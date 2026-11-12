@@ -1,0 +1,5 @@
+# Your own copies, never committed: the period toolchain, the retail game, build output.
+/toolchain/
+/ff7.exe
+/build/
+__pycache__/

@@ -1,0 +1,19 @@
+# Style for the sources: 4-space indent, function braces on their own line, control-flow braces
+# attached (BreakBeforeBraces: Linux).
+#
+# ColumnLimit is 0 and comments are never reflowed: the `// FUNCTION: FF7 0x...` marker comments and
+# 1998-era prototypes routinely exceed any sane limit, and a formatter that rewrites a marker breaks
+# it. Large data initializers sit between `// clang-format off` and `// clang-format on`.
+BasedOnStyle: LLVM
+Language: Cpp
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 0
+BreakBeforeBraces: Linux
+ReflowComments: false
+SortIncludes: false
+AlignConsecutiveMacros: false
+AlignTrailingComments: false
+SpaceAfterCStyleCast: false
+PointerAlignment: Right
