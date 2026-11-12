@@ -1784,7 +1784,7 @@ void __cdecl Mini_CondorStartRecordAction(short recordIndex, short slot)
     Mini_CondorSubmitSfxPlay(0, 4);
     g_CondorSelectPanelPhase = 1;
     g_CondorPhaseFrames = 0;
-    g_CondorBannerCounter = 0xFFE0 /* -32 */;
+    g_CondorBannerCounter = -32;
     Mini_CondorRequestDisplayMode2();
     g_CondorMainState = 0x11;
 }
@@ -1803,7 +1803,7 @@ void __cdecl Mini_CondorUpdateRedFadeSprite(void)
 
     if (g_CondorRedFadeLevel != 0) {
         g_CondorRedFadeLevel -= 2;
-        g_CondorCurrentValues.lineStartX = 0xFFA0 /* -96 */;
+        g_CondorCurrentValues.lineStartX = -96;
         g_CondorDefaultValues.lineEndX = 512;
         if (g_CondorPhase == 1) {
             g_CondorDefaultValues.defaultValue = 0x2A0;

@@ -267,7 +267,7 @@ void __cdecl Mini_CondorFreezeTimerAndResetBanner(void)
     g_CondorSelectedRecord = 0xFFFF;
     g_CondorSelectPanelPhase = CONDOR_PANEL_OPEN;
     g_CondorPhaseFrames = 0;
-    g_CondorBannerCounter = 0xFFE0 /* -32 */;
+    g_CondorBannerCounter = -32;
     Mini_CondorRequestDisplayMode2();
 }
 /*

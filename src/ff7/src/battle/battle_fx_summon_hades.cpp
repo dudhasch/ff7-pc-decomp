@@ -5979,7 +5979,7 @@ void __cdecl BattleFx_SummonHadesTubeSpawnTimeline(void)
         tube->posZ = 0;
         tube->posX = 0;
         tube->posY = 0;
-        tube->scrollSpeed = 0xF2B8 /* -3400 */;
+        tube->scrollSpeed = -3400;
         tube->stateIndex = 0x1F;
         g_BattleSummonHadesPositionHistory[0x1F].headIndex = g_BattleSummonHadesPositionHistory[0x1F].step = g_BattleSummonHadesPositionHistory[0x1F].timer = 0;
         g_BattleSummonHadesPositionHistory[0x1F].stepLimit = 5;

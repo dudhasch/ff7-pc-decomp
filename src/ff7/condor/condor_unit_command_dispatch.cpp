@@ -403,7 +403,7 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
     g_pCondorConfigEntry->initialValue = 0;
     frame.cursorX.x = g_CondorCursorPos.x;
     frame.cursorX.y = 1024 - g_CondorCursorPos.y;
-    frame.cursorZ = 0xFFD8 /* -40 */;
+    frame.cursorZ = -40;
     /* Retail caller prototype (int, int, char, void *) -> short preserved for /Od argument promotion on `Mini_CondorInitRecordFromConfig`. */
     frame.tmpIndex = ((short(__cdecl *)(int, int, char, void *))Mini_CondorInitRecordFromConfig)((int)frame.record, (int)g_pCondorConfigEntry, (char)((frame.recordSlot & 0xFFFF) | 0x80), &frame.cursorX);
     if (frame.tmpIndex == 1) {

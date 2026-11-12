@@ -1549,7 +1549,7 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
         if (Input_GetPressed(INPUT_ANY) != 0 && frame.rowUpdateResult == 0) {
             g_BattleResultGilItemsFlag = 1;
             g_MenuTransitionStep = 0 - g_MenuTransitionStep;
-            g_MenuResultFadeStep = 0xFFFA /* -6 */;
+            g_MenuResultFadeStep = -6;
             g_MenuBattleEndMode = MENU_BATTLE_END_EXP_TO_GIL;
             g_MenuResultFadeLevel = 0xFF;
         }
@@ -1797,7 +1797,7 @@ void __cdecl Battle_DrawResultExpScreen1x(void)
         if (Input_GetPressed(INPUT_ANY) != 0 && frame.rowUpdateResult == 0) {
             g_BattleResultGilItemsFlag = 1;
             g_MenuTransitionStep = 0 - g_MenuTransitionStep;
-            g_MenuResultFadeStep = 0xFFFA /* -6 */;
+            g_MenuResultFadeStep = -6;
             g_MenuBattleEndMode = MENU_BATTLE_END_EXP_TO_GIL;
             g_MenuResultFadeLevel = 0xFF;
         }

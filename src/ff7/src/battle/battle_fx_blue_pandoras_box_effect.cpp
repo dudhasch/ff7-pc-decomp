@@ -367,7 +367,7 @@ void __cdecl BattleFx_BluePandorasBoxTimelineTask(void)
             modelTaskPtr->offsetY = 0x64;
             modelTaskPtr->radius = 2000;
             modelTaskPtr->speed = 63;
-            modelTaskPtr->drift = 0xFFF5 /* -11 */;
+            modelTaskPtr->drift = -11;
             modelTaskPtr->velocityY = 0xFFDE;
             modelTaskPtr->gravity = 0;
             modelTaskPtr->lifetime = 32;
@@ -397,7 +397,7 @@ void __cdecl BattleFx_BluePandorasBoxTimelineTask(void)
             modelTaskPtr->offsetY = 0x50;
             modelTaskPtr->radius = 1800;
             modelTaskPtr->speed = 0xFFD9;
-            modelTaskPtr->drift = 0xFFFC /* -4 */;
+            modelTaskPtr->drift = -4;
             modelTaskPtr->velocityY = 0xFFEA;
             modelTaskPtr->gravity = 0;
             modelTaskPtr->lifetime = 28;

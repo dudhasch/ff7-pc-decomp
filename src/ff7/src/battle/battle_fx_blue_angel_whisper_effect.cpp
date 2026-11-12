@@ -580,7 +580,7 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeTimelineTask(void)
         pRecord = (BattleFxAngelWhisperRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperRingRecordTimelineTask);
         *(Int64Pair *)&pRecord->posX = task->pos;
         pRecord->baseScale = task->baseScale;
-        pRecord->accel = 0xFFB0 /* -80 */;
+        pRecord->accel = -80;
     }
     if (task->step == 60) {
         for (i8 = 0; i8 < 10; i8++) {

@@ -152,7 +152,7 @@ void __cdecl BattleFx_LimitClimhazzardTimelineTask(void)
         pRecord->posX = g_YasuiLimitClimhazzardTimelineScratch->vx + g_YasuiLimitClimhazzardTimelineScratch->transX;
         pRecord->posY = g_YasuiLimitClimhazzardTimelineScratch->vy + g_YasuiLimitClimhazzardTimelineScratch->transY;
         pRecord->posZ = g_YasuiLimitClimhazzardTimelineScratch->vz + g_YasuiLimitClimhazzardTimelineScratch->transZ;
-        pRecord->pushLength = 0xFC18 /* -1000 */;
+        pRecord->pushLength = -1000;
         BattleFx_FadeOutScreenFlashRamp(5);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&pRecord->posX), 0x12);
     }

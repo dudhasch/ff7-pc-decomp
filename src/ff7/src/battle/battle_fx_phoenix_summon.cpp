@@ -1071,7 +1071,7 @@ void __cdecl BattleFx_SummonPhoenixRingColumnTask(void)
     SetTransMatrix(matPtr);
     RefreshGlobalTransformState();
     primitive = (BattleFxPhoenixFlatPacket *)Gfx_GetPsxPacketScratchPtr();
-    g_BattleSummonPhoenixCoordData2.ringColumnCoord2 = 0xFC18 /* -1000 */;
+    g_BattleSummonPhoenixCoordData2.ringColumnCoord2 = -1000;
     g_BattleSummonPhoenixCoordData1.ringColumnCoord1 = g_BattleSummonPhoenixCoordData2.ringColumnCoord2;
     g_BattleSummonPhoenixCoordData4.ringColumnCoord4 = 0;
     g_BattleSummonPhoenixCoordData3.ringColumnCoord3 = g_BattleSummonPhoenixCoordData4.ringColumnCoord4;
@@ -1083,10 +1083,10 @@ void __cdecl BattleFx_SummonPhoenixRingColumnTask(void)
             Gfx_DrawPsxPrimitive(primitive);
             primitive++;
         }
-        g_BattleSummonPhoenixCoordData1.ringColumnCoord1 += 0xFC18 /* -1000 */;
-        g_BattleSummonPhoenixCoordData2.ringColumnCoord2 += 0xFC18 /* -1000 */;
-        g_BattleSummonPhoenixCoordData3.ringColumnCoord3 += 0xFC18 /* -1000 */;
-        g_BattleSummonPhoenixCoordData4.ringColumnCoord4 += 0xFC18 /* -1000 */;
+        g_BattleSummonPhoenixCoordData1.ringColumnCoord1 += -1000;
+        g_BattleSummonPhoenixCoordData2.ringColumnCoord2 += -1000;
+        g_BattleSummonPhoenixCoordData3.ringColumnCoord3 += -1000;
+        g_BattleSummonPhoenixCoordData4.ringColumnCoord4 += -1000;
     }
     if (g_BattleIsPaused == 0) {
         (task->spawnIndex)++;

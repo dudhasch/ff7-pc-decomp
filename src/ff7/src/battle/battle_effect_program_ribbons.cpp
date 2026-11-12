@@ -1994,7 +1994,7 @@ void __cdecl Battle_EffectProgram4ActorOrbitTask(void)
         if (frame.orbitSlot->phase == 1) {
             frame.anchorX = 0;
             frame.anchorY = 0;
-            frame.anchorZ = 0xFF9C /* -100 */;
+            frame.anchorZ = -100;
             Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, &frame.anchorX, (short *)&g_BattleLimitTifaAttachPos);
             Battle_GetBoneWorldPos(g_BattleLimitTifaActorIdx, 0x1C, &frame.anchorX);
             *(short *)&g_BattleLimitTifaAttachPos += (short)((frame.anchorX - *(short *)&g_BattleLimitTifaAttachPos) / 4);
@@ -2030,7 +2030,7 @@ void __cdecl Battle_EffectProgram4ActorOrbitTask(void)
         }
         frame.anchorX = 0;
         frame.anchorY = 0;
-        frame.anchorZ = 0xFF9C /* -100 */;
+        frame.anchorZ = -100;
         Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, &frame.anchorX, (short *)&g_BattleLimitTifaAttachPos);
         Battle_GetBoneWorldPos(g_BattleLimitTifaActorIdx, 0x1C, &frame.anchorX);
         *(short *)&g_BattleLimitTifaAttachPos += (short)((frame.anchorX - *(short *)&g_BattleLimitTifaAttachPos) / 4);
@@ -2945,7 +2945,7 @@ void __cdecl Battle_EffectProgram6CarryTargetActorTask(void)
     } else {
         frame.tmpBoneMinY = 0;
         frame.cameraOffsetY = 0;
-        frame.tmpBoneMaxY = 0xFF9C /* -100 */;
+        frame.tmpBoneMaxY = -100;
         Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, &frame.tmpBoneMinY, (short *)&g_BattleLimitTifaAttachPos);
         if (frame.effectSlot->timer < 31) { /* empty first arm: lib/codegen.h */
         } else {

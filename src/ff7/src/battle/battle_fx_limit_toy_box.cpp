@@ -223,7 +223,7 @@ void __cdecl BattleFx_LimitToyBoxASetupTask(void)
     frame.slot->worldPos = *(Int64Pair *)(&frame.centroid);
     frame.size = 1728;
     frame.slot->rollZOrRadius = 0;
-    frame.slot->rollStepOrRange = 0xFF00 /* -256 */;
+    frame.slot->rollStepOrRange = -256;
     frame.slot->rotationY = *(short *)&frame.angle;
     frame.slot->scale = 0;
     frame.slot->scaleStepOrSpeed = ((frame.size << 12) / 750) / 8;

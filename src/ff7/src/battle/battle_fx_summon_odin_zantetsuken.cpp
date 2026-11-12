@@ -585,7 +585,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                 frameIndex -= 25;
                 if (frameIndex < 35) {
                     if (frameIndex == 0) {
-                        taskPtr->angularVelocity = 0xFF6A /* -150 */;
+                        taskPtr->angularVelocity = -150;
                     }
                     if (frameIndex < 15) {
                         BattleFx_SummonOdinZantetsukenSpawnBoneSprites(3);
@@ -672,7 +672,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                                     if (frameIndex < 8) {
                                         g_BattleSummonOdinZInitialAngles.angleY += 0xC8;
                                     } else if (frameIndex == 8) {
-                                        taskPtr->angularVelocity = 0xFE0C /* -500 */;
+                                        taskPtr->angularVelocity = -500;
                                         g_BattleSummonOdinZCameraTarget->tintB = 0;
                                         g_BattleSummonOdinZCameraTarget->tintG = 0;
                                         g_BattleSummonOdinZCameraTarget->tintR = 0;

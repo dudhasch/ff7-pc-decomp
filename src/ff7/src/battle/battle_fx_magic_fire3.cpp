@@ -179,14 +179,14 @@ void __cdecl BattleFx_MagicFire3TimelineTask(void)
         child->step = (extent / 750) / 32;
         child = (BattleFxFire3Timeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFire3SpinGrowFadeModel3EarlyFadeTask);
         child->spinAngle = 0;
-        child->riseSpeed = 0xFC00 /* -1024 */;
+        child->riseSpeed = -1024;
         child->offsetY = 0xFFDE;
         *(Int64Pair *)((char *)child + 4) = *(Int64Pair *)((char *)selfPtr + 4);
         child->spread = extent / 620 >> 1;
         child->step = (extent / 620) / 32;
         child = (BattleFxFire3Timeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFire3SpinGrowFadeModel3Task);
         child->spinAngle = 0;
-        child->riseSpeed = 0xFC00 /* -1024 */;
+        child->riseSpeed = -1024;
         child->offsetY = 0xFFE6;
         *(Int64Pair *)((char *)child + 4) = *(Int64Pair *)((char *)selfPtr + 4);
         child->spread = extent / 600 >> 1;

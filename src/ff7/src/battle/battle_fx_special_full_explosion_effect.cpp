@@ -129,7 +129,7 @@ void __cdecl BattleFx_SpecialFullExplosionSetupTask(void)
     task->ownerSlot = BATTLE_TASK_FREE;
     task = (BattleFxFullExplosionSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFullExplosionTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleSpecFullExplosionTargetMask, (short *)((char *)task + 4));
-    task->launchSpeed = 0xFAC0 /* -1344 */;
+    task->launchSpeed = -1344;
     task->radius = 2464;
     task->diameter = task->radius << 1;
     task->velocity = -(task->launchSpeed >> 1);

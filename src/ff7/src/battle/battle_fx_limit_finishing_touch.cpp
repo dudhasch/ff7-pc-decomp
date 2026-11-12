@@ -356,7 +356,7 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
         frame.garyotenSlot = (BattleFxLimitGaryotenSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitFinishingTouchScaledModelTask);
         frame.attachX = 0;
         frame.attachY = 0;
-        frame.attachZ = 0xFDD5 /* -555 */;
+        frame.attachZ = -555;
         BattleFx_LimitFinishingTouchTransformAttachPointToEffectSpace(g_BattleLimitFinishingTouchActorIndex, -1, &frame.attachX, &frame.garyotenSlot->scaledModel.posX);
         frame.garyotenSlot->scaledModel.baseScale = 0x1CCC;
     }

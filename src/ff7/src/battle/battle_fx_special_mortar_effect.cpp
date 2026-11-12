@@ -169,7 +169,7 @@ void __cdecl BattleFx_SpecialMortarTimelineTask(void)
         Battle_GetBoneWorldPos(taskPtr->actorIndex, g_BattleActorRecords[taskPtr->actorIndex].bone33, &pShell->posX);
         pShell->rotOrVelX = 0;
         pShell->spinRate = theta + 0x400;
-        pShell->rotOrVelZ = 0xFE00 /* -512 */;
+        pShell->rotOrVelZ = -512;
     }
     if (taskPtr->frame == 20) {
         for (i8 = 0; i8 < 24; i8++) {

@@ -1721,7 +1721,7 @@ void __cdecl BattleFx_BzSpawnRingDebris(void)
         frame.debrisRecord->deltaZ = 0;
         frame.debrisRecord->startX = 0;
         frame.debrisRecord->startY = 0xD8F0;
-        frame.debrisRecord->startZ = 0xD8F0 /* -10000 */;
+        frame.debrisRecord->startZ = -10000;
         frame.spawnBudget -= 0x100;
     }
     (frame.ringDebrisTask->frameCounter)++;

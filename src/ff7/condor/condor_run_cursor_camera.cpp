@@ -563,7 +563,7 @@ short __cdecl Mini_CondorProbeGatedCursorPosPlacement(void)
     }
     frame.placeX.x = g_CondorCursorPos.x;
     frame.placeX.y = 1024 - g_CondorCursorPos.y;
-    frame.placeZ = 0xFFD8 /* -40 */;
+    frame.placeZ = -40;
     frame.hitResult = Mini_CondorTestRecordPlacementWithPeers(0, &frame.placeX);
     if (frame.hitResult == 1) {
         return 1;
@@ -591,7 +591,7 @@ short __cdecl Mini_CondorProbeCursorPlacement(void)
 
     frame.placeX.x = g_CondorCursor.x;
     frame.placeX.y = 1024 - g_CondorCursor.y;
-    frame.placeZ = 0xFFD8 /* -40 */;
+    frame.placeZ = -40;
     frame.hitResult = Mini_CondorTestRecordPlacement(0, &frame.placeX);
     if (frame.hitResult == 1) {
         return 1;

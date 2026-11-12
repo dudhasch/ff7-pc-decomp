@@ -1853,7 +1853,7 @@ void __cdecl BattleFx_SummonBahamutActorDescentTask(void)
                 stage -= 65;
                 if (stage < 105) {
                     if (stage == 0) {
-                        g_BattleSummonBahamutDefaultPosition[1] = 0xE4A8 /* -7000 */;
+                        g_BattleSummonBahamutDefaultPosition[1] = -7000;
                     }
                     if (stage == 104) {
                         Battle_AllocSceneMessage(2);

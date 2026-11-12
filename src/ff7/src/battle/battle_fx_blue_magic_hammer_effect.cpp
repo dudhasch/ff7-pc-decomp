@@ -89,7 +89,7 @@ void __cdecl BattleFx_BlueSpawnMagicHammerPerTarget(int actor)
         swingRange = 1900;
     }
     swingPtr->swingAngle = 0;
-    swingPtr->swingStep = 0xFF00 /* -256 */;
+    swingPtr->swingStep = -256;
     swingPtr->yaw = g_BattleActorRecords[actor].yaw;
     swingPtr->tiltAngle = 0;
     swingPtr->tiltStep = ((swingRange << 12) / 750) / 8;

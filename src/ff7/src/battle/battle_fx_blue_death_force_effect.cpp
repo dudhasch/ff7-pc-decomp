@@ -226,7 +226,7 @@ void __cdecl BattleFx_BlueDeathForceTimelineTask(void)
         pNewTask->tilt = 0;
         pNewTask->tiltSpeed = 48;
         pNewTask->turn = 0;
-        pNewTask->turnSpeed = 0xFFAE /* -82 */;
+        pNewTask->turnSpeed = -82;
         pNewTask->modelScale = (task->radius << 12) / 800;
         pNewTask->sparkRadius = task->radius;
     }

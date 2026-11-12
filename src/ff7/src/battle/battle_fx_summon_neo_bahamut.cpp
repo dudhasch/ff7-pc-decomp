@@ -492,8 +492,8 @@ int __cdecl BattleFx_SummonEnterNeoBahamut(int targetMask, int actorIdx)
     g_BattleSummonNeoBahamutLightRigAngle.angleX = 0xD8F0;
     g_BattleSummonNeoBahamutLightRigAngle.angleY = 0xD8F0;
     g_BattleSummonNeoBahamutAnchorPosition[0] = 0;
-    g_BattleSummonNeoBahamutAnchorPosition[1] = 0xFA24 /* -1500 */;
-    g_BattleSummonNeoBahamutAnchorPosition[2] = 0xE2B4 /* -7500 */;
+    g_BattleSummonNeoBahamutAnchorPosition[1] = -1500;
+    g_BattleSummonNeoBahamutAnchorPosition[2] = -7500;
     g_BattleSummonNeoBahamutCircleModelAngle = 0;
     g_BattleSummonNeoBahamutLineLight2State = 0;
     memset(&g_BattleSummonNeoBahamutGroundMatrix, 0, sizeof(g_BattleSummonNeoBahamutGroundMatrix));

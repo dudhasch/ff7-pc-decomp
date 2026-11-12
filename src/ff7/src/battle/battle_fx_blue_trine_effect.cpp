@@ -110,11 +110,11 @@ void __cdecl BattleFx_BlueTrineSetupTask(void)
     scaleTarget = 0x6C0;
     scaleShifted = scaleTarget << 12;
     task->spinX = 0;
-    task->spinStepX = 0xFFD8 /* -40 */;
+    task->spinStepX = -40;
     task->spinY = 0;
     task->spinStepY = 8;
     task->spinZ = 0;
-    task->spinStepZ = 0xFFD8 /* -40 */;
+    task->spinStepZ = -40;
     task->scale = 0;
     task->scaleStep = scaleShifted / 750 / 18;
     pFadeModel = (BattleFxBlueTrineSpinState *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueTrineSpinGrowFadeModelTask);
@@ -124,7 +124,7 @@ void __cdecl BattleFx_BlueTrineSetupTask(void)
     pFadeModel->spinX = 0;
     pFadeModel->spinStepX = 40;
     pFadeModel->spinY = 0;
-    pFadeModel->spinStepY = 0xFFF8 /* -8 */;
+    pFadeModel->spinStepY = -8;
     pFadeModel->spinZ = 0;
     pFadeModel->spinStepZ = 40;
     pFadeModel->scale = 0;

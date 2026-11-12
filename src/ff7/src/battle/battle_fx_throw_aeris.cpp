@@ -434,7 +434,7 @@ void __cdecl BattleFx_ThrowAerisWeaponsArcTimelineTask(void)
         speed = (SqrtToInt(norm) << 1) / 10;
         pProjectile = (BattleFxAerisArcSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowAerisWeaponsArcProjectileTask);
         *(Int64Pair *)((char *)pProjectile + 4) = *(Int64Pair *)&g_BattleThrowAerisSourcePos;
-        pProjectile->arcVelocity = 0xFFF4 /* -12 */;
+        pProjectile->arcVelocity = -12;
         pProjectile->velocityX = speed * g_BattleThrowAerisDeltaVectorX >> 12;
         pProjectile->velocityY = speed * g_BattleThrowAerisDeltaVectorY >> 12;
         pProjectile->velocityZ = speed * g_BattleThrowAerisDeltaVectorZ >> 12;
