@@ -184,16 +184,16 @@ void __cdecl D3DFreePolygonSet(GfxPolygonSet *polygonSet)
     int index;
     if (polygonSet != 0) {
         // STRING: FF7 0x0091257c
-        GameHeapFree((void *)polygonSet->elements, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4BF);
+        GameHeapFree((void *)polygonSet->elements, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1215);
         Gfx_FreePolygonSetGroups(polygonSet->groupCount, (int)polygonSet->entries);
         // STRING: FF7 0x0091259c
-        GameHeapFree((void *)polygonSet->groupStates, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4C3);
+        GameHeapFree((void *)polygonSet->groupStates, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1219);
         if (polygonSet->batchList != 0) {
             for (index = 0; index < polygonSet->groupCount; index++) {
                 D3D5FreeBatch((struct GfxD3d5BatchState *)polygonSet->batchList[index]);
             }
             // STRING: FF7 0x009125bc
-            GameHeapFree(polygonSet->batchList, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4CC);
+            GameHeapFree(polygonSet->batchList, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1228);
         }
         if (polygonSet->comObjectTable != 0) {
             for (index = 0; index < polygonSet->groupCount; index++) {
@@ -203,7 +203,7 @@ void __cdecl D3DFreePolygonSet(GfxPolygonSet *polygonSet)
                 }
             }
             // STRING: FF7 0x009125dc
-            GameHeapFree(polygonSet->comObjectTable, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4DA);
+            GameHeapFree(polygonSet->comObjectTable, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1242);
         }
         if (polygonSet->execBuffers != 0) {
             for (index = 0; index < polygonSet->groupCount; index++) {
@@ -213,12 +213,12 @@ void __cdecl D3DFreePolygonSet(GfxPolygonSet *polygonSet)
                 }
             }
             // STRING: FF7 0x009125fc
-            GameHeapFree(polygonSet->execBuffers, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4E8);
+            GameHeapFree(polygonSet->execBuffers, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1256);
         }
         // STRING: FF7 0x0091261c
-        GameHeapFree((void *)polygonSet->execBufferAlloc, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4EB);
+        GameHeapFree((void *)polygonSet->execBufferAlloc, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1259);
         // STRING: FF7 0x0091263c
-        GameHeapFree(polygonSet, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4ED);
+        GameHeapFree(polygonSet, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1261);
     }
 }
 
@@ -231,7 +231,7 @@ int __cdecl D3DAllocPolygonSet(void)
     GfxPolygonSet *rec;
 
     // STRING: FF7 0x0091265c
-    rec = (GfxPolygonSet *)((int)GameHeapAlloc(1, 0xB0, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x4F5));
+    rec = (GfxPolygonSet *)((int)GameHeapAlloc(1, 176, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1269));
     if (rec != 0) {
         rec->drawEnabled = 1;
         rec->drawUnsorted = 1;
@@ -251,9 +251,9 @@ int __cdecl D3DExecAllocGroupArrays(GfxExecGroup *group)
     ok = 0;
     if (group != 0) {
         // STRING: FF7 0x0091267c
-        group->entryHandles = (int)GameHeapAlloc(group->entryCount, 4, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x508);
+        group->entryHandles = (int)GameHeapAlloc(group->entryCount, 4, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1288);
         // STRING: FF7 0x0091269c
-        group->entryStates = (int)GameHeapAlloc(group->entryCount, 4, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x509);
+        group->entryStates = (int)GameHeapAlloc(group->entryCount, 4, "C:\\lib\\src\\graphics\\dx_rend.cpp", 1289);
         if (group->entryHandles != 0 && group->entryStates != 0) {
             ok = 1;
         }
@@ -298,13 +298,13 @@ int __cdecl D3DExecCompileGroup(int groupIndex, struct GfxExecTransformBlock *tr
         sprintf(buf, "LIGHT STATES  %d. \n", compileInfo[8]);
         Gfx_DebugPrint(buf);
         // STRING: FF7 0x00912708
-        if (CheckDirectDrawResult(((ComDirect3DDevice *)target->d3dDevice)->CreateExecuteBuffer(descPointer, &polygonSet->execBuffers[groupIndex], 0), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x53e)) {
+        if (CheckDirectDrawResult(((ComDirect3DDevice *)target->d3dDevice)->CreateExecuteBuffer(descPointer, &polygonSet->execBuffers[groupIndex], 0), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1342)) {
             // STRING: FF7 0x00912728
             sprintf(buf, "EXECUTE BUFFER OBJECT %p \n", polygonSet->execBuffers[groupIndex]);
             Gfx_DebugPrint(buf);
             bufDesc = descPointer;
             // STRING: FF7 0x00912744
-            if (CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->Lock(bufDesc), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x557)) {
+            if (CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->Lock(bufDesc), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1367)) {
                 // STRING: FF7 0x00912764
                 sprintf(buf, "EXECUTE BUFFER POINTER %p  SIZE %d. \n", bufDesc->data, bufDesc->bufferSize);
                 Gfx_DebugPrint(buf);
@@ -317,7 +317,7 @@ int __cdecl D3DExecCompileGroup(int groupIndex, struct GfxExecTransformBlock *tr
                         // STRING: FF7 0x0091278c
                         Gfx_DebugPrint("AFTER DATA COMPILE \n");
                         // STRING: FF7 0x009127a4
-                        if (CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->Unlock(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x575)) {
+                        if (CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->Unlock(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1397)) {
                             // STRING: FF7 0x009127c4
                             Gfx_DebugPrint("AFTER UNLOCK \n");
                             memset(processVerts, 0, sizeof(processVerts));
@@ -328,7 +328,7 @@ int __cdecl D3DExecCompileGroup(int groupIndex, struct GfxExecTransformBlock *tr
                             processVerts[4] = dataInformation[5];
                             processVerts[5] = dataInformation[6];
                             // STRING: FF7 0x009127d4
-                            if (CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->SetExecuteData(processVerts), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x58d)) {
+                            if (CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->SetExecuteData(processVerts), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1421)) {
                                 // STRING: FF7 0x009127f4
                                 Gfx_DebugPrint("EXECUTE BUFFER CREATED AND SET \n");
                                 result = 1;
@@ -339,7 +339,7 @@ int __cdecl D3DExecCompileGroup(int groupIndex, struct GfxExecTransformBlock *tr
                     // STRING: FF7 0x00912818
                     Gfx_DebugPrint("ERROR: INVALID EXECUTION BUFFER DATA POINTER. \n");
                     // STRING: FF7 0x00912848
-                    CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->Unlock(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x59e);
+                    CheckDirectDrawResult(polygonSet->execBuffers[groupIndex]->Unlock(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1438);
                 }
             }
         }
@@ -363,7 +363,7 @@ void __cdecl D3DExecResetCompileInfo(void *compileInfo)
 // FUNCTION: FF7 0x006a0390
 int __cdecl D3DExecCompileBuffer(int mode, GfxExecTransformBlock *transformBlock, int renderStates, int triangleList, int vertexBuffer, void *compileState, void *polygonSet)
 {
-    char line[0xC8];
+    char line[200];
     int res;
     int total;
     int writePointer;
@@ -443,7 +443,7 @@ int __cdecl D3DExecCompileBuffer(int mode, GfxExecTransformBlock *transformBlock
             vertexFormat = D3DPROCESSVERTICES_TRANSFORMLIGHT;
             break;
         }
-        writePointer = D3DExecEmitInstruction(D3DOP_PROCESSVERTICES, 0x10, 1, &total, writePointer);
+        writePointer = D3DExecEmitInstruction(D3DOP_PROCESSVERTICES, 16, 1, &total, writePointer);
         if (writePointer != 0) {
             vertexOp = (GfxExecVertexOp *)writePointer;
             memset((void *)vertexOp, 0, 0x10);
@@ -455,7 +455,7 @@ int __cdecl D3DExecCompileBuffer(int mode, GfxExecTransformBlock *transformBlock
             vertexOp++;
             writePointer = (int)vertexOp;
         }
-        total += 0x10;
+        total += 16;
     }
     Gfx_DebugPrint(DxRendLit_AfterProcessVertices());
     writePointer = D3DExecAlignInstructionStream(8, &total, writePointer);
@@ -591,14 +591,14 @@ int __cdecl D3DExecBuildVertexArray(int vertexOut, int modulate, GfxExecTriangle
         break;
     case GFX_D3D_VERTEX_FORMAT_LVERTEX:
         if (vertexBuffer[1].texCoordCount != 0) {
-            copyBuffer = (int)GameHeapAlloc(1, count * 0x20, (char *)(int)DxRendLit_SourcePath_1(), 0x11C);
-            tmpVerts = (int)GameHeapAlloc(1, count * 0x20, (char *)(int)DxRendLit_SourcePath_2(), 0x11D);
-            colorBuf = (int)GameHeapAlloc(1, count * 0x10, (char *)(int)DxRendLit_SourcePath_3(), 0x11E);
-            header->structSize = 0x34;
+            copyBuffer = (int)GameHeapAlloc(1, count * 0x20, (char *)(int)DxRendLit_SourcePath_1(), 284);
+            tmpVerts = (int)GameHeapAlloc(1, count * 0x20, (char *)(int)DxRendLit_SourcePath_2(), 285);
+            colorBuf = (int)GameHeapAlloc(1, count * 0x10, (char *)(int)DxRendLit_SourcePath_3(), 286);
+            header->structSize = 52;
             header->copyBuffer = copyBuffer;
-            header->inVertexSize = 0x20;
+            header->inVertexSize = 32;
             header->tmpVerts = tmpVerts;
-            header->outVertexSize = 0x20;
+            header->outVertexSize = 32;
             header->colorBuf = colorBuf;
             header->flags = 0x3F;
         }
@@ -1123,7 +1123,7 @@ void __cdecl D3DExecRenderDeferredPass(int passKind, int deferredList, GfxEngine
                                                     execBits = D3DEXECUTE_UNCLIPPED;
                                                 }
                                                 // STRING: FF7 0x00912868
-                                                CheckDirectDrawResult(((ComDirect3DDevice *)(executeIface))->Execute(entryBuffer, viewportIface, execBits), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x69F);
+                                                CheckDirectDrawResult(((ComDirect3DDevice *)(executeIface))->Execute(entryBuffer, viewportIface, execBits), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1695);
                                             }
                                             seqPtr = (GfxDrawStateNode *)(seqPtr->next);
                                         } while (seqPtr != 0);
@@ -1156,7 +1156,7 @@ void __cdecl D3DExecRenderDeferredPass(int passKind, int deferredList, GfxEngine
                                                     altBits = D3DEXECUTE_UNCLIPPED;
                                                 }
                                                 // STRING: FF7 0x00912888
-                                                CheckDirectDrawResult(((ComDirect3DDevice *)(executeIface))->Execute(entryBuffer, viewportIface, altBits), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x6FA);
+                                                CheckDirectDrawResult(((ComDirect3DDevice *)(executeIface))->Execute(entryBuffer, viewportIface, altBits), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1786);
                                             }
                                             seqPtr = (GfxDrawStateNode *)(seqPtr->next);
                                         } while (seqPtr != 0);
@@ -1172,7 +1172,7 @@ void __cdecl D3DExecRenderDeferredPass(int passKind, int deferredList, GfxEngine
                                     bitsValue = 2;
                                 }
                                 // STRING: FF7 0x009128a8
-                                CheckDirectDrawResult(((ComDirect3DDevice *)(executeIface))->Execute(entryBuffer, viewportIface, bitsValue), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x749);
+                                CheckDirectDrawResult(((ComDirect3DDevice *)(executeIface))->Execute(entryBuffer, viewportIface, bitsValue), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1865);
                             }
                         }
                     }
@@ -1204,7 +1204,7 @@ void __cdecl D3D_RenderDeferredLists(int passSelect, GfxEngineContext *device)
         if (device->zBufferSurface != 0) {
             if (((ComDirectDrawSurface *)(device->zBufferSurface))->IsLost() == DDERR_SURFACELOST) {
                 // STRING: FF7 0x009128c8
-                failed |= CheckDirectDrawResult(((ComDirectDrawSurface *)(device->zBufferSurface))->Restore(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x77D);
+                failed |= CheckDirectDrawResult(((ComDirectDrawSurface *)(device->zBufferSurface))->Restore(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1917);
             }
         }
         if (failed == 0) {
@@ -1213,7 +1213,7 @@ void __cdecl D3D_RenderDeferredLists(int passSelect, GfxEngineContext *device)
                     sceneObject = device->d3dDevice2;
                     if (sceneObject != 0) {
                         // STRING: FF7 0x009128e8
-                        if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(sceneObject))->BeginScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x793) != 0) {
+                        if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(sceneObject))->BeginScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1939) != 0) {
                             if (passSelect == GFX_SCENE_PASS_OPAQUE || passSelect == GFX_SCENE_PASS_BOTH) {
                                 device->opaqueSet->drawEnabled = 1;
                                 device->transSet->drawEnabled = 0;
@@ -1225,7 +1225,7 @@ void __cdecl D3D_RenderDeferredLists(int passSelect, GfxEngineContext *device)
                                 D3D5DrawGroupListPass(GFX_SCENE_PASS_TRANSLUCENT, device->polygonSetList, device);
                             }
                             // STRING: FF7 0x00912908
-                            CheckDirectDrawResult(((ComDirect3DDevice2 *)(sceneObject))->EndScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x7B4);
+                            CheckDirectDrawResult(((ComDirect3DDevice2 *)(sceneObject))->EndScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1972);
                         }
                     }
                 }
@@ -1233,7 +1233,7 @@ void __cdecl D3D_RenderDeferredLists(int passSelect, GfxEngineContext *device)
                 execIface = device->d3dDevice;
                 if (execIface != 0) {
                     // STRING: FF7 0x00912928
-                    if (CheckDirectDrawResult(((ComDirect3DDevice *)(execIface))->BeginScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x7C0) != 0) {
+                    if (CheckDirectDrawResult(((ComDirect3DDevice *)(execIface))->BeginScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 1984) != 0) {
                         if (passSelect == GFX_SCENE_PASS_OPAQUE || passSelect == GFX_SCENE_PASS_BOTH) {
                             device->opaqueSet->drawEnabled = 1;
                             device->transSet->drawEnabled = 0;
@@ -1245,7 +1245,7 @@ void __cdecl D3D_RenderDeferredLists(int passSelect, GfxEngineContext *device)
                             D3DExecRenderDeferredPass(GFX_SCENE_PASS_TRANSLUCENT, device->polygonSetList, device);
                         }
                         // STRING: FF7 0x00912948
-                        CheckDirectDrawResult(((ComDirect3DDevice *)(execIface))->EndScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x7DE);
+                        CheckDirectDrawResult(((ComDirect3DDevice *)(execIface))->EndScene(), "C:\\lib\\src\\graphics\\dx_rend.cpp", 2014);
                     }
                 }
             }
@@ -1517,7 +1517,7 @@ void __cdecl DestroyBlockHeapNodeList(int list)
     if (list != 0) {
         DestroyBlockHeapChain((MemBlockHeap *)(((GfxBlockHeapNodeList *)list)->heapChain));
         // STRING: FF7 0x00912968
-        GameHeapFree((void *)list, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x930);
+        GameHeapFree((void *)list, "C:\\lib\\src\\graphics\\dx_rend.cpp", 2352);
     }
 }
 
@@ -1530,9 +1530,9 @@ int __cdecl CreateBlockHeapNodeList(int count)
     int list;
 
     // STRING: FF7 0x00912988
-    list = (int)GameHeapAlloc(1, 0xC, "C:\\lib\\src\\graphics\\dx_rend.cpp", 0x938);
+    list = (int)GameHeapAlloc(1, 12, "C:\\lib\\src\\graphics\\dx_rend.cpp", 2360);
     if (list != 0) {
-        ((GfxBlockHeapNodeList *)list)->heapChain = CreateBlockHeapCount(count, 0xA0, 0);
+        ((GfxBlockHeapNodeList *)list)->heapChain = CreateBlockHeapCount(count, 160, 0);
     }
     return list;
 }

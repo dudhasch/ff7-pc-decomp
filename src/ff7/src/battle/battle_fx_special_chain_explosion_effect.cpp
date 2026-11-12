@@ -169,22 +169,22 @@ void __cdecl BattleFx_SpecialChainExplosionSetupTask(void)
     frame.timelineSlot->jitterBias = 0x360;
     frame.timelineSlot->jitterRange = frame.timelineSlot->jitterBias << 1;
     frame.timelineSlot->scale = 0x170A;
-    frame.distance = 0xEA0;
+    frame.distance = 3744;
     g_BattleSpecChainExplosionDeltaX = frame.timelineSlot->pos.vx - g_BattleCameraPosition.cameraPosX;
     g_BattleSpecChainExplosionDeltaY = 0;
     g_BattleSpecChainExplosionDeltaZ = frame.timelineSlot->pos.vz - g_BattleCameraPosZ;
     NormalizeVectorFixed(&g_BattleSpecChainExplosionDeltaX, &g_BattleSpecChainExplosionDeltaX);
-    *(short *)&frame.offsetX = frame.timelineSlot->pos.vx - (frame.distance * g_BattleSpecChainExplosionDeltaX >> 0xC);
+    *(short *)&frame.offsetX = frame.timelineSlot->pos.vx - (frame.distance * g_BattleSpecChainExplosionDeltaX >> 12);
     frame.slotField06 = frame.timelineSlot->pos.vy;
-    *(short *)&frame.offsetZ = frame.timelineSlot->pos.vz - (frame.distance * g_BattleSpecChainExplosionDeltaZ >> 0xC);
-    frame.stepSize = (frame.distance << 1) / 0x1E;
+    *(short *)&frame.offsetZ = frame.timelineSlot->pos.vz - (frame.distance * g_BattleSpecChainExplosionDeltaZ >> 12);
+    frame.stepSize = (frame.distance << 1) / 30;
     frame.timelineSlot->stepSize = *(short *)&frame.stepSize;
     g_BattleSpecChainExplosionNormalX = -g_BattleSpecChainExplosionDeltaZ;
     g_BattleSpecChainExplosionNormalY = 0;
     g_BattleSpecChainExplosionNormalZ = g_BattleSpecChainExplosionDeltaX;
-    g_BattleSpecChainExplosionStepX = frame.stepSize * g_BattleSpecChainExplosionDeltaX >> 0xC;
+    g_BattleSpecChainExplosionStepX = frame.stepSize * g_BattleSpecChainExplosionDeltaX >> 12;
     g_BattleSpecChainExplosionStepY = 0;
-    g_BattleSpecChainExplosionStepZ = frame.stepSize * g_BattleSpecChainExplosionDeltaZ >> 0xC;
+    g_BattleSpecChainExplosionStepZ = frame.stepSize * g_BattleSpecChainExplosionDeltaZ >> 12;
     *(int *)&g_BattleSpecChainExplosionTargetOffset.vx = frame.offsetX;
     *(int *)&g_BattleSpecChainExplosionTargetOffset.vz = frame.offsetZ;
     frame.timelineSlot->pos = g_BattleSpecChainExplosionTargetOffset;
@@ -216,7 +216,7 @@ void __cdecl BattleFx_SpecialChainExplosionTimelineTask(void)
         return;
     }
     taskPtr = (BattleFxChainExplosionTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (taskPtr->phase > 1 && taskPtr->phase < 0x23) {
+    if (taskPtr->phase > 1 && taskPtr->phase < 35) {
         head = g_BattleSpecChainExplosionExplosionHead;
         convergePtr = BATTLE_NEW_TASK_SLOT(BattleFx_SpecialChainExplosionConvergingSpritesTask);
         ((BattleFxBerserkFadeSprite *)convergePtr)->ringIndex = head;
@@ -225,9 +225,9 @@ void __cdecl BattleFx_SpecialChainExplosionTimelineTask(void)
             g_BattleSpecChainExplosionExplosionCoords[head].posX = taskPtr->pos.vx + rand() % taskPtr->jitterRange - taskPtr->jitterBias;
             g_BattleSpecChainExplosionExplosionCoords[head].posY = taskPtr->pos.vy + rand() % taskPtr->jitterRange - taskPtr->jitterBias;
             g_BattleSpecChainExplosionExplosionCoords[head].posZ = taskPtr->pos.vz + rand() % taskPtr->jitterRange - taskPtr->jitterBias;
-            g_BattleSpecChainExplosionExplosionCoords[head].scale = taskPtr->scale * scaleRand >> 0xC;
+            g_BattleSpecChainExplosionExplosionCoords[head].scale = taskPtr->scale * scaleRand >> 12;
             head++;
-            if (head >= 0x137) {
+            if (head >= 311) {
                 head = 0;
             }
         }
@@ -237,13 +237,13 @@ void __cdecl BattleFx_SpecialChainExplosionTimelineTask(void)
         }
     }
     if (taskPtr->phase == 0x25) {
-        for (i7 = 0; i7 < 0xA; i7++) {
+        for (i7 = 0; i7 < 10; i7++) {
             if ((g_BattleSpecChainExplosionTargetMask & 1 << i7) != 0) {
                 Battle_PostActorHitOrHurtMessage(i7);
             }
         }
     }
-    if (taskPtr->phase >= 0x2B) {
+    if (taskPtr->phase >= 43) {
         level = 0;
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -253,9 +253,9 @@ void __cdecl BattleFx_SpecialChainExplosionTimelineTask(void)
     i7 = SinFixed(taskPtr->angle);
     taskPtr->angle += taskPtr->angleStep;
     head = taskPtr->stepSize << 3;
-    scaleRand = head * i7 >> 0xC;
-    taskPtr->pos.vx = (scaleRand * g_BattleSpecChainExplosionNormalX >> 0xC) + g_BattleSpecChainExplosionTargetOffset.vx;
-    taskPtr->pos.vz = (scaleRand * g_BattleSpecChainExplosionNormalZ >> 0xC) + g_BattleSpecChainExplosionTargetOffset.vz;
+    scaleRand = head * i7 >> 12;
+    taskPtr->pos.vx = (scaleRand * g_BattleSpecChainExplosionNormalX >> 12) + g_BattleSpecChainExplosionTargetOffset.vx;
+    taskPtr->pos.vz = (scaleRand * g_BattleSpecChainExplosionNormalZ >> 12) + g_BattleSpecChainExplosionTargetOffset.vz;
     g_BattleSpecChainExplosionTargetPos = taskPtr->pos;
     (taskPtr->phase)++;
 }
@@ -286,14 +286,14 @@ void __cdecl BattleFx_SpecialChainExplosionConvergingSpritesTask(void)
             normal.vz = g_BattleSpecChainExplosionTargetPos.vz - g_BattleSpecChainExplosionExplosionCoords[q].posZ;
             r = NormalizeVectorFixed(&normal, &normal);
             r = SqrtToInt(r) >> 5;
-            g_BattleSpecChainExplosionExplosionCoords[q].posX += (short)(r * normal.vx >> 0xC);
-            g_BattleSpecChainExplosionExplosionCoords[q].posY += (short)(r * normal.vy >> 0xC);
-            g_BattleSpecChainExplosionExplosionCoords[q].posZ += (short)(r * normal.vz >> 0xC);
+            g_BattleSpecChainExplosionExplosionCoords[q].posX += (short)(r * normal.vx >> 12);
+            g_BattleSpecChainExplosionExplosionCoords[q].posY += (short)(r * normal.vy >> 12);
+            g_BattleSpecChainExplosionExplosionCoords[q].posZ += (short)(r * normal.vz >> 12);
         }
         BattleFx_InstallBillboardMatrix(&g_BattleSpecChainExplosionExplosionCoords[q].posX, (short)g_BattleSpecChainExplosionExplosionCoords[q].scale, -(g_BattleSpecChainExplosionExplosionCoords[q].scale >> 3));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(((unsigned char *)&g_BattleSpecChainExplosionSpriteReq), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         q++;
-        if (q >= 0x137) {
+        if (q >= 311) {
             q = 0;
         }
     }

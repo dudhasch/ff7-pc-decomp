@@ -65,7 +65,7 @@ void __cdecl Mini_CondorUpdateUnitAnims(void)
     int recordIndex;
 
     unit = &g_CondorRecordTable.records[0];
-    for (recordIndex = 0; recordIndex < 0x28; recordIndex++) {
+    for (recordIndex = 0; recordIndex < 40; recordIndex++) {
         if (unit->status != 0) {
             Mini_CondorRampUnitTurnRate(unit);
         }
@@ -89,7 +89,7 @@ void __cdecl Mini_CondorUpdateUnits(void)
     lowest = 0x400;
     highest = 0x1E0;
     rec = &g_CondorRecordTable.records[0];
-    for (i = 0; i < 0x28; i++) {
+    for (i = 0; i < 40; i++) {
         if (rec->status != 0) {
             if (rec->retired == 0 && (rec->status & 0x10) != 0) {
                 Mini_CondorTickReloadTimer(rec);
@@ -111,7 +111,7 @@ void __cdecl Mini_CondorUpdateUnits(void)
                             rec->status = 0;
                             g_CondorUnitDeathActive = 0;
                             g_CondorDyingUnitIndex = -1;
-                            if (rec->unitIndex == 0x10 && g_CondorBattleOutcome == 0) {
+                            if (rec->unitIndex == 16 && g_CondorBattleOutcome == 0) {
                                 g_CondorBattleOutcome = 1;
                             }
                         } else {
@@ -122,7 +122,7 @@ void __cdecl Mini_CondorUpdateUnits(void)
                     }
                 }
             } else {
-                if (rec->unitIndex >= 0x10) {
+                if (rec->unitIndex >= 16) {
                     if (lowest >= rec->posY) {
                         lowest = rec->posY;
                     }
@@ -135,7 +135,7 @@ void __cdecl Mini_CondorUpdateUnits(void)
                 if ((rec->status & 4) == 0) {
                     if (g_CondorRecordMode <= 1 && g_CondorSelectPanelPhase == 0) {
                         rec->actionCountdown -= g_CondorTickStep;
-                        if (rec->actionCountdown == 0 || rec->actionCountdown >= 0xFF00) {
+                        if (rec->actionCountdown == 0 || rec->actionCountdown >= 65280) {
                             rec->actionCountdown = rec->timerReload;
                             Mini_CondorDispatchUnitFlags(rec, i);
                         }
@@ -151,17 +151,17 @@ void __cdecl Mini_CondorUpdateUnits(void)
         rec++;
     }
     was = *(short *)&g_CondorAlertLevel;
-    if (lowest <= 0x1C0) {
+    if (lowest <= 448) {
         *(int *)&g_CondorAlertLevel = 0x60;
     } else {
         *(int *)&g_CondorAlertLevel = 0x60 - (lowest - 0x1C0) / 6;
     }
-    if (*(int *)&g_CondorAlertLevel < 0x58 && was >= 0x58) {
+    if (*(int *)&g_CondorAlertLevel < 88 && was >= 88) {
         Mini_CondorSubmitSfxPlay(0, 1);
     }
     *(int *)&g_CondorHighestUnitY = highest;
-    if (*(int *)&g_CondorHighestUnitY >= 0x3A0) {
-        *(int *)&g_CondorHighestUnitY = 0x3A0;
+    if (*(int *)&g_CondorHighestUnitY >= 928) {
+        *(int *)&g_CondorHighestUnitY = 928;
     }
 }
 
@@ -261,7 +261,7 @@ void __cdecl Mini_CondorUpdateUnitContactState(CondorRecord *unit, int index)
             status = Mini_CondorAdvanceUnitAttack(targetIndex, attackStatus);
             if (status == 1) {
                 unit->inContact = 0;
-                unit->bufferIndex = 0x78;
+                unit->bufferIndex = 120;
             }
             if (status == 2) {
                 hitCount++;
@@ -273,7 +273,7 @@ void __cdecl Mini_CondorUpdateUnitContactState(CondorRecord *unit, int index)
         unit->inContact = 0;
         unit->bufferIndex = 0;
         unit->sequenceFlag = 0;
-        if (unit->unitIndex < 0x10) {
+        if (unit->unitIndex < 16) {
             unit->angle = 0;
         } else {
             if ((unit->candidate & 0xFF) != 0) {
@@ -301,13 +301,13 @@ void __cdecl Mini_CondorRampUnitTurnRate(CondorRecord *unit)
                 if ((unit->turnRate & 0x200) == 0) {
                     turnRate += 0x10;
                     unit->turnRate = turnRate;
-                    if (turnRate >= 0x1FF) {
+                    if (turnRate >= 511) {
                         unit->turnRate = 0x3FF;
                     }
                 } else {
                     turnRate -= 0x10;
                     unit->turnRate = turnRate | 0x200;
-                    if (turnRate >= 0xFF00) {
+                    if (turnRate >= 65280) {
                         unit->turnRate = 0;
                     }
                 }
@@ -316,7 +316,7 @@ void __cdecl Mini_CondorRampUnitTurnRate(CondorRecord *unit)
             unit->sequenceCommand--;
         }
     }
-    if (unit->unitIndex < 0x10) {
+    if (unit->unitIndex < 16) {
         unit->drawAngle = unit->angle;
     } else {
         unit->drawAngle = unit->angle;
@@ -378,7 +378,7 @@ void __cdecl Mini_CondorIntegrateUnitVelocity(CondorRecord *unit)
     unit->subPixelX = accum;
     accum = accum >> 8;
     if (accum != 0) {
-        if (accum >= 0x80) {
+        if (accum >= 128) {
             accum |= 0xFF00;
         }
         unit->posX += accum;
@@ -389,7 +389,7 @@ void __cdecl Mini_CondorIntegrateUnitVelocity(CondorRecord *unit)
     unit->subPixelY = accum;
     accum = accum >> 8;
     if (accum != 0) {
-        if (accum >= 0x80) {
+        if (accum >= 128) {
             accum |= 0xFF00;
         }
         unit->posY += accum;
@@ -408,12 +408,12 @@ void __cdecl Mini_CondorPairUnitWithPeer(CondorRecord *unit, int recordIndex)
     short linked;
 
     peerIndex = 0xFFFF;
-    if (unit->unitIndex < 0x10) {
+    if (unit->unitIndex < 16) {
         if ((short)Mini_CondorIsPairableUnitKind(unit) != 0) {
-            peerIndex = Mini_CondorFindNearestOtherRecordInRange(unit, 0x14, 0x28);
+            peerIndex = Mini_CondorFindNearestOtherRecordInRange(unit, 20, 40);
         }
     } else {
-        peerIndex = Mini_CondorFindNearestOtherRecordInRange(unit, 0, 0x14);
+        peerIndex = Mini_CondorFindNearestOtherRecordInRange(unit, 0, 20);
     }
     if (peerIndex != -1) {
         peer = &g_CondorRecordTable.records[peerIndex];
@@ -438,7 +438,7 @@ void __cdecl Mini_CondorPairUnitWithPeer(CondorRecord *unit, int recordIndex)
                 peer->contactSlot = recordIndex;
             }
         }
-        if (unit->unitIndex < 0x10) {
+        if (unit->unitIndex < 16) {
             g_CondorCursor.x = unit->posX;
             g_CondorCursor.y = unit->posY;
             g_CondorPairUnitIndex = recordIndex;
@@ -466,7 +466,7 @@ short __cdecl Mini_CondorUpdateUnitTargetState(CondorRecord *unit)
     short unused;
     short res;
 
-    if (unit->unitIndex == 0x13 && Mini_CondorTickRecordLinkWait(unit) == 1) {
+    if (unit->unitIndex == 19 && Mini_CondorTickRecordLinkWait(unit) == 1) {
         return 0;
     }
     cnt = 0;
@@ -528,7 +528,7 @@ short __cdecl Mini_CondorUpdateUnitTargetState(CondorRecord *unit)
     if (unit->targetIndex >= 0xCC && unit->targetIndex <= 0xCF && g_CondorBattleOutcome == 0) {
         g_CondorBattleOutcome = 2;
     }
-    if (unit->worldX == 0x30 && unit->worldY == -0x60 && g_CondorBattleOutcome == 0) {
+    if (unit->worldX == 48 && unit->worldY == -96 && g_CondorBattleOutcome == 0) {
         g_CondorBattleOutcome = 2;
     }
     return 0;
@@ -613,7 +613,7 @@ void __cdecl Mini_CondorSettleRecordAtTarget(CondorRecord *unit)
     if ((unit->velX | unit->velY) == 0) {
         unit->targetY = 0;
         unit->targetX = 0;
-        if (unit->unitIndex >= 0x10) {
+        if (unit->unitIndex >= 16) {
             Mini_CondorAdvanceRecordPathSegment(unit);
         } else {
             unit->state = 0;
@@ -637,7 +637,7 @@ void __cdecl Mini_CondorSettleRecordAtTarget(CondorRecord *unit)
 // FUNCTION: FF7 0x0060048c
 void __cdecl Mini_CondorRefreshRecordMotion(CondorRecord *unit)
 {
-    if (unit->unitIndex >= 0x10) {
+    if (unit->unitIndex >= 16) {
         if ((unit->candidate & 0xFF) != 0) {
             (unit->candidate)--;
         }
@@ -1145,7 +1145,7 @@ short __cdecl Mini_CondorTickRecordLinkWait(CondorRecord *unit)
         }
     } else if (unit->cycleCountdown != 0) {
         (unit->cycleCountdown)--;
-    } else if ((unit - g_CondorRecordTable.records) < 0x14) {
+    } else if ((unit - g_CondorRecordTable.records) < 20) {
         if (unit->state == 0 && (short)Mini_CondorTryLinkFirstPeer(unit) == 1) {
             waiting++;
         }
@@ -1173,10 +1173,10 @@ short __cdecl Mini_CondorTryLinkRecordToPeer(CondorRecord *record)
     linkSlotPtr->posZ = record->posZ;
     linkSlotPtr->offsetY = record->attackRange;
     linkSlotPtr->prevOffsetY = linkSlotPtr->offsetY;
-    if ((record - g_CondorRecordTable.records) < 0x14) {
-        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 0x14, 0x28);
+    if ((record - g_CondorRecordTable.records) < 20) {
+        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 20, 40);
     } else {
-        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 0, 0x14);
+        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 0, 20);
     }
     if (g_CondorMatchCount != 0) {
         for (scanIndex = 0; scanIndex < g_CondorMatchCount; scanIndex++) {
@@ -1205,7 +1205,7 @@ short __cdecl Mini_CondorBeginPeerLinkMotion(CondorRecord *record, int targetInd
     CondorRecord *peer;
     short moverIndex;
 
-    moverIndex = Mini_CondorSpawnMovingRecord(record, 0x18);
+    moverIndex = Mini_CondorSpawnMovingRecord(record, 24);
     if (moverIndex != -1) {
         record->bufferIndex = moverIndex;
         peer = &g_CondorRecordTable.records[targetIndex];
@@ -1215,7 +1215,7 @@ short __cdecl Mini_CondorBeginPeerLinkMotion(CondorRecord *record, int targetInd
         record->angle = Mini_CondorVectorToAngle((CondorCursor *)&record->velX);
         g_CondorRecordTable.records[moverIndex].velX = (short)g_CondorVecX;
         g_CondorRecordTable.records[moverIndex].velY = (short)g_CondorVecY;
-        g_CondorRecordTable.records[moverIndex].rotX = 0x400;
+        g_CondorRecordTable.records[moverIndex].rotX = 0x400 /* 90 deg */;
         g_CondorRecordTable.records[moverIndex].rotY = record->angle;
         record->velY = 0;
         record->velX = 0;
@@ -1245,10 +1245,10 @@ short __cdecl Mini_CondorTryLinkFirstPeer(CondorRecord *record)
     linkSlotPtr->posZ = record->posZ;
     linkSlotPtr->offsetY = record->attackRange;
     linkSlotPtr->prevOffsetY = linkSlotPtr->offsetY;
-    if ((record - g_CondorRecordTable.records) < 0x14) {
-        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 0x14, 0x28);
+    if ((record - g_CondorRecordTable.records) < 20) {
+        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 20, 40);
     } else {
-        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 0, 0x14);
+        nearestIndex = Mini_CondorFindNearestRecordInRange(linkSlotPtr, 0, 20);
     }
     if (g_CondorMatchCount != 0) {
         for (slot = 0; slot < g_CondorMatchCount; slot++) {
@@ -1355,7 +1355,7 @@ void __cdecl Mini_CondorStepUnitKind6(CondorRecord *unit)
             unit->sequenceIndex = 0;
             Mini_CondorBeginRecordSequence(unit);
             unit->state = 0;
-            spawnIndex = Mini_CondorSpawnMovingRecord(unit, 0xB);
+            spawnIndex = Mini_CondorSpawnMovingRecord(unit, 11);
             if (spawnIndex != -1) {
                 unit->candidate = 0x80;
                 g_CondorRecordTable.records[spawnIndex].rotX = 0x180;
@@ -1380,10 +1380,10 @@ short __cdecl Mini_CondorLookupScaledPairByte(CondorRecord *unitA, CondorRecord 
 
     header = (unsigned short *)(g_pCondorDataBin + 0x18);
     ptr = (char *)(g_pCondorDataBin + (*header & 0xFFFF));
-    ptr += unitA->attackerSlot * 0x14 + unitB->attackerSlot;
+    ptr += unitA->attackerSlot * 20 + unitB->attackerSlot;
     byte = *ptr;
     if (byte != 0) {
-        byte = unitA->scalePercent * byte / 0x64;
+        byte = unitA->scalePercent * byte / 100;
     } else {
         byte = 0;
     }
@@ -1439,7 +1439,7 @@ void __cdecl Mini_CondorDrawActiveUnits(GfxEngineContext *context, int param)
     SetRotMatrix((void *)frame.worldMatrixPtr);
     SetTransMatrix((void *)frame.worldMatrixPtr);
     frame.recordPtr = &g_CondorRecordTable.records[0];
-    for (frame.unitIndex = 0; frame.unitIndex < 0x28; frame.unitIndex++, frame.recordPtr++) {
+    for (frame.unitIndex = 0; frame.unitIndex < 40; frame.unitIndex++, frame.recordPtr++) {
         if (frame.recordPtr->status == 0) {
             continue;
         }
@@ -1451,7 +1451,7 @@ void __cdecl Mini_CondorDrawActiveUnits(GfxEngineContext *context, int param)
         }
         PushRotMatrix();
         frame.rotX.vy = -frame.recordPtr->drawAngle;
-        if (frame.unitIndex < 0x14) {
+        if (frame.unitIndex < 20) {
             frame.vecX.vx = -frame.recordPtr->rotX;
         } else {
             frame.vecX.vx = frame.recordPtr->rotX;
@@ -1478,7 +1478,7 @@ void __cdecl Mini_CondorDrawActiveUnits(GfxEngineContext *context, int param)
         }
         PopRotMatrix();
     }
-    for (frame.unitIndex = 0x28; frame.unitIndex < 0x34; frame.unitIndex++) {
+    for (frame.unitIndex = 40; frame.unitIndex < 52; frame.unitIndex++) {
         frame.recordPtr = &g_CondorRecordTable.records[frame.unitIndex];
         if (frame.recordPtr->status == 0) {
             continue;
@@ -1486,7 +1486,7 @@ void __cdecl Mini_CondorDrawActiveUnits(GfxEngineContext *context, int param)
         PushRotMatrix();
         frame.rotX.vy = -frame.recordPtr->drawAngle;
         frame.vecX.vx = -frame.recordPtr->rotX;
-        if (frame.recordPtr->unitIndex == 0x18) {
+        if (frame.recordPtr->unitIndex == 24) {
             if (frame.recordPtr->rotY > 0x400 && frame.recordPtr->rotY < 0xC00) {
                 frame.vecX.vy = frame.recordPtr->rotY;
             } else {
@@ -1512,7 +1512,7 @@ void __cdecl Mini_CondorDrawActiveUnits(GfxEngineContext *context, int param)
         Mini_CondorDrawUnitModel(context, frame.recordPtr, frame.modelMatrixPtr, 0, 0);
         PopRotMatrix();
     }
-    for (frame.unitIndex = 0x43; frame.unitIndex < 0x46; frame.unitIndex++) {
+    for (frame.unitIndex = 67; frame.unitIndex < 70; frame.unitIndex++) {
         frame.recordPtr = &g_CondorRecordTable.records[frame.unitIndex];
         if (frame.recordPtr->status == 0) {
             continue;
@@ -1522,7 +1522,7 @@ void __cdecl Mini_CondorDrawActiveUnits(GfxEngineContext *context, int param)
         frame.vecX.vx = -frame.recordPtr->rotX;
         frame.vecX.vy = frame.recordPtr->rotY;
         frame.vecX.vz = -frame.recordPtr->rotZ;
-        if (frame.unitIndex == 0x44) {
+        if (frame.unitIndex == 68) {
             frame.vecX.vy = -frame.recordPtr->rotZ;
             frame.vecX.vz = -frame.recordPtr->rotY;
         }
@@ -1539,7 +1539,7 @@ void __cdecl Mini_CondorDrawActiveUnits(GfxEngineContext *context, int param)
         RotTransPoint(&frame.scaledX, (void *)(frame.modelMatrixPtr + 0x12), &frame.screenPoint);
         SetRotMatrix((void *)frame.modelMatrixPtr);
         SetTransMatrix((void *)frame.modelMatrixPtr);
-        if (frame.unitIndex == 0x45) {
+        if (frame.unitIndex == 69) {
             Mini_CondorDrawUnitModel(context, frame.recordPtr, frame.modelMatrixPtr, 0, 0);
         } else {
             Mini_CondorDrawUnitModel(context, frame.recordPtr, frame.modelMatrixPtr, 1, 1);
@@ -1566,8 +1566,8 @@ void __cdecl Mini_CondorDrawTranslucentRect(int param)
 
     x = g_CondorViewportOffsetX + (g_CondorPanelRectX - *(unsigned short *)&g_CondorSnapshotX - 0x14) * g_CondorViewportScale;
     top = g_CondorViewportOffsetY + (g_CondorPanelRectY - *(unsigned short *)&g_CondorSnapshotY) * g_CondorViewportScale;
-    width = (g_CondorLayoutPanelHeight + 0x1E) * g_CondorViewportScale;
-    h = (g_CondorRecordPanelHeight + 0xF) * g_CondorViewportScale;
+    width = (g_CondorLayoutPanelHeight + 30) * g_CondorViewportScale;
+    h = (g_CondorRecordPanelHeight + 15) * g_CondorViewportScale;
     emitRes = Gfx_EmitFlatRect(x, top, width, h, 0xA0000000, 0, FLOAT_0_952_BITS, g_CondorTranslucentRectRenderObject);
     (*(int *)&g_CondorBuffer) = 1;
 }
@@ -1691,7 +1691,7 @@ void __cdecl Mini_CondorDrawPhaseSevenUnitModels(GfxEngineContext *drawMode, int
         RotTransPoint(&frame.worldX, (void *)(g_CondorWorldMatrixPtr + 0x12), &frame.transResult);
         SetRotMatrix((void *)g_CondorWorldMatrixPtr);
         SetTransMatrix((void *)g_CondorWorldMatrixPtr);
-        for (frame.recordIndex = 0x34; frame.recordIndex < 0x3F; frame.recordIndex++) {
+        for (frame.recordIndex = 52; frame.recordIndex < 63; frame.recordIndex++) {
             frame.condorRecord = &g_CondorRecordTable.records[frame.recordIndex];
             if (frame.condorRecord->status == 0) {
                 continue;
@@ -1720,7 +1720,7 @@ void __cdecl Mini_CondorDrawPhaseSevenUnitModels(GfxEngineContext *drawMode, int
         PopRotMatrix();
         frame.groupIndex = 0;
         if (g_CondorMatchListState.choiceActionSlot != 0) {
-            for (frame.recordIndex = 0x40; frame.recordIndex < 0x43; frame.recordIndex++) {
+            for (frame.recordIndex = 64; frame.recordIndex < 67; frame.recordIndex++) {
                 frame.condorRecord = &g_CondorRecordTable.records[frame.recordIndex];
                 frame.tableIndex = (g_CondorMatchListState.choiceActionSlot - 1) * 9 + frame.groupIndex * 3;
                 frame.groupIndex++;
@@ -1739,8 +1739,8 @@ void __cdecl Mini_CondorDrawPhaseSevenUnitModels(GfxEngineContext *drawMode, int
                 frame.vecX.vz = frame.condorRecord->rotZ;
                 RotMatrixXYZ(&frame.vecX, (void *)frame.recordMatrix);
                 frame.vecX.vx = frame.condorRecord->worldX << 1;
-                frame.vecX.vy = frame.condorRecord->worldY * 2 + 0xA;
-                frame.vecX.vz = frame.condorRecord->worldZ + 0x7DA;
+                frame.vecX.vy = frame.condorRecord->worldY * 2 + 10;
+                frame.vecX.vz = frame.condorRecord->worldZ + 2010;
                 RotTransPoint(&frame.vecX, (void *)(frame.recordMatrix + 0x12), &frame.transResult);
                 SetRotMatrix((void *)frame.recordMatrix);
                 SetTransMatrix((void *)frame.recordMatrix);
@@ -1784,7 +1784,7 @@ void __cdecl Mini_CondorStartRecordAction(short recordIndex, short slot)
     Mini_CondorSubmitSfxPlay(0, 4);
     g_CondorSelectPanelPhase = 1;
     g_CondorPhaseFrames = 0;
-    g_CondorBannerCounter = 0xFFE0;
+    g_CondorBannerCounter = 0xFFE0 /* -32 */;
     Mini_CondorRequestDisplayMode2();
     g_CondorMainState = 0x11;
 }
@@ -1803,8 +1803,8 @@ void __cdecl Mini_CondorUpdateRedFadeSprite(void)
 
     if (g_CondorRedFadeLevel != 0) {
         g_CondorRedFadeLevel -= 2;
-        g_CondorCurrentValues.lineStartX = 0xFFA0;
-        g_CondorDefaultValues.lineEndX = 0x200;
+        g_CondorCurrentValues.lineStartX = 0xFFA0 /* -96 */;
+        g_CondorDefaultValues.lineEndX = 512;
         if (g_CondorPhase == 1) {
             g_CondorDefaultValues.defaultValue = 0x2A0;
             g_CondorCurrentValues.currentValue = g_CondorDefaultValues.defaultValue;
@@ -1816,13 +1816,13 @@ void __cdecl Mini_CondorUpdateRedFadeSprite(void)
         g_CondorFlags.green = 0;
         g_CondorFlags.blue = 0;
         lineOfs = g_CondorViewportScale * (g_CondorCurrentValues.currentValue - g_CondorCameraY);
-        if (g_CondorFlags.red > 0xFF) {
+        if (g_CondorFlags.red > 255) {
             clamped = 0xFF;
         } else {
             clamped = g_CondorFlags.red;
         }
         redByte = clamped;
-        if (lineOfs > 0 && lineOfs < g_CondorViewportScale * 0xF0) {
+        if (lineOfs > 0 && lineOfs < g_CondorViewportScale * 240) {
             rect = (GfxBatchPrimitive *)Gfx_EmitFlatRect(g_CondorViewportOffsetX, g_CondorViewportOffsetY + lineOfs, g_CondorViewportWidth, g_CondorViewportScale, 0xA0FF0000, 0, FLOAT_0_2_BITS, g_CondorRedFadeLineRenderObject);
             g_CondorRedFadeLineDrawn = 1;
             if (rect == 0) {
@@ -1868,8 +1868,8 @@ short __cdecl Mini_CondorPickRecordNearPoint(CondorCursor *cursor)
     targetPy = cursor->y;
     ptr = &g_CondorRecordTable.records[0];
     bestIndex = 0xFFFF;
-    bestDist = 0x4000;
-    for (slot = 0; slot < 0x28; slot++) {
+    bestDist = 16384;
+    for (slot = 0; slot < 40; slot++) {
         if (ptr->status != 0 && ptr->retired == 0) {
             recordX = ptr->posX;
             if (recordX > mouseX - 0xD && recordX < mouseX + 0xD) {
@@ -1916,7 +1916,7 @@ short __cdecl Mini_CondorFindNearestOtherRecordInRange(CondorRecord *origin, sho
     short reach;
 
     g_CondorMatchCount = 0;
-    bestDist = 0x4000;
+    bestDist = 16384;
     bestIndex = 0xFFFF;
     ptr = &g_CondorRecordTable.records[first];
     for (slot = first; slot < last; slot++, ptr++) {

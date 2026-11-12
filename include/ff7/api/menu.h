@@ -796,7 +796,7 @@ extern int g_MenuBusterLoadDir;
 extern int g_MenuConfigVolumeCursor;
 extern int g_MenuConfigVolumeCursorRow;
 extern struct EnglishWindowFrame *g_MenuConfigFrames;
-extern unsigned char g_MenuConfigWindowColors[0x10];
+extern unsigned char g_MenuConfigWindowColors[16];
 extern int g_MenuConfigClearedWord;
 extern int g_MenuWindowColorColumn;
 extern int g_MenuConfigEditorMode;

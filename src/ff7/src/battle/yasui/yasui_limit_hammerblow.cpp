@@ -185,7 +185,7 @@ void __cdecl BattleFx_LimitHammerblowTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (rec->frameCounter == 0xF) {
+    if (rec->frameCounter == 15) {
         RotMatrix((SVECTOR *)&g_BattleActorRecords[g_YasuiLimitHammerblowSourceActor].rotX, &g_YasuiLimitHammerblowImpactState.matrix);
         Battle_GetBoneWorldPos(g_YasuiLimitHammerblowSourceActor, g_BattleActorRecords[g_YasuiLimitHammerblowSourceActor].targetBone, g_YasuiLimitHammerblowBonePosScratch);
         g_YasuiLimitHammerblowImpactState.matrix.t[0] = g_YasuiLimitHammerblowBonePosScratch[0];
@@ -193,28 +193,28 @@ void __cdecl BattleFx_LimitHammerblowTimelineTask(void)
         g_YasuiLimitHammerblowImpactState.matrix.t[2] = g_YasuiLimitHammerblowBonePosScratch[2];
         child = (BattleFxHammerblowTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHammerblowGrowingBlackModelTask);
         child->posX = 0;
-        child->posY = -0x1F4;
-        child->posZ = -0x1F4;
+        child->posY = -500;
+        child->posZ = -500;
         child->velocityZ = 0;
         child->velocityY = 0;
         child->velocityX = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(g_YasuiLimitHammerblowBonePosScratch), 0x163);
     }
-    if (rec->frameCounter == 0xF) {
+    if (rec->frameCounter == 15) {
         child = (BattleFxHammerblowTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHammerblowRadialSpriteEmitterTask);
     }
-    if (rec->frameCounter == 0xF) {
+    if (rec->frameCounter == 15) {
         child = (BattleFxHammerblowTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHammerblowSpawnEasedGrowingModelsTask);
         child->ownerSlot = 0;
     }
-    if (rec->frameCounter == 0xF) {
+    if (rec->frameCounter == 15) {
         if (g_BattleActiveTargetMask & (1 << g_YasuiLimitHammerblowTargetActor)) {
             Battle_GetBoneWorldPos(g_YasuiLimitHammerblowTargetActor, g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].targetBone, bone);
             (*(Int64Pair *)&g_YasuiLimitHammerblowSavedActorPos) = *(Int64Pair *)&g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posX;
             child = (BattleFxHammerblowTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHammerblowTumblingActorTask);
             *(Int64Pair *)&child->posX = *(Int64Pair *)&g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posX;
             child->velocityX = SinFixed(g_BattleActorRecords[g_YasuiLimitHammerblowSourceActor].yaw) * -0x1F4 >> 12;
-            child->velocityY = -0x1F4;
+            child->velocityY = -500;
             child->velocityZ = CosFixed(g_BattleActorRecords[g_YasuiLimitHammerblowSourceActor].yaw) * -0x1F4 >> 12;
             child->offsetX = SinFixed(g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].yaw) * (bone[0] - g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posX) >> 12;
             child->offsetY = bone[1] - g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posY;
@@ -226,7 +226,7 @@ void __cdecl BattleFx_LimitHammerblowTimelineTask(void)
             Battle_PostActorHitOrHurtMessage(g_YasuiLimitHammerblowTargetActor);
         }
     }
-    if (rec->frameCounter == 0x3C) {
+    if (rec->frameCounter == 60) {
         rec->ownerSlot = BATTLE_TASK_FREE;
     }
     (rec->frameCounter)++;
@@ -256,8 +256,8 @@ void __cdecl BattleFx_LimitHammerblowGrowingBlackModelTask(void)
         if (frame < 0) { /* empty first arm: lib/codegen.h */
         } else {
             frame = frame;
-            if (frame < 0xF) {
-                ratio = (frame << 0xC) / 0xF;
+            if (frame < 15) {
+                ratio = (frame << 12) / 15;
                 g_YasuiLimitHammerblowModelDrawReq0.alpha = ratio;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
@@ -266,11 +266,11 @@ void __cdecl BattleFx_LimitHammerblowGrowingBlackModelTask(void)
         }
     }
     frame = task->frame;
-    if (frame < 0xF) {
-        ratio = (frame << 0xC) / 0xF;
-        scale = ratio << 9 >> 0xC;
+    if (frame < 15) {
+        ratio = (frame << 12) / 15;
+        scale = ratio << 9 >> 12;
     } else {
-        frame -= 0xF;
+        frame -= 15;
         if (frame < 0) { /* empty first arm: lib/codegen.h */
         } else {
             frame = frame;
@@ -316,7 +316,7 @@ void __cdecl BattleFx_LimitHammerblowSpawnEasedGrowingModelsTask(void)
         child->angleZ = 0;
         child->angleY = 0;
         child->angleX = 0;
-        child->scale = 0x200;
+        child->scale = 0x200 /* 0.125 */;
         (pEmitter->index)++;
         if (pEmitter->index >= 3) {
             pEmitter->index = 0xFFFF;
@@ -350,8 +350,8 @@ void __cdecl BattleFx_LimitHammerblowEasedGrowingModelTask(void)
         if (frame < 0) { /* empty first arm: lib/codegen.h */
         } else {
             frame = frame;
-            if (frame < 0xA) {
-                ratio = (frame << 0xC) / 0xA;
+            if (frame < 10) {
+                ratio = (frame << 12) / 10;
                 g_YasuiLimitHammerblowModelDrawReq1.alpha = ratio;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
@@ -360,14 +360,14 @@ void __cdecl BattleFx_LimitHammerblowEasedGrowingModelTask(void)
         }
     }
     frame = task->frame;
-    if (frame < 0xA) {
-        ratio = (frame << 0xC) / 0xA;
+    if (frame < 10) {
+        ratio = (frame << 12) / 10;
         for (pass = 0; pass < 2; pass++) {
             ratio = SinFixed(ratio / 4);
         }
-        scale = task->scale * ratio >> 0xC;
+        scale = task->scale * ratio >> 12;
     } else {
-        frame -= 0xA;
+        frame -= 10;
         if (frame < 0) { /* empty first arm: lib/codegen.h */
         } else {
             frame = frame;
@@ -407,12 +407,12 @@ void __cdecl BattleFx_LimitHammerblowRadialSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    emitAmount = (task->frameCounter << 9 & 0xFF) + 0x200;
-    while (emitAmount >= 0x100) {
+    emitAmount = (task->frameCounter << 9 & 0xFF) + 512;
+    while (emitAmount >= 256) {
         pSprite = (BattleFxHammerblowRadialSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHammerblowSpriteAnimationTask);
         angle = rand() & 0xFFF;
-        pSprite->offsetX = SinFixed(angle) * 0x64 >> 0xC;
-        pSprite->offsetY = (CosFixed(angle) * 0x64 >> 0xC) - 0x1F4;
+        pSprite->offsetX = SinFixed(angle) * 0x64 >> 12;
+        pSprite->offsetY = (CosFixed(angle) * 0x64 >> 12) - 0x1F4;
         pSprite->offsetZ = 0xFE0C;
         if (DEAD_IN_RETAIL != 0) {
             rot = 0xFFFFFE40;
@@ -422,8 +422,8 @@ void __cdecl BattleFx_LimitHammerblowRadialSpriteEmitterTask(void)
         pSprite->rotation = rot;
         pSprite->clearedRotY = 0;
         pSprite->angle = angle;
-        pSprite->scale = 0x2000;
-        emitAmount -= 0x100;
+        pSprite->scale = 0x2000 /* 2.0 */;
+        emitAmount -= 256;
     }
     (task->frameCounter)++;
     if (task->frameCounter >= 5) {
@@ -492,7 +492,7 @@ void __cdecl BattleFx_LimitHammerblowTumblingActorTask(void)
     }
     if (g_BattleIsPaused == 0) {
         (p->timer)++;
-        if (p->timer >= 0x14) {
+        if (p->timer >= 20) {
             g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scale = p->startY;
             *(Int64Pair *)&g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posX = (*(Int64Pair *)&g_YasuiLimitHammerblowSavedActorPos);
             g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].rotZ = 0;
@@ -504,8 +504,8 @@ void __cdecl BattleFx_LimitHammerblowTumblingActorTask(void)
         p->posX += p->velocityX;
         p->posY += p->velocityY;
         p->posZ += p->velocityZ;
-        p->velocityY += 0x1E;
-        g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].rotZ += 0x200;
+        p->velocityY += 30;
+        g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].rotZ += 0x200 /* 45 deg */;
     }
     g_YasuiLimitHammerblowTumbleScratch->prevOffsetX = p->offsetX;
     g_YasuiLimitHammerblowTumbleScratch->prevOffsetY = p->offsetY;
@@ -515,9 +515,9 @@ void __cdecl BattleFx_LimitHammerblowTumblingActorTask(void)
     g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posX = p->posX - g_YasuiLimitHammerblowTumbleScratch->prevOffsetX + p->offsetX;
     g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posY = p->posY - g_YasuiLimitHammerblowTumbleScratch->prevOffsetY + p->offsetY;
     g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].posZ = p->posZ - g_YasuiLimitHammerblowTumbleScratch->prevOffsetZ + p->offsetZ;
-    g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scale = p->startY + (0 - p->startY) * p->timer / 0x14;
-    g_YasuiLimitHammerblowTumbleScaleX = g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scaleX * g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scale >> 0xC;
-    g_YasuiLimitHammerblowTumbleMatrix.scaleY = g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scaleY * g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scale >> 0xC;
+    g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scale = p->startY + (0 - p->startY) * p->timer / 20;
+    g_YasuiLimitHammerblowTumbleScaleX = g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scaleX * g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scale >> 12;
+    g_YasuiLimitHammerblowTumbleMatrix.scaleY = g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scaleY * g_BattleActorRecords[g_YasuiLimitHammerblowTargetActor].scale >> 12;
     g_YasuiLimitHammerblowTumbleMatrix.posX = p->posX;
     g_YasuiLimitHammerblowTumbleMatrix.posY = 0;
     g_YasuiLimitHammerblowTumbleMatrix.posZ = p->posZ;

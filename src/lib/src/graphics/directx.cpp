@@ -502,9 +502,9 @@ void *__cdecl AllocEngineContext(GfxAppDescriptor *descriptor)
     GfxEngineContext *pEngine;
     char cwd[200];
 
-    pEngine = (GfxEngineContext *)(GameHeapAlloc(1, 0xAA0,
+    pEngine = (GfxEngineContext *)(GameHeapAlloc(1, 2720,
 
-                           DirectXLit_SourcePath_1(), 0x38));
+                           DirectXLit_SourcePath_1(), 56));
     if (pEngine != 0) {
         pEngine->activeA = 1;
         pEngine->activeB = 1;
@@ -613,7 +613,7 @@ void __cdecl DestroyEngineContext(void)
     if (ctx != 0) {
         Gfx_DestroyDebugLogTarget((GfxDebugLogTarget *)(ctx->debugLogTarget));
 
-        GameHeapFree(ctx, DirectXLit_SourcePath_2(), 0x92);
+        GameHeapFree(ctx, DirectXLit_SourcePath_2(), 146);
         SetEngineContext(0);
     }
 }
@@ -654,7 +654,7 @@ int __stdcall GameWindowProc(int hWnd, unsigned int msg, unsigned int wParam, in
     GfxEngineContext *ctx;
     int res;
     int vk;
-    char ps[0x40];
+    char ps[64];
 
     res = 0;
     ctx = GetEngineContext();
@@ -790,7 +790,7 @@ int __cdecl CreateGameWindow(int hInstance, GfxEngineContext *ctx)
     int rc[4];
     int ah;
     int hdc;
-    char msg[0xC8];
+    char msg[200];
 
     valid = 0;
     if (ctx->customWindowClass != 0) {
@@ -913,12 +913,12 @@ void *__cdecl CreateEngineContextDefaults(GfxAppDescriptor *descriptor)
 
     ctx = (GfxEngineContext *)AllocEngineContext(descriptor);
     if (ctx != 0) {
-        ctx->displayWidth = 0x280;
-        ctx->displayHeight = 0x1E0;
+        ctx->displayWidth = 640;
+        ctx->displayHeight = 480;
         ctx->clipLeft = 0;
         ctx->clipTop = 0;
-        ctx->viewSizeX = 0x280;
-        ctx->viewSizeY = 0x1E0;
+        ctx->viewSizeX = 640;
+        ctx->viewSizeY = 480;
         ctx->clipRight = ctx->clipLeft + ctx->viewSizeX - 1;
         ctx->clipBottom = ctx->clipTop + ctx->viewSizeY - 1;
         ctx->colorDepth = 0x10;
@@ -931,7 +931,7 @@ void *__cdecl CreateEngineContextDefaults(GfxAppDescriptor *descriptor)
         ctx->modeSetupDone = 1;
         ctx->zBufferEnabled = 1;
         ctx->modeLoaded = 1;
-        ctx->matrixStackSize = 0x20;
+        ctx->matrixStackSize = 32;
         ctx->windowTitle =
 
             DirectXLit_Default();
@@ -1000,21 +1000,21 @@ int __cdecl RestoreLostSurfaces(GfxEngineContext *context)
             if (((ComDirectDrawSurface *)context->primarySurface)->IsLost() == DDERR_SURFACELOST) {
                 val |= !CheckDirectDrawResult(((ComDirectDrawSurface *)context->primarySurface)->Restore(),
 
-                                            DirectXLit_SourcePath_3(), 0x27A);
+                                            DirectXLit_SourcePath_3(), 634);
             }
         }
         if (context->backSurface != 0) {
             if (((ComDirectDrawSurface *)context->backSurface)->IsLost() == DDERR_SURFACELOST) {
                 val |= !CheckDirectDrawResult(((ComDirectDrawSurface *)context->backSurface)->Restore(),
 
-                                            DirectXLit_SourcePath_4(), 0x282);
+                                            DirectXLit_SourcePath_4(), 642);
             }
         }
         if (context->zBufferSurface != 0) {
             if (((ComDirectDrawSurface *)context->zBufferSurface)->IsLost() == DDERR_SURFACELOST) {
                 val |= CheckDirectDrawResult(((ComDirectDrawSurface *)context->zBufferSurface)->Restore(),
 
-                                           DirectXLit_SourcePath_5(), 0x28B);
+                                           DirectXLit_SourcePath_5(), 651);
             }
         }
     }
@@ -1060,12 +1060,12 @@ void __cdecl GfxPresentBackBuffer(struct GfxEngineContext *context)
         if (((ComDirectDrawSurface *)context->primarySurface)->IsLost() == DDERR_SURFACELOST) {
             frame.errors |= !CheckDirectDrawResult(((ComDirectDrawSurface *)context->primarySurface)->Restore(),
 
-                                                   DirectXLit_SourcePath_6(), 0x2cc);
+                                                   DirectXLit_SourcePath_6(), 716);
         }
         if (((ComDirectDrawSurface *)context->backSurface)->IsLost() == DDERR_SURFACELOST) {
             frame.errors |= !CheckDirectDrawResult(((ComDirectDrawSurface *)context->backSurface)->Restore(),
 
-                                                   DirectXLit_SourcePath_7(), 0x2d0);
+                                                   DirectXLit_SourcePath_7(), 720);
         }
         if (frame.errors == 0) {
             memset(frame.effect, 0, 100);
@@ -1073,7 +1073,7 @@ void __cdecl GfxPresentBackBuffer(struct GfxEngineContext *context)
             frame.effect[1] = 8;
             CheckDirectDrawResult(((ComDirectDrawSurface *)context->primarySurface)->Blt(frame.destination, context->backSurface, frame.source, 0x1000000, frame.effect),
 
-                                  DirectXLit_SourcePath_8(), 0x2e4);
+                                  DirectXLit_SourcePath_8(), 740);
         }
     }
     UpdateFrameTiming(context);
@@ -1097,7 +1097,7 @@ int __cdecl AllocDDDriverRecord(void)
 {
     int val;
 
-    val = (int)GameHeapAlloc(1, 0x20, DirectXLit_SourcePath_9(), 0x300);
+    val = (int)GameHeapAlloc(1, 32, DirectXLit_SourcePath_9(), 768);
     return val;
 }
 
@@ -1109,11 +1109,11 @@ void __cdecl FreeDDDriverRecord(GfxDdDriverRecord *driverRecord)
 {
     if (driverRecord != 0) {
 
-        GameHeapFree((void *)driverRecord->driverDescription, DirectXLit_SourcePath_10(), 0x309);
+        GameHeapFree((void *)driverRecord->driverDescription, DirectXLit_SourcePath_10(), 777);
 
-        GameHeapFree((void *)driverRecord->driverName, DirectXLit_SourcePath_11(), 0x30A);
+        GameHeapFree((void *)driverRecord->driverName, DirectXLit_SourcePath_11(), 778);
 
-        GameHeapFree(driverRecord, DirectXLit_SourcePath_12(), 0x30B);
+        GameHeapFree(driverRecord, DirectXLit_SourcePath_12(), 779);
     }
 }
 
@@ -1204,7 +1204,7 @@ int __cdecl AllocD3DDeviceRecord(void)
 {
     int val;
 
-    val = (int)GameHeapAlloc(1, 0x20, DirectXLit_SourcePath_13(), 0x378);
+    val = (int)GameHeapAlloc(1, 32, DirectXLit_SourcePath_13(), 888);
     return val;
 }
 
@@ -1216,15 +1216,15 @@ void __cdecl FreeD3DDeviceRecord(GfxD3DDeviceRecord *deviceRecord)
 {
     if (deviceRecord != 0) {
 
-        GameHeapFree((void *)deviceRecord->name, DirectXLit_SourcePath_14(), 0x381);
+        GameHeapFree((void *)deviceRecord->name, DirectXLit_SourcePath_14(), 897);
 
-        GameHeapFree((void *)deviceRecord->description, DirectXLit_SourcePath_15(), 0x382);
+        GameHeapFree((void *)deviceRecord->description, DirectXLit_SourcePath_15(), 898);
 
-        GameHeapFree((void *)deviceRecord->hardwareDesc, DirectXLit_SourcePath_16(), 0x383);
+        GameHeapFree((void *)deviceRecord->hardwareDesc, DirectXLit_SourcePath_16(), 899);
 
-        GameHeapFree((void *)deviceRecord->softwareDesc, DirectXLit_SourcePath_17(), 0x384);
+        GameHeapFree((void *)deviceRecord->softwareDesc, DirectXLit_SourcePath_17(), 900);
 
-        GameHeapFree(deviceRecord, DirectXLit_SourcePath_18(), 0x386);
+        GameHeapFree(deviceRecord, DirectXLit_SourcePath_18(), 902);
     }
 }
 
@@ -1398,7 +1398,7 @@ int __cdecl D3DCreateDeviceFromSurface(int surface, int iid)
     int result;
     result = 0;
     if (CheckDirectDrawResult(((ComUnknown *)surface)->QueryInterface((const void *)iid, &result),
-                              DirectXLit_SourcePath_19(), 0x443)) { /* empty first arm: lib/codegen.h */
+                              DirectXLit_SourcePath_19(), 1091)) { /* empty first arm: lib/codegen.h */
     } else {
         result = 0;
     }
@@ -1424,7 +1424,7 @@ int __cdecl D3DCreateDevice2FromSurface(int iid, struct GfxEngineContext *contex
     int result;
     result = 0;
     if (CheckDirectDrawResult(((ComDirect3D2 *)context->direct3D2)->CreateDevice((const void *)iid, GfxGetRenderTargetSurface(context), &result),
-                              DirectXLit_SourcePath_20(), 0x45b)) { /* empty first arm: lib/codegen.h */
+                              DirectXLit_SourcePath_20(), 1115)) { /* empty first arm: lib/codegen.h */
     } else {
         result = 0;
     }
@@ -1449,7 +1449,7 @@ int __cdecl AllocTextureFormatRecord(void)
 {
     GfxTextureFormatRecord *rec;
 
-    rec = (GfxTextureFormatRecord *)((int)GameHeapAlloc(1, 0x84, DirectXLit_SourcePath_21(), 0x472));
+    rec = (GfxTextureFormatRecord *)((int)GameHeapAlloc(1, 132, DirectXLit_SourcePath_21(), 1138));
     return (int)rec;
 }
 
@@ -1461,9 +1461,9 @@ void __cdecl FreeTextureFormatRecord(int formatRecord)
 {
     if (formatRecord != 0) {
 
-        GameHeapFree(((GfxTextureFormatRecord *)formatRecord)->surfaceDesc, DirectXLit_SourcePath_22(), 0x47B);
+        GameHeapFree(((GfxTextureFormatRecord *)formatRecord)->surfaceDesc, DirectXLit_SourcePath_22(), 1147);
 
-        GameHeapFree((void *)formatRecord, DirectXLit_SourcePath_23(), 0x47C);
+        GameHeapFree((void *)formatRecord, DirectXLit_SourcePath_23(), 1148);
     }
 }
 
@@ -1612,11 +1612,11 @@ int __cdecl PickZBufferDepth(int desc)
 void __cdecl D3DDeviceDescInit(GfxD3DDeviceDesc *desc)
 {
     memset((void *)desc, 0, 0xCC);
-    desc->size = 0xCC;
-    desc->triCapsSize = 0x38;
-    desc->lineCapsSize = 0x38;
+    desc->size = 204;
+    desc->triCapsSize = 56;
+    desc->lineCapsSize = 56;
     desc->transformCapsSize = 8;
-    desc->lightingCapsSize = 0x10;
+    desc->lightingCapsSize = 16;
 }
 
 /*
@@ -1626,8 +1626,8 @@ void __cdecl D3DDeviceDescInit(GfxD3DDeviceDesc *desc)
 void __cdecl DDSurfaceDescInit(GfxTextureSurfaceDesc *desc)
 {
     memset(desc, 0, 0x6C);
-    desc->size = 0x6C;
-    desc->pixelFormatSize = 0x20;
+    desc->size = 108;
+    desc->pixelFormatSize = 32;
 }
 
 /*
@@ -1673,7 +1673,7 @@ int __cdecl GfxInitRenderResources(struct GfxEngineContext *context)
         D3DSetupDevicePolygonSets(context);
         context->statsRecord = (GfxStatsRecord *)Gfx_StatsCreateRecord();
         context->frameStatsRecord = Gfx_StatsCreateRecord();
-        ZeroFillMemory32(0xFC, (void *)context->frameStatsRecord);
+        ZeroFillMemory32(252, (void *)context->frameStatsRecord);
         context->fileRegistry = FileRegistryCreate((int)FileFreeRecordCallback);
         Gfx_DebugPrint(DirectXLit_MatrixInitialize());
         if (context->matrixStackSize > 0) {
@@ -1693,24 +1693,24 @@ int __cdecl GfxInitRenderResources(struct GfxEngineContext *context)
             }
         }
         context->cameraMatrix = Gfx_AllocIdentityMatrix4x4();
-        blockCount = 0x800;
+        blockCount = 2048;
         depthRange = 0x10000;
-        bucketCount = 0x200;
+        bucketCount = 512;
         context->depthSortQueue = Gfx_CreateSortedDrawQueue(blockCount, depthRange, bucketCount);
-        context->drawPool = Gfx_CreateDrawPool(0x200);
-        context->renderObjectBank = Gfx_CreatePrimitiveMeshBank(0x32, 0x100, 0x32, 0x100, (int)context);
-        context->renderResourceTable = MatrixStack_Create(0x14);
+        context->drawPool = Gfx_CreateDrawPool(512);
+        context->renderObjectBank = Gfx_CreatePrimitiveMeshBank(50, 256, 50, 256, (int)context);
+        context->renderResourceTable = MatrixStack_Create(20);
         if (context->renderResourceTable != 0) {
             for (entIndex = 0; entIndex < ((MatrixStack *)(context->renderResourceTable))->capacity; entIndex++) {
 
-                ((int *)(((MatrixStack *)(context->renderResourceTable))->entries))[entIndex] = (int)GameHeapAlloc(1, 0x1E, DirectXLit_SourcePath_24(), 0x5A0);
+                ((int *)(((MatrixStack *)(context->renderResourceTable))->entries))[entIndex] = (int)GameHeapAlloc(1, 30, DirectXLit_SourcePath_24(), 1440);
                 if (((int *)(((MatrixStack *)(context->renderResourceTable))->entries))[entIndex] != 0) {
                     SetIdentityPsxMatrix((PsxMatrix *)((((int *)(((MatrixStack *)(context->renderResourceTable))->entries))[entIndex])));
                 }
             }
         }
         ReadTimestampCounter(&context->secondStart);
-        context->nodeList = CreateBlockHeapNodeList(0x64);
+        context->nodeList = CreateBlockHeapNodeList(100);
         result = 1;
     }
     return result;
@@ -1834,7 +1834,7 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
         }
         if ((context->setupFlags & GFX_SETUP_DIRECTDRAW) != 0) {
             frame.driverGuid = 0;
-            if (CheckDirectDrawResult(DirectDrawEnumerateA((int)DDEnumDriversCallback, EngineContextToCallbackParam(context)), DirectXLit_SourcePath_25(), 0x603) != 0 && context->modeActive == 0) {
+            if (CheckDirectDrawResult(DirectDrawEnumerateA((int)DDEnumDriversCallback, EngineContextToCallbackParam(context)), DirectXLit_SourcePath_25(), 1539) != 0 && context->modeActive == 0) {
                 if (context->ddDriverList != 0 && ((GfxDeviceInfo *)(context->ddDriverList))->count > 0) {
                     frame.driverGuid = *(int *)((char *)((GfxDeviceInfo *)(context->ddDriverList))->driverRecord + 4);
                 } else {
@@ -1842,22 +1842,22 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                 }
             }
             if (context->modeActive == 0 && context->fullScreen != 0) {
-                if (CheckDirectDrawResult(DirectDrawCreate(0, (int)&context->displayDdObject, 0), DirectXLit_SourcePath_26(), 0x61C) != 0) {
+                if (CheckDirectDrawResult(DirectDrawCreate(0, (int)&context->displayDdObject, 0), DirectXLit_SourcePath_26(), 1564) != 0) {
                     frame.coopObject = context->displayDdObject;
                     DDSurfaceDescInit(&context->displayDdSavedMode);
-                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.coopObject))->GetDisplayMode(&context->displayDdSavedMode), DirectXLit_SourcePath_27(), 0x624) != 0) {
+                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.coopObject))->GetDisplayMode(&context->displayDdSavedMode), DirectXLit_SourcePath_27(), 1572) != 0) {
                         context->displayDdModeSaved = 1;
                     }
-                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.coopObject))->SetCooperativeLevel((int)(context->hwnd), (int)(DDSCL_NORMAL)), DirectXLit_SourcePath_28(), 0x629) != 0) {
-                        CheckDirectDrawResult(((ComDirectDraw *)(frame.coopObject))->SetDisplayMode((int)(context->displayWidth), (int)(context->displayHeight), (int)(context->colorDepth)), DirectXLit_SourcePath_29(), 0x62B);
+                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.coopObject))->SetCooperativeLevel((int)(context->hwnd), (int)(DDSCL_NORMAL)), DirectXLit_SourcePath_28(), 1577) != 0) {
+                        CheckDirectDrawResult(((ComDirectDraw *)(frame.coopObject))->SetDisplayMode((int)(context->displayWidth), (int)(context->displayHeight), (int)(context->colorDepth)), DirectXLit_SourcePath_29(), 1579);
                     }
                 }
             }
-            if (CheckDirectDrawResult(DirectDrawCreate(frame.driverGuid, (int)&context->ddObject, 0), DirectXLit_SourcePath_30(), 0x634) != 0) {
+            if (CheckDirectDrawResult(DirectDrawCreate(frame.driverGuid, (int)&context->ddObject, 0), DirectXLit_SourcePath_30(), 1588) != 0) {
                 frame.ddInterface = context->ddObject;
                 if (context->fullScreen != 0) {
                     DDSurfaceDescInit(&context->savedDisplayMode);
-                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->GetDisplayMode(&context->savedDisplayMode), DirectXLit_SourcePath_31(), 0x641) != 0) {
+                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->GetDisplayMode(&context->savedDisplayMode), DirectXLit_SourcePath_31(), 1601) != 0) {
                         context->displayModeSaved = 1;
                     }
                 }
@@ -1865,7 +1865,7 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                 memset(&frame.driverCapsHel, 0, sizeof(frame.driverCapsHel));
                 frame.driverCapsHw.size = sizeof(frame.driverCapsHw);
                 frame.driverCapsHel.size = sizeof(frame.driverCapsHel);
-                if (CheckDirectDrawResult(((ComDirectDraw *)(context->ddObject))->GetCaps(&frame.driverCapsHw, &frame.driverCapsHel), DirectXLit_SourcePath_32(), 0x64E) != 0) {
+                if (CheckDirectDrawResult(((ComDirectDraw *)(context->ddObject))->GetCaps(&frame.driverCapsHw, &frame.driverCapsHel), DirectXLit_SourcePath_32(), 1614) != 0) {
                     context->driverCapsHw = frame.driverCapsHw;
                     context->driverCapsHel = frame.driverCapsHel;
                     if (context->deviceIndex != 0) {
@@ -1878,22 +1878,22 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                     }
                 }
                 frame.d3dInterface = 0;
-                if (CheckDirectDrawResult(((ComUnknown *)(frame.ddInterface))->QueryInterface(&IID_IDirectDraw2, &context->ddObject2), DirectXLit_SourcePath_33(), 0x65F) != 0) {
+                if (CheckDirectDrawResult(((ComUnknown *)(frame.ddInterface))->QueryInterface(&IID_IDirectDraw2, &context->ddObject2), DirectXLit_SourcePath_33(), 1631) != 0) {
                     frame.d3dInterface = context->ddObject2;
                     Gfx_DebugPrint(
                                                DirectXLit_DirectDraw2());
                 }
                 if (frame.d3dInterface != 0 && (frame.driverCapsHw.caps & DDCAPS_NOHARDWARE) == 0) {
                     frame.vidMemCaps = DDSCAPS_OFFSCREENPLAIN;
-                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.d3dInterface))->GetAvailableVidMem(&frame.vidMemCaps, &frame.vidMemTotal, &frame.vidMemFree), DirectXLit_SourcePath_34(), 0x66D) != 0) {
+                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.d3dInterface))->GetAvailableVidMem(&frame.vidMemCaps, &frame.vidMemTotal, &frame.vidMemFree), DirectXLit_SourcePath_34(), 1645) != 0) {
                         sprintf(frame.msgBuffer, (const char *)DirectXLit_TotalFree(),
                                 frame.vidMemTotal, frame.vidMemFree);
                         Gfx_DebugPrint(frame.msgBuffer);
                     }
                 }
-                CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->EnumDisplayModes((int)(0), (int)(0), (int)(EngineContextToCallbackParam(context)), (int)((int)DDEnumDisplayModesCallback)), DirectXLit_SourcePath_35(), 0x67B);
-                if (CheckDirectDrawResult(((ComUnknown *)(frame.ddInterface))->QueryInterface(&IID_IDirect3D, &context->direct3D), DirectXLit_SourcePath_36(), 0x687) != 0) {
-                    CheckDirectDrawResult(((ComDirect3D *)(context->direct3D))->EnumDevices((int)((int)D3DEnumDevicesCallback), (int)(EngineContextToCallbackParam(context))), DirectXLit_SourcePath_37(), 0x689);
+                CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->EnumDisplayModes((int)(0), (int)(0), (int)(EngineContextToCallbackParam(context)), (int)((int)DDEnumDisplayModesCallback)), DirectXLit_SourcePath_35(), 1659);
+                if (CheckDirectDrawResult(((ComUnknown *)(frame.ddInterface))->QueryInterface(&IID_IDirect3D, &context->direct3D), DirectXLit_SourcePath_36(), 1671) != 0) {
+                    CheckDirectDrawResult(((ComDirect3D *)(context->direct3D))->EnumDevices((int)((int)D3DEnumDevicesCallback), (int)(EngineContextToCallbackParam(context))), DirectXLit_SourcePath_37(), 1673);
                 }
                 // VC5 empty conditional nodes preserve the original register choices.
                 if (0)
@@ -1905,16 +1905,16 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                         Gfx_DebugPrint(
                                                    DirectXLit_NoRequestedDisplayModes());
                     }
-                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->SetCooperativeLevel((int)(context->hwnd), (int)(DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN)), DirectXLit_SourcePath_38(), 0x6A2) != 0) {
+                    if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->SetCooperativeLevel((int)(context->hwnd), (int)(DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN)), DirectXLit_SourcePath_38(), 1698) != 0) {
                         Gfx_DebugPrint(
                                                    DirectXLit_ExclusiveMode());
-                        if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->SetDisplayMode((int)(context->displayWidth), (int)(context->displayHeight), (int)(context->colorDepth)), DirectXLit_SourcePath_39(), 0x6B1) != 0) { /* empty first arm: lib/codegen.h */
+                        if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->SetDisplayMode((int)(context->displayWidth), (int)(context->displayHeight), (int)(context->colorDepth)), DirectXLit_SourcePath_39(), 1713) != 0) { /* empty first arm: lib/codegen.h */
                         } else {
                             return 0;
                         }
                     }
                 } else {
-                    CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->SetCooperativeLevel((int)(context->hwnd), (int)(DDSCL_NORMAL)), DirectXLit_SourcePath_40(), 0x6C0);
+                    CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->SetCooperativeLevel((int)(context->hwnd), (int)(DDSCL_NORMAL)), DirectXLit_SourcePath_40(), 1728);
                 }
                 if ((frame.driverCapsHw.caps & DDCAPS_NOHARDWARE) != 0) {
                     Gfx_DebugPrint(
@@ -1962,7 +1962,7 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                     frame.primaryDesc.caps |= DDSCAPS_3DDEVICE;
                 }
                 frame.primaryDesc.backBufferCount = context->bufferCount - 1;
-                if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->CreateSurface(&frame.primaryDesc, &context->primarySurface, (int)(0)), DirectXLit_SourcePath_41(), 0x722) != 0) {
+                if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->CreateSurface(&frame.primaryDesc, &context->primarySurface, (int)(0)), DirectXLit_SourcePath_41(), 1826) != 0) {
                     if (context->deviceIndex != 0) {
                         Gfx_DebugPrint(
                                                    DirectXLit_DdFrontSurface());
@@ -1970,11 +1970,11 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                         Gfx_LogDirectDrawSurfaceCaps((int *)(&frame.primaryCapsOut));
                     }
                     DDSurfaceDescInit(&context->surfaceDescs[0]);
-                    CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->GetSurfaceDesc(&context->surfaceDescs[0]), DirectXLit_SourcePath_42(), 0x733);
+                    CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->GetSurfaceDesc(&context->surfaceDescs[0]), DirectXLit_SourcePath_42(), 1843);
                     if (context->fullScreen != 0) {
                         for (frame.bufferIndex = 1; frame.bufferIndex < context->bufferCount; frame.bufferIndex++) {
                             frame.attachCaps = DDSCAPS_BACKBUFFER;
-                            if (CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->GetAttachedSurface(&frame.attachCaps, &context->surfaces[frame.bufferIndex]), DirectXLit_SourcePath_43(), 0x73F) != 0) {
+                            if (CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->GetAttachedSurface(&frame.attachCaps, &context->surfaces[frame.bufferIndex]), DirectXLit_SourcePath_43(), 1855) != 0) {
                                 if (context->deviceIndex != 0) {
                                     Gfx_DebugPrint(
                                                                DirectXLit_DdBackSurface());
@@ -1983,7 +1983,7 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                                 }
                                 DDSurfaceSetSrcColorKey(context->ddSurface, context->surfaces[frame.bufferIndex]);
                                 DDSurfaceDescInit(&context->surfaceDescs[frame.bufferIndex]);
-                                CheckDirectDrawResult(((ComDirectDrawSurface *)(context->surfaces[frame.bufferIndex]))->GetSurfaceDesc(&context->surfaceDescs[frame.bufferIndex]), DirectXLit_SourcePath_44(), 0x751);
+                                CheckDirectDrawResult(((ComDirectDrawSurface *)(context->surfaces[frame.bufferIndex]))->GetSurfaceDesc(&context->surfaceDescs[frame.bufferIndex]), DirectXLit_SourcePath_44(), 1873);
                                 frame.initStatus = 1;
                             } else {
                                 frame.initStatus = 0;
@@ -1991,9 +1991,9 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                             }
                         }
                     } else {
-                        if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->CreateClipper((int)(0), &context->ddClipper, (int)(0)), DirectXLit_SourcePath_45(), 0x763) != 0) {
-                            if (CheckDirectDrawResult(((ComDirectDrawClipper *)(context->ddClipper))->SetHWnd((int)(0), (int)(context->hwnd)), DirectXLit_SourcePath_46(), 0x765) != 0) {
-                                CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->SetClipper((int)(context->ddClipper)), DirectXLit_SourcePath_47(), 0x768);
+                        if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->CreateClipper((int)(0), &context->ddClipper, (int)(0)), DirectXLit_SourcePath_45(), 1891) != 0) {
+                            if (CheckDirectDrawResult(((ComDirectDrawClipper *)(context->ddClipper))->SetHWnd((int)(0), (int)(context->hwnd)), DirectXLit_SourcePath_46(), 1893) != 0) {
+                                CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->SetClipper((int)(context->ddClipper)), DirectXLit_SourcePath_47(), 1896);
                             }
                         }
                         memset((void *)&frame.attachCaps, 0, 4);
@@ -2011,10 +2011,10 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                             frame.offscreenDesc.caps |= DDSCAPS_VIDEOMEMORY;
                         }
                         for (frame.bufferIndex = 1; frame.bufferIndex < context->bufferCount; frame.bufferIndex++) {
-                            if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->CreateSurface(&frame.offscreenDesc, &context->surfaces[frame.bufferIndex], (int)(0)), DirectXLit_SourcePath_48(), 0x78C) != 0) {
-                                if (CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->SetClipper((int)(context->ddClipper)), DirectXLit_SourcePath_49(), 0x78F) != 0) {
+                            if (CheckDirectDrawResult(((ComDirectDraw *)(frame.ddInterface))->CreateSurface(&frame.offscreenDesc, &context->surfaces[frame.bufferIndex], (int)(0)), DirectXLit_SourcePath_48(), 1932) != 0) {
+                                if (CheckDirectDrawResult(((ComDirectDrawSurface *)(context->primarySurface))->SetClipper((int)(context->ddClipper)), DirectXLit_SourcePath_49(), 1935) != 0) {
                                     DDSurfaceDescInit(&context->surfaceDescs[frame.bufferIndex]);
-                                    CheckDirectDrawResult(((ComDirectDrawSurface *)(context->surfaces[frame.bufferIndex]))->GetSurfaceDesc(&context->surfaceDescs[frame.bufferIndex]), DirectXLit_SourcePath_50(), 0x792);
+                                    CheckDirectDrawResult(((ComDirectDrawSurface *)(context->surfaces[frame.bufferIndex]))->GetSurfaceDesc(&context->surfaceDescs[frame.bufferIndex]), DirectXLit_SourcePath_50(), 1938);
                                     DDSurfaceSetSrcColorKey(context->ddSurface, context->surfaces[frame.bufferIndex]);
                                     frame.initStatus = 1;
                                 } else {
@@ -2079,11 +2079,11 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                             } else {
                                 frame.zSurfaceDesc.caps |= DDSCAPS_VIDEOMEMORY;
                             }
-                            if (CheckDirectDrawResult(((ComDirectDraw *)(context->ddObject))->CreateSurface(&frame.zSurfaceDesc, &context->zBufferSurface, (int)(0)), DirectXLit_SourcePath_51(), 0x816) != 0) {
-                                if (CheckDirectDrawResult(((ComDirectDrawSurface *)(frame.indexSurface))->AddAttachedSurface((int)(context->zBufferSurface)), DirectXLit_SourcePath_52(), 0x818) != 0) {
+                            if (CheckDirectDrawResult(((ComDirectDraw *)(context->ddObject))->CreateSurface(&frame.zSurfaceDesc, &context->zBufferSurface, (int)(0)), DirectXLit_SourcePath_51(), 2070) != 0) {
+                                if (CheckDirectDrawResult(((ComDirectDrawSurface *)(frame.indexSurface))->AddAttachedSurface((int)(context->zBufferSurface)), DirectXLit_SourcePath_52(), 2072) != 0) {
                                     DDSurfaceDescInit(&frame.dxDesc);
                                     // STRING: FF7 0x0090db0c
-                                    CheckDirectDrawResult(((ComDirectDrawSurface *)(context->zBufferSurface))->GetSurfaceDesc(&frame.dxDesc), "C:\\lib\\src\\graphics\\directx.cpp", 0x826);
+                                    CheckDirectDrawResult(((ComDirectDrawSurface *)(context->zBufferSurface))->GetSurfaceDesc(&frame.dxDesc), "C:\\lib\\src\\graphics\\directx.cpp", 2086);
                                     sprintf(frame.driverMsgBuffer, (const char *)
                                             // STRING: FF7 0x90db2c
                                             "%d-BIT Z BUFFER CREATED IN %s \n",
@@ -2099,7 +2099,7 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                             D3DDeviceDescInit(&frame.hwDeviceDesc);
                             D3DDeviceDescInit(&frame.swDeviceDesc);
                             // STRING: FF7 0x0090db4c
-                            if (CheckDirectDrawResult(((ComDirect3DDevice *)(context->d3dDevice))->GetCaps(&frame.hwDeviceDesc, &frame.swDeviceDesc), "C:\\lib\\src\\graphics\\directx.cpp", 0x83E) != 0) {
+                            if (CheckDirectDrawResult(((ComDirect3DDevice *)(context->d3dDevice))->GetCaps(&frame.hwDeviceDesc, &frame.swDeviceDesc), "C:\\lib\\src\\graphics\\directx.cpp", 2110) != 0) {
                                 context->hwDeviceDesc = frame.hwDeviceDesc;
                                 context->swDeviceDesc = frame.swDeviceDesc;
                                 Gfx_DebugPrint(
@@ -2113,7 +2113,7 @@ int __cdecl InitGraphicsDevice(GfxEngineContext *context)
                             }
                             frame.initStatus = 0;
                             // STRING: FF7 0x0090db7c
-                            if (CheckDirectDrawResult(((ComDirect3DDevice *)(context->d3dDevice))->EnumTextureFormats((int)((int)D3DEnumTextureFormatsCallback), (int)(EngineContextToCallbackParam(context))), "C:\\lib\\src\\graphics\\directx.cpp", 0x84C) != 0) {
+                            if (CheckDirectDrawResult(((ComDirect3DDevice *)(context->d3dDevice))->EnumTextureFormats((int)((int)D3DEnumTextureFormatsCallback), (int)(EngineContextToCallbackParam(context))), "C:\\lib\\src\\graphics\\directx.cpp", 2124) != 0) {
                                 Gfx_DebugPrint(
                                                        // STRING: FF7 0x90db9c
                                                        "TEXTURE FORMATS: \n");
@@ -2229,7 +2229,7 @@ void __cdecl GfxShutdownRenderResources(struct GfxEngineContext *context)
         for (idx = 0; idx < ((MatrixStack *)(context->renderResourceTable))->capacity; idx++) {
 
             // STRING: FF7 0x0090dc20
-            GameHeapFree((void *)((int *)((MatrixStack *)(context->renderResourceTable))->entries)[idx], "C:\\lib\\src\\graphics\\directx.cpp", 0x91C);
+            GameHeapFree((void *)((int *)((MatrixStack *)(context->renderResourceTable))->entries)[idx], "C:\\lib\\src\\graphics\\directx.cpp", 2332);
         }
         MatrixStack_Destroy((MatrixStack *)(context->renderResourceTable));
     }
@@ -2314,14 +2314,14 @@ void __cdecl ShutdownGraphicsDevice(struct GfxEngineContext *context)
         if (context->unusedComSurface != 0) {
             CheckDirectDrawResult(((ComUnknown *)(context->unusedComSurface))->Release(),
                                   // STRING: FF7 0x0090dc54
-                                  "C:\\lib\\src\\graphics\\directx.cpp", 0x9ad);
+                                  "C:\\lib\\src\\graphics\\directx.cpp", 2477);
             context->unusedComSurface = 0;
         }
         if (context->fullScreen != 0) {
             if (context->primarySurface != 0) {
                 CheckDirectDrawResult(((ComUnknown *)(context->primarySurface))->Release(),
                                       // STRING: FF7 0x0090dc74
-                                      "C:\\lib\\src\\graphics\\directx.cpp", 0x9bd);
+                                      "C:\\lib\\src\\graphics\\directx.cpp", 2493);
                 context->primarySurface = 0;
             }
         } else {
@@ -2329,7 +2329,7 @@ void __cdecl ShutdownGraphicsDevice(struct GfxEngineContext *context)
                 if (context->surfaces[f.index] != 0) {
                     CheckDirectDrawResult(((ComUnknown *)context->surfaces[f.index])->Release(),
                                           // STRING: FF7 0x0090dc94
-                                          "C:\\lib\\src\\graphics\\directx.cpp", 0x9cc);
+                                          "C:\\lib\\src\\graphics\\directx.cpp", 2508);
                     context->surfaces[f.index] = 0;
                 }
             }
@@ -2337,16 +2337,16 @@ void __cdecl ShutdownGraphicsDevice(struct GfxEngineContext *context)
         if (context->ddObject2 != 0) {
             CheckDirectDrawResult(((ComUnknown *)(context->ddObject2))->Release(),
                                   // STRING: FF7 0x0090dcb4
-                                  "C:\\lib\\src\\graphics\\directx.cpp", 0x9db);
+                                  "C:\\lib\\src\\graphics\\directx.cpp", 2523);
             context->ddObject2 = 0;
         }
         if (context->displayModeSaved != 0 && context->ddObject != 0) {
             CheckDirectDrawResult(((ComDirectDraw *)(context->ddObject))->SetCooperativeLevel(context->hwnd, DDSCL_NORMAL),
                                   // STRING: FF7 0x0090dcd4
-                                  "C:\\lib\\src\\graphics\\directx.cpp", 0x9e8);
+                                  "C:\\lib\\src\\graphics\\directx.cpp", 2536);
             CheckDirectDrawResult(((ComDirectDraw *)(context->ddObject))->RestoreDisplayMode(),
                                   // STRING: FF7 0x0090dcf4
-                                  "C:\\lib\\src\\graphics\\directx.cpp", 0x9f1);
+                                  "C:\\lib\\src\\graphics\\directx.cpp", 2545);
             context->displayModeSaved = 0;
         }
         if (context->ddObject != 0) {
@@ -2357,15 +2357,15 @@ void __cdecl ShutdownGraphicsDevice(struct GfxEngineContext *context)
             if (context->displayDdModeSaved != 0) {
                 CheckDirectDrawResult(((ComDirectDraw *)(context->displayDdObject))->SetCooperativeLevel(context->hwnd, DDSCL_NORMAL),
                                       // STRING: FF7 0x0090dd14
-                                      "C:\\lib\\src\\graphics\\directx.cpp", 0xa07);
+                                      "C:\\lib\\src\\graphics\\directx.cpp", 2567);
                 CheckDirectDrawResult(((ComDirectDraw *)(context->displayDdObject))->RestoreDisplayMode(),
                                       // STRING: FF7 0x0090dd34
-                                      "C:\\lib\\src\\graphics\\directx.cpp", 0xa10);
+                                      "C:\\lib\\src\\graphics\\directx.cpp", 2576);
                 context->displayDdModeSaved = 0;
             }
             CheckDirectDrawResult(((ComUnknown *)(context->displayDdObject))->Release(),
                                   // STRING: FF7 0x0090dd54
-                                  "C:\\lib\\src\\graphics\\directx.cpp", 0xa1d);
+                                  "C:\\lib\\src\\graphics\\directx.cpp", 2589);
             context->displayDdObject = 0;
         }
         DestroyListAndNull((List **)&context->ddDriverList);
@@ -2375,7 +2375,7 @@ void __cdecl ShutdownGraphicsDevice(struct GfxEngineContext *context)
             FreeLibrary(context->driverLibrary);
         GameHeapFree((void *)context->driverName,
                      // STRING: FF7 0x0090dd74
-                     "C:\\lib\\src\\graphics\\directx.cpp", 0xa38);
+                     "C:\\lib\\src\\graphics\\directx.cpp", 2616);
         GfxFreeDriverOps(context->driverObject);
         context->deviceReady = 0;
         Gfx_DebugPrint(
@@ -2420,26 +2420,26 @@ int __cdecl GfxLockSurface(int index)
                 f.rect[2] = f.context->clientWidth - 1;
                 f.rect[3] = f.context->clientHeight - 1;
             }
-            f.context->surfaceDescs[index].size = 0x6c;
-            f.context->surfaceDescs[index].pixelFormatSize = 0x20;
+            f.context->surfaceDescs[index].size = 108;
+            f.context->surfaceDescs[index].pixelFormatSize = 32;
             f.errors = 0;
             if (f.context->fullScreen != 0) {
                 if (((ComDirectDrawSurface *)f.context->primarySurface)->IsLost() == DDERR_SURFACELOST) {
                     f.errors |= CheckDirectDrawResult(((ComDirectDrawSurface *)f.context->primarySurface)->Restore(),
                                                       // STRING: FF7 0x0090ddac
-                                                      "C:\\lib\\src\\graphics\\directx.cpp", 0xa76);
+                                                      "C:\\lib\\src\\graphics\\directx.cpp", 2678);
                 }
             } else {
                 if (((ComDirectDrawSurface *)f.context->surfaces[index])->IsLost() == DDERR_SURFACELOST) {
                     f.errors |= CheckDirectDrawResult(((ComDirectDrawSurface *)f.context->surfaces[index])->Restore(),
                                                       // STRING: FF7 0x0090ddcc
-                                                      "C:\\lib\\src\\graphics\\directx.cpp", 0xa7d);
+                                                      "C:\\lib\\src\\graphics\\directx.cpp", 2685);
                 }
             }
             if (f.errors == 0) {
                 if (CheckDirectDrawResult(((ComDirectDrawSurface *)f.context->surfaces[index])->Lock(f.rect, &f.context->surfaceDescs[index], 1, f.flags),
                                           // STRING: FF7 0x0090ddec
-                                          "C:\\lib\\src\\graphics\\directx.cpp", 0xa8a)) {
+                                          "C:\\lib\\src\\graphics\\directx.cpp", 2698)) {
                     f.descriptor = (GfxSurfaceLockDesc *)&f.context->surfaceDescs[index];
                     f.context->targetFormat.width = f.descriptor->width;
                     f.context->targetFormat.height = f.descriptor->height;
@@ -2470,7 +2470,7 @@ int __cdecl GfxUnlockSurface(int index)
         if (f.context->surfaces[index] != 0) {
             if (CheckDirectDrawResult(((ComDirectDrawSurface *)f.context->surfaces[index])->Unlock(*(int *)((char *)&f.context->surfaceDescs[index] + 0x24)),
                                       // STRING: FF7 0x0090de0c
-                                      "C:\\lib\\src\\graphics\\directx.cpp", 0xaab))
+                                      "C:\\lib\\src\\graphics\\directx.cpp", 2731))
                 f.success = 1;
         }
     }
@@ -2496,7 +2496,7 @@ int __cdecl DDSurfaceSetSrcColorKey(int value, int surface)
         f.key[1] = value;
         if (CheckDirectDrawResult(((ComDirectDrawSurface *)surface)->SetColorKey(f.flags, f.key),
                                   // STRING: FF7 0x0090de2c
-                                  "C:\\lib\\src\\graphics\\directx.cpp", 0xac9)) {
+                                  "C:\\lib\\src\\graphics\\directx.cpp", 2761)) {
             f.success = 1;
         }
     }

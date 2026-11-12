@@ -117,7 +117,7 @@ void __cdecl Battle_ActorScaleRampSpriteQuadTask(void)
     frame.rotM12 = 0;
     frame.rotM20 = 0;
     frame.rotM21 = 0;
-    frame.rotM22 = 0x1000;
+    frame.rotM22 = 0x1000 /* 360 deg */;
     memset(&frame.transX, 0, 12);
     g_BattleWorldSprite_DrawReq.objectDword = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
     g_BattleWorldSprite_DrawReq.stepByte = frame.rampSprite->step << 5;

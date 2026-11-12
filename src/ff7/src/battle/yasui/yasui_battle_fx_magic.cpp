@@ -94,7 +94,7 @@ void __cdecl BattleFx_MagicEnterWall(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004574ba
 void __cdecl BattleFx_MagicBeginWall(int targetMask, int actorIdx)
 {
-    g_YasuiMagicWallScale = 0x1800;
+    g_YasuiMagicWallScale = 0x1800 /* 1.5 */;
     g_YasuiMagicWallBlendFactor = 0x800;
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 0, BattleFx_MagicSpawnWallPerTarget);
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x44);
@@ -113,8 +113,8 @@ void __cdecl BattleFx_MagicSpawnWallPerTarget(int actor)
     task = (BattleFxMagicWallTask *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicWallTimelineTask);
     actorState = (BattleActorWallState *)&g_BattleActorRecords[actor].modelId;
     Battle_GetBoneWorldPos(actor, actorState->boneIndex, &task->x);
-    task->x -= (short)(SinFixed(actorState->angle) * actorState->radius >> 0xC);
-    task->z -= (short)(CosFixed(actorState->angle) * actorState->radius >> 0xC);
+    task->x -= (short)(SinFixed(actorState->angle) * actorState->radius >> 12);
+    task->z -= (short)(CosFixed(actorState->angle) * actorState->radius >> 12);
     *(Int64Pair *)((char *)task + 0xC) = *(Int64Pair *)((char *)actorState + 0x15E);
     task->targetActor = actor;
 }
@@ -149,7 +149,7 @@ void __cdecl BattleFx_MagicWallTimelineTask(void)
         *(Int64Pair *)((char *)childTask + 0xC) = task->actorPos;
         *(Int64Pair *)((char *)childTask + 4) = task->startPos;
     }
-    if (task->frame == 0x10) {
+    if (task->frame == 16) {
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -177,29 +177,29 @@ void __cdecl BattleFx_MagicWallShrinkingModelTask(void)
 
     frame.record = (BattleFxCosmoMemoryTriSpin *)BATTLE_CURRENT_TASK_SLOT;
     *(int *)&g_YasuiMagicWallModelDrawReq = Gfx_ModelTableGetRenderObject(0, g_YasuiMagicWallResourceContext);
-    if (frame.record->step < 0x10) {
-        frame.envelope = (frame.record->step * -0x2000) / 0x10 + 0x3000;
+    if (frame.record->step < 16) {
+        frame.envelope = (frame.record->step * -0x2000) / 16 + 0x3000;
     } else {
         frame.envelope = 0x1000;
     }
-    frame.scaleX.vz = frame.envelope * g_YasuiMagicWallScale >> 0xC;
+    frame.scaleX.vz = frame.envelope * g_YasuiMagicWallScale >> 12;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     frame.step = frame.record->step;
     if (frame.step < 8) {
-        frame.fade = 0x1000 - (frame.step << 0xC) / 8;
+        frame.fade = 4096 - (frame.step << 12) / 8;
     } else {
         frame.step -= 8;
-        if (frame.step < 0x10) {
+        if (frame.step < 16) {
             frame.fade = 0;
         } else {
-            frame.step -= 0x10;
+            frame.step -= 16;
             if (frame.step < 8) {
-                frame.fade = (frame.step << 0xC) / 8;
+                frame.fade = (frame.step << 12) / 8;
             }
         }
     }
-    frame.fade += (0x1000 - frame.fade) * g_YasuiMagicWallBlendFactor >> 0xC;
+    frame.fade += (4096 - frame.fade) * g_YasuiMagicWallBlendFactor >> 12;
     RotMatrix((SVECTOR *)((int)frame.record + 0xC), &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.record->posX;
     frame.rotMatrix.t[1] = frame.record->posY;
@@ -213,7 +213,7 @@ void __cdecl BattleFx_MagicWallShrinkingModelTask(void)
     g_YasuiMagicWallDrawOrder = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiMagicWallModelDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiMagicWallDrawOrder);
     if (g_BattleIsPaused == 0) {
         (frame.record->step)++;
-        if (frame.record->step >= 0x20) {
+        if (frame.record->step >= 32) {
             frame.record->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -238,19 +238,19 @@ void __cdecl BattleFx_MagicWallShortShrinkingModelTask(void)
 #pragma pack(pop)
 
     frame.record = (BattleFxCosmoMemoryTriSpin *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scaleX.vz = ((frame.record->step * -0x2000) / 0x10 + 0x3000) * g_YasuiMagicWallScale >> 0xC;
+    frame.scaleX.vz = ((frame.record->step * -0x2000) / 16 + 0x3000) * g_YasuiMagicWallScale >> 12;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     frame.step = frame.record->step;
     if (frame.step < 8) {
-        frame.fade = 0x1000 - (frame.step << 0xC) / 8;
+        frame.fade = 4096 - (frame.step << 12) / 8;
     } else {
         frame.step -= 8;
         if (frame.step < 8) {
-            frame.fade = (frame.step << 0xC) / 8;
+            frame.fade = (frame.step << 12) / 8;
         }
     }
-    frame.fade += (0x1000 - frame.fade) * g_YasuiMagicWallBlendFactor >> 0xC;
+    frame.fade += (4096 - frame.fade) * g_YasuiMagicWallBlendFactor >> 12;
     RotMatrix((SVECTOR *)((int)frame.record + 0xC), &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.record->posX;
     frame.rotMatrix.t[1] = frame.record->posY;
@@ -264,7 +264,7 @@ void __cdecl BattleFx_MagicWallShortShrinkingModelTask(void)
     g_YasuiMagicWallDrawOrder = BattleFx_SubmitModelDraw((BattleFxModelDraw *)((char *)&g_YasuiMagicWallModelDrawReq + 16), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiMagicWallDrawOrder);
     if (g_BattleIsPaused == 0) {
         (frame.record->step)++;
-        if (frame.record->step >= 0x10) {
+        if (frame.record->step >= 16) {
             frame.record->ownerSlot = BATTLE_TASK_FREE;
         }
     }

@@ -54,7 +54,7 @@ void __cdecl WorldScript_ClearVariableBank(void)
 {
     int i;
 
-    for (i = 0; i < 0x400; i++) {
+    for (i = 0; i < 1024; i++) {
         gSavemap.scriptBanks[i] = 0;
     }
 }
@@ -70,11 +70,11 @@ int __cdecl World_SelectMapVariantFromStoryProgress(void)
     int variant;
     int tier;
 
-    if (gSavemap.storyProgress < 0x3E8) {
+    if (gSavemap.storyProgress < 1000) {
         variant = 0;
     } else {
-        if (gSavemap.storyProgress < 0x62C) {
-            tier = (gSavemap.tutSub & 1 | (gSavemap.storyProgress >= 0x654) << 1) + 1;
+        if (gSavemap.storyProgress < 1580) {
+            tier = (gSavemap.tutSub & 1 | (gSavemap.storyProgress >= 1620) << 1) + 1;
         } else {
             tier = (gSavemap.storyProgress >= 0x654 | ((gSavemap.worldMapVariantFlags & 0x10) != 0) << 1) + 5;
         }
@@ -91,7 +91,7 @@ int __cdecl World_IsStoryProgressInWindow3E8To4B0(void)
 {
     int in;
 
-    if (gSavemap.storyProgress >= 0x3e8 && gSavemap.storyProgress < 0x4b0) {
+    if (gSavemap.storyProgress >= 1000 && gSavemap.storyProgress < 1200) {
         in = 1;
     } else {
         in = 0;
@@ -125,7 +125,7 @@ void __cdecl World_RestoreStateFromSavemap(int statePtr, int argPtr, int skipSte
     } frameSlot; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     frameSlot.dwChecksum = 0;
-    for (frameSlot.i = 0x380; frameSlot.i < 0x400; frameSlot.i++) {
+    for (frameSlot.i = 896; frameSlot.i < 1024; frameSlot.i++) {
         frameSlot.dwChecksum += gSavemap.scriptBanks[frameSlot.i];
     }
     if ((frameSlot.dwChecksum & 0xff) != 0) {
@@ -155,7 +155,7 @@ void __cdecl World_RestoreStateFromSavemap(int statePtr, int argPtr, int skipSte
                     WorldEntity_SetupForModel(0x15 + frameSlot.i);
                     frameSlot.polePos.vx = gSavemap.polePositions[frameSlot.i] & 0xffff;
                     frameSlot.polePos.vy = 0;
-                    frameSlot.polePos.vz = (gSavemap.polePositions[frameSlot.i] >> 0x10) & 0xffff;
+                    frameSlot.polePos.vz = (gSavemap.polePositions[frameSlot.i] >> 16) & 0xffff;
                     WorldEntity_SetCurrentPositionAndGround(&frameSlot.polePos);
                 }
             }
@@ -210,7 +210,7 @@ void __cdecl World_SaveStateToSavemap(void)
         }
     }
     frameSlot.dwChecksum = 0;
-    for (frameSlot.i = 0x380; frameSlot.i < 0x3ff; frameSlot.i++) {
+    for (frameSlot.i = 896; frameSlot.i < 1023; frameSlot.i++) {
         frameSlot.dwChecksum += gSavemap.scriptBanks[frameSlot.i];
     }
     gSavemap.worldChecksum = -frameSlot.dwChecksum;
@@ -234,7 +234,7 @@ void __cdecl World_ExportTransitionRequestAndSaveState(int stateOut, int argOut,
         *(int *)argOut = g_WorldFieldTransitionArg;
     }
     if (entryOut != 0) {
-        *(int *)entryOut = g_WorldFieldTransitionEntryWord | (g_WorldCountdownActive != 0) << 0x1D;
+        *(int *)entryOut = g_WorldFieldTransitionEntryWord | (g_WorldCountdownActive != 0) << 29;
     }
     gSavemap.menuLockedWord |= 0x300;
     World_SaveStateToSavemap();
@@ -622,7 +622,7 @@ int __cdecl World_RollEncounter(void)
             frame.terrain = 0;
         frame.record = (unsigned short *)((char *)&g_WorldEncounterTable[0x50] + ((frame.region << 7) + (frame.terrain << 5)));
         frame.rate = (frame.record[0] >> 8) & 0xff;
-        g_WorldEncounterStepCounter += frame.rate ? (World_GetEncounterRateScale() << 10) / frame.rate : 0x7fff;
+        g_WorldEncounterStepCounter += frame.rate ? (World_GetEncounterRateScale() << 10) / frame.rate : 32767;
         if (WorldMap_NextRandomByte() < (g_WorldEncounterStepCounter >> 8) && (frame.record[0] & 1)) {
             if (WorldMap_NextRandomByte() < g_WorldRegionYuffieChance[frame.region] &&
                 (WorldEntity_GetPlayerTerrainType() == WORLD_TERRAIN_FOREST || WorldEntity_GetPlayerTerrainType() == WORLD_TERRAIN_JUNGLE) &&
@@ -716,7 +716,7 @@ int __cdecl World_RollEncounter(void)
 // FUNCTION: FF7 0x00767c55
 int __cdecl World_GetEncounterRateScale(void)
 {
-    return g_PartyBattleModifiers.encounterRate * ((g_PartyBattleModifiers.encounterRate > 0x10) + 1);
+    return g_PartyBattleModifiers.encounterRate * ((g_PartyBattleModifiers.encounterRate > 16) + 1);
 }
 
 /*
@@ -729,7 +729,7 @@ int __cdecl World_GetPreemptiveRate(void)
     int rate;
 
     rate = g_PartyBattleModifiers.preemptiveOdds & PARTY_PREEMPTIVE_ODDS_MASK;
-    return rate * ((rate > 0x10) + 1);
+    return rate * ((rate > 16) + 1);
 }
 
 /*

@@ -41,7 +41,7 @@ unsigned short __cdecl Battle_AiVm_Random16(void)
 int __cdecl Battle_Roll1To100(void)
 {
     /* Signed division on the promoted return value: the original divides signed. */
-    return Battle_AiVm_Random16() * 0x63 / 0xffff + 1;
+    return Battle_AiVm_Random16() * 99 / 65535 + 1;
 }
 
 /*

@@ -62,7 +62,7 @@ void __cdecl Savemap_BuildPreviewHeader(void)
     for (slot = 0; slot < 3; slot++) {
         gSavemap.descParty[slot] = *(char *)&gSavemap.party[slot];
     }
-    Menu_SetEncodedTextCopyLimit(0x10);
+    Menu_SetEncodedTextCopyLimit(16);
     for (slot = 0; slot < 3; slot++) {
         charId = gSavemap.party[slot];
         if (charId != PARTY_CHAR_NONE) {
@@ -75,7 +75,7 @@ void __cdecl Savemap_BuildPreviewHeader(void)
             break;
         }
     }
-    for (slot = 0; slot < 0xC; slot++) {
+    for (slot = 0; slot < 12; slot++) {
         if (slot > 2 && slot < 6) {
             gSavemap.windowColors[slot + 3] = *(char *)((char *)&g_FieldWindowColours + slot);
         } else if (slot > 5 && slot < 9) {
@@ -86,7 +86,7 @@ void __cdecl Savemap_BuildPreviewHeader(void)
     }
     gSavemap.descGil = gSavemap.gil;
     gSavemap.descTime = *(int *)&gSavemap.seconds;
-    Menu_SetEncodedTextCopyLimit(0x18);
+    Menu_SetEncodedTextCopyLimit(24);
     Menu_CopyEncodedTextLimited((int)gSavemap.descLocation, (int)gSavemap.location);
 }
 

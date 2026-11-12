@@ -193,21 +193,21 @@ void __cdecl BattleFx_SpecialPoisonGasTimelineTask(void)
         pParticle->velocityZ = (mainSelf->endZ - mainSelf->startZ) / 8;
     }
     if (mainSelf->phase == 8) {
-        for (i7 = 0; i7 < 0xC; i7++) {
+        for (i7 = 0; i7 < 12; i7++) {
             pParticle = (BattleFxPoisonGasParticleRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPoisonGasBouncingSpriteTask);
-            pParticle->posX = mainSelf->endX + rand() % 0x190 + -0xC8;
-            pParticle->posZ = mainSelf->endZ + rand() % 0x190 + -0xC8;
+            pParticle->posX = mainSelf->endX + rand() % 400 + -200;
+            pParticle->posZ = mainSelf->endZ + rand() % 400 + -200;
             pParticle->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFF06, 0x64, (char *)pParticle + 0xC);
-            pParticle->countdown = rand() % 0x14;
+            BattleFx_MakeRandomConeVector(0xFFFFFF06, 100, (char *)pParticle + 0xC);
+            pParticle->countdown = rand() % 20;
         }
         Battle_PlaySfxPannedToActor(0xFA, (short)mainSelf->actorIndex, 0);
     }
-    if (mainSelf->phase > 0xB && mainSelf->phase < 0x13) {
+    if (mainSelf->phase > 11 && mainSelf->phase < 19) {
         pParticle = (BattleFxPoisonGasParticleRecord *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialPoisonGasAnimatedSpriteTask)];
-        pParticle->posX = mainSelf->endX + rand() % 0x4B0 + -0x258;
-        pParticle->posY = mainSelf->endY + rand() % 0x4B0 + -0x258;
-        pParticle->posZ = mainSelf->endZ + rand() % 0x4B0 + -0x258;
+        pParticle->posX = mainSelf->endX + rand() % 1200 + -600;
+        pParticle->posY = mainSelf->endY + rand() % 1200 + -600;
+        pParticle->posZ = mainSelf->endZ + rand() % 1200 + -600;
         pParticle->countdown = 1;
     }
     if (mainSelf->phase == 0xF) {
@@ -276,14 +276,14 @@ void __cdecl BattleFx_SpecialPoisonGasBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.bounceSlot = (BattleFxPoisonGasBouncingSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecPoisonGasSpriteReq1.res16 = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecPoisonGasLoadedResTable);
-    g_BattleSpecPoisonGasSpriteReq1.res20 = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecPoisonGasLoadedResTable);
+    g_BattleSpecPoisonGasSpriteReq1.res16 = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecPoisonGasLoadedResTable);
+    g_BattleSpecPoisonGasSpriteReq1.res20 = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecPoisonGasLoadedResTable);
     for (frame.axisIndex = 0; frame.axisIndex < 3; frame.axisIndex++) {
         frame.spriteMatrix.m[2][frame.axisIndex] = 0;
         frame.spriteMatrix.m[1][frame.axisIndex] = 0;
         frame.spriteMatrix.m[0][frame.axisIndex] = 0;
     }
-    if (frame.bounceSlot->frameCounter < 0xC) {
+    if (frame.bounceSlot->frameCounter < 12) {
         frame.rampValue = 8;
     } else {
         frame.rampValue = 0x14 - frame.bounceSlot->frameCounter;
@@ -318,10 +318,10 @@ void __cdecl BattleFx_SpecialPoisonGasBouncingSpriteTask(void)
         frame.bounceSlot->posY = 0;
         frame.bounceSlot->velocityY *= -1;
     }
-    frame.bounceSlot->velocityY += 0x14;
+    frame.bounceSlot->velocityY += 20;
     frame.bounceSlot->phase += 0x200;
     (frame.bounceSlot->frameCounter)++;
-    if (frame.bounceSlot->frameCounter == 0x14) {
+    if (frame.bounceSlot->frameCounter == 20) {
         frame.bounceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -348,9 +348,9 @@ void __cdecl BattleFx_SpecialPoisonGasProjectileTask(void)
 #pragma pack(pop)
 
     frame.projSlot = (BattleFxHellBomberRocketSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scaleX.x = 0x800;
-    frame.scaleX.y = 0x1200;
-    frame.scaleX.z = 0x800;
+    frame.scaleX.x = 0x800 /* 0.5 */;
+    frame.scaleX.y = 0x1200 /* 1.125 */;
+    frame.scaleX.z = 0x800 /* 0.5 */;
     memset(&frame.clearedWord, 0, 4);
     g_BattleSpecPoisonGasSpriteReq3.res24 = Gfx_ModelTableGetLoadedRecord(8, g_BattleSpecPoisonGasLoadedResTable);
     g_BattleSpecPoisonGasSpriteReq3.res28 = Gfx_ModelTableGetSpriteObject(8, g_BattleSpecPoisonGasLoadedResTable);
@@ -374,7 +374,7 @@ void __cdecl BattleFx_SpecialPoisonGasProjectileTask(void)
     SetTransMatrix(&frame.combinedMatrix);
     g_BattleSpecPoisonGasSpriteReq3.res8 = Gfx_ModelTableGetRenderObject(frame.modelIdx0[((frame.projSlot->frameCounter) % 8)], g_BattleSpecPoisonGasLoadedResTable);
     g_BattleSpecPoisonGasDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecPoisonGasSpriteReq3.res8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecPoisonGasDrawListHead);
-    BattleFx_InstallBillboardMatrix((char *)frame.projSlot + 4, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((char *)frame.projSlot + 4, 0x1000 /* 1.0 */, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecPoisonGasSpriteReq3.res24, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -385,9 +385,9 @@ void __cdecl BattleFx_SpecialPoisonGasProjectileTask(void)
     (frame.projSlot->frameCounter)++;
     if (frame.projSlot->frameCounter == 8) {
         frame.projectile = (BattleFxEnergyWaveSpinSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialPoisonGasAnimatedSpriteTask)]);
-        frame.projectile->posX = frame.projSlot->posX + rand() % 0x320 + -0x190;
-        frame.projectile->posY = frame.projSlot->posY + rand() % 0x320 + -0x190;
-        frame.projectile->posZ = frame.projSlot->posZ + rand() % 0x320 + -0x190;
+        frame.projectile->posX = frame.projSlot->posX + rand() % 800 + -400;
+        frame.projectile->posY = frame.projSlot->posY + rand() % 800 + -400;
+        frame.projectile->posZ = frame.projSlot->posZ + rand() % 800 + -400;
         frame.projectile->spriteVariant = 0;
         frame.projSlot->ownerSlot = BATTLE_TASK_FREE;
     }

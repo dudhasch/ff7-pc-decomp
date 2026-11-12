@@ -194,7 +194,7 @@ void __cdecl BattleFx_MagicDemi2TimelineTask(void)
         frame.particle->pos = *(Int64Pair *)(&frame.boneX);
         frame.particle->pushLength = -g_BattleActorRecords[frame.timeline->actorIndex].radius;
         frame.particle->velocityX = 0;
-        frame.particle->velocityY = 0x400;
+        frame.particle->velocityY = 1024;
         frame.particle->velocityZ = 0;
     }
     if (frame.timeline->step == 8) {
@@ -247,7 +247,7 @@ void __cdecl BattleFx_MagicDemi2TrailSpriteTask(void)
     taskPtr = (BattleFxDemi2Slot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicDemi2_SpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleMagicDemi2_LoadedRes);
     g_BattleMagicDemi2_SpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicDemi2_LoadedRes);
-    billboard = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0xD00, 0);
+    billboard = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0xD00 /* 0.8125 */, 0);
     if (billboard->t[2] > 0) {
         g_BattleMagicDemi2_SpriteReq.frame = taskPtr->frameCount;
         g_BattleMagicDemi2_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleMagicDemi2_SpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicDemi2_DrawListHandle);
@@ -272,15 +272,15 @@ void __cdecl BattleFx_MagicDemi2ShrinkingQuadSpriteTask(void)
     PsxMatrix *matrix;
 
     task = (BattleFxDemi2Slot *)BATTLE_CURRENT_TASK_SLOT;
-    size = task->frameCount * -0x3000 / 0x28 + 0x3000;
+    size = task->frameCount * -12288 / 40 + 12288;
     phaseFrame = task->frameCount;
-    if (phaseFrame < 0x14) {
-        g_BattleMagicDemi2_SpriteData1.colorB = (phaseFrame << 7) / 0x14;
+    if (phaseFrame < 20) {
+        g_BattleMagicDemi2_SpriteData1.colorB = (phaseFrame << 7) / 20;
         g_BattleMagicDemi2_SpriteData1.colorG = g_BattleMagicDemi2_SpriteData1.colorB;
         (g_BattleMagicDemi2_SpriteData1.colorR) = g_BattleMagicDemi2_SpriteData1.colorG;
     } else {
-        phaseFrame -= 0x14;
-        if (phaseFrame < 0x14) {
+        phaseFrame -= 20;
+        if (phaseFrame < 20) {
             g_BattleMagicDemi2_SpriteData1.colorB = 0x80;
             g_BattleMagicDemi2_SpriteData1.colorG = g_BattleMagicDemi2_SpriteData1.colorB;
             (g_BattleMagicDemi2_SpriteData1.colorR) = g_BattleMagicDemi2_SpriteData1.colorG;
@@ -325,7 +325,7 @@ void __cdecl BattleFx_MagicDemi2SpriteRingTask(void)
         (g_BattleMagicDemi2_SpriteData2.colorR) = g_BattleMagicDemi2_SpriteData2.colorG;
     } else {
         frame.phase -= 5;
-        if (frame.phase < 0xF) {
+        if (frame.phase < 15) {
             g_BattleMagicDemi2_SpriteData2.colorB = 0x80;
             g_BattleMagicDemi2_SpriteData2.colorG = g_BattleMagicDemi2_SpriteData2.colorB;
             (g_BattleMagicDemi2_SpriteData2.colorR) = g_BattleMagicDemi2_SpriteData2.colorG;
@@ -342,16 +342,16 @@ void __cdecl BattleFx_MagicDemi2SpriteRingTask(void)
         }
     }
     g_BattleMagicDemi2_SpriteData2.drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleMagicDemi2_LoadedRes);
-    for (frame.spriteIndex = 0; frame.spriteIndex < 0x10; frame.spriteIndex++) {
-        frame.offsetX.vx = SinFixed(((frame.spriteIndex << 0xC) / 16)) * 0x1F4 >> 0xC;
-        frame.offsetX.vy = CosFixed(((frame.spriteIndex << 0xC) / 16)) * 0x1F4 >> 0xC;
+    for (frame.spriteIndex = 0; frame.spriteIndex < 16; frame.spriteIndex++) {
+        frame.offsetX.vx = SinFixed(((frame.spriteIndex << 12) / 16)) * 0x1F4 >> 12;
+        frame.offsetX.vy = CosFixed(((frame.spriteIndex << 12) / 16)) * 0x1F4 >> 12;
         frame.offsetX.vz = 0;
         RotMatrix(&frame.ringSlot->rot, &frame.rotMatrix);
         TransformVectorToInt16(&frame.rotMatrix, &frame.offsetX, &frame.offsetX.vx);
         frame.offsetX.vx += frame.ringSlot->spinX;
         frame.offsetX.vy += frame.ringSlot->spinY;
         frame.offsetX.vz += frame.ringSlot->spinZ;
-        BattleFx_InstallBillboardMatrix(&frame.offsetX, 0x600, frame.ringSlot->pushLength);
+        BattleFx_InstallBillboardMatrix(&frame.offsetX, 0x600 /* 0.375 */, frame.ringSlot->pushLength);
         g_BattleMagicDemi2_DrawListHandle = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleMagicDemi2_QuadReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicDemi2_DrawListHandle);
     }
     if (g_BattleIsPaused == 0) {
@@ -379,12 +379,12 @@ void __cdecl BattleFx_MagicDemi2AnimatedSpriteTask(void)
         (g_BattleMagicDemi2_SpriteData3.colorR) = g_BattleMagicDemi2_SpriteData3.colorG;
     } else {
         phaseFrame -= 5;
-        if (phaseFrame < 0x23) {
+        if (phaseFrame < 35) {
             g_BattleMagicDemi2_SpriteData3.colorB = 0x80;
             g_BattleMagicDemi2_SpriteData3.colorG = g_BattleMagicDemi2_SpriteData3.colorB;
             (g_BattleMagicDemi2_SpriteData3.colorR) = g_BattleMagicDemi2_SpriteData3.colorG;
         } else {
-            phaseFrame -= 0x23;
+            phaseFrame -= 35;
             if (phaseFrame < 5) {
                 g_BattleMagicDemi2_SpriteData3.colorB = phaseFrame * -0x80 / 5 + 0x80;
                 g_BattleMagicDemi2_SpriteData3.colorG = g_BattleMagicDemi2_SpriteData3.colorB;
@@ -402,8 +402,8 @@ void __cdecl BattleFx_MagicDemi2AnimatedSpriteTask(void)
         ((BattleMagicDemi3SpriteData *)g_BattleMagicDemi2_SpriteData2.fadingRecord)->spriteObject2 = Gfx_ModelTableGetSpriteObject(2, g_BattleMagicDemi2_LoadedRes);
         ((BattleMagicDemi3SpriteData *)g_BattleMagicDemi2_SpriteData2.fadingRecord)->spriteObject3 = Gfx_ModelTableGetSpriteObject(3, g_BattleMagicDemi2_LoadedRes);
     }
-    g_BattleMagicDemi2_SpriteData3.framePhase = task->frameCount % 0xC;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, task->pushLength);
+    g_BattleMagicDemi2_SpriteData3.framePhase = task->frameCount % 12;
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, task->pushLength);
     g_BattleMagicDemi2_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleMagicDemi2_SpriteData2.fadingRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicDemi2_DrawListHandle);
     if (g_BattleIsPaused == 0) {
         task->frameCount++;

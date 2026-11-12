@@ -17,7 +17,7 @@ SortBucketTable *__cdecl Sort_CreateBucketTable(int bucketCount, int entryCount)
     int wordCnt;
 
     // STRING: FF7 0x00912e78
-    table = (SortBucketTable *)GameHeapAlloc(1, 0x20, "C:\\lib\\src\\sort\\sort.cpp", 0x19);
+    table = (SortBucketTable *)GameHeapAlloc(1, 32, "C:\\lib\\src\\sort\\sort.cpp", 25);
     if (table == 0) {
         return 0;
     } else {
@@ -26,17 +26,17 @@ SortBucketTable *__cdecl Sort_CreateBucketTable(int bucketCount, int entryCount)
             wordCnt++;
         }
         // STRING: FF7 0x00912e94
-        table->occupancyBits = (int *)GameHeapAlloc(wordCnt, 4, "C:\\lib\\src\\sort\\sort.cpp", 0x2E);
+        table->occupancyBits = (int *)GameHeapAlloc(wordCnt, 4, "C:\\lib\\src\\sort\\sort.cpp", 46);
         if (table->occupancyBits == 0) {
             return 0;
         } else {
             // STRING: FF7 0x00912eb0
-            table->bucketFirst = (SortNode **)GameHeapAlloc(bucketCount, 4, "C:\\lib\\src\\sort\\sort.cpp", 0x36);
+            table->bucketFirst = (SortNode **)GameHeapAlloc(bucketCount, 4, "C:\\lib\\src\\sort\\sort.cpp", 54);
             if (table->bucketFirst == 0) {
                 return 0;
             } else {
                 // STRING: FF7 0x00912ecc
-                table->bucketLast = (SortNode **)GameHeapAlloc(bucketCount, 4, "C:\\lib\\src\\sort\\sort.cpp", 0x3E);
+                table->bucketLast = (SortNode **)GameHeapAlloc(bucketCount, 4, "C:\\lib\\src\\sort\\sort.cpp", 62);
                 if (table->bucketLast == 0) {
                     return 0;
                 } else {
@@ -44,7 +44,7 @@ SortBucketTable *__cdecl Sort_CreateBucketTable(int bucketCount, int entryCount)
                         table->bucketLast[wordCnt] = 0;
                     }
                     // STRING: FF7 0x00912ee8
-                    table->entries = (SortNode *)GameHeapAlloc(entryCount, 0xC, "C:\\lib\\src\\sort\\sort.cpp", 0x4C);
+                    table->entries = (SortNode *)GameHeapAlloc(entryCount, 12, "C:\\lib\\src\\sort\\sort.cpp", 76);
                     if (table->entries == 0) {
                         return 0;
                     } else {
@@ -69,22 +69,22 @@ int __cdecl Sort_DestroyBucketTable(SortBucketTable *table)
     if (table != 0) {
         if (table->entries != 0) {
             // STRING: FF7 0x00912f04
-            GameHeapFree(table->entries, "C:\\lib\\src\\sort\\sort.cpp", 0x73);
+            GameHeapFree(table->entries, "C:\\lib\\src\\sort\\sort.cpp", 115);
         }
         if (table->bucketLast != 0) {
             // STRING: FF7 0x00912f20
-            GameHeapFree(table->bucketLast, "C:\\lib\\src\\sort\\sort.cpp", 0x78);
+            GameHeapFree(table->bucketLast, "C:\\lib\\src\\sort\\sort.cpp", 120);
         }
         if (table->bucketFirst != 0) {
             // STRING: FF7 0x00912f3c
-            GameHeapFree(table->bucketFirst, "C:\\lib\\src\\sort\\sort.cpp", 0x7D);
+            GameHeapFree(table->bucketFirst, "C:\\lib\\src\\sort\\sort.cpp", 125);
         }
         if (table->occupancyBits != 0) {
             // STRING: FF7 0x00912f58
-            GameHeapFree(table->occupancyBits, "C:\\lib\\src\\sort\\sort.cpp", 0x82);
+            GameHeapFree(table->occupancyBits, "C:\\lib\\src\\sort\\sort.cpp", 130);
         }
         // STRING: FF7 0x00912f74
-        GameHeapFree(table, "C:\\lib\\src\\sort\\sort.cpp", 0x85);
+        GameHeapFree(table, "C:\\lib\\src\\sort\\sort.cpp", 133);
         return 0;
     } else {
         return 1;

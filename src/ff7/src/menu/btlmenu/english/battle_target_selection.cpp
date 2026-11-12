@@ -98,7 +98,7 @@ void Battle_AdvanceTargetCursorInGroup(unsigned int mode)
     case BTL_TARGET_ONE_ANY:
         if (g_BtlSingleTargetIndex < 4 && ((unsigned short)g_BtlTargetAvailableMask & BATTLE_ACTOR_MASK_ALLIES) != 0) {
         scanLowSlots:
-            for (i = 0; i < 0x14; i++) {
+            for (i = 0; i < 20; i++) {
                 g_BtlSingleTargetIndex++;
                 g_BtlSingleTargetIndex %= 4;
                 if (((unsigned short)g_BtlTargetAvailableMask & (1 << g_BtlSingleTargetIndex)) != 0) {
@@ -106,7 +106,7 @@ void Battle_AdvanceTargetCursorInGroup(unsigned int mode)
                 }
             }
         } else {
-            for (i = 0; i < 0x14; i++) {
+            for (i = 0; i < 20; i++) {
                 g_BtlSingleTargetIndex++;
                 if (g_BtlSingleTargetIndex >= 0xc) {
                     g_BtlSingleTargetIndex = 4;
@@ -126,7 +126,7 @@ void Battle_AdvanceTargetCursorInGroup(unsigned int mode)
             break;
         }
         {
-            for (i = 0; i < 0x14; i++) {
+            for (i = 0; i < 20; i++) {
                 g_BtlSingleTargetIndex++;
                 g_BtlSingleTargetIndex %= 4;
                 if (((unsigned short)g_BtlTargetAvailableMask & (1 << g_BtlSingleTargetIndex)) != 0) {
@@ -140,7 +140,7 @@ void Battle_AdvanceTargetCursorInGroup(unsigned int mode)
             break;
         }
         {
-            for (i = 0; i < 0x14; i++) {
+            for (i = 0; i < 20; i++) {
                 g_BtlSingleTargetIndex++;
                 if (g_BtlSingleTargetIndex >= 0xc) {
                     g_BtlSingleTargetIndex = 4;

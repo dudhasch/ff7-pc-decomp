@@ -271,7 +271,7 @@ void __cdecl BattleFx_LimitLoadResLandscaper(void)
 // FUNCTION: FF7 0x00494470
 int __cdecl BattleFx_LimitEnterLandscaper(int targetMask, int actorIdx)
 {
-    memcpy(&g_BattleLimitLandscaperMeshWorkingBlob, &g_BattleLimitLandscaperMeshSourceBlob1, 0x93C);
+    memcpy(&g_BattleLimitLandscaperMeshWorkingBlob, &g_BattleLimitLandscaperMeshSourceBlob1, 2364);
     g_BattleLimitLandscaperFlashLevel = 0x80;
     BattleFx_LimitLoadResLandscaper();
     BattleFx_LimitBeginLandscaper(targetMask, actorIdx);
@@ -335,7 +335,7 @@ void __cdecl BattleFx_LimitLandscaperSaveActorPositionsFindNearestPoint(void)
 
     pointCount = (g_BattleLimitLandscaperMeshWorkingBlob.progress) / 8;
     tableAddr = (int)&g_BattleLimitLandscaperMeshWorkingBlob.ptr;
-    for (actorSlot = 0; actorSlot < 0xA; actorSlot++) {
+    for (actorSlot = 0; actorSlot < 10; actorSlot++) {
         g_BattleLimitLandscaperTargetSavePositions[actorSlot].posX = g_BattleActorRecords[actorSlot].posX;
         g_BattleLimitLandscaperTargetSavePositions[actorSlot].posY = g_BattleActorRecords[actorSlot].posY;
         g_BattleLimitLandscaperTargetSavePositions[actorSlot].posZ = g_BattleActorRecords[actorSlot].posZ;
@@ -373,11 +373,11 @@ void __cdecl BattleFx_LimitLandscaperInitFragmentTable(void)
     int padSlot[2]; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
     short r;
 
-    for (r = 0; r < 0x70; r++) {
+    for (r = 0; r < 112; r++) {
         g_BattleLimitLandscaperActorFallData[r].posX = 0;
         g_BattleLimitLandscaperActorFallData[r].posY = 0;
         g_BattleLimitLandscaperActorFallData[r].fallPosition = 0;
-        BattleFx_MakeRandomConeVector(0xFFFFFF38, 0x64, (short *)&g_BattleLimitLandscaperFragmentRecords.velocities[r]);
+        BattleFx_MakeRandomConeVector(0xFFFFFF38, 100, (short *)&g_BattleLimitLandscaperFragmentRecords.velocities[r]);
     }
 }
 
@@ -414,11 +414,11 @@ void __cdecl BattleFx_LimitLandscaperTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL != 0) {
-        leftEdge = g_BattleLimitLandscaperCentroid % 0x200;
+        leftEdge = g_BattleLimitLandscaperCentroid % 512;
         g_BattleLimitLandscaperCentroid++;
-        topEdge = 0x64;
-        width = 0x100;
-        height = 0x100;
+        topEdge = 100;
+        width = 256;
+        height = 256;
         textureU = 0;
         sourceV = 0;
         rotation = 0;
@@ -427,18 +427,18 @@ void __cdecl BattleFx_LimitLandscaperTimelineTask(void)
             Gfx_EmitPsxTexturedSpriteQuad(leftEdge, topEdge, width, height, textureU, sourceV, rotation, FLOAT_ONE_BITS, colorMask, 0, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleLimitLandscaperOffscreenSlot));
         }
     }
-    if (taskPtr->step == 0x20) {
+    if (taskPtr->step == 32) {
         newTaskPtr = (BattleLimitLandscaperTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLandscaperTravelingSpriteEmitterTask);
         newTaskPtr->posX = taskPtr->posX;
         newTaskPtr->posY = taskPtr->posY;
         newTaskPtr->posZ = taskPtr->posZ;
-        newTaskPtr->posXStep = ((g_BattleLimitLandscaperCenter.posX) - taskPtr->posX) / 0xA;
-        newTaskPtr->posYStep = (g_BattleLimitLandscaperCenter.posY - taskPtr->posY) / 0xA;
-        newTaskPtr->posZStep = (g_BattleLimitLandscaperCenterZ - taskPtr->posZ) / 0xA;
+        newTaskPtr->posXStep = ((g_BattleLimitLandscaperCenter.posX) - taskPtr->posX) / 10;
+        newTaskPtr->posYStep = (g_BattleLimitLandscaperCenter.posY - taskPtr->posY) / 10;
+        newTaskPtr->posZStep = (g_BattleLimitLandscaperCenterZ - taskPtr->posZ) / 10;
         Battle_PlaySfxPannedToActor(0x175, (short)taskPtr->level, 0x40);
         Battle_AllocateResourceSlot(BattleFx_LimitLandscaperCameraShakeTask);
     }
-    if (taskPtr->step == 0x2A) {
+    if (taskPtr->step == 42) {
         newTaskPtr = (BattleLimitLandscaperTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLandscaperGrowingModelTask);
         newTaskPtr->posX = (g_BattleLimitLandscaperCenter.posX);
         newTaskPtr->posY = g_BattleLimitLandscaperCenter.posY;
@@ -450,7 +450,7 @@ void __cdecl BattleFx_LimitLandscaperTimelineTask(void)
         Battle_AllocateResourceSlot(BattleFx_LimitLandscaperFlashShakeTask);
         Battle_PlaySfxPannedToActor(0xFA, -1, 0x40);
     }
-    if (taskPtr->step == 0x38) {
+    if (taskPtr->step == 56) {
         if (g_BattleUiScalingMode != 2) {
             g_BattleLimitLandscaperTintColor1[0] = *(short *)&g_BattleViewportOriginX;
             g_BattleLimitLandscaperTintColor1[1] = *(short *)&g_BattleViewportOriginY;
@@ -464,7 +464,7 @@ void __cdecl BattleFx_LimitLandscaperTimelineTask(void)
         }
         BattleFx_LimitLandscaperQueueStageOffscreenRequests(g_BattleLimitLandscaperModelPointers, (BattleFxScreenRect *)g_BattleLimitLandscaperTintColor1);
     }
-    if (taskPtr->step == 0x39) {
+    if (taskPtr->step == 57) {
         newTaskPtr = (BattleLimitLandscaperTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLandscaperFragmentMorphTask);
         newTaskPtr->posX = (g_BattleLimitLandscaperCenter.posX);
         newTaskPtr->posY = g_BattleLimitLandscaperCenter.posY;
@@ -472,7 +472,7 @@ void __cdecl BattleFx_LimitLandscaperTimelineTask(void)
         Battle_PlaySfxPannedToActor(0x1AC, -1, 0x40);
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x70) {
+    if (taskPtr->step == 112) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
         if (g_BattleLimitLandscaperOffscreenSlot >= 0) {
             Battle3d_ReleaseOffscreenSlot(g_BattleLimitLandscaperOffscreenSlot);
@@ -586,12 +586,12 @@ void __cdecl BattleFx_LimitLandscaperTravelingSpriteEmitterTask(void)
     pSprite->posZ = taskPtr->posZ;
     pSprite->posY = 0;
     angle = rand() % 0x1000;
-    pSprite->velX = CosFixed(angle) * 0x64 >> 0xC;
-    pSprite->velZ = SinFixed(angle) * 0x64 >> 0xC;
-    pSprite->velY = -rand() % 0xC8 - 0x64;
+    pSprite->velX = CosFixed(angle) * 0x64 >> 12;
+    pSprite->velZ = SinFixed(angle) * 0x64 >> 12;
+    pSprite->velY = -rand() % 200 - 100;
     pSprite->spriteKind = rand() % 3;
     (taskPtr->step)++;
-    if (taskPtr->step == 0xA) {
+    if (taskPtr->step == 10) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -631,7 +631,7 @@ void __cdecl BattleFx_LimitLandscaperBouncingSpriteTask(void)
         frame.localMatrix.m[1][frame.rowIndex] = 0;
         frame.localMatrix.m[0][frame.rowIndex] = 0;
     }
-    if (frame.sprite->frame < 0x16) {
+    if (frame.sprite->frame < 22) {
         frame.intensity = 8;
     } else {
         frame.intensity = 0x1E - frame.sprite->frame;
@@ -666,10 +666,10 @@ void __cdecl BattleFx_LimitLandscaperBouncingSpriteTask(void)
         frame.sprite->posY = 0;
         frame.sprite->velY *= -1;
     }
-    frame.sprite->velY += 0x14;
-    frame.sprite->angle += 0x200;
+    frame.sprite->velY += 20;
+    frame.sprite->angle += 0x200 /* 45 deg */;
     (frame.sprite->frame)++;
-    if (frame.sprite->frame == 0x1E) {
+    if (frame.sprite->frame == 30) {
         frame.sprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -691,7 +691,7 @@ void __cdecl BattleFx_LimitLandscaperAnimatedSpriteTask(void)
     taskPtr = (BattleFxLimitLandscaperSpriteState *)BATTLE_CURRENT_TASK_SLOT;
     tableIds[0] = 2;
     tableIds[1] = 3;
-    BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0x2000 /* 2.0 */, 0);
     g_BattleLimitLandscaperDrawRequest2.frameTable = Gfx_ModelTableGetLoadedRecord(tableIds[taskPtr->tableIndex], g_BattleLimitLandscaperResTable);
     g_BattleLimitLandscaperDrawRequest2.spriteData = Gfx_ModelTableGetSpriteObject(tableIds[taskPtr->tableIndex], g_BattleLimitLandscaperResTable);
     g_BattleLimitLandscaperColorVector.frameIndex = taskPtr->frameIndex;
@@ -747,7 +747,7 @@ void __cdecl BattleFx_LimitLandscaperGrowingModelTask(void)
         return;
     }
     (frame.growState->frameIndex)++;
-    if (frame.growState->frameIndex == 0xF) {
+    if (frame.growState->frameIndex == 15) {
         frame.growState->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -791,7 +791,7 @@ void __cdecl BattleFx_LimitLandscaperShrinkingModelTask(void)
         return;
     }
     (frame.shrinkState->frameIndex)++;
-    if (frame.shrinkState->frameIndex == 0xF) {
+    if (frame.shrinkState->frameIndex == 15) {
         frame.shrinkState->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -848,7 +848,7 @@ void __cdecl BattleFx_LimitLandscaperFragmentMorphTask(void)
     localMatrix.t[1] = task->y;
     localMatrix.t[2] = task->z;
     MultiplyMatrix(&g_BattleCameraTransform, &localMatrix, &viewMatrix);
-    if (task->frame < 0x1E) {
+    if (task->frame < 30) {
         SetRotMatrix(&viewMatrix);
         SetTransMatrix(&viewMatrix);
         RefreshGlobalTransformState();
@@ -872,7 +872,7 @@ void __cdecl BattleFx_LimitLandscaperFragmentMorphTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frame < 0x1E) {
+    if (task->frame < 30) {
         srcAddr = (int)&g_BattleLimitLandscaperMeshSourceBlob1.ptr;
         toAddress = (int)&g_BattleLimitLandscaperMeshSourceBlob2.ptr;
         blendAddr = (int)&g_BattleLimitLandscaperMeshWorkingBlob.ptr;
@@ -881,20 +881,20 @@ void __cdecl BattleFx_LimitLandscaperFragmentMorphTask(void)
             pStartVec = (Vec3sPacked *)(srcAddr + (index << 2) * 2);
             targetVec = (Vec3sPacked *)(toAddress + (index << 2) * 2);
             blendVecPtr = (Vec3sPacked *)(blendAddr + (index << 2) * 2);
-            blendVecPtr->vx = pStartVec->vx + (targetVec->vx - pStartVec->vx) * task->frame / 0x1E;
-            blendVecPtr->vy = pStartVec->vy + (targetVec->vy - pStartVec->vy) * task->frame / 0x1E;
-            blendVecPtr->vz = pStartVec->vz + (targetVec->vz - pStartVec->vz) * task->frame / 0x1E;
+            blendVecPtr->vx = pStartVec->vx + (targetVec->vx - pStartVec->vx) * task->frame / 30;
+            blendVecPtr->vy = pStartVec->vy + (targetVec->vy - pStartVec->vy) * task->frame / 30;
+            blendVecPtr->vz = pStartVec->vz + (targetVec->vz - pStartVec->vz) * task->frame / 30;
         }
         for (index = 0; index < 3; index++) {
             pSprite = (BattleFxLandscaperFragmentSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLandscaperAnimatedSpriteTask);
             blendVecPtr = (Vec3sPacked *)(blendAddr + (rand() % pointCnt << 2) * 2);
             pSprite->posX = blendVecPtr->vx + (g_BattleLimitLandscaperCenter.posX);
-            pSprite->posY = blendVecPtr->vy + g_BattleLimitLandscaperCenter.posY + -0x190;
+            pSprite->posY = blendVecPtr->vy + g_BattleLimitLandscaperCenter.posY + -400;
             pSprite->posZ = blendVecPtr->vz + g_BattleLimitLandscaperCenterZ;
             pSprite->tableIndex = 1;
             pSprite->offsetY = 0xFF9C;
         }
-        for (index = 0; index < 0xA; index++) {
+        for (index = 0; index < 10; index++) {
             blendVecPtr = (Vec3sPacked *)(blendAddr + (g_BattleLimitLandscaperTargetPositions[index] << 2) * 2);
             if (REG_ALLOC_HINT) {
             }
@@ -903,8 +903,8 @@ void __cdecl BattleFx_LimitLandscaperFragmentMorphTask(void)
     } else {
         BattleFx_LimitLandscaperUpdateFragmentPositions();
     }
-    if (task->frame == 0x1E) {
-        for (index = 0; index < 0xA; index++) {
+    if (task->frame == 30) {
+        for (index = 0; index < 10; index++) {
             pSprite = (BattleFxLandscaperFragmentSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLandscaperActorFallTask);
             pSprite->offsetY = 0xFFD8;
             pSprite->fragmentIndex = index;
@@ -912,7 +912,7 @@ void __cdecl BattleFx_LimitLandscaperFragmentMorphTask(void)
         Battle_PlaySfxPannedToActor(0x152, -1, 0x40);
     }
     (task->frame)++;
-    if (task->frame == 0x32) {
+    if (task->frame == 50) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1261,7 +1261,7 @@ void __cdecl BattleFx_LimitLandscaperActorFallTask(void)
         return;
     }
     g_BattleActorRecords[task->actorIndex].posY += task->fallSpeed;
-    task->fallSpeed += 0xA;
+    task->fallSpeed += 10;
     if (g_BattleLimitLandscaperTargetSavePositions[task->actorIndex].posY <= g_BattleActorRecords[task->actorIndex].posY) {
         g_BattleActorRecords[task->actorIndex].posY = g_BattleLimitLandscaperTargetSavePositions[task->actorIndex].posY;
         if ((g_BattleLimitLandscaperTargets & 1 << task->actorIndex) != 0) {
@@ -1279,11 +1279,11 @@ void __cdecl BattleFx_LimitLandscaperUpdateFragmentPositions(void)
 {
     short i;
 
-    for (i = 0; i < 0x70; i++) {
+    for (i = 0; i < 112; i++) {
         g_BattleLimitLandscaperActorFallData[i].fallPosition += g_BattleLimitLandscaperFragmentRecords.velocities[i].fallVelocity;
         g_BattleLimitLandscaperActorFallData[i].posY += g_BattleLimitLandscaperFragmentRecords.velocities[i].velocityY;
         g_BattleLimitLandscaperActorFallData[i].posX += g_BattleLimitLandscaperFragmentRecords.velocities[i].velocityX;
-        g_BattleLimitLandscaperFragmentRecords.velocities[i].velocityY += 0x14;
+        g_BattleLimitLandscaperFragmentRecords.velocities[i].velocityY += 20;
         if (g_BattleLimitLandscaperActorFallData[i].posY > 0) {
             g_BattleLimitLandscaperActorFallData[i].posY = 0;
             g_BattleLimitLandscaperFragmentRecords.velocities[i].velocityY = -g_BattleLimitLandscaperFragmentRecords.velocities[i].velocityY;
@@ -1310,9 +1310,9 @@ void __cdecl BattleFx_LimitLandscaperFlashShakeTask(void)
     if (g_BattleLimitLandscaperFlashLevel > 0) {
         g_BattleLimitLandscaperFlashLevel -= 0x40;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - (q->step % 2 << 6));
+    g_BattleCameraFocalPoint.focalPointY += (short)(32 - (q->step % 2 << 6));
     (q->step)++;
-    if (q->step == 0x28) {
+    if (q->step == 40) {
         q->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1329,7 +1329,7 @@ void __cdecl BattleFx_LimitLandscaperCameraShakeTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)((6 - task->frameCounter) * 0xA * (1 - (task->frameCounter % 2 << 1)));
+    g_BattleCameraFocalPoint.focalPointY += (short)((6 - task->frameCounter) * 10 * (1 - (task->frameCounter % 2 << 1)));
     (task->frameCounter)++;
     if (task->frameCounter == 6) {
         task->ownerSlot = BATTLE_TASK_FREE;

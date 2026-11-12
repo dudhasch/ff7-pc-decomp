@@ -97,7 +97,7 @@ void __cdecl BattleFx_BlueBeginFrogSong(int targetMask, int actorIdx)
 
     g_BattleFxDrawListBufferTaskSlotPtr = (unsigned char *)BATTLE_NEW_TASK_SLOT(BattleFx_SelectDrawListBuffer);
     idx = 0;
-    for (count = 0; idx < 0xA; idx++) {
+    for (count = 0; idx < 10; idx++) {
         if ((targetMask & 1 << idx) != 0) {
             count++;
             if (count == 1) {
@@ -123,16 +123,16 @@ void __cdecl BattleFx_BlueFrogSongSpawnTask(void)
     task = (BattleFxFrogSongNoteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueFrogSongNoteEmitTask);
     Battle_GetBoneWorldPos(g_BattleBlueFrogSongState.actorIndex, g_BattleActorRecords[g_BattleBlueFrogSongState.actorIndex].targetBone, &task->posX);
     rad = g_BattleActorRecords[g_BattleBlueFrogSongState.actorIndex].radius + 0xE0;
-    if (rad > 0x4F2) {
+    if (rad > 1266) {
         rad = 0x4F2;
     }
     task->noteIndex = rad;
     task->noteOffset = task->noteIndex << 1;
     task->riseRange = -(task->posY << 1);
-    task->scale = (rad << 0xC) / 0x1C2;
+    task->scale = (rad << 12) / 450;
     aim = (BattleFxFrogSongAimTask *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueFrogSongAimTask);
     aim->pos = task->pos;
-    aim->scale = (rad << 0xC) / 0x5DC;
+    aim->scale = (rad << 12) / 1500;
     aim->aimValue = rad;
 }
 
@@ -151,30 +151,30 @@ void __cdecl BattleFx_BlueFrogSongNoteEmitTask(void)
         return;
     }
     task = (BattleFxFrogSongNoteEmitter *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->frameCount > 0x11 && task->frameCount < 0x36) {
+    if (task->frameCount > 17 && task->frameCount < 54) {
         ringIndex = g_BattleBlueFrogSongState.nextNoteIndex;
         drawTask = (BattleFxFrogSongNoteTask *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueFrogSongDrawNotesTask);
         drawTask->ringIndex = ringIndex;
         for (noteIndex = 0; noteIndex < 4; noteIndex++) {
-            bytesRand = (rand() % 4096) + 0x800;
+            bytesRand = (rand() % 4096) + 2048;
             g_BattleBlueFrogSongBillboardRing[ringIndex].posX = task->baseX + rand() % task->jitterRange - task->jitterOffset;
             g_BattleBlueFrogSongBillboardRing[ringIndex].riseY = -(rand() % task->riseRange);
             g_BattleBlueFrogSongBillboardRing[ringIndex].posZ = task->baseZ + rand() % task->jitterRange - task->jitterOffset;
-            g_BattleBlueFrogSongBillboardRing[ringIndex].scale = task->scale * bytesRand >> 0xC;
+            g_BattleBlueFrogSongBillboardRing[ringIndex].scale = task->scale * bytesRand >> 12;
             ringIndex++;
-            if (ringIndex >= 0xDE) {
+            if (ringIndex >= 222) {
                 ringIndex = 0;
             }
         }
         g_BattleBlueFrogSongState.nextNoteIndex = ringIndex;
     }
-    if (task->frameCount == 0x11) {
+    if (task->frameCount == 17) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x134);
     }
-    if (task->frameCount == 0x1E) {
+    if (task->frameCount == 30) {
         Battle_PostActorHitOrHurtMessage(g_BattleBlueFrogSongState.actorIndex);
     }
-    if (task->frameCount >= 0x3C) {
+    if (task->frameCount >= 60) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCount)++;
@@ -196,11 +196,11 @@ void __cdecl BattleFx_BlueFrogSongDrawNotesTask(void)
         BattleFx_InstallBillboardMatrix(&g_BattleBlueFrogSongBillboardRing[ringIndex].posX, g_BattleBlueFrogSongBillboardRing[ringIndex].scale, -(g_BattleBlueFrogSongBillboardRing[ringIndex].scale >> 2));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueFrogSongResourceTable.noteSpriteHandle, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         ringIndex++;
-        if (ringIndex >= 0xDE) {
+        if (ringIndex >= 222) {
             ringIndex = 0;
         }
     }
-    if (task->frameIndex >= 0xB) {
+    if (task->frameIndex >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -231,16 +231,16 @@ void __cdecl BattleFx_BlueFrogSongAimTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (aimer->frameCount >= 1 && aimer->frameCount <= 0x14) {
+    if (aimer->frameCount >= 1 && aimer->frameCount <= 20) {
         pRingDraw = (BattleFxFrogSongAimState *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueFrogSongRingDrawTask);
         pRingDraw->pos = aimer->pos;
         pRingDraw->scale = aimer->scale;
         pRingDraw->angle = 7 - (aimer->frameCount & 7) << 9;
-        pRingDraw->angularVelocity = 0x60;
+        pRingDraw->angularVelocity = 96;
         pRingDraw->aimStep = aimer->aimValue >> 2;
         pRingDraw->ringPhase = pRingDraw->aimStep;
     }
-    if (aimer->frameCount > 0x14) {
+    if (aimer->frameCount > 20) {
         aimer->ownerSlot = BATTLE_TASK_FREE;
     }
     (aimer->frameCount)++;
@@ -285,7 +285,7 @@ void __cdecl BattleFx_BlueFrogSongRingDrawTask(void)
     g_BattleBlueFrogSongNoteSpriteReq.kaeruNoteSpriteHandle = Gfx_ModelTableGetLoadedRecord(1, g_BattleBlueFrogSongLoadedResTable);
     g_BattleBlueFrogSongNoteSpriteReq.kaeruNoteSpriteAltHandle = Gfx_ModelTableGetSpriteObject(1, g_BattleBlueFrogSongLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueFrogSongNoteSpriteReq.kaeruNoteSpriteHandle, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0xC) {
+    if (frame.slot->frameCounter >= 12) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

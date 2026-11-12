@@ -125,7 +125,7 @@ struct BattleSpecialFascinationModelReq g_BattleSpecialFascinationModelReq = {0,
 // clang-format on
 // Model table indices, read as an int array by the projectile task.
 // GLOBAL: FF7 0x008a7ea0
-unsigned char g_BattleSpecialFascinationModelIndices[0x1c] = {0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00};
+unsigned char g_BattleSpecialFascinationModelIndices[28] = {0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00};
 // clang-format on
 #pragma intrinsic(memset)
 #pragma intrinsic(memcpy)
@@ -191,7 +191,7 @@ void __cdecl BattleFx_SpecialBeginFascination(int targetMask, int actorIdx)
     g_BattleFxTimelineState.red = 0x40;
     g_BattleFxTimelineState.channel1 = 0x20;
     g_BattleFxTimelineState.channel2 = 0x60;
-    Battle_StartFixedPointRamp(0x1000, 0xA);
+    Battle_StartFixedPointRamp(0x1000, 10);
 }
 
 /*
@@ -205,7 +205,7 @@ void __cdecl BattleFx_SpecialFascinationWaitRampEndTask(void)
     task = (BattleFxIcicleDropRamp *)BATTLE_CURRENT_TASK_SLOT;
     task->toggle ^= 1;
     if (g_BattleSecondaryTaskActiveCount <= 1) {
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -254,20 +254,20 @@ void __cdecl BattleFx_SpecialFascinationTimelineTask(void)
         frame.spawnSlot->posZ = frame.taskSlot->posZ;
         frame.spawnSlot->swayPhase = 0;
         frame.spawnSlot->spinAngleY = 0;
-        frame.spawnSlot->scale = 0x1000;
+        frame.spawnSlot->scale = 0x1000 /* 1.0 */;
         frame.spawnSlot->angleY = ArcTangentFixed(frame.taskSlot->velocityX - frame.taskSlot->posX, frame.taskSlot->velocityZ - frame.taskSlot->posZ);
         frame.spawnSlot->posY = 0xF9C0;
-        frame.spawnSlot->velocityX = (frame.taskSlot->velocityX - frame.taskSlot->posX) / 0x14;
+        frame.spawnSlot->velocityX = (frame.taskSlot->velocityX - frame.taskSlot->posX) / 20;
         frame.spawnSlot->velocityY = 0;
-        frame.spawnSlot->velocityZ = (frame.taskSlot->velocityZ - frame.taskSlot->posZ) / 0x14;
+        frame.spawnSlot->velocityZ = (frame.taskSlot->velocityZ - frame.taskSlot->posZ) / 20;
     }
-    if (frame.taskSlot->frameCounter == 0x28) {
-        for (frame.spawnIndex = 0; frame.spawnIndex < 0x10; frame.spawnIndex++) {
+    if (frame.taskSlot->frameCounter == 40) {
+        for (frame.spawnIndex = 0; frame.spawnIndex < 16; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFascinationTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFascinationDampedSpriteTask);
             Battle_GetBoneWorldPos(frame.taskSlot->actorIndex, g_BattleActorRecords[frame.taskSlot->actorIndex].targetBone, (short *)((int)frame.spawnSlot + 4));
             frame.dirX.vx = 0;
             frame.dirX.vy = 0;
-            frame.dirX.vz = 0x50;
+            frame.dirX.vz = 80;
             frame.angleX.vx = frame.spawnIndex << 8;
             frame.angleX.vy = rand();
             frame.angleX.vz = 0;
@@ -282,11 +282,11 @@ void __cdecl BattleFx_SpecialFascinationTimelineTask(void)
     if (frame.taskSlot->frameCounter < 8) {
         g_BattleSpecialFascinationSpin += 6;
     }
-    if (frame.taskSlot->frameCounter > 0x34) {
+    if (frame.taskSlot->frameCounter > 52) {
         g_BattleSpecialFascinationSpin -= 6;
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x3C) {
+    if (frame.taskSlot->frameCounter == 60) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -300,10 +300,10 @@ void __cdecl BattleFx_SpecialFascinationDampedSpriteTask(void)
     BattleFxLivewireDotSlot *task;
 
     task = (BattleFxLivewireDotSlot *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000 /* 1.0 */, 0);
     g_BattleSpecialFascinationColor1.yuwakuColor1StepWord = task->step;
-    g_BattleSpecialFascinationColor1.drawObj = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecialFascinationLoadedRes);
-    (g_BattleSpecialFascinationColor1.animTable) = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecialFascinationLoadedRes);
+    g_BattleSpecialFascinationColor1.drawObj = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecialFascinationLoadedRes);
+    (g_BattleSpecialFascinationColor1.animTable) = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecialFascinationLoadedRes);
     g_BattleSpecialFascinationDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialFascinationColor1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialFascinationDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
@@ -344,12 +344,12 @@ void __cdecl BattleFx_SpecialFascinationTask(void)
     frame.scaleVec.vz = frame.taskSlot->radius * 0x12 >> 3;
     frame.scaleVec.vy = frame.scaleVec.vz;
     frame.scaleVec.vx = frame.scaleVec.vy;
-    frame.angleX.vx = 0xFC00;
+    frame.angleX.vx = 0xFC00 /* 5670 deg */;
     frame.angleX.vy = frame.taskSlot->angle;
     frame.angleX.vz = 0;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleVec);
-    frame.rotMatrix.t[0] = frame.taskSlot->posX + (SinFixed((frame.taskSlot->phase << 0xC) / 0x14) >> 2);
+    frame.rotMatrix.t[0] = frame.taskSlot->posX + (SinFixed((frame.taskSlot->phase << 12) / 20) >> 2);
     frame.rotMatrix.t[1] = frame.taskSlot->posY;
     frame.rotMatrix.t[2] = frame.taskSlot->posZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.drawMatrix);
@@ -364,7 +364,7 @@ void __cdecl BattleFx_SpecialFascinationTask(void)
     frame.scaleVec.vx = frame.scaleVec.vy;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleVec);
-    frame.rotMatrix.t[0] = frame.taskSlot->posX + (SinFixed((frame.taskSlot->phase << 0xC) / 0x14) >> 2);
+    frame.rotMatrix.t[0] = frame.taskSlot->posX + (SinFixed((frame.taskSlot->phase << 12) / 20) >> 2);
     frame.rotMatrix.t[1] = frame.taskSlot->posY;
     frame.rotMatrix.t[2] = frame.taskSlot->posZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.drawMatrix);
@@ -376,35 +376,35 @@ void __cdecl BattleFx_SpecialFascinationTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.taskSlot->frameCounter < 0x14) {
+    if (frame.taskSlot->frameCounter < 20) {
         frame.taskSlot->angle += 0x80;
         (frame.taskSlot->phase)++;
         frame.taskSlot->posX += frame.taskSlot->velocityX;
         frame.taskSlot->posZ += frame.taskSlot->velocityZ;
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFascinationSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFascinationSineSpriteTask);
-            frame.spawnSlot->posX = frame.taskSlot->posX + rand() % 0x190 + -0xC8;
-            frame.spawnSlot->posY = frame.taskSlot->posY + rand() % 0x190 + -0xC8;
-            frame.spawnSlot->posZ = frame.taskSlot->posZ + rand() % 0x190 + -0xC8;
+            frame.spawnSlot->posX = frame.taskSlot->posX + rand() % 400 + -200;
+            frame.spawnSlot->posY = frame.taskSlot->posY + rand() % 400 + -200;
+            frame.spawnSlot->posZ = frame.taskSlot->posZ + rand() % 400 + -200;
             frame.spawnSlot->variant = (rand() % 4);
             frame.spawnSlot->sinePhase = rand();
         }
     }
-    if (frame.taskSlot->frameCounter >= 0x14) {
-        frame.taskSlot->angle += 0x200;
-        frame.taskSlot->posY += 0x28;
-        frame.taskSlot->radius -= 0xC8;
+    if (frame.taskSlot->frameCounter >= 20) {
+        frame.taskSlot->angle += 0x200 /* 45 deg */;
+        frame.taskSlot->posY += 40;
+        frame.taskSlot->radius -= 200;
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFascinationSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFascinationRisingVariantSpriteTask);
             g_BattleSpecialFascinationAngle = (rand() % 4096);
-            frame.spawnSlot->posX = frame.taskSlot->posX + (SinFixed(g_BattleSpecialFascinationAngle) * frame.taskSlot->radius / 0xC >> 0xC);
-            frame.spawnSlot->posZ = frame.taskSlot->posZ + (CosFixed(g_BattleSpecialFascinationAngle) * frame.taskSlot->radius / 0xC >> 0xC);
-            frame.spawnSlot->posY = frame.taskSlot->posY + rand() % 0xC8 + -0x64;
+            frame.spawnSlot->posX = frame.taskSlot->posX + (SinFixed(g_BattleSpecialFascinationAngle) * frame.taskSlot->radius / 12 >> 12);
+            frame.spawnSlot->posZ = frame.taskSlot->posZ + (CosFixed(g_BattleSpecialFascinationAngle) * frame.taskSlot->radius / 12 >> 12);
+            frame.spawnSlot->posY = frame.taskSlot->posY + rand() % 200 + -100;
             frame.spawnSlot->variant = (rand() % 4);
         }
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x28) {
+    if (frame.taskSlot->frameCounter == 40) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -419,14 +419,14 @@ void __cdecl BattleFx_SpecialFascinationSineSpriteTask(void)
     int q; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
     p = (BattleFxFascinationSineTask *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)p + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)p + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialFascinationColor2.drawObj = Gfx_ModelTableGetSpriteObject(((int *)&g_BattleSpecialFascinationSpriteIndices1)[p->spriteIndex], g_BattleSpecialFascinationLoadedRes);
     (g_BattleSpecialFascinationColor2.animTable) = Gfx_ModelTableGetLoadedRecord(((int *)&g_BattleSpecialFascinationSpriteIndices1)[p->spriteIndex], g_BattleSpecialFascinationLoadedRes);
     g_BattleSpecialFascinationColor2.yuwakuSineFrameIndex = p->frame % *(int *)((char *)*(int *)(g_BattleSpecialFascinationColor2.animTable) + 4);
     g_BattleSpecialFascinationDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialFascinationColor2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialFascinationDrawListHandle);
     if (g_BattleIsPaused == 0) {
         (p->phase)++;
-        p->sineOffset += (short)(SinFixed(p->phase << 9) * 0x32 >> 0xC);
+        p->sineOffset += (short)(SinFixed(p->phase << 9) * 0x32 >> 12);
         (p->frame)++;
         if (p->frame == *(int *)((char *)*(int *)(g_BattleSpecialFascinationColor2.animTable) + 4) << 1) {
             p->ownerSlot = BATTLE_TASK_FREE;
@@ -443,7 +443,7 @@ void __cdecl BattleFx_SpecialFascinationRisingVariantSpriteTask(void)
     BattleFxFascinationRisingSprite *task;
 
     task = (BattleFxFascinationRisingSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialFascinationColor3.yuwakuRisingFrameWord = task->frameIndex;
     g_BattleSpecialFascinationColor3.drawObj = Gfx_ModelTableGetSpriteObject(((int *)&g_BattleSpecialFascinationSpriteIndices2)[task->requestIndex], g_BattleSpecialFascinationLoadedRes);
     (g_BattleSpecialFascinationColor3.animTable) = Gfx_ModelTableGetLoadedRecord(((int *)&g_BattleSpecialFascinationSpriteIndices2)[task->requestIndex], g_BattleSpecialFascinationLoadedRes);

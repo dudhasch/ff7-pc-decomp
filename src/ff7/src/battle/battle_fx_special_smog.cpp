@@ -186,13 +186,13 @@ void __cdecl BattleFx_SpecialSmogTimelineTask(void)
         Gte_BuildLookBasisFromDirection(&frame.deltaX.vx, frame.basisMatrix.m[0]);
         frame.stepX.vx = 0;
         frame.stepX.vy = 0;
-        frame.stepX.vz = 0x12C;
+        frame.stepX.vz = 300;
         TransformVectorToInt16(&frame.basisMatrix, &frame.stepX, &frame.stepX.vx);
         for (frame.spawnIndex = 0; frame.spawnIndex < 6; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSmogDriftingFadeSpriteTask);
-            frame.spawnSlot->velocityX = frame.deltaX.vx / 0xE;
-            frame.spawnSlot->velocityY = frame.deltaX.vy / 0xE;
-            frame.spawnSlot->velocityZ = frame.deltaX.vz / 0xE;
+            frame.spawnSlot->velocityX = frame.deltaX.vx / 14;
+            frame.spawnSlot->velocityY = frame.deltaX.vy / 14;
+            frame.spawnSlot->velocityZ = frame.deltaX.vz / 14;
             frame.spawnSlot->posX = frame.timelineSlot->startX + frame.stepX.vx * (6 - frame.spawnIndex);
             frame.spawnSlot->posY = frame.timelineSlot->startY + frame.stepX.vy * (6 - frame.spawnIndex);
             frame.spawnSlot->posZ = frame.timelineSlot->startZ + frame.stepX.vz * (6 - frame.spawnIndex);
@@ -201,25 +201,25 @@ void __cdecl BattleFx_SpecialSmogTimelineTask(void)
     }
     if (frame.timelineSlot->frameCounter == 8) {
         frame.spawnSlot = (BattleFxSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSmogAnimatedSpriteTask);
-        frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 0x258 + -0x12C;
-        frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 0x258 + -0x12C;
-        frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 0x258 + -0x12C;
+        frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 600 + -300;
+        frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 600 + -300;
+        frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 600 + -300;
         frame.spawnSlot->state = 1;
         for (frame.spawnIndex = 0; frame.spawnIndex < 4; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSmogAnimatedSpriteTask);
-            frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 0x4B0 + -0x258;
+            frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 1200 + -600;
+            frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 1200 + -600;
+            frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 1200 + -600;
             frame.spawnSlot->state = 0;
         }
-        for (frame.spawnIndex = 0; frame.spawnIndex < 0xC; frame.spawnIndex++) {
+        for (frame.spawnIndex = 0; frame.spawnIndex < 12; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSmogDriftingRingTask);
             frame.spawnSlot->posX = frame.timelineSlot->targetX;
             frame.spawnSlot->posY = frame.timelineSlot->targetY;
             frame.spawnSlot->posZ = frame.timelineSlot->targetZ;
             frame.stepX.vx = 0;
             frame.stepX.vy = 0;
-            frame.stepX.vz = 0xC8;
+            frame.stepX.vz = 200;
             frame.deltaX.vx = (rand() % 4096);
             frame.deltaX.vy = (rand() % 4096);
             frame.deltaX.vz = 0;
@@ -228,23 +228,23 @@ void __cdecl BattleFx_SpecialSmogTimelineTask(void)
             frame.spawnSlot->state = 0;
         }
     }
-    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 0x1C) {
+    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 28) {
         frame.spawnSlot = (BattleFxSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSmogAnimatedSpriteTask);
-        frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 0x3E8 + -0x1F4;
-        frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 0x3E8 + -0x1F4;
-        frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 0x3E8 + -0x1F4;
+        frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 1000 + -500;
+        frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 1000 + -500;
+        frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 1000 + -500;
         frame.spawnSlot->state = 6;
         frame.spawnSlot = (BattleFxSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSmogAnimatedSpriteTask);
-        frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 0x3E8 + -0x1F4;
-        frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 0x3E8 + -0x1F4;
-        frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 0x3E8 + -0x1F4;
+        frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 1000 + -500;
+        frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 1000 + -500;
+        frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 1000 + -500;
         frame.spawnSlot->state = (rand() % 4) + 2;
     }
-    if (frame.timelineSlot->frameCounter == 0x19) {
+    if (frame.timelineSlot->frameCounter == 25) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x1E) {
+    if (frame.timelineSlot->frameCounter == 30) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -292,10 +292,10 @@ void __cdecl BattleFx_SpecialSmogDriftingRingTask(void)
     BattleFxSmogRing *task;
 
     task = (BattleFxSmogRing *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800 /* 1.5 */, 0);
     RefreshGlobalTransformState();
     BattleFx_SpecialSmogDrawPsxTexturedQuadStrip(8, task->angle, 0x320, 0x78 - task->step * 6);
-    task->angle += 0x100;
+    task->angle += 0x100 /* 22.5 deg */;
     if (g_BattleIsPaused != 0) {
         return;
     }
@@ -306,7 +306,7 @@ void __cdecl BattleFx_SpecialSmogDriftingRingTask(void)
     task->velocityY -= (short)(task->velocityY / 8);
     task->velocityZ -= (short)(task->velocityZ / 8);
     (task->step)++;
-    if (task->step == 0x14) {
+    if (task->step == 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -354,15 +354,15 @@ void __cdecl BattleFx_SpecialSmogDrawPsxTexturedQuadStrip(short amplitude, short
         Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)frame.quadState);
     }
     for (frame.stripIndex = 0; frame.stripIndex < 8; frame.stripIndex++) {
-        frame.sinCur = SinFixed(phase + frame.stripIndex * angleStep) * amplitude >> 0xC;
-        frame.sinNext = SinFixed(phase + (frame.stripIndex + 1) * angleStep) * amplitude >> 0xC;
-        frame.x0.vx = frame.sinCur - 0x40;
-        frame.x1.vx = frame.sinCur + 0x40;
-        frame.x2.vx = frame.sinNext - 0x40;
-        frame.x3.vx = frame.sinNext + 0x40;
+        frame.sinCur = SinFixed(phase + frame.stripIndex * angleStep) * amplitude >> 12;
+        frame.sinNext = SinFixed(phase + (frame.stripIndex + 1) * angleStep) * amplitude >> 12;
+        frame.x0.vx = frame.sinCur - 64;
+        frame.x1.vx = frame.sinCur + 64;
+        frame.x2.vx = frame.sinNext - 64;
+        frame.x3.vx = frame.sinNext + 64;
         frame.at34.value = ((frame.stripIndex << 7) / 8) - 0x40;
         frame.at26.value = frame.at34.value;
-        frame.x3.vy = ((frame.stripIndex + 1 << 7) / 8) - 0x40;
+        frame.x3.vy = ((frame.stripIndex + 1 << 7) / 8) - 64;
         frame.x2.vy = frame.x3.vy;
         frame.x0.vx <<= 3;
         frame.x1.vx <<= 3;

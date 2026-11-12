@@ -189,11 +189,11 @@ static __inline unsigned char *HighwayResolveFieldResource(int index)
 HighwayFieldContext::HighwayFieldContext()
 {
     if (g_HighwayGameMode == 0) {
-        this->dataBase = (HighwayMotionCommand *)HighwayResolveFieldResource(0xF);
+        this->dataBase = (HighwayMotionCommand *)HighwayResolveFieldResource(15);
     } else {
-        this->dataBase = (HighwayMotionCommand *)HighwayResolveFieldResource(0x1D);
+        this->dataBase = (HighwayMotionCommand *)HighwayResolveFieldResource(29);
     }
-    this->frames = new HighwayTrackFrame[0x50];
+    this->frames = new HighwayTrackFrame[80];
     this->roadGroup = new HighwayRenderGroup((int *)g_HighwayTrackTimNames1, 0x50);
     this->wallGroup = new HighwayRenderGroup((int *)g_HighwayTrackTimNames2, 0xA0);
     this->fieldBlock = (HighwayPaletteFieldBlock *)operator new(0x4E0);
@@ -286,17 +286,17 @@ void HighwayFieldContext::reset()
     this->entryCountCopy = 0;
     this->cycleIndex = 0;
     this->cycleIndexB = 0;
-    for (sampleIdx = 0; sampleIdx < 0x50; sampleIdx++) {
-        for (fieldIdx = 0; fieldIdx < 0xA; fieldIdx++) {
+    for (sampleIdx = 0; sampleIdx < 80; sampleIdx++) {
+        for (fieldIdx = 0; fieldIdx < 10; fieldIdx++) {
             this->frames[sampleIdx].info[fieldIdx] = 0;
         }
     }
-    for (recordIdx = 0; recordIdx < 0xA; recordIdx++) {
+    for (recordIdx = 0; recordIdx < 10; recordIdx++) {
         this->anchors[recordIdx].x = 0;
         this->anchors[recordIdx].y = 0;
         this->anchors[recordIdx].z = 0;
     }
-    for (frameIndex = 0; frameIndex < 0x50; frameIndex++) {
+    for (frameIndex = 0; frameIndex < 80; frameIndex++) {
         this->frames[frameIndex].info[HIGHWAY_FRAME_INFO_SEGMENT_BASE] = frameIndex % 8;
         update();
         g_HighwayTrackProgress++;
@@ -340,10 +340,10 @@ void HighwayFieldContext::update()
         this->tableIndex = this->cursor->tableIndex;
         velocity = this->cursor->speed;
         nextSpeed = (velocity * velocity) << 12;
-        flatSpeed = nextSpeed > 0x400 ? Mini_HighwaySqrtFixed12(nextSpeed - 0x400) : 0;
+        flatSpeed = nextSpeed > 1024 ? Mini_HighwaySqrtFixed12(nextSpeed - 1024) : 0;
         this->stepB = ((this->targetB - this->prevTargetB) << 16) / this->stepCount;
         this->stepA = ((this->targetA - this->prevTargetA) << 16) / this->stepCount;
-        this->angleStep = Mini_HighwayAtan2Angle4096(0x800, flatSpeed) << 1;
+        this->angleStep = Mini_HighwayAtan2Angle4096(2048, flatSpeed) << 1;
         this->commandPending = 0;
         this->angleTotal = 0;
         this->speed = velocity;
@@ -381,7 +381,7 @@ void HighwayFieldContext::update()
         this->commandPending = 1;
     }
     if (this->angle < 0) {
-        this->angle += 0x1000;
+        this->angle += 0x1000 /* 360 deg */;
     }
     this->angle %= 0x1000;
     this->posA += this->stepA;
@@ -413,7 +413,7 @@ void HighwayFieldContext::update()
     pRecord->angleX = pitchAngleScalar;
     ((HighwayFieldManager *)this)->advanceActors();
     (this->frameIndex)++;
-    this->frameIndex %= 0x50;
+    this->frameIndex %= 80;
 }
 extern "C" {
 
@@ -472,11 +472,11 @@ void HighwayFieldContext::draw()
     int vertIndex;
     char nearFlag;
 
-    pFrame = &this->frames[g_HighwayTrackProgress % 0x50];
+    pFrame = &this->frames[g_HighwayTrackProgress % 80];
     pFrame->buildQuad(&lastQuad[0].x);
-    for (frameIndex = 1; frameIndex < 0x50; frameIndex++) {
-        nearFlag = frameIndex < 0x28;
-        pFrame = &this->frames[(g_HighwayTrackProgress + frameIndex) % 0x50];
+    for (frameIndex = 1; frameIndex < 80; frameIndex++) {
+        nearFlag = frameIndex < 40;
+        pFrame = &this->frames[(g_HighwayTrackProgress + frameIndex) % 80];
         if (pFrame->info[HIGHWAY_FRAME_INFO_SKIPPED] != 0) {
             continue;
         }
@@ -524,8 +524,8 @@ void HighwayFieldManager::samplePosition(int path, int unused, int *position)
 
     fr37 = path >> 8;
     fx4 = path & 0xFF;
-    f8 = (HighwayTrackFrame *)this->frames + fr37 % 0x50;
-    s2 = (HighwayTrackFrame *)this->frames + (fr37 + 1) % 0x50;
+    f8 = (HighwayTrackFrame *)this->frames + fr37 % 80;
+    s2 = (HighwayTrackFrame *)this->frames + (fr37 + 1) % 80;
     PsxApplyMatrix33ToIntVector((struct SnoboMatrix *)&f8->matrix, (struct SnowboardSpawnPos *)in19, (struct SnowboardVec *)tf29);
     PsxApplyMatrix33ToIntVector((struct SnoboMatrix *)&s2->matrix, (struct SnowboardSpawnPos *)in19, (struct SnowboardVec *)ts6);
     pf4[0] = f8->posX + (tf29[0] >> 18);
@@ -568,8 +568,8 @@ void HighwayFieldManager::load(int path, int unused, int *position, int *result)
 
     fr37 = path >> 8;
     fx4 = path & 0xFF;
-    f8 = (HighwayTrackFrame *)this->frames + fr37 % 0x50;
-    s2 = (HighwayTrackFrame *)this->frames + (fr37 + 1) % 0x50;
+    f8 = (HighwayTrackFrame *)this->frames + fr37 % 80;
+    s2 = (HighwayTrackFrame *)this->frames + (fr37 + 1) % 80;
     in19[0] = unused << 18;
     in19[1] = 0;
     in19[2] = 0;
@@ -590,30 +590,30 @@ void HighwayFieldManager::load(int path, int unused, int *position, int *result)
 
     as0 = s2->angleX;
     af5 = f8->angleX;
-    if (as0 - af5 > 0x800) {
+    if (as0 - af5 > 2048) {
         af5 += 0x1000;
     }
-    if (af5 - as0 > 0x800) {
+    if (af5 - as0 > 2048) {
         as0 += 0x1000;
     }
     ((short *)result)[0] += ((as0 - af5) * fx4) >> 8;
 
     as0 = s2->angleY;
     af5 = f8->angleY;
-    if (as0 - af5 > 0x800) {
+    if (as0 - af5 > 2048) {
         af5 += 0x1000;
     }
-    if (af5 - as0 > 0x800) {
+    if (af5 - as0 > 2048) {
         as0 += 0x1000;
     }
     ((short *)result)[1] += ((as0 - af5) * fx4) >> 8;
 
     as0 = s2->angleZ;
     af5 = f8->angleZ;
-    if (as0 - af5 > 0x800) {
+    if (as0 - af5 > 2048) {
         af5 += 0x1000;
     }
-    if (af5 - as0 > 0x800) {
+    if (af5 - as0 > 2048) {
         as0 += 0x1000;
     }
     ((short *)result)[2] += ((as0 - af5) * fx4) >> 8;
@@ -643,8 +643,8 @@ void HighwayFieldManager::loadPlanar(int path, int unused, int *position, int *r
 
     fr37 = path >> 8;
     fx4 = path & 0xFF;
-    f8 = (HighwayTrackFrame *)this->frames + fr37 % 0x50;
-    s2 = (HighwayTrackFrame *)this->frames + (fr37 + 1) % 0x50;
+    f8 = (HighwayTrackFrame *)this->frames + fr37 % 80;
+    s2 = (HighwayTrackFrame *)this->frames + (fr37 + 1) % 80;
     PsxApplyMatrix33ToIntVector((struct SnoboMatrix *)&f8->matrix, (struct SnowboardSpawnPos *)in19, (struct SnowboardVec *)tf29);
     PsxApplyMatrix33ToIntVector((struct SnoboMatrix *)&s2->matrix, (struct SnowboardSpawnPos *)in19, (struct SnowboardVec *)ts6);
     pf4[0] = f8->posX + (tf29[0] >> 16);
@@ -662,20 +662,20 @@ void HighwayFieldManager::loadPlanar(int path, int unused, int *position, int *r
 
     as0 = s2->angleX;
     af5 = f8->angleX;
-    if (as0 - af5 > 0x800) {
+    if (as0 - af5 > 2048) {
         af5 += 0x1000;
     }
-    if (af5 - as0 > 0x800) {
+    if (af5 - as0 > 2048) {
         as0 += 0x1000;
     }
     ((short *)result)[0] += ((as0 - af5) * fx4) >> 8;
 
     as0 = s2->angleY;
     af5 = f8->angleY;
-    if (as0 - af5 > 0x800) {
+    if (as0 - af5 > 2048) {
         af5 += 0x1000;
     }
-    if (af5 - as0 > 0x800) {
+    if (af5 - as0 > 2048) {
         as0 += 0x1000;
     }
     ((short *)result)[1] += ((as0 - af5) * fx4) >> 8;

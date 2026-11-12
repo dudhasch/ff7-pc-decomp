@@ -160,9 +160,9 @@ unsigned short __cdecl SoundFontPickBestDevice(unsigned int *ram, int *hardware)
     unsigned char capsBuf[102]; // Packed SDK device capabilities, not an SF2 record.
     unsigned int scores[8]; // Device scores (the original has no bounds check).
 
-    softwareScore8 = 0x80;
-    hardwareScore = 0x40;
-    minScore = 0x20;
+    softwareScore8 = 128;
+    hardwareScore = 64;
+    minScore = 32;
     pointBytes = 0x80000;
     /* Invokes untyped callback slot `g_SfUtilsManagerApi[0]` with its runtime (unsigned short *) -> int signature. */
     enumResult = ((int(__cdecl *)(unsigned short *))g_SfUtilsManagerApi[0])(&g_SfDeviceCount);
@@ -261,12 +261,12 @@ int __cdecl SoundFontSaveLoadedBanks(unsigned short device)
         /* Invokes untyped callback slot `g_SfUtilsManagerApi[6]` with its runtime (unsigned short, unsigned short *) -> int signature. */
         if (((int(__cdecl *)(unsigned short, unsigned short *))g_SfUtilsManagerApi[6])(device, &bankOut) != -1 && bank == bankOut) {
             // STRING: FF7 0x009691b0
-            nodePtr = (SavedSfBank *)GameHeapAllocRaw(sizeof(SavedSfBank), "C:\\lib\\src\\sound\\creative\\sfutils.cpp", 0x139);
+            nodePtr = (SavedSfBank *)GameHeapAllocRaw(sizeof(SavedSfBank), "C:\\lib\\src\\sound\\creative\\sfutils.cpp", 313);
             if (!nodePtr) {
                 nodePtr = g_savedSfBanks;
                 while (nodePtr) {
                     // STRING: FF7 0x009691d8
-                    GameHeapFree(nodePtr, "C:\\lib\\src\\sound\\creative\\sfutils.cpp", 0x141);
+                    GameHeapFree(nodePtr, "C:\\lib\\src\\sound\\creative\\sfutils.cpp", 321);
                     nodePtr = nodePtr->next;
                 }
                 return 0;
@@ -339,7 +339,7 @@ int __cdecl SoundFontRestoreLoadedBanks(unsigned short device)
         }
         next = nodePtr->next;
         // STRING: FF7 0x00969200
-        GameHeapFree(nodePtr, "C:\\lib\\src\\sound\\creative\\sfutils.cpp", 0x195);
+        GameHeapFree(nodePtr, "C:\\lib\\src\\sound\\creative\\sfutils.cpp", 405);
         nodePtr = next;
     }
     return 1;
@@ -358,7 +358,7 @@ int __cdecl SfManLoadBankFromFile(unsigned short device, unsigned short bankInde
     SfManFile file;
     SfManBank bank;
 
-    file.size = 0x80;
+    file.size = 128;
     file.reserved2 = 0;
     file.path = path;
     memset(&bank, 0, sizeof(bank));
@@ -376,14 +376,14 @@ int __cdecl SfManCopyPresetFromFile(unsigned short device, unsigned short source
     SfManPresetRef src;
     SfManPresetRef dst;
     SfManFileRequest request;
-    char filename[0x204];
+    char filename[516];
     int result;
 
     src.bank = sourceBank;
     src.preset = sourcePreset;
     dst.bank = destinationBank;
     dst.preset = destinationPreset;
-    request.size = 0x204;
+    request.size = 516;
     request.zero = 0;
     request.path = filename;
     strcpy(request.path, path);
@@ -409,7 +409,7 @@ int __cdecl SfManCopyPresetRange(unsigned short dev, int unused, char *path)
     } srcPreset, destPreset;
     int result;
 
-    copyRequest.size = 0x80;
+    copyRequest.size = 128;
     copyRequest.zero = 0;
     copyRequest.path = path;
     memset(&srcPreset, 0, sizeof(srcPreset));
@@ -417,7 +417,7 @@ int __cdecl SfManCopyPresetRange(unsigned short dev, int unused, char *path)
     srcPreset.bank = 0x8000;
     destPreset.bank = 0x8000;
     srcPreset.preset = 0;
-    for (; srcPreset.preset < 0xA; srcPreset.preset++) {
+    for (; srcPreset.preset < 10; srcPreset.preset++) {
         destPreset.preset = srcPreset.preset;
         /* Invokes untyped callback slot `((int *)g_SfUtilsManagerApi)[15]` with its runtime (unsigned short, void *, void *, void *) -> int signature. */
         result = ((int(__cdecl *)(unsigned short, void *, void *, void *))((int *)g_SfUtilsManagerApi)[15])(
@@ -469,7 +469,7 @@ int __cdecl SfManGetBankFileName(unsigned short device, unsigned short bank, cha
     memset(&info, 0, sizeof(info));
     memset(&bankRef, 0, sizeof(bankRef));
     info.path = name;
-    info.size = 0x80;
+    info.size = 128;
     bankRef.bank = bank;
     res = ((int(__cdecl *)(unsigned short, SfManPresetRef *, SfManNameRequest *))g_SfUtilsManagerApi[0x34 / 4])(device, &bankRef, &info);
     OutputDebugStringA(SfManErrorText(res));
@@ -482,7 +482,7 @@ int __cdecl SfManGetBankFileName(unsigned short device, unsigned short bank, cha
 // FUNCTION: FF7 0x0074b6ee
 int __cdecl SfManGetSampleRamSize(unsigned short dev, unsigned int *total, unsigned int *free)
 {
-    unsigned char caps[0x66];
+    unsigned char caps[102];
 
     memset(caps, 0, 0x66);
 
@@ -508,8 +508,8 @@ int __cdecl SoundFontFindMidiOutIndex(unsigned short device)
 {
     int i;
     unsigned int numDevs;
-    char name[0x34];
-    char card[0x68];
+    char name[52];
+    char card[104];
 
     /* Invokes untyped callback slot `((int *)g_SfUtilsManagerApi)[1]` with its runtime (unsigned short, unsigned char *) -> int signature. */
     if (((int(__cdecl *)(unsigned short, unsigned char *))((int *)g_SfUtilsManagerApi)[1])(

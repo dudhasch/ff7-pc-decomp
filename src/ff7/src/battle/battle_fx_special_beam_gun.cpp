@@ -162,7 +162,7 @@ void __cdecl BattleFx_SpecialBeamGunTimelineTask(void)
     if (frame.timelineSlot->frameCounter == 0) {
         frame.offsetX.vx = 0;
         frame.offsetX.vy = 0;
-        frame.offsetX.vz = 0x1F4;
+        frame.offsetX.vz = 500;
         g_BattleSpecialBeamGunBasisMatrix.vectorX = frame.timelineSlot->startX;
         g_BattleSpecialBeamGunBasisMatrix.vectorY = frame.timelineSlot->startY;
         g_BattleSpecialBeamGunBasisMatrix.vectorZ = frame.timelineSlot->startZ;
@@ -174,7 +174,7 @@ void __cdecl BattleFx_SpecialBeamGunTimelineTask(void)
         frame.spawnSlot->posY = frame.timelineSlot->startY;
         frame.spawnSlot->posZ = frame.timelineSlot->startZ;
     }
-    if (frame.timelineSlot->frameCounter < 0xF) {
+    if (frame.timelineSlot->frameCounter < 15) {
         g_BattleSpecialBeamGunBasisMatrix.vectorX = frame.timelineSlot->startX;
         g_BattleSpecialBeamGunBasisMatrix.vectorY = frame.timelineSlot->startY;
         g_BattleSpecialBeamGunBasisMatrix.vectorZ = frame.timelineSlot->startZ;
@@ -185,29 +185,29 @@ void __cdecl BattleFx_SpecialBeamGunTimelineTask(void)
         frame.stepZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 8;
         for (frame.driftIndex = 0; frame.driftIndex < 3; frame.driftIndex++) {
             frame.spawnSlot = (BattleFxBeamGunTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBeamGunDriftModelTask);
-            frame.driftX.vx = CosFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 0x555) >> 5;
-            frame.driftX.vy = SinFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 0x555) >> 5;
-            frame.driftX.vz = rand() % 0x64 - 0x32;
+            frame.driftX.vx = CosFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 1365) >> 5;
+            frame.driftX.vy = SinFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 1365) >> 5;
+            frame.driftX.vz = rand() % 100 - 50;
             RotTransPointToInt16(&frame.driftX, &frame.spawnSlot->posX, &frame.projDepth);
             frame.spawnSlot->velocityX = frame.stepX;
             frame.spawnSlot->velocityY = frame.stepY;
             frame.spawnSlot->velocityZ = frame.stepZ;
         }
     }
-    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 0x1C) {
+    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 28) {
         frame.spawnSlot = (BattleFxBeamGunTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBeamGunOneShotSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posY += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posZ += (short)(rand() % 0x320 - 0x190);
+        frame.spawnSlot->posX += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posY += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posZ += (short)(rand() % 800 - 400);
         frame.spawnSlot->unusedWord = 0x3000;
         frame.spawnSlot->negRadius = -g_BattleActorRecords[g_BattleSpecialActorId].radius;
     }
-    if (frame.timelineSlot->frameCounter == 0xF) {
+    if (frame.timelineSlot->frameCounter == 15) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -266,7 +266,7 @@ void __cdecl BattleFx_SpecialBeamGunOneShotSpriteTask(void)
     task = (BattleFxBeamGunOneShotSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialBeamGunScaleData1.spriteRecord = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialBeamGunLoadedRes);
     g_BattleSpecialBeamGunScaleData1.spriteObject = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialBeamGunLoadedRes);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000 /* 1.0 */, task->pushLength);
     g_BattleSpecialBeamGunScaleData1.frameIndex = task->frameIndex;
     g_BattleSpecialBeamGunDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialBeamGunScaleData1.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBeamGunDrawListHandle);
     if (g_BattleIsPaused == 0) {

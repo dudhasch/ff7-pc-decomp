@@ -412,7 +412,7 @@ int __cdecl OpenLgpArchive(char *name, int lgp)
     g_LgpFileHandles.fileHandles[lgp] = v.handle;
     if (!ReadLgpToc(v.handle, lgp))
         return 0;
-    g_LgpLookupTables[lgp] = (FileLgpLookupRow *)GameHeapAllocRaw(0xe10, (char *)IsLibCpp_FileLine192(), 0x192);
+    g_LgpLookupTables[lgp] = (FileLgpLookupRow *)GameHeapAllocRaw(3600, (char *)IsLibCpp_FileLine192(), 0x192);
     if (g_LgpLookupTables[lgp] == 0)
         return 0;
     for (v.first = 0; v.first < 30; v.first++) {
@@ -471,7 +471,7 @@ void __cdecl ReadLgpConflictTable(int fd, int archiveIndex)
         FileReadU16(fd, &g_LgpConflictTable[archiveIndex][entryIndex].countWord);
         g_LgpConflictTable[archiveIndex][entryIndex].dirs = (FileLgpConflictDir *)GameHeapAllocRaw(g_LgpConflictTable[archiveIndex][entryIndex].count * 0x82, IsLibCpp_FileLine1F3(), 0x1F3);
         for (j = 0; j < g_LgpConflictTable[archiveIndex][entryIndex].count; j++) {
-            FileReadBytes(fd, g_LgpConflictTable[archiveIndex][entryIndex].dirs[j].name, 0x80);
+            FileReadBytes(fd, g_LgpConflictTable[archiveIndex][entryIndex].dirs[j].name, 128);
             FileReadU16(fd, &g_LgpConflictTable[archiveIndex][entryIndex].dirs[j].tocIndex);
         }
     }
@@ -519,9 +519,9 @@ char __cdecl GetLgpLookupCharCode(char character)
 
     /* Signed char promotion and the original CRT locale behavior are retained. */
     lower = tolower(character);
-    if (lower >= 0x61 && lower <= 0x7A) {
+    if (lower >= 97 && lower <= 122) {
         return (char)lower;
-    } else if (lower >= 0x30 && lower <= 0x39) {
+    } else if (lower >= 48 && lower <= 57) {
         return lower + 0x31;
     } else if (lower == 0x5F) {
         return 0x6B;
@@ -657,7 +657,7 @@ void *__cdecl FindLgpFile(char *name, int lgp)
 // FUNCTION: FF7 0x00675f1d
 int __cdecl CloseLgpArchive(int archiveIndex)
 {
-    if (archiveIndex >= 0x12) {
+    if (archiveIndex >= 18) {
         return 0;
     } else {
         if (g_LgpFileHandles.fileHandles[archiveIndex] != -1) {
@@ -666,12 +666,12 @@ int __cdecl CloseLgpArchive(int archiveIndex)
         }
         if (g_LgpTocBlocks[archiveIndex].entries != 0) {
             // STRING: FF7 0x0090d1f8
-            GameHeapFree(g_LgpTocBlocks[archiveIndex].entries, "C:\\lib\\src\\file\\is_lib.cpp", 0x2D7);
+            GameHeapFree(g_LgpTocBlocks[archiveIndex].entries, "C:\\lib\\src\\file\\is_lib.cpp", 727);
             g_LgpTocBlocks[archiveIndex].entries = 0;
         }
         if (g_LgpLookupTables[archiveIndex] != 0) {
             // STRING: FF7 0x0090d214
-            GameHeapFree(g_LgpLookupTables[archiveIndex], "C:\\lib\\src\\file\\is_lib.cpp", 0x2DC);
+            GameHeapFree(g_LgpLookupTables[archiveIndex], "C:\\lib\\src\\file\\is_lib.cpp", 732);
             g_LgpLookupTables[archiveIndex] = 0;
         }
         FreeLgpConflictTable(archiveIndex);
@@ -687,7 +687,7 @@ void __cdecl FreeLgpConflictTable(int archiveIndex)
 {
     int entryIndex;
 
-    if (archiveIndex >= 0x12) {
+    if (archiveIndex >= 18) {
         return;
     }
     for (entryIndex = 0; entryIndex < g_LgpConflictCounts[archiveIndex]; entryIndex++) {
@@ -711,19 +711,19 @@ int __cdecl CloseAllLgpArchives(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0x12; i++) {
+    for (i = 0; i < 18; i++) {
         if (g_LgpFileHandles.fileHandles[i] != -1) {
             FileCloseLL(g_LgpFileHandles.fileHandles[i]);
             g_LgpFileHandles.fileHandles[i] = 0;
         }
         if (g_LgpTocBlocks[i].entries != 0) {
             // STRING: FF7 0x0090d230
-            GameHeapFree(g_LgpTocBlocks[i].entries, "C:\\lib\\src\\file\\is_lib.cpp", 0x2FA);
+            GameHeapFree(g_LgpTocBlocks[i].entries, "C:\\lib\\src\\file\\is_lib.cpp", 762);
             g_LgpTocBlocks[i].entries = 0;
         }
         if (g_LgpLookupTables[i] != 0) {
             // STRING: FF7 0x0090d24c
-            GameHeapFree(g_LgpLookupTables[i], "C:\\lib\\src\\file\\is_lib.cpp", 0x2FF);
+            GameHeapFree(g_LgpLookupTables[i], "C:\\lib\\src\\file\\is_lib.cpp", 767);
             g_LgpLookupTables[i] = 0;
         }
     }
@@ -740,7 +740,7 @@ void __cdecl FreeAllLgpConflictTables(void)
     int archive;
     int entryIdx;
 
-    for (archive = 0; archive < 0x12; archive++) {
+    for (archive = 0; archive < 18; archive++) {
         for (entryIdx = 0; entryIdx < g_LgpConflictCounts[archive]; entryIdx++) {
             if (g_LgpConflictTable[archive][entryIdx].dirs != 0) {
                 GameHeapFree(g_LgpConflictTable[archive][entryIdx].dirs, IsLibCpp_FileLine224(), 0x224);
@@ -756,7 +756,7 @@ void __cdecl FreeAllLgpConflictTables(void)
 // FUNCTION: FF7 0x0067620f
 int __cdecl GetLgpArchiveFd(int archiveIndex)
 {
-    if (archiveIndex >= 0x12) {
+    if (archiveIndex >= 18) {
         return 0;
     } else {
         return g_LgpFileHandles.fileHandles[archiveIndex];
@@ -771,7 +771,7 @@ int __cdecl SeekLgpArchive(int offset, int archiveIndex)
 {
     int unused; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
-    if (archiveIndex >= 0x12) {
+    if (archiveIndex >= 18) {
         return 0;
     } else if (g_LgpFileHandles.fileHandles[archiveIndex] == 0) {
         return 0;

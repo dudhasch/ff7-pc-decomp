@@ -156,7 +156,7 @@ void __cdecl Mini_HighwayResetSlot(int slot)
     g_HighwaySlotHeads[slot].rotX = 0;
     g_HighwaySlotHeads[slot].rotY = 0;
     g_HighwaySlotHeads[slot].rotZ = 0;
-    for (i = 0; i < 0x50; i++) {
+    for (i = 0; i < 80; i++) {
         base[i] = 0;
     }
     *base = 5;
@@ -256,16 +256,16 @@ int __cdecl Mini_HighwayInitActorGroups(int animSet)
         childGroup->minPosZ = 0x1F400;
         childGroup->clearedWord = 0;
         childGroup->isActive = 1;
-        childGroup->segmentStartZ = 0x14;
-        childGroup->segmentEndZ = 0x64;
-        childGroup->startRadius = 0x24;
-        childGroup->endRadius = 0x24;
-        childGroup->lateralStep = 0x30;
-        childGroup->lateralReturnStep = 0x30;
-        pGroupRef->actors[0] = (int)g_pHighwayIndexBlock->createRaw(0x61, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
-        pGroupRef->actors[1] = (int)g_pHighwayIndexBlock->createRaw(0x9B, (HighwayModelNode *)pGroupRef->actors[0], 0, -0xA, 0x55, 0, 0, 0);
-        pGroupRef->actors[2] = (int)g_pHighwayIndexBlock->createRaw(0x95, (HighwayModelNode *)pGroupRef->actors[0], -0x50, 0, -0x28, 0, 0, 0);
-        pGroupRef->actors[3] = (int)g_pHighwayIndexBlock->createRaw(0x61, (HighwayModelNode *)pGroupRef->actors[0], 0, 0, 0, 0, 0, 0);
+        childGroup->segmentStartZ = 20;
+        childGroup->segmentEndZ = 100;
+        childGroup->startRadius = 36;
+        childGroup->endRadius = 36;
+        childGroup->lateralStep = 48;
+        childGroup->lateralReturnStep = 48;
+        pGroupRef->actors[0] = (int)g_pHighwayIndexBlock->createRaw(97, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
+        pGroupRef->actors[1] = (int)g_pHighwayIndexBlock->createRaw(155, (HighwayModelNode *)pGroupRef->actors[0], 0, -10, 85, 0, 0, 0);
+        pGroupRef->actors[2] = (int)g_pHighwayIndexBlock->createRaw(149, (HighwayModelNode *)pGroupRef->actors[0], -80, 0, -40, 0, 0, 0);
+        pGroupRef->actors[3] = (int)g_pHighwayIndexBlock->createRaw(97, (HighwayModelNode *)pGroupRef->actors[0], 0, 0, 0, 0, 0, 0);
         pGroupRef->hideQueued = 0;
         pGroupRef->isVisible = 0;
         pGroupRef->freezeQueued = 0;
@@ -297,7 +297,7 @@ int __cdecl Mini_HighwayInitActorGroups(int animSet)
             childGroup->firstId = 2;
             childGroup->secondId = 0xD;
             pGroupRef->animIndexB = 2;
-            pGroupRef->animIndexA = 0x11;
+            pGroupRef->animIndexA = 17;
         } else {
             childGroup->firstId = 0x11;
             childGroup->secondId = 0x13;
@@ -310,14 +310,14 @@ int __cdecl Mini_HighwayInitActorGroups(int animSet)
         childGroup->minPosZ = 0x5DC00;
         childGroup->isActive = 1;
         childGroup->randomChance = 0x800;
-        childGroup->lateralStep = 0x1F4;
+        childGroup->lateralStep = 500;
         childGroup->segmentStartZ = 0xFFFFFFE2;
-        childGroup->segmentEndZ = 0x64;
-        childGroup->startRadius = 0x4B;
-        childGroup->endRadius = 0x4B;
-        pGroupRef->actors[0] = (int)g_pHighwayIndexBlock->createRaw(0x61, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
-        pGroupRef->actors[1] = (int)g_pHighwayIndexBlock->createRaw(0x99, (HighwayModelNode *)pGroupRef->actors[0], 0, 0, 0, 0, 0, 0);
-        pGroupRef->actors[2] = (int)g_pHighwayIndexBlock->createRaw(0x9A, (HighwayModelNode *)pGroupRef->actors[0], 0, 3, -6, 0, 0, 0);
+        childGroup->segmentEndZ = 100;
+        childGroup->startRadius = 75;
+        childGroup->endRadius = 75;
+        pGroupRef->actors[0] = (int)g_pHighwayIndexBlock->createRaw(97, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
+        pGroupRef->actors[1] = (int)g_pHighwayIndexBlock->createRaw(153, (HighwayModelNode *)pGroupRef->actors[0], 0, 0, 0, 0, 0, 0);
+        pGroupRef->actors[2] = (int)g_pHighwayIndexBlock->createRaw(154, (HighwayModelNode *)pGroupRef->actors[0], 0, 3, -6, 0, 0, 0);
         pGroupRef->hideQueued = 0;
         pGroupRef->isVisible = 0;
         pGroupRef->freezeQueued = 0;
@@ -358,17 +358,17 @@ int __cdecl Mini_HighwayInitActorGroups(int animSet)
         childGroup->minPosZ = 0x1F400;
         childGroup->isActive = 1;
         childGroup->segmentStartZ = 0xFFFFFFB0;
-        childGroup->segmentEndZ = 0x4B;
-        childGroup->startRadius = 0x84;
-        childGroup->endRadius = 0xF0;
+        childGroup->segmentEndZ = 75;
+        childGroup->startRadius = 132;
+        childGroup->endRadius = 240;
         childGroup->randomChance = 0x100;
-        childGroup->lateralReturnStep = 0x1000;
-        childGroup->lateralStep = 0xFA;
-        childGroup->randomRange = 0x1E;
+        childGroup->lateralReturnStep = 4096;
+        childGroup->lateralStep = 250;
+        childGroup->randomRange = 30;
         childGroup->hp = 0x270F;
         childGroup->maxHp = childGroup->hp;
-        pGroupRef->actors[0] = (int)g_pHighwayIndexBlock->createRaw(0x61, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
-        pGroupRef->actors[1] = (int)g_pHighwayIndexBlock->createRaw(0x61, (HighwayModelNode *)pGroupRef->actors[0], 0, 0, 0, 0, 0, 0);
+        pGroupRef->actors[0] = (int)g_pHighwayIndexBlock->createRaw(97, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
+        pGroupRef->actors[1] = (int)g_pHighwayIndexBlock->createRaw(97, (HighwayModelNode *)pGroupRef->actors[0], 0, 0, 0, 0, 0, 0);
         pGroupRef->animIndexB = 4;
         pGroupRef->animIndexA = 0xFFFFFFFF;
         pGroupRef->hideQueued = 0;
@@ -406,20 +406,20 @@ void __cdecl Mini_HighwayCreateSlotActors(int slot)
     slotStatus->maxPosZ = 0xBB800;
     slotStatus->minPosZ = 0x1F400;
     slotStatus->isActive = 1;
-    slotStatus->segmentStartZ = 0x14;
-    slotStatus->segmentEndZ = 0x64;
-    slotStatus->startRadius = 0x24;
-    slotStatus->endRadius = 0x24;
+    slotStatus->segmentStartZ = 20;
+    slotStatus->segmentEndZ = 100;
+    slotStatus->startRadius = 36;
+    slotStatus->endRadius = 36;
     slotStatus->randomChance = 0x400;
-    slotStatus->lateralReturnStep = 0x400;
-    slotStatus->lateralStep = 0x1C2;
-    slotStatus->randomRange = 0x14;
+    slotStatus->lateralReturnStep = 1024;
+    slotStatus->lateralStep = 450;
+    slotStatus->randomRange = 20;
     slotActor->actors[0] =
-        (int)g_pHighwayIndexBlock->createRaw(0x61, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
+        (int)g_pHighwayIndexBlock->createRaw(97, (HighwayModelNode *)g_pHighwayIndexBlock, 0, 0, 0, 0, 0, 0);
     slotActor->actors[1] =
-        (int)g_pHighwayIndexBlock->createRaw(0x9B, (HighwayModelNode *)slotActor->actors[0], 0, 0, 0x78, 0, 0, 0);
+        (int)g_pHighwayIndexBlock->createRaw(155, (HighwayModelNode *)slotActor->actors[0], 0, 0, 120, 0, 0, 0);
     slotActor->actors[2] =
-        (int)g_pHighwayIndexBlock->createRaw(0x94, (HighwayModelNode *)slotActor->actors[0], 0, 0, 0, 0, 0, 0);
+        (int)g_pHighwayIndexBlock->createRaw(148, (HighwayModelNode *)slotActor->actors[0], 0, 0, 0, 0, 0, 0);
     switch (slot) {
     case HIGHWAY_ENEMY_SLOT_LEFT:
         slotStatus->posX = 0xFFFF3800;
@@ -481,14 +481,14 @@ void __cdecl Mini_HighwayClampSlotPosition(int slot)
     int frameIdx;
 
     slotActor = &g_HighwaySlotStates[slot];
-    frameIdx = (g_HighwayActorRenderOffset + (slotActor->posZ >> 8) >> 8) % 0x50;
+    frameIdx = (g_HighwayActorRenderOffset + (slotActor->posZ >> 8) >> 8) % 80;
     roadLimit = (((HighwayFrameRecord *)(g_pHighwayFieldManager->frames + frameIdx * 0xB0))->roadWidth >> 1) - 0x60 << 8;
     if (slot == 5) {
         if (slotActor->posX > roadLimit - 0x7800) {
-            slotActor->posX = roadLimit - 0x7800;
+            slotActor->posX = roadLimit - 30720;
         }
         if (slotActor->posX < -roadLimit + 0x7800) {
-            slotActor->posX = -roadLimit + 0x7800;
+            slotActor->posX = -roadLimit + 30720;
         }
     } else {
         if (slotActor->posX > roadLimit) {
@@ -506,13 +506,13 @@ void __cdecl Mini_HighwayClampSlotPosition(int slot)
             slotActor->posZ = slotActor->minPosZ;
         }
         g_HighwaySlotMinIndex = 1;
-        g_HighwaySlotMaxIndex = 0x24;
-        if (roadLimit - slotActor->posX < 0x8000) {
+        g_HighwaySlotMaxIndex = 36;
+        if (roadLimit - slotActor->posX < 32768) {
             leftGap = roadLimit - slotActor->posX;
-            g_HighwayActorZOffset = (leftGap * 0x138 / 128 >> 8) + 0xC8;
-        } else if (slotActor->posX - -roadLimit < 0x8000) {
+            g_HighwayActorZOffset = (leftGap * 312 / 128 >> 8) + 0xC8;
+        } else if (slotActor->posX - -roadLimit < 32768) {
             rightGap = slotActor->posX - -roadLimit;
-            g_HighwayActorZOffset = (rightGap * 0x1D8 / 128 >> 8) + 0x28;
+            g_HighwayActorZOffset = (rightGap * 472 / 128 >> 8) + 0x28;
         } else {
             g_HighwayActorZOffset = 0x200;
         }
@@ -525,13 +525,13 @@ void __cdecl Mini_HighwayClampSlotPosition(int slot)
 void __cdecl Mini_HighwayUpdateSpawns(void)
 {
     if (g_HighwaySpawningStopped == 0 && g_HighwaySpawnCooldown == 0) {
-        if (rand() % 0x3C == 0 && g_HighwaySlotStates[2].state == HIGHWAY_SLOT_STATE_INACTIVE) {
+        if (rand() % 60 == 0 && g_HighwaySlotStates[2].state == HIGHWAY_SLOT_STATE_INACTIVE) {
             Mini_HighwaySpawnSlot(2);
         }
-        if (rand() % 0x3C == 0 && g_HighwaySlotStates[3].state == HIGHWAY_SLOT_STATE_INACTIVE) {
+        if (rand() % 60 == 0 && g_HighwaySlotStates[3].state == HIGHWAY_SLOT_STATE_INACTIVE) {
             Mini_HighwaySpawnSlot(3);
         }
-        if (rand() % 0x3C == 0 && g_HighwaySlotStates[4].state == HIGHWAY_SLOT_STATE_INACTIVE) {
+        if (rand() % 60 == 0 && g_HighwaySlotStates[4].state == HIGHWAY_SLOT_STATE_INACTIVE) {
             Mini_HighwaySpawnSlot(4);
         }
     }
@@ -571,10 +571,10 @@ void __cdecl Mini_HighwaySpawnSlot(int slot)
         slotActor->animIndexB = slot + 9;
         break;
     case HIGHWAY_SPAWN_VARIANT_MEDIUM:
-        nextIndex = slot + 0xC;
+        nextIndex = slot + 12;
         spawnPtr->hp = 0x1E;
         spawnPtr->maxHp = spawnPtr->hp;
-        slotActor->animIndexB = slot + 0xC;
+        slotActor->animIndexB = slot + 12;
         break;
     default:
         nextIndex = slot + 1;
@@ -672,65 +672,65 @@ void __cdecl Mini_HighwayUpdateSlotMovement(int slotIndex)
             rootVal = actorRecord->animItemA->player;
             if (slotData->timer == 0) {
                 if (g_HighwayInputAction == HIGHWAY_ACTION_SQUARE) {
-                    slotData->timer = 0x1D;
+                    slotData->timer = 29;
                 }
                 if (g_HighwayInputAction == HIGHWAY_ACTION_CIRCLE) {
                     slotData->timer = 0xFFFFFFE3;
                 }
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_DOWN_LEFT) {
-                steerAngle = 0xA00;
+                steerAngle = 0xA00 /* 225 deg */;
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_DOWN) {
-                steerAngle = 0xC00;
+                steerAngle = 0xC00 /* 270 deg */;
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_DOWN_RIGHT) {
-                steerAngle = 0xE00;
+                steerAngle = 0xE00 /* 315 deg */;
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_LEFT) {
-                steerAngle = 0x800;
+                steerAngle = 0x800 /* 180 deg */;
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_RIGHT) {
                 steerAngle = 0;
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_UP_LEFT) {
-                steerAngle = 0x600;
+                steerAngle = 0x600 /* 135 deg */;
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_UP) {
-                steerAngle = 0x400;
+                steerAngle = 0x400 /* 90 deg */;
             }
             if (g_HighwayInputDirection == HIGHWAY_DIR_UP_RIGHT) {
-                steerAngle = 0x200;
+                steerAngle = 0x200 /* 45 deg */;
             }
             if (slotData->state == 6) {
                 g_HighwayInputLock = 1;
-                if (slotData->posX > 0xB400) {
+                if (slotData->posX > 46080) {
                     g_HighwayInputDirection = HIGHWAY_DIR_LEFT;
-                    steerAngle = 0x800;
+                    steerAngle = 0x800 /* 180 deg */;
                 }
-                if (slotData->posX < 0xA500) {
+                if (slotData->posX < 42240) {
                     g_HighwayInputDirection = HIGHWAY_DIR_RIGHT;
                     steerAngle = 0;
                 }
             }
             if (g_HighwayGameMode == 0 && slotData->counter > 1) {
-                slotData->posX -= 0x600;
-                slotData->posZ += 0x800;
+                slotData->posX -= 1536;
+                slotData->posZ += 2048;
             }
             if (g_HighwayInputDirection != HIGHWAY_DIR_NONE) {
-                slotData->velocityX += CosFixed(steerAngle) * 0x658 >> 0xC;
-                slotData->velocityZ += SinFixed(steerAngle) * 0x658 >> 0xB;
+                slotData->velocityX += CosFixed(steerAngle) * 0x658 >> 12;
+                slotData->velocityZ += SinFixed(steerAngle) * 0x658 >> 11;
             }
-            slotData->velocityX = (slotData->velocityX << 3) / 0xA;
-            slotData->velocityZ = (slotData->velocityZ << 3) / 0xA;
+            slotData->velocityX = (slotData->velocityX << 3) / 10;
+            slotData->velocityZ = (slotData->velocityZ << 3) / 10;
             slotData->posX += slotData->velocityX;
             slotData->posZ += slotData->velocityZ;
             if (g_HighwayInputDirection == HIGHWAY_DIR_NONE) {
                 if (slotData->angle > 0x3FF) {
-                    slotData->angle -= 0xC00;
+                    slotData->angle -= 0xC00 /* 270 deg */;
                 }
                 if (slotData->angle < (-1023)) {
-                    slotData->angle += 0xC00;
+                    slotData->angle += 0xC00 /* 270 deg */;
                 }
                 if (slotData->angle > (-1024) && slotData->angle < 0x400) {
                     slotData->angle = 0;
@@ -738,7 +738,7 @@ void __cdecl Mini_HighwayUpdateSlotMovement(int slotIndex)
             } else {
                 slotData->angle += CosFixed(steerAngle) >> 1;
                 if (slotData->angle > 0x4400) {
-                    slotData->angle = 0x4400;
+                    slotData->angle = 0x4400 /* 1530 deg */;
                 }
                 if (slotData->angle < (-17408)) {
                     slotData->angle = (-17408);
@@ -774,8 +774,8 @@ void __cdecl Mini_HighwayUpdateSlotMovement(int slotIndex)
                 slotData->subState = 0;
                 slotData->state = HIGHWAY_SLOT_STATE_NORMAL;
                 g_HighwaySlotStates[0].partCount--;
-                g_HighwaySlotStates[0].counter = 0x49;
-                g_HighwaySlotStates[1].animCountdown = 0x31;
+                g_HighwaySlotStates[0].counter = 73;
+                g_HighwaySlotStates[1].animCountdown = 49;
             }
         }
         break;
@@ -786,27 +786,27 @@ void __cdecl Mini_HighwayUpdateSlotMovement(int slotIndex)
             }
             if (slotData->posZ > slotData->maxPosZ) {
                 slotData->countdown = 1;
-                slotData->moveAngle = 0xC00;
+                slotData->moveAngle = 0xC00 /* 270 deg */;
             }
             if (slotData->posZ < slotData->minPosZ) {
                 slotData->countdown = 1;
-                slotData->moveAngle = 0x400;
+                slotData->moveAngle = 0x400 /* 90 deg */;
             }
             if (slotData->countdown == 0) {
-                if (rand() % 0x1000 < slotData->randomChance) {
-                    slotData->countdown = 0xA;
+                if (rand() % 4096 < slotData->randomChance) {
+                    slotData->countdown = 10;
                     slotData->moveAngle = rand() % 0x1000;
-                    slotData->velocityX = (slotData->velocityX << 3) / 0xA;
-                    slotData->velocityZ = (slotData->velocityZ << 3) / 0xA;
+                    slotData->velocityX = (slotData->velocityX << 3) / 10;
+                    slotData->velocityZ = (slotData->velocityZ << 3) / 10;
                 }
             } else {
                 (slotData->countdown)--;
-                slotData->velocityX += CosFixed(slotData->moveAngle) * slotData->lateralStep >> 0xC;
-                slotData->velocityZ += SinFixed(slotData->moveAngle) * slotData->lateralStep >> 0xB;
+                slotData->velocityX += CosFixed(slotData->moveAngle) * slotData->lateralStep >> 12;
+                slotData->velocityZ += SinFixed(slotData->moveAngle) * slotData->lateralStep >> 11;
                 slotData->posX += slotData->velocityX;
                 slotData->posZ += slotData->velocityZ;
-                slotData->velocityX = (slotData->velocityX << 3) / 0xA;
-                slotData->velocityZ = (slotData->velocityZ << 3) / 0xA;
+                slotData->velocityX = (slotData->velocityX << 3) / 10;
+                slotData->velocityZ = (slotData->velocityZ << 3) / 10;
                 slotData->prevPosX = slotData->posX;
                 slotData->prevPosZ = slotData->posZ;
             }
@@ -824,7 +824,7 @@ void __cdecl Mini_HighwayUpdateSlotMovement(int slotIndex)
         break;
     case HIGHWAY_SLOT_MODE_BOSS:
         if (slotData->subState == 0) {
-            if (rand() % 0x1E == 0) {
+            if (rand() % 30 == 0) {
                 if (slotData->angle == 0) {
                     Mini_HighwayDispatchSoundCategory(0x12D, 2, 0);
                 }
@@ -839,21 +839,21 @@ void __cdecl Mini_HighwayUpdateSlotMovement(int slotIndex)
                 slotData->targetAngle = 0x400;
             }
             if (slotData->moveAngle == 0) {
-                if (rand() % 0x1000 < slotData->randomChance) {
-                    if (rand() % 0x1000 < slotData->randomThreshold) {
+                if (rand() % 4096 < slotData->randomChance) {
+                    if (rand() % 4096 < slotData->randomThreshold) {
                         slotData->targetAngle = Mini_HighwayAngleBetweenRecords(&g_HighwaySlotHeads[slotIndex], &g_HighwaySlotHeads[1]);
                     } else {
-                        slotData->targetAngle = rand() % 0x1000;
+                        slotData->targetAngle = rand() % 4096;
                     }
                     slotData->moveAngle = rand() % (slotData->randomRange + 1);
                 }
             } else {
                 (slotData->moveAngle)--;
-                slotData->velocityX += CosFixed(slotData->targetAngle) * slotData->lateralStep >> 0xC;
-                slotData->velocityZ += SinFixed(slotData->targetAngle) * slotData->lateralStep >> 0xB;
+                slotData->velocityX += CosFixed(slotData->targetAngle) * slotData->lateralStep >> 12;
+                slotData->velocityZ += SinFixed(slotData->targetAngle) * slotData->lateralStep >> 11;
             }
-            slotData->velocityX = (slotData->velocityX << 3) / 0xA;
-            slotData->velocityZ = (slotData->velocityZ << 3) / 0xA;
+            slotData->velocityX = (slotData->velocityX << 3) / 10;
+            slotData->velocityZ = (slotData->velocityZ << 3) / 10;
             slotData->posX += slotData->velocityX;
             slotData->posZ += slotData->velocityZ;
             slotData->prevPosX = slotData->posX;
@@ -874,7 +874,7 @@ void __cdecl Mini_HighwayUpdateSlotMovement(int slotIndex)
                 slotData->useConfigB = 1;
                 slotData->configIndexB = 0;
                 slotData->animFrameB = slotData->laneCode >> 2;
-                slotData->animFrameB = slotData->animFrameB % 0xB;
+                slotData->animFrameB = slotData->animFrameB % 11;
             }
         }
     }
@@ -984,18 +984,18 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
             if (frame.slotActor->timer > 0) {
                 (frame.slotActor->timer)--;
                 frame.slotActor->configIndexA = 2;
-                frame.slotActor->animFrameA = 0x1D - frame.slotActor->timer;
+                frame.slotActor->animFrameA = 29 - frame.slotActor->timer;
             }
             if (frame.slotActor->timer < 0) {
                 (frame.slotActor->timer)++;
                 frame.slotActor->configIndexA = 3;
-                frame.slotActor->animFrameA = frame.slotActor->timer + 0x1D;
+                frame.slotActor->animFrameA = frame.slotActor->timer + 29;
             }
             frame.moveFlag = 0;
-            if (frame.slotActor->timer < -0xA && frame.slotActor->timer > -0x17) {
+            if (frame.slotActor->timer < -10 && frame.slotActor->timer > -23) {
                 frame.moveFlag = 1;
             }
-            if (frame.slotActor->timer > 0xA && frame.slotActor->timer < 0x14) {
+            if (frame.slotActor->timer > 10 && frame.slotActor->timer < 20) {
                 frame.moveFlag = 1;
             }
             if (frame.moveFlag != 0) {
@@ -1005,15 +1005,15 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
                 frame.tmpFlagB = 0;
                 frame.tmpFlagC = 0;
                 Mini_HighwaySendChannelCommandA0(g_HighwaySoundParam, 2);
-                Mini_HighwayDispatchSoundCategory(5, 2, 0xE);
+                Mini_HighwayDispatchSoundCategory(5, 2, 14);
                 Mini_HighwaySendChannelCommandB0(0, 2);
                 for (frame.actorIndex = 2; frame.actorIndex <= 5; frame.actorIndex++) {
                     if (g_HighwaySlotStates[frame.actorIndex].state == HIGHWAY_SLOT_STATE_NORMAL || g_HighwaySlotStates[frame.actorIndex].state == HIGHWAY_SLOT_STATE_HIT) {
                         frame.actorDistance = Mini_HighwayActorDistance(&g_HighwaySlotHeads[0], &g_HighwaySlotHeads[frame.actorIndex]);
-                        if (frame.actorDistance < 0xA0) {
+                        if (frame.actorDistance < 160) {
                             frame.angleBetween = Mini_HighwayAngleBetweenRecords(&g_HighwaySlotHeads[0], &g_HighwaySlotHeads[frame.actorIndex]);
                             if (frame.angleBetween < 0) {
-                                frame.angleBetween += 0x1000;
+                                frame.angleBetween += 0x1000 /* 360 deg */;
                             }
                             frame.angleInRange = 0;
                             if (frame.slotActor->timer < 0) {
@@ -1036,11 +1036,11 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
                 }
                 if (frame.neighborFlag == 1) {
                     Mini_HighwaySendChannelCommandA0(g_HighwaySoundParam, 2);
-                    Mini_HighwayDispatchSoundCategory(0x12, 2, -0x1E);
+                    Mini_HighwayDispatchSoundCategory(0x12, 2, -30);
                     Mini_HighwaySendChannelCommandB0(0, 2);
                     for (frame.actorIndex = 2; frame.actorIndex <= 4; frame.actorIndex++) {
                         if ((&frame.nearFlags)[frame.actorIndex] == 1) {
-                            Mini_HighwayActorApplyHit(frame.actorIndex, 0x32);
+                            Mini_HighwayActorApplyHit(frame.actorIndex, 50);
                         }
                     }
                 }
@@ -1054,10 +1054,10 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
                 frame.slotActor->lateralOffset = -g_HighwayActorZOffset;
             }
             frame.delta = (short)frame.slotActor->lateralOffset;
-            if (rand() % 0xA == 0) {
+            if (rand() % 10 == 0) {
                 frame.slotActor->animDirty = 1;
             }
-            if (rand() % 0x1E == 0) {
+            if (rand() % 30 == 0) {
                 if (frame.slotActor->animCountA == 0) {
                     Mini_HighwayDispatchSoundCategory(0x12D, 2, 0);
                 }
@@ -1071,15 +1071,15 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
             frame.slotActor->useConfigA = 1;
             frame.slotActor->useConfigB = 1;
             frame.slotActor->configIndexA = 6;
-            frame.slotActor->animFrameA = 0x49 - frame.slotActor->counter;
+            frame.slotActor->animFrameA = 73 - frame.slotActor->counter;
             frame.slotActor->configIndexB = 1;
-            frame.slotActor->animFrameB = 0x49 - frame.slotActor->counter;
+            frame.slotActor->animFrameB = 73 - frame.slotActor->counter;
         }
         frame.angles[2] += frame.delta;
-        if (frame.delta > -0x32 && frame.delta < 0x32) {
+        if (frame.delta > -50 && frame.delta < 50) {
             frame.delta = 0;
         }
-        frame.clampedIndex = (frame.delta >> 4) + (frame.slotActor->angle >> 0xA) + 0x12;
+        frame.clampedIndex = (frame.delta >> 4) + (frame.slotActor->angle >> 10) + 18;
         if (frame.clampedIndex < g_HighwaySlotMinIndex) {
             frame.clampedIndex = g_HighwaySlotMinIndex;
         } else if (frame.clampedIndex > g_HighwaySlotMaxIndex) {
@@ -1104,7 +1104,7 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
             }
             frame.slotActor->useConfigB = 1;
             frame.slotActor->configIndexB = 3;
-            frame.slotActor->animFrameB = 0x12 - frame.slotActor->stunTimer;
+            frame.slotActor->animFrameB = 18 - frame.slotActor->stunTimer;
         }
         if (frame.slotActor->animCountdown > 1) {
             if (frame.slotActor->animCountdown > 2) {
@@ -1114,11 +1114,11 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
             frame.slotActor->useConfigA = 1;
             frame.slotActor->configIndexB = 2;
             frame.slotActor->configIndexA = 1;
-            frame.slotActor->animFrameB = 0x31 - frame.slotActor->animCountdown;
-            frame.slotActor->animFrameA = 0x31 - frame.slotActor->animCountdown;
+            frame.slotActor->animFrameB = 49 - frame.slotActor->animCountdown;
+            frame.slotActor->animFrameA = 49 - frame.slotActor->animCountdown;
         }
         frame.delta = frame.farAngles[1] - frame.angles[1];
-        if (frame.delta > 0x800) {
+        if (frame.delta > 2048) {
             frame.delta -= 0x1000;
         }
         if (frame.delta < -2048) {
@@ -1141,7 +1141,7 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
         g_pHighwayFieldManager->load(g_HighwaySlotBaseIndex + (frame.slotActor->posZ >> 8), frame.slotActor->posX >> 8, &frame.nearPoint[0], (int *)&frame.angles[0]);
         g_pHighwayFieldManager->load(g_HighwaySlotBaseIndex + (frame.slotActor->posZ >> 8) + 0xFA0, frame.slotActor->posX >> 8, &frame.farPoint[0], (int *)&frame.farAngles[0]);
         frame.delta = frame.farAngles[1] - frame.angles[1] >> 1;
-        if (frame.delta > 0x800) {
+        if (frame.delta > 2048) {
             frame.delta -= 0x1000;
         }
         if (frame.delta < -2048) {
@@ -1152,8 +1152,8 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
         if (frame.clampedIndex < 1) {
             frame.clampedIndex = 1;
         }
-        if (frame.clampedIndex > 0x11) {
-            frame.clampedIndex = 0x11;
+        if (frame.clampedIndex > 17) {
+            frame.clampedIndex = 17;
         }
         if (frame.delta != 0 && frame.slotActor->useConfigA == 0) {
             frame.slotActor->useConfigA = 1;
@@ -1166,10 +1166,10 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
             }
             frame.slotActor->useConfigA = 1;
             frame.slotActor->configIndexA = 2;
-            frame.slotActor->animFrameA = 0x1C - frame.slotActor->timer;
+            frame.slotActor->animFrameA = 28 - frame.slotActor->timer;
             frame.slotActor->useConfigB = 1;
             frame.slotActor->configIndexB = 1;
-            frame.slotActor->animFrameB = 0x1C - frame.slotActor->timer;
+            frame.slotActor->animFrameB = 28 - frame.slotActor->timer;
         }
         if (frame.slotActor->state == HIGHWAY_SLOT_STATE_DESTROYED) {
             if ((frame.slotActor->counter)-- == 0) {
@@ -1177,10 +1177,10 @@ void __cdecl Mini_HighwayUpdateSlotTransform(int slotIndex)
             }
             frame.slotActor->useConfigA = 1;
             frame.slotActor->configIndexA = frame.slotActor->variant + 3;
-            frame.slotActor->animFrameA = 0x3B - frame.slotActor->counter;
+            frame.slotActor->animFrameA = 59 - frame.slotActor->counter;
             frame.slotActor->useConfigB = 1;
             frame.slotActor->configIndexB = frame.slotActor->variant + 2;
-            frame.slotActor->animFrameB = 0x3B - frame.slotActor->counter;
+            frame.slotActor->animFrameB = 59 - frame.slotActor->counter;
             frame.slotActor->lateralOffset += 0x200;
             frame.slotActor->posZ -= frame.slotActor->lateralOffset;
             frame.effectRecord = (HighwayEffectPoolEntry *)Mini_HighwaySpawnEffect(frame.nearPoint[0], frame.nearPoint[1], frame.nearPoint[2], 2, 0xAA);
@@ -1579,10 +1579,10 @@ void __cdecl Mini_HighwayActorApplyCollisionVelocity(short slotA, short slotB, i
     }
     angle = angle % 0x1000;
     if (angle < 0) {
-        angle += 0x1000;
+        angle += 0x1000 /* 360 deg */;
     }
-    impulseZ = SinFixed(angle) * 0x1388 >> 0xB;
-    impulseX = CosFixed(angle) * 0x1388 >> 0xC;
+    impulseZ = SinFixed(angle) * 0x1388 >> 11;
+    impulseX = CosFixed(angle) * 0x1388 >> 12;
     if (slotA != 0) {
         g_HighwaySlotStates[slotA].velocityX = impulseX;
         g_HighwaySlotStates[slotA].velocityZ = impulseZ;
@@ -1599,24 +1599,24 @@ void __cdecl Mini_HighwayActorApplyCollisionVelocity(short slotA, short slotB, i
         g_HighwaySlotStates[slotB].velocityZ = 0;
     }
     if (g_HighwaySlotStates[slotB].state == HIGHWAY_SLOT_STATE_DESTROYED && g_HighwaySlotStates[slotA].state != HIGHWAY_SLOT_STATE_DESTROYED && slotA > 1 && slotB > 1) {
-        Mini_HighwayActorApplyHit(slotA, 0xF);
+        Mini_HighwayActorApplyHit(slotA, 15);
     }
     if (g_HighwaySlotStates[slotA].state == HIGHWAY_SLOT_STATE_DESTROYED && g_HighwaySlotStates[slotB].state != HIGHWAY_SLOT_STATE_DESTROYED && slotA > 1 && slotB > 1) {
-        Mini_HighwayActorApplyHit(slotB, 0xF);
+        Mini_HighwayActorApplyHit(slotB, 15);
     }
     if (slotA == 1 && slotB != 0) {
         Mini_HighwayActorDirectionalCue(slotB, angle);
     }
     if (slotA == 0) {
         if (slotB != 1) {
-            Mini_HighwayDamageCharacter(0, 0x40);
+            Mini_HighwayDamageCharacter(0, 64);
         }
         if (g_HighwaySlotStates[slotB].state != HIGHWAY_SLOT_STATE_DESTROYED && slotB != 1) {
             Mini_HighwayActorApplyHit(slotB, 1);
         }
     }
     if (slotB == 5) {
-        Mini_HighwayActorApplyHit(slotA, 0x14);
+        Mini_HighwayActorApplyHit(slotA, 20);
     }
 }
 /*
@@ -1638,15 +1638,15 @@ void __cdecl Mini_HighwayActorApplyHit(int slotIndex, int amount)
     case HIGHWAY_SLOT_MODE_ESCORTED:
         angle = Mini_HighwayAngleBetweenRecords(&g_HighwaySlotHeads[slotIndex], &g_HighwaySlotHeads[1]);
         slotPointer->state = HIGHWAY_SLOT_STATE_HIT;
-        slotPointer->stunTimer = 0x12;
+        slotPointer->stunTimer = 18;
         break;
     case HIGHWAY_SLOT_MODE_ENEMY:
         if (slotPointer->hp < 1) {
-            g_HighwayCurrentScore += 0x1F4;
-            Mini_HighwayDispatchSoundCategory(0x138, 1, 0xA);
+            g_HighwayCurrentScore += 500;
+            Mini_HighwayDispatchSoundCategory(0x138, 1, 10);
             slotPointer->state = HIGHWAY_SLOT_STATE_DESTROYED;
             slotPointer->variant = rand() % 3;
-            slotPointer->counter = 0x3B;
+            slotPointer->counter = 59;
             slotPointer->lateralOffset = 0;
             slotPointer->partCount -= 1;
             if (g_HighwayActiveSlotCount != 1) {
@@ -1659,7 +1659,7 @@ void __cdecl Mini_HighwayActorApplyHit(int slotIndex, int amount)
         } else {
             slotPointer->hp -= amount;
             slotPointer->state = HIGHWAY_SLOT_STATE_HIT;
-            slotPointer->timer = 0x1C;
+            slotPointer->timer = 28;
             header->freezeQueued = 1;
         }
         break;
@@ -1675,21 +1675,21 @@ void __cdecl Mini_HighwayActorDirectionalCue(int slotIndex, int angle)
 
     target = &g_HighwaySlotHeads[1];
     if (g_HighwayCurrentScore > 0) {
-        g_HighwayCurrentScore -= 0x32;
+        g_HighwayCurrentScore -= 50;
     }
-    angle += 0x800;
+    angle += 0x800 /* 180 deg */;
     angle = angle % 0x1000;
     if (angle >= 0 && angle < 0x400) {
-        Mini_HighwayDamageCharacter(2, 0x190);
+        Mini_HighwayDamageCharacter(2, 400);
     }
     if (angle >= 0x400 && angle < 0x800) {
-        Mini_HighwayDamageCharacter(3, 0x190);
+        Mini_HighwayDamageCharacter(3, 400);
     }
     if (angle >= 0x800 && angle < 0xC00) {
-        Mini_HighwayDamageCharacter(1, 0x190);
+        Mini_HighwayDamageCharacter(1, 400);
     }
     if (angle >= 0xC00 && angle < 0x1000) {
-        Mini_HighwayDamageCharacter(4, 0x190);
+        Mini_HighwayDamageCharacter(4, 400);
     }
     target->hideQueued = 1;
 }
@@ -1710,21 +1710,21 @@ void __cdecl Mini_HighwayActorIntegrateMotion(int slotIndex, int unused)
     value = 0;
     actor = &g_HighwaySlotStates[slotIndex];
     if (actor->isFlyingAway != 0) {
-        speed = 0xFA0;
+        speed = 4000;
         actor->targetAngle = 0xC00;
-        actor->velocityX += CosFixed(actor->targetAngle) * speed >> 0xC;
-        actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 0xB;
-        actor->velocityX = (actor->velocityX << 3) / 0xA;
-        actor->velocityZ = (actor->velocityZ << 3) / 0xA;
+        actor->velocityX += CosFixed(actor->targetAngle) * speed >> 12;
+        actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 11;
+        actor->velocityX = (actor->velocityX << 3) / 10;
+        actor->velocityZ = (actor->velocityZ << 3) / 10;
         actor->posX += actor->velocityX;
         actor->posZ += actor->velocityZ;
-        if (actor->posZ < -0x1388) {
+        if (actor->posZ < -5000) {
             Mini_HighwayDespawnSlot(slotIndex);
         }
     } else {
         switch (actor->aiMode) {
         case HIGHWAY_SLOT_MODE_BOSS:
-            speed = 0x3E8;
+            speed = 1000;
             if (actor->state == HIGHWAY_SLOT_STATE_HIT) {
                 speed = 0;
             }
@@ -1735,56 +1735,56 @@ void __cdecl Mini_HighwayActorIntegrateMotion(int slotIndex, int unused)
             /* Numeric active enemy bike count (1..3). */
             switch ((char)g_HighwayActiveSlotCount) {
             case 1:
-                speed = 0x3E8;
+                speed = 1000;
                 actor->targetAngle = targetAngle;
             case 2:
-                speed = 0x3E8;
+                speed = 1000;
                 actor->targetAngle = targetAngle;
             case 3:
-                speed = 0x3E8;
+                speed = 1000;
                 actor->targetAngle = targetAngle;
             }
-            if (slotDistance < 0x1F4 && g_HighwaySlotStates[0].timer != 0) {
-                speed = 0x514;
+            if (slotDistance < 500 && g_HighwaySlotStates[0].timer != 0) {
+                speed = 1300;
                 actor->targetAngle = slotAngle + 0x800;
             }
             if (actor->minPosZ > actor->posZ) {
-                speed = 0x7D0;
+                speed = 2000;
                 actor->targetAngle = 0x400;
             }
-            actor->velocityX += CosFixed(actor->targetAngle) * speed >> 0xC;
-            actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 0xB;
-            actor->velocityX = (actor->velocityX << 3) / 0xA;
-            actor->velocityZ = (actor->velocityZ << 3) / 0xA;
+            actor->velocityX += CosFixed(actor->targetAngle) * speed >> 12;
+            actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 11;
+            actor->velocityX = (actor->velocityX << 3) / 10;
+            actor->velocityZ = (actor->velocityZ << 3) / 10;
             actor->posX += actor->velocityX;
             actor->posZ += actor->velocityZ;
             break;
         case HIGHWAY_SLOT_MODE_BOSS_CHARGE:
-            speed = 0x320;
+            speed = 800;
             if (actor->state == HIGHWAY_SLOT_STATE_HIT) {
                 speed = 0;
             }
             actor->targetAngle = Mini_HighwayAngleBetweenRecords(&g_HighwaySlotHeads[slotIndex], &g_HighwaySlotHeads[1]);
             if (actor->minPosZ > actor->posZ) {
-                speed = 0x7D0;
+                speed = 2000;
                 actor->targetAngle = 0x400;
             }
-            actor->velocityX += CosFixed(actor->targetAngle) * speed >> 0xC;
-            actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 0xB;
-            actor->velocityX = (actor->velocityX << 3) / 0xA;
-            actor->velocityZ = (actor->velocityZ << 3) / 0xA;
+            actor->velocityX += CosFixed(actor->targetAngle) * speed >> 12;
+            actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 11;
+            actor->velocityX = (actor->velocityX << 3) / 10;
+            actor->velocityZ = (actor->velocityZ << 3) / 10;
             actor->posX += actor->velocityX;
             actor->posZ += actor->velocityZ;
             break;
         case HIGHWAY_SLOT_MODE_BOSS_RETREAT:
-            speed = 0x320;
+            speed = 800;
             if (actor->state == HIGHWAY_SLOT_STATE_HIT) {
                 speed = 0;
             }
             targetAngle = Mini_HighwayAngleBetweenRecords(&g_HighwaySlotHeads[slotIndex], &g_HighwaySlotHeads[1]);
             slotAngle = Mini_HighwayAngleBetweenRecords(&g_HighwaySlotHeads[slotIndex], &g_HighwaySlotHeads[0]);
-            if (actor->wanderTimer == 0 && rand() % 0x64 == 0) {
-                actor->wanderTimer = rand() % 0x5A;
+            if (actor->wanderTimer == 0 && rand() % 100 == 0) {
+                actor->wanderTimer = rand() % 90;
             }
             if (actor->wanderTimer == 0) {
                 actor->targetAngle = targetAngle;
@@ -1793,13 +1793,13 @@ void __cdecl Mini_HighwayActorIntegrateMotion(int slotIndex, int unused)
                 (actor->wanderTimer)--;
             }
             if (actor->minPosZ > actor->posZ) {
-                speed = 0x7D0;
+                speed = 2000;
                 actor->targetAngle = 0x400;
             }
-            actor->velocityX += CosFixed(actor->targetAngle) * speed >> 0xC;
-            actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 0xB;
-            actor->velocityX = (actor->velocityX << 3) / 0xA;
-            actor->velocityZ = (actor->velocityZ << 3) / 0xA;
+            actor->velocityX += CosFixed(actor->targetAngle) * speed >> 12;
+            actor->velocityZ += SinFixed(actor->targetAngle) * speed >> 11;
+            actor->velocityX = (actor->velocityX << 3) / 10;
+            actor->velocityZ = (actor->velocityZ << 3) / 10;
             actor->posX += actor->velocityX;
             actor->posZ += actor->velocityZ;
         }

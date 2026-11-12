@@ -114,10 +114,10 @@ void __cdecl Submarine_DrawAtlasQuad(int originX, int originY, short srcX, short
             srcY <<= 1;
             width <<= 1;
             height <<= 1;
-            xUpperHalf = srcX >= 0x100;
-            crossesX = srcX + width > 0x100;
-            sourceYHigh = srcY >= 0x100;
-            crossYFlag = srcY + height > 0x100;
+            xUpperHalf = srcX >= 256;
+            crossesX = srcX + width > 256;
+            sourceYHigh = srcY >= 256;
+            crossYFlag = srcY + height > 256;
             if (xUpperHalf == crossesX && sourceYHigh == crossYFlag) {
                 quadCase = xUpperHalf << 1 | sourceYHigh;
                 switch (quadCase) {
@@ -128,17 +128,17 @@ void __cdecl Submarine_DrawAtlasQuad(int originX, int originY, short srcX, short
                     break;
                 case SUBMARINE_ATLAS_PAGE_BOTTOM_LEFT:
                     atlasX = srcX;
-                    srcYNext = srcY - 0x100;
+                    srcYNext = srcY - 256;
                     quadBatch = (GfxRenderObject *)batchC;
                     break;
                 case SUBMARINE_ATLAS_PAGE_TOP_RIGHT:
-                    atlasX = srcX - 0x100;
+                    atlasX = srcX - 256;
                     srcYNext = srcY;
                     quadBatch = (GfxRenderObject *)batchB;
                     break;
                 case SUBMARINE_ATLAS_PAGE_BOTTOM_RIGHT:
-                    atlasX = srcX - 0x100;
-                    srcYNext = srcY - 0x100;
+                    atlasX = srcX - 256;
+                    srcYNext = srcY - 256;
                     quadBatch = (GfxRenderObject *)batchD;
                 }
                 if (AcquireBatchNode(1, quadBatch) != 0) {
@@ -200,11 +200,11 @@ void __cdecl Submarine_DrawAtlasQuad(int originX, int originY, short srcX, short
                 case SUBMARINE_ATLAS_SPLIT_X_BOTTOM:
                     atlasX = srcX;
                     srcYNext = srcY;
-                    remainingWidth = 0x100 - srcX;
+                    remainingWidth = 256 - srcX;
                     firstHeight = height;
                     rightSourceX = 0;
                     srcYSecond = srcY;
-                    widthRight = srcX + width + -0x100;
+                    widthRight = srcX + width + -256;
                     hLower = height;
                     quadBatch = (GfxRenderObject *)((quadCase == SUBMARINE_ATLAS_SPLIT_X_TOP) ? batch : batchC);
                     if (AcquireBatchNode(1, quadBatch) != 0) {
@@ -295,11 +295,11 @@ void __cdecl Submarine_DrawAtlasQuad(int originX, int originY, short srcX, short
                     atlasX = srcX;
                     srcYNext = srcY;
                     remainingWidth = width;
-                    firstHeight = 0x100 - srcY;
+                    firstHeight = 256 - srcY;
                     rightSourceX = srcX;
                     srcYSecond = 0;
                     widthRight = width;
-                    hLower = srcY + height + -0x100;
+                    hLower = srcY + height + -256;
                     quadBatch = (GfxRenderObject *)((quadCase == SUBMARINE_ATLAS_SPLIT_Y_LEFT) ? batch : batchB);
                     if (AcquireBatchNode(1, quadBatch) != 0) {
                         uOrigin = (float)atlasX * 0.00390625f;
@@ -387,12 +387,12 @@ void __cdecl Submarine_DrawAtlasQuad(int originX, int originY, short srcX, short
                 case SUBMARINE_ATLAS_SPLIT_XY:
                     atlasX = srcX;
                     srcYNext = srcY;
-                    remainingWidth = 0x100 - srcX;
-                    firstHeight = 0x100 - srcY;
+                    remainingWidth = 256 - srcX;
+                    firstHeight = 256 - srcY;
                     rightSourceX = 0;
                     srcYSecond = srcY;
-                    widthRight = srcX + width + -0x100;
-                    hLower = 0x100 - srcY;
+                    widthRight = srcX + width + -256;
+                    hLower = 256 - srcY;
                     quadBatch = (GfxRenderObject *)batch;
                     if (AcquireBatchNode(1, quadBatch) != 0) {
                         uOrigin = (float)atlasX * 0.00390625f;
@@ -479,9 +479,9 @@ void __cdecl Submarine_DrawAtlasQuad(int originX, int originY, short srcX, short
                     *(short *)&originX -= remainingWidth;
                     *(short *)&originY += firstHeight;
                     srcYNext = 0;
-                    firstHeight = srcY + height + -0x100;
+                    firstHeight = srcY + height + -256;
                     srcYSecond = 0;
-                    hLower = srcY + height + -0x100;
+                    hLower = srcY + height + -256;
                     quadBatch = (GfxRenderObject *)batchC;
                     if (AcquireBatchNode(1, quadBatch) != 0) {
                         uOrigin = (float)atlasX * 0.00390625f;

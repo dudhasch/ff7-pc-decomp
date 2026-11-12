@@ -118,7 +118,7 @@ void __cdecl BattleFx_BlueBeginQuestionMarks(int targetMask, int actorIdx)
 
     *(int *)&g_BattleFxDrawListBufferTaskSlotPtr = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SelectDrawListBuffer);
     idx = 0;
-    for (count = 0; idx < 0xA; idx++) {
+    for (count = 0; idx < 10; idx++) {
         if ((targetMask & 1 << idx) != 0) {
             count++;
             if (count == 1) {
@@ -145,7 +145,7 @@ void __cdecl BattleFx_BlueQuestionMarksSetupTask(void)
     task->baseY = 0;
     task->modelScale = 0xDB6;
     task->offset = 0xF254;
-    task->velocity = 0x247;
+    task->velocity = 583;
     spawnTask = (BattleFxQuestionMarksDrifter *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueQuestionMarksSpawnDriftingSpritesTask);
     *(Int64Pair *)&spawnTask->posX = *(Int64Pair *)&task->posX;
     spawnTask->spriteScale = 0x1B6D;
@@ -186,18 +186,18 @@ void __cdecl BattleFx_BlueQuestionMarksTimelineTask(void)
     frame.hatenaDraw = (BattleFxBlueQuestionMarksDraw *)Gfx_GetPsxScratchpadPtr(0);
     frame.hatenaDraw->meshData = (int)&g_BattleBlueQuestionMarksMeshDef;
     frame.hatenaDraw->drawList = g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED;
-    frame.hatenaDraw->stage = 0xC;
+    frame.hatenaDraw->stage = 12;
     frame.hatenaDraw->primCursor = Gfx_GetPsxPacketScratchPtr();
     Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_BattleBlueQuestionMarksLoadedResTable)));
     Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_BattleBlueQuestionMarksLoadedResTable)));
     g_BattleFxActiveDrawListPtr = BattleFx_BlueQuestionMarksDrawPsxMesh((BattleFxBlueQuestionMarksDraw *)frame.hatenaDraw);
-    if (frame.timelineSlot->frameCounter >= 0x18) {
+    if (frame.timelineSlot->frameCounter >= 24) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.timelineSlot->frameCounter == 0x12) {
+    if (frame.timelineSlot->frameCounter == 18) {
         Battle_PostActorHitOrHurtMessage(g_BattleBlueQuestionMarksTargetIndex);
     }
     if (frame.timelineSlot->frameCounter < 6) {
@@ -404,23 +404,23 @@ void __cdecl BattleFx_BlueQuestionMarksSpawnDriftingSpritesTask(void)
         return;
     }
     if (spawner->step >= 6 && spawner->step <= 9) {
-        for (i = 0; i < 0x14; i++) {
+        for (i = 0; i < 20; i++) {
             pDriftSprite = (BattleFxQuestionMarksDriftSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueQuestionMarksDriftingAnimatedSpriteTask);
-            nx.vx = rand() % 0x708 - 0x384;
+            nx.vx = rand() % 1800 - 900;
             nx.vy = 0;
-            nx.vz = rand() % 0x708 - 0x384;
+            nx.vz = rand() % 1800 - 900;
             NormalizeVectorFixed(&nx, &nx);
-            radius = rand() % 0x190 + 0x258;
-            pDriftSprite->posX = spawner->posX + (radius * nx.vx >> 0xC);
+            radius = rand() % 400 + 600;
+            pDriftSprite->posX = spawner->posX + (radius * nx.vx >> 12);
             pDriftSprite->posY = 0;
-            pDriftSprite->posZ = spawner->posZ + (radius * nx.vz >> 0xC);
+            pDriftSprite->posZ = spawner->posZ + (radius * nx.vz >> 12);
             pDriftSprite->scale = spawner->spriteScale;
-            pace = rand() % 0x20 + 0x64;
-            pDriftSprite->velocityX = pace * nx.vx >> 0xC;
-            pDriftSprite->velocityZ = pace * nx.vz >> 0xC;
+            pace = rand() % 32 + 100;
+            pDriftSprite->velocityX = pace * nx.vx >> 12;
+            pDriftSprite->velocityZ = pace * nx.vz >> 12;
         }
     }
-    if (spawner->step >= 0x18) {
+    if (spawner->step >= 24) {
         spawner->ownerSlot = BATTLE_TASK_FREE;
     }
     (spawner->step)++;
@@ -438,7 +438,7 @@ void __cdecl BattleFx_BlueQuestionMarksDriftingAnimatedSpriteTask(void)
     g_BattleBlueQuestionMarksSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleBlueQuestionMarksLoadedResTable);
     g_BattleBlueQuestionMarksSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleBlueQuestionMarksLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueQuestionMarksSpriteReq.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->timer >= 0xB) {
+    if (task->timer >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

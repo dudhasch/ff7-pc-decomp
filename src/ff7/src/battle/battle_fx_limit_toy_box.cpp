@@ -221,24 +221,24 @@ void __cdecl BattleFx_LimitToyBoxASetupTask(void)
     }
     frame.slot = (BattleFxLimitToyBoxASlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxADrawModelTask);
     frame.slot->worldPos = *(Int64Pair *)(&frame.centroid);
-    frame.size = 0x6C0;
+    frame.size = 1728;
     frame.slot->rollZOrRadius = 0;
-    frame.slot->rollStepOrRange = 0xFF00;
+    frame.slot->rollStepOrRange = 0xFF00 /* -256 */;
     frame.slot->rotationY = *(short *)&frame.angle;
     frame.slot->scale = 0;
-    frame.slot->scaleStepOrSpeed = ((frame.size << 0xC) / 0x2EE) / 8;
-    frame.sizeTmp = frame.size * 0x2EE;
-    frame.slot->radialOffset = frame.sizeTmp / 0x28A;
-    frame.slot->heightOffset = frame.sizeTmp / 0x384;
+    frame.slot->scaleStepOrSpeed = ((frame.size << 12) / 750) / 8;
+    frame.sizeTmp = frame.size * 750;
+    frame.slot->radialOffset = frame.sizeTmp / 650;
+    frame.slot->heightOffset = frame.sizeTmp / 900;
     frame.slot = (BattleFxLimitToyBoxASlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxAEmitSpriteQuadsTask);
-    if (frame.size > 0x4F2) {
-        frame.size = 0x4F2;
+    if (frame.size > 1266) {
+        frame.size = 1266;
     }
     frame.slot->worldPos = *(Int64Pair *)(&frame.centroid);
     frame.slot->rollZOrRadius = frame.size / 2;
     frame.slot->rollStepOrRange = frame.slot->rollZOrRadius / 2;
-    frame.slot->scale = (frame.size << 0xC) / 0x15E;
-    frame.slot->scaleStepOrSpeed = frame.size * 0x37 / 0x258;
+    frame.slot->scale = (frame.size << 12) / 350;
+    frame.slot->scaleStepOrSpeed = frame.size * 55 / 600;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleLimitToyBoxTargetMask), 0xA4);
 }
 
@@ -296,20 +296,20 @@ void __cdecl BattleFx_LimitToyBoxADrawModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.animSlot->timer >= 0x1A) {
+    if (frame.animSlot->timer >= 26) {
         frame.animSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.animSlot->timer == 0x10) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    if (frame.animSlot->timer == 16) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_BattleLimitToyBoxTargetMask & 1 << frame.actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
             }
         }
     }
-    if (frame.animSlot->timer >= 0xA && frame.animSlot->timer < 0xE) {
+    if (frame.animSlot->timer >= 10 && frame.animSlot->timer < 14) {
         frame.animSlot->phase += frame.animSlot->phaseStep;
     }
     if (frame.animSlot->timer < 8) {
@@ -335,24 +335,24 @@ void __cdecl BattleFx_LimitToyBoxAEmitSpriteQuadsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (emitter->frame >= 0xE && emitter->frame <= 0x11) {
-        for (i = 0; i < 0xC; i++) {
+    if (emitter->frame >= 14 && emitter->frame <= 17) {
+        for (i = 0; i < 12; i++) {
             pSprite = (BattleFxToyBoxASpriteQuad *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxASpriteQuadTask);
-            nx.vx = rand() % 0x1000 - 0x800;
+            nx.vx = rand() % 4096 - 2048;
             nx.vy = 0;
-            nx.vz = rand() % 0x1000 - 0x800;
+            nx.vz = rand() % 4096 - 2048;
             NormalizeVectorFixed(&nx, &nx);
             radius = emitter->spreadCenter - emitter->spreadHalfRange + rand() % (emitter->spreadHalfRange << 1);
-            pSprite->posX = emitter->posX + (radius * nx.vx >> 0xC);
+            pSprite->posX = emitter->posX + (radius * nx.vx >> 12);
             pSprite->height = emitter->posY;
-            pSprite->posY = emitter->posZ + (radius * nx.vz >> 0xC);
+            pSprite->posY = emitter->posZ + (radius * nx.vz >> 12);
             pSprite->angle = emitter->angle;
-            burst = emitter->baseSpeed + rand() % 0x20;
-            pSprite->velocityX = burst * nx.vx >> 0xC;
-            pSprite->velocityY = burst * nx.vz >> 0xC;
+            burst = emitter->baseSpeed + rand() % 32;
+            pSprite->velocityX = burst * nx.vx >> 12;
+            pSprite->velocityY = burst * nx.vz >> 12;
         }
     }
-    if (emitter->frame >= 0x1A) {
+    if (emitter->frame >= 26) {
         emitter->state = BATTLE_TASK_FREE;
     }
     (emitter->frame)++;
@@ -410,21 +410,21 @@ void __cdecl BattleFx_LimitToyBoxBSetupTask(void)
     frame.zeroShort = 0;
     frame.particle = (BattleFxToyBoxBParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxSharedDrawModelTask);
     frame.particle->worldPos = *(Int64Pair *)(&frame.centroid);
-    frame.particle->spawnRadiusMax = rand() % 0x1000;
+    frame.particle->spawnRadiusMax = rand() % 4096;
     frame.scaleSource = 0x6A4;
-    frame.particle->scale = (frame.scaleSource << 0xC) / 0x41A;
+    frame.particle->scale = (frame.scaleSource << 12) / 1050;
     frame.particle->velocityX = 0xF254;
-    frame.particle->velocityY = 0x247;
+    frame.particle->velocityY = 583;
     g_BattleLimitToyBoxTableField = Gfx_ModelTableGetRenderObject(2, g_BattleLimitToyBoxLoadedResTable);
     frame.particle = (BattleFxToyBoxBParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxEmitSpritesTask);
     if (frame.scaleSource > 0x4F2) {
         frame.scaleSource = 0x4F2;
     }
     frame.particle->worldPos = *(Int64Pair *)(&frame.centroid);
-    frame.particle->spawnRadiusMax = 0xA28;
-    frame.particle->spawnRadiusMin = 0x6A4;
-    frame.particle->scale = (frame.scaleSource << 0xC) / 0x15E;
-    frame.particle->emitSpeed = frame.scaleSource * 0x64 / 0x258;
+    frame.particle->spawnRadiusMax = 2600;
+    frame.particle->spawnRadiusMin = 1700;
+    frame.particle->scale = (frame.scaleSource << 12) / 350;
+    frame.particle->emitSpeed = frame.scaleSource * 100 / 600;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleLimitToyBoxTargetMask), 0x85);
 }
 
@@ -470,14 +470,14 @@ void __cdecl BattleFx_LimitToyBoxSharedDrawModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.toyboxModel->step >= 0x1A) {
+    if (frame.toyboxModel->step >= 26) {
         frame.toyboxModel->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.toyboxModel->step == 0x10) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    if (frame.toyboxModel->step == 16) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_BattleLimitToyBoxTargetMask & 1 << frame.actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
             }
@@ -510,23 +510,23 @@ void __cdecl BattleFx_LimitToyBoxEmitSpritesTask(void)
         return;
     }
     if (emitter->step >= 6 && emitter->step <= 9) {
-        for (i = 0; i < 0xC; i++) {
+        for (i = 0; i < 12; i++) {
             pSprite = (BattleFxToyBoxSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxEmittedSpriteTask);
-            nx.vx = rand() % 0x1000 - 0x800;
+            nx.vx = rand() % 4096 - 2048;
             nx.vy = 0;
-            nx.vz = rand() % 0x1000 - 0x800;
+            nx.vz = rand() % 4096 - 2048;
             NormalizeVectorFixed(&nx, &nx);
-            radius = emitter->randMin + rand() % (emitter->randMax - emitter->randMin + 0x64);
-            pSprite->posX = emitter->posX + (radius * nx.vx >> 0xC);
+            radius = emitter->randMin + rand() % (emitter->randMax - emitter->randMin + 100);
+            pSprite->posX = emitter->posX + (radius * nx.vx >> 12);
             pSprite->height = emitter->heightY;
-            pSprite->posY = emitter->posY + (radius * nx.vz >> 0xC);
+            pSprite->posY = emitter->posY + (radius * nx.vz >> 12);
             pSprite->scale = emitter->spriteScale;
-            burst = emitter->emitSpeed + rand() % 0x20;
-            pSprite->velocityX = burst * nx.vx >> 0xC;
-            pSprite->velocityY = burst * nx.vz >> 0xC;
+            burst = emitter->emitSpeed + rand() % 32;
+            pSprite->velocityX = burst * nx.vx >> 12;
+            pSprite->velocityY = burst * nx.vz >> 12;
         }
     }
-    if (emitter->step >= 0x1A) {
+    if (emitter->step >= 26) {
         emitter->ownerSlot = BATTLE_TASK_FREE;
     }
     (emitter->step)++;
@@ -546,7 +546,7 @@ void __cdecl BattleFx_LimitToyBoxEmittedSpriteTask(void)
     g_BattleLimitToyBoxSpriteRequest.frame = task->frameIndex;
     BattleFx_InstallBillboardMatrix((char *)task + 4, (short)task->angle, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleLimitToyBoxSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frameIndex >= 0xB) {
+    if (task->frameIndex >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -584,21 +584,21 @@ void __cdecl BattleFx_LimitToyBoxCSetupTask(void)
     frame.zeroShort = 0;
     frame.particle = (BattleFxToyBoxBParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxSharedDrawModelTask);
     frame.particle->worldPos = *(Int64Pair *)(&frame.centroid);
-    frame.particle->spawnRadiusMax = rand() % 0x1000;
+    frame.particle->spawnRadiusMax = rand() % 4096;
     frame.scaleSource = 0x5DC;
-    frame.particle->scale = (frame.scaleSource << 0xC) / 0x578;
+    frame.particle->scale = (frame.scaleSource << 12) / 1400;
     frame.particle->velocityX = 0xF254;
-    frame.particle->velocityY = 0x247;
+    frame.particle->velocityY = 583;
     g_BattleLimitToyBoxTableField = Gfx_ModelTableGetRenderObject(3, g_BattleLimitToyBoxLoadedResTable);
     frame.particle = (BattleFxToyBoxBParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxEmitSpritesTask);
     if (frame.scaleSource > 0x4F2) {
         frame.scaleSource = 0x4F2;
     }
     frame.particle->worldPos = *(Int64Pair *)(&frame.centroid);
-    frame.particle->spawnRadiusMax = 0x8FC;
-    frame.particle->spawnRadiusMin = 0x578;
-    frame.particle->scale = (frame.scaleSource << 0xC) / 0x15E;
-    frame.particle->emitSpeed = frame.scaleSource * 0x64 / 0x258;
+    frame.particle->spawnRadiusMax = 2300;
+    frame.particle->spawnRadiusMin = 1400;
+    frame.particle->scale = (frame.scaleSource << 12) / 350;
+    frame.particle->emitSpeed = frame.scaleSource * 100 / 600;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleLimitToyBoxTargetMask), 0x85);
 }
 
@@ -629,21 +629,21 @@ void __cdecl BattleFx_LimitToyBoxDSetupTask(void)
     frame.zeroShort = 0;
     frame.particle = (BattleFxToyBoxBParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxSharedDrawModelTask);
     frame.particle->worldPos = *(Int64Pair *)(&frame.centroid);
-    frame.particle->spawnRadiusMax = rand() % 0x1000;
+    frame.particle->spawnRadiusMax = rand() % 4096;
     frame.scaleSource = 0x384;
-    frame.particle->scale = (frame.scaleSource << 0xC) / 0x320;
+    frame.particle->scale = (frame.scaleSource << 12) / 800;
     frame.particle->velocityX = 0xF254;
-    frame.particle->velocityY = 0x247;
+    frame.particle->velocityY = 583;
     g_BattleLimitToyBoxTableField = Gfx_ModelTableGetRenderObject(4, g_BattleLimitToyBoxLoadedResTable);
     frame.particle = (BattleFxToyBoxBParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToyBoxEmitSpritesTask);
     if (frame.scaleSource > 0x4F2) {
         frame.scaleSource = 0x4F2;
     }
     frame.particle->worldPos = *(Int64Pair *)(&frame.centroid);
-    frame.particle->spawnRadiusMax = 0x578;
-    frame.particle->spawnRadiusMin = 0x384;
-    frame.particle->scale = (frame.scaleSource << 0xC) / 0x15E;
-    frame.particle->emitSpeed = frame.scaleSource * 0x64 / 0x258;
+    frame.particle->spawnRadiusMax = 1400;
+    frame.particle->spawnRadiusMin = 900;
+    frame.particle->scale = (frame.scaleSource << 12) / 350;
+    frame.particle->emitSpeed = frame.scaleSource * 100 / 600;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleLimitToyBoxTargetMask), 0x85);
 }
 } /* extern "C" */

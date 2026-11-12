@@ -69,7 +69,7 @@ void __cdecl Field_DrawGatewayArrows(void *matrix, FieldGatewayBox *gatewayBoxes
         SetRotMatrix(matrix);
         SetTransMatrix(matrix);
         SetGeomOffset(g_FieldDisplayOffsetX, g_FieldDisplayHeight);
-        for (frame.gatewayIndex = 0; frame.gatewayIndex < 0xC; frame.gatewayIndex++) {
+        for (frame.gatewayIndex = 0; frame.gatewayIndex < 12; frame.gatewayIndex++) {
             if (g_pFieldScrollBounds->gatewayArrowShown[frame.gatewayIndex] == 1) {
                 frame.centerX = (gatewayBoxes[frame.gatewayIndex].x0 + gatewayBoxes[frame.gatewayIndex].x1) / 2;
                 frame.centerY = (gatewayBoxes[frame.gatewayIndex].y0 + gatewayBoxes[frame.gatewayIndex].y1) / 2;
@@ -102,7 +102,7 @@ void __cdecl Field_DrawGatewayArrows(void *matrix, FieldGatewayBox *gatewayBoxes
                 }
             }
         }
-        for (frame.gatewayIndex = 0; frame.gatewayIndex < 0xC; frame.gatewayIndex++) {
+        for (frame.gatewayIndex = 0; frame.gatewayIndex < 12; frame.gatewayIndex++) {
             if (g_pFieldScrollBounds->triggerMarkers[frame.gatewayIndex].state != 0) {
                 frame.centerX = g_pFieldScrollBounds->triggerMarkers[frame.gatewayIndex].x;
                 frame.centerY = g_pFieldScrollBounds->triggerMarkers[frame.gatewayIndex].y;

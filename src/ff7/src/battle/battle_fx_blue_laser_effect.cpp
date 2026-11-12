@@ -101,7 +101,7 @@ void __cdecl BattleFx_BlueBeginLaser(int targetMask, int actorIdx)
 
     g_BattleFxDrawListBufferTaskSlotPtr = (unsigned char *)BATTLE_NEW_TASK_SLOT(BattleFx_LaserSelectDrawListBuffer);
     idx = 0;
-    for (count = 0; idx < 0xA; idx++) {
+    for (count = 0; idx < 10; idx++) {
         if ((targetMask & 1 << idx) != 0) {
             count++;
             if (count == 1) {
@@ -131,15 +131,15 @@ void __cdecl BattleFx_BlueLaserSetupTask(void)
     task = (BattleFxLaserSetupSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueLaserSpawnRibbonsTask);
     Battle_GetBoneWorldPos(g_BattleBlueLaserState.actorIndex, g_BattleActorRecords[g_BattleBlueLaserState.actorIndex].targetBone, &task->bonePos.x);
     rad = g_BattleActorRecords[g_BattleBlueLaserState.actorIndex].radius + 0xAA;
-    if (rad > 0x4F2) {
+    if (rad > 1266) {
         rad = 0x4F2;
     }
     task->jitterRadius = rad;
     task->stepIndex = 0;
     Battle_GetBoneWorldPos(g_BattleBlueLaserTargetMask, g_BattleActorRecords[g_BattleBlueLaserTargetMask].targetBone, &g_BattleBlueLaserState.target.x);
-    g_BattleBlueLaserState.range = g_BattleActorRecords[g_BattleBlueLaserTargetMask].radius + 0x12C;
-    if (g_BattleBlueLaserState.range > 0x76C) {
-        g_BattleBlueLaserState.range = 0x76C;
+    g_BattleBlueLaserState.range = g_BattleActorRecords[g_BattleBlueLaserTargetMask].radius + 300;
+    if (g_BattleBlueLaserState.range > 1900) {
+        g_BattleBlueLaserState.range = 1900;
     }
 }
 
@@ -200,16 +200,16 @@ void __cdecl BattleFx_BlueLaserSpawnRibbonsTask(void)
     frame.spawnFrameH = 6;
     frame.spawnFrameI = 8;
     frame.spawnFrameJ = 9;
-    frame.spawnFrameK = 0xA;
-    frame.spawnFrameL = 0xB;
+    frame.spawnFrameK = 10;
+    frame.spawnFrameL = 11;
     frame.reazerSlot = (BattleFxLaserSpawnSlot *)BATTLE_CURRENT_TASK_SLOT;
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.reazerSlot->stepIndex < 0xC) {
+    if (frame.reazerSlot->stepIndex < 12) {
         frame.jitterRadius = frame.reazerSlot->jitterRadius;
         frame.jitterRange = frame.jitterRadius << 1;
-        for (frame.tableIndex = 0; frame.tableIndex < 0xC; frame.tableIndex++) {
+        for (frame.tableIndex = 0; frame.tableIndex < 12; frame.tableIndex++) {
             if (frame.reazerSlot->frameCounter != (&frame.spawnFrameA)[frame.tableIndex]) {
                 continue;
             }
@@ -243,18 +243,18 @@ void __cdecl BattleFx_BlueLaserSpawnRibbonsTask(void)
             TransformVectorToInt32((PsxMatrix *)&frame.rotMatrix, &frame.vecX, &frame.vecX);
             *(BattleVec4i *)&g_BattleBlueLaserState.ribbons[frame.ribbonIndex].aimDirX = *(BattleVec4i *)&frame.dirX;
             *(BattleVec4i *)&g_BattleBlueLaserState.ribbons[frame.ribbonIndex].velocityX = *(BattleVec4i *)&frame.vecX;
-            for (frame.tmpSpread = 0; frame.tmpSpread < 0x18; frame.tmpSpread++) {
+            for (frame.tmpSpread = 0; frame.tmpSpread < 24; frame.tmpSpread++) {
                 g_BattleBlueLaserState.ribbons[frame.ribbonIndex].trail[frame.tmpSpread].w = 0;
             }
         }
     }
     if (g_BattleBlueLaserState.ribbonCount >= 8) {
-        if (g_BattleBlueLaserState.spawnStep == 0xF) {
+        if (g_BattleBlueLaserState.spawnStep == 15) {
             Battle_PostActorHitOrHurtMessage(g_BattleBlueLaserState.actorIndex);
         }
         g_BattleBlueLaserState.spawnStep++;
     }
-    if (g_BattleBlueLaserState.spawnStep >= 0x14) {
+    if (g_BattleBlueLaserState.spawnStep >= 20) {
         frame.reazerSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.reazerSlot->frameCounter)++;
@@ -310,17 +310,17 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
         frame.ribbon->speed = g_BattleBlueLaserState.range / 8;
         frame.ribbon->waveAmplitude = g_BattleBlueLaserState.range + (g_BattleBlueLaserState.range >> 1);
     case BATTLE_BLUE_LASER_RIBBON_RISE:
-        frame.stepX = frame.ribbon->speed * frame.ribbon->velocityX >> 0xC;
-        frame.stepY = frame.ribbon->speed * frame.ribbon->velocityY >> 0xC;
-        frame.stepZ = frame.ribbon->speed * frame.ribbon->velocityZ >> 0xC;
+        frame.stepX = frame.ribbon->speed * frame.ribbon->velocityX >> 12;
+        frame.stepY = frame.ribbon->speed * frame.ribbon->velocityY >> 12;
+        frame.stepZ = frame.ribbon->speed * frame.ribbon->velocityZ >> 12;
         frame.ribbon->pos.x += frame.stepX;
         frame.ribbon->pos.y += frame.stepY;
         frame.ribbon->pos.z += frame.stepZ;
         frame.tmpAngle = frame.ribbonStep + 1 << 8;
-        frame.sinOffset = SinFixed(frame.tmpAngle) * frame.ribbon->waveAmplitude >> 0xC;
-        *(short *)&frame.pointX = frame.ribbon->pos.x + (frame.sinOffset * -frame.ribbon->aimDirX >> 0xC);
-        frame.pointY = frame.ribbon->pos.y + (frame.sinOffset * -frame.ribbon->aimDirY >> 0xC);
-        *(short *)&frame.pointZ = frame.ribbon->pos.z + (frame.sinOffset * -frame.ribbon->aimDirZ >> 0xC);
+        frame.sinOffset = SinFixed(frame.tmpAngle) * frame.ribbon->waveAmplitude >> 12;
+        *(short *)&frame.pointX = frame.ribbon->pos.x + (frame.sinOffset * -frame.ribbon->aimDirX >> 12);
+        frame.pointY = frame.ribbon->pos.y + (frame.sinOffset * -frame.ribbon->aimDirY >> 12);
+        *(short *)&frame.pointZ = frame.ribbon->pos.z + (frame.sinOffset * -frame.ribbon->aimDirZ >> 12);
         frame.recordTrail = 1;
         if (frame.ribbonStep == 7) {
             frame.ribbon->state = BATTLE_BLUE_LASER_RIBBON_AIM;
@@ -328,8 +328,8 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
         break;
     case BATTLE_BLUE_LASER_RIBBON_AIM:
         frame.ribbon->state = BATTLE_BLUE_LASER_RIBBON_HOME;
-        frame.ribbon->speed = 0x1FB;
-        frame.ribbon->speedAccel = rand() % 0xE + 0xC;
+        frame.ribbon->speed = 507;
+        frame.ribbon->speedAccel = rand() % 14 + 12;
         frame.ribbon->waveAmplitudeStep = (rand() % 8) + 8;
         frame.ribbon->timer = 0;
         frame.ribbon->deltaX = frame.ribbon->target.x - frame.ribbon->pos.x;
@@ -340,20 +340,20 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
         Gte_BuildAxisAngleMatrix(frame.tmpAngle, &frame.rotMatrix, &frame.dirX);
         TransformVectorToInt32(&frame.rotMatrix, &frame.ribbon->velocityX, &frame.ribbon->velocityX);
         frame.ribbon->waveAmplitude = (frame.tmpAngle >> 1) + frame.tmpAngle * 2 + (rand() % 64);
-        frame.ribbon->phaseStep = 0x1000 / ((rand() % 8) + 0xA);
+        frame.ribbon->phaseStep = 4096 / ((rand() % 8) + 10);
         frame.ribbon->phase = frame.ribbon->phaseStep;
         frame.ribbon->phaseStepDecay = (rand() % 8) + 4;
     case BATTLE_BLUE_LASER_RIBBON_HOME:
-        frame.stepX = frame.ribbon->speed * frame.ribbon->deltaX >> 0xC;
-        frame.stepY = frame.ribbon->speed * frame.ribbon->deltaY >> 0xC;
-        frame.stepZ = frame.ribbon->speed * frame.ribbon->deltaZ >> 0xC;
+        frame.stepX = frame.ribbon->speed * frame.ribbon->deltaX >> 12;
+        frame.stepY = frame.ribbon->speed * frame.ribbon->deltaY >> 12;
+        frame.stepZ = frame.ribbon->speed * frame.ribbon->deltaZ >> 12;
         frame.ribbon->pos.x += frame.stepX;
         frame.ribbon->pos.y += frame.stepY;
         frame.ribbon->pos.z += frame.stepZ;
-        frame.sinOffset = SinFixed(frame.ribbon->phase) * frame.ribbon->waveAmplitude >> 0xC;
-        *(short *)&frame.pointX = frame.ribbon->pos.x + (frame.sinOffset * frame.ribbon->velocityX >> 0xC);
-        frame.pointY = frame.ribbon->pos.y + (frame.sinOffset * frame.ribbon->velocityY >> 0xC);
-        *(short *)&frame.pointZ = frame.ribbon->pos.z + (frame.sinOffset * frame.ribbon->velocityZ >> 0xC);
+        frame.sinOffset = SinFixed(frame.ribbon->phase) * frame.ribbon->waveAmplitude >> 12;
+        *(short *)&frame.pointX = frame.ribbon->pos.x + (frame.sinOffset * frame.ribbon->velocityX >> 12);
+        frame.pointY = frame.ribbon->pos.y + (frame.sinOffset * frame.ribbon->velocityY >> 12);
+        *(short *)&frame.pointZ = frame.ribbon->pos.z + (frame.sinOffset * frame.ribbon->velocityZ >> 12);
         frame.ribbon->speed += frame.ribbon->speedAccel;
         frame.ribbon->waveAmplitude += frame.ribbon->waveAmplitudeStep;
         frame.ribbon->phase += frame.ribbon->phaseStep;
@@ -361,7 +361,7 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
         frame.recordTrail = 1;
         if (frame.ribbon->timer != 0) {
             (frame.ribbon->timer)++;
-            if (frame.ribbon->timer >= 0xC) {
+            if (frame.ribbon->timer >= 12) {
                 frame.ribbon->state = BATTLE_BLUE_LASER_RIBBON_IMPACT;
             }
             break;
@@ -397,7 +397,7 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
         if (frame.ribbon->timer == 0) {
             frame.animSlot = (BattleFxMatraMagicAnimSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueLaserAnimatedSpriteTask);
             *(Int64Pair *)&frame.animSlot->posX = *(Int64Pair *)&frame.ribbon->anchor;
-            frame.animSlot->scale = (frame.ribbon->jitterRadius << 0xC) / 0x12C;
+            frame.animSlot->scale = (frame.ribbon->jitterRadius << 12) / 300;
             if (g_BattleBlueLaserState.ribbonCount % 3 == 1) {
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&frame.animSlot->posX), 0xFA);
             }
@@ -439,12 +439,12 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
     frame.headIndex = frame.ribbon->trailTailIndex;
     frame.ribbonBlock->end = frame.ribbon->trail[frame.headIndex];
     frame.ribbonBlock->start = frame.ribbonBlock->end;
-    frame.ribbonBlock->start.x -= 0x64;
-    frame.ribbonBlock->start.y -= 0x64;
-    frame.ribbonBlock->start.z -= 0x64;
+    frame.ribbonBlock->start.x -= 100;
+    frame.ribbonBlock->start.y -= 100;
+    frame.ribbonBlock->start.z -= 100;
     frame.ribbonBlock->colorBottom = 0x10;
     frame.ribbonBlock->baseColor = 0x10;
-    BattleFx_BlueLaserProjectRibbonSegmentQuad(frame.ribbonBlock, 0xC, 0);
+    BattleFx_BlueLaserProjectRibbonSegmentQuad(frame.ribbonBlock, 12, 0);
     frame.tmpAngle = frame.headIndex;
     for (frame.segmentCount = 0;; frame.tmpAngle++, frame.segmentIndex++) {
         if (frame.tmpAngle >= 0x18) {
@@ -480,7 +480,7 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
         }
         frame.ribbonBlock->prevDepth = frame.ribbonBlock->depth;
         frame.ribbonBlock->colorStart = frame.ribbonBlock->colorBottom;
-        BattleFx_BlueLaserProjectRibbonSegmentQuad(frame.ribbonBlock, 0x30, 0);
+        BattleFx_BlueLaserProjectRibbonSegmentQuad(frame.ribbonBlock, 48, 0);
         BattleFx_BlueLaserDrawPsxGouraudQuads(frame.ribbonBlock, frame.segmentIndex, frame.segmentCount, 0);
         if (frame.segmentIndex == frame.segmentCount) {
             for (frame.wordIndex = 0; frame.wordIndex < 4; frame.wordIndex++) {
@@ -489,7 +489,7 @@ void __cdecl BattleFx_BlueLaserRibbonTask(void)
                 frame.ribbonBlock->prevScreenY[frame.wordIndex] = frame.ribbonBlock->screenY[frame.wordIndex];
             }
             frame.ribbonBlock->prevDepth = frame.ribbonBlock->depth;
-            BattleFx_BlueLaserProjectRibbonSegmentQuad(frame.ribbonBlock, 0x1A, 1);
+            BattleFx_BlueLaserProjectRibbonSegmentQuad(frame.ribbonBlock, 26, 1);
             BattleFx_BlueLaserDrawPsxGouraudQuads(frame.ribbonBlock, frame.segmentIndex, frame.segmentCount, 1);
         }
     }
@@ -513,7 +513,7 @@ void __cdecl BattleFx_BlueLaserAnimatedSpriteTask(void)
     (((BattleFxVector3 *)&g_BattleBlueLaserSpriteDrawReq)->limitSparkVectorAt16) = Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueLaserLoadedRes);
     (((BattleFxVector3 *)&g_BattleBlueLaserSpriteDrawReq)->drawObj) = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueLaserLoadedRes);
     g_BattleFxActiveDrawListPtr = (int)BattleFx_SubmitSpriteDraw((char *)&g_BattleBlueLaserSpriteDrawReq + 16, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frame >= 0x11) {
+    if (task->frame >= 17) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -541,7 +541,7 @@ void __cdecl BattleFx_BlueLaserDrawPsxGouraudQuads(BattleFxBlueLaserSegmentWork 
         shadeTail = ribbon->colorBottom;
     } else {
         SetDrawColorRGB(0x68, 0x28, 0x28);
-        cornerIndex = 0x1000 / count * step;
+        cornerIndex = 4096 / count * step;
         Gfx_ShadePsxVertexColor((CVECTOR *)&ribbon->baseColor, cornerIndex, (CVECTOR *)&ribbon->colorBottom);
         colorStartVal = ribbon->colorBottom;
         shadeTail = ribbon->colorStart;
@@ -578,9 +578,9 @@ void __cdecl BattleFx_BlueLaserProjectRibbonSegmentQuad(BattleFxBlueLaserSegment
 
     if (advanceFlag != 0) {
         scale = SqrtToInt(ribbon->deltaLengthSq) >> 2;
-        ribbon->rotation.t[0] += scale * ribbon->deltaX >> 0xC;
-        ribbon->rotation.t[1] += scale * ribbon->deltaY >> 0xC;
-        ribbon->rotation.t[2] += scale * ribbon->deltaZ >> 0xC;
+        ribbon->rotation.t[0] += scale * ribbon->deltaX >> 12;
+        ribbon->rotation.t[1] += scale * ribbon->deltaY >> 12;
+        ribbon->rotation.t[2] += scale * ribbon->deltaZ >> 12;
     } else {
         ribbon->deltaX = ribbon->end.x - ribbon->start.x;
         ribbon->deltaY = ribbon->end.y - ribbon->start.y;
@@ -641,7 +641,7 @@ void __cdecl BattleFx_LaserSelectDrawListBuffer(void)
     if (g_BattleSecondaryTaskActiveCount <= 1) {
         *(int *)g_BattleFxDrawListBufferTaskSlotPtr = 0xFFFFFFFF;
     }
-    for (delayIndex = 0; delayIndex < 0x64; delayIndex++) {
+    for (delayIndex = 0; delayIndex < 100; delayIndex++) {
     }
 }
 } /* extern "C" */

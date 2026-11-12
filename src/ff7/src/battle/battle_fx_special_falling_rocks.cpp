@@ -144,11 +144,11 @@ unsigned char g_bssPad_00b6efc0[4] = {0};
 // GLOBAL: FF7 0x00b6efc4
 int g_BattleSpecialFallingRocksDrawListHandle = 0;
 // GLOBAL: FF7 0x00b6efc8
-unsigned char g_BattleSpecialFallingRocksRotMatrix[0x4] = {0};
+unsigned char g_BattleSpecialFallingRocksRotMatrix[4] = {0};
 unsigned char g_bssPad_00b6efcc[4] = {0};
 unsigned char g_bssPad_00b6efd0[8] = {0};
 // GLOBAL: FF7 0x00b6efd8
-unsigned char g_BattleSpecialFallingRocksMatrix[0x10] = {0};
+unsigned char g_BattleSpecialFallingRocksMatrix[16] = {0};
 // GLOBAL: FF7 0x00b6efe8
 int g_BattleSpecialFallingRocksModelOffset = 0;
 // GLOBAL: FF7 0x00b6efec
@@ -252,25 +252,25 @@ void __cdecl BattleFx_SpecialFallingRocksTimelineTask(void)
         sprite = (BattleFxFallingRocksTimelineTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFallingRocksFallingModelTask);
         Battle_GetBoneWorldPos(pCur->actorIndex, g_BattleActorRecords[pCur->actorIndex].targetBone, &sprite->posX);
         sprite->posY = 0xF830;
-        sprite->velocityY = 0x64;
+        sprite->velocityY = 100;
     }
     if (pCur->step == 4) {
         for (i9 = 0; i9 < 5; i9++) {
             sprite = (BattleFxFallingRocksTimelineTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFallingRocksAnimatedSpriteTask);
             Battle_GetBoneWorldPos(pCur->actorIndex, g_BattleActorRecords[pCur->actorIndex].targetBone, &sprite->posX);
-            sprite->posX += (short)(rand() % 0x320 - 0x190);
-            sprite->posY += (short)(rand() % 0x190 - 0x320);
-            sprite->posZ += (short)(rand() % 0x320 - 0x190);
+            sprite->posX += (short)(rand() % 800 - 400);
+            sprite->posY += (short)(rand() % 400 - 800);
+            sprite->posZ += (short)(rand() % 800 - 400);
         }
     }
-    if (pCur->step == 5 || pCur->step == 0x14) {
+    if (pCur->step == 5 || pCur->step == 20) {
         Battle_AllocateResourceSlot(BattleFx_SpecialFallingRocksCameraShakeTask);
     }
     if (pCur->step == 5) {
         Battle_PostActorHitOrHurtMessage(pCur->actorIndex);
     }
     (pCur->step)++;
-    if (pCur->step == 0x32) {
+    if (pCur->step == 50) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -284,9 +284,9 @@ void __cdecl BattleFx_SpecialFallingRocksAnimatedSpriteTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialFallingRocksHitSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecialFallingRocksLoadedRes);
-    g_BattleSpecialFallingRocksHitSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecialFallingRocksLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800, 0);
+    g_BattleSpecialFallingRocksHitSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecialFallingRocksLoadedRes);
+    g_BattleSpecialFallingRocksHitSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecialFallingRocksLoadedRes);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800 /* 1.5 */, 0);
     g_BattleSpecialFallingRocksHitSpriteReq.frame = task->frameCounter;
     g_BattleSpecialFallingRocksDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialFallingRocksHitSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialFallingRocksDrawListHandle);
     if (g_BattleIsPaused != 0) {
@@ -335,7 +335,7 @@ void __cdecl BattleFx_SpecialFallingRocksFallingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.slot->velocityY += 0x1E;
+    frame.slot->velocityY += 30;
     frame.slot->startY += frame.slot->velocityY;
     (frame.slot->frameCounter)++;
     if (frame.slot->frameCounter == 5) {
@@ -345,9 +345,9 @@ void __cdecl BattleFx_SpecialFallingRocksFallingModelTask(void)
             frame.splitSlot->posX = frame.slot->startX;
             frame.splitSlot->posY = frame.slot->startY;
             frame.splitSlot->posZ = frame.slot->startZ;
-            frame.splitSlot->velocityX = (frame.splitIndex != 0 ? -100 : 0) + 0x32;
+            frame.splitSlot->velocityX = (frame.splitIndex != 0 ? -100 : 0) + 50;
             frame.splitSlot->velocityY = 0xFF74;
-            frame.splitSlot->velocityZ = rand() % 0xC8 - 0x64;
+            frame.splitSlot->velocityZ = rand() % 200 - 100;
             frame.splitSlot->angle = 0;
             frame.splitSlot->angleVelocity = (frame.splitIndex != 0 ? -200 : 0) + 0x64;
             frame.splitSlot->modelIndex = frame.splitIndex;
@@ -373,8 +373,8 @@ void __cdecl BattleFx_SpecialFallingRocksSpawnBouncingSprites(BattleFxFallingRoc
         pBouncer->startZ = origin->startZ;
         magnitude = rand() % 100 + 100;
         angle = rand() % 0x1000;
-        pBouncer->velocityX = (CosFixed(angle) * magnitude) >> 0xC;
-        pBouncer->velocityZ = (SinFixed(angle) * magnitude) >> 0xC;
+        pBouncer->velocityX = (CosFixed(angle) * magnitude) >> 12;
+        pBouncer->velocityZ = (SinFixed(angle) * magnitude) >> 12;
         pBouncer->velocityY = value;
         pBouncer->randomIndex = rand() % 16;
     }
@@ -398,18 +398,18 @@ void __cdecl BattleFx_SpecialFallingRocksBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.slot = (BattleFxFallingRocksBouncingSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialFallingRocksDebrisSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xD, g_BattleSpecialFallingRocksLoadedRes);
-    g_BattleSpecialFallingRocksDebrisSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0xD, g_BattleSpecialFallingRocksLoadedRes);
+    g_BattleSpecialFallingRocksDebrisSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(13, g_BattleSpecialFallingRocksLoadedRes);
+    g_BattleSpecialFallingRocksDebrisSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(13, g_BattleSpecialFallingRocksLoadedRes);
     frame.angleY = 0;
     frame.angleX = frame.angleY;
     frame.angleZ = frame.slot->frameCounter << 8;
-    BattleFx_SpecialFallingRocksInstallScaledSpriteMatrix(&frame.slot->posX, &frame.angleX, 0x1800);
+    BattleFx_SpecialFallingRocksInstallScaledSpriteMatrix(&frame.slot->posX, &frame.angleX, 0x1800 /* 1.5 */);
     g_BattleSpecialFallingRocksDebrisSpriteReq.frame = frame.slot->color;
     g_BattleSpecialFallingRocksDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialFallingRocksDebrisSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialFallingRocksDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.slot->velocityY += 0x28;
+    frame.slot->velocityY += 40;
     frame.slot->posX += frame.slot->velocityX;
     frame.slot->posY += frame.slot->velocityY;
     frame.slot->posZ += frame.slot->velocityZ;
@@ -418,7 +418,7 @@ void __cdecl BattleFx_SpecialFallingRocksBouncingSpriteTask(void)
         frame.slot->velocityY = -frame.slot->velocityY;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0xF) {
+    if (frame.slot->frameCounter == 15) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -483,13 +483,13 @@ void __cdecl BattleFx_SpecialFallingRocksSplittingSpinModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.spawnSlot->velocityY += 0xA;
+    frame.spawnSlot->velocityY += 10;
     frame.spawnSlot->startX += frame.spawnSlot->velocityX;
     frame.spawnSlot->startY += frame.spawnSlot->velocityY;
     frame.spawnSlot->startZ += frame.spawnSlot->velocityZ;
     frame.spawnSlot->angle += frame.spawnSlot->angleVelocity;
     (frame.spawnSlot->frameCounter)++;
-    if (frame.spawnSlot->frameCounter == 0xA) {
+    if (frame.spawnSlot->frameCounter == 10) {
         frame.spawnSlot->ownerSlot = BATTLE_TASK_FREE;
         for (frame.fragmentIndex = 0; frame.fragmentIndex < 2; frame.fragmentIndex++) {
             frame.fragmentSlot = (BattleFxFallingRocksBouncingFragmentModelSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFallingRocksBouncingFragmentModelTask);
@@ -498,7 +498,7 @@ void __cdecl BattleFx_SpecialFallingRocksSplittingSpinModelTask(void)
             frame.fragmentSlot->posZ = frame.spawnSlot->startZ;
             frame.fragmentSlot->velocityX = frame.spawnSlot->velocityX + (frame.fragmentIndex != 0 ? -40 : 40);
             frame.fragmentSlot->velocityY = frame.spawnSlot->velocityY;
-            frame.fragmentSlot->velocityZ = rand() % 0xC8 - 0x64;
+            frame.fragmentSlot->velocityZ = rand() % 200 - 100;
             frame.fragmentSlot->angle = frame.spawnSlot->angle;
             frame.fragmentSlot->angleVelocity = (frame.fragmentIndex != 0 ? -200 : 0) + 0x64;
             frame.fragmentSlot->modelIndex = frame.spawnSlot->modelIndex * 2 + frame.fragmentIndex;
@@ -537,9 +537,9 @@ void __cdecl BattleFx_SpecialFallingRocksBouncingFragmentModelTask(void)
         g_BattleSpecialFallingRocksModelOffset = 0;
     }
     g_BattleSpecialFallingRocksFragmentModelReq.modelResource = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialFallingRocksLoadedRes);
-    g_BattleSpecialFallingRocksShadowSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecialFallingRocksLoadedRes);
-    g_BattleSpecialFallingRocksShadowSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecialFallingRocksLoadedRes);
-    if (frame.fragmentSlot->frameCounter < 0xC) {
+    g_BattleSpecialFallingRocksShadowSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecialFallingRocksLoadedRes);
+    g_BattleSpecialFallingRocksShadowSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecialFallingRocksLoadedRes);
+    if (frame.fragmentSlot->frameCounter < 12) {
         frame.phaseInit = 8;
     } else {
         frame.phaseInit = 0x14 - frame.fragmentSlot->frameCounter;
@@ -560,15 +560,15 @@ void __cdecl BattleFx_SpecialFallingRocksBouncingFragmentModelTask(void)
     g_BattleSpecialFallingRocksFragmentModelReq.angle = frame.phase << 4;
     g_BattleSpecialFallingRocksFragmentModelReq.modelResource = Gfx_ModelTableGetRenderObject(g_BattleSpecialFallingRocksFragmentModelIndices[frame.fragmentSlot->modelIndex + g_BattleSpecialFallingRocksModelOffset], g_BattleSpecialFallingRocksLoadedRes);
     g_BattleSpecialFallingRocksDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialFallingRocksFragmentModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialFallingRocksDrawListHandle);
-    frame.heightFactor = 0x80 - (-frame.fragmentSlot->posY >> 4);
+    frame.heightFactor = 128 - (-frame.fragmentSlot->posY >> 4);
     if (frame.heightFactor > 0) {
-        frame.rotX = 0x400;
+        frame.rotX = 0x400 /* 90 deg */;
         frame.angle = 0;
         frame.rotY = frame.angle;
         frame.spriteX = frame.fragmentSlot->posX;
         frame.spriteZ = frame.fragmentSlot->posZ;
         frame.spriteY = 0;
-        frame.spriteRecord = BattleFx_SpecialFallingRocksInstallScaledSpriteMatrix(&frame.spriteX, &frame.rotX, 0x2000);
+        frame.spriteRecord = BattleFx_SpecialFallingRocksInstallScaledSpriteMatrix(&frame.spriteX, &frame.rotX, 0x2000 /* 2.0 */);
         if (((PsxMatrix *)frame.spriteRecord)->t[2] > 0) {
             g_BattleSpecialFallingRocksModelOffset = 4;
             g_BattleSpecialFallingRocksShadowSpriteReq.colorB = frame.heightFactor * frame.phase >> 3;
@@ -580,20 +580,20 @@ void __cdecl BattleFx_SpecialFallingRocksBouncingFragmentModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.fragmentSlot->velocityY += 0x50;
+    frame.fragmentSlot->velocityY += 80;
     frame.fragmentSlot->posX += frame.fragmentSlot->velocityX;
     frame.fragmentSlot->posY += frame.fragmentSlot->velocityY;
     frame.fragmentSlot->posZ += frame.fragmentSlot->velocityZ;
-    if (frame.fragmentSlot->posY > -0x64) {
+    if (frame.fragmentSlot->posY > -100) {
         frame.fragmentSlot->velocityY = -frame.fragmentSlot->velocityY;
         frame.fragmentSlot->posY = 0xFF9C;
     }
     frame.fragmentSlot->angle += frame.fragmentSlot->angleVelocity;
-    if (frame.fragmentSlot->frameCounter > 0xC) {
+    if (frame.fragmentSlot->frameCounter > 12) {
         frame.phase--;
     }
     (frame.fragmentSlot->frameCounter)++;
-    if (frame.fragmentSlot->frameCounter == 0x14) {
+    if (frame.fragmentSlot->frameCounter == 20) {
         frame.fragmentSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

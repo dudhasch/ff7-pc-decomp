@@ -154,7 +154,7 @@ void __cdecl BattleFx_SpecialSpawnEnergyPerTarget(int actor, int actorIdx)
     Gte_BuildLookBasisFromDirection(dir, (short *)&g_BattleSpecialEnergyPosition);
     timeline->targetActorIdx = actor;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2 = 0;
-    Battle_StartFixedPointRamp(0xC00, 0xA);
+    Battle_StartFixedPointRamp(0xC00, 10);
     Battle_PlaySfxPannedToActor(0xFA, actorIdx, 0x40);
 }
 
@@ -200,7 +200,7 @@ void __cdecl BattleFx_SpecialEnergyTimelineTask(void)
         frame.deltaY = frame.timelineSlot->targetY - frame.spawnSlot->posY;
         frame.deltaZ = frame.timelineSlot->targetZ - frame.spawnSlot->posZ;
         frame.distance = SqrtToInt(frame.deltaX * frame.deltaX + frame.deltaY * frame.deltaY + frame.deltaZ * frame.deltaZ);
-        frame.spawnSlot->startValue = frame.distance * 0x1200 / 0xBB8;
+        frame.spawnSlot->startValue = frame.distance * 4608 / 3000;
         frame.spawnSlot->clearedParam = 0;
         frame.spawnSlot = (BattleFxEnergyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergyBeamModelsTask);
         frame.spawnSlot->posX = frame.timelineSlot->posX;
@@ -209,15 +209,15 @@ void __cdecl BattleFx_SpecialEnergyTimelineTask(void)
         frame.spawnSlot->startValue = frame.distance;
         frame.spawnSlot->clearedParam = 0;
     }
-    if (frame.timelineSlot->frameCounter > 6 && frame.timelineSlot->frameCounter < 0xE) {
+    if (frame.timelineSlot->frameCounter > 6 && frame.timelineSlot->frameCounter < 14) {
         for (frame.i = 0; frame.i < 2; frame.i++) {
             frame.spawnSlot = (BattleFxEnergyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergyMainSlotAnimatedSpriteTask);
-            frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 0x4B0 + -0x258;
+            frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 1200 + -600;
+            frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 1200 + -600;
+            frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 1200 + -600;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0xA) {
+    if (frame.timelineSlot->frameCounter == 10) {
         frame.spawnSlot = (BattleFxEnergyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergySpinModelsTask);
         frame.spawnSlot->posX = frame.timelineSlot->targetX;
         frame.spawnSlot->posY = 0;
@@ -227,23 +227,23 @@ void __cdecl BattleFx_SpecialEnergyTimelineTask(void)
         frame.spawnSlot->posX = frame.timelineSlot->targetX;
         frame.spawnSlot->posY = 0xFED4;
         frame.spawnSlot->posZ = frame.timelineSlot->targetZ;
-        for (frame.i = 0; frame.i < 0x14; frame.i++) {
+        for (frame.i = 0; frame.i < 20; frame.i++) {
             frame.spawnSlot = (BattleFxEnergyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergyBouncingSpriteTask);
             frame.spawnSlot->posX = frame.timelineSlot->targetX;
             frame.spawnSlot->posZ = frame.timelineSlot->targetZ;
             frame.spawnSlot->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFF06, 0x64, &frame.spawnSlot->velocityX);
+            BattleFx_MakeRandomConeVector(0xFFFFFF06, 100, &frame.spawnSlot->velocityX);
             frame.spawnSlot->variant = rand() % 7;
         }
         Battle_PlaySfxPannedToActor(0x164, (short)frame.timelineSlot->actorIndex, 0x40);
     }
-    if (frame.timelineSlot->frameCounter == 0x23) {
+    if (frame.timelineSlot->frameCounter == 35) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     frame.timelineSlot->frameCounter++;
-    if (frame.timelineSlot->frameCounter == 0x2D) {
+    if (frame.timelineSlot->frameCounter == 45) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
     }
 }
 
@@ -270,14 +270,14 @@ void __cdecl BattleFx_SpecialEnergyBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.bouncingSlot = (BattleFxEnergyWaveBouncingSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialEnergySpriteConfig1.bounceSpriteGroup = Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecialEnergyLoadedResTable);
-    g_BattleSpecialEnergySpriteConfig1.bounceDrawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecialEnergyLoadedResTable);
+    g_BattleSpecialEnergySpriteConfig1.bounceSpriteGroup = Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecialEnergyLoadedResTable);
+    g_BattleSpecialEnergySpriteConfig1.bounceDrawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecialEnergyLoadedResTable);
     for (frame.axisIndex = 0; frame.axisIndex < 3; frame.axisIndex++) {
         frame.matrixRow2.m[2][frame.axisIndex] = 0;
         frame.matrixRow2.m[1][frame.axisIndex] = 0;
         frame.matrixRow2.m[0][frame.axisIndex] = 0;
     }
-    if (frame.bouncingSlot->frameCounter < 0x16) {
+    if (frame.bouncingSlot->frameCounter < 22) {
         frame.rollValue = 8;
     } else {
         frame.rollValue = 0x1E - frame.bouncingSlot->frameCounter;
@@ -312,10 +312,10 @@ void __cdecl BattleFx_SpecialEnergyBouncingSpriteTask(void)
         frame.bouncingSlot->posY = 0;
         frame.bouncingSlot->velocityY *= -1;
     }
-    frame.bouncingSlot->velocityY += 0x14;
-    frame.bouncingSlot->angle += 0x200;
+    frame.bouncingSlot->velocityY += 20;
+    frame.bouncingSlot->angle += 0x200 /* 45 deg */;
     frame.bouncingSlot->frameCounter++;
-    if (frame.bouncingSlot->frameCounter == 0x1E) {
+    if (frame.bouncingSlot->frameCounter == 30) {
         frame.bouncingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -358,7 +358,7 @@ void __cdecl BattleFx_SpecialEnergyExpandingModelTask(void)
         return;
     }
     frame.expandTask->step++;
-    if (frame.expandTask->step == 0xF) {
+    if (frame.expandTask->step == 15) {
         frame.expandTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -390,7 +390,7 @@ void __cdecl BattleFx_SpecialEnergySpinModelsTask(void)
 
     frame.spinSlot = (BattleFxEnergyWaveSpinModelsSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialEnergyModelDescriptors.spinModelGroup = Gfx_ModelTableGetRenderObject(7, g_BattleSpecialEnergyLoadedResTable);
-    frame.countdown = 0x10;
+    frame.countdown = 16;
     frame.rotX.vy = frame.spinSlot->frameCounter << 6;
     frame.rotX.vz = 0;
     frame.rotX.vx = frame.rotX.vz;
@@ -412,7 +412,7 @@ void __cdecl BattleFx_SpecialEnergySpinModelsTask(void)
     g_BattleSpecialEnergyDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergyModelDescriptors.spinModelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyDrawListHead);
     g_BattleSpecialEnergyModelDescriptors.spinDrawFlags = 0xA8;
     g_BattleSpecialEnergyModelDescriptors.spinModelGroup = Gfx_ModelTableGetRenderObject(8, g_BattleSpecialEnergyLoadedResTable);
-    g_BattleSpecialEnergyModelDescriptors.spinFadeLevel = 0x1000 - (frame.countdown << 9);
+    g_BattleSpecialEnergyModelDescriptors.spinFadeLevel = 4096 - (frame.countdown << 9);
     g_BattleSpecialEnergyDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergyModelDescriptors.spinModelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyDrawListHead);
     frame.rotX.vy = -frame.spinSlot->frameCounter << 6;
     frame.rotX.vz = 0;
@@ -435,23 +435,23 @@ void __cdecl BattleFx_SpecialEnergySpinModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.spinSlot->frameCounter < 0x16) {
-        frame.spawnRadius = frame.spinSlot->frameCounter * 0x50;
+    if (frame.spinSlot->frameCounter < 22) {
+        frame.spawnRadius = frame.spinSlot->frameCounter * 80;
         for (frame.i = 0; frame.i < 6; frame.i++) {
             frame.spawnAngle = (rand() % 4096);
             frame.spawnSlot = (BattleFxEnergyWaveSpinSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialEnergyAnimatedSpriteTask)]);
-            frame.spawnSlot->posX = frame.spinSlot->centerX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
-            frame.spawnSlot->posZ = frame.spinSlot->centerZ + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
+            frame.spawnSlot->posX = frame.spinSlot->centerX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
+            frame.spawnSlot->posZ = frame.spinSlot->centerZ + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
             frame.spawnSlot->posY = 0xFF6A;
             frame.spawnSlot->spriteVariant = 2;
         }
     }
     g_BattleCameraFocalPoint.focalPointY += (short)(((frame.spinSlot->frameCounter % 2) << 4) - 8);
-    if (frame.spinSlot->frameCounter > 0xE) {
+    if (frame.spinSlot->frameCounter > 14) {
         frame.countdown--;
     }
     frame.spinSlot->frameCounter++;
-    if (frame.spinSlot->frameCounter == 0x1E) {
+    if (frame.spinSlot->frameCounter == 30) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -467,9 +467,9 @@ void __cdecl BattleFx_SpecialEnergyAnimatedSpriteTask(void)
     BattleFxEnergySpriteSlot *task;
 
     task = (BattleFxEnergySpriteSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
-    g_BattleSpecialEnergySpriteConfig1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecialEnergyLoadedResTable);
+    g_BattleSpecialEnergySpriteConfig1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecialEnergyLoadedResTable);
     g_BattleSpecialEnergySpriteConfig1.drawObj = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2800, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2800 /* 2.5 */, 0);
     g_BattleSpecialEnergySpriteConfig1.frame = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergySpriteConfig1.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleSpecialEnergySpriteConfig1.spriteGroup != 0) {
@@ -490,9 +490,9 @@ void __cdecl BattleFx_SpecialEnergyMainSlotAnimatedSpriteTask(void)
     BattleFxEnergySpriteSlot *task;
 
     task = (BattleFxEnergySpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialEnergyModelDescriptors.animSpriteGroup = Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecialEnergyLoadedResTable);
-    g_BattleSpecialEnergyModelDescriptors.animDrawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecialEnergyLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    g_BattleSpecialEnergyModelDescriptors.animSpriteGroup = Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecialEnergyLoadedResTable);
+    g_BattleSpecialEnergyModelDescriptors.animDrawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecialEnergyLoadedResTable);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialEnergyModelDescriptors.animFrame = task->frameCounter;
     g_BattleSpecialEnergyDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergyModelDescriptors.animSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleSpecialEnergyModelDescriptors.animSpriteGroup != 0) {
@@ -520,7 +520,7 @@ void __cdecl BattleFx_SpecialEnergyShrinkingSpriteTask(void)
     if (taskPtr->frameCounter < 6) {
         fadeStep = 4;
     } else {
-        fadeStep = 0xA - taskPtr->frameCounter;
+        fadeStep = 10 - taskPtr->frameCounter;
     }
     shadeByte = fadeStep;
     BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0x3000 - taskPtr->frameCounter * 0x258, 0);
@@ -531,7 +531,7 @@ void __cdecl BattleFx_SpecialEnergyShrinkingSpriteTask(void)
     g_BattleSpecialEnergyDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergyModelDescriptors.shrinkSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyDrawListHead);
     if (g_BattleIsPaused == 0) {
         taskPtr->frameCounter++;
-        if (taskPtr->frameCounter == 0xA) {
+        if (taskPtr->frameCounter == 10) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -573,7 +573,7 @@ void __cdecl BattleFx_SpecialEnergyStretchingModelsTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecialEnergySpriteRequest1.fadeLevel = 0x1000 - (g_BattleSpecialEnergyAngleRoll << 8);
+    g_BattleSpecialEnergySpriteRequest1.fadeLevel = 4096 - (g_BattleSpecialEnergyAngleRoll << 8);
     g_BattleSpecialEnergySpriteRequest1.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialEnergyLoadedResTable);
     g_BattleSpecialEnergyDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergySpriteRequest1.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyDrawListHead);
     g_BattleSpecialEnergySpriteRequest1.modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleSpecialEnergyLoadedResTable);
@@ -585,7 +585,7 @@ void __cdecl BattleFx_SpecialEnergyStretchingModelsTask(void)
         g_BattleSpecialEnergyAngleRoll -= 2;
     }
     frame.stretchSlot->frameCounter++;
-    if (frame.stretchSlot->frameCounter == 0xA) {
+    if (frame.stretchSlot->frameCounter == 10) {
         frame.stretchSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -635,8 +635,8 @@ void __cdecl BattleFx_SpecialEnergyBeamModelsTask(void)
     g_BattleSpecialEnergyDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergySpriteConfig2.config2ModelField, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyDrawListHead);
     g_BattleSpecialEnergySpriteConfig2.config2ModelField = Gfx_ModelTableGetRenderObject(5, g_BattleSpecialEnergyLoadedResTable);
     g_BattleSpecialEnergyDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergySpriteConfig2.config2ModelField, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyDrawListHead);
-    BattleFx_InstallBillboardMatrix((void *)&g_BattleSpecialEnergyOffsetVector, 0x3000, 0);
-    g_BattleSpecialEnergySpriteRequest2.request2Byte2 = g_BattleSpecialEnergyAngleRoll * 0x14;
+    BattleFx_InstallBillboardMatrix((void *)&g_BattleSpecialEnergyOffsetVector, 0x3000 /* 3.0 */, 0);
+    g_BattleSpecialEnergySpriteRequest2.request2Byte2 = g_BattleSpecialEnergyAngleRoll * 20;
     g_BattleSpecialEnergySpriteRequest2.request2Byte1 = g_BattleSpecialEnergySpriteRequest2.request2Byte2;
     g_BattleSpecialEnergySpriteRequest2.red = g_BattleSpecialEnergySpriteRequest2.request2Byte1;
     g_BattleSpecialEnergySpriteRequest2.request2FrameParity = (frame.beamSlot->frameCounter % 2);
@@ -648,7 +648,7 @@ void __cdecl BattleFx_SpecialEnergyBeamModelsTask(void)
         g_BattleSpecialEnergyAngleRoll--;
     }
     frame.beamSlot->frameCounter++;
-    if (frame.beamSlot->frameCounter == 0xA) {
+    if (frame.beamSlot->frameCounter == 10) {
         frame.beamSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

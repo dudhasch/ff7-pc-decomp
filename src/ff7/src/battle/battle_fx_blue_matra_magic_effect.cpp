@@ -150,11 +150,11 @@ void __cdecl BattleFx_BlueBeginMatraMagic(int targetMask, int actorIdx)
 #pragma pack(pop)
 
     g_BattleBlueMatraMagicDrawBufferSlot = (int)BATTLE_NEW_TASK_SLOT(BattleFx_BlueMatraMagicSelectDrawListBuffer);
-    for (frame.slotIndex = 0; frame.slotIndex < 0x1C; frame.slotIndex++) {
+    for (frame.slotIndex = 0; frame.slotIndex < 28; frame.slotIndex++) {
         g_BattleBlueMatraMagicRibbonRecords[frame.slotIndex].state = BATTLE_BLUE_MATRA_MAGIC_RIBBON_FREE;
     }
     frame.slotIndex = 0;
-    for (frame.emitterCount = 0; frame.slotIndex < 0xA; frame.slotIndex++) {
+    for (frame.emitterCount = 0; frame.slotIndex < 10; frame.slotIndex++) {
         if ((targetMask & 1 << frame.slotIndex) != 0) {
             g_BattleBlueMatraMagicEmitterRecord.emitters[frame.emitterCount].targetHandle = frame.slotIndex;
             frame.emitterCount++;
@@ -163,7 +163,7 @@ void __cdecl BattleFx_BlueBeginMatraMagic(int targetMask, int actorIdx)
     g_BattleBlueMatraMagicEmitterRecord.targetCount = frame.emitterCount;
     g_BattleBlueMatraMagicEmitterRecord.actorIndex = actorIdx;
     g_BattleBlueMatraMagicRibbonCount = 0;
-    g_BattleBlueMatraMagicRibbonAngle = 0x400;
+    g_BattleBlueMatraMagicRibbonAngle = 0x400 /* 90 deg */;
     g_BattleBlueMatraMagicRibbonPitch = 0;
     g_BattleBlueMatraMagicRibbonRoll = 0;
     g_BattleBlueMatraMagicStateFlag = BATTLE_BLUE_MATRA_MAGIC_SPAWN_SHUFFLE;
@@ -210,7 +210,7 @@ void __cdecl BattleFx_BlueMatraMagicSetupTask(void)
         actorId = g_BattleBlueMatraMagicEmitterRecord.emitters[i].targetHandle;
         Battle_GetBoneWorldPos(actorId, g_BattleActorRecords[actorId].targetBone, &g_BattleBlueMatraMagicEmitterRecord.emitters[i].posX);
         rad = g_BattleActorRecords[actorId].radius + 0x8C;
-        if (rad > 0x4F2) {
+        if (rad > 1266) {
             rad = 0x4F2;
         }
         g_BattleBlueMatraMagicEmitterRecord.emitters[i].spread = rad;
@@ -220,9 +220,9 @@ void __cdecl BattleFx_BlueMatraMagicSetupTask(void)
     selfPtr->spawnCursor = 0;
     Battle_GetBoneWorldPos(g_BattleBlueMatraMagicEmitterRecord.actorIndex, g_BattleActorRecords[g_BattleBlueMatraMagicEmitterRecord.actorIndex].targetBone, &g_BattleBlueMatraMagicTrajectoryParams.x);
     g_BattleBlueMatraMagicTrajectoryParams.radius = g_BattleActorRecords[g_BattleBlueMatraMagicEmitterRecord.actorIndex].radius;
-    g_BattleBlueMatraMagicTrajectoryParams.peakRadius = g_BattleBlueMatraMagicTrajectoryParams.radius + 0x1F4;
-    if (g_BattleBlueMatraMagicTrajectoryParams.peakRadius > 0x76C) {
-        g_BattleBlueMatraMagicTrajectoryParams.peakRadius = 0x76C;
+    g_BattleBlueMatraMagicTrajectoryParams.peakRadius = g_BattleBlueMatraMagicTrajectoryParams.radius + 500;
+    if (g_BattleBlueMatraMagicTrajectoryParams.peakRadius > 1900) {
+        g_BattleBlueMatraMagicTrajectoryParams.peakRadius = 1900;
     }
 }
 
@@ -282,7 +282,7 @@ void __cdecl BattleFx_BlueMatraMagicSpawnRibbonsTask(void)
     if (g_BattleBlueMatraMagicStateFlag == BATTLE_BLUE_MATRA_MAGIC_SPAWN_FIRE && g_BattleBlueMatraMagicRibbonRecords[activeSlot->ribbonIndex].state == BATTLE_BLUE_MATRA_MAGIC_RIBBON_FREE) {
         ribbonIndex = activeSlot->ribbonIndex;
         (activeSlot->ribbonIndex)++;
-        if (activeSlot->ribbonIndex >= 0x1C) {
+        if (activeSlot->ribbonIndex >= 28) {
             activeSlot->ribbonIndex = 0;
         }
         ribbonTask = (BattleMatraMagicRibbonSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueMatraMagicRibbonTask);
@@ -341,14 +341,14 @@ void __cdecl BattleFx_BlueMatraMagicSpawnRibbonsTask(void)
         }
     }
     if (g_BattleBlueMatraMagicStateFlag == BATTLE_BLUE_MATRA_MAGIC_SPAWN_FINISH) {
-        if (g_BattleBlueMatraMagicRibbonCount == 0xF) {
+        if (g_BattleBlueMatraMagicRibbonCount == 15) {
             for (emitterIndex = 0; emitterIndex < g_BattleBlueMatraMagicEmitterRecord.targetCount; emitterIndex++) {
                 Battle_PostActorHitOrHurtMessage(g_BattleBlueMatraMagicEmitterRecord.emitters[emitterIndex].targetHandle);
             }
         }
         g_BattleBlueMatraMagicRibbonCount++;
     }
-    if (g_BattleBlueMatraMagicRibbonCount >= 0x14) {
+    if (g_BattleBlueMatraMagicRibbonCount >= 20) {
         activeSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (activeSlot->frameCounter)++;
@@ -401,30 +401,30 @@ void __cdecl BattleFx_BlueMatraMagicRibbonTask(void)
     switch (frame.state) {
     case BATTLE_BLUE_MATRA_MAGIC_RIBBON_LAUNCH:
         frame.ribbon->state = BATTLE_BLUE_MATRA_MAGIC_RIBBON_RISE;
-        frame.ribbon->speed = g_BattleBlueMatraMagicTrajectoryParams.peakRadius / 0xA;
+        frame.ribbon->speed = g_BattleBlueMatraMagicTrajectoryParams.peakRadius / 10;
         frame.ribbon->waveAmplitude = g_BattleBlueMatraMagicTrajectoryParams.peakRadius + (g_BattleBlueMatraMagicTrajectoryParams.peakRadius >> 1);
     case BATTLE_BLUE_MATRA_MAGIC_RIBBON_RISE:
-        frame.stepX = frame.ribbon->speed * frame.ribbon->velocityX >> 0xC;
-        frame.stepY = frame.ribbon->speed * frame.ribbon->velocityY >> 0xC;
-        frame.stepZ = frame.ribbon->speed * frame.ribbon->velocityZ >> 0xC;
+        frame.stepX = frame.ribbon->speed * frame.ribbon->velocityX >> 12;
+        frame.stepY = frame.ribbon->speed * frame.ribbon->velocityY >> 12;
+        frame.stepZ = frame.ribbon->speed * frame.ribbon->velocityZ >> 12;
         frame.ribbon->posX += frame.stepX;
         frame.ribbon->posY += frame.stepY;
         frame.ribbon->posZ += frame.stepZ;
         frame.tmpAngle = (frame.frameCounter + 1) * 0xAA;
-        frame.waveOffset = SinFixed(frame.tmpAngle) * frame.ribbon->waveAmplitude >> 0xC;
-        *(short *)&frame.pointX = frame.ribbon->posX + (frame.waveOffset * -frame.ribbon->aimDirX >> 0xC);
-        frame.pointY = frame.ribbon->posY + (frame.waveOffset * -frame.ribbon->aimDirY >> 0xC);
-        *(short *)&frame.pointZ = frame.ribbon->posZ + (frame.waveOffset * -frame.ribbon->aimDirZ >> 0xC);
+        frame.waveOffset = SinFixed(frame.tmpAngle) * frame.ribbon->waveAmplitude >> 12;
+        *(short *)&frame.pointX = frame.ribbon->posX + (frame.waveOffset * -frame.ribbon->aimDirX >> 12);
+        frame.pointY = frame.ribbon->posY + (frame.waveOffset * -frame.ribbon->aimDirY >> 12);
+        *(short *)&frame.pointZ = frame.ribbon->posZ + (frame.waveOffset * -frame.ribbon->aimDirZ >> 12);
         frame.updated = 1;
-        if (frame.frameCounter == 0xB) {
+        if (frame.frameCounter == 11) {
             frame.ribbon->state = BATTLE_BLUE_MATRA_MAGIC_RIBBON_AIM;
         }
         break;
     case BATTLE_BLUE_MATRA_MAGIC_RIBBON_AIM:
         frame.ribbon->state = BATTLE_BLUE_MATRA_MAGIC_RIBBON_HOME;
-        frame.ribbon->speed = 0x25B;
-        frame.ribbon->speedAccel = rand() % 0xE + 0x10;
-        frame.ribbon->waveAmplitudeStep = rand() % 0xC + 0xC;
+        frame.ribbon->speed = 603;
+        frame.ribbon->speedAccel = rand() % 14 + 16;
+        frame.ribbon->waveAmplitudeStep = rand() % 12 + 12;
         frame.ribbon->clearedParam = 0;
         frame.ribbon->deltaX = frame.ribbon->targetX - frame.ribbon->posX;
         frame.ribbon->deltaY = frame.ribbon->targetY - frame.ribbon->posY;
@@ -434,20 +434,20 @@ void __cdecl BattleFx_BlueMatraMagicRibbonTask(void)
         Gte_BuildAxisAngleMatrix(frame.tmpAngle, &frame.rotMatrix, &frame.dirX);
         TransformVectorToInt32(&frame.rotMatrix, &frame.ribbon->velocityX, &frame.ribbon->velocityX);
         frame.ribbon->waveAmplitude = (frame.tmpAngle >> 1) + frame.tmpAngle * 2;
-        frame.ribbon->phaseStep = 0x1000 / ((rand() % 8) + 0xA);
+        frame.ribbon->phaseStep = 4096 / ((rand() % 8) + 10);
         frame.ribbon->phase = frame.ribbon->phaseStep;
         frame.ribbon->phaseStepDecay = (rand() % 8) + 6;
     case BATTLE_BLUE_MATRA_MAGIC_RIBBON_HOME:
-        frame.stepX = frame.ribbon->speed * frame.ribbon->deltaX >> 0xC;
-        frame.stepY = frame.ribbon->speed * frame.ribbon->deltaY >> 0xC;
-        frame.stepZ = frame.ribbon->speed * frame.ribbon->deltaZ >> 0xC;
+        frame.stepX = frame.ribbon->speed * frame.ribbon->deltaX >> 12;
+        frame.stepY = frame.ribbon->speed * frame.ribbon->deltaY >> 12;
+        frame.stepZ = frame.ribbon->speed * frame.ribbon->deltaZ >> 12;
         frame.ribbon->posX += frame.stepX;
         frame.ribbon->posY += frame.stepY;
         frame.ribbon->posZ += frame.stepZ;
-        frame.waveOffset = SinFixed(frame.ribbon->phase) * frame.ribbon->waveAmplitude >> 0xC;
-        *(short *)&frame.pointX = frame.ribbon->posX + (frame.waveOffset * frame.ribbon->velocityX >> 0xC);
-        frame.pointY = frame.ribbon->posY + (frame.waveOffset * frame.ribbon->velocityY >> 0xC);
-        *(short *)&frame.pointZ = frame.ribbon->posZ + (frame.waveOffset * frame.ribbon->velocityZ >> 0xC);
+        frame.waveOffset = SinFixed(frame.ribbon->phase) * frame.ribbon->waveAmplitude >> 12;
+        *(short *)&frame.pointX = frame.ribbon->posX + (frame.waveOffset * frame.ribbon->velocityX >> 12);
+        frame.pointY = frame.ribbon->posY + (frame.waveOffset * frame.ribbon->velocityY >> 12);
+        *(short *)&frame.pointZ = frame.ribbon->posZ + (frame.waveOffset * frame.ribbon->velocityZ >> 12);
         frame.ribbon->speed += frame.ribbon->speedAccel;
         frame.ribbon->waveAmplitude += frame.ribbon->waveAmplitudeStep;
         frame.ribbon->phase += frame.ribbon->phaseStep;
@@ -471,7 +471,7 @@ void __cdecl BattleFx_BlueMatraMagicRibbonTask(void)
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&frame.spriteSlot->posX), 0xFA);
         }
         *(Int64Pair *)&frame.spriteSlot->posX = *(Int64Pair *)&frame.ribbon->anchorX;
-        frame.spriteSlot->scale = (frame.ribbon->jitterRadius << 0xC) / 0x12C;
+        frame.spriteSlot->scale = (frame.ribbon->jitterRadius << 12) / 300;
     case BATTLE_BLUE_MATRA_MAGIC_RIBBON_DRAIN_TRAIL:
         frame.waveOffset = frame.ribbon->trailTailIndex;
         frame.ribbon->trail[frame.waveOffset].valid = 0;
@@ -510,12 +510,12 @@ void __cdecl BattleFx_BlueMatraMagicRibbonTask(void)
     frame.tailIndex = frame.ribbon->trailTailIndex;
     *(Int64Pair *)&frame.ribbonData->endX = *(Int64Pair *)&frame.ribbon->trail[frame.tailIndex];
     *(Int64Pair *)&frame.ribbonData->startX = *(Int64Pair *)&frame.ribbonData->endX;
-    frame.ribbonData->startX -= 0x64;
-    frame.ribbonData->startY -= 0x64;
-    frame.ribbonData->startZ -= 0x64;
+    frame.ribbonData->startX -= 100;
+    frame.ribbonData->startY -= 100;
+    frame.ribbonData->startZ -= 100;
     frame.ribbonData->colorBottom = 0xC0C0C;
     frame.ribbonData->baseColor = 0xC0C0C;
-    BattleFx_BlueMatraMagicProjectRibbonSegmentQuad(frame.ribbonData, 0xC, 0);
+    BattleFx_BlueMatraMagicProjectRibbonSegmentQuad(frame.ribbonData, 12, 0);
     frame.segmentIndex = 0;
     frame.tmpAngle = frame.tailIndex;
     for (frame.segmentCount = 0;; frame.tmpAngle++, frame.segmentIndex++) {
@@ -552,13 +552,13 @@ void __cdecl BattleFx_BlueMatraMagicRibbonTask(void)
         }
         frame.ribbonData->prevDepth = frame.ribbonData->depth;
         frame.ribbonData->colorStart = frame.ribbonData->colorBottom;
-        BattleFx_BlueMatraMagicProjectRibbonSegmentQuad(frame.ribbonData, 0x30, 0);
+        BattleFx_BlueMatraMagicProjectRibbonSegmentQuad(frame.ribbonData, 48, 0);
         BattleFx_BlueMatraMagicDrawPsxGouraudQuads(frame.ribbonData, frame.segmentIndex, frame.segmentCount, 0);
         if (frame.segmentIndex == frame.segmentCount && frame.ribbon->state < BATTLE_BLUE_MATRA_MAGIC_RIBBON_IMPACT) {
             BattleFx_BlueMatraMagicAdvanceDrawModel(frame.ribbonData);
         }
     }
-    if (frame.frameCounter >= 0x37) {
+    if (frame.frameCounter >= 55) {
         frame.ribbonSlot->ownerSlot = BATTLE_TASK_FREE;
         frame.ribbon->state = BATTLE_BLUE_MATRA_MAGIC_RIBBON_FREE;
     }
@@ -582,7 +582,7 @@ void __cdecl BattleFx_BlueMatraMagicAnimatedSpriteTask(void)
     g_BattleBlueMatraMagicSpriteDrawReq.matraSpriteGroup = Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueMatraMagicEmitterRecord.resourceHandle);
     g_BattleBlueMatraMagicSpriteDrawReq.matraSpriteDrawHandle = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueMatraMagicEmitterRecord.resourceHandle);
     g_BattleBlueMatraMagicDrawListBuffer1 = BattleFx_SubmitSpriteDraw(&g_BattleBlueMatraMagicSpriteDrawReq.matraSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleBlueMatraMagicDrawListBuffer1);
-    if (task->frame >= 0xB) {
+    if (task->frame >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -606,7 +606,7 @@ void __cdecl BattleFx_BlueMatraMagicDrawPsxGouraudQuads(BattleFxBlueMatraMagicSe
         colorBottom = ribbon->colorBottom;
     } else {
         SetDrawColorRGB(0x60, 0x60, 0x60);
-        index = 0x1000 / count * step;
+        index = 4096 / count * step;
         Gfx_ShadePsxVertexColor((CVECTOR *)&ribbon->baseColor, index, (CVECTOR *)&ribbon->colorBottom);
         colorStart = ribbon->colorBottom;
         colorBottom = ribbon->colorStart;
@@ -643,9 +643,9 @@ void __cdecl BattleFx_BlueMatraMagicProjectRibbonSegmentQuad(BattleFxBlueMatraMa
 
     if (advanceFlag != 0) {
         scale = SqrtToInt(segment->deltaLength) >> 2;
-        segment->rotation.t[0] += scale * segment->deltaX >> 0xC;
-        segment->rotation.t[1] += scale * segment->deltaY >> 0xC;
-        segment->rotation.t[2] += scale * segment->deltaZ >> 0xC;
+        segment->rotation.t[0] += scale * segment->deltaX >> 12;
+        segment->rotation.t[1] += scale * segment->deltaY >> 12;
+        segment->rotation.t[2] += scale * segment->deltaZ >> 12;
     } else {
         segment->deltaX = segment->endX - segment->startX;
         segment->deltaY = segment->endY - segment->startY;
@@ -699,9 +699,9 @@ void __cdecl BattleFx_BlueMatraMagicAdvanceDrawModel(BattleFxBlueMatraMagicSegme
     BattleFxModelDraw *drawReq;
 
     step = SqrtToInt(missile->deltaLength) >> 2;
-    missile->rotation.t[0] += step * missile->deltaX >> 0xC;
-    missile->rotation.t[1] += step * missile->deltaY >> 0xC;
-    missile->rotation.t[2] += step * missile->deltaZ >> 0xC;
+    missile->rotation.t[0] += step * missile->deltaX >> 12;
+    missile->rotation.t[1] += step * missile->deltaY >> 12;
+    missile->rotation.t[2] += step * missile->deltaZ >> 12;
     scaleVec.vz = g_BattleBlueMatraMagicRibbonAngle;
     scaleVec.vy = scaleVec.vz;
     scaleVec.vx = scaleVec.vy;

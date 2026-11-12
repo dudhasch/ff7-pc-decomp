@@ -335,13 +335,13 @@ void __cdecl Gfx_RasterDrawIndexedDepthMesh(int value, GfxPolygonBatch *mesh, Gf
     for (remaining = primitiveCnt; remaining > 0; remaining--) {
         idx0 = *(unsigned short *)idxPointer;
         idxPointer += 2;
-        firstVert = ae + idx0 * 0x20;
+        firstVert = ae + idx0 * 32;
         indexB = *(unsigned short *)idxPointer;
         idxPointer += 2;
-        vertexB = ae + indexB * 0x20;
+        vertexB = ae + indexB * 32;
         pickedIndex = *(unsigned short *)idxPointer;
         idxPointer += 2;
-        height = ae + pickedIndex * 0x20;
+        height = ae + pickedIndex * 32;
         Gfx_RasterSubmitTriangleVertices(firstVert, vertexB, height, depthValue, context);
     }
     tableBase->triangleCallback = prevCallback;

@@ -49,7 +49,7 @@ struct EnglishWindowFrame g_MenuQuitDialogRect1x = {60, 70, 200, 100};
 // of 3 at g_MenuQuitDialogPromptText + i * 0x1E. The six zero bytes after the third line have no reader.
 // Text: "Do you want to quit" "playing Final Fantasy VII" "and return to Windows?"
 // GLOBAL: FF7 0x00919970
-unsigned char g_MenuQuitDialogPromptText[0x60] = {
+unsigned char g_MenuQuitDialogPromptText[96] = {
     0x24, 0x4f, 0x00, 0x59, 0x4f, 0x55, 0x00, 0x57, 0x41, 0x4e, 0x54, 0x00, 0x54, 0x4f, 0x00, 0x51, 0x55, 0x49, 0x54, 0xff, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x4c, 0x41, 0x59, 0x49, 0x4e, 0x47, 0x00, 0x26, 0x49, 0x4e, 0x41, 0x4c, 0x00, 0x26, 0x41, 0x4e, 0x54,
     0x41, 0x53, 0x59, 0x00, 0x36, 0x29, 0x29, 0xff, 0x00, 0x00, 0x00, 0x00, 0x41, 0x4e, 0x44, 0x00, 0x52, 0x45, 0x54, 0x55, 0x52, 0x4e, 0x00, 0x54,
@@ -257,7 +257,7 @@ void __cdecl Menu_DrawQuitConfirmBackdropTriangles(void)
     GfxTlVertex *thirdVertex11;
     GfxTlVertex *vertex11Second;
 
-    if (AcquireBatchNode(0xE, g_pMenuDialogBatchList) != 0) {
+    if (AcquireBatchNode(14, g_pMenuDialogBatchList) != 0) {
         Menu_ScaleAndOffsetThreeVectors((float *)scaledPts, g_MenuQuitBackdropTriRecord_01, g_MenuDialogOriginRecord);
         firstVertex01Ptr = (GfxTlVertex *)(g_pMenuDialogBatchList->vertexCursor);
         firstVertex01Ptr->xBits = scaledPts[0][0];
@@ -597,20 +597,20 @@ void __cdecl Menu_DialogApplyUiScalingViewport(void)
     if (mode == 0) {
         g_MenuViewportX = 0;
         g_MenuViewportY = 0;
-        g_MenuViewportWidth = 0x140;
-        g_MenuViewportHeight = 0xf0;
+        g_MenuViewportWidth = 320;
+        g_MenuViewportHeight = 240;
         g_MenuIsSmallViewport320x240 = 1;
     } else if (mode == 1) {
-        g_MenuViewportX = 0xa0;
-        g_MenuViewportY = 0x78;
-        g_MenuViewportWidth = 0x140;
-        g_MenuViewportHeight = 0xf0;
+        g_MenuViewportX = 160;
+        g_MenuViewportY = 120;
+        g_MenuViewportWidth = 320;
+        g_MenuViewportHeight = 240;
         g_MenuIsSmallViewport320x240 = 1;
     } else {
         g_MenuViewportX = 0;
         g_MenuViewportY = 0;
-        g_MenuViewportWidth = 0x280;
-        g_MenuViewportHeight = 0x1e0;
+        g_MenuViewportWidth = 640;
+        g_MenuViewportHeight = 480;
         g_MenuIsSmallViewport320x240 = 0;
     }
 }
@@ -643,17 +643,17 @@ void __cdecl Menu_QuitConfirmDialogFrame(void)
                               0.01f);
         }
         textWidth = Menu_MeasureEncodedString2x((unsigned char *)&g_MenuQuitDialogYesText);
-        leftX = g_MenuQuitDialogRect2x.x + 0x64 - textWidth / 4;
+        leftX = g_MenuQuitDialogRect2x.x + 100 - textWidth / 4;
         Menu_DrawEncodedString2x(leftX, g_MenuQuitDialogRect2x.y + 0x9c,
                           (unsigned char *)&g_MenuQuitDialogYesText,
                           g_MenuQuitConfirmCursor ? 0 : 7, 0.01f);
         textWidth = Menu_MeasureEncodedString2x((unsigned char *)&g_MenuQuitDialogNoText);
         rightX =
-            g_MenuQuitDialogRect2x.x + g_MenuQuitDialogRect2x.width - 0x64 - textWidth / 4;
+            g_MenuQuitDialogRect2x.x + g_MenuQuitDialogRect2x.width - 100 - textWidth / 4;
         Menu_DrawEncodedString2x(rightX, g_MenuQuitDialogRect2x.y + 0x9c,
                           (unsigned char *)&g_MenuQuitDialogNoText,
                           g_MenuQuitConfirmCursor ? 7 : 0, 0.01f);
-        arrowX = g_MenuQuitConfirmCursor ? rightX - 0x32 : leftX - 0x32;
+        arrowX = g_MenuQuitConfirmCursor ? rightX - 50 : leftX - 50;
         Menu_DrawMoreTextArrow2x(arrowX, g_MenuQuitDialogRect2x.y + 0xa4, 0.001f);
     } else {
         Menu_DrawWindowFrame1x(&g_MenuQuitDialogRect1x, 0.1f);
@@ -664,17 +664,17 @@ void __cdecl Menu_QuitConfirmDialogFrame(void)
                                  0.01f);
         }
         textWidth = Menu_MeasureEncodedString1x((unsigned char *)&g_MenuQuitDialogYesText);
-        leftX = g_MenuQuitDialogRect1x.x + 0x32 - textWidth / 4;
+        leftX = g_MenuQuitDialogRect1x.x + 50 - textWidth / 4;
         Menu_DrawEncodedString1x(leftX, g_MenuQuitDialogRect1x.y + 0x4e,
                              (unsigned char *)&g_MenuQuitDialogYesText,
                              g_MenuQuitConfirmCursor ? 0 : 7, 0.01f);
         textWidth = Menu_MeasureEncodedString1x((unsigned char *)&g_MenuQuitDialogNoText);
         rightX =
-            g_MenuQuitDialogRect1x.x + g_MenuQuitDialogRect1x.width - 0x32 - textWidth / 4;
+            g_MenuQuitDialogRect1x.x + g_MenuQuitDialogRect1x.width - 50 - textWidth / 4;
         Menu_DrawEncodedString1x(rightX, g_MenuQuitDialogRect1x.y + 0x4e,
                              (unsigned char *)&g_MenuQuitDialogNoText,
                              g_MenuQuitConfirmCursor ? 7 : 0, 0.01f);
-        arrowX = g_MenuQuitConfirmCursor ? rightX - 0x19 : leftX - 0x19;
+        arrowX = g_MenuQuitConfirmCursor ? rightX - 25 : leftX - 25;
         Menu_DrawMoreTextArrow1x(arrowX, g_MenuQuitDialogRect1x.y + 0x52, 0.001f);
     }
     if (BtlMenu_GetInputRepeat(INPUT_LEFT) || BtlMenu_GetInputRepeat(INPUT_RIGHT)) {
@@ -745,12 +745,12 @@ void __cdecl Menu_DialogShowCenteredMessage(int message)
     if (((int (__cdecl *)(int, struct GfxEngineContext *))Gfx_BeginSceneCall)(0, frame.engineContext) != 0) { /* reads eax after a void call, as the original does */
         if (g_MenuIsSmallViewport320x240 != 1) {
             frame.boxWidth = Menu_MeasureEncodedString2x((unsigned char *)&g_MenuDialogMessageBuffer) + 0x14;
-            Menu_SetRectShorts(&frame.rect.x, 0x140 - (frame.boxWidth / 2), 0xD7, frame.boxWidth, 0x33);
+            Menu_SetRectShorts(&frame.rect.x, 0x140 - (frame.boxWidth / 2), 215, frame.boxWidth, 51);
             Menu_DrawWindowFrame2x(&frame.rect, 0.1f);
             Menu_DrawEncodedString2x(frame.rect.x + 0xC, frame.rect.y + 0xE, (unsigned char *)&g_MenuDialogMessageBuffer, 7, 0);
         } else {
             frame.boxWidth = Menu_MeasureEncodedString1x((unsigned char *)&g_MenuDialogMessageBuffer) + 0xA;
-            Menu_SetRectShorts(&frame.rect.x, 0xA0 - (frame.boxWidth / 2), 0x6B, frame.boxWidth, 0x1A);
+            Menu_SetRectShorts(&frame.rect.x, 0xA0 - (frame.boxWidth / 2), 107, frame.boxWidth, 26);
             Menu_DrawWindowFrame1x(&frame.rect, 0.1f);
             Menu_DrawEncodedString1x(frame.rect.x + 6, frame.rect.y + 7, (unsigned char *)&g_MenuDialogMessageBuffer, 7, 0);
         }

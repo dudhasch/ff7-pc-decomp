@@ -137,24 +137,24 @@ void __cdecl BattleFx_MagicBolt2TimelineTask(void)
             child->pushLength = task->pushLength;
             Battle_PostActorHitOrHurtMessage(task->allocType);
         }
-        if (task->step >= 0 && task->step <= 0x14 && (task->step & 1) == 0) {
+        if (task->step >= 0 && task->step <= 20 && (task->step & 1) == 0) {
             child = (BattleFxBolt2Slot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt2GrowFadeModelTask);
-            child->posX = task->posX + rand() % 0x7D0 + -0x3E8;
+            child->posX = task->posX + rand() % 2000 + -1000;
             child->posY = 0;
-            child->posZ = task->posZ + rand() % 0x7D0 + -0x3E8;
-            child->scale = 0x1000;
-            child->velocity = 0x800;
+            child->posZ = task->posZ + rand() % 2000 + -1000;
+            child->scale = 0x1000 /* 1.0 */;
+            child->velocity = 2048;
         }
         if (task->step == 8) {
             child = (BattleFxBolt2Slot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt2BillboardSpriteTask);
             child->position = task->position;
             child->pushLength = task->pushLength;
         }
-        if (task->step >= 0 && task->step <= 0xF) {
+        if (task->step >= 0 && task->step <= 15) {
             child = (BattleFxBolt2Slot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt2FlippedSpriteTask);
-            child->posX = task->posX + rand() % 0x3E8 + -0x1F4;
-            child->posY = task->posY + rand() % 0x3E8 + -0x1F4;
-            child->posZ = task->posZ + rand() % 0x3E8 + -0x1F4;
+            child->posX = task->posX + rand() % 1000 + -500;
+            child->posY = task->posY + rand() % 1000 + -500;
+            child->posZ = task->posZ + rand() % 1000 + -500;
             child->flags = rand() & 7;
             child->pushLength = task->pushLength;
         }
@@ -181,7 +181,7 @@ void __cdecl BattleFx_MagicBolt2GrowFadeModelTask(void)
 
     frame.growFade = (BattleFxBolt2GrowFade *)BATTLE_CURRENT_TASK_SLOT;
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.fadeLevel = 0x80 - (frame.growFade->step << 4);
+    frame.fadeLevel = 128 - (frame.growFade->step << 4);
     frame.posX.m[2][1] = frame.growFade->offset;
     frame.posX.m[0][0] = frame.posX.m[2][1];
     frame.posX.m[1][2] = -frame.growFade->offset;
@@ -229,7 +229,7 @@ void __cdecl BattleFx_MagicBolt2FadeBillboardSpriteTask(void)
     pSprite->fadePrev = pSprite->fadeLevel;
     pSprite->fadeOlder = pSprite->fadePrev;
     pSprite->primCode = 0x2C;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, task->pushLength);
     g_BattleMagicBolt2_ChainTail = BattleFx_SubmitSpriteDraw(pSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicBolt2_ChainTail);
     if (g_BattleIsPaused == 0) {
         if ((task->fadeStep)++ == 3) {
@@ -247,7 +247,7 @@ void __cdecl BattleFx_MagicBolt2BillboardSpriteTask(void)
     task = (BattleFxBolt2BillboardSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicBolt2_ModelReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleMagicBolt2_ResourceHandle);
     g_BattleMagicBolt2_ModelReq.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleMagicBolt2_ResourceHandle);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000 /* 3.0 */, task->pushLength);
     g_BattleMagicBolt2_ModelReq.frame = task->frameCounter >> 1;
     g_BattleMagicBolt2_ChainTail = BattleFx_SubmitSpriteDraw(&g_BattleMagicBolt2_ModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicBolt2_ChainTail);
     if (g_BattleIsPaused == 0) {
@@ -272,14 +272,14 @@ void __cdecl BattleFx_MagicBolt2FlippedSpriteTask(void)
     RotTransPoint((SVECTOR *)&taskPtr->posX, &g_BattleMagicBolt2_SpriteReq.transX, &screenZ);
     g_BattleMagicBolt2_SpriteReq.transZ += taskPtr->depthStep;
     if ((taskPtr->flags & 1) != 0) {
-        g_BattleMagicBolt2_Scale[0] = 0xE000;
+        g_BattleMagicBolt2_Scale[0] = 0xE000 /* 14.0 */;
     } else {
-        g_BattleMagicBolt2_Scale[0] = 0x2000;
+        g_BattleMagicBolt2_Scale[0] = 0x2000 /* 2.0 */;
     }
     if ((taskPtr->flags & 2) != 0) {
-        g_BattleMagicBolt2_SpriteReq.rotM11 = 0xE000;
+        g_BattleMagicBolt2_SpriteReq.rotM11 = 0xE000 /* 5040 deg */;
     } else {
-        g_BattleMagicBolt2_SpriteReq.rotM11 = 0x2000;
+        g_BattleMagicBolt2_SpriteReq.rotM11 = 0x2000 /* 720 deg */;
     }
     SetRotMatrix((PsxMatrix *)g_BattleMagicBolt2_Scale);
     SetTransMatrix((PsxMatrix *)g_BattleMagicBolt2_Scale);

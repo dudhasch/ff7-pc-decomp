@@ -102,7 +102,7 @@ short g_SnoboRiderPoseVertex[8] = {0x2b, 0x2c, 0x2d, 0x2d, 0x2e, 0x2f, 0, 0};
 // into gSavemap.snowboardCourseResult. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0x926380..0x926388 are aliases.
 // GLOBAL: FF7 0x00926380
-char g_SnoboCourseResultBySegment[0x8] = {0x00, 0x00, 0x00, 0x02, 0x01, 0x04, 0x08, 0x00};
+char g_SnoboCourseResultBySegment[8] = {0x00, 0x00, 0x00, 0x02, 0x01, 0x04, 0x08, 0x00};
 // GLOBAL: FF7 0x00926388
 short g_SnoboAnimFrameActionPairs[4] = {210, 209, 224, 223};
 // GLOBAL: FF7 0x00926390
@@ -129,7 +129,7 @@ unsigned int g_SnoboThresholdRecords[3][8] = {{53000, 54000, 55000, 60000, 65000
 
 /*
  * Picks the viewport from GetUiScalingMode: MAIN_GRAPHICS_MODE_320X240 gives
- * GfxSetViewportRect(0, 0, 0x140, 0xF0, context), MAIN_GRAPHICS_MODE_320X240_CENTERED gives
+ * GfxSetViewportRect(0, 0, 320, 240, context), MAIN_GRAPHICS_MODE_320X240_CENTERED gives
  * (0xA0, 0x78, 0x140, 0xF0) so the 320x240 image sits in the middle of a 640x480 target, and
  * anything else gives the full (0, 0, 0x280, 0x1E0).
  */
@@ -140,11 +140,11 @@ void __cdecl Gfx_SetUiScalingViewport(struct GfxEngineContext *context)
 
     mode = GetUiScalingMode();
     if (mode == MAIN_GRAPHICS_MODE_320X240) {
-        GfxSetViewportRect(0, 0, 0x140, 0xF0, context);
+        GfxSetViewportRect(0, 0, 320, 240, context);
     } else if (mode == MAIN_GRAPHICS_MODE_320X240_CENTERED) {
-        GfxSetViewportRect(0xA0, 0x78, 0x140, 0xF0, context);
+        GfxSetViewportRect(160, 120, 320, 240, context);
     } else {
-        GfxSetViewportRect(0, 0, 0x280, 0x1E0, context);
+        GfxSetViewportRect(0, 0, 640, 480, context);
     }
 }
 
@@ -258,7 +258,7 @@ int __cdecl Mini_SnowboardInit(struct GfxEngineContext *ctx)
         return 0;
     if (!g_pSnoboRenderer->initialize())
         return 0;
-    Mini_InitPrimBuffer(0x18, 0xf0, 0x280, 0xf0, 0, 0);
+    Mini_InitPrimBuffer(24, 240, 640, 240, 0, 0);
     Mini_SnowboardPreloadSfx();
     if (g_SnoboModeFlag == SNOWBOARD_MODE_EVENT) {
         g_SnoboStatePtr->soundCommand->command = SOUND_SFX_ALL_PAN;
@@ -526,7 +526,7 @@ void __cdecl Mini_SnowboardStateFadeIn(void)
 {
     Mini_SnowboardRendererFillColor(*(unsigned char *)&g_SnoboFadeLevel << 0x10 | *(unsigned char *)&g_SnoboFadeLevel << 8 | *(unsigned char *)&g_SnoboFadeLevel);
     g_SnoboFadeLevel += 4;
-    if (g_SnoboFadeLevel >= 0x100) {
+    if (g_SnoboFadeLevel >= 256) {
         g_SnoboFadeLevel = 0;
         g_SnoboStateHandler = Mini_SnowboardStateIntro;
     }
@@ -552,15 +552,15 @@ void __cdecl Mini_SnowboardStateIntro(void)
     }
     g_SnoboFadeLevel++;
     fade = g_SnoboFadeLevel;
-    if (fade < 0x80) {
+    if (fade < 128) {
         Mini_SnowboardRendererFadeWhite(0x100 - (fade << 1));
         if (g_SnoboModeFlag == SNOWBOARD_MODE_GOLD_SAUCER) {
             MidiSetVolume(fade);
         }
     }
-    if (fade < 0x100) {
+    if (fade < 256) {
         g_SnoboCameraPosWord[0] = (fade * 0x60 >> 8) - 0x20;
-        g_SnoboCameraPosWord[1] = 0x1000 - (fade << 0xB >> 8);
+        g_SnoboCameraPosWord[1] = 0x1000 - (fade << 11 >> 8);
         g_SnoboCameraPosWord[2] = 0;
         g_SnoboCourseRecords.cameraOffset[0] = 0;
         g_SnoboCourseRecords.cameraOffset[1] = (fade << 6 >> 8) + 0x40;
@@ -578,7 +578,7 @@ void __cdecl Mini_SnowboardStateIntro(void)
     Mini_SnowboardEmitCourseChain(1, 2);
     Mini_SnowboardWriteRelativePosition((struct SnowboardRelativePosition *)(relPosition));
     Mini_SnowboardRunActionFrame(relPosition, Gfx_GetPsxScratchpadPtr(0), 1, 1);
-    if (((unsigned short)g_SnoboStatePtr->riderState & 0xFF) != 0x10 && g_SnoboFadeLevel > 0xFF) {
+    if (((unsigned short)g_SnoboStatePtr->riderState & 0xFF) != 0x10 && g_SnoboFadeLevel > 255) {
         g_SnoboStateHandler = Mini_SnowboardStateRace;
         if (g_SnoboModeFlag == SNOWBOARD_MODE_GOLD_SAUCER) {
             g_SnoboFadeLevel = 0;
@@ -616,17 +616,17 @@ void __cdecl Mini_SnowboardStateEndHold0(void)
     g_SnoboStatePtr->inputFlags = 0;
     Mini_SnowboardEmitCameraFrame();
     g_pSnoboRenderer->showMenu(Gfx_GetPsxScratchpadPtr(0), g_SnoboFadeLevel);
-    if (g_SnoboFadeLevel++ >= 0x50) {
-        if (g_SnoboStatePtr->resultTotal >= 0x64) {
+    if (g_SnoboFadeLevel++ >= 80) {
+        if (g_SnoboStatePtr->resultTotal >= 100) {
             animCode = 0x1B;
         } else {
-            if (g_SnoboStatePtr->resultTotal >= 0x46) {
+            if (g_SnoboStatePtr->resultTotal >= 70) {
                 midTier = 0x1E;
             } else {
-                if (g_SnoboStatePtr->resultTotal >= 0x32) {
+                if (g_SnoboStatePtr->resultTotal >= 50) {
                     lowTier = 0;
                 } else {
-                    lowTier = g_SnoboStatePtr->resultTotal >= 0x1E ? 0x1D : 0x1F;
+                    lowTier = g_SnoboStatePtr->resultTotal >= 30 ? 0x1D : 0x1F;
                 }
                 midTier = lowTier;
             }
@@ -659,14 +659,14 @@ void __cdecl Mini_SnowboardStateEndHold1(void)
     Mini_SnowboardEmitCameraFrame();
     g_pSnoboRenderer->renderRaceState(g_SnoboStatePtr->triggerStage - 1, g_SnoboCourseTimeRank, g_SnoboFadeLevel);
     g_SnoboFadeLevel++;
-    if (g_SnoboFadeLevel > 0x24) {
+    if (g_SnoboFadeLevel > 36) {
         if (g_SnoboAltEndTimer != 0) {
             animCode = 0x1E;
         } else {
-            if (g_SnoboStatePtr->resultPartB >= 0x1E) {
+            if (g_SnoboStatePtr->resultPartB >= 30) {
                 lowTier = 0;
             } else {
-                lowTier = g_SnoboStatePtr->resultPartB >= 0xF ? 0x1D : 0x1F;
+                lowTier = g_SnoboStatePtr->resultPartB >= 15 ? 0x1D : 0x1F;
             }
             animCode = lowTier;
         }
@@ -739,14 +739,14 @@ void __cdecl Mini_SnowboardStateFadeOut(void)
         SoundUpdateFades();
     }
     g_SnoboFadeLevel += 8;
-    if (g_SnoboFadeLevel < 0x100) {
+    if (g_SnoboFadeLevel < 256) {
         Mini_SnowboardRendererFadeWhite(g_SnoboFadeLevel);
         g_SnoboStatePtr->modeFlags = 0;
         g_SnoboStatePtr->inputFlags = 0;
         g_SnoboStatePtr->running = 0;
         Mini_SnowboardEmitRiderFrame();
     } else if (g_SnoboModeFlag == SNOWBOARD_MODE_GOLD_SAUCER) {
-        if (g_SnoboRunFinished != 0 && g_SnoboStatePtr->activeFlags != 0 && g_SnoboCourseRecords.runs[0].frameIndex < 0x2220 && (unsigned int)g_SnoboStatePtr->courseTime < (unsigned int)g_SnoboCourseRecords.runs[g_SnoboStatePtr->triggerStage].courseTime) {
+        if (g_SnoboRunFinished != 0 && g_SnoboStatePtr->activeFlags != 0 && g_SnoboCourseRecords.runs[0].frameIndex < 8736 && (unsigned int)g_SnoboStatePtr->courseTime < (unsigned int)g_SnoboCourseRecords.runs[g_SnoboStatePtr->triggerStage].courseTime) {
             Mini_SnowboardStoreRunSamplesToSlot();
         }
         Mini_SnowboardRendererFillColor(0xFFFFFF);
@@ -780,7 +780,7 @@ void __cdecl Mini_SnowboardStateQuit(void)
         Mini_SnowboardBeginSoundFade();
     }
     g_SnoboFadeLevel += 8;
-    if (g_SnoboFadeLevel < 0x100) {
+    if (g_SnoboFadeLevel < 256) {
         Mini_SnowboardRendererFadeBlack(g_SnoboFadeLevel);
         g_SnoboStatePtr->modeFlags = 0;
         g_SnoboStatePtr->inputFlags = 0;
@@ -872,7 +872,7 @@ void __cdecl Mini_SnowboardUpdateRiderPosition(SnowboardRiderPose *pose)
     sampleAddr = &base->vertices[phase];
     pose->posX = sampleAddr->posX;
     pose->posY = sampleAddr->posY;
-    pose->posZ = sampleAddr->posZ - 0x80;
+    pose->posZ = sampleAddr->posZ - 128;
     PsxApplyMatrix33ToLongVector((struct SnoboMatrix *)&pose->matrix, (struct SnoboVector *)&pose->posX, &pose->offsetX);
     effectPtr = (SnowboardEffectPos *)(g_SnoboStatePtr->effectPosTable + block * 0xC);
     g_SnoboStatePtr->originX = pose->offsetX + effectPtr->posX;
@@ -893,7 +893,7 @@ void __cdecl Mini_SnowboardStateAltEndWait(void)
     Mini_SnowboardUpdateTerrainMotion(1, 1);
     if (g_SnoboStatePtr->section != g_SnoboStatePtr->blockTable[g_SnoboStatePtr->segment])
         return;
-    if (g_SnoboStatePtr->triangle >= 0x3C) {
+    if (g_SnoboStatePtr->triangle >= 60) {
         switch ((char)g_SnoboStatePtr->riderState) {
         case SNOWBOARD_RIDER_ACTION_CONTROLS:
         case SNOWBOARD_RIDER_ACTION_TURN_LEFT:
@@ -928,10 +928,10 @@ void __cdecl Mini_SnowboardStateAltEndFadeUp(void)
     }
     Mini_SnowboardUpdateTerrainMotion(1, 1);
     g_SnoboFadeLevel++;
-    if (g_SnoboFadeLevel > 0x3C) {
+    if (g_SnoboFadeLevel > 60) {
         g_SnoboAltEndTimer += 2;
         Mini_SnowboardRendererFadeWhite(g_SnoboAltEndTimer);
-        if (g_SnoboAltEndTimer >= 0xFC) {
+        if (g_SnoboAltEndTimer >= 252) {
             g_SnoboStateHandler = Mini_SnowboardStateAltEndFadeDown;
         }
     }
@@ -1087,7 +1087,7 @@ void __cdecl Mini_SnowboardStateEndDispatch(void)
     g_SnoboStatePtr->modeFlags = 0;
     g_SnoboStatePtr->inputFlags = 0;
     Mini_SnowboardEmitCameraFrame();
-    if (g_SnoboFadeLevel++ > 0xF0) {
+    if (g_SnoboFadeLevel++ > 240) {
         g_SnoboFadeLevel = 0;
         if (g_SnoboStatePtr->activeFlags != 0) {
             g_SnoboCourseTimeRank = Mini_SnowboardInsertCourseTimeRank();
@@ -1276,7 +1276,7 @@ void __cdecl Mini_SnowboardPreloadSfx(void)
 {
     int i;
 
-    for (i = 0xD; i >= 0; i--) {
+    for (i = 13; i >= 0; i--) {
         SfxLoadIntoBuffer(g_SnoboSfxIds[i], 0);
     }
     g_SnoboStatePtr->soundCommand = (SnowboardSoundCommand *)(g_SnoboStatePtr + 1);
@@ -1292,7 +1292,7 @@ void __cdecl Mini_SnowboardReleaseSfx(void)
 {
     int i;
 
-    for (i = 0xD; i >= 0; i--) {
+    for (i = 13; i >= 0; i--) {
         Sfx_ReleaseCachedBuffer(g_SnoboSfxIds[i], 0xF);
     }
 }
@@ -1557,7 +1557,7 @@ void __cdecl Mini_SnowboardAppendRiderSample(void)
         return;
     }
     value = g_SnoboCourseRecords.runs[0].frameIndex;
-    if (value >= 0x2220) {
+    if (value >= 8736) {
         return;
     }
     sample = (SnowboardRiderSample *)(g_SnoboCourseRecords.runs[0].frames + value * 15);
@@ -1634,11 +1634,11 @@ void __cdecl Mini_SnowboardEmitAnimFrameActions(void)
         Matrix30SetRotationY(-(short)(pFrame->rotationYHi << 8 | pFrame->rotationYLo), &buf->yawMatrix);
         PsxMultiplyMatrix33ViaLocal((PsxMatrix *)&buf->matrix, (PsxMatrix *)&buf->yawMatrix, (PsxMatrix *)&buf->matrix);
         frameIdx = pFrame->posXByte3 << 0x18 | pFrame->posXByte2 << 0x10 | pFrame->posXByte1 << 8;
-        ((PsxMatrix *)&buf->matrix)->t[0] = (frameIdx >> 0xC) - g_SnoboStatePtr->originX;
+        ((PsxMatrix *)&buf->matrix)->t[0] = (frameIdx >> 12) - g_SnoboStatePtr->originX;
         frameIdx = pFrame->posYByte3 << 0x18 | pFrame->posYByte2 << 0x10 | pFrame->posYByte1 << 8;
-        ((PsxMatrix *)&buf->matrix)->t[1] = (frameIdx >> 0xC) - g_SnoboStatePtr->originY;
+        ((PsxMatrix *)&buf->matrix)->t[1] = (frameIdx >> 12) - g_SnoboStatePtr->originY;
         frameIdx = pFrame->posZByte3 << 0x18 | pFrame->posZByte2 << 0x10 | pFrame->posZByte1 << 8;
-        ((PsxMatrix *)&buf->matrix)->t[2] = (frameIdx >> 0xC) - g_SnoboStatePtr->originZ;
+        ((PsxMatrix *)&buf->matrix)->t[2] = (frameIdx >> 12) - g_SnoboStatePtr->originZ;
         GtePsxMatrixToFloat4x4((PsxMatrix *)&buf->matrix, matrix);
         kindTag = 3;
         if (g_SnoboCourseRecords.animFrameVariantWord < 3) {
@@ -1683,7 +1683,7 @@ void __cdecl Mini_SnowboardEmitAnimFrameActions(void)
 // FUNCTION: FF7 0x00726015
 void __cdecl Mini_SnowboardInitRunAtCourseEntry(int segment, int triangle, int riderState)
 {
-    short rotation[0x10];
+    short rotation[16];
     short pos[4];
     SnowboardCourseEntry *dat;
 
@@ -1726,11 +1726,11 @@ void __cdecl Mini_SnowboardInitRunAtCourseEntry(int segment, int triangle, int r
     g_SnoboStatePtr->originZ =
         g_SnoboStatePtr->segmentPtr->vectors[triangle].z;
     g_SnoboStatePtr->relPosX =
-        (float)((g_SnoboStatePtr->originX + pos[0]) << 0xC);
+        (float)((g_SnoboStatePtr->originX + pos[0]) << 12);
     g_SnoboStatePtr->relPosY =
-        (float)((g_SnoboStatePtr->originY + pos[1]) << 0xC);
+        (float)((g_SnoboStatePtr->originY + pos[1]) << 12);
     g_SnoboStatePtr->riderPos =
-        (float)((g_SnoboStatePtr->originZ + pos[2]) << 0xC);
+        (float)((g_SnoboStatePtr->originZ + pos[2]) << 12);
     g_SnoboStatePtr->velocityX = 0.0f;
     g_SnoboStatePtr->fadeLevel = 0.0f;
     g_SnoboStatePtr->velocityZ = 0.0f;
@@ -1747,9 +1747,9 @@ void __cdecl Mini_SnowboardInitRunAtCourseEntry(int segment, int triangle, int r
     g_SnoboStatePtr->targetAngle1 = 0.0f;
     g_SnoboStatePtr->riderState = (short)riderState;
     g_SnoboStatePtr->followAngle = 0;
-    pos[0] = (short)((int)g_SnoboStatePtr->relPosX >> 0xC);
-    pos[1] = (short)((int)g_SnoboStatePtr->relPosY >> 0xC);
-    pos[2] = (short)((int)g_SnoboStatePtr->riderPos >> 0xC);
+    pos[0] = (short)((int)g_SnoboStatePtr->relPosX >> 12);
+    pos[1] = (short)((int)g_SnoboStatePtr->relPosY >> 12);
+    pos[2] = (short)((int)g_SnoboStatePtr->riderPos >> 12);
     g_SnoboStatePtr->triangle = (short)((SnoboSpawnFn)Mini_SnowboardFindCourseTriangleIndex)(pos, (int)dat, Gfx_GetPsxScratchpadPtr(0));
     Mini_SnowboardResetRiderRecord();
     Mini_SnowboardSelectEffectCallbacks();
@@ -1761,9 +1761,9 @@ void __cdecl Mini_SnowboardInitRunAtCourseEntry(int segment, int triangle, int r
     g_SnoboStatePtr->rotationY = 0;
     if (g_SnoboModeFlag == SNOWBOARD_MODE_GOLD_SAUCER) {
         g_SnoboStatePtr->segmentTable[2].linkedBlock =
-            g_SnoboStatePtr->bestScores[0] < 0x46;
+            g_SnoboStatePtr->bestScores[0] < 70;
         g_SnoboStatePtr->segmentTable[4].linkedBlock =
-            g_SnoboStatePtr->bestScores[1] < 0x46;
+            g_SnoboStatePtr->bestScores[1] < 70;
     }
     g_SnoboRunFinished = 0;
     g_SnoboFadeLevel = 0;
@@ -1976,7 +1976,7 @@ int __cdecl Mini_SnowboardTransformCourseVertices(SnowboardCourseNodeState *bloc
         block->vertices[frame.vertIdx] = srcVerts[frame.vertIdx];
         block->colors[frame.vertIdx] = srcColors[frame.vertIdx];
     }
-    for (frame.vertIdx = 7; frame.vertIdx < 0x31; frame.vertIdx++) {
+    for (frame.vertIdx = 7; frame.vertIdx < 49; frame.vertIdx++) {
         frame.srcVert = &block->courseBlock->vertices[frame.vertIdx];
         frame.posX = (float)frame.srcVert->posX;
         frame.posY = (float)frame.srcVert->posY;
@@ -2009,7 +2009,7 @@ void __cdecl Mini_SnowboardRefreshCourseBlockVertices(SnowboardCourseNodeState *
         int vertexIndex;
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
-    for (frame.vertexIndex = 0; frame.vertexIndex < 0x31; frame.vertexIndex++) {
+    for (frame.vertexIndex = 0; frame.vertexIndex < 49; frame.vertexIndex++) {
         frame.srcVert = &block->courseBlock->vertices[frame.vertexIndex];
         frame.posX = (float)frame.srcVert->posX;
         frame.posY = (float)frame.srcVert->posY;
@@ -2035,7 +2035,7 @@ void __cdecl Mini_SnowboardRefreshCourseBlockVertices(SnowboardCourseNodeState *
         frame.dstColorPtr++;
         frame.srcColorPtr++;
     }
-    for (frame.srcColorPtr = &block->courseBlock->colors[7]; frame.vertexIndex < 0x31; frame.vertexIndex++) {
+    for (frame.srcColorPtr = &block->courseBlock->colors[7]; frame.vertexIndex < 49; frame.vertexIndex++) {
         *frame.dstColorPtr = *frame.srcColorPtr;
         frame.dstColorPtr++;
         frame.srcColorPtr++;
@@ -2079,7 +2079,7 @@ void __cdecl Mini_SnowboardSubdivideCourseEdgeRow(SnowboardCourseNodeState *bloc
 #pragma pack(pop)
 
     frame.dstIndex = 0;
-    for (frame.srcIndex = 0x2A; frame.srcIndex < 0x30; frame.dstIndex += 2, frame.srcIndex++) {
+    for (frame.srcIndex = 42; frame.srcIndex < 48; frame.dstIndex += 2, frame.srcIndex++) {
         block->edgeRow[frame.dstIndex] = block->vertices[frame.srcIndex];
         frame.midPtr = &block->edgeRow[frame.dstIndex + 1];
         frame.endPtr = &block->vertices[frame.srcIndex + 1];
@@ -2123,7 +2123,7 @@ void __cdecl Mini_SnowboardEmitCourseMesh(SnowboardCourseNodeState *node)
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
     if (node->active == 0) {
         frame.pointer = node->courseBlock->faces;
-        for (frame.face = 0; frame.face < 0x48; frame.face++) {
+        for (frame.face = 0; frame.face < 72; frame.face++) {
             frame.packed = frame.pointer->word;
             frame.pointer++;
             frame.indices[0] = frame.packed & 255;
@@ -2139,7 +2139,7 @@ void __cdecl Mini_SnowboardEmitCourseMesh(SnowboardCourseNodeState *node)
         frame.column = 0;
         frame.sourceColors[0] = g_SnoboColorPairs[node->segmentIndex].a;
         frame.sourceColors[1] = g_SnoboColorPairs[node->segmentIndex].b;
-        for (frame.index = 0; frame.index < 0x2a; frame.index++) {
+        for (frame.index = 0; frame.index < 42; frame.index++) {
             frame.column++;
             if (frame.column >= 7) {
                 frame.column = 0;
@@ -2164,7 +2164,7 @@ void __cdecl Mini_SnowboardAppendCourseRecord(SnowboardCourseNodeState *cursor)
 {
     SnowboardCourseActionRecord *recordPtr;
 
-    if (cursor->recordCount >= 0x14) {
+    if (cursor->recordCount >= 20) {
         return;
     }
     recordPtr = (SnowboardCourseActionRecord *)(cursor->recordCount * 0x4C + (char *)&g_SnoboCourseActionRecords);
@@ -3168,7 +3168,7 @@ void __cdecl Mini_SnowboardStepCamera(int context)
     short stepCount;
 
     stepCount = *(short *)&g_SnoboCameraStepCount;
-    if (stepCount < 0x40) {
+    if (stepCount < 64) {
         stepCount++;
         g_SnoboCameraStepCount = stepCount;
     }
@@ -3218,7 +3218,7 @@ void __cdecl Mini_SnowboardUpdateCourseSurface(void)
             g_SnoboSurfaceTriangle[slotIdx].posY = g_SnoboSurfaceSeamVertices[vertexIndex].posY - g_SnoboSurfaceSeamVertices->posY;
         }
     }
-    g_SnoboStatePtr->terrainHeight = (float)(Mini_SnowboardInterpolateTriangleHeight((SnowboardHeightPoint *)&g_SnoboStatePtr->probeDeltaX, g_SnoboSurfaceTriangle, &g_SnoboSurfaceTriangle[1], &g_SnoboSurfaceTriangle[2]) + g_SnoboStatePtr->segmentPtr->vectors[g_SnoboStatePtr->chainIndex].y << 0xC);
+    g_SnoboStatePtr->terrainHeight = (float)(Mini_SnowboardInterpolateTriangleHeight((SnowboardHeightPoint *)&g_SnoboStatePtr->probeDeltaX, g_SnoboSurfaceTriangle, &g_SnoboSurfaceTriangle[1], &g_SnoboSurfaceTriangle[2]) + g_SnoboStatePtr->segmentPtr->vectors[g_SnoboStatePtr->chainIndex].y << 12);
     Mini_SnowboardIntegrateVerticalMotion(&g_SnoboStatePtr->motionFlags);
     if (g_SnoboStatePtr->motionStage > 8) {
         g_SnoboStatePtr->targetAngle1 = 0.0f;
@@ -3320,7 +3320,7 @@ void __cdecl Mini_SnowboardComputeRelativeCameraPos(SnowboardHeightPoint *riderP
         relCam->riderZ = riderPos->z;
         midY = (farY - midY) * riderPos->z / record->riderRange + midY;
     }
-    farY = (int)(g_SnoboStatePtr->relPosY * 0.00024414062f) - g_SnoboStatePtr->originY + 0x40;
+    farY = (int)(g_SnoboStatePtr->relPosY * 0.00024414062f) - g_SnoboStatePtr->originY + 64;
     if (midY < farY) {
         yClamped = midY;
     } else {
@@ -3371,12 +3371,12 @@ void __cdecl Mini_SnowboardUpdateRiderFollowCamera(void)
         goto updatePosition;
     }
     frame.difference = (frame.angle - g_SnoboStatePtr->flags) & 0xfff;
-    if (frame.difference > 0x400 && frame.difference < 0xc00)
+    if (frame.difference > 1024 && frame.difference < 3072)
         frame.angle = (frame.angle + 0x800) & 0xfff;
     frame.difference = (frame.angle - g_SnoboStatePtr->flags) & 0xfff;
-    if (frame.difference > 0x200 && frame.difference < 0x800)
+    if (frame.difference > 512 && frame.difference < 2048)
         frame.angle = g_SnoboStatePtr->flags + 0x200;
-    else if (frame.difference > 0x800 && frame.difference < 0xe00)
+    else if (frame.difference > 2048 && frame.difference < 3584)
         frame.angle = g_SnoboStatePtr->flags - 0x200;
     frame.difference = g_SnoboStatePtr->followAngle >> 4;
     if (frame.difference < 4)
@@ -3472,22 +3472,22 @@ void __cdecl Mini_SnowboardComputeResultScores(void)
     int partScore;
     int pickupScore;
 
-    partScore = 0x1E - g_SnoboStatePtr->spinCount / 3;
+    partScore = 30 - g_SnoboStatePtr->spinCount / 3;
     if (partScore < 0) {
         partScore = 0;
     }
     g_SnoboStatePtr->resultPartA = partScore;
     g_pSnoboRenderer->splitTime((int)&g_SnoboStatePtr->courseTime, (int)timeDigits);
-    partScore = (timeDigits[3] + timeDigits[2] * 0xA + timeDigits[1] * 0x3C + timeDigits[0] * 0x258 - g_SnoboSelectorTable.triggerStageWeights[g_SnoboStatePtr->triggerStage]) / 2;
-    partScore = 0x1E - partScore;
-    if (partScore > 0x1E) {
-        partScore = 0x1E;
+    partScore = (timeDigits[3] + timeDigits[2] * 10 + timeDigits[1] * 60 + timeDigits[0] * 600 - g_SnoboSelectorTable.triggerStageWeights[g_SnoboStatePtr->triggerStage]) / 2;
+    partScore = 30 - partScore;
+    if (partScore > 30) {
+        partScore = 30;
     } else if (partScore < 0) {
         partScore = 0;
     }
     g_SnoboStatePtr->resultPartB = partScore;
-    if (g_SnoboStatePtr->pickupTotal > 0x28) {
-        pickupScore = 0x28;
+    if (g_SnoboStatePtr->pickupTotal > 40) {
+        pickupScore = 40;
     } else {
         pickupScore = g_SnoboStatePtr->pickupTotal;
     }
@@ -3592,7 +3592,7 @@ void __cdecl Mini_SnowboardResetSoundState(void)
 }
 
 /*
- * Fades all sound effects to volume 0 over 0x1E steps: writes SOUND_SFX_ALL_VOLUME_TRANS
+ * Fades all sound effects to volume 0 over 30 steps: writes SOUND_SFX_ALL_VOLUME_TRANS
  * into the sound command buffer at g_SnoboStatePtr->soundCommand and calls
  * SoundDispatchCommand once.
  */

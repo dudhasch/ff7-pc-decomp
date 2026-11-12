@@ -172,7 +172,7 @@ void __cdecl Battle_ApplyStatusToActorMask(int actorMask, int elementMask, int s
     int affinity;
 
     resultMask = 0;
-    for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    for (actorIndex = 0; actorIndex < 10; actorIndex++) {
         g_aCombatants[actorIndex].elementAffinity = 3;
         if ((actorMask & 1 << actorIndex) != 0) {
             affinity = Battle_FindElementAffinityIndex(actorIndex, elementMask, statusMask);
@@ -225,7 +225,7 @@ void __cdecl Battle_ResolveElementAffinity(void)
     if (g_pBattleCommandCtx->power != 0 && frame.affinityTable.immunityBits != 0) {
         frame.affinityTable.immunityBits = 0;
     }
-    for (frame.entryIndex = 0; frame.entryIndex < 0x10; frame.entryIndex++) {
+    for (frame.entryIndex = 0; frame.entryIndex < 16; frame.entryIndex++) {
         if (frame.affinityTable.entries[frame.entryIndex] != 0) {
             *(short *)&frame.reactionBits |= (short)(1 << (frame.entryIndex % 8));
         }
@@ -407,7 +407,7 @@ void __cdecl Battle_RemoveActorAndAwardSpoils(int actor, int status, int set)
     g_BattleState.actors[actor].slipRate = 0;
     ((BattleActorResumeMarker *)&g_BattleState.actorResumeMarker)[actor].marker = 0xFF;
     Battle_ReleasePendingDrops((short)actor);
-    for (clearIdx = 0; clearIdx < 0x10; clearIdx++) {
+    for (clearIdx = 0; clearIdx < 16; clearIdx++) {
         g_BattleState.actors[actor].statusTimers[clearIdx] = 0;
     }
     for (clearIdx = 0; clearIdx < 8; clearIdx++) {
@@ -503,7 +503,7 @@ void __cdecl Battle_OnStatusAutoControlCleared(int actor, int status, int set)
     }
 }
 
-/* The status bit number of Petrify (BATTLE_STATUS_PETRIFY is 1 << 0xE). */
+/* The status bit number of Petrify (BATTLE_STATUS_PETRIFY is 1 << 14). */
 #define BATTLE_STATUS_BIT_PETRIFY 0xE
 
 /* What Petrify keeps: every status but Sleep, Poison, Confusion, Regen and Dual Drain. */
@@ -726,7 +726,7 @@ int __cdecl Battle_FindStatusTimerSlot(int status)
     int index;
 
     foundIdx = 0xFFFFFFFF;
-    for (index = 0; index < 0x10; index++) {
+    for (index = 0; index < 16; index++) {
         if (g_BattleStatusTimerSlots[index] == status) {
             foundIdx = index;
         }

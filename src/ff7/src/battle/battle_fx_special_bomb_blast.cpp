@@ -140,8 +140,8 @@ void __cdecl BattleFx_SpecialBeginBombBlast(int targetMask, int actorIdx)
 
 /*
  * Timing-only task; it draws nothing. On the first frame it clears the three colour channels of
- * g_BattleFxTimelineState and calls Battle_StartFixedPointRamp(0x1000, 0x14). It then counts frames, and
- * at frame 0x28 calls Battle_StartFixedPointRamp(0, 0x14) and frees its slot.
+ * g_BattleFxTimelineState and calls Battle_StartFixedPointRamp(0x1000, 20). It then counts frames, and
+ * at frame 0x28 calls Battle_StartFixedPointRamp(0, 20) and frees its slot.
  */
 // FUNCTION: FF7 0x00537427
 void __cdecl BattleFx_SpecialBombBlastScreenRampTimerTask(void)
@@ -153,11 +153,11 @@ void __cdecl BattleFx_SpecialBombBlastScreenRampTimerTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0x1000, 0x14);
+        Battle_StartFixedPointRamp(0x1000, 20);
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x28) {
-        Battle_StartFixedPointRamp(0, 0x14);
+    if (task->frameCounter == 40) {
+        Battle_StartFixedPointRamp(0, 20);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -177,7 +177,7 @@ void __cdecl BattleFx_SpecialSpawnBombBlastPerTarget(int actor, int targetIndex)
 }
 
 /*
- * Timeline task of one target: over 0x32 frames it spawns the animated sprites, the bouncing and
+ * Timeline task of one target: over 50 frames it spawns the animated sprites, the bouncing and
  * radial-spark sprites, the growing spinning models and the grow-fade sprites.
  */
 // FUNCTION: FF7 0x00537507
@@ -202,21 +202,21 @@ void __cdecl BattleFx_SpecialBombBlastTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter < 0xF) {
+    if (frame.slot->frameCounter < 15) {
         frame.spawnSlot = (BattleFxBombBlastTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBombBlastAnimatedSpriteTask);
-        frame.spawnSlot->posA = frame.slot->posA + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posB = frame.slot->posB + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posC = frame.slot->posC + rand() % 0x4B0 + -0x258;
+        frame.spawnSlot->posA = frame.slot->posA + rand() % 1200 + -600;
+        frame.spawnSlot->posB = frame.slot->posB + rand() % 1200 + -600;
+        frame.spawnSlot->posC = frame.slot->posC + rand() % 1200 + -600;
         frame.spawnSlot->variant = (rand() % 4);
     }
-    if (frame.slot->frameCounter == 0xF) {
+    if (frame.slot->frameCounter == 15) {
         for (frame.angleStep = 0; frame.angleStep < 0xC; frame.angleStep++) {
             frame.spawnSlot = (BattleFxBombBlastTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialBombBlastBouncingSpriteTask)];
-            frame.spawnSlot->posA = frame.slot->posA + rand() % 0x190 + -0xC8;
-            frame.spawnSlot->posC = frame.slot->posC + rand() % 0x190 + -0xC8;
+            frame.spawnSlot->posA = frame.slot->posA + rand() % 400 + -200;
+            frame.spawnSlot->posC = frame.slot->posC + rand() % 400 + -200;
             frame.spawnSlot->posB = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFED4, 0x64, &frame.spawnSlot->velA);
-            frame.spawnSlot->variant = rand() % 0x14;
+            BattleFx_MakeRandomConeVector(0xFFFFFED4, 100, &frame.spawnSlot->velA);
+            frame.spawnSlot->variant = rand() % 20;
         }
         for (frame.angleStep = 0; frame.angleStep < 0xC; frame.angleStep++) {
             frame.spawnSlot = (BattleFxBombBlastTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialBombBlastRadialSparkSpriteTask)];
@@ -225,8 +225,8 @@ void __cdecl BattleFx_SpecialBombBlastTimelineTask(void)
             frame.spawnSlot->posC = frame.slot->posC;
             frame.angle = (-rand() % 1024);
             frame.spawnSlot->angle = frame.angle;
-            frame.offsetX.vx = CosFixed(frame.angle) * 0xC8 >> 0xC;
-            frame.offsetX.vy = SinFixed(frame.angle) * 0xC8 >> 0xC;
+            frame.offsetX.vx = CosFixed(frame.angle) * 0xC8 >> 12;
+            frame.offsetX.vy = SinFixed(frame.angle) * 0xC8 >> 12;
             frame.offsetX.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -242,19 +242,19 @@ void __cdecl BattleFx_SpecialBombBlastTimelineTask(void)
         }
         Battle_PlaySfxPannedToActor(0x98, (short)frame.slot->targetIndex, 0);
     }
-    if (frame.slot->frameCounter >= 0xF && frame.slot->frameCounter < 0x1B && (frame.slot->frameCounter % 4) == 0) {
+    if (frame.slot->frameCounter >= 15 && frame.slot->frameCounter < 27 && (frame.slot->frameCounter % 4) == 0) {
         frame.angle = frame.slot->frameCounter - 0xF >> 2;
         frame.spawnSlot = (BattleFxBombBlastTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBombBlastGrowingSpinningModelTask);
-        frame.spawnSlot->posA = frame.slot->posA + (SinFixed(frame.angle * 0x555) * 0x4B0 >> 0xC);
+        frame.spawnSlot->posA = frame.slot->posA + (SinFixed(frame.angle * 1365) * 0x4B0 >> 12);
         frame.spawnSlot->posB = 0;
-        frame.spawnSlot->posC = frame.slot->posC + (CosFixed(frame.angle * 0x555) * 0x4B0 >> 0xC);
+        frame.spawnSlot->posC = frame.slot->posC + (CosFixed(frame.angle * 1365) * 0x4B0 >> 12);
     }
-    if (frame.slot->frameCounter > 0xF && frame.slot->frameCounter < 0x15) {
+    if (frame.slot->frameCounter > 15 && frame.slot->frameCounter < 21) {
         for (frame.angleStep = 0; frame.angleStep < 4; frame.angleStep++) {
             frame.spawnSlot = (BattleFxBombBlastTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBombBlastGrowFadeSpriteTask);
-            frame.spawnSlot->posA = frame.slot->posA + rand() % 0x640 + -0x320;
-            frame.spawnSlot->posB = -rand() % 0x4B0;
-            frame.spawnSlot->posC = frame.slot->posC + rand() % 0x640 + -0x320;
+            frame.spawnSlot->posA = frame.slot->posA + rand() % 1600 + -800;
+            frame.spawnSlot->posB = -rand() % 1200;
+            frame.spawnSlot->posC = frame.slot->posC + rand() % 1600 + -800;
         }
         for (frame.angleStep = 0; frame.angleStep < 8; frame.angleStep++) {
             frame.angle = (rand() % 4096);
@@ -262,29 +262,29 @@ void __cdecl BattleFx_SpecialBombBlastTimelineTask(void)
             frame.spawnSlot->posA = frame.slot->posA;
             frame.spawnSlot->posB = 0xFF38;
             frame.spawnSlot->posC = frame.slot->posC;
-            frame.spawnSlot->velA = SinFixed(frame.angle) * 0x3C >> 0xC;
-            frame.spawnSlot->velC = CosFixed(frame.angle) * 0x3C >> 0xC;
-            frame.spawnSlot->velB = -rand() % 0x28 - 0x78;
+            frame.spawnSlot->velA = SinFixed(frame.angle) * 0x3C >> 12;
+            frame.spawnSlot->velC = CosFixed(frame.angle) * 0x3C >> 12;
+            frame.spawnSlot->velB = -rand() % 40 - 120;
             frame.spawnSlot->variant = 5;
         }
     }
-    if (frame.slot->frameCounter > 0x20 && frame.slot->frameCounter < 0x2C) {
+    if (frame.slot->frameCounter > 32 && frame.slot->frameCounter < 44) {
         frame.spawnSlot = (BattleFxBombBlastTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBombBlastAnimatedSpriteTask);
-        frame.spawnSlot->posA = frame.slot->posA + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posB = frame.slot->posB + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posC = frame.slot->posC + rand() % 0x4B0 + -0x258;
+        frame.spawnSlot->posA = frame.slot->posA + rand() % 1200 + -600;
+        frame.spawnSlot->posB = frame.slot->posB + rand() % 1200 + -600;
+        frame.spawnSlot->posC = frame.slot->posC + rand() % 1200 + -600;
         frame.spawnSlot->variant = 4;
         frame.spawnSlot = (BattleFxBombBlastTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBombBlastAnimatedSpriteTask);
-        frame.spawnSlot->posA = frame.slot->posA + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posB = frame.slot->posB + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posC = frame.slot->posC + rand() % 0x4B0 + -0x258;
+        frame.spawnSlot->posA = frame.slot->posA + rand() % 1200 + -600;
+        frame.spawnSlot->posB = frame.slot->posB + rand() % 1200 + -600;
+        frame.spawnSlot->posC = frame.slot->posC + rand() % 1200 + -600;
         frame.spawnSlot->variant = 6;
     }
-    if (frame.slot->frameCounter == 0x28) {
+    if (frame.slot->frameCounter == 40) {
         Battle_PostActorHitOrHurtMessage(frame.slot->actorMask);
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x32) {
+    if (frame.slot->frameCounter == 50) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -349,8 +349,8 @@ void __cdecl BattleFx_SpecialBombBlastGrowFadeSpriteTask(void)
     int cap;
 
     taskPtr = (BattleFxBombBlastBouncingSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecBombBlastSpriteReq1.secondSpriteResource = Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecBombBlastLoadedResTable);
-    g_BattleSpecBombBlastSpriteReq1.secondDrawObj = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSpecBombBlastLoadedResTable);
+    g_BattleSpecBombBlastSpriteReq1.secondSpriteResource = Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecBombBlastLoadedResTable);
+    g_BattleSpecBombBlastSpriteReq1.secondDrawObj = Gfx_ModelTableGetSpriteObject(10, g_BattleSpecBombBlastLoadedResTable);
     if (taskPtr->frameCounter < 8) {
         cap = taskPtr->frameCounter;
     } else {
@@ -365,7 +365,7 @@ void __cdecl BattleFx_SpecialBombBlastGrowFadeSpriteTask(void)
     g_BattleSpecBombBlastPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecBombBlastSpriteReq1.secondSpriteResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecBombBlastPacketCursor);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frameCounter)++;
-        if (taskPtr->frameCounter == 0x18) {
+        if (taskPtr->frameCounter == 24) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -436,10 +436,10 @@ void __cdecl BattleFx_SpecialBombBlastBouncingSpriteTask(void)
         frame.slot->posB = 0;
         frame.slot->velB *= -1;
     }
-    frame.slot->velB += 0x14;
-    frame.slot->angle += 0x200;
+    frame.slot->velB += 20;
+    frame.slot->angle += 0x200 /* 45 deg */;
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0xF) {
+    if (frame.slot->frameCounter == 15) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -477,7 +477,7 @@ void __cdecl BattleFx_SpecialBombBlastRadialSparkSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.slot->posA, frame.scaleMatrix.t, &frame.screenDepth);
-    frame.scaleMatrix.m[2][2] = 0x6000;
+    frame.scaleMatrix.m[2][2] = 0x6000 /* 6.0 */;
     frame.scaleMatrix.m[1][1] = frame.scaleMatrix.m[2][2];
     frame.scaleMatrix.m[0][0] = frame.scaleMatrix.m[1][1];
     ConcatMatrixIntoFirst(&frame.scaleMatrix, &g_BattleCameraTransform);
@@ -524,9 +524,9 @@ void __cdecl BattleFx_SpecialBombBlastGrowingSpinningModelTask(void)
     frame.rotX.vy = frame.slot->frameCounter << 6;
     frame.rotX.vz = 0;
     RotMatrix(&frame.rotX, &frame.spinMatrix);
-    g_BattleSpecBombBlastScaleVectorZ = (frame.slot->frameCounter << 8) + 0x3000;
+    g_BattleSpecBombBlastScaleVectorZ = (frame.slot->frameCounter << 8) + 12288;
     g_BattleSpecBombBlastScaleVectorX = g_BattleSpecBombBlastScaleVectorZ;
-    g_BattleSpecBombBlastScaleVectorY = (frame.slot->frameCounter << 8) + 0x2000;
+    g_BattleSpecBombBlastScaleVectorY = (frame.slot->frameCounter << 8) + 8192;
     ScaleMatrix(&frame.spinMatrix, &g_BattleSpecBombBlastScaleVectorX);
     frame.spinMatrix.t[0] = frame.slot->posX;
     frame.spinMatrix.t[1] = frame.slot->posY;
@@ -540,7 +540,7 @@ void __cdecl BattleFx_SpecialBombBlastGrowingSpinningModelTask(void)
         return;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x1E) {
+    if (frame.slot->frameCounter == 30) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

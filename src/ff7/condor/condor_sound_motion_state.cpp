@@ -146,7 +146,7 @@ void __cdecl Mini_CondorLoadSoundTable(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0xE; i++) {
+    for (i = 0; i < 14; i++) {
         SfxLoadIntoBuffer(g_CondorSoundEffectIds[i], 0);
     }
 }
@@ -159,7 +159,7 @@ void __cdecl Mini_CondorReleaseCachedSfxBuffers(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0xE; i++) {
+    for (i = 0; i < 14; i++) {
         Sfx_ReleaseCachedBuffer(g_CondorSoundEffectIds[i], 0xF);
     }
 }
@@ -182,7 +182,7 @@ void __cdecl Mini_CondorAdvanceSlotMotion(CondorSlotMotion *slot)
             slot->carryX = delta;
             delta = delta >> 8;
             if (delta != 0) {
-                if (delta >= 0x80) {
+                if (delta >= 128) {
                     delta |= 0xFF00;
                 }
                 slot->posX += delta;
@@ -196,7 +196,7 @@ void __cdecl Mini_CondorAdvanceSlotMotion(CondorSlotMotion *slot)
             slot->carryY = delta;
             delta = delta >> 8;
             if (delta != 0) {
-                if (delta >= 0x80) {
+                if (delta >= 128) {
                     delta |= 0xFF00;
                 }
                 slot->posY += delta;
@@ -333,7 +333,7 @@ void __cdecl Mini_CondorUpdateRecordSelectPanel(void)
             g_CondorSelectPanelPhase = CONDOR_PANEL_CLOSED;
             if (g_CondorRecordMode == CONDOR_RECORD_MODE_CURSOR) {
                 if (g_CondorLayoutStart == 1) {
-                    if (g_CondorRecordTable.records[g_CondorSelectedRecord].unitIndex < 0x10) {
+                    if (g_CondorRecordTable.records[g_CondorSelectedRecord].unitIndex < 16) {
                         Mini_CondorOpenSelectedRecordActionMenu();
                     } else {
                         Mini_CondorRequestDisplayMode1();
@@ -458,7 +458,7 @@ short __cdecl Mini_CondorAdvanceUnitAttack(int attackerSlot, int targetSlot)
         break;
     case CONDOR_ATTACK_STEP_RESOLVE:
         pAttackerRecord->inContact = CONDOR_ATTACK_STEP_NONE;
-        pAttackerRecord->bufferIndex = 0x78;
+        pAttackerRecord->bufferIndex = 120;
         pAttackerRecord->sequenceIndex = 0;
         result = Mini_CondorBeginRecordSequence(pAttackerRecord);
         state = targetPtr->counter;
@@ -472,13 +472,13 @@ short __cdecl Mini_CondorAdvanceUnitAttack(int attackerSlot, int targetSlot)
             Mini_CondorRefreshActiveRecordDisplay();
         }
         if (state == 0) {
-            if (targetPtr->unitIndex >= 0x10) {
+            if (targetPtr->unitIndex >= 16) {
                 if (g_CondorSelectedRecord == -1) {
                     g_CondorSelectedRecord = ((int)pAttackerRecord - (int)&g_CondorRecordTable.records[0].status) / 0x78;
                     Mini_CondorRefreshActiveRecordDisplay();
                     g_CondorSelectedRecord = 0xFFFF;
                 }
-                Mini_CondorStartRecordAction(0xA, ((int)pAttackerRecord - (int)&g_CondorRecordTable.records[0].status) / 0x78);
+                Mini_CondorStartRecordAction(10, ((int)pAttackerRecord - (int)&g_CondorRecordTable.records[0].status) / 0x78);
             }
             if ((int)targetPtr == pAttackerRecord->contactSlot * 0x78 + (int)&g_CondorRecordTable.records[0].status) {
                 pAttackerRecord->contactSlot = 0xFF;
@@ -490,7 +490,7 @@ short __cdecl Mini_CondorAdvanceUnitAttack(int attackerSlot, int targetSlot)
             }
             if (targetPtr->retired == 0) {
                 targetPtr->retired = 0xFF;
-                if (targetPtr->unitIndex < 0x10) {
+                if (targetPtr->unitIndex < 16) {
                     g_CondorPlayerUnitCount--;
                 } else {
                     g_CondorSpawnCount--;
@@ -644,7 +644,7 @@ void __cdecl Mini_CondorBeginLinearMotion(int startX, int startY, int endX, int 
         g_CondorMotionStepsY = -g_CondorMotionStepsY;
     }
     if (g_CondorMotionStepsX >= g_CondorMotionStepsY) {
-        g_CondorVecX = 0x100;
+        g_CondorVecX = 256;
         scaled = g_CondorMotionStepsY << 8;
         if (scaled == 0) {
             g_CondorVecY = 1;
@@ -655,7 +655,7 @@ void __cdecl Mini_CondorBeginLinearMotion(int startX, int startY, int endX, int 
             g_CondorVecY = 1;
         }
     } else {
-        g_CondorVecY = 0x100;
+        g_CondorVecY = 256;
         scaled = g_CondorMotionStepsX << 8;
         if (scaled == 0) {
             g_CondorVecX = 1;
@@ -850,16 +850,16 @@ void __cdecl Mini_CondorAdvanceCounterToTarget(void)
 }
 
 /*
- * Ticks the end banner for 0x168 frames, then sets the exit word to CONDOR_STAGE_EXIT.
+ * Ticks the end banner for 360 frames, then sets the exit word to CONDOR_STAGE_EXIT.
  */
 // FUNCTION: FF7 0x005fca8e
 void __cdecl Mini_CondorTickCounterOrRequestState5(void)
 {
-    if (g_CondorPhaseFrames < 0x168) {
+    if (g_CondorPhaseFrames < 360) {
         g_CondorPhaseFrames++;
         g_CondorBannerCounter++;
-        if (g_CondorBannerCounter >= 0x40) {
-            g_CondorBannerCounter = 0x40;
+        if (g_CondorBannerCounter >= 64) {
+            g_CondorBannerCounter = 64;
         }
     } else {
         g_CondorStage = CONDOR_STAGE_EXIT;
@@ -867,7 +867,7 @@ void __cdecl Mini_CondorTickCounterOrRequestState5(void)
 }
 
 /*
- * Ticks the end banner; after 0x258 frames, or Circle or Cross once it is full, sets the exit
+ * Ticks the end banner; after 600 frames, or Circle or Cross once it is full, sets the exit
  * word to CONDOR_STAGE_EXIT_FLAGGED.
  */
 // FUNCTION: FF7 0x005fcae6
@@ -878,12 +878,12 @@ void __cdecl Mini_CondorTickCounterOrRequestState4(void)
     val = 0;
     val = 0;
     g_CondorPhaseFrames++;
-    if (g_CondorPhaseFrames > 0x258) {
+    if (g_CondorPhaseFrames > 600) {
         val++;
     }
     g_CondorBannerCounter++;
-    if (g_CondorBannerCounter >= 0x40) {
-        g_CondorBannerCounter = 0x40;
+    if (g_CondorBannerCounter >= 64) {
+        g_CondorBannerCounter = 64;
         if ((g_CondorInputPressed & (INPUT_CIRCLE | INPUT_CROSS)) != 0) {
             val++;
         }
@@ -971,19 +971,19 @@ void __cdecl Mini_CondorHandleRecordSelectInput(void)
     }
     if ((g_CondorInputPressed & INPUT_UP) != 0) {
         Mini_CondorSubmitSfxPlay(SFX_MENU_CURSOR, 4);
-        g_CondorSelectRowY -= 0x10;
+        g_CondorSelectRowY -= 16;
         if (g_CondorSelectRowY < 0) {
-            g_CondorSelectRowY = 0x10;
+            g_CondorSelectRowY = 16;
         }
     }
     if ((g_CondorInputPressed & INPUT_DOWN) != 0) {
         Mini_CondorSubmitSfxPlay(SFX_MENU_CURSOR, 4);
-        g_CondorSelectRowY += 0x10;
-        if (g_CondorSelectRowY > 0x10) {
+        g_CondorSelectRowY += 16;
+        if (g_CondorSelectRowY > 16) {
             g_CondorSelectRowY = 0;
         }
     }
-    g_CondorSpriteSlot6ScreenY = g_CondorCameraY + g_CondorSelectRowY + 0x4C;
+    g_CondorSpriteSlot6ScreenY = g_CondorCameraY + g_CondorSelectRowY + 76;
 }
 
 /*
@@ -1128,7 +1128,7 @@ void __cdecl Mini_CondorRunPhasedMotion()
             g_CondorPhaseFrames++;
         } else {
             g_CondorBannerCounter -= 2;
-            if (g_CondorBannerCounter == -0x18) {
+            if (g_CondorBannerCounter == -24) {
                 g_CondorPhaseFrames++;
             }
         }
@@ -1136,7 +1136,7 @@ void __cdecl Mini_CondorRunPhasedMotion()
         Mini_CondorMoveCursorAndScroll(INPUT_DOWN, &g_CondorCursorPos);
         Mini_CondorMoveCursorAndScroll(INPUT_DOWN, &g_CondorCursorPos);
         Mini_CondorMoveCursorAndScroll(INPUT_DOWN, &g_CondorCursorPos);
-        if (g_CondorCameraY >= 0x148) {
+        if (g_CondorCameraY >= 328) {
             g_CondorMainState = CONDOR_STATE_IDLE;
             g_CondorSelectPanelPhase = CONDOR_PANEL_CLOSED;
         }

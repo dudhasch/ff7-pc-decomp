@@ -200,14 +200,14 @@ void __cdecl Battle_ConsumeRandomInventoryItem(int actor)
 
     itemCnt = 0;
     consumed = 0xFFFF;
-    for (slotIndex = 0; slotIndex < 0x140; slotIndex++) {
+    for (slotIndex = 0; slotIndex < 320; slotIndex++) {
         if (g_BattleItemListBlock.slots[slotIndex].itemId != 0xFFFF && (g_BattleItemListBlock.slots[slotIndex].flags & 1) == 0) {
             itemCnt++;
         }
     }
     if (itemCnt != 0) {
         pick = (g_BattleState.turnRandomWord) % itemCnt;
-        for (slotIndex = 0; slotIndex < 0x140; slotIndex++) {
+        for (slotIndex = 0; slotIndex < 320; slotIndex++) {
             if (g_BattleItemListBlock.slots[slotIndex].itemId != 0xFFFF && (g_BattleItemListBlock.slots[slotIndex].flags & 1) == 0) {
                 pick--;
                 if (pick < 0) {
@@ -304,7 +304,7 @@ void __cdecl Battle_ConsumeInventoryItemById(int actor, int itemId)
 {
     int i;
 
-    for (i = 0; i < 0x140; i++) {
+    for (i = 0; i < 320; i++) {
         if (g_BattleItemListBlock.slots[i].itemId == itemId) {
             if ((g_BattleItemListBlock.slots[i].flags & 9) == 0) {
                 Battle_ConsumeInventorySlot(i);
@@ -337,7 +337,7 @@ void __cdecl Battle_EventShowLimitBreakBanner(int actor)
     msgText = Kernel_GetBattleMessage(0x26);
     queueRes = Battle_QueueAiMessageText(msgText, (unsigned short *)&unitWord);
     (g_BattleState.messageWindowRequest) = queueRes + 0x100;
-    (g_BattleState.limitBanner) = 0xF;
+    (g_BattleState.limitBanner) = 15;
 }
 
 /*
@@ -364,13 +364,13 @@ void __cdecl Battle_StatusTimerExpireGeneric(int actor, int timerSlot)
 }
 
 /*
- * Calls Battle_EnqueueActionDirect(actor, 3, 2, 0x36, 0), queueing the fixed action 0x36 for that
+ * Calls Battle_EnqueueActionDirect(actor, 3, 2, 54, 0), queueing the fixed action 0x36 for that
  * actor.
  */
 // FUNCTION: FF7 0x00434d46
 void __cdecl Battle_StatusTimerExpireDeathSentence(int actor)
 {
-    Battle_EnqueueActionDirect(actor, 3, 2, 0x36, 0);
+    Battle_EnqueueActionDirect(actor, 3, 2, 54, 0);
 }
 
 /*
@@ -394,7 +394,7 @@ void __cdecl Battle_StatusTimerExpireSlowNumb(int actor)
 void __cdecl Battle_StatusTimerExpirePoison(int actor)
 {
     if ((g_aCombatants[actor].status & BATTLE_STATUS_POISON) != 0) {
-        g_BattleState.actors[actor].poisonTimer = 0xA;
+        g_BattleState.actors[actor].poisonTimer = 10;
         Battle_EnqueueActionDirect(actor, 3, 0x23, 0, 0);
     }
 }
@@ -558,7 +558,7 @@ void __cdecl Battle_ResetEventQueues(void)
     int entryIndex;
 
     for (queueIndex = 0; queueIndex < 3; queueIndex++) {
-        for (entryIndex = 0; entryIndex < 0x80; entryIndex++) {
+        for (entryIndex = 0; entryIndex < 128; entryIndex++) {
             g_BattleEventQueueBuffers[queueIndex][entryIndex].actor = 0xFF;
         }
         g_BattleEventQueueReadIndices[queueIndex] = 0;

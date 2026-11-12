@@ -51,7 +51,7 @@ unsigned char g_MenuItemManualText[816] = {0x2f, 0x2b, 0x01, 0x00, 0x27, 0x4f, 0
 // GLOBAL: FF7 0x00921520
 unsigned char g_MenuItemManualNoUseText[40] = {0x29, 0x54, 0x07, 0x53, 0x00, 0x47, 0x4f, 0x54, 0x00, 0x4e, 0x4f, 0x54, 0x48, 0x49, 0x4e, 0x47, 0x00, 0x54, 0x4f, 0x00, 0x44, 0x4f, 0x00, 0x57, 0x49, 0x54, 0x48, 0x00, 0x4d, 0x45, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 // GLOBAL: FF7 0x00921548
-unsigned short g_ItemMateriaSortKeys[0x140] = {195, 121, 292, 80, 271, 76, 158, 187, 10, 240, 152, 46, 74, 125, 268, 212, 237, 243, 120, 275, 108, 229, 214, 124, 136, 245, 68, 170, 281, 143, 86, 88, 9, 127, 24, 257, 71, 73, 57, 148, 251, 277, 97, 276, 141, 147, 164, 123, 20, 66, 129, 230, 81, 166, 219, 2, 105, 259, 131, 56, 65, 36, 258, 209, 161, 54, 182, 261, 137, 112, 262, 196, 109, 151, 162, 244, 146, 295, 33, 194, 199, 139, 221, 145, 186, 17, 265, 178, 35, 84, 106, 47, 7, 40, 122, 0, 254, 154, 222, 44, 16, 95, 59, 72, 111, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 29, 176, 115, 30, 78, 179, 53, 90, 218, 169, 177, 294, 11, 118, 207, 273, 140, 159, 173, 104, 264, 61, 64, 51, 168, 191, 135, 291, 198, 156, 100, 201, 96, 12, 31, 13, 119, 38, 160, 3, 280, 69, 241, 216, 77, 188, 157, 165, 174, 62, 232, 102, 5, 49, 149, 192, 37, 114, 224, 19, 248, 142, 110, 175, 93, 253, 203, 15, 289, 290, 83, 274, 202, 242, 236, 269, 155, 183, 279, 133, 99, 167, 67, 223, 89, 247, 278, 1, 26, 189, 208, 116, 50, 287, 272, 246, 255, 150, 215, 180, 45, 293, 107, 22, 210, 52, 285, 21, 234, 270, 103, 18, 252, 113, 206, 228, 227, 138, 286, 185, 28, 144, 235, 239, 256, 181, 58, 153, 27, 132, 266, 172, 32, 231, 101, 60, 48, 190, 217, 75, 288, 4, 98, 130, 6, 92, 282, 226, 225, 91, 85, 14, 23, 63, 163, 79, 171, 296, 200, 42, 197, 205, 70, 260, 41, 8, 39, 193, 267, 43, 250, 233, 117, 82, 134, 284, 249, 184, 213, 87, 128, 25, 263, 220, 94, 55, 204, 34, 211, 283, 238, 126};
+unsigned short g_ItemMateriaSortKeys[320] = {195, 121, 292, 80, 271, 76, 158, 187, 10, 240, 152, 46, 74, 125, 268, 212, 237, 243, 120, 275, 108, 229, 214, 124, 136, 245, 68, 170, 281, 143, 86, 88, 9, 127, 24, 257, 71, 73, 57, 148, 251, 277, 97, 276, 141, 147, 164, 123, 20, 66, 129, 230, 81, 166, 219, 2, 105, 259, 131, 56, 65, 36, 258, 209, 161, 54, 182, 261, 137, 112, 262, 196, 109, 151, 162, 244, 146, 295, 33, 194, 199, 139, 221, 145, 186, 17, 265, 178, 35, 84, 106, 47, 7, 40, 122, 0, 254, 154, 222, 44, 16, 95, 59, 72, 111, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 29, 176, 115, 30, 78, 179, 53, 90, 218, 169, 177, 294, 11, 118, 207, 273, 140, 159, 173, 104, 264, 61, 64, 51, 168, 191, 135, 291, 198, 156, 100, 201, 96, 12, 31, 13, 119, 38, 160, 3, 280, 69, 241, 216, 77, 188, 157, 165, 174, 62, 232, 102, 5, 49, 149, 192, 37, 114, 224, 19, 248, 142, 110, 175, 93, 253, 203, 15, 289, 290, 83, 274, 202, 242, 236, 269, 155, 183, 279, 133, 99, 167, 67, 223, 89, 247, 278, 1, 26, 189, 208, 116, 50, 287, 272, 246, 255, 150, 215, 180, 45, 293, 107, 22, 210, 52, 285, 21, 234, 270, 103, 18, 252, 113, 206, 228, 227, 138, 286, 185, 28, 144, 235, 239, 256, 181, 58, 153, 27, 132, 266, 172, 32, 231, 101, 60, 48, 190, 217, 75, 288, 4, 98, 130, 6, 92, 282, 226, 225, 91, 85, 14, 23, 63, 163, 79, 171, 296, 200, 42, 197, 205, 70, 260, 41, 8, 39, 193, 267, 43, 250, 233, 117, 82, 134, 284, 249, 184, 213, 87, 128, 25, 263, 220, 94, 55, 204, 34, 211, 283, 238, 126};
 // GLOBAL: FF7 0x009217c8
 unsigned char g_MateriaKindById[384] = {0x1d, 0x1e, 0x21, 0x22, 0x23, 0x45, 0x2b, 0x24, 0x20, 0x26, 0x27, 0x28, 0x54, 0x2a, 0x46, 0x47, 0x1c, 0x04, 0x3f, 0x55, 0x56, 0x41, 0x09, 0x1f, 0x53, 0x4e, 0x30, 0x32, 0x33, 0x36, 0x38, 0x39, 0x3b, 0x3c, 0x3d, 0x50, 0x0f, 0x10, 0x05, 0x35, 0x3e, 0x2d, 0x3a, 0x4f, 0x48, 0x01, 0x02, 0x03, 0x59, 0x0a, 0x0b, 0x12, 0x0c, 0x0d, 0x0e, 0x13, 0x14, 0x15, 0x16, 0x17, 0x11, 0x1a, 0x18, 0x08, 0x37, 0x19, 0x06, 0x07, 0x1b, 0x40, 0x4b, 0x4c, 0x4d, 0x58, 0x25, 0x29, 0x2c, 0x2e, 0x2f, 0x31, 0x34, 0x42, 0x43, 0x44, 0x49, 0x4a, 0x51, 0x52, 0x57, 0x5a, 0x5b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x01, 0x10, 0x00, 0x01, 0x00, 0x00, 0x00, 0x92, 0x36, 0xe0, 0x2f, 0x0f, 0x2a, 0x50, 0x2e, 0x2f, 0x32, 0xcc, 0x29, 0xe0, 0x03, 0xad, 0x31, 0xc5, 0x10, 0x8a, 0x21, 0x07, 0x19, 0x48, 0x1d, 0xe0, 0x03, 0xed, 0x29, 0x4e, 0x2e, 0x0c, 0x04, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x10, 0x00, 0x20, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xcf, 0x3a, 0xa6, 0xaa, 0x6c, 0xc6, 0xe9, 0xff, 0xff, 0xef, 0x6a, 0xca, 0xaa, 0xcc, 0xa3, 0xfc, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xef, 0xaa, 0xaa, 0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xbf, 0x6c, 0xc6, 0xcb, 0xac, 0xca, 0xe9, 0xff, 0xff, 0xef, 0x6a, 0xca, 0xcc, 0xbc, 0xcc, 0xfb, 0xff, 0xff, 0xff, 0xff, 0xff, 0xae, 0xcc, 0xcc, 0xcc, 0xcc, 0xea, 0xff, 0xff, 0xff, 0xff, 0xff, 0xcf, 0x6b, 0xb6, 0xcc, 0x6c, 0x8a, 0xab, 0xff, 0xff, 0xaf, 0x36, 0xba, 0xcb, 0xbc, 0xbb, 0xfc, 0xff, 0xff, 0xff, 0xff, 0xae, 0xcc, 0xac, 0xcb, 0xaa, 0xca, 0xcc, 0xea, 0xff, 0xff, 0xff, 0xff, 0xaf, 0xab, 0xa6, 0x63, 0xcb, 0x56, 0x66, 0x66, 0x66, 0x66, 0x33, 0x3c, 0xca, 0xba, 0xbc, 0xfa, 0xff, 0xff, 0xff, 0xae, 0xcc, 0x6a, 0xbb, 0xcc, 0xac, 0x6c, 0xa6, 0xcc, 0xfa, 0xff, 0xff, 0xff, 0xef, 0xcb, 0x36, 0x63, 0xba, 0x66, 0xa6, 0xcc, 0x6a, 0x66, 0x68, 0x55, 0x44, 0x63, 0xbc, 0xfe, 0xff, 0xff, 0xef, 0xca, 0x6a, 0xa3, 0xcb, 0xaa, 0xbc, 0x5c, 0x63, 0xa6, 0xac, 0xff, 0xff, 0xff, 0xff, 0xba, 0x6a, 0x63, 0x66, 0x36, 0x63, 0xca, 0xac, 0x83, 0xa6, 0x86, 0x45, 0xa3, 0xab, 0xff, 0xff, 0xff, 0xae, 0xac, 0x56, 0x33, 0xc5, 0xcc, 0xac, 0x66, 0xa6, 0x63, 0xca, 0xfa, 0xff, 0xff, 0xff, 0xbe, 0xac, 0xa6, 0x68, 0x83, 0x36, 0xb6, 0x6b, 0x66, 0x63, 0x8a, 0x33, 0xca, 0xeb, 0xff};
 unsigned char g_MenuItemBitmapBytes[720] = {
@@ -99,9 +99,9 @@ unsigned char g_MenuItemBitmapTailAndOwners[88] = {
     0xfc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x07, 0x08
 };
 // GLOBAL: FF7 0x00921c78
-unsigned char g_MenuItemWindowRects2x[0x20] = {0x00, 0x00, 0x00, 0x00, 0x80, 0x02, 0x33, 0x00, 0x00, 0x00, 0x33, 0x00, 0x80, 0x02, 0x33, 0x00, 0x00, 0x00, 0x5e, 0x00, 0x80, 0x02, 0x82, 0x01, 0xdc, 0x00, 0x1a, 0x00, 0x91, 0x00, 0xe3, 0x00};
+unsigned char g_MenuItemWindowRects2x[32] = {0x00, 0x00, 0x00, 0x00, 0x80, 0x02, 0x33, 0x00, 0x00, 0x00, 0x33, 0x00, 0x80, 0x02, 0x33, 0x00, 0x00, 0x00, 0x5e, 0x00, 0x80, 0x02, 0x82, 0x01, 0xdc, 0x00, 0x1a, 0x00, 0x91, 0x00, 0xe3, 0x00};
 // GLOBAL: FF7 0x00921c98
-unsigned char g_MenuItemWindowRects1x[0x20] = {0x00, 0x00, 0x00, 0x00, 0x40, 0x01, 0x1a, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x40, 0x01, 0x1a, 0x00, 0x00, 0x00, 0x2f, 0x00, 0x40, 0x01, 0xc1, 0x00, 0x6e, 0x00, 0x0d, 0x00, 0x49, 0x00, 0x72, 0x00};
+unsigned char g_MenuItemWindowRects1x[32] = {0x00, 0x00, 0x00, 0x00, 0x40, 0x01, 0x1a, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x40, 0x01, 0x1a, 0x00, 0x00, 0x00, 0x2f, 0x00, 0x40, 0x01, 0xc1, 0x00, 0x6e, 0x00, 0x0d, 0x00, 0x49, 0x00, 0x72, 0x00};
 /* Contiguous 7-short scroll-bar descriptor passed to Menu_DrawScrollBar2x/1x via
  * &g_MenuItemScrollBar.visibleRows; split across per-dword GLOBALs for direct field addressing. */
 // GLOBAL: FF7 0x00dd17f0
@@ -248,7 +248,7 @@ short __cdecl Menu_ItemSortQuicksort(unsigned short *base, unsigned int count, s
             rightStack[stackTop] = count;
             stackTop++;
         }
-        if (stackTop >= 0x40) {
+        if (stackTop >= 64) {
             return 0;
         }
     }
@@ -461,7 +461,7 @@ void __cdecl Menu_ItemScreenInit(int arg)
     g_MenuItemState = MENU_ITEM_STATE_ITEM_LIST;
     MenuCursor_Init(g_MenuItemCursors, 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0,
                     0);
-    MenuCursor_Init(&g_MenuItemCursors[1], 0, 0, 1, 0xa, 0, 0, 1, 0x140, 0, 0, 0,
+    MenuCursor_Init(&g_MenuItemCursors[1], 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0,
                     0, 0, 1);
     MenuCursor_Init(&g_MenuItemCursors[2], 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0,
                     0);
@@ -488,7 +488,7 @@ void __cdecl Menu_BuildOwnedKeyItemList(void)
             n++;
         }
     }
-    for (; n < 0x40; n++) {
+    for (; n < 64; n++) {
         g_MenuItemBuffer[n] = 0xff;
     }
 }
@@ -502,7 +502,7 @@ int __cdecl Menu_CharacterLimitMaskMatchesAttackSlots(int charIdx)
     int mask;
     int n;
 
-    for (mask = n = 0; n < 0xa; n++) {
+    for (mask = n = 0; n < 10; n++) {
         if (Kernel_GetLimitAttackId(charIdx, n) != 0x7f) {
             mask |= 1 << n;
         }
@@ -1261,21 +1261,21 @@ void __cdecl Menu_DrawItemScreenTypeIcon2x(int x, int y, int itemId, int unused,
         kind = 0;
     } else if (itemId < 0x100) {
         item = itemId - 0x80;
-        if (item < 0x10) {
+        if (item < 16) {
             kind = 1;
-        } else if (item < 0x20) {
+        } else if (item < 32) {
             kind = 3;
-        } else if (item < 0x30) {
+        } else if (item < 48) {
             kind = 2;
-        } else if (item < 0x3e) {
+        } else if (item < 62) {
             kind = 5;
-        } else if (item < 0x49) {
+        } else if (item < 73) {
             kind = 4;
-        } else if (item < 0x57) {
+        } else if (item < 87) {
             kind = 9;
-        } else if (item < 0x65) {
+        } else if (item < 101) {
             kind = 6;
-        } else if (item < 0x72) {
+        } else if (item < 114) {
             kind = 7;
         } else {
             kind = 8;
@@ -1285,9 +1285,9 @@ void __cdecl Menu_DrawItemScreenTypeIcon2x(int x, int y, int itemId, int unused,
     } else {
         kind = 0xb;
     }
-    su = (kind & 1) * 0x10 + 0x60;
-    sv = kind / 2 * 0x10 + 0x70;
-    Menu_DrawAtlasQuad2x(x, y, su, sv, 0x10, 0x10, 1, 0, 0, z);
+    su = (kind & 1) * 16 + 0x60;
+    sv = kind / 2 * 16 + 0x70;
+    Menu_DrawAtlasQuad2x(x, y, su, sv, 16, 16, 1, 0, 0, z);
 }
 
 /*
@@ -1305,21 +1305,21 @@ void __cdecl Menu_DrawItemScreenTypeIcon1x(int x, int y, int itemId, int unused,
         kind = 0;
     } else if (itemId < 0x100) {
         item = itemId - 0x80;
-        if (item < 0x10) {
+        if (item < 16) {
             kind = 1;
-        } else if (item < 0x20) {
+        } else if (item < 32) {
             kind = 3;
-        } else if (item < 0x30) {
+        } else if (item < 48) {
             kind = 2;
-        } else if (item < 0x3e) {
+        } else if (item < 62) {
             kind = 5;
-        } else if (item < 0x49) {
+        } else if (item < 73) {
             kind = 4;
-        } else if (item < 0x57) {
+        } else if (item < 87) {
             kind = 9;
-        } else if (item < 0x65) {
+        } else if (item < 101) {
             kind = 6;
-        } else if (item < 0x72) {
+        } else if (item < 114) {
             kind = 7;
         } else {
             kind = 8;
@@ -1329,9 +1329,9 @@ void __cdecl Menu_DrawItemScreenTypeIcon1x(int x, int y, int itemId, int unused,
     } else {
         kind = 0xb;
     }
-    su = (kind & 1) * 0x10 + 0x60;
-    sv = kind / 2 * 0x10 + 0x70;
-    Menu_DrawAtlasQuad1x(x, y, su, sv, 0x10, 0x10, 1, 0, 0, z);
+    su = (kind & 1) * 16 + 0x60;
+    sv = kind / 2 * 16 + 0x70;
+    Menu_DrawAtlasQuad1x(x, y, su, sv, 16, 16, 1, 0, 0, z);
 }
 
 /*
@@ -1368,7 +1368,7 @@ void __cdecl Menu_CopyPopupTextBuffer(unsigned char *src)
 {
     int i;
 
-    for (i = 0; i < 0x50; i++) {
+    for (i = 0; i < 80; i++) {
         g_MenuItemPopupText[i] = *src;
         src++;
     }
@@ -1395,7 +1395,7 @@ void __cdecl Savemap_HarvestAllMateriaToStash(void)
     int weaponIdx;
     int armorIndex;
 
-    for (workIndex = 0; workIndex < 0x30; workIndex++) {
+    for (workIndex = 0; workIndex < 48; workIndex++) {
         g_MateriaWork[workIndex] = -1;
     }
     for (charIdx = 0; charIdx < 9; charIdx++) {
@@ -1411,7 +1411,7 @@ void __cdecl Savemap_HarvestAllMateriaToStash(void)
                 (unsigned int *)&gSavemap.chars[charIdx].armorMateria[armorIndex]);
         }
     }
-    for (stockIndex = 0; stockIndex < 0xc8; stockIndex++) {
+    for (stockIndex = 0; stockIndex < 200; stockIndex++) {
         Savemap_StashOneMateria((unsigned int *)&gSavemap.materia[stockIndex]);
     }
     Savemap_CommitMateriaStash();
@@ -1429,7 +1429,7 @@ void __cdecl Savemap_StashOneMateria(unsigned int *pMateriaEntry)
     if (*pMateriaEntry == -1) {
         return;
     }
-    for (n = 0; n < 0x30; n++) {
+    for (n = 0; n < 48; n++) {
         if (g_MateriaWork[n] == -1) {
             g_MateriaWork[n] = *pMateriaEntry;
             return;
@@ -1451,7 +1451,7 @@ void __cdecl Savemap_ReplaceMateriaOfKind(unsigned int materia,
 {
     int i;
 
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < 48; i++) {
         if (g_MateriaKindById[g_MateriaWork[i] & 0xff] == kind) {
             g_MateriaWork[i] = materia;
             break;
@@ -1469,7 +1469,7 @@ int __cdecl Savemap_GetLowestMateriaKind(void)
     int lowest;
 
     lowest = 0xff;
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < 48; i++) {
         if (g_MateriaKindById[g_MateriaWork[i] & 0xff] < lowest) {
             lowest = g_MateriaKindById[g_MateriaWork[i] & 0xff];
         }
@@ -1485,13 +1485,13 @@ void __cdecl Savemap_CommitMateriaStash(void)
 {
     int i;
 
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < 48; i++) {
         if (g_MateriaWork[i] == -1) {
             continue;
         }
         Savemap_EraseMateriaValueAnywhere(g_MateriaWork[i]);
     }
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < 48; i++) {
         gSavemap.stolenMateria[i] = g_MateriaWork[i];
     }
 }
@@ -1526,7 +1526,7 @@ void __cdecl Savemap_EraseMateriaValueAnywhere(unsigned int materiaEntry)
             }
         }
     }
-    for (stockIndex = 0; stockIndex < 0xc8; stockIndex++) {
+    for (stockIndex = 0; stockIndex < 200; stockIndex++) {
         if (gSavemap.materia[stockIndex] == materiaEntry) {
             gSavemap.materia[stockIndex] = -1;
             return;
@@ -1542,7 +1542,7 @@ void __cdecl Savemap_ReturnMateriaStash(void)
 {
     int i;
 
-    for (i = 0; i < 0x30; i++) {
+    for (i = 0; i < 48; i++) {
         if ((unsigned int)gSavemap.stolenMateria[i] == 0xFFFFFFFF) {
             continue;
         }

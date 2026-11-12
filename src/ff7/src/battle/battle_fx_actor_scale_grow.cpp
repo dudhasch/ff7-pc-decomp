@@ -31,8 +31,8 @@ int __cdecl BattleFx_EnterGrowActorScale(int targetMask, int actorIdx)
     slotIdx = (short)Battle_AllocateSecondaryResourceSlot(Battle3d_ActorScaleRampTask);
     *(short *)&g_BattleTaskSlotBuffer.secondarySlots[slotIdx].data[2] = actorIdx;
     *(short *)g_BattleTaskSlotBuffer.secondarySlots[slotIdx].data = 0x10;
-    g_BattleTaskSlotBuffer.secondarySlots[slotIdx].frameCounter = 0x100;
-    g_BattleScriptWaitFrames = 0xE;
+    g_BattleTaskSlotBuffer.secondarySlots[slotIdx].frameCounter = 256;
+    g_BattleScriptWaitFrames = 14;
     Battle_PlaySfxCenteredMulti(0x29);
     if (actorIdx == 0) {
         g_BattleActorRecords[1].stateFlags = g_BattleActorRecords[1].stateFlags | 2;

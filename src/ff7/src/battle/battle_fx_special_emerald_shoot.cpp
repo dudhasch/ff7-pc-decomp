@@ -161,7 +161,7 @@ void __cdecl BattleFx_SpecialSpawnEnergyWavePerTarget(int actor, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0xC00, 0xA);
+    Battle_StartFixedPointRamp(0xC00, 10);
     Battle_PlaySfxPannedToActor(0xFA, (short)actorIdx, 0x40);
 }
 
@@ -204,7 +204,7 @@ void __cdecl BattleFx_SpecialEnergyWaveTimelineTask(void)
         frame.deltaY = frame.timelineSlot->targetY - frame.spawnSlot->posY;
         frame.deltaZ = frame.timelineSlot->targetZ - frame.spawnSlot->posZ;
         frame.distance = SqrtToInt(frame.deltaX * frame.deltaX + frame.deltaY * frame.deltaY + frame.deltaZ * frame.deltaZ);
-        frame.spawnSlot->scale = frame.distance * 0x1200 / 0xBB8;
+        frame.spawnSlot->scale = frame.distance * 0x1200 / 3000;
         frame.spawnSlot->clearedParam = 0;
         frame.spawnSlot = (BattleFxEnergyWaveTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergyWaveBeamModelsTask);
         frame.spawnSlot->posX = frame.timelineSlot->startX;
@@ -213,15 +213,15 @@ void __cdecl BattleFx_SpecialEnergyWaveTimelineTask(void)
         frame.spawnSlot->scale = frame.distance;
         frame.spawnSlot->clearedParam = 0;
     }
-    if (frame.timelineSlot->frameCounter > 6 && frame.timelineSlot->frameCounter < 0xE) {
+    if (frame.timelineSlot->frameCounter > 6 && frame.timelineSlot->frameCounter < 14) {
         for (frame.i = 0; frame.i < 2; frame.i++) {
             frame.spawnSlot = (BattleFxEnergyWaveTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergyWaveMainSlotAnimatedSpriteTask);
-            frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 0x4B0 + -0x258;
+            frame.spawnSlot->posX = frame.timelineSlot->targetX + rand() % 1200 + -600;
+            frame.spawnSlot->posY = frame.timelineSlot->targetY + rand() % 1200 + -600;
+            frame.spawnSlot->posZ = frame.timelineSlot->targetZ + rand() % 1200 + -600;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0xA) {
+    if (frame.timelineSlot->frameCounter == 10) {
         frame.spawnSlot = (BattleFxEnergyWaveTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergyWaveSpinModelsTask);
         frame.spawnSlot->posX = frame.timelineSlot->targetX;
         frame.spawnSlot->posY = 0;
@@ -231,23 +231,23 @@ void __cdecl BattleFx_SpecialEnergyWaveTimelineTask(void)
         frame.spawnSlot->posX = frame.timelineSlot->targetX;
         frame.spawnSlot->posY = 0xFED4;
         frame.spawnSlot->posZ = frame.timelineSlot->targetZ;
-        for (frame.i = 0; frame.i < 0x14; frame.i++) {
+        for (frame.i = 0; frame.i < 20; frame.i++) {
             frame.spawnSlot = (BattleFxEnergyWaveTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergyWaveBouncingSpriteTask);
             frame.spawnSlot->posX = frame.timelineSlot->targetX;
             frame.spawnSlot->posZ = frame.timelineSlot->targetZ;
             frame.spawnSlot->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFF06, 0x64, &frame.spawnSlot->velocityX);
+            BattleFx_MakeRandomConeVector(0xFFFFFF06, 100, &frame.spawnSlot->velocityX);
             frame.spawnSlot->variant = rand() % 7;
         }
         Battle_PlaySfxPannedToActor(0x176, (short)frame.timelineSlot->actorIndex, 0x40);
     }
-    if (frame.timelineSlot->frameCounter == 0x23) {
+    if (frame.timelineSlot->frameCounter == 35) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x2D) {
+    if (frame.timelineSlot->frameCounter == 45) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
     }
 }
 
@@ -277,7 +277,7 @@ void __cdecl BattleFx_SpecialEnergyWaveBouncingSpriteTask(void)
         frame.combinedMatrix.m[1][frame.axisIndex] = 0;
         frame.combinedMatrix.m[0][frame.axisIndex] = 0;
     }
-    if (frame.spriteSlot->frameCounter < 0x16) {
+    if (frame.spriteSlot->frameCounter < 22) {
         frame.levelWide = 8;
     } else {
         frame.levelWide = 0x1E - frame.spriteSlot->frameCounter;
@@ -299,12 +299,12 @@ void __cdecl BattleFx_SpecialEnergyWaveBouncingSpriteTask(void)
     g_BattleSpecialEnergyWaveModelDescriptors.frameIndex = frame.spriteSlot->modelDesc;
     if (frame.level == 8) {
         g_BattleSpecialEnergyWaveModelDescriptors.primCode = PSX_PRIM_POLY_FT4;
-        g_BattleSpecialEnergyWaveSpriteConfig1.bounceSpriteGroup = Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecialEnergyWaveResourceTable);
-        g_BattleSpecialEnergyWaveSpriteConfig1.bounceDrawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecialEnergyWaveResourceTable);
+        g_BattleSpecialEnergyWaveSpriteConfig1.bounceSpriteGroup = Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecialEnergyWaveResourceTable);
+        g_BattleSpecialEnergyWaveSpriteConfig1.bounceDrawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecialEnergyWaveResourceTable);
     } else {
         g_BattleSpecialEnergyWaveModelDescriptors.primCode = PSX_PRIM_POLY_FT4_TRANS;
-        g_BattleSpecialEnergyWaveSpriteConfig1.bounceSpriteGroup = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecialEnergyWaveResourceTable);
-        g_BattleSpecialEnergyWaveSpriteConfig1.bounceDrawObj = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecialEnergyWaveResourceTable);
+        g_BattleSpecialEnergyWaveSpriteConfig1.bounceSpriteGroup = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecialEnergyWaveResourceTable);
+        g_BattleSpecialEnergyWaveSpriteConfig1.bounceDrawObj = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecialEnergyWaveResourceTable);
     }
     g_BattleSpecialEnergyWaveModelDescriptors.blue = frame.level << 4;
     g_BattleSpecialEnergyWaveModelDescriptors.green = g_BattleSpecialEnergyWaveModelDescriptors.blue;
@@ -320,10 +320,10 @@ void __cdecl BattleFx_SpecialEnergyWaveBouncingSpriteTask(void)
         frame.spriteSlot->posY = 0;
         frame.spriteSlot->velocityY *= -1;
     }
-    frame.spriteSlot->velocityY += 0x14;
-    frame.spriteSlot->angle += 0x200;
+    frame.spriteSlot->velocityY += 20;
+    frame.spriteSlot->angle += 0x200 /* 45 deg */;
     (frame.spriteSlot->frameCounter)++;
-    if (frame.spriteSlot->frameCounter == 0x1E) {
+    if (frame.spriteSlot->frameCounter == 30) {
         frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -364,12 +364,12 @@ void __cdecl BattleFx_SpecialEnergyWaveExpandingModelTask(void)
         return;
     }
     (frame.expandTask->step)++;
-    if (frame.expandTask->step == 0xF) {
+    if (frame.expandTask->step == 15) {
         frame.expandTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
-// Draws the two spin models (the second spins the opposite way at a different scale) and, for the first 0x16 frames,
+// Draws the two spin models (the second spins the opposite way at a different scale) and, for the first 22 frames,
 // spawns six animated sprites on a ring around the center. Shakes the camera focal point and frees itself at frame 0x1E.
 // FUNCTION: FF7 0x0050c221
 void __cdecl BattleFx_SpecialEnergyWaveSpinModelsTask(void)
@@ -412,7 +412,7 @@ void __cdecl BattleFx_SpecialEnergyWaveSpinModelsTask(void)
     g_BattleSpecialEnergyWaveDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergyWaveModelDescriptors.spinModelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyWaveDrawListHandle);
     g_BattleSpecialEnergyWaveModelDescriptors.spinDrawFlags = 0xA8;
     g_BattleSpecialEnergyWaveModelDescriptors.spinModelGroup = Gfx_ModelTableGetRenderObject(8, g_BattleSpecialEnergyWaveResourceTable);
-    g_BattleSpecialEnergyWaveModelDescriptors.spinFadeLevel = 0x1000 - (g_BattleSpecialEnergyWaveAngleYaw << 9);
+    g_BattleSpecialEnergyWaveModelDescriptors.spinFadeLevel = 4096 - (g_BattleSpecialEnergyWaveAngleYaw << 9);
     g_BattleSpecialEnergyWaveDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergyWaveModelDescriptors.spinModelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyWaveDrawListHandle);
     frame.rotX.vy = -frame.spinSlot->frameCounter << 6;
     frame.rotX.vz = 0;
@@ -435,23 +435,23 @@ void __cdecl BattleFx_SpecialEnergyWaveSpinModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.spinSlot->frameCounter < 0x16) {
-        frame.radius = frame.spinSlot->frameCounter * 0x50;
+    if (frame.spinSlot->frameCounter < 22) {
+        frame.radius = frame.spinSlot->frameCounter * 80;
         for (frame.i = 0; frame.i < 6; frame.i++) {
             frame.randAngle = (rand() % 4096);
             frame.spinSprite = (BattleFxEnergyWaveSpinSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialEnergyWaveAnimatedSpriteTask)]);
-            frame.spinSprite->posX = frame.spinSlot->centerX + (CosFixed(frame.randAngle) * frame.radius >> 0xC);
-            frame.spinSprite->posZ = frame.spinSlot->centerZ + (SinFixed(frame.randAngle) * frame.radius >> 0xC);
+            frame.spinSprite->posX = frame.spinSlot->centerX + (CosFixed(frame.randAngle) * frame.radius >> 12);
+            frame.spinSprite->posZ = frame.spinSlot->centerZ + (SinFixed(frame.randAngle) * frame.radius >> 12);
             frame.spinSprite->posY = 0xFF6A;
             frame.spinSprite->spriteVariant = 2;
         }
     }
     g_BattleCameraFocalPoint.focalPointY += (short)(((frame.spinSlot->frameCounter % 2) << 4) - 8);
-    if (frame.spinSlot->frameCounter > 0xE) {
+    if (frame.spinSlot->frameCounter > 14) {
         g_BattleSpecialEnergyWaveAngleYaw--;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x1E) {
+    if (frame.spinSlot->frameCounter == 30) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -463,9 +463,9 @@ void __cdecl BattleFx_SpecialEnergyWaveAnimatedSpriteTask(void)
     BattleFxSewerTsunamiAnimSprite *task;
 
     task = (BattleFxSewerTsunamiAnimSprite *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
-    g_BattleSpecialEnergyWaveSpriteConfig1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecialEnergyWaveResourceTable);
+    g_BattleSpecialEnergyWaveSpriteConfig1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecialEnergyWaveResourceTable);
     g_BattleSpecialEnergyWaveSpriteConfig1.drawObj = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2800, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2800 /* 2.5 */, 0);
     g_BattleSpecialEnergyWaveSpriteConfig1.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergyWaveSpriteConfig1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleSpecialEnergyWaveSpriteConfig1.spriteGroup != 0) {
@@ -483,9 +483,9 @@ void __cdecl BattleFx_SpecialEnergyWaveMainSlotAnimatedSpriteTask(void)
     BattleFxSewerTsunamiAnimSprite *task;
 
     task = (BattleFxSewerTsunamiAnimSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialEnergyWaveModelDescriptors.animSpriteGroup = Gfx_ModelTableGetLoadedRecord(0xD, g_BattleSpecialEnergyWaveResourceTable);
-    g_BattleSpecialEnergyWaveModelDescriptors.animDrawObj = Gfx_ModelTableGetSpriteObject(0xD, g_BattleSpecialEnergyWaveResourceTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    g_BattleSpecialEnergyWaveModelDescriptors.animSpriteGroup = Gfx_ModelTableGetLoadedRecord(13, g_BattleSpecialEnergyWaveResourceTable);
+    g_BattleSpecialEnergyWaveModelDescriptors.animDrawObj = Gfx_ModelTableGetSpriteObject(13, g_BattleSpecialEnergyWaveResourceTable);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialEnergyWaveModelDescriptors.animFrame = task->frame;
     g_BattleSpecialEnergyWaveDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergyWaveModelDescriptors.animSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyWaveDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecialEnergyWaveModelDescriptors.animSpriteGroup != 0) {
@@ -511,7 +511,7 @@ void __cdecl BattleFx_SpecialEnergyWaveShrinkingSpriteTask(void)
     if (taskPtr->frame < 6) {
         fadeStep = 4;
     } else {
-        fadeStep = 0xA - taskPtr->frame;
+        fadeStep = 10 - taskPtr->frame;
     }
     shadeByte = fadeStep;
     BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0x3000 - taskPtr->frame * 0x258, 0);
@@ -522,7 +522,7 @@ void __cdecl BattleFx_SpecialEnergyWaveShrinkingSpriteTask(void)
     g_BattleSpecialEnergyWaveDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergyWaveModelDescriptors.shrinkSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyWaveDrawListHandle);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frame)++;
-        if (taskPtr->frame == 0xA) {
+        if (taskPtr->frame == 10) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -558,7 +558,7 @@ void __cdecl BattleFx_SpecialEnergyWaveStretchingModelsTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecialEnergyWaveSpriteRequest1.fadeLevel = 0x1000 - (g_BattleSpecialEnergyWaveTimer << 8);
+    g_BattleSpecialEnergyWaveSpriteRequest1.fadeLevel = 4096 - (g_BattleSpecialEnergyWaveTimer << 8);
     g_BattleSpecialEnergyWaveSpriteRequest1.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialEnergyWaveResourceTable);
     g_BattleSpecialEnergyWaveDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergyWaveSpriteRequest1.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyWaveDrawListHandle);
     g_BattleSpecialEnergyWaveSpriteRequest1.modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleSpecialEnergyWaveResourceTable);
@@ -570,7 +570,7 @@ void __cdecl BattleFx_SpecialEnergyWaveStretchingModelsTask(void)
         g_BattleSpecialEnergyWaveTimer -= 2;
     }
     (frame.stretchSlot->frameCounter)++;
-    if (frame.stretchSlot->frameCounter == 0xA) {
+    if (frame.stretchSlot->frameCounter == 10) {
         frame.stretchSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -619,8 +619,8 @@ void __cdecl BattleFx_SpecialEnergyWaveBeamModelsTask(void)
     g_BattleSpecialEnergyWaveDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergyWaveSpriteConfig2.config2ModelField, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyWaveDrawListHandle);
     g_BattleSpecialEnergyWaveSpriteConfig2.config2ModelField = Gfx_ModelTableGetRenderObject(5, g_BattleSpecialEnergyWaveResourceTable);
     g_BattleSpecialEnergyWaveDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialEnergyWaveSpriteConfig2.config2ModelField, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergyWaveDrawListHandle);
-    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecialEnergyWaveOffsetVector, 0x3000, 0);
-    g_BattleSpecialEnergyWaveSpriteRequest2.request2Byte2 = g_BattleSpecialEnergyWaveAngleRoll * 0x14;
+    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecialEnergyWaveOffsetVector, 0x3000 /* 3.0 */, 0);
+    g_BattleSpecialEnergyWaveSpriteRequest2.request2Byte2 = g_BattleSpecialEnergyWaveAngleRoll * 20;
     g_BattleSpecialEnergyWaveSpriteRequest2.request2Byte1 = g_BattleSpecialEnergyWaveSpriteRequest2.request2Byte2;
     (g_BattleSpecialEnergyWaveSpriteRequest2.red) = g_BattleSpecialEnergyWaveSpriteRequest2.request2Byte1;
     g_BattleSpecialEnergyWaveSpriteRequest2.request2FrameParity = (frame.beamSlot->frameCounter % 2);
@@ -632,7 +632,7 @@ void __cdecl BattleFx_SpecialEnergyWaveBeamModelsTask(void)
         g_BattleSpecialEnergyWaveAngleRoll--;
     }
     (frame.beamSlot->frameCounter)++;
-    if (frame.beamSlot->frameCounter == 0xA) {
+    if (frame.beamSlot->frameCounter == 10) {
         frame.beamSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

@@ -62,7 +62,7 @@ int __cdecl Battle_PickRandomMagicAttackId(void)
 {
     int val;
 
-    val = Battle_RandBelow(0x36) & 0xFF;
+    val = Battle_RandBelow(54) & 0xFF;
     return val;
 }
 
@@ -74,7 +74,7 @@ int __cdecl Battle_PickRandomSummonAttackId(void)
 {
     int val;
 
-    val = (Battle_RandBelow(0x10) & 0xFF) + 0x38;
+    val = (Battle_RandBelow(16) & 0xFF) + 0x38;
     return val;
 }
 
@@ -115,10 +115,10 @@ void __cdecl Battle_RollReactionTriggers(int actorIndex, int triggerMode)
                     percent = entries[idx].chance;
                     if (percent != 0) {
                         if (triggerMode == BATTLE_REACTION_MODE_FINAL_ATTACK) {
-                            percent = 0x64;
+                            percent = 100;
                             (*(char *)&entries[idx].chance)--;
                         }
-                        if ((Battle_RandBelow(0x64) & 0xFF) < percent) {
+                        if ((Battle_RandBelow(100) & 0xFF) < percent) {
                             resolveResult = Battle_ResolveReactionAttackDescriptor(actorIndex, typeOfs, entries[idx].attackIndex, &attackDef);
                             if ((resolveResult & 2) != 0) {
                                 targetFlags = (*(unsigned short *)&g_aCombatants[actorIndex].attackerMask);
@@ -167,7 +167,7 @@ int __cdecl Battle_ResolveReactionAttackDescriptor(int unusedArg, int slotIndex,
         }
         if (descriptor[0] == 2) {
             result = g_BattleAttackTable[descriptor[1]].targetFlags;
-            if (descriptor[1] >= 0x38) {
+            if (descriptor[1] >= 56) {
                 descriptor[0] = 3;
                 descriptor[1] -= 0x38;
             }

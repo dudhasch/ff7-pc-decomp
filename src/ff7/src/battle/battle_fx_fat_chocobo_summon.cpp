@@ -276,7 +276,7 @@ void __cdecl BattleFx_SummonBeginFatChocobo(int targetMask, int actorIdx)
 
     Battle_GetActorMaskCentroid(g_BattleSummonFatChocoboTargetMask = targetMask, &centroid.vx);
     if (centroid.vz < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonFatChocoboAngles[1] = 0x800;
+        g_BattleSummonFatChocoboAngles[1] = 0x800 /* 180 deg */;
     }
     g_BattleSummonFatChocoboLightMatrix.value = centroid.vz;
     RotMatrixXYZ((int *)g_BattleSummonFatChocoboAngles, (int *)&g_BattleSummonFatChocoboLightMatrix);
@@ -411,7 +411,7 @@ void __cdecl BattleFx_FatChocoboRunCameraScript(void)
             case SUMMON_CAMERA_MOVE_EASED:
                 g_BattleSummonFatChocoboCameraState->frameCount = BattleFx_FatChocoboReadCameraScriptOperand(&taskSlot->scriptCursor);
                 g_BattleSummonFatChocoboCameraState->progress = 0;
-                g_BattleSummonFatChocoboCameraState->progressStep = 0x1000 / g_BattleSummonFatChocoboCameraState->frameCount;
+                g_BattleSummonFatChocoboCameraState->progressStep = 4096 / g_BattleSummonFatChocoboCameraState->frameCount;
                 g_BattleSummonFatChocoboCameraState->deltaX = g_BattleSummonFatChocoboCameraState->posX;
                 g_BattleSummonFatChocoboCameraState->deltaY = g_BattleSummonFatChocoboCameraState->posY;
                 g_BattleSummonFatChocoboCameraState->deltaZ = g_BattleSummonFatChocoboCameraState->posZ;
@@ -464,17 +464,17 @@ void __cdecl BattleFx_FatChocoboRunCameraScript(void)
                 pVector->offsetY = g_BattleSummonFatChocoboCameraScratch->posY - g_BattleSummonFatChocoboCameraState->deltaY;
                 pVector->offsetZ = g_BattleSummonFatChocoboCameraScratch->posZ - g_BattleSummonFatChocoboCameraState->deltaZ;
                 VectorNormalToSVector((int *)pVector, (short *)delta);
-                g_BattleSummonFatChocoboCameraState->posX = g_BattleSummonFatChocoboCameraScratch->posX - (delta->vx * g_BattleSummonFatChocoboCameraState->progress >> 0xC);
-                g_BattleSummonFatChocoboCameraState->posY = g_BattleSummonFatChocoboCameraScratch->posY - (delta->vy * g_BattleSummonFatChocoboCameraState->progress >> 0xC);
-                g_BattleSummonFatChocoboCameraState->posZ = g_BattleSummonFatChocoboCameraScratch->posZ - (delta->vz * g_BattleSummonFatChocoboCameraState->progress >> 0xC);
+                g_BattleSummonFatChocoboCameraState->posX = g_BattleSummonFatChocoboCameraScratch->posX - (delta->vx * g_BattleSummonFatChocoboCameraState->progress >> 12);
+                g_BattleSummonFatChocoboCameraState->posY = g_BattleSummonFatChocoboCameraScratch->posY - (delta->vy * g_BattleSummonFatChocoboCameraState->progress >> 12);
+                g_BattleSummonFatChocoboCameraState->posZ = g_BattleSummonFatChocoboCameraScratch->posZ - (delta->vz * g_BattleSummonFatChocoboCameraState->progress >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_BattleSummonFatChocoboCameraState->progress += g_BattleSummonFatChocoboCameraState->progressStep;
                 eased = g_BattleSummonFatChocoboCameraState->progress;
                 eased = SinFixed(SinFixed(eased / 4) / 4);
-                g_BattleSummonFatChocoboCameraState->posX = g_BattleSummonFatChocoboCameraState->deltaX + (g_BattleSummonFatChocoboCameraState->stepX * eased >> 0xC);
-                g_BattleSummonFatChocoboCameraState->posY = g_BattleSummonFatChocoboCameraState->deltaY + (g_BattleSummonFatChocoboCameraState->stepY * eased >> 0xC);
-                g_BattleSummonFatChocoboCameraState->posZ = g_BattleSummonFatChocoboCameraState->deltaZ + (g_BattleSummonFatChocoboCameraState[1].mode * eased >> 0xC);
+                g_BattleSummonFatChocoboCameraState->posX = g_BattleSummonFatChocoboCameraState->deltaX + (g_BattleSummonFatChocoboCameraState->stepX * eased >> 12);
+                g_BattleSummonFatChocoboCameraState->posY = g_BattleSummonFatChocoboCameraState->deltaY + (g_BattleSummonFatChocoboCameraState->stepY * eased >> 12);
+                g_BattleSummonFatChocoboCameraState->posZ = g_BattleSummonFatChocoboCameraState->deltaZ + (g_BattleSummonFatChocoboCameraState[1].mode * eased >> 12);
             }
             g_BattleSummonFatChocoboCameraState->frameCount--;
             g_BattleSummonFatChocoboCameraState = (struct BattleFxFatChocoboCamera *)&g_BattleSummonFatChocoboTargetActor.state;
@@ -581,15 +581,15 @@ void __cdecl BattleFx_SummonFatChocoboTimelineTask(void)
     if (frame < 1) { /* empty first arm: lib/codegen.h */
     } else {
         frame--;
-        if (frame < 0xF) {
+        if (frame < 15) {
             if (frame == 0) {
                 newTask = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonFatChocoboScalingFadeModelTask);
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            frame -= 0xF;
-            if (frame < 0xF) {
-                if (frame == 0xE) {
+            frame -= 15;
+            if (frame < 15) {
+                if (frame == 14) {
                     pRingRecord = (BattleFxRingWaveSlot *)Battle_AllocSceneMessage(1);
                     pRingRecord->flags = 0;
                     pRingRecord->lifetime = 0xD8F0;
@@ -597,27 +597,27 @@ void __cdecl BattleFx_SummonFatChocoboTimelineTask(void)
                     pRingRecord->angleY = g_BattleSummonFatChocoboAngles[1];
                 }
             } else {
-                frame -= 0xF;
-                if (frame < 0xC) {
+                frame -= 15;
+                if (frame < 12) {
                     if (frame == 0) {
                         Battle_AllocateResourceSlot(BattleFx_SummonFatChocoboOffsetRampTask);
                         Battle_AllocateResourceSlot(BattleFx_SummonFatChocoboScreenFillTask);
                     }
                 } else {
-                    frame -= 0xC;
-                    if (frame < 0x30) {
+                    frame -= 12;
+                    if (frame < 48) {
                         if (frame < 3) { /* empty first arm: lib/codegen.h */
                         } else {
                             frame -= 3;
-                            if (frame < 0x1E) {
+                            if (frame < 30) {
                                 if (frame == 0) {
                                     newTask = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonFatChocoboGrowingModelTask);
                                     newTask = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonFatChocoboSpawnAnimatedSpritesTask);
                                     newTask = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonFatChocoboCameraShakeTask);
                                 }
                             } else {
-                                frame -= 0x1E;
-                                if (frame < 0xF) {
+                                frame -= 30;
+                                if (frame < 15) {
                                     if (frame == 0) {
                                         g_BattleActorRecords[3].tintB = 0;
                                         g_BattleActorRecords[3].tintG = g_BattleActorRecords[3].tintB;
@@ -626,8 +626,8 @@ void __cdecl BattleFx_SummonFatChocoboTimelineTask(void)
                                             (&g_BattleActorRecords[3].fadeFlags)[boneIdx] |= 8;
                                         }
                                     }
-                                    g_BattleActorRecords[3].tintPhase = (frame << 0xC) / 0xF;
-                                    if (frame == 0xE) {
+                                    g_BattleActorRecords[3].tintPhase = (frame << 12) / 15;
+                                    if (frame == 14) {
                                         Battle_AllocSceneMessage(2);
                                     }
                                 }
@@ -652,8 +652,8 @@ void __cdecl BattleFx_SummonFatChocoboTimelineTask(void)
     task->frameCounter++;
 }
 
-// Scales the Fat Chocobo model up over 0x2D frames, holds it for 0x1E and fades it out over the next
-// 0xF, drawing it after the sorted models each frame.
+// Scales the Fat Chocobo model up over 45 frames, holds it for 30 and fades it out over the next
+// 15, drawing it after the sorted models each frame.
 // FUNCTION: FF7 0x00508eb4
 void __cdecl BattleFx_SummonFatChocoboScalingFadeModelTask(void)
 {
@@ -672,22 +672,22 @@ void __cdecl BattleFx_SummonFatChocoboScalingFadeModelTask(void)
         g_BattleSummonFatChocoboEffectDescriptor.modelRequest = 0;
     }
     frame = task->frameCounter;
-    if (frame < 0x2D) {
-        ratio = (frame << 0xC) / 0x2D;
-        g_BattleSummonFatChocoboFadeScaleValue[0] = (ratio * 0x6000 >> 0xC) + 0x1000;
+    if (frame < 45) {
+        ratio = (frame << 12) / 45;
+        g_BattleSummonFatChocoboFadeScaleValue[0] = (ratio * 0x6000 /* 6.0 */ >> 12) + 0x1000;
         g_BattleSummonFatChocoboFadeScaleVector[0] = g_BattleSummonFatChocoboFadeScaleValue[0];
-        g_BattleSummonFatChocoboEffectDescriptor.fadeInverse = 0x1000 - ratio;
+        g_BattleSummonFatChocoboEffectDescriptor.fadeInverse = 4096 - ratio;
     } else {
-        frame -= 0x2D;
-        if (frame < 0x1E) {
-            g_BattleSummonFatChocoboFadeScaleValue[0] = 0x6000;
+        frame -= 45;
+        if (frame < 30) {
+            g_BattleSummonFatChocoboFadeScaleValue[0] = 0x6000 /* 6.0 */;
             g_BattleSummonFatChocoboFadeScaleVector[0] = g_BattleSummonFatChocoboFadeScaleValue[0];
             g_BattleSummonFatChocoboEffectDescriptor.fadeInverse = 0;
         } else {
-            frame -= 0x1E;
-            if (frame < 0xF) {
-                ratio = (frame << 0xC) / 0xF;
-                g_BattleSummonFatChocoboFadeScaleValue[0] = 0x6000;
+            frame -= 30;
+            if (frame < 15) {
+                ratio = (frame << 12) / 15;
+                g_BattleSummonFatChocoboFadeScaleValue[0] = 0x6000 /* 6.0 */;
                 g_BattleSummonFatChocoboFadeScaleVector[0] = g_BattleSummonFatChocoboFadeScaleValue[0];
                 g_BattleSummonFatChocoboEffectDescriptor.fadeInverse = ratio;
             } else {
@@ -728,22 +728,22 @@ void __cdecl BattleFx_SummonFatChocoboGrowingModelTask(void)
     }
     g_BattleSummonFatChocoboEffectDescriptor.modelDraw = Gfx_ModelTableGetRenderObject(0, g_BattleSummonFatChocoboModelTable);
     frame = pSlot->frameCount;
-    if (frame < 0xA) {
+    if (frame < 10) {
         g_BattleSummonFatChocoboEffectDescriptor.growFraction = 0;
     } else {
-        frame -= 0xA;
+        frame -= 10;
         if (frame < 5) {
-            g_BattleSummonFatChocoboEffectDescriptor.growFraction = (frame << 0xC) / 5;
+            g_BattleSummonFatChocoboEffectDescriptor.growFraction = (frame << 12) / 5;
         } else {
             pSlot->stage = 0xFFFF;
             return;
         }
     }
-    scaleBase = (pSlot->frameCount << 0xC) / 0xF;
+    scaleBase = (pSlot->frameCount << 12) / 15;
     for (shapeIndex = 0; shapeIndex < 0; shapeIndex++) {
         scaleBase = SinFixed(scaleBase / 4);
     }
-    g_BattleSummonFatChocoboGrowScaleValue[0] = (scaleBase * 0x5000 >> 0xC) + 0x1000;
+    g_BattleSummonFatChocoboGrowScaleValue[0] = (scaleBase * 0x5000 /* 5.0 */ >> 12) + 0x1000;
     g_BattleSummonFatChocoboGrowScaleCopy[0] = g_BattleSummonFatChocoboGrowScaleValue[0];
     g_BattleSummonFatChocoboGrowScaleVector[0] = g_BattleSummonFatChocoboGrowScaleCopy[0];
     MultiplyMatrix(&g_BattleSummonFatChocoboTransformMatrix, g_BattleSummonFatChocoboGrowScaleVector, (void *)(g_BattleSummonFatChocoboActorBonePos.dataBlockPtr));
@@ -757,9 +757,9 @@ void __cdecl BattleFx_SummonFatChocoboGrowingModelTask(void)
 
 // Spawns the Fat Chocobo animated sprites. Unless the game is paused, each call allocates fifteen
 // animated sprite tasks and then advances the timer. Each sprite takes a random angle p from rand()
-// & 0xFFF and a random horizontal speed r from rand() % 0xC8 + 0x64. Its position lies on a circle
+// & 0xFFF and a random horizontal speed r from rand() % 200 + 100. Its position lies on a circle
 // of radius 0xDAC at angle p, its velocityX and velocityZ are r times the sine and cosine of p, and
-// velocityY is the negated rand() % 0x64 + 0x32. scale gets rand() % 0x4000 + 0x4000. The branches
+// velocityY is the negated rand() % 100 + 50. scale gets rand() % 16384 + 16384. The branches
 // on 0 != 0 are never taken. Once the timer reaches six, the task sets ownerSlot to 0xFFFF and
 // retires.
 // FUNCTION: FF7 0x0050921e
@@ -775,30 +775,30 @@ void __cdecl BattleFx_SummonFatChocoboSpawnAnimatedSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    for (spriteIndex = 0; spriteIndex < 0xF; spriteIndex++) {
+    for (spriteIndex = 0; spriteIndex < 15; spriteIndex++) {
         sprite = (BattleFxWeaponEmeraldBeamSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonFatChocoboAnimatedSpriteTask);
         heading = rand() & 0xFFF;
         if (DEAD_IN_RETAIL != 0) {
             pick = 0x12C;
         } else {
-            pick = rand() % 0xC8 + 0x64;
+            pick = rand() % 200 + 100;
         }
         speed = pick;
-        sprite->posX = SinFixed(heading) * 0xDAC >> 0xC;
+        sprite->posX = SinFixed(heading) * 0xDAC >> 12;
         sprite->posY = 0;
-        sprite->posZ = CosFixed(heading) * 0xDAC >> 0xC;
-        sprite->velocityX = speed * SinFixed(heading) >> 0xC;
+        sprite->posZ = CosFixed(heading) * 0xDAC >> 12;
+        sprite->velocityX = speed * SinFixed(heading) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             liftPick = 0x96;
         } else {
-            liftPick = rand() % 0x64 + 0x32;
+            liftPick = rand() % 100 + 50;
         }
         sprite->velocityY = -liftPick;
-        sprite->velocityZ = speed * CosFixed(heading) >> 0xC;
+        sprite->velocityZ = speed * CosFixed(heading) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             bytesPick = 0x8000;
         } else {
-            bytesPick = rand() % 0x4000 + 0x4000;
+            bytesPick = rand() % 16384 + 16384;
         }
         sprite->scale = bytesPick;
     }
@@ -826,15 +826,15 @@ void __cdecl BattleFx_SummonFatChocoboAnimatedSpriteTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonFatChocoboSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         task->step++;
-        if (task->step >= 0x10) {
+        if (task->step >= 16) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             task->posA += task->velocityA;
             task->posB += task->velocityB;
             task->posC += task->velocityC;
-            task->velocityA = task->velocityA * 0xF00 >> 0xC;
-            task->velocityB = task->velocityB * 0x1100 >> 0xC;
-            task->velocityC = task->velocityC * 0xF00 >> 0xC;
+            task->velocityA = task->velocityA * 0xF00 /* 0.9375 */ >> 12;
+            task->velocityB = task->velocityB * 0x1100 /* 1.0625 */ >> 12;
+            task->velocityC = task->velocityC * 0xF00 /* 0.9375 */ >> 12;
         }
     }
 }
@@ -857,9 +857,9 @@ int __cdecl BattleFx_SummonFatChocoboInstallSpriteMatrix(void *vector, short sca
     RotTransPoint(vector, (int *)&g_BattleSummonFatChocoboBillboardMatrix.vecX, &flags);
     if (offset != 0) {
         NormalizeVectorFixed((int *)&g_BattleSummonFatChocoboBillboardMatrix.vecX, &normal);
-        g_BattleSummonFatChocoboBillboardMatrix.vecX += normal.vx * offset >> 0xC;
-        g_BattleSummonFatChocoboBillboardMatrix.vecY += normal.vy * offset >> 0xC;
-        g_BattleSummonFatChocoboBillboardMatrix.vecZ += normal.vz * offset >> 0xC;
+        g_BattleSummonFatChocoboBillboardMatrix.vecX += normal.vx * offset >> 12;
+        g_BattleSummonFatChocoboBillboardMatrix.vecY += normal.vy * offset >> 12;
+        g_BattleSummonFatChocoboBillboardMatrix.vecZ += normal.vz * offset >> 12;
     }
     SetRotMatrix((short *)&g_BattleSummonFatChocoboBillboardMatrix);
     SetTransMatrix((short *)&g_BattleSummonFatChocoboBillboardMatrix);
@@ -880,12 +880,12 @@ void __cdecl BattleFx_SummonFatChocoboCameraShakeTask(void)
         return;
     }
     if ((taskPtr->frameCounter & 1) == 0) {
-        shake = taskPtr->frameCounter * -500 / 0x1E + 0x1F4;
+        shake = taskPtr->frameCounter * -500 / 30 + 0x1F4;
         g_BattleCameraFocalPoint.focalPointY -= shake;
         g_BattleCameraPosition.cameraPosY -= shake;
     }
     taskPtr->frameCounter++;
-    if (taskPtr->frameCounter >= 0x1E) {
+    if (taskPtr->frameCounter >= 30) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -904,7 +904,7 @@ void __cdecl BattleFx_SummonFatChocoboOffsetRampTask(void)
     }
     g_BattleActorRecords[3].posY -= 0xFD66;
     task->frameCounter++;
-    if (task->frameCounter >= 0xF) {
+    if (task->frameCounter >= 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -937,8 +937,8 @@ void __cdecl BattleFx_SummonFatChocoboScreenFillTask(void)
     prim.code = PSX_PRIM_TILE;
     prim.x0 = 0;
     prim.y0 = 0;
-    prim.x1 = 0x280;
-    prim.y1 = 0x14C;
+    prim.x1 = 640;
+    prim.y1 = 332;
     prim.x0 = *(short *)&g_BattleViewportOriginX;
     prim.y0 = *(short *)&g_BattleViewportOriginY;
     prim.x1 = *(short *)&g_BattleViewportWidth;
@@ -947,7 +947,7 @@ void __cdecl BattleFx_SummonFatChocoboScreenFillTask(void)
     Gfx_DrawPsxPrimitive(&prim);
     if (g_BattleIsPaused == 0) {
         p->frameCounter++;
-        if (p->frameCounter >= 0xC) {
+        if (p->frameCounter >= 12) {
             p->ownerSlot = BATTLE_TASK_FREE;
         }
     }

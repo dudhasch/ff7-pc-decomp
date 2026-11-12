@@ -393,10 +393,10 @@ int __cdecl Mini_CondorLoadAnimation(char *path)
 {
     PolygonAnimation *result;
     char buf[0x100];
-    char dir[0x100];
-    char ext[0x100];
+    char dir[256];
+    char ext[256];
     char drive[4];
-    char file[0x100];
+    char file[256];
 
     result = 0;
     _splitpath(path, drive, dir, file, ext);
@@ -458,7 +458,7 @@ void __cdecl Mini_CondorReleaseBatchesAndResetDrawPools(GfxEngineContext *pool)
         Gfx_EmptyRenderObjectBatch(((CondorRenderObject *)&g_CondorRenderObjects)[i].renderObject);
         ((CondorRenderObject *)&g_CondorRenderObjectsTail)[i].renderObject = 0;
     }
-    for (i = 0; i < 0xD; i++) {
+    for (i = 0; i < 13; i++) {
         if (((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].drawn != 0) {
             Gfx_EmptyRenderObjectBatch(((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].renderObject);
             ((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].drawn = 0;
@@ -520,7 +520,7 @@ void __cdecl Mini_CondorRenderScene(GfxEngineContext *renderContext)
     g_CondorPeakValue = 0;
     Mini_CondorDrawPhaseSevenUnitModels(renderContext, g_CondorSubViewIndex);
     Gfx_SetRenderStateCall(RENDER_STATE_LINEAR_FILTER, 0, renderContext);
-    for (i = 0; i < 0xD; i++) {
+    for (i = 0; i < 13; i++) {
         if (((CondorRenderObjectSlot3 *)&g_CondorRenderObjectSlotsTail)[i].mode == 0 && ((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].drawn != 0 && ((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].renderObject != 0) {
             Gfx_DrawRenderObjectCall((GfxRenderObject *)(((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].renderObject), renderContext);
         }
@@ -536,7 +536,7 @@ void __cdecl Mini_CondorRenderScene(GfxEngineContext *renderContext)
     }
     Gfx_SetScenePassCall(1, renderContext);
     Gfx_SetRenderStateCall(RENDER_STATE_LINEAR_FILTER, 0, renderContext);
-    for (i = 0; i < 0xD; i++) {
+    for (i = 0; i < 13; i++) {
         if (((CondorRenderObjectSlot3 *)&g_CondorRenderObjectSlotsTail)[i].mode == 1 && ((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].drawn != 0 && ((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].renderObject != 0) {
             Gfx_DrawRenderObjectCall((GfxRenderObject *)(((struct CondorRenderObjectSlotEntry *)&g_CondorRenderObjectSlots)[i].renderObject), renderContext);
         }

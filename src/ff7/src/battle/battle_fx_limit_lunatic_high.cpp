@@ -159,12 +159,12 @@ void __cdecl BattleFx_LimitLunaticHighTimelineTask(void)
     }
     task = BATTLE_CURRENT_TASK_SLOT;
     if (task->frameCounter == 0) {
-        for (i = 0; i < 0xA; i++) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleLimitLunaticHighSelectMask & 1 << i) != 0) {
                 pNewTask = (BattleLimitLunaticHighTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLunaticHighSpawnEffectsTask);
                 Battle_GetBoneWorldPos(i, g_BattleActorRecords[i].targetBone, &pNewTask->bonePosX);
                 pNewTask->bonePosY = 0;
-                pNewTask->effectRadius = g_BattleActorRecords[i].radius + 0x12C;
+                pNewTask->effectRadius = g_BattleActorRecords[i].radius + 300;
                 pNewTask->actorIndex = i;
             }
         }
@@ -175,19 +175,19 @@ void __cdecl BattleFx_LimitLunaticHighTimelineTask(void)
         g_BattleFxTimelineState.channel1 = 0x40;
         g_BattleFxTimelineState.channel2 = 0;
         intensity = task->frameCounter << 8;
-    } else if (task->frameCounter >= 0x20) {
+    } else if (task->frameCounter >= 32) {
         intensity = 0x800 - (task->frameCounter - 0x20 << 8);
     } else {
         intensity = 0x800;
     }
-    if (task->frameCounter == 0x23) {
-        for (i = 0; i < 0xA; i++) {
+    if (task->frameCounter == 35) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleLimitLunaticHighSelectMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (task->frameCounter >= 0x28) {
+    if (task->frameCounter >= 40) {
         intensity = 0;
         g_BattleFxTimelineState.channel1 = intensity;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
@@ -224,21 +224,21 @@ void __cdecl BattleFx_LimitLunaticHighSpawnEffectsTask(void)
     if (pTaskSlot->step == 1) {
         childTaskPtr = (BattleFxLunaticHighSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLunaticHighDrawModelEntry1Task);
         childTaskPtr->pos = pTaskSlot->pos;
-        childTaskPtr->scale = (pTaskSlot->scale << 0xC << 1) / 0x2EE;
+        childTaskPtr->scale = (pTaskSlot->scale << 12 << 1) / 750;
         childTaskPtr = (BattleFxLunaticHighSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLunaticHighDrawModelEntry2Task);
         childTaskPtr->pos = pTaskSlot->pos;
-        childTaskPtr->scale = (pTaskSlot->scale << 0xC << 1) / 0x15E;
+        childTaskPtr->scale = (pTaskSlot->scale << 12 << 1) / 350;
     }
     if (pTaskSlot->step == 1) {
         childTaskPtr = (BattleFxLunaticHighSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLunaticHighSpriteParticlePool100Task);
         childTaskPtr->pos = pTaskSlot->pos;
         childTaskPtr->scale = pTaskSlot->scale;
         childTaskPtr->poolIndex = pTaskSlot->poolIndex;
-        for (idx = 0; idx < 0x64; idx++) {
+        for (idx = 0; idx < 100; idx++) {
             g_BattleLimitLunaticHighParticlePool[pTaskSlot->poolIndex][idx].active = 0;
         }
     }
-    if (pTaskSlot->step >= 0x28) {
+    if (pTaskSlot->step >= 40) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (pTaskSlot->step)++;
@@ -267,7 +267,7 @@ void __cdecl BattleFx_LimitLunaticHighSpriteParticlePool100Task(void)
     pParticlePool = g_BattleLimitLunaticHighParticlePool[task->poolIndex];
     g_BattleLimitLunaticHighSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitLunaticHighLoadedResTable);
     g_BattleLimitLunaticHighSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitLunaticHighLoadedResTable);
-    for (idx = 0; idx < 0x64; idx++) {
+    for (idx = 0; idx < 100; idx++) {
         if (pParticlePool[idx].active != 0) {
             g_BattleLimitLunaticHighSpriteReq.frame = pParticlePool[idx].age;
             BattleFx_InstallBillboardMatrix(&pParticlePool[idx].posX, (short)pParticlePool[idx].scale, -(pParticlePool[idx].scale >> 3));
@@ -278,7 +278,7 @@ void __cdecl BattleFx_LimitLunaticHighSpriteParticlePool100Task(void)
                 pParticlePool[idx].posZ += pParticlePool[idx].velocityZ;
                 pParticlePool[idx].velocityX -= (short)(pParticlePool[idx].velocityX >> 3);
                 pParticlePool[idx].velocityZ -= (short)(pParticlePool[idx].velocityZ >> 3);
-                if (pParticlePool[idx].age >= 0xF) {
+                if (pParticlePool[idx].age >= 15) {
                     pParticlePool[idx].active = 0;
                 }
                 (pParticlePool[idx].age)++;
@@ -288,30 +288,30 @@ void __cdecl BattleFx_LimitLunaticHighSpriteParticlePool100Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCount >= 0x23) {
+    if (task->frameCount >= 35) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (task->frameCount < 0x13) {
+    if (task->frameCount < 19) {
         sizeBase = 0xDC0;
         for (idx = 0; idx < 5; idx++) {
-            for (freeSlot = 0; freeSlot < 0x64 && pParticlePool[freeSlot].active != 0; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 100 && pParticlePool[freeSlot].active != 0; freeSlot++) {
             }
-            if (freeSlot >= 0x64) {
+            if (freeSlot >= 100) {
                 break;
             }
             pParticlePool[freeSlot].active = 1;
             pParticlePool[freeSlot].age = 0;
             theta = ((rand()) % 4096);
-            dist = task->speed / 3 * 2 + rand() % 0x64;
-            pParticlePool[freeSlot].posX = task->posX + (CosFixed(theta) * dist >> 0xC);
+            dist = task->speed / 3 * 2 + rand() % 100;
+            pParticlePool[freeSlot].posX = task->posX + (CosFixed(theta) * dist >> 12);
             pParticlePool[freeSlot].posY = task->posY;
-            pParticlePool[freeSlot].posZ = task->posZ + (SinFixed(theta) * dist >> 0xC);
-            dist = rand() % 0x5A + 0x5A;
-            pParticlePool[freeSlot].velocityX = CosFixed(theta) * dist >> 0xC;
-            pParticlePool[freeSlot].velocityY = -(rand() % 0xA + 0x14);
-            pParticlePool[freeSlot].velocityZ = SinFixed(theta) * dist >> 0xC;
+            pParticlePool[freeSlot].posZ = task->posZ + (SinFixed(theta) * dist >> 12);
+            dist = rand() % 90 + 90;
+            pParticlePool[freeSlot].velocityX = CosFixed(theta) * dist >> 12;
+            pParticlePool[freeSlot].velocityY = -(rand() % 10 + 20);
+            pParticlePool[freeSlot].velocityZ = SinFixed(theta) * dist >> 12;
             theta = rand() % 0xB00 + 0xE00;
-            pParticlePool[freeSlot].scale = sizeBase * theta >> 0xC;
+            pParticlePool[freeSlot].scale = sizeBase * theta >> 12;
         }
     }
     (task->frameCount)++;
@@ -358,16 +358,16 @@ void __cdecl BattleFx_LimitLunaticHighDrawModelEntry1Task(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleLimitLunaticHighLoadedResTable);
     frame.modelDraw->flags = 0x28;
     frame.modelDraw->uvScroll = (frame.uvSelect & 1) << 7;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = ((frame.uvSelect & 2) >> 1) | 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.entry->step < 8) {
         frame.modelDraw->fadeLevel = frame.entry->step << 4;
-    } else if (frame.entry->step >= 0x16) {
-        frame.modelDraw->fadeLevel = 0x80 - (frame.entry->step - 0x16 << 4);
+    } else if (frame.entry->step >= 22) {
+        frame.modelDraw->fadeLevel = 128 - (frame.entry->step - 22 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.entry->step >= 0x1E) {
+    if (frame.entry->step >= 30) {
         frame.entry->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -416,16 +416,16 @@ void __cdecl BattleFx_LimitLunaticHighDrawModelEntry2Task(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleLimitLunaticHighLoadedResTable);
     frame.modelDraw->flags = 0x28;
     frame.modelDraw->uvScroll = (frame.uvSelect & 1) << 7;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = ((frame.uvSelect & 2) >> 1) | 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.entry->step < 8) {
         frame.modelDraw->fadeLevel = frame.entry->step << 4;
-    } else if (frame.entry->step >= 0x16) {
-        frame.modelDraw->fadeLevel = 0x80 - (frame.entry->step - 0x16 << 4);
+    } else if (frame.entry->step >= 22) {
+        frame.modelDraw->fadeLevel = 128 - (frame.entry->step - 22 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.entry->step >= 0x1E) {
+    if (frame.entry->step >= 30) {
         frame.entry->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

@@ -310,14 +310,14 @@ void __cdecl BattleFx_LimitAllCreationTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step == 0x28) {
+    if (taskPtr->step == 40) {
         Battle_GetBoneWorldPos(taskPtr->battlerIndex, g_BattleActorRecords[taskPtr->battlerIndex].targetBone, &taskPtr->posX);
         taskPtr->baseY -= 0xC8;
         taskPtr->angle = ArcTangentFixed(g_BattleLimitAllCreationState40 - taskPtr->posX, g_BattleLimitAllCreationState44 - taskPtr->posY);
         orbitPtr = (BattleFxAllCreationOrbitSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitAllCreationScalingModelTask);
         orbitPtr->angle = taskPtr->angle;
-        orbitPtr->velX = SinFixed(taskPtr->angle) * 0x78 >> 0xC;
-        orbitPtr->velZ = CosFixed(taskPtr->angle) * 0x78 >> 0xC;
+        orbitPtr->velX = SinFixed(taskPtr->angle) * 0x78 >> 12;
+        orbitPtr->velZ = CosFixed(taskPtr->angle) * 0x78 >> 12;
         orbitPtr->posX = taskPtr->posX;
         orbitPtr->posY = taskPtr->baseY;
         orbitPtr->posZ = taskPtr->posY;
@@ -326,29 +326,29 @@ void __cdecl BattleFx_LimitAllCreationTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0x18;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0x1000, 0x28);
+        Battle_StartFixedPointRamp(0x1000, 40);
         Battle_PlaySfxPannedToActor(0x136, (short)taskPtr->battlerIndex, 0);
     }
-    if (taskPtr->step >= 0x28 && taskPtr->step < 0x46 && taskPtr->step % 0xA == 0) {
+    if (taskPtr->step >= 40 && taskPtr->step < 70 && taskPtr->step % 10 == 0) {
         orbitPtr = (BattleFxAllCreationOrbitSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitAllCreationShrinkingModelTask);
         orbitPtr->posX = taskPtr->posX;
         orbitPtr->posY = 0;
         orbitPtr->posZ = taskPtr->posY;
     }
-    if (taskPtr->step == 0x55) {
+    if (taskPtr->step == 85) {
         Battle_AllocateResourceSlot(BattleFx_LimitAllCreationScreenFlashTask);
         Battle_PlaySfxPannedToActor(0x176, (short)taskPtr->battlerIndex, 0);
     }
-    if (taskPtr->step == 0x9B) {
-        for (newActor = 0; newActor < 0xA; newActor++) {
+    if (taskPtr->step == 155) {
+        for (newActor = 0; newActor < 10; newActor++) {
             if ((g_BattleLimitAllCreationTargets & 1 << newActor) != 0) {
                 Battle_PostActorHitOrHurtMessage(newActor);
             }
         }
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0xB9) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (taskPtr->step == 185) {
+        Battle_StartFixedPointRamp(0, 10);
         g_BattleScriptEffectFlag = 0;
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -385,13 +385,13 @@ void __cdecl BattleFx_LimitAllCreationShrinkingModelTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleLimitAllCreationModelReq1.actorPos = 0x1000 - frame.shrinkRecord->frameIndex * 0xC8;
+    g_BattleLimitAllCreationModelReq1.actorPos = 4096 - frame.shrinkRecord->frameIndex * 200;
     g_BattleLimitAllCreationDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitAllCreationModelReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitAllCreationDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.shrinkRecord->frameIndex)++;
-    if (frame.shrinkRecord->frameIndex == 0x14) {
+    if (frame.shrinkRecord->frameIndex == 20) {
         frame.shrinkRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -431,12 +431,12 @@ void __cdecl BattleFx_LimitAllCreationScalingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.scalingRecord->frame < 0x28) {
-        g_BattleLimitAllCreationPos60 = SinFixed(frame.scalingRecord->frame * 0x19) * 0xE10 >> 0xC;
+    if (frame.scalingRecord->frame < 40) {
+        g_BattleLimitAllCreationPos60 = SinFixed(frame.scalingRecord->frame * 25) * 0xE10 >> 12;
         g_BattleLimitAllCreationPos5C = g_BattleLimitAllCreationPos60;
         g_BattleLimitAllCreationPos58 = g_BattleLimitAllCreationPos5C;
     }
-    if (frame.scalingRecord->frame >= 0x2D && frame.scalingRecord->frame < 0x46) {
+    if (frame.scalingRecord->frame >= 45 && frame.scalingRecord->frame < 70) {
         frame.blendIndex = frame.scalingRecord->frame - 0x2D;
         if (frame.blendIndex < 4) {
             g_BattleLimitAllCreationBlendStep = frame.blendIndex + 1;
@@ -447,11 +447,11 @@ void __cdecl BattleFx_LimitAllCreationScalingModelTask(void)
             g_BattleLimitAllCreationPos5C += 0x320;
         }
     }
-    if (frame.scalingRecord->frame >= 0x46) {
-        g_BattleLimitAllCreationPos60 -= 0xB4;
+    if (frame.scalingRecord->frame >= 70) {
+        g_BattleLimitAllCreationPos60 -= 180;
         g_BattleLimitAllCreationPos58 = g_BattleLimitAllCreationPos60;
     }
-    if (frame.scalingRecord->frame == 0x50) {
+    if (frame.scalingRecord->frame == 80) {
         g_BattleLimitAllCreationModelReq2.flags |= 8;
     }
     if (REG_ALLOC_HINT) {
@@ -459,7 +459,7 @@ void __cdecl BattleFx_LimitAllCreationScalingModelTask(void)
     if (REG_ALLOC_HINT) {
     }
     (frame.scalingRecord->frame)++;
-    if (frame.scalingRecord->frame == 0x5A) {
+    if (frame.scalingRecord->frame == 90) {
         frame.scalingRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -475,27 +475,27 @@ void __cdecl BattleFx_LimitAllCreationScreenFlashTask(void)
 
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     brightness = g_BattleLimitAllCreationScale1[0] + g_BattleLimitAllCreationScale2;
-    if (brightness > 0xF0) {
+    if (brightness > 240) {
         brightness = 0xF0;
     }
     g_BattleOverlayDrawListHead = BattleFx_FlashScreenWhite((char)brightness, *(char *)&g_BattleLimitAllCreationScale2, *(char *)&g_BattleLimitAllCreationScale2);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter < 0x1E) {
+    if (taskPtr->frameCounter < 30) {
         g_BattleLimitAllCreationScale2 -= 8;
     }
-    if (taskPtr->frameCounter >= 0x1E && taskPtr->frameCounter < 0x28) {
+    if (taskPtr->frameCounter >= 30 && taskPtr->frameCounter < 40) {
         g_BattleLimitAllCreationScale2 += 0x18;
     }
-    if (taskPtr->frameCounter >= 0x37) {
+    if (taskPtr->frameCounter >= 55) {
         g_BattleLimitAllCreationScale2 -= 8;
     }
     if (g_BattleLimitAllCreationScale1[0] > 0) {
         g_BattleLimitAllCreationScale1[0] -= 6;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x56) {
+    if (taskPtr->frameCounter == 86) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }

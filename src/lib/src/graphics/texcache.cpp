@@ -177,7 +177,7 @@ bool __cdecl Gfx_TextureCacheEvictForBytes(unsigned int needed)
     for (Candidates::iterator r = p.begin(); r != p.end(); ++r) {
         IDirectDrawSurface *surface = (*r)->second;
         // STRING: FF7 0x009121ec
-        if (CheckDirectDrawResult(surface->GetSurfaceDesc(&t), "C:\\lib\\src\\graphics\\TexCache.cpp", 0xa2)) {
+        if (CheckDirectDrawResult(surface->GetSurfaceDesc(&t), "C:\\lib\\src\\graphics\\TexCache.cpp", 162)) {
             unsigned int bytes = t.lPitch * t.dwHeight;
             if (bytes >= needed) {
                 unsigned int references = (*r)->second->Release();
@@ -192,7 +192,7 @@ bool __cdecl Gfx_TextureCacheEvictForBytes(unsigned int needed)
     for (r = p.begin(); r != p.end(); ++r) {
         IDirectDrawSurface *surface2 = (*r)->second;
         // STRING: FF7 0x00912210
-        if (CheckDirectDrawResult(surface2->GetSurfaceDesc(&t), "C:\\lib\\src\\graphics\\TexCache.cpp", 0xba)) {
+        if (CheckDirectDrawResult(surface2->GetSurfaceDesc(&t), "C:\\lib\\src\\graphics\\TexCache.cpp", 186)) {
             unsigned int bytes2 = t.lPitch * t.dwHeight;
             q += bytes2;
             unsigned int references2 = (*r)->second->Release();

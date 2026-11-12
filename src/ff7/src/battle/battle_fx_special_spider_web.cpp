@@ -126,7 +126,7 @@ void __cdecl BattleFx_SpecialBeginSpiderWeb(int targetMask, int actorIdx)
 
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 4, BattleFx_SpecialSpawnSpiderWebPerTarget);
     Battle_PlaySfxPannedToActor(0x6A, (short)actorIdx, 0x40);
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         ((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[i].active = 0;
     }
 }
@@ -160,7 +160,7 @@ void __cdecl BattleFx_SpecialSpiderWebLineRecordsTask(void)
     int raw;
 
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
-    if (taskPtr->frameCounter < 0x20) {
+    if (taskPtr->frameCounter < 32) {
         raw = 0x80;
     } else {
         raw = 0x28 - taskPtr->frameCounter << 4;
@@ -171,17 +171,17 @@ void __cdecl BattleFx_SpecialSpiderWebLineRecordsTask(void)
         return;
     }
     recIndex = 0;
-    for (numActive = 0; recIndex < 0xC8; recIndex++) {
+    for (numActive = 0; recIndex < 200; recIndex++) {
         if (((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[recIndex].active != 0) {
             numActive++;
             (((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[recIndex].timer)++;
-            if (((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[recIndex].timer == 0xA) {
+            if (((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[recIndex].timer == 10) {
                 ((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[recIndex].active = 0;
             }
         }
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x28) {
+    if (taskPtr->frameCounter == 40) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -201,7 +201,7 @@ void __cdecl BattleFx_SpecialSpiderWebDrawLineRecords(short trailWidth)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (idx = 0; idx < 0xC8; idx++) {
+    for (idx = 0; idx < 200; idx++) {
         if (((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[idx].active != 0) {
             primPtr = (BattleFxSpiderWebLinePrim *)g_BattleSpecialSpiderWebDrawListHandle;
             primPtr->tag = primPtr->tag & 0xFFFFFF | 0x3000000;
@@ -252,7 +252,7 @@ void __cdecl BattleFx_SpecialSpiderWebTimelineTask(void)
         frame.spriteSlot->velB = frame.heading;
         frame.offsetX.vy = 0;
         frame.offsetX.vx = frame.offsetX.vy;
-        frame.offsetX.vz = 0x190;
+        frame.offsetX.vz = 400;
         RotMatrix((SVECTOR *)((int)frame.spriteSlot + 0xC), &frame.rotMatrix);
         TransformVectorToInt16(&frame.rotMatrix, &frame.offsetX, &frame.offsetX.vx);
         frame.timelineSlot->posA += frame.offsetX.vx;
@@ -263,14 +263,14 @@ void __cdecl BattleFx_SpecialSpiderWebTimelineTask(void)
         frame.spriteSlot->posC = frame.timelineSlot->posC;
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].altBone, (short *)&frame.bonePos);
         frame.heading = frame.targetY - 0xC8;
-        for (frame.spriteIndex = 0; frame.spriteIndex < 0x14; frame.spriteIndex++) {
+        for (frame.spriteIndex = 0; frame.spriteIndex < 20; frame.spriteIndex++) {
             frame.spriteSlot = (BattleFxSpiderWebTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSpiderWebOrbitTrailTask);
             frame.spriteSlot->posA = frame.timelineSlot->posA;
             frame.spriteSlot->posB = frame.timelineSlot->posB;
             frame.spriteSlot->posC = frame.timelineSlot->posC;
-            frame.spriteSlot->velA = (frame.timelineSlot->targetX - frame.spriteSlot->posA) / 0xA;
-            frame.spriteSlot->velB = (frame.heading / 0x14 * frame.spriteIndex - frame.spriteSlot->posB) / 0xA;
-            frame.spriteSlot->velC = (frame.timelineSlot->targetZ - frame.spriteSlot->posC) / 0xA;
+            frame.spriteSlot->velA = (frame.timelineSlot->targetX - frame.spriteSlot->posA) / 10;
+            frame.spriteSlot->velB = (frame.heading / 20 * frame.spriteIndex - frame.spriteSlot->posB) / 10;
+            frame.spriteSlot->velC = (frame.timelineSlot->targetZ - frame.spriteSlot->posC) / 10;
             if ((frame.spriteIndex % 2) == 0) {
                 frame.spriteSlot->angle = (rand() % 512) - 0x100;
                 frame.spriteSlot->spin = (g_BattleSpecialSpiderWebSpriteData.spriteIndex) * 0x180;
@@ -279,23 +279,23 @@ void __cdecl BattleFx_SpecialSpiderWebTimelineTask(void)
                 frame.spriteSlot->spin = (g_BattleSpecialSpiderWebSpriteData.spriteIndex) * 0xFFFFFE80;
             }
             frame.spriteSlot->radius = 0;
-            frame.spriteSlot->radiusScale = (SinFixed(frame.spriteIndex * 0x66) * 0x258 >> 0xC) + (SinFixed(frame.spriteIndex * 0x320) * 0xC8 >> 0xC) + 0x258;
+            frame.spriteSlot->radiusScale = (SinFixed(frame.spriteIndex * 0x66) * 0x258 >> 12) + (SinFixed(frame.spriteIndex * 0x320) * 0xC8 >> 12) + 0x258;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x24) {
+    if (frame.timelineSlot->frameCounter == 36) {
         BattleFx_HitMarkSpawnAtActorBone(frame.timelineSlot->actorIndex, 0x33);
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
-    if (frame.timelineSlot->frameCounter > 0x10 && frame.timelineSlot->frameCounter < 0x1F) {
+    if (frame.timelineSlot->frameCounter > 16 && frame.timelineSlot->frameCounter < 31) {
         frame.spriteSlot = (BattleFxSpiderWebTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSpiderWebVariantSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, (short *)((char *)frame.spriteSlot + 4));
-        frame.spriteSlot->posA += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spriteSlot->posB += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spriteSlot->posC += (short)(rand() % 0x3E8 - 0x1F4);
+        frame.spriteSlot->posA += (short)(rand() % 1000 - 500);
+        frame.spriteSlot->posB += (short)(rand() % 1000 - 500);
+        frame.spriteSlot->posC += (short)(rand() % 1000 - 500);
         frame.spriteSlot->spin = (rand() % 2);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x32) {
+    if (frame.timelineSlot->frameCounter == 50) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -311,14 +311,14 @@ void __cdecl BattleFx_SpecialSpiderWebLoopingSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialSpiderWebSpriteData.itoSpriteDataTable8 = Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecialSpiderWebLoadedRes);
     g_BattleSpecialSpiderWebSpriteData.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecialSpiderWebLoadedRes);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x3000 /* 3.0 */, 0);
     g_BattleSpecialSpiderWebSpriteData.itoSpriteDataFrameIndex20 = task->frameCounter % *(int *)((char *)*(int *)g_BattleSpecialSpiderWebSpriteData.itoSpriteDataTable8 + 4);
     g_BattleSpecialSpiderWebDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSpiderWebSpriteData.itoSpriteDataTable8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSpiderWebDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0xA) {
+    if (task->frameCounter == 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -332,7 +332,7 @@ void __cdecl BattleFx_SpecialSpiderWebVariantSpriteTask(void)
     BattleFxSpiderWebVariantSprite *task;
 
     task = (BattleFxSpiderWebVariantSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialSpiderWebSpriteData.itoVariantFrameWord36 = task->frameIndex;
     g_BattleSpecialSpiderWebSpriteData.itoVariantSpriteTable24 = Gfx_ModelTableGetLoadedRecord((&g_BattleSpecialSpiderWebSpriteData.itoVariantRequestTable40)[task->requestIndex], g_BattleSpecialSpiderWebLoadedRes);
     if (task->requestIndex != 2) {
@@ -370,23 +370,23 @@ void __cdecl BattleFx_SpecialSpiderWebOrbitTrailTask(void)
     if (quad != 0) {
         BattleFx_SpecialSpiderWebGetOrbitOffsetPoint(orbit, (Vec3sPacked *)(quad + 4));
     }
-    if (orbit->step < 0xA) {
+    if (orbit->step < 10) {
         orbit->centerX += orbit->velocityX;
         orbit->centerY += orbit->velocityY;
         orbit->centerZ += orbit->velocityZ;
-        orbit->radius = SinFixed(orbit->step * 0xC8) * orbit->radiusScale >> 0xC;
+        orbit->radius = SinFixed(orbit->step * 200) * orbit->radiusScale >> 12;
     } else {
         orbit->angle += orbit->angularVelocity;
         orbit->centerY -= 5;
     }
-    if (orbit->step > 0x14) {
+    if (orbit->step > 20) {
         orbit->radius += (short)(orbit->radius / 64);
     }
     if (quad != 0) {
         BattleFx_SpecialSpiderWebGetOrbitOffsetPoint(orbit, (Vec3sPacked *)(quad + 0xC));
     }
     (orbit->step)++;
-    if (orbit->step == 0x28) {
+    if (orbit->step == 40) {
         orbit->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -399,7 +399,7 @@ int __cdecl BattleFx_SpecialSpiderWebClaimQuadRecord(void)
 {
     short i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[i].active == 0) {
             ((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[i].active = 1;
             ((BattleSpecialSpiderWebLineRecord *)(g_BattleSpecialSpiderWebLineRecords))[i].timer = 0;
@@ -415,8 +415,8 @@ int __cdecl BattleFx_SpecialSpiderWebClaimQuadRecord(void)
 // FUNCTION: FF7 0x0055a698
 void __cdecl BattleFx_SpecialSpiderWebGetOrbitOffsetPoint(BattleFxSpiderWebOrbit *orbit, Vec3sPacked *outPoint)
 {
-    outPoint->vx = orbit->centerX + (CosFixed(orbit->angle) * orbit->radius >> 0xC);
+    outPoint->vx = orbit->centerX + (CosFixed(orbit->angle) * orbit->radius >> 12);
     outPoint->vy = orbit->centerY;
-    outPoint->vz = orbit->centerZ + (SinFixed(orbit->angle) * orbit->radius >> 0xC);
+    outPoint->vz = orbit->centerZ + (SinFixed(orbit->angle) * orbit->radius >> 12);
 }
 } /* extern "C" */

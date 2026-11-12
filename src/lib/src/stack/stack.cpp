@@ -18,9 +18,9 @@ void __cdecl MatrixStack_Destroy(MatrixStack *stack)
 {
     if (stack != 0) {
         // STRING: FF7 0x009129a8
-        GameHeapFree((void *)stack->entries, "C:\\lib\\src\\stack\\stack.cpp", 0xC);
+        GameHeapFree((void *)stack->entries, "C:\\lib\\src\\stack\\stack.cpp", 12);
         // STRING: FF7 0x009129c4
-        GameHeapFree(stack, "C:\\lib\\src\\stack\\stack.cpp", 0xD);
+        GameHeapFree(stack, "C:\\lib\\src\\stack\\stack.cpp", 13);
     }
 }
 
@@ -33,12 +33,12 @@ int __cdecl MatrixStack_Create(int capacity)
     MatrixStack *stack;
 
     // STRING: FF7 0x009129e0
-    stack = (MatrixStack *)GameHeapAlloc(1, 0xC, "C:\\lib\\src\\stack\\stack.cpp", 0x15);
+    stack = (MatrixStack *)GameHeapAlloc(1, 12, "C:\\lib\\src\\stack\\stack.cpp", 21);
     if (stack != 0) {
         stack->capacity = capacity;
         stack->depth = 0;
         // STRING: FF7 0x009129fc
-        stack->entries = (int)GameHeapAlloc(capacity, 4, "C:\\lib\\src\\stack\\stack.cpp", 0x1A);
+        stack->entries = (int)GameHeapAlloc(capacity, 4, "C:\\lib\\src\\stack\\stack.cpp", 26);
         if (stack->entries == 0) {
             MatrixStack_Destroy(stack);
             stack = 0;

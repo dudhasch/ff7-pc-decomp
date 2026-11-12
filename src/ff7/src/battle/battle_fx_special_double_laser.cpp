@@ -166,29 +166,29 @@ void __cdecl BattleFx_SpecialDoubleLaserTimelineTask(void)
     }
     if (p->step >= 4 && p->step < 8) {
         r = (BattleFxDoubleLaserBeamRecord *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialDoubleLaserAnimatedSpriteTask)];
-        r->posX = p->targetBonePos[0] + rand() % 0x320 + -0x190;
-        r->posY = p->targetBonePos[1] + rand() % 0x320 + -0x190;
-        r->posZ = p->targetBonePos[2] + rand() % 0x320 + -0x190;
+        r->posX = p->targetBonePos[0] + rand() % 800 + -400;
+        r->posY = p->targetBonePos[1] + rand() % 800 + -400;
+        r->posZ = p->targetBonePos[2] + rand() % 800 + -400;
         r->stage = 0;
     }
-    if (p->step >= 8 && p->step < 0x10) {
+    if (p->step >= 8 && p->step < 16) {
         r = (BattleFxDoubleLaserBeamRecord *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialDoubleLaserAnimatedSpriteTask)];
-        r->posX = p->targetBonePos[0] + rand() % 0x4B0 + -0x258;
-        r->posY = p->targetBonePos[1] + rand() % 0x4B0 + -0x258;
-        r->posZ = p->targetBonePos[2] + rand() % 0x4B0 + -0x258;
+        r->posX = p->targetBonePos[0] + rand() % 1200 + -600;
+        r->posY = p->targetBonePos[1] + rand() % 1200 + -600;
+        r->posZ = p->targetBonePos[2] + rand() % 1200 + -600;
         r->stage = 1;
         r = (BattleFxDoubleLaserBeamRecord *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialDoubleLaserAnimatedSpriteTask)];
-        r->posX = p->targetBonePos[0] + rand() % 0x4B0 + -0x258;
-        r->posY = p->targetBonePos[1] + rand() % 0x4B0 + -0x258;
-        r->posZ = p->targetBonePos[2] + rand() % 0x4B0 + -0x258;
+        r->posX = p->targetBonePos[0] + rand() % 1200 + -600;
+        r->posY = p->targetBonePos[1] + rand() % 1200 + -600;
+        r->posZ = p->targetBonePos[2] + rand() % 1200 + -600;
         r->stage = 2;
     }
-    if (p->step == 0xA) {
+    if (p->step == 10) {
         Battle_PostActorHitOrHurtMessage(p->hitActor);
         Battle_PlaySfxPannedToActor(0xFA, (short)p->hitActor, 0);
     }
     (p->step)++;
-    if (p->step == 0x23) {
+    if (p->step == 35) {
         p->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -208,7 +208,7 @@ void __cdecl BattleFx_SpecialDoubleLaserAnimatedSpriteTask(void)
     BattleFxTailLaserAnimSprite *task;
 
     task = (BattleFxTailLaserAnimSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecDoubleLaserSpriteReq1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_BattleSpecDoubleLaserSpriteReq2.variantTableIndex[task->variant], g_BattleSpecDoubleLaserLoadedResTable);
     if (task->variant != 1) {
         g_BattleSpecDoubleLaserSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(g_BattleSpecDoubleLaserSpriteReq2.variantTableIndex[task->variant], g_BattleSpecDoubleLaserLoadedResTable);
@@ -256,8 +256,8 @@ void __cdecl BattleFx_SpecialDoubleLaserDrawBeamSpriteTask(void)
     Gte_BuildLookBasisFromDirection(&frame.beamDirX.vx, frame.lookBasis.m[0]);
     RotMatrixXYZ(g_BattleSpecDoubleLaserBeamAngles, &frame.beamMatrix);
     ConcatMatrixPreservingTranslation(&frame.lookBasis, &frame.beamMatrix, &frame.beamMatrix);
-    frame.beamScaleX.vx = (frame.beamLength << 0xC) / 0x7D0;
-    frame.beamScaleX.vz = 0x4000;
+    frame.beamScaleX.vx = (frame.beamLength << 12) / 2000;
+    frame.beamScaleX.vz = 0x4000 /* 4.0 */;
     frame.beamScaleX.vy = frame.beamScaleX.vz;
     ScaleMatrix(&frame.beamMatrix, &frame.beamScaleX);
     frame.beamMatrix.t[0] = frame.beamSlot->beamStartX;

@@ -208,23 +208,23 @@ void __cdecl BattleFx_SpecialDiamondCardTimelineTask(void)
         }
         frame.slot->distance = frame.distance;
         frame.slot->velocityY = 0xFED4;
-        frame.slot->scale = 0x2000;
+        frame.slot->scale = 0x2000 /* 2.0 */;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleSpecialDiamondCardTargetPos), 0x1D5);
     }
-    if (frame.current->step == 0x18) {
+    if (frame.current->step == 24) {
         frame.slot = (BattleFxDiamondCardSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDiamondCardOscillatingModelTask);
         frame.slot->posY = 0xFEF6;
-        frame.slot->velocityY = 0x21;
+        frame.slot->velocityY = 33;
         frame.slot->angle = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x1D6);
     }
-    if (frame.current->step == 0x48) {
+    if (frame.current->step == 72) {
         Battle_GetBoneWorldPos(g_BattleSpecialDiamondCardFirstTargetIdx, g_BattleActorRecords[g_BattleSpecialDiamondCardFirstTargetIdx].targetBone, &frame.current->posX);
         frame.vector[0] = frame.current->posX - g_BattleCameraPosition.cameraPosX;
         frame.vector[1] = 0;
         frame.vector[2] = frame.current->posZ - g_BattleCameraPosZ;
         frame.distance = NormalizeVectorFixed(&frame.vector[0], &frame.vector[0]);
-        frame.distance = SqrtToInt(frame.distance) / 0xC;
+        frame.distance = SqrtToInt(frame.distance) / 12;
         frame.angle = ComputeAngleBetweenVectors(&g_BattleSpecialDiamondCardNegativeZUnitVector, (VECTOR *)(&frame.vector[0]), (VECTOR *)(&frame.axis[0]));
         Gte_BuildAxisAngleMatrix(frame.angle, (PsxMatrix *)(&frame.matrix[0]), (VECTOR *)(&frame.axis[0]));
         TransformVectorToInt32((PsxMatrix *)(&frame.matrix[0]), &g_BattleSpecialDiamondCardNegativeZUnitVector, &frame.vector[0]);
@@ -235,14 +235,14 @@ void __cdecl BattleFx_SpecialDiamondCardTimelineTask(void)
         frame.slot->posX = g_BattleCameraPosition.cameraPosX;
         frame.slot->posY = frame.current->posY;
         frame.slot->posZ = g_BattleCameraPosZ;
-        frame.slot->offsetX = frame.distance * frame.vector[0] >> 0xC;
+        frame.slot->offsetX = frame.distance * frame.vector[0] >> 12;
         frame.slot->velocityY = 0;
-        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 0xC;
+        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 12;
         frame.slot->angle = frame.angle;
         frame.slot->scale = 0x2666;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.current->posX), 0x1D7);
     }
-    if (frame.current->step >= 0x5A) {
+    if (frame.current->step >= 90) {
         frame.current->ownerSlot = 0xFFFF;
     }
     (frame.current->step)++;
@@ -278,7 +278,7 @@ void __cdecl BattleFx_SpecialDiamondCardSpinningModelTask(void)
     if (frame.spinRecord->step <= 8) {
         frame.axisAngle = frame.spinRecord->step << 7;
     } else {
-        frame.axisAngle = 0x400;
+        frame.axisAngle = 0x400 /* 90 deg */;
     }
     frame.targetRotX.vx = 0;
     frame.targetRotX.vy = g_BattleSpecialDiamondCardTargetPos.yaw;
@@ -292,7 +292,7 @@ void __cdecl BattleFx_SpecialDiamondCardSpinningModelTask(void)
     TransformVectorToInt16(&frame.axisMatrix, &frame.rotOffsetX, &frame.rotOffsetX.vx);
     frame.rotX.vx = 0;
     frame.rotX.vy = 0;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.modelMatrix);
     frame.modelMatrix.t[0] = frame.spinRecord->posX + frame.rotOffsetX.vx;
@@ -309,11 +309,11 @@ void __cdecl BattleFx_SpecialDiamondCardSpinningModelTask(void)
     frame.drawRecord->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialDiamondCardLoadedResTable);
     frame.drawRecord->flags = 0;
     frame.drawRecord->uvScroll = 0;
-    frame.drawRecord->fadeLevel = 0x80;
+    frame.drawRecord->fadeLevel = 128;
     frame.drawRecord->stateFlags = 0x20;
     frame.drawRecord->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinRecord->step >= 0x12) {
+    if (frame.spinRecord->step >= 18) {
         frame.spinRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -351,7 +351,7 @@ void __cdecl BattleFx_SpecialDiamondCardOscillatingModelTask(void)
 #pragma pack(pop)
 
     frame.oscModel = (BattleFxOscillatingModel *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
@@ -369,11 +369,11 @@ void __cdecl BattleFx_SpecialDiamondCardOscillatingModelTask(void)
     frame.drawRecord->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialDiamondCardLoadedResTable);
     frame.drawRecord->flags = 0;
     frame.drawRecord->uvScroll = 0;
-    frame.drawRecord->fadeLevel = 0x80;
+    frame.drawRecord->fadeLevel = 128;
     frame.drawRecord->stateFlags = 0x20;
     frame.drawRecord->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.oscModel->phase >= 0x30) {
+    if (frame.oscModel->phase >= 48) {
         frame.oscModel->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -385,10 +385,10 @@ void __cdecl BattleFx_SpecialDiamondCardOscillatingModelTask(void)
         if (frame.oscModel->velocity < 2) {
             frame.oscModel->velocity = 1;
         }
-    } else if (frame.oscModel->phase < 0x28) {
+    } else if (frame.oscModel->phase < 40) {
         frame.sineAngle = frame.oscModel->phase - 8 << 7;
-        frame.oscModel->offset = SinFixed(frame.sineAngle) * 0x18 >> 0xC;
-        if (frame.oscModel->phase >= 0x16 && frame.oscModel->phase < 0x22) {
+        frame.oscModel->offset = SinFixed(frame.sineAngle) * 0x18 >> 12;
+        if (frame.oscModel->phase >= 22 && frame.oscModel->phase < 34) {
             frame.oscModel->angle -= 0xAA;
         }
     } else {
@@ -424,7 +424,7 @@ void __cdecl BattleFx_SpecialDiamondCardAcceleratingModelTask(void)
     frame.accelSlot = (BattleFxSpecialAcceleratingSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.accelSlot->angleY;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     frame.modelMatrix.t[0] = frame.accelSlot->posA;
     frame.modelMatrix.t[1] = frame.accelSlot->posY;
@@ -440,24 +440,24 @@ void __cdecl BattleFx_SpecialDiamondCardAcceleratingModelTask(void)
     frame.drawRecord->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialDiamondCardLoadedResTable);
     frame.drawRecord->flags = 0;
     frame.drawRecord->uvScroll = 0;
-    frame.drawRecord->fadeLevel = 0x80;
+    frame.drawRecord->fadeLevel = 128;
     frame.drawRecord->stateFlags = 0x20;
     frame.drawRecord->texturePageBits = 0;
-    if (frame.accelSlot->timer >= 0xC) {
+    if (frame.accelSlot->timer >= 12) {
         frame.drawRecord->flags = 8;
-        frame.drawRecord->fadeLevel = 0x80 - (frame.accelSlot->timer - 0xC << 4);
+        frame.drawRecord->fadeLevel = 128 - (frame.accelSlot->timer - 12 << 4);
         frame.drawRecord->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialDiamondCardLoadedResTable);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.accelSlot->timer >= 0x14) {
+    if (frame.accelSlot->timer >= 20) {
         frame.accelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.accelSlot->timer == 0xA) {
+    if (frame.accelSlot->timer == 10) {
         frame.screenPan = Battle_ComputeScreenPanFromPosition(&frame.accelSlot->posA);
-        if (frame.screenPan > 0x40) {
+        if (frame.screenPan > 64) {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialDiamondCardFirstTargetIdx, 0x118);
         } else {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialDiamondCardFirstTargetIdx, 0x18);
@@ -489,7 +489,7 @@ void __cdecl BattleFx_SpecialDiamondCardBuildFacingVectors(void)
     Battle_GetBoneWorldPos(g_BattleSpecialDiamondCardActorIdx,
                            g_BattleActorRecords[g_BattleSpecialDiamondCardActorIdx].altBone,
                            &g_BattleSpecialDiamondCardTargetPos.posX);
-    g_BattleSpecialDiamondCardTargetPos.posY -= 0xe0;
+    g_BattleSpecialDiamondCardTargetPos.posY -= 224;
     g_BattleSpecialDiamondCardTargetPos.yaw = g_BattleActorRecords[g_BattleSpecialDiamondCardActorIdx].yaw;
     frame.rot[0] = 0;
     frame.rot[1] = g_BattleSpecialDiamondCardTargetPos.yaw;
@@ -512,7 +512,7 @@ void __cdecl BattleFx_SpecialDiamondCardDelayedImpactTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x5A) {
+    if (task->frameCounter == 90) {
         BattleFx_SpecialDiamondCardSpawnImpactTimeline(g_BattleSpecialDiamondCardFirstTargetIdx, g_BattleSpecialDiamondCardActorIdx);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -534,10 +534,10 @@ void __cdecl BattleFx_SpecialDiamondCardSpawnImpactTimeline(int actorIndex, int 
     effectPointer = (BattleFxDiamondCardImpactTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDiamondCardImpactTimelineTask);
     Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].targetBone, &effectPointer->posX);
     Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].altBone, positionVec);
-    effectPointer->posY = positionVec[1] - 0x200;
-    h = g_BattleActorRecords[actorIndex].radius + 0x300;
-    if (h > 0x76C) {
-        h = 0x76C;
+    effectPointer->posY = positionVec[1] - 512;
+    h = g_BattleActorRecords[actorIndex].radius + 768;
+    if (h > 1900) {
+        h = 1900;
     }
     effectPointer->jitter = h;
     g_BattleSpecialDiamondCardBillboardCursor = 0;
@@ -569,31 +569,31 @@ void __cdecl BattleFx_SpecialDiamondCardImpactTimelineTask(void)
         return;
     }
     selfPtr = (BattleFxDiamondCardImpact *)BATTLE_CURRENT_TASK_SLOT;
-    if (selfPtr->step >= 4 && selfPtr->step <= 0xA) {
+    if (selfPtr->step >= 4 && selfPtr->step <= 10) {
         for (idx = 0; idx < 6; idx++) {
             child = (BattleFxDiamondCardImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDiamondCardBouncingModelTask);
             *(Int64Pair *)((char *)child + 4) = *(Int64Pair *)((char *)selfPtr + 4);
-            dirXPart.vx = rand() % 0x1000 - 0x800;
+            dirXPart.vx = rand() % 4096 - 2048;
             dirXPart.vy = 0;
-            dirXPart.vz = rand() % 0x1000 - 0x800;
+            dirXPart.vz = rand() % 4096 - 2048;
             NormalizeVectorFixed(&dirXPart, &dirXPart);
-            mag = rand() % 0x50 + 0x3C;
-            child->velocityX = mag * dirXPart.vx >> 0xC;
-            child->velocityY = -(rand() % 0x3C + 0xA5);
-            child->velocityZ = mag * dirXPart.vz >> 0xC;
-            child->gravity = rand() % 0x16 + 0x1A;
+            mag = rand() % 80 + 60;
+            child->velocityX = mag * dirXPart.vx >> 12;
+            child->velocityY = -(rand() % 60 + 165);
+            child->velocityZ = mag * dirXPart.vz >> 12;
+            child->gravity = rand() % 22 + 26;
             cursor = rand() % 6 - 3;
             if (cursor == 0) {
                 cursor = 3;
             }
-            child->speed = (rand() % 0x48 + 0x54) * cursor;
+            child->speed = (rand() % 72 + 84) * cursor;
             child->angleX = child->speed << 1;
-            child->lateralSpeed = (rand() % 0x43 + 0x2E) * cursor;
+            child->lateralSpeed = (rand() % 67 + 46) * cursor;
             child->angleZ = child->lateralSpeed;
-            child->scaleOrIndex = 0x492;
+            child->scaleOrIndex = 1170;
         }
     }
-    if (selfPtr->step >= 1 && selfPtr->step <= 0xD) {
+    if (selfPtr->step >= 1 && selfPtr->step <= 13) {
         cursor = g_BattleSpecialDiamondCardBillboardCursor;
         child = (BattleFxDiamondCardImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDiamondCardDrawTwoSpritesTask);
         child->scaleOrIndex = cursor;
@@ -605,15 +605,15 @@ void __cdecl BattleFx_SpecialDiamondCardImpactTimelineTask(void)
             g_BattleSpecialDiamondCardBillboards[cursor].posY = selfPtr->baseB + (rand() % jitterSpan - mag);
             g_BattleSpecialDiamondCardBillboards[cursor].posZ = selfPtr->baseC + (rand() % jitterSpan - mag);
             scaleRoll = rand() % 0x1000 + 0xA00;
-            g_BattleSpecialDiamondCardBillboards[cursor].scale = baseScale * scaleRoll >> 0xC;
+            g_BattleSpecialDiamondCardBillboards[cursor].scale = baseScale * scaleRoll >> 12;
             cursor++;
-            if (cursor >= 0xC8) {
+            if (cursor >= 200) {
                 cursor = 0;
             }
         }
         g_BattleSpecialDiamondCardBillboardCursor = cursor;
     }
-    if (selfPtr->step >= 8 && selfPtr->step <= 0x13) {
+    if (selfPtr->step >= 8 && selfPtr->step <= 19) {
         cursor = g_BattleSpecialDiamondCardBillboardCursor;
         child = (BattleFxDiamondCardImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDiamondCardDrawFourSpritesTask);
         child->scaleOrIndex = cursor;
@@ -627,18 +627,18 @@ void __cdecl BattleFx_SpecialDiamondCardImpactTimelineTask(void)
             g_BattleSpecialDiamondCardBillboards[cursor].posY = selfPtr->baseB + rand() % invBase;
             g_BattleSpecialDiamondCardBillboards[cursor].posZ = selfPtr->baseC + (rand() % jitterSpan - mag);
             scaleRoll = rand() % 0xE00 + 0x800;
-            g_BattleSpecialDiamondCardBillboards[cursor].scale = baseScale * scaleRoll >> 0xC;
+            g_BattleSpecialDiamondCardBillboards[cursor].scale = baseScale * scaleRoll >> 12;
             cursor++;
-            if (cursor >= 0xC8) {
+            if (cursor >= 200) {
                 cursor = 0;
             }
         }
         g_BattleSpecialDiamondCardBillboardCursor = cursor;
     }
-    if (selfPtr->step == 0x23) {
+    if (selfPtr->step == 35) {
         Battle_PostActorHitOrHurtMessage(g_BattleSpecialDiamondCardFirstTargetIdx);
     }
-    if (selfPtr->step >= 0x28) {
+    if (selfPtr->step >= 40) {
         selfPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (selfPtr->step)++;
@@ -665,7 +665,7 @@ void __cdecl BattleFx_SpecialDiamondCardDrawFourSpritesTask(void)
         BattleFx_InstallBillboardMatrix(&g_BattleSpecialDiamondCardBillboards[cursor].posX, g_BattleSpecialDiamondCardBillboards[cursor].scale, -(g_BattleSpecialDiamondCardBillboards[cursor].scale >> 3));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw((char *)&g_BattleSpecialDiamondCardAxisAngleMatrix + 0x10, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         cursor++;
-        if (cursor >= 0xC8) {
+        if (cursor >= 200) {
             cursor = 0;
         }
     }
@@ -699,7 +699,7 @@ void __cdecl BattleFx_SpecialDiamondCardDrawTwoSpritesTask(void)
         BattleFx_InstallBillboardMatrix(&g_BattleSpecialDiamondCardBillboards[ii].posX, g_BattleSpecialDiamondCardBillboards[ii].scale, -(g_BattleSpecialDiamondCardBillboards[ii].scale >> 3));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw((char *)&g_BattleSpecialDiamondCardColorTable1 + 0x8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         ii++;
-        if (ii >= 0xC8) {
+        if (ii >= 200) {
             ii = 0;
         }
     }
@@ -753,16 +753,16 @@ void __cdecl BattleFx_SpecialDiamondCardBouncingModelTask(void)
     frame.drawRecord->modelGroup = Gfx_ModelTableGetRenderObject(4, g_BattleSpecialDiamondCardLoadedResTable);
     frame.drawRecord->flags = 0;
     frame.drawRecord->uvScroll = 0;
-    frame.drawRecord->fadeLevel = 0x80;
+    frame.drawRecord->fadeLevel = 128;
     frame.drawRecord->stateFlags = 0x20;
     frame.drawRecord->texturePageBits = 0;
-    if (frame.bounceRecord->step >= 0x18) {
+    if (frame.bounceRecord->step >= 24) {
         frame.drawRecord->flags = 8;
-        frame.drawRecord->fadeLevel = 0x80 - (frame.bounceRecord->step - 0x18) * 0x15;
+        frame.drawRecord->fadeLevel = 128 - (frame.bounceRecord->step - 24) * 21;
         frame.drawRecord->modelGroup = Gfx_ModelTableGetRenderObject(5, g_BattleSpecialDiamondCardLoadedResTable);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.bounceRecord->step >= 0x1E) {
+    if (frame.bounceRecord->step >= 30) {
         frame.bounceRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -777,8 +777,8 @@ void __cdecl BattleFx_SpecialDiamondCardBouncingModelTask(void)
     } else {
         frame.bounceRecord->velocityX = frame.bounceRecord->velocityX / 3 << 1;
         frame.bounceRecord->velocityZ = frame.bounceRecord->velocityZ / 3 << 1;
-        frame.bounceRecord->velocityY = -((frame.bounceRecord->velocityY >> 2) + rand() % 0x2D);
-        frame.bounceRecord->gravity = (frame.bounceRecord->gravity >> 3) + rand() % 0x19;
+        frame.bounceRecord->velocityY = -((frame.bounceRecord->velocityY >> 2) + rand() % 45);
+        frame.bounceRecord->gravity = (frame.bounceRecord->gravity >> 3) + rand() % 25;
         frame.bounceRecord->posY += frame.bounceRecord->velocityY;
     }
     frame.bounceRecord->angleX += frame.bounceRecord->angleSpeed;

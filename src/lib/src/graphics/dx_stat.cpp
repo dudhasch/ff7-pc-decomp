@@ -16,7 +16,7 @@ extern "C" {
 void __cdecl Gfx_StatsFreeRecord(int recordBlock)
 {
     // STRING: FF7 0x0090f984
-    GameHeapFree((void *)recordBlock, "C:\\lib\\src\\graphics\\dx_stat.cpp", 0xE);
+    GameHeapFree((void *)recordBlock, "C:\\lib\\src\\graphics\\dx_stat.cpp", 14);
 }
 
 /*
@@ -28,7 +28,7 @@ int __cdecl Gfx_StatsCreateRecord(void)
     GfxStatsRecord *rec;
 
     // STRING: FF7 0x0090f9a4
-    rec = (GfxStatsRecord *)GameHeapAlloc(1, 0xFC, "C:\\lib\\src\\graphics\\dx_stat.cpp", 0x15);
+    rec = (GfxStatsRecord *)GameHeapAlloc(1, 252, "C:\\lib\\src\\graphics\\dx_stat.cpp", 21);
     if (rec != 0) {
         rec->enabled = 1;
     }

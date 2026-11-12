@@ -167,7 +167,7 @@ void __cdecl BattleFx_SpecialFireShellTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.effectSlot->frameCounter < 0xC && (frame.effectSlot->frameCounter % 4) == 0) {
+    if (frame.effectSlot->frameCounter < 12 && (frame.effectSlot->frameCounter % 4) == 0) {
         frame.spawnSlot = (BattleFxFireballParticleRecord *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialFireShellVariantSpriteTask)];
         frame.spawnSlot->posX = frame.effectSlot->posX;
         frame.spawnSlot->posY = frame.effectSlot->posY;
@@ -182,23 +182,23 @@ void __cdecl BattleFx_SpecialFireShellTimelineTask(void)
         frame.spawnSlot->velocityZ = (frame.effectSlot->velocityZ - frame.effectSlot->posZ) / 8;
         Battle_PlaySfxPannedToActor(0x163, (short)frame.effectSlot->sourceActor, 0);
     }
-    if (frame.effectSlot->frameCounter == 0xE) {
+    if (frame.effectSlot->frameCounter == 14) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 8; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFireballParticleRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFireShellBouncingSpriteTask);
-            frame.spawnSlot->posX = frame.effectSlot->velocityX + rand() % 0x190 + -0xC8;
-            frame.spawnSlot->posZ = frame.effectSlot->velocityZ + rand() % 0x190 + -0xC8;
+            frame.spawnSlot->posX = frame.effectSlot->velocityX + rand() % 400 + -200;
+            frame.spawnSlot->posZ = frame.effectSlot->velocityZ + rand() % 400 + -200;
             frame.spawnSlot->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFF06, 0x64, (char *)frame.spawnSlot + 0xC);
-            frame.spawnSlot->variant = rand() % 0x14;
+            BattleFx_MakeRandomConeVector(0xFFFFFF06, 100, (char *)frame.spawnSlot + 0xC);
+            frame.spawnSlot->variant = rand() % 20;
         }
         Battle_PlaySfxPannedToActor(0x7C, (short)frame.effectSlot->actorIndex, 0);
     }
-    if (frame.effectSlot->frameCounter > 0xB && frame.effectSlot->frameCounter < 0x13) {
+    if (frame.effectSlot->frameCounter > 11 && frame.effectSlot->frameCounter < 19) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFireballParticleRecord *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialFireShellVariantSpriteTask)];
-            frame.spawnSlot->posX = frame.effectSlot->velocityX + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posY = frame.effectSlot->velocityY + rand() % 0x4B0 + -0x258;
-            frame.spawnSlot->posZ = frame.effectSlot->velocityZ + rand() % 0x4B0 + -0x258;
+            frame.spawnSlot->posX = frame.effectSlot->velocityX + rand() % 1200 + -600;
+            frame.spawnSlot->posY = frame.effectSlot->velocityY + rand() % 1200 + -600;
+            frame.spawnSlot->posZ = frame.effectSlot->velocityZ + rand() % 1200 + -600;
             frame.angleX.vx = rand() % 0x4B0 - 0x258;
             frame.angleX.vy = 0;
             frame.angleX.vz = rand() % 0x4B0 - 0x258;
@@ -210,11 +210,11 @@ void __cdecl BattleFx_SpecialFireShellTimelineTask(void)
             frame.spawnSlot->variant = 1;
         }
     }
-    if (frame.effectSlot->frameCounter == 0xF) {
+    if (frame.effectSlot->frameCounter == 15) {
         Battle_PostActorHitOrHurtMessage(frame.effectSlot->actorIndex);
     }
     (frame.effectSlot->frameCounter)++;
-    if (frame.effectSlot->frameCounter == 0x28) {
+    if (frame.effectSlot->frameCounter == 40) {
         frame.effectSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -282,14 +282,14 @@ void __cdecl BattleFx_SpecialFireShellBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.effectSlot = (BattleFxTailLaserBouncingSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecFireShellSpriteReq1.drawBlock = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecFireShellLoadedResTable);
-    g_BattleSpecFireShellSpriteReq1.handle = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecFireShellLoadedResTable);
+    g_BattleSpecFireShellSpriteReq1.drawBlock = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecFireShellLoadedResTable);
+    g_BattleSpecFireShellSpriteReq1.handle = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecFireShellLoadedResTable);
     for (frame.axisIndex = 0; frame.axisIndex < 3; frame.axisIndex++) {
         frame.scaleMatrix.m[2][frame.axisIndex] = 0;
         frame.scaleMatrix.m[1][frame.axisIndex] = 0;
         frame.scaleMatrix.m[0][frame.axisIndex] = 0;
     }
-    if (frame.effectSlot->frameCounter < 0xC) {
+    if (frame.effectSlot->frameCounter < 12) {
         frame.tmpScale = 8;
     } else {
         frame.tmpScale = 0x14 - frame.effectSlot->frameCounter;
@@ -324,10 +324,10 @@ void __cdecl BattleFx_SpecialFireShellBouncingSpriteTask(void)
         frame.effectSlot->posY = 0;
         frame.effectSlot->velocityY *= -1;
     }
-    frame.effectSlot->velocityY += 0x14;
-    frame.effectSlot->angle += 0x200;
+    frame.effectSlot->velocityY += 20;
+    frame.effectSlot->angle += 0x200 /* 45 deg */;
     (frame.effectSlot->frameCounter)++;
-    if (frame.effectSlot->frameCounter == 0x14) {
+    if (frame.effectSlot->frameCounter == 20) {
         frame.effectSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -381,7 +381,7 @@ void __cdecl BattleFx_SpecialFireShellProjectileTask(void)
     SetTransMatrix(&frame.drawMatrix);
     g_BattleSpecFireShellModelParams.drawBlock = Gfx_ModelTableGetRenderObject((&frame.stepIdx0)[frame.slot->frameCounter % 8], g_BattleSpecFireShellLoadedResTable);
     g_BattleSpecFireShellPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecFireShellModelParams.drawBlock, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecFireShellPacketCursor);
-    BattleFx_InstallBillboardMatrix((char *)frame.slot + 4, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((char *)frame.slot + 4, 0x1000 /* 1.0 */, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecFireShellModelParams.spriteEntry, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -392,9 +392,9 @@ void __cdecl BattleFx_SpecialFireShellProjectileTask(void)
     (frame.slot->frameCounter)++;
     if (frame.slot->frameCounter == 8) {
         frame.childSlot = (BattleFxEnergyWaveSpinSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialFireShellVariantSpriteTask)]);
-        frame.childSlot->posX = frame.slot->posX + rand() % 0x320 + -0x190;
-        frame.childSlot->posY = frame.slot->posY + rand() % 0x320 + -0x190;
-        frame.childSlot->posZ = frame.slot->posZ + rand() % 0x320 + -0x190;
+        frame.childSlot->posX = frame.slot->posX + rand() % 800 + -400;
+        frame.childSlot->posY = frame.slot->posY + rand() % 800 + -400;
+        frame.childSlot->posZ = frame.slot->posZ + rand() % 800 + -400;
         frame.childSlot->spriteVariant = 0;
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }

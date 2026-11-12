@@ -31,7 +31,7 @@ int __cdecl LoadFileBlock(int fileId, int offset, int size, void **outBuffer, vo
                 callback();
         } else {
             // STRING: FF7 0x007c0a68
-            (*outBuffer) = GameHeapAllocRaw(size, "C:\\Lib\\src\\file\\smcdfile.cpp", 0x44);
+            (*outBuffer) = GameHeapAllocRaw(size, "C:\\Lib\\src\\file\\smcdfile.cpp", 68);
             if (*outBuffer != 0) {
                 memcpy(*outBuffer, (char *)frame.data + offset, size);
                 if (callback != 0)
@@ -41,7 +41,7 @@ int __cdecl LoadFileBlock(int fileId, int offset, int size, void **outBuffer, vo
                 *outBuffer = 0;
             }
             // STRING: FF7 0x007c0a88
-            GameHeapFree(frame.data, "C:\\Lib\\src\\file\\smcdfile.cpp", 0x51);
+            GameHeapFree(frame.data, "C:\\Lib\\src\\file\\smcdfile.cpp", 81);
         }
     } else {
         size = 0;
@@ -66,12 +66,12 @@ int __cdecl LoadFileBlockLzs(int fileId, int uncompressedSize, void **outBuffer,
     frame.data = LoadDiskFile(&frame.length, (void *)fileId);
     if (frame.data != 0) {
         // STRING: FF7 0x007c0aa8
-        (*outBuffer) = GameHeapAllocRaw(uncompressedSize, "C:\\Lib\\src\\file\\smcdfile.cpp", 0x80);
+        (*outBuffer) = GameHeapAllocRaw(uncompressedSize, "C:\\Lib\\src\\file\\smcdfile.cpp", 128);
         LzsDecompress(frame.data, *outBuffer);
         if (callback != 0)
             callback();
         // STRING: FF7 0x007c0ac8
-        GameHeapFree(frame.data, "C:\\Lib\\src\\file\\smcdfile.cpp", 0x88);
+        GameHeapFree(frame.data, "C:\\Lib\\src\\file\\smcdfile.cpp", 136);
     } else {
         *outBuffer = 0;
     }

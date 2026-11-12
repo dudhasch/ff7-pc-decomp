@@ -305,7 +305,7 @@ void __cdecl SoundShutdown(void)
         for (frame.index = 0; frame.index < 750; frame.index++) {
             if (((SoundCachedSample *)&g_SoundChannels.cachedSamples)[frame.index].data != 0)
                 // STRING: FF7 0x00967b2c
-                GameHeapFree((void *)((SoundCachedSample *)&g_SoundChannels.cachedSamples)[frame.index].data, "C:\\lib\\src\\sound\\sound.cpp", 0x136);
+                GameHeapFree((void *)((SoundCachedSample *)&g_SoundChannels.cachedSamples)[frame.index].data, "C:\\lib\\src\\sound\\sound.cpp", 310);
             if (g_SoundChannels.bufferHandles[frame.index] != 0) {
                 // STRING: FF7 0x00967b48
                 sprintf(frame.message, "SOUND NOT UNLOADED: %d\n", frame.index + 1);
@@ -317,11 +317,11 @@ void __cdecl SoundShutdown(void)
         for (frame.index = 0; frame.index < 98; frame.index++) {
             if (((int *)&g_SoundChannels.trackNameBuffers)[frame.index] != 0)
                 // STRING: FF7 0x00967b60
-                GameHeapFree((void *)((int *)&g_SoundChannels.trackNameBuffers)[frame.index], "C:\\lib\\src\\sound\\sound.cpp", 0x143);
+                GameHeapFree((void *)((int *)&g_SoundChannels.trackNameBuffers)[frame.index], "C:\\lib\\src\\sound\\sound.cpp", 323);
         }
         if (g_SoundData.musicStreamBufferPtr != 0)
             // STRING: FF7 0x00967b7c
-            GameHeapFree((void *)g_SoundData.musicStreamBufferPtr, "C:\\lib\\src\\sound\\sound.cpp", 0x147);
+            GameHeapFree((void *)g_SoundData.musicStreamBufferPtr, "C:\\lib\\src\\sound\\sound.cpp", 327);
         SfxStreamClose((struct SoundStreamPlayer *)&g_SoundData.sfxStreamObject);
         SfxStreamClose((struct SoundStreamPlayer *)&g_SoundData.musicStreamObject);
         if (g_SoundChannels.primaryBuffer != 0) {
@@ -369,7 +369,7 @@ void __cdecl MusicLoadWaveNameIndex(void)
             } while (frame.name[frame.length - 1] != 10);
             frame.name[frame.length - 1] = 0;
             // STRING: FF7 0x00967bb0
-            ((int *)&g_SoundChannels.trackNameBuffers)[frame.index] = (int)GameHeapAllocRaw(strlen(frame.name) + 1, "C:\\lib\\src\\sound\\sound.cpp", 0x181);
+            ((int *)&g_SoundChannels.trackNameBuffers)[frame.index] = (int)GameHeapAllocRaw(strlen(frame.name) + 1, "C:\\lib\\src\\sound\\sound.cpp", 385);
             if (((int *)&g_SoundChannels.trackNameBuffers)[frame.index] != 0)
                 strcpy((char *)((int *)&g_SoundChannels.trackNameBuffers)[frame.index], frame.name);
         }
@@ -995,7 +995,7 @@ int __cdecl SfxDecodeToStaticBuffer(SoundSfxDecodeRecord *record, int size)
             break;
         case SOUND_WAVE_FORMAT_ADPCM:
             // STRING: FF7 0x00967c24
-            frame.srcBuf = (int)(GameHeapAllocRaw(record->allocSize, "C:\\lib\\src\\sound\\sound.cpp", 0x4A4));
+            frame.srcBuf = (int)(GameHeapAllocRaw(record->allocSize, "C:\\lib\\src\\sound\\sound.cpp", 1188));
             if (frame.srcBuf != 0) {
                 ReadFileDataPartial(record->allocSize, (void *)frame.srcBuf, (struct FileHandle *)size);
                 AcmMakePcm16Format(record->allocSize, (void *)record[1].allocSize, &frame.pcmFormat);
@@ -1008,7 +1008,7 @@ int __cdecl SfxDecodeToStaticBuffer(SoundSfxDecodeRecord *record, int size)
                 }
                 if (record->looping != 0) {
                     // STRING: FF7 0x00967c40
-                    frame.pcmBuf = (int)(GameHeapAllocRaw(frame.decodedSize, "C:\\lib\\src\\sound\\sound.cpp", 0x4B9));
+                    frame.pcmBuf = (int)(GameHeapAllocRaw(frame.decodedSize, "C:\\lib\\src\\sound\\sound.cpp", 1209));
                     if (frame.pcmBuf != 0) {
                         AcmStreamPrepare(frame.acmStream, (SoundAcmStreamHeader *)(&frame.streamHeader), frame.srcBuf, record->allocSize, frame.pcmBuf, frame.decodedSize);
                         AcmStreamConvert(frame.acmStream, &frame.streamHeader, 0);
@@ -1037,11 +1037,11 @@ int __cdecl SfxDecodeToStaticBuffer(SoundSfxDecodeRecord *record, int size)
                 }
                 if (frame.srcBuf != 0) {
                     // STRING: FF7 0x00967c5c
-                    GameHeapFree((void *)(frame.srcBuf), "C:\\lib\\src\\sound\\sound.cpp", 0x4E0);
+                    GameHeapFree((void *)(frame.srcBuf), "C:\\lib\\src\\sound\\sound.cpp", 1248);
                 }
                 if (frame.pcmBuf != 0) {
                     // STRING: FF7 0x00967c78
-                    GameHeapFree((void *)(frame.pcmBuf), "C:\\lib\\src\\sound\\sound.cpp", 0x4E1);
+                    GameHeapFree((void *)(frame.pcmBuf), "C:\\lib\\src\\sound\\sound.cpp", 1249);
                 }
                 return frame.soundBuffer;
             }
@@ -1049,7 +1049,7 @@ int __cdecl SfxDecodeToStaticBuffer(SoundSfxDecodeRecord *record, int size)
         }
         if (frame.srcBuf != 0) {
             // STRING: FF7 0x00967c94
-            GameHeapFree((void *)(frame.srcBuf), "C:\\lib\\src\\sound\\sound.cpp", 0x4E9);
+            GameHeapFree((void *)(frame.srcBuf), "C:\\lib\\src\\sound\\sound.cpp", 1257);
         }
         return 0;
     }
@@ -1107,7 +1107,7 @@ int __cdecl SfxLoadFormatTable(void)
         if (frame.format.pcm.format == 2)
             frame.extra.value = frame.format.pcmExtra;
         // STRING: FF7 0x00967ce0
-        frame.data = (int)GameHeapAllocRaw(frame.extra.value + 18, "C:\\lib\\src\\sound\\sound.cpp", 0x515);
+        frame.data = (int)GameHeapAllocRaw(frame.extra.value + 18, "C:\\lib\\src\\sound\\sound.cpp", 1301);
         if (frame.data == 0)
             return 0;
         *(struct Pcm16 *)frame.data = frame.format.pcm;
@@ -1177,7 +1177,7 @@ int __cdecl MusicWaveStartServiceTimer(void)
 {
     if (g_MusicServiceTimerActive != 0)
         return 1;
-    if (timeBeginPeriod(0x50) == 0x61)
+    if (timeBeginPeriod(0x50) == 97)
         return 0;
     g_MusicServiceTimerBusy = 0;
     g_MusicServiceTimerId = timeSetEvent(0x50, 5, MusicWaveStreamServiceTimerProc, 0, 1);
@@ -1193,7 +1193,7 @@ void __cdecl MusicWaveStopServiceTimer(void)
 {
     if (g_MusicServiceTimerId != 0) {
         timeKillEvent(g_MusicServiceTimerId);
-        timeEndPeriod(0x50);
+        timeEndPeriod(80);
     }
     g_MusicServiceTimerActive = 0;
 }
@@ -1241,7 +1241,7 @@ int __cdecl SfxStreamPrime(SoundStreamState *streamState, int fileHandle)
         if (AcmStreamOpen((int)streamState + 0x44, streamState->source->sourceFormat, (int)frame.pcmFormat, 0) == 0) {
             break;
         }
-        frame.chunkCount = 0x5622 / streamState->source->formatInfo->rateDivisor;
+        frame.chunkCount = 22050 / streamState->source->formatInfo->rateDivisor;
         if (0x5622 % streamState->source->formatInfo->rateDivisor != 0) {
             frame.chunkCount++;
         }
@@ -1261,12 +1261,12 @@ int __cdecl SfxStreamPrime(SoundStreamState *streamState, int fileHandle)
             streamState->srcBytes = streamState->source->dataBytes;
             streamState->source->filePos = GetFilePosition((struct FileHandle *)fileHandle);
             // STRING: FF7 0x00967cfc
-            streamState->srcBuffer = (int)(GameHeapAllocRaw(streamState->srcBytes, "C:\\lib\\src\\sound\\sound.cpp", 0x5D6));
+            streamState->srcBuffer = (int)(GameHeapAllocRaw(streamState->srcBytes, "C:\\lib\\src\\sound\\sound.cpp", 1494));
             if (streamState->srcBuffer == 0) {
                 break;
             }
             // STRING: FF7 0x00967d18
-            streamState->pcmBuffer = (int)(GameHeapAllocRaw(streamState->bufferSize, "C:\\lib\\src\\sound\\sound.cpp", 0x5D9));
+            streamState->pcmBuffer = (int)(GameHeapAllocRaw(streamState->bufferSize, "C:\\lib\\src\\sound\\sound.cpp", 1497));
             if (streamState->pcmBuffer == 0) {
                 break;
             }
@@ -1308,12 +1308,12 @@ int __cdecl SfxStreamPrime(SoundStreamState *streamState, int fileHandle)
                 streamState->primed = 1;
             }
             // STRING: FF7 0x00967d34
-            streamState->srcBuffer = (int)(GameHeapAllocRaw(streamState->srcBytes, "C:\\lib\\src\\sound\\sound.cpp", 0x61E));
+            streamState->srcBuffer = (int)(GameHeapAllocRaw(streamState->srcBytes, "C:\\lib\\src\\sound\\sound.cpp", 1566));
             if (streamState->srcBuffer == 0) {
                 break;
             }
             // STRING: FF7 0x00967d50
-            streamState->pcmBuffer = (int)(GameHeapAllocRaw(streamState->chunkSize, "C:\\lib\\src\\sound\\sound.cpp", 0x622));
+            streamState->pcmBuffer = (int)(GameHeapAllocRaw(streamState->chunkSize, "C:\\lib\\src\\sound\\sound.cpp", 1570));
             if (streamState->pcmBuffer == 0) {
                 break;
             }
@@ -1382,12 +1382,12 @@ void __cdecl SfxStreamClose(SoundStreamPlayer *stream)
     }
     if (stream->srcBuffer != 0) {
         // STRING: FF7 0x00967d6c
-        GameHeapFree((void *)(stream->srcBuffer), "C:\\lib\\src\\sound\\sound.cpp", 0x692);
+        GameHeapFree((void *)(stream->srcBuffer), "C:\\lib\\src\\sound\\sound.cpp", 1682);
         stream->srcBuffer = 0;
     }
     if (stream->pcmBuffer != 0) {
         // STRING: FF7 0x00967d88
-        GameHeapFree((void *)(stream->pcmBuffer), "C:\\lib\\src\\sound\\sound.cpp", 0x698);
+        GameHeapFree((void *)(stream->pcmBuffer), "C:\\lib\\src\\sound\\sound.cpp", 1688);
         stream->pcmBuffer = 0;
     }
 }
@@ -1437,7 +1437,7 @@ int __cdecl MusicWaveStreamOpen(void)
     stream = (SoundWaveStream *)&g_SoundData.musicStreamObject;
     if (g_SoundData.musicStreamBufferPtr != 0) {
         // STRING: FF7 0x00967da4
-        GameHeapFree((void *)(g_SoundData.musicStreamBufferPtr), "C:\\lib\\src\\sound\\sound.cpp", 0x6C2);
+        GameHeapFree((void *)(g_SoundData.musicStreamBufferPtr), "C:\\lib\\src\\sound\\sound.cpp", 1730);
     }
     g_SoundData.musicStreamBufferPtr = 0;
     if (g_SoundData.musicFileHandle != 0) {
@@ -1558,7 +1558,7 @@ void __cdecl DsWriteIntoBufferRegion(char *source, int sourceBytes, IDirectSound
     if (sourceBytes == 0 && bytes == 0)
         return;
     // STRING: FF7 0x00967dc0
-    if (!DsCheckError(buffer->Lock(offset, bytes, (void **)&ptr1, &size1, (void **)&ptr2, &size2, 0), "C:\\lib\\src\\sound\\sound.cpp", 0x773))
+    if (!DsCheckError(buffer->Lock(offset, bytes, (void **)&ptr1, &size1, (void **)&ptr2, &size2, 0), "C:\\lib\\src\\sound\\sound.cpp", 1907))
         return;
     if (sourceBytes < bytes) {
         if ((int)size1 >= bytes) {
@@ -1579,7 +1579,7 @@ void __cdecl DsWriteIntoBufferRegion(char *source, int sourceBytes, IDirectSound
             memcpy(ptr2, source + size1, size2);
     }
     // STRING: FF7 0x00967ddc
-    DsCheckError(buffer->Unlock(ptr1, size1, ptr2, size2), "C:\\lib\\src\\sound\\sound.cpp", 0x791);
+    DsCheckError(buffer->Unlock(ptr1, size1, ptr2, size2), "C:\\lib\\src\\sound\\sound.cpp", 1937);
 }
 
 // Native compiler-generated implementation lives in sound_native.cpp.
@@ -1625,7 +1625,7 @@ int __cdecl MusicWaveParseWavHeader(SoundWaveInfo *waveInfo)
         switch (frame.wave.format) {
         case SOUND_WAVE_FORMAT_PCM:
             // STRING: FF7 0x00967df8
-            waveInfo->buffer = (int)GameHeapAllocRaw(0x12, "C:\\lib\\src\\sound\\sound.cpp", 0x7b4);
+            waveInfo->buffer = (int)GameHeapAllocRaw(18, "C:\\lib\\src\\sound\\sound.cpp", 1972);
             if (waveInfo->buffer != 0) {
                 break;
             } else {
@@ -1634,7 +1634,7 @@ int __cdecl MusicWaveParseWavHeader(SoundWaveInfo *waveInfo)
         case SOUND_WAVE_FORMAT_ADPCM:
             ReadFileDataPartial(2, &frame.extra.value, (struct FileHandle *)g_SoundData.musicFileHandle);
             // STRING: FF7 0x00967e14
-            waveInfo->buffer = (int)GameHeapAllocRaw(frame.extra.value + 0x12, "C:\\lib\\src\\sound\\sound.cpp", 0x7bb);
+            waveInfo->buffer = (int)GameHeapAllocRaw(frame.extra.value + 0x12, "C:\\lib\\src\\sound\\sound.cpp", 1979);
             if (waveInfo->buffer == 0)
                 return 0;
             ((MusicWaveInfoHeader *)(waveInfo->buffer))->extraValue = frame.extra.value;
@@ -1642,11 +1642,11 @@ int __cdecl MusicWaveParseWavHeader(SoundWaveInfo *waveInfo)
             ReadFileDataPartial(4, &frame.chunkTag, (struct FileHandle *)g_SoundData.musicFileHandle);
             ReadFileDataPartial(4, &frame.chunkSize, (struct FileHandle *)g_SoundData.musicFileHandle);
             // STRING: FF7 0x00967e30
-            frame.data = (int)GameHeapAllocRaw(frame.chunkSize, "C:\\lib\\src\\sound\\sound.cpp", 0x7c2);
+            frame.data = (int)GameHeapAllocRaw(frame.chunkSize, "C:\\lib\\src\\sound\\sound.cpp", 1986);
             if (frame.data != 0)
                 ReadFileDataPartial(frame.chunkSize, (void *)frame.data, (struct FileHandle *)g_SoundData.musicFileHandle);
             // STRING: FF7 0x00967e4c
-            GameHeapFree((void *)frame.data, "C:\\lib\\src\\sound\\sound.cpp", 0x7c6);
+            GameHeapFree((void *)frame.data, "C:\\lib\\src\\sound\\sound.cpp", 1990);
             break;
         }
         *(struct Wave16 *)waveInfo->buffer = frame.wave;
@@ -1661,7 +1661,7 @@ int __cdecl MusicWaveParseWavHeader(SoundWaveInfo *waveInfo)
         while (ReadFileDataPartial(4, &frame.chunkTag, (struct FileHandle *)g_SoundData.musicFileHandle) != 0) {
             ReadFileDataPartial(4, &frame.chunkSize, (struct FileHandle *)g_SoundData.musicFileHandle);
             // STRING: FF7 0x00967e68
-            frame.data = (int)GameHeapAllocRaw(frame.chunkSize, "C:\\lib\\src\\sound\\sound.cpp", 0x7d8);
+            frame.data = (int)GameHeapAllocRaw(frame.chunkSize, "C:\\lib\\src\\sound\\sound.cpp", 2008);
             ReadFileDataPartial(frame.chunkSize, (void *)frame.data, (struct FileHandle *)g_SoundData.musicFileHandle);
             if (frame.chunkTag == MAKE_FOURCC('s', 'm', 'p', 'l')) {
                 waveInfo->ready = 1;
@@ -1680,7 +1680,7 @@ int __cdecl MusicWaveParseWavHeader(SoundWaveInfo *waveInfo)
                 }
             }
             // STRING: FF7 0x00967e84
-            GameHeapFree((void *)frame.data, "C:\\lib\\src\\sound\\sound.cpp", 0x7f1);
+            GameHeapFree((void *)frame.data, "C:\\lib\\src\\sound\\sound.cpp", 2033);
         }
         SetFilePosition((struct FileHandle *)(g_SoundData.musicFileHandle), waveInfo->filePos);
         return 1;
@@ -2566,7 +2566,7 @@ void __cdecl SfxPlayCachedBuffer(int id, unsigned char pan, unsigned char volume
         return;
     }
     q = id - 1;
-    if (q < 0 || q > 0x2EE) {
+    if (q < 0 || q > 750) {
         return;
     }
     p = &((SoundRecordEntry *)&g_SoundChannels.soundRecords)[q];
@@ -2580,7 +2580,7 @@ void __cdecl SfxPlayCachedBuffer(int id, unsigned char pan, unsigned char volume
         DsSetCurrentPosition(g_SoundChannels.bufferHandles[q], 0);
         DsSetPanMillibels(g_SoundChannels.bufferHandles[q],
                           g_SoundPanMillibelTable[pan] * g_SoundData.panInvertScale);
-        volume = g_SoundData.masterVolume * volume / 0x64;
+        volume = g_SoundData.masterVolume * volume / 100;
         DsSetVolumeMillibels(g_SoundChannels.bufferHandles[q], g_SoundVolumeMillibelTable[volume]);
         DsSetFrequency(g_SoundChannels.bufferHandles[q],
                        SfxFrequencyFromTranspose(
@@ -2616,7 +2616,7 @@ void __cdecl SfxRetriggerCachedBuffer(int soundId)
         return;
     }
     index = soundId - 1;
-    if (index < 0 || index > 0x2EE) { /* empty first arm: lib/codegen.h */
+    if (index < 0 || index > 750) { /* empty first arm: lib/codegen.h */
     } else {
         meta = &((SoundRecordEntry *)&g_SoundChannels.soundRecords)[index];
         if (meta->dataSize == 0) {
@@ -2649,7 +2649,7 @@ void __cdecl SfxStopAndRewindCachedBuffer(int soundId)
         return;
     }
     index = soundId - 1;
-    if (index < 0 || index > 0x2EE) { /* empty first arm: lib/codegen.h */
+    if (index < 0 || index > 750) { /* empty first arm: lib/codegen.h */
     } else if (g_SoundChannels.bufferHandles[index] != 0) {
         DsStopBuffer(g_SoundChannels.bufferHandles[index]);
         DsSetCurrentPosition(g_SoundChannels.bufferHandles[index], 0);
@@ -2668,7 +2668,7 @@ void __cdecl SfxStopCachedBuffer(int soundId)
         return;
     }
     index = soundId - 1;
-    if (index < 0 || index > 0x2EE) { /* empty first arm: lib/codegen.h */
+    if (index < 0 || index > 750) { /* empty first arm: lib/codegen.h */
     } else if (g_SoundChannels.bufferHandles[index] != 0) {
         DsStopBuffer(g_SoundChannels.bufferHandles[index]);
     }
@@ -2687,7 +2687,7 @@ void __cdecl SfxResumeCachedBuffer(int soundId)
         return;
     }
     index = soundId - 1;
-    if (index < 0 || index > 0x2EE) { /* empty first arm: lib/codegen.h */
+    if (index < 0 || index > 750) { /* empty first arm: lib/codegen.h */
     } else if (g_SoundChannels.bufferHandles[index] != 0) {
         if (((SoundRecordEntry *)&g_SoundChannels.soundRecords)[index].loopFlag != 0) {
             DsPlayBuffer(g_SoundChannels.bufferHandles[index], 1);
@@ -2710,10 +2710,10 @@ void __cdecl SfxSetCachedBufferVolume(int soundId, int volume)
         return;
     }
     index = soundId - 1;
-    if (index < 0 || index > 0x2EE) {
+    if (index < 0 || index > 750) {
         return;
     }
-    if ((volume & 0xFF) > 0x7F) {
+    if ((volume & 0xFF) > 127) {
         *(char *)&volume = 0x7F;
     }
     if (g_SoundChannels.bufferHandles[index] != 0) {
@@ -2755,7 +2755,7 @@ void __cdecl SfxSetCachedBufferTranspose(int soundId, int transpose)
         return;
     }
     index = soundId - 1;
-    if (index < 0 || index > 0x2EE) { /* empty first arm: lib/codegen.h */
+    if (index < 0 || index > 750) { /* empty first arm: lib/codegen.h */
     } else if (g_SoundChannels.bufferHandles[index] != 0) {
         DsSetFrequency(g_SoundChannels.bufferHandles[index], SfxFrequencyFromTranspose(transpose & 0xFF, ((WAVEFORMATEX *)((SoundRecordEntry *)&g_SoundChannels.soundRecords)[index].waveFormat)->nSamplesPerSec));
     }

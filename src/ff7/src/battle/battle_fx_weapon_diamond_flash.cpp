@@ -181,13 +181,13 @@ void __cdecl BattleFx_WeaponBeginDiamondFlash(int targetMask, int actorIdx)
     Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].bone34, (short *)&g_WeaponFxDiamondFlashActorPos);
     Battle_GetActorMaskCentroid(targetMask, &frame.record->posX);
     frame.dirX.vx = frame.record->posX - g_WeaponFxDiamondFlashActorPos.posX;
-    frame.dirX.vy = frame.record->posY - 0x320 - g_WeaponFxDiamondFlashActorPos.posY;
+    frame.dirX.vy = frame.record->posY - 800 - g_WeaponFxDiamondFlashActorPos.posY;
     frame.dirX.vz = frame.record->posZ - g_WeaponFxDiamondFlashActorPosZ;
     Gte_BuildLookBasisFromDirection(&frame.dirX.vx, (short *)&g_WeaponFxDiamondFlashMatrix);
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0xE00, 0x14);
+    Battle_StartFixedPointRamp(0xE00, 20);
 }
 
 /*
@@ -225,7 +225,7 @@ void __cdecl BattleFx_WeaponDiamondFlashTimelineTask(void)
         frame.particle->posZ = g_WeaponFxDiamondFlashActorPosZ;
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_WeaponFxDiamondFlashBoneIndex].posX), 0x2A8, 0, 0, 0, 0, 0, 0);
     }
-    if (frame.centroid->frame >= 0 && frame.centroid->frame < 0x14) {
+    if (frame.centroid->frame >= 0 && frame.centroid->frame < 20) {
         frame.particle = (BattleFxDiamondFlashParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponDiamondFlashInwardModelTask);
         frame.particle->posX = g_WeaponFxDiamondFlashActorPos.posX;
         frame.particle->posY = g_WeaponFxDiamondFlashActorPos.posY;
@@ -241,55 +241,55 @@ void __cdecl BattleFx_WeaponDiamondFlashTimelineTask(void)
         frame.particle->posX += frame.offsetX;
         frame.particle->posY += frame.offsetY;
         frame.particle->posZ += frame.offsetZ;
-        frame.particle->velocityX = -frame.offsetX / 0xF;
-        frame.particle->velocityY = -frame.offsetY / 0xF;
-        frame.particle->velocityZ = -frame.offsetZ / 0xF;
+        frame.particle->velocityX = -frame.offsetX / 15;
+        frame.particle->velocityY = -frame.offsetY / 15;
+        frame.particle->velocityZ = -frame.offsetZ / 15;
     }
-    if (frame.centroid->frame >= 0xA && frame.centroid->frame < 0x19) {
+    if (frame.centroid->frame >= 10 && frame.centroid->frame < 25) {
         for (frame.actorIndex = 0; frame.actorIndex < 4; frame.actorIndex++) {
             frame.particle = (BattleFxDiamondFlashParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponDiamondFlashConvergingModelTask);
-            frame.particle->velocityX = rand() % 0x640 - 0x320;
+            frame.particle->velocityX = rand() % 1600 - 800;
             frame.particle->velocityY = 0;
             frame.particle->velocityZ = (rand() % 4096);
-            frame.particle->convergeDistance = 0x1F40;
+            frame.particle->convergeDistance = 8000;
         }
     }
-    if (frame.centroid->frame >= 0x3C && frame.centroid->frame < 0x4B && frame.centroid->frame % 5 == 0) {
+    if (frame.centroid->frame >= 60 && frame.centroid->frame < 75 && frame.centroid->frame % 5 == 0) {
         frame.particle = (BattleFxDiamondFlashParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponDiamondFlashPulsingOrientedModelTask);
         frame.particle->posX = g_WeaponFxDiamondFlashActorPos.posX;
         frame.particle->posY = g_WeaponFxDiamondFlashActorPos.posY;
         frame.particle->posZ = g_WeaponFxDiamondFlashActorPosZ;
     }
-    if (frame.centroid->frame == 0x1E) {
+    if (frame.centroid->frame == 30) {
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_WeaponFxDiamondFlashBoneIndex].posX), 0x12E, 0, 0, 0, 0, 0, 0);
     }
-    if (frame.centroid->frame >= 0x1E && frame.centroid->frame < 0x3C) {
+    if (frame.centroid->frame >= 30 && frame.centroid->frame < 60) {
         for (frame.actorIndex = 0; frame.actorIndex < 4; frame.actorIndex++) {
             frame.particle = (BattleFxDiamondFlashParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponDiamondFlashTripleModelStreakTask);
             frame.angle = (rand() % 4096);
-            frame.particle->posX = g_WeaponFxDiamondFlashActorPos.posX + (CosFixed(frame.angle) * 0x258 >> 0xC);
-            frame.particle->posY = g_WeaponFxDiamondFlashActorPos.posY + (SinFixed(frame.angle) * 0x258 >> 0xC);
+            frame.particle->posX = g_WeaponFxDiamondFlashActorPos.posX + (CosFixed(frame.angle) * 0x258 >> 12);
+            frame.particle->posY = g_WeaponFxDiamondFlashActorPos.posY + (SinFixed(frame.angle) * 0x258 >> 12);
             frame.particle->posZ = g_WeaponFxDiamondFlashActorPosZ;
-            frame.offsetX = frame.centroid->posX + (CosFixed(frame.angle) * 0x7D0 >> 0xC);
+            frame.offsetX = frame.centroid->posX + (CosFixed(frame.angle) * 0x7D0 >> 12);
             frame.offsetY = 0;
-            frame.offsetZ = frame.centroid->posZ - (SinFixed(frame.angle) * 0x7D0 >> 0xC);
+            frame.offsetZ = frame.centroid->posZ - (SinFixed(frame.angle) * 0x7D0 >> 12);
             frame.offsetX = frame.offsetX - frame.particle->posX;
             frame.offsetY = frame.offsetY - frame.particle->posY;
             frame.offsetZ = frame.offsetZ - frame.particle->posZ;
             VectorNormalSVectorToSVector(&frame.offsetX, &frame.offsetX);
-            frame.particle->velocityX = frame.offsetX * 0x3E8 >> 0xC;
-            frame.particle->velocityY = frame.offsetY * 0x3E8 >> 0xC;
-            frame.particle->velocityZ = frame.offsetZ * 0x3E8 >> 0xC;
+            frame.particle->velocityX = frame.offsetX * 0x3E8 >> 12;
+            frame.particle->velocityY = frame.offsetY * 0x3E8 >> 12;
+            frame.particle->velocityZ = frame.offsetZ * 0x3E8 >> 12;
             frame.particle->variant = (rand() % 2);
             frame.particle->angle = frame.angle;
         }
     }
-    if (frame.centroid->frame >= 0x23 && frame.centroid->frame < 0x32) {
+    if (frame.centroid->frame >= 35 && frame.centroid->frame < 50) {
         for (frame.actorIndex = 0; frame.actorIndex < 3; frame.actorIndex++) {
             frame.particle = (BattleFxDiamondFlashParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_WeaponDiamondFlashBillboardSpriteTask)];
             frame.angle = (rand() % 4096);
             frame.offsetX = 0;
-            frame.offsetY = -rand() % 0x4B0;
+            frame.offsetY = -rand() % 1200;
             frame.offsetZ = 0;
             frame.rotX.vx = (rand() % 2048) - 0x400;
             frame.rotX.vy = (rand() % 4096);
@@ -305,12 +305,12 @@ void __cdecl BattleFx_WeaponDiamondFlashTimelineTask(void)
             frame.particle->variant = (rand() % 2);
         }
     }
-    if (frame.centroid->frame >= 0x28 && frame.centroid->frame < 0x37) {
+    if (frame.centroid->frame >= 40 && frame.centroid->frame < 55) {
         for (frame.actorIndex = 0; frame.actorIndex < 3; frame.actorIndex++) {
             frame.particle = (BattleFxDiamondFlashParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponDiamondFlashDampedSpriteTask);
             frame.angle = (rand() % 4096);
             frame.offsetX = 0;
-            frame.offsetY = -rand() % 0x5DC;
+            frame.offsetY = -rand() % 1500;
             frame.offsetZ = 0;
             frame.rotX.vx = (rand() % 2048) - 0x400;
             frame.rotX.vy = (rand() % 4096);
@@ -324,10 +324,10 @@ void __cdecl BattleFx_WeaponDiamondFlashTimelineTask(void)
             frame.particle->velocityY = frame.offsetY / 4;
             frame.particle->velocityZ = frame.offsetZ / 4;
             frame.particle->variant = (rand() % 2);
-            frame.particle->fadeTimer = 0xC;
+            frame.particle->fadeTimer = 12;
         }
     }
-    if (frame.centroid->frame == 0x3C) {
+    if (frame.centroid->frame == 60) {
         frame.particle = (BattleFxDiamondFlashParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponDiamondFlashShrinkingModelPairTask);
         frame.particle->posX = g_WeaponFxDiamondFlashActorPos.posX;
         frame.particle->posY = g_WeaponFxDiamondFlashActorPos.posY;
@@ -341,27 +341,27 @@ void __cdecl BattleFx_WeaponDiamondFlashTimelineTask(void)
         frame.offsetZ = 0x4B0;
         TransformVectorToInt16((void *)&g_WeaponFxDiamondFlashMatrix, &frame.offsetX, &frame.particle->velocityX);
     }
-    if (frame.centroid->frame == 0x3C) {
+    if (frame.centroid->frame == 60) {
         g_WeaponFxDiamondFlashCentroidPos.posX = frame.centroid->posX;
         g_WeaponFxDiamondFlashCentroidPos.posY = 0xFC18;
         g_WeaponFxDiamondFlashCentroidPosZ = frame.centroid->posZ;
         g_WeaponFxDiamondFlashSpriteExpandActive = 1;
     }
-    if (frame.centroid->frame == 0x46) {
+    if (frame.centroid->frame == 70) {
         frame.particle = (BattleFxDiamondFlashParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponDiamondFlashScreenFlashTask);
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_WeaponFxDiamondFlashBoneIndex].posX), 0x176, 0, 0, 0, 0, 0, 0);
     }
-    if (frame.centroid->frame == 0x50) {
+    if (frame.centroid->frame == 80) {
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, 0, 0, 0, 0, 0, 0, 0, 0);
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_WeaponFxDiamondFlashActorIndex & 1 << frame.actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
             }
         }
     }
     (frame.centroid->frame)++;
-    if (frame.centroid->frame == 0x5A) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (frame.centroid->frame == 90) {
+        Battle_StartFixedPointRamp(0, 10);
         frame.centroid->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -376,15 +376,15 @@ void __cdecl BattleFx_WeaponDiamondFlashPulsingOrientedModelTask(void)
 
     task = (BattleFxDiamondFlashPulsingSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_WeaponFxDiamondFlashPulsingOrientedDrawReq.model) = Gfx_ModelTableGetRenderObject(0, g_WeaponFxDiamondFlashResourceContext);
-    BattleFx_InstallOrientedMatrixUniform(&task->posX, (int *)&g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite, SinFixed(task->frameCounter * 0x33) * 0x6000 >> 0xC, 0xFFFFFC18);
+    BattleFx_InstallOrientedMatrixUniform(&task->posX, (int *)&g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite, SinFixed(task->frameCounter * 0x33) * 0x6000 /* 6.0 */ >> 12, 0xFFFFFC18);
     SetDrawColorRGB(0, 0, 0);
-    g_WeaponFxDiamondFlashPulsingOrientedDrawReq.param = SinFixed(task->frameCounter * 0x33) << 0xC >> 0xC;
+    g_WeaponFxDiamondFlashPulsingOrientedDrawReq.param = SinFixed(task->frameCounter * 51) << 12 >> 12;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashPulsingOrientedDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x14) {
+    if (task->frameCounter == 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -399,15 +399,15 @@ void __cdecl BattleFx_WeaponDiamondFlashPulsingBillboardModelTask(void)
 
     task = (BattleFxDiamondFlashPulsingSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite.billboardDrawReq = Gfx_ModelTableGetRenderObject(2, g_WeaponFxDiamondFlashResourceContext);
-    BattleFx_InstallBillboardMatrix(&task->posX, SinFixed(task->frameCounter * 0xC) * 0x6000 >> 0xC, 0xFFFFFC18);
+    BattleFx_InstallBillboardMatrix(&task->posX, SinFixed(task->frameCounter * 0xC) * 0x6000 /* 6.0 */ >> 12, 0xFFFFFC18);
     SetDrawColorRGB(0, 0, 0);
-    g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite.billboardScaleParam = 0x1000 - (SinFixed(task->frameCounter * 0x19) << 0xC >> 0xC);
+    g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite.billboardScaleParam = 0x1000 - (SinFixed(task->frameCounter * 0x19) << 12 >> 12);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite.billboardDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x50) {
+    if (task->frameCounter == 80) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -422,7 +422,7 @@ void __cdecl BattleFx_WeaponDiamondFlashInwardModelTask(void)
 
     task = (BattleFxWeaponDiaInwardModel *)BATTLE_CURRENT_TASK_SLOT;
     g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite.inwardModelDrawReq = Gfx_ModelTableGetRenderObject(1, g_WeaponFxDiamondFlashResourceContext);
-    BattleFx_InstallOrientedMatrixUniform(&task->posX, &g_WeaponFxDiamondFlashInwardOrientationAngle, SinFixed(task->frame * 0x44) << 0xB >> 0xC, 0xFFFFFC18);
+    BattleFx_InstallOrientedMatrixUniform(&task->posX, &g_WeaponFxDiamondFlashInwardOrientationAngle, SinFixed(task->frame * 0x44) << 11 >> 12, 0xFFFFFC18);
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashPulsingInwardDrawReqComposite.inwardModelDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
@@ -432,7 +432,7 @@ void __cdecl BattleFx_WeaponDiamondFlashInwardModelTask(void)
     task->posY += task->velocityY;
     task->posZ += task->velocityZ;
     (task->frame)++;
-    if (task->frame == 0xF) {
+    if (task->frame == 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -474,14 +474,14 @@ void __cdecl BattleFx_WeaponDiamondFlashConvergingModelTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_WeaponFxDiamondFlashConvergingDrawReq.angleParam = CosFixed(frame.convergeSlot->frameCount * 0x44) << 0xC >> 0xC;
+    g_WeaponFxDiamondFlashConvergingDrawReq.angleParam = CosFixed(frame.convergeSlot->frameCount * 0x44) << 12 >> 12;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashConvergingDrawReq.modelDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.convergeSlot->projectedPosZ -= 0x215;
+    frame.convergeSlot->projectedPosZ -= 533;
     (frame.convergeSlot->frameCount)++;
-    if (frame.convergeSlot->frameCount == 0xF) {
+    if (frame.convergeSlot->frameCount == 15) {
         frame.convergeSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -503,7 +503,7 @@ void __cdecl BattleFx_WeaponDiamondFlashDampedSpriteTask(void)
     frame.spriteTask = (BattleFxWeaponDiamondFlashSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     frame.fieldIdA[0] = 0x10;
     frame.fieldIdA[1] = 0x11;
-    BattleFx_InstallBillboardMatrix(&frame.spriteTask->posX, 0x4000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.spriteTask->posX, 0x4000 /* 4.0 */, 0);
     (*(int *)&g_WeaponFxDiamondFlashDampedSpriteReq) = Gfx_ModelTableGetLoadedRecord(frame.fieldIdA[frame.spriteTask->tableIndex], g_WeaponFxDiamondFlashResourceContext);
     (g_WeaponFxDiamondFlashDampedSpriteReq.drawObj) = Gfx_ModelTableGetSpriteObject(frame.fieldIdA[frame.spriteTask->tableIndex], g_WeaponFxDiamondFlashResourceContext);
     (g_WeaponFxDiamondFlashDampedSpriteReq.frame) = frame.spriteTask->frameIndex >> 1;
@@ -534,11 +534,11 @@ void __cdecl BattleFx_WeaponDiamondFlashDampedSpriteTask(void)
             frame.spriteTask->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
-        if (g_WeaponFxDiamondFlashSpriteDistance < 0x7D0) {
-            g_WeaponFxDiamondFlashSpriteDistance = (0x7D0 - g_WeaponFxDiamondFlashSpriteDistance) * 0x190 / 0x7D0;
+        if (g_WeaponFxDiamondFlashSpriteDistance < 2000) {
+            g_WeaponFxDiamondFlashSpriteDistance = (2000 - g_WeaponFxDiamondFlashSpriteDistance) * 400 / 2000;
             VectorNormalSVectorToSVector(&g_WeaponFxDiamondFlashSpriteDeltaPos[0], &g_WeaponFxDiamondFlashSpriteDeltaPos[0]);
-            frame.spriteTask->posX += (short)(g_WeaponFxDiamondFlashSpriteDeltaPos[0] * g_WeaponFxDiamondFlashSpriteDistance >> 0xC);
-            frame.spriteTask->posY += (short)(g_WeaponFxDiamondFlashSpriteDeltaPos[1] * g_WeaponFxDiamondFlashSpriteDistance >> 0xC);
+            frame.spriteTask->posX += (short)(g_WeaponFxDiamondFlashSpriteDeltaPos[0] * g_WeaponFxDiamondFlashSpriteDistance >> 12);
+            frame.spriteTask->posY += (short)(g_WeaponFxDiamondFlashSpriteDeltaPos[1] * g_WeaponFxDiamondFlashSpriteDistance >> 12);
         }
     }
     if ((*(int *)&g_WeaponFxDiamondFlashDampedSpriteReq) != 0) {
@@ -575,7 +575,7 @@ void __cdecl BattleFx_WeaponDiamondFlashTripleModelStreakTask(void)
     frame.modelIds[4] = 8;
     frame.modelIds[5] = 9;
     Gte_BuildLookBasisFromDirection(&frame.streak->velocityX, frame.lookBasis.m[0]);
-    (g_WeaponFxDiamondFlashTripleModelScaleVector.scale) = (SinFixed(frame.streak->step << 7) << 0xC >> 0xC) + 0x1000;
+    (g_WeaponFxDiamondFlashTripleModelScaleVector.scale) = (SinFixed(frame.streak->step << 7) << 12 >> 12) + 0x1000;
     ScaleMatrix(&frame.lookBasis, &(g_WeaponFxDiamondFlashTripleModelScaleVector.scaleX));
     frame.lookBasis.t[0] = frame.streak->posX;
     frame.lookBasis.t[1] = frame.streak->posY;
@@ -609,9 +609,9 @@ void __cdecl BattleFx_WeaponDiamondFlashBillboardSpriteTask(void)
     BattleFxDiamondFlashBillboardRecord *task;
 
     task = (BattleFxDiamondFlashBillboardRecord *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2800, 0);
-    (g_WeaponFxDiamondFlashBillboardSpriteReq.spriteTable) = Gfx_ModelTableGetLoadedRecord(0x12, g_WeaponFxDiamondFlashResourceContext);
-    g_WeaponFxDiamondFlashBillboardSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0x12, g_WeaponFxDiamondFlashResourceContext);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2800 /* 2.5 */, 0);
+    (g_WeaponFxDiamondFlashBillboardSpriteReq.spriteTable) = Gfx_ModelTableGetLoadedRecord(18, g_WeaponFxDiamondFlashResourceContext);
+    g_WeaponFxDiamondFlashBillboardSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(18, g_WeaponFxDiamondFlashResourceContext);
     g_WeaponFxDiamondFlashBillboardSpriteReq.count = task->spriteIndex;
     if (task->active != 0) {
         *(unsigned short *)&g_WeaponFxDiamondFlashBillboardSpriteReq.count |= 0x8000;
@@ -674,16 +674,16 @@ void __cdecl BattleFx_WeaponDiamondFlashShrinkingModelPairTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
-    (g_WeaponFxDiamondFlashShrinkingModelDrawReq.shrinkAmount) = SinFixed(frame.shrinkRecord->step * 0x33) << 0xB >> 0xC;
-    (g_WeaponFxDiamondFlashShrinkingModelDrawReq.model) = Gfx_ModelTableGetRenderObject(0xD, g_WeaponFxDiamondFlashResourceContext);
+    (g_WeaponFxDiamondFlashShrinkingModelDrawReq.shrinkAmount) = SinFixed(frame.shrinkRecord->step * 51) << 11 >> 12;
+    (g_WeaponFxDiamondFlashShrinkingModelDrawReq.model) = Gfx_ModelTableGetRenderObject(13, g_WeaponFxDiamondFlashResourceContext);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&(g_WeaponFxDiamondFlashShrinkingModelDrawReq.model), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
-    (g_WeaponFxDiamondFlashShrinkingModelDrawReq.model) = Gfx_ModelTableGetRenderObject(0xE, g_WeaponFxDiamondFlashResourceContext);
+    (g_WeaponFxDiamondFlashShrinkingModelDrawReq.model) = Gfx_ModelTableGetRenderObject(14, g_WeaponFxDiamondFlashResourceContext);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&(g_WeaponFxDiamondFlashShrinkingModelDrawReq.model), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.shrinkRecord->step)++;
-    if (frame.shrinkRecord->step == 0x14) {
+    if (frame.shrinkRecord->step == 20) {
         frame.shrinkRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -715,17 +715,17 @@ void __cdecl BattleFx_WeaponDiamondFlashTrailingProjectileTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    g_WeaponFxDiamondFlashTrailingDrawReqComposite.cosParam = CosFixed(frame.trail->step * 0x33) << 7 >> 0xC;
-    g_WeaponFxDiamondFlashTrailingDrawReqComposite.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x13, g_WeaponFxDiamondFlashResourceContext);
-    g_WeaponFxDiamondFlashTrailingDrawReqComposite.spriteObject = Gfx_ModelTableGetSpriteObject(0x13, g_WeaponFxDiamondFlashResourceContext);
-    g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource = Gfx_ModelTableGetRenderObject(0xA, g_WeaponFxDiamondFlashResourceContext);
+    g_WeaponFxDiamondFlashTrailingDrawReqComposite.cosParam = CosFixed(frame.trail->step * 51) << 7 >> 12;
+    g_WeaponFxDiamondFlashTrailingDrawReqComposite.spriteRecord = Gfx_ModelTableGetLoadedRecord(19, g_WeaponFxDiamondFlashResourceContext);
+    g_WeaponFxDiamondFlashTrailingDrawReqComposite.spriteObject = Gfx_ModelTableGetSpriteObject(19, g_WeaponFxDiamondFlashResourceContext);
+    g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource = Gfx_ModelTableGetRenderObject(10, g_WeaponFxDiamondFlashResourceContext);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
-    g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource = Gfx_ModelTableGetRenderObject(0xB, g_WeaponFxDiamondFlashResourceContext);
+    g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource = Gfx_ModelTableGetRenderObject(11, g_WeaponFxDiamondFlashResourceContext);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
-    g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource = Gfx_ModelTableGetRenderObject(0xC, g_WeaponFxDiamondFlashResourceContext);
+    g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource = Gfx_ModelTableGetRenderObject(12, g_WeaponFxDiamondFlashResourceContext);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashTrailingDrawReqComposite.modelResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
-    BattleFx_InstallBillboardMatrix(&frame.trail->posA, 0x4000, 0);
-    g_WeaponFxDiamondFlashTrailingSpriteParams.b = SinFixed(frame.trail->step * 0x33) << 7 >> 0xC;
+    BattleFx_InstallBillboardMatrix(&frame.trail->posA, 0x4000 /* 4.0 */, 0);
+    g_WeaponFxDiamondFlashTrailingSpriteParams.b = SinFixed(frame.trail->step * 51) << 7 >> 12;
     g_WeaponFxDiamondFlashTrailingSpriteParams.g = g_WeaponFxDiamondFlashTrailingSpriteParams.b;
     g_WeaponFxDiamondFlashTrailingSpriteParams.r = g_WeaponFxDiamondFlashTrailingSpriteParams.g;
     g_WeaponFxDiamondFlashTrailingSpriteParams.frame = (frame.trail->step % 2);
@@ -764,7 +764,7 @@ void __cdecl BattleFx_WeaponDiamondFlashTrailModelTask(void)
 #pragma pack(pop)
 
     frame.trailRecord = (BattleFxEnergyOrbTrailModel *)BATTLE_CURRENT_TASK_SLOT;
-    g_WeaponFxDiamondFlashTrailModelDrawReq.resource = Gfx_ModelTableGetRenderObject(0xF, g_WeaponFxDiamondFlashResourceContext);
+    g_WeaponFxDiamondFlashTrailModelDrawReq.resource = Gfx_ModelTableGetRenderObject(15, g_WeaponFxDiamondFlashResourceContext);
     if (frame.trailRecord->frameCount > 2) {
         RotMatrix((SVECTOR *)&g_WeaponFxDiamondFlashTrailModelDrawReq, &frame.rotMatrix);
         ConcatMatrixPreservingTranslation(&g_WeaponFxDiamondFlashMatrix, &frame.rotMatrix, &frame.rotMatrix);
@@ -779,14 +779,14 @@ void __cdecl BattleFx_WeaponDiamondFlashTrailModelTask(void)
         SetRotMatrix(&frame.drawMatrix);
         SetTransMatrix(&frame.drawMatrix);
         SetDrawColorRGB(0, 0, 0);
-        g_WeaponFxDiamondFlashTrailModelDrawReq.param = SinFixed(frame.trailRecord->frameCount * 0x33) << 0xC >> 0xC;
+        g_WeaponFxDiamondFlashTrailModelDrawReq.param = SinFixed(frame.trailRecord->frameCount * 51) << 12 >> 12;
         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_WeaponFxDiamondFlashTrailModelDrawReq.resource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.trailRecord->frameCount)++;
-    if (frame.trailRecord->frameCount == 0x14) {
+    if (frame.trailRecord->frameCount == 20) {
         frame.trailRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -801,13 +801,13 @@ void __cdecl BattleFx_WeaponDiamondFlashScreenFlashTask(void)
     unsigned short brightness;
 
     taskPtr = (BattleFxPhaseControllerTask *)BATTLE_CURRENT_TASK_SLOT;
-    brightness = SinFixed(taskPtr->frameCount * 0x44) * 0xFF >> 0xC;
+    brightness = SinFixed(taskPtr->frameCount * 68) * 0xFF >> 12;
     g_BattleOverlayDrawListHead = BattleFx_FlashScreenWhite((char)brightness, (char)brightness, (char)brightness);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (taskPtr->frameCount)++;
-    if (taskPtr->frameCount == 0x1E) {
+    if (taskPtr->frameCount == 30) {
         taskPtr->stage = 0xFFFF;
     }
 }

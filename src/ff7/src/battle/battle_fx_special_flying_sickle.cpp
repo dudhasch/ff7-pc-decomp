@@ -153,9 +153,9 @@ void __cdecl BattleFx_SpecialFlyingSickleTimelineTask(void)
     }
     if (frame.timelineSlot->frameCounter == 0) {
         frame.spawnSlot = (BattleFxFlyingSickleTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFlyingSickleRisingAnimatedSpriteTask);
-        frame.spawnSlot->posX = frame.timelineSlot->fromX + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posY = frame.timelineSlot->fromY + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posZ = frame.timelineSlot->fromZ + rand() % 0x320 + -0x190;
+        frame.spawnSlot->posX = frame.timelineSlot->fromX + rand() % 800 + -400;
+        frame.spawnSlot->posY = frame.timelineSlot->fromY + rand() % 800 + -400;
+        frame.spawnSlot->posZ = frame.timelineSlot->fromZ + rand() % 800 + -400;
         frame.spawnSlot = (BattleFxFlyingSickleTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFlyingSickleOrbitModelTask);
         frame.spawnSlot->posX = (frame.timelineSlot->fromX + frame.timelineSlot->toX) / 2;
         frame.spawnSlot->posY = (frame.timelineSlot->fromY + frame.timelineSlot->toY) / 2;
@@ -170,22 +170,22 @@ void __cdecl BattleFx_SpecialFlyingSickleTimelineTask(void)
         frame.spawnSlot->orbitAngle = 0;
         frame.spawnSlot->spinRate = 1;
     }
-    if (frame.timelineSlot->frameCounter == 0x11) {
-        BattleFx_HitMarkSpawnScriptAtActorBone(g_BattleSpecialActorId, 9, 0x1000);
+    if (frame.timelineSlot->frameCounter == 17) {
+        BattleFx_HitMarkSpawnScriptAtActorBone(g_BattleSpecialActorId, 9, 0x1000 /* 1.0 */);
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
-    if (frame.timelineSlot->frameCounter > 0xD && frame.timelineSlot->frameCounter < 0x11) {
+    if (frame.timelineSlot->frameCounter > 13 && frame.timelineSlot->frameCounter < 17) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFlyingSickleTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFlyingSickleVariantSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, (short *)((int)frame.spawnSlot + 4));
-            frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
             frame.spawnSlot->spinRate = rand() % 5;
         }
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -214,7 +214,7 @@ void __cdecl BattleFx_SpecialFlyingSickleVariantSpriteTask(void)
     entryIds[2] = 4;
     entryIds[3] = 5;
     entryIds[4] = 6;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000 /* 3.0 */, 0);
     *(short *)((char *)&g_BattleSpecialFlyingSickleColor1 + 0x4) = task->frameIndex;
     ((BattleSpecFlyingSickleDataBlob *)&g_BattleSpecialFlyingSickleDataBlob)->frameTable = Gfx_ModelTableGetLoadedRecord(entryIds[task->variantIndex], g_BattleSpecialFlyingSickleLoadedRes);
     ((BattleSpecFlyingSickleDataBlob *)&g_BattleSpecialFlyingSickleDataBlob)->variantField = Gfx_ModelTableGetSpriteObject(entryIds[task->variantIndex], g_BattleSpecialFlyingSickleLoadedRes);
@@ -240,11 +240,11 @@ void __cdecl BattleFx_SpecialFlyingSickleRisingAnimatedSpriteTask(void)
     task = (BattleFxSatelliteBeamBlackPuff *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecialFlyingSickleSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialFlyingSickleLoadedRes);
     g_BattleSpecialFlyingSickleSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialFlyingSickleLoadedRes);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1600, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1600 /* 1.375 */, 0);
     g_BattleSpecialFlyingSickleSpriteReq1.frame = task->frame;
     g_BattleSpecialFlyingSickleDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialFlyingSickleSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialFlyingSickleDrawListHandle);
     if (g_BattleIsPaused == 0) {
-        task->posY -= 0x32;
+        task->posY -= 50;
         if ((g_BattleSpecialFlyingSickleSpriteReq1.spriteGroup) != 0) {
             (task->frame)++;
             if (task->frame >= g_BattleSpecialFlyingSickleSpriteReq1.spriteGroup->header->frameCount) {
@@ -287,8 +287,8 @@ void __cdecl BattleFx_SpecialFlyingSickleOrbitModelTask(void)
     frame.drawParamD = 0x20;
     frame.drawParamE = 0;
     frame.modelHandle = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialFlyingSickleLoadedRes);
-    frame.orbitX.vx = SinFixed((frame.kamaSlot->orbitAngle << 0xC) / 0x23 + 0x800) * frame.kamaSlot->radius >> 0xC;
-    frame.orbitX.vz = CosFixed((frame.kamaSlot->orbitAngle << 0xC) / 0x23 + 0x800) * frame.kamaSlot->radius >> 0xC;
+    frame.orbitX.vx = SinFixed((frame.kamaSlot->orbitAngle << 12) / 35 + 2048) * frame.kamaSlot->radius >> 12;
+    frame.orbitX.vz = CosFixed((frame.kamaSlot->orbitAngle << 12) / 35 + 2048) * frame.kamaSlot->radius >> 12;
     frame.orbitX.vy = 0;
     RotMatrix((SVECTOR *)((int)frame.kamaSlot + 0xC), &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.kamaSlot->posX;
@@ -298,7 +298,7 @@ void __cdecl BattleFx_SpecialFlyingSickleOrbitModelTask(void)
     SetTransMatrix(&frame.rotMatrix);
     RotTransPointToInt16(&frame.orbitX, (short *)&frame.orbitX, &frame.transDepth);
     frame.angleX.vx = 0;
-    frame.angleX.vy = frame.kamaSlot->frameCounter << 0xA;
+    frame.angleX.vy = frame.kamaSlot->frameCounter << 10;
     frame.angleX.vz = frame.kamaSlot->angleZ;
     RotMatrixZYX(&frame.angleX, &frame.rotMatrix);
     RotateMatrixY(frame.kamaSlot->angleY, &frame.rotMatrix);
@@ -316,7 +316,7 @@ void __cdecl BattleFx_SpecialFlyingSickleOrbitModelTask(void)
     }
     frame.kamaSlot->orbitAngle += frame.kamaSlot->angleStep;
     (frame.kamaSlot->frameCounter)++;
-    if (frame.kamaSlot->frameCounter == 0x23) {
+    if (frame.kamaSlot->frameCounter == 35) {
         frame.kamaSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

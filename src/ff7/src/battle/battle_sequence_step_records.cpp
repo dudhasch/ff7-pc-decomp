@@ -68,7 +68,7 @@ int __cdecl Battle_AllocSequenceStep(void)
     step->stepFlags = 0;
     step->effectId = 0;
     step->hitRecordIndex = *(short *)&g_BattleSeqHitRecordCursor;
-    if (g_BattleSeqStepCursor < 0x40) {
+    if (g_BattleSeqStepCursor < 64) {
         g_BattleSeqStepCursor++;
     }
     return (int)step;
@@ -85,7 +85,7 @@ int __cdecl Battle_AllocHitRecord(void)
 
     hitRecord = &g_BattleEffectOrderTable[g_BattleSeqHitRecordCursor];
     hitRecord->damageDisplayIndex = 0xFF;
-    if (g_BattleSeqHitRecordCursor < 0x80) {
+    if (g_BattleSeqHitRecordCursor < 128) {
         g_BattleSeqHitRecordCursor++;
     }
     return (int)hitRecord;
@@ -108,7 +108,7 @@ void __cdecl Battle_PruneSequenceWaitFlags(void)
     } frame;
 #pragma pack(pop)
 
-    for (frame.recordIndex = 0; frame.recordIndex < 0xA; frame.recordIndex++) {
+    for (frame.recordIndex = 0; frame.recordIndex < 10; frame.recordIndex++) {
         frame.lastRecordByActor[frame.recordIndex] = 0xFFFFFFFF;
     }
     for (frame.recordIndex = 0; frame.recordIndex < g_BattleSeqHitRecordCursor; frame.recordIndex++) {
@@ -265,10 +265,10 @@ void __cdecl Battle_PlaySequence(void)
             pEndStep = (BattleSeqStep *)Battle_AllocSequenceStep();
             pEndStep->actorIndex = 0xFF;
         }
-        for (stepIdx = 0; stepIdx < 0x40; stepIdx++) {
+        for (stepIdx = 0; stepIdx < 64; stepIdx++) {
             stepActor = g_BattleSequenceBuffer.steps[stepIdx].actorIndex;
             if (stepActor != -1) {
-                if (stepActor >= 4 && stepActor < 0xA) {
+                if (stepActor >= 4 && stepActor < 10) {
                     g_BattleScene.actors[stepActor].scriptId = g_aCombatants[stepActor].scriptId;
                 }
             } else {
@@ -281,7 +281,7 @@ void __cdecl Battle_PlaySequence(void)
         if (g_BattleSequenceEndReached != 0) {
             g_BattleSequenceEndReached = 0;
             Battle_ResetSequence();
-            for (stepIdx = 4; stepIdx < 0xA; stepIdx++) {
+            for (stepIdx = 4; stepIdx < 10; stepIdx++) {
                 g_BattleScene.actors[stepIdx].scriptId = g_aCombatants[stepIdx].scriptId;
             }
             g_BattleSeqPlaybackState = BATTLE_SEQ_PLAYBACK_START;
@@ -335,7 +335,7 @@ void __cdecl Battle_ClearActorAnimHoldFlags(int actorIdx)
     int recordIndex;
     BattleHitRecord *record;
 
-    for (recordIndex = 0; recordIndex < 0x80; recordIndex++) {
+    for (recordIndex = 0; recordIndex < 128; recordIndex++) {
         record = &g_BattleEffectOrderTable[recordIndex];
         if (record->targetActor == actorIdx) {
             *(unsigned short *)&record->flags &= 0xFFFB;
@@ -353,7 +353,7 @@ void __cdecl Battle_RetargetActorAnimPose(int actorIdx, int oldPose, int newPose
     int recordIndex;
     BattleHitRecord *record;
 
-    for (recordIndex = 0; recordIndex < 0x80; recordIndex++) {
+    for (recordIndex = 0; recordIndex < 128; recordIndex++) {
         record = &g_BattleEffectOrderTable[recordIndex];
         if (record->targetActor == actorIdx && record->animId == oldPose) {
             if (gateFlag == 1) {

@@ -213,9 +213,9 @@ void __cdecl BattleFx_SpecialAtomicRayTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0x1000, 0x14);
+        Battle_StartFixedPointRamp(0x1000, 20);
     }
-    if (frame.timelineSlot->frameCounter == 0x14) {
+    if (frame.timelineSlot->frameCounter == 20) {
         frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayLayeredModelsTask);
         g_BattleSpecialAtomicRayState1 = (BattleFxAtomicRayOrigin *)frame.spawnSlot;
         frame.spawnSlot->posX = 0;
@@ -223,24 +223,24 @@ void __cdecl BattleFx_SpecialAtomicRayTimelineTask(void)
         frame.spawnSlot->posZ = 0;
         frame.spawnSlot->velocityY = 0xFF74;
     }
-    if (frame.timelineSlot->frameCounter >= 0xA && frame.timelineSlot->frameCounter < 0x1E && frame.timelineSlot->frameCounter % 5 == 0) {
+    if (frame.timelineSlot->frameCounter >= 10 && frame.timelineSlot->frameCounter < 30 && frame.timelineSlot->frameCounter % 5 == 0) {
         frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRaySpinFadeModelTask);
         frame.spawnSlot->posX = 0;
         frame.spawnSlot->posY = 0;
         frame.spawnSlot->posZ = 0;
     }
-    if (frame.timelineSlot->frameCounter >= 0x1E && frame.timelineSlot->frameCounter < 0x26) {
+    if (frame.timelineSlot->frameCounter >= 30 && frame.timelineSlot->frameCounter < 38) {
         frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayFrameTableSpriteTask);
-        frame.spawnSlot->posX = rand() % 0xFA0 - 0x7D0;
+        frame.spawnSlot->posX = rand() % 4000 - 2000;
         frame.spawnSlot->posY = 0;
-        frame.spawnSlot->posZ = rand() % 0xFA0 - 0x7D0;
+        frame.spawnSlot->posZ = rand() % 4000 - 2000;
         frame.spawnSlot->variantIndex = (rand() % 2);
         frame.tmpSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayDrawGrowingModelsTask);
         frame.tmpSlot->posX = frame.spawnSlot->posX;
         frame.tmpSlot->posY = 0;
         frame.tmpSlot->posZ = frame.spawnSlot->posZ;
     }
-    if (frame.timelineSlot->frameCounter == 0x1E) {
+    if (frame.timelineSlot->frameCounter == 30) {
         frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayFlickerSpriteTask);
         frame.dirX.vx = frame.timelineSlot->posX - g_BattleSpecialAtomicRayState1->savedX;
         frame.dirX.vy = frame.timelineSlot->posY - g_BattleSpecialAtomicRayState1->savedY;
@@ -253,7 +253,7 @@ void __cdecl BattleFx_SpecialAtomicRayTimelineTask(void)
         SetTransMatrix(&g_BattleSpecialAtomicRayBuffer.matrix);
         frame.dirX.vx = 0;
         frame.dirX.vy = 0;
-        frame.dirX.vz = 0x258;
+        frame.dirX.vz = 600;
         RotTransPointToInt16(&frame.dirX, &frame.spawnSlot->posX, &frame.screenPos);
         frame.spawnSlot->variantIndex = 0;
         frame.tmpSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayStretchSpriteTask);
@@ -261,20 +261,20 @@ void __cdecl BattleFx_SpecialAtomicRayTimelineTask(void)
         frame.deltaY = frame.timelineSlot->posY - frame.spawnSlot->posY;
         frame.deltaZ = frame.timelineSlot->posZ - frame.spawnSlot->posZ;
         frame.distance = SqrtToInt(frame.deltaX * frame.deltaX + frame.deltaY * frame.deltaY + frame.deltaZ * frame.deltaZ);
-        frame.tmpSlot->scale = (frame.distance << 0xC) / 0x384;
+        frame.tmpSlot->scale = (frame.distance << 12) / 900;
         frame.tmpSlot->posX = frame.spawnSlot->posX;
         frame.tmpSlot->posY = frame.spawnSlot->posY;
         frame.tmpSlot->posZ = frame.spawnSlot->posZ;
         frame.tmpSlot->velocityX = 0;
         frame.tmpSlot->velocityY = 0xFC00;
-        frame.tmpSlot->velocityZ = 0x400;
+        frame.tmpSlot->velocityZ = 1024;
         frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayFlickerSpriteTask);
         frame.spawnSlot->posX = frame.timelineSlot->posX;
         frame.spawnSlot->posY = frame.timelineSlot->posY;
         frame.spawnSlot->posZ = frame.timelineSlot->posZ;
         frame.spawnSlot->variantIndex = 1;
     }
-    if (frame.timelineSlot->frameCounter == 0x32) {
+    if (frame.timelineSlot->frameCounter == 50) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 6; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayOrbitSpriteTask);
             frame.spawnSlot->posX = frame.timelineSlot->posX;
@@ -282,34 +282,34 @@ void __cdecl BattleFx_SpecialAtomicRayTimelineTask(void)
             frame.spawnSlot->posZ = frame.timelineSlot->posZ;
             frame.spawnSlot->velocityY = 0;
             frame.spawnSlot->velocityX = 0;
-            frame.spawnSlot->velocityZ = frame.spawnIndex * 0xAA - 0x200;
+            frame.spawnSlot->velocityZ = frame.spawnIndex * 170 - 512;
             frame.spawnSlot->angle = (rand() % 4096);
             frame.spawnSlot->scale = ((rand() % 4) << 9) + 0x1800;
         }
     }
-    if (frame.timelineSlot->frameCounter > 0x32 && frame.timelineSlot->frameCounter < 0x50) {
+    if (frame.timelineSlot->frameCounter > 50 && frame.timelineSlot->frameCounter < 80) {
         frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayVariantSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+        frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
         frame.spawnSlot->variantIndex = (rand() % 4);
     }
-    if (frame.timelineSlot->frameCounter > 0x56 && frame.timelineSlot->frameCounter < 0x5E) {
+    if (frame.timelineSlot->frameCounter > 86 && frame.timelineSlot->frameCounter < 94) {
         frame.spawnSlot = (BattleFxAtomicRayTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAtomicRayVariantSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+        frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
         frame.spawnSlot->variantIndex = 4;
     }
-    if (frame.timelineSlot->frameCounter == 0x5A) {
+    if (frame.timelineSlot->frameCounter == 90) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
         Battle_PlaySfxPannedToActor(0xFA, (short)frame.timelineSlot->actorIndex, 0);
-        Battle_StartFixedPointRamp(0, 0x14);
+        Battle_StartFixedPointRamp(0, 20);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x64) {
+    if (frame.timelineSlot->frameCounter == 100) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -370,12 +370,12 @@ void __cdecl BattleFx_SpecialAtomicRayStretchSpriteTask(void)
 #pragma pack(pop)
 
     frame.stretchSlot = (BattleFxAtomicRayStretchSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecialAtomicRayColor2.spriteField) = Gfx_ModelTableGetLoadedRecord(0x13, g_BattleSpecialAtomicRayLoadedRes);
-    g_BattleSpecialAtomicRayColor2.drawObj = Gfx_ModelTableGetSpriteObject(0x13, g_BattleSpecialAtomicRayLoadedRes);
+    (g_BattleSpecialAtomicRayColor2.spriteField) = Gfx_ModelTableGetLoadedRecord(19, g_BattleSpecialAtomicRayLoadedRes);
+    g_BattleSpecialAtomicRayColor2.drawObj = Gfx_ModelTableGetSpriteObject(19, g_BattleSpecialAtomicRayLoadedRes);
     RotMatrixXYZ((SVECTOR *)&frame.stretchSlot->rotX, &frame.localMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialAtomicRayBuffer.matrix, &frame.localMatrix, &frame.localMatrix);
     frame.scaleX.vy = frame.stretchSlot->lengthScale;
-    frame.scaleX.vz = 0x2000;
+    frame.scaleX.vz = 0x2000 /* 2.0 */;
     frame.scaleX.vx = frame.scaleX.vz;
     ScaleMatrix(&frame.localMatrix, &frame.scaleX);
     frame.localMatrix.t[0] = frame.stretchSlot->posX;
@@ -388,7 +388,7 @@ void __cdecl BattleFx_SpecialAtomicRayStretchSpriteTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialAtomicRayColor2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (frame.stretchSlot->frameIndex)++;
-        if (frame.stretchSlot->frameIndex == 0x30) {
+        if (frame.stretchSlot->frameIndex == 48) {
             frame.stretchSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -414,16 +414,16 @@ void __cdecl BattleFx_SpecialAtomicRayOrbitSpriteTask(void)
 #pragma pack(pop)
 
     frame.orbitSlot = (BattleFxAtomicRayOrbitSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialAtomicRayMotionTable.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x14, g_BattleSpecialAtomicRayLoadedRes);
-    g_BattleSpecialAtomicRayMotionTable.spriteObject = Gfx_ModelTableGetSpriteObject(0x14, g_BattleSpecialAtomicRayLoadedRes);
-    if (frame.orbitSlot->frameCounter < 0x16) {
+    g_BattleSpecialAtomicRayMotionTable.spriteRecord = Gfx_ModelTableGetLoadedRecord(20, g_BattleSpecialAtomicRayLoadedRes);
+    g_BattleSpecialAtomicRayMotionTable.spriteObject = Gfx_ModelTableGetSpriteObject(20, g_BattleSpecialAtomicRayLoadedRes);
+    if (frame.orbitSlot->frameCounter < 22) {
         frame.sizeRaw = 8;
     } else {
-        frame.sizeRaw = 0x1E - frame.orbitSlot->frameCounter;
+        frame.sizeRaw = 30 - frame.orbitSlot->frameCounter;
     }
     frame.spriteSize = *(short *)&frame.sizeRaw;
-    frame.orbitX.vx = CosFixed(frame.orbitSlot->angle) * 0x320 >> 0xC;
-    frame.orbitX.vz = SinFixed(frame.orbitSlot->angle) * 0x320 >> 0xC;
+    frame.orbitX.vx = CosFixed(frame.orbitSlot->angle) * 0x320 >> 12;
+    frame.orbitX.vz = SinFixed(frame.orbitSlot->angle) * 0x320 >> 12;
     frame.orbitX.vy = 0;
     RotMatrix((SVECTOR *)&frame.orbitSlot->rotX, &frame.drawMatrix);
     frame.drawMatrix.t[0] = frame.orbitSlot->centerX;
@@ -440,9 +440,9 @@ void __cdecl BattleFx_SpecialAtomicRayOrbitSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.orbitSlot->angle += 0x100;
+    frame.orbitSlot->angle += 0x100 /* 22.5 deg */;
     (frame.orbitSlot->frameCounter)++;
-    if (frame.orbitSlot->frameCounter == 0x1E) {
+    if (frame.orbitSlot->frameCounter == 30) {
         frame.orbitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -459,13 +459,13 @@ void __cdecl BattleFx_SpecialAtomicRayFlickerSpriteTask(void)
     p = (BattleFxTailLaserAnimSprite *)BATTLE_CURRENT_TASK_SLOT;
     tbl[0] = 0x11;
     tbl[1] = 0x12;
-    BattleFx_InstallBillboardMatrix(&p->posX, (p->variant != 0 ? 0x2000 : 0x1000) + (p->frame % 2 << 0xA), -0x320);
+    BattleFx_InstallBillboardMatrix(&p->posX, (p->variant != 0 ? 0x2000 : 0x1000) + (p->frame % 2 << 10), -800);
     ((BattleFxAtomicRayColorRecord *)&g_BattleSpecialAtomicRayColor3)->spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(tbl[p->variant], g_BattleSpecialAtomicRayLoadedRes);
     ((BattleFxAtomicRayColorRecord *)&g_BattleSpecialAtomicRayColor3)->drawObject = Gfx_ModelTableGetSpriteObject(tbl[p->variant], g_BattleSpecialAtomicRayLoadedRes);
     g_BattleSpecialAtomicRayDrawListHead = BattleFx_SubmitSpriteDraw((char *)&g_BattleSpecialAtomicRayColor3 + 8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialAtomicRayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (p->frame)++;
-        if (p->frame == 0x30) {
+        if (p->frame == 48) {
             p->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -490,9 +490,9 @@ void __cdecl BattleFx_SpecialAtomicRayDrawGrowingModelsTask(void)
 #pragma pack(pop)
 
     frame.growSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialAtomicRayAnimConfig.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x12, g_BattleSpecialAtomicRayLoadedRes);
-    g_BattleSpecialAtomicRayAnimConfig.spriteObject = Gfx_ModelTableGetSpriteObject(0x12, g_BattleSpecialAtomicRayLoadedRes);
-    if (frame.growSlot->frameCounter < 0x14) {
+    g_BattleSpecialAtomicRayAnimConfig.spriteRecord = Gfx_ModelTableGetLoadedRecord(18, g_BattleSpecialAtomicRayLoadedRes);
+    g_BattleSpecialAtomicRayAnimConfig.spriteObject = Gfx_ModelTableGetSpriteObject(18, g_BattleSpecialAtomicRayLoadedRes);
+    if (frame.growSlot->frameCounter < 20) {
         frame.growScale = 8;
     } else {
         frame.growScale = 0x1C - frame.growSlot->frameCounter;
@@ -502,7 +502,7 @@ void __cdecl BattleFx_SpecialAtomicRayDrawGrowingModelsTask(void)
     frame.rotX.vx = frame.rotX.vz;
     frame.rotX.vy = frame.growSlot->frameCounter << 6;
     RotMatrix(&frame.rotX, &frame.localMatrix);
-    g_BattleSpecialAtomicRayState4 = frame.growSlot->frameCounter * 0x190;
+    g_BattleSpecialAtomicRayState4 = frame.growSlot->frameCounter * 400;
     g_BattleSpecialAtomicRayState3 = g_BattleSpecialAtomicRayState4;
     g_BattleSpecialAtomicRayState2 = g_BattleSpecialAtomicRayState3;
     ScaleMatrix(&frame.localMatrix, &g_BattleSpecialAtomicRayState2);
@@ -522,13 +522,13 @@ void __cdecl BattleFx_SpecialAtomicRayDrawGrowingModelsTask(void)
     g_BattleSpecialAtomicRayAnimConfig.scale = 0x1000 - (g_BattleSpecialAtomicRayScaleX << 9);
     g_BattleSpecialAtomicRayAnimConfig.modelDraw = Gfx_ModelTableGetRenderObject(9, g_BattleSpecialAtomicRayLoadedRes);
     g_BattleSpecialAtomicRayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialAtomicRayAnimConfig.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialAtomicRayDrawListHead);
-    BattleFx_InstallBillboardMatrix(&frame.growSlot->posX, ((frame.growSlot->frameCounter % 2) << 0xA) + 0x1000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.growSlot->posX, ((frame.growSlot->frameCounter % 2) << 10) + 0x1000, 0);
     g_BattleSpecialAtomicRayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialAtomicRayAnimConfig.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialAtomicRayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.growSlot->frameCounter)++;
-    if (frame.growSlot->frameCounter == 0x1C) {
+    if (frame.growSlot->frameCounter == 28) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -545,14 +545,14 @@ void __cdecl BattleFx_SpecialAtomicRayFrameTableSpriteTask(void)
     p = (BattleFxRadiantBreathFrameSprite *)BATTLE_CURRENT_TASK_SLOT;
     tbl[0] = 0xE;
     tbl[1] = 0xF;
-    BattleFx_InstallBillboardMatrix(&p->posX, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix(&p->posX, 0x1800 /* 1.5 */, 0);
     *(short *)((char *)&g_BattleSpecialAtomicRayColor5 + 0x4) = g_BattleSpecialAtomicRayFrameIndices[p->frameIndex];
     g_BattleSpecialAtomicRayColor4.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(tbl[p->animIndex], g_BattleSpecialAtomicRayLoadedRes);
     g_BattleSpecialAtomicRayColor4.drawObject = Gfx_ModelTableGetSpriteObject(tbl[p->animIndex], g_BattleSpecialAtomicRayLoadedRes);
     g_BattleSpecialAtomicRayDrawListHead = BattleFx_SubmitSpriteDraw((char *)&g_BattleSpecialAtomicRayColor4 + 0x8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialAtomicRayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (p->frameIndex)++;
-        if (p->frameIndex == 0x1C) {
+        if (p->frameIndex == 28) {
             p->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -576,14 +576,14 @@ void __cdecl BattleFx_SpecialAtomicRaySpinFadeModelTask(void)
 #pragma pack(pop)
 
     frame.slot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecialAtomicRayScale.modelField) = Gfx_ModelTableGetRenderObject(0xC, g_BattleSpecialAtomicRayLoadedRes);
+    (g_BattleSpecialAtomicRayScale.modelField) = Gfx_ModelTableGetRenderObject(12, g_BattleSpecialAtomicRayLoadedRes);
     frame.angleX.vz = 0;
     frame.angleX.vx = frame.angleX.vz;
     frame.angleX.vy = frame.slot->frameCounter << 6;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     (g_BattleSpecialAtomicRayBuffer.scaleFactor) = frame.slot->frameCounter * 0xFA + 0x800;
     g_BattleSpecialAtomicRayScaleFactor = (g_BattleSpecialAtomicRayBuffer.scaleFactor);
-    g_BattleSpecialAtomicRayIntensity = 0x4000 - frame.slot->frameCounter * 0x320;
+    g_BattleSpecialAtomicRayIntensity = 0x4000 - frame.slot->frameCounter * 800;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecialAtomicRayScaleFactor);
     frame.rotMatrix.t[0] = frame.slot->posX;
     frame.rotMatrix.t[1] = frame.slot->posY;
@@ -597,7 +597,7 @@ void __cdecl BattleFx_SpecialAtomicRaySpinFadeModelTask(void)
         return;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x14) {
+    if (frame.slot->frameCounter == 20) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -643,9 +643,9 @@ void __cdecl BattleFx_SpecialAtomicRayLayeredModelsTask(void)
     g_BattleSpecialAtomicRayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialAtomicRayModelIndices.firstModelRes, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialAtomicRayDrawListHead);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecialAtomicRayModelIndices.indexWord42 = g_BattleSpecialAtomicRayStepCount << 9;
-    g_BattleSpecialAtomicRayModelIndices.secondModelRes = Gfx_ModelTableGetRenderObject(0xA, g_BattleSpecialAtomicRayLoadedRes);
+    g_BattleSpecialAtomicRayModelIndices.secondModelRes = Gfx_ModelTableGetRenderObject(10, g_BattleSpecialAtomicRayLoadedRes);
     g_BattleSpecialAtomicRayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialAtomicRayModelIndices.secondModelRes, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialAtomicRayDrawListHead);
-    g_BattleSpecialAtomicRayModelIndices.secondModelRes = Gfx_ModelTableGetRenderObject(0xB, g_BattleSpecialAtomicRayLoadedRes);
+    g_BattleSpecialAtomicRayModelIndices.secondModelRes = Gfx_ModelTableGetRenderObject(11, g_BattleSpecialAtomicRayLoadedRes);
     g_BattleSpecialAtomicRayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialAtomicRayModelIndices.secondModelRes, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialAtomicRayDrawListHead);
     frame.angleX.vx = 0;
     frame.angleX.vz = frame.slot->frameCounter << 6;
@@ -665,7 +665,7 @@ void __cdecl BattleFx_SpecialAtomicRayLayeredModelsTask(void)
     }
     if (frame.slot->velocityY < 0) {
         frame.slot->posY += frame.slot->velocityY;
-        frame.slot->velocityY += 0xA;
+        frame.slot->velocityY += 10;
     }
     if (frame.slot->velocityY == 0) {
         if (g_BattleSpecialAtomicRayModelIndex == 0x20) {
@@ -675,12 +675,12 @@ void __cdecl BattleFx_SpecialAtomicRayLayeredModelsTask(void)
         }
         g_BattleSpecialAtomicRayModelIndex = *(short *)&frame.nextModelIndex;
     }
-    if (frame.slot->frameCounter > 0x48) {
+    if (frame.slot->frameCounter > 72) {
         g_BattleSpecialAtomicRayStepCount++;
     }
     frame.slot->stepCount = g_BattleSpecialAtomicRayStepCount;
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x50) {
+    if (frame.slot->frameCounter == 80) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -714,21 +714,21 @@ void __cdecl BattleFx_SpecialAtomicRayScaleUpModelTask(void)
 #pragma pack(pop)
 
     frame.slot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scaleM00 = 0x1000;
+    frame.scaleM00 = 0x1000 /* 1.0 */;
     frame.scaleM01 = 0;
     frame.scaleM02 = 0;
     frame.scaleM10 = 0;
-    frame.scaleM11 = 0x1000;
+    frame.scaleM11 = 0x1000 /* 1.0 */;
     frame.scaleM12 = 0;
     frame.scaleM20 = 0;
     frame.scaleM21 = 0;
-    frame.scaleM22 = 0x1000;
+    frame.scaleM22 = 0x1000 /* 1.0 */;
     memset(&frame.extraX, 0, 12);
     (g_BattleSpecialAtomicRayModelReq.modelField) = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialAtomicRayLoadedRes);
     if (frame.slot->frameCounter < 8) {
         frame.scaleAmount = frame.slot->frameCounter * 0x600;
     } else {
-        frame.scaleAmount = 0x3000;
+        frame.scaleAmount = 0x3000 /* 3.0 */;
     }
     g_BattleSpecialAtomicRayParamVec = frame.scaleAmount;
     g_BattleSpecialAtomicRayScaleZ = g_BattleSpecialAtomicRayParamVec;
@@ -746,11 +746,11 @@ void __cdecl BattleFx_SpecialAtomicRayScaleUpModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter > 0x5C) {
+    if (frame.slot->frameCounter > 92) {
         g_BattleSpecialAtomicRayAngle++;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x64) {
+    if (frame.slot->frameCounter == 100) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

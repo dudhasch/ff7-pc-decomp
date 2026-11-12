@@ -42,7 +42,7 @@ struct BattleFxSpriteRequest g_BattleSpecNapalmSpriteReq1 = {0, 0, -128, -128, -
 // g_BattleSpecNapalmSpriteOffsetTable is indexed by the code as an array. The span runs to the next
 // named definition of the TU; the TU's pieces inside 0x89d5e8..0x89d5f0 are aliases.
 // GLOBAL: FF7 0x0089d5e8
-unsigned char g_BattleSpecNapalmSpriteOffsetTable[0x8] = {0x08, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00};
+unsigned char g_BattleSpecNapalmSpriteOffsetTable[8] = {0x08, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00};
 // GLOBAL: FF7 0x0089d5f0
 struct BattleSpecNapalmSpriteReq2 g_BattleSpecNapalmSpriteReq2 = {{0, 0x18, 0, 0x20, 0, 0, 0, 0}, 0, 0};
 // GLOBAL: FF7 0x0089d600
@@ -169,7 +169,7 @@ void __cdecl BattleFx_SpecialNapalmBlendPartVectorsCallback(int unused, BattleFx
     float factor;
     int wholeSteps;
 
-    wholeSteps = g_BattleSpecNapalmBlendStep / 0x1E;
+    wholeSteps = g_BattleSpecNapalmBlendStep / 30;
     factor = wholeSteps;
     outVec->posX = (srcVec->posX - dstVec->x) * factor + dstVec->x;
     outVec->posY = (srcVec->posY - dstVec->y) * factor + dstVec->y;
@@ -216,16 +216,16 @@ void __cdecl BattleFx_SpecialNapalmTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step < 0xA) {
+    if (taskPtr->step < 10) {
         for (j6 = 0; j6 < 4; j6++) {
             pChild = (BattleFxSpecialNapalmSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialNapalmVariantSpriteTask);
             pChild->posX = taskPtr->startX;
             pChild->posY = taskPtr->startY;
             pChild->posZ = taskPtr->startZ;
             frameAngle = rand() % 0x1000;
-            pChild->velocityX = CosFixed(frameAngle) * 0x50 >> 0xC;
-            pChild->velocityZ = SinFixed(frameAngle) * 0x50 >> 0xC;
-            pChild->velocityY = -rand() % 0x50;
+            pChild->velocityX = CosFixed(frameAngle) * 0x50 >> 12;
+            pChild->velocityZ = SinFixed(frameAngle) * 0x50 >> 12;
+            pChild->velocityY = -rand() % 80;
             pChild->variant = 0;
         }
     }
@@ -236,25 +236,25 @@ void __cdecl BattleFx_SpecialNapalmTimelineTask(void)
             pChild->posX = taskPtr->startX;
             pChild->posY = taskPtr->startY;
             pChild->posZ = taskPtr->startZ;
-            pChild->velocityX = SinFixed(frameAngle + j6 * 0x258 + -0x12C) * 0x96 >> 0xC;
-            pChild->velocityZ = CosFixed(frameAngle + j6 * 0x258 + -0x12C) * 0x96 >> 0xC;
-            pChild->velocityY = -rand() % 0x32 - 0x32;
+            pChild->velocityX = SinFixed(frameAngle + j6 * 600 + -300) * 0x96 >> 12;
+            pChild->velocityZ = CosFixed(frameAngle + j6 * 600 + -300) * 0x96 >> 12;
+            pChild->velocityY = -rand() % 50 - 50;
         }
     }
-    if (taskPtr->step == 0xA) {
+    if (taskPtr->step == 10) {
         pChild = (BattleFxSpecialNapalmSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialNapalmMissileTask);
         pChild->posX = taskPtr->startX;
         pChild->posY = taskPtr->startY;
         pChild->posZ = taskPtr->startZ;
-        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 0xA;
-        pChild->velocityY = (taskPtr->endY - taskPtr->startY) / 0xA;
-        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 0xA;
+        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 10;
+        pChild->velocityY = (taskPtr->endY - taskPtr->startY) / 10;
+        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 10;
         pChild->angle = ArcTangentFixed(taskPtr->endX - taskPtr->startX, taskPtr->endZ - taskPtr->startZ);
     }
-    if (taskPtr->step == 0x28) {
+    if (taskPtr->step == 40) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
     }
-    if (taskPtr->step == 0x14) {
+    if (taskPtr->step == 20) {
         pChild = (BattleFxSpecialNapalmSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialNapalmImpactModelsTask);
         pChild->posX = taskPtr->endX;
         pChild->posY = 0;
@@ -263,18 +263,18 @@ void __cdecl BattleFx_SpecialNapalmTimelineTask(void)
         pChild->posX = taskPtr->endX;
         pChild->posY = 0xFED4;
         pChild->posZ = taskPtr->endZ;
-        for (j6 = 0; j6 < 0x14; j6++) {
+        for (j6 = 0; j6 < 20; j6++) {
             pChild = (BattleFxSpecialNapalmSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialNapalmBouncingSpriteTask);
             pChild->posX = taskPtr->endX;
             pChild->posZ = taskPtr->endZ;
             pChild->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFF06, 0x64, &pChild->velocityX);
+            BattleFx_MakeRandomConeVector(0xFFFFFF06, 100, &pChild->velocityX);
             pChild->variant = rand() % 7;
         }
         Battle_PlaySfxPannedToActor(0x176, (short)taskPtr->actorIndex, 0x40);
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x37) {
+    if (taskPtr->step == 55) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -324,14 +324,14 @@ void __cdecl BattleFx_SpecialNapalmArcingTrailEmitterTask(void)
     task->posX += task->velocityX;
     task->posY += task->velocityY;
     task->posZ += task->velocityZ;
-    task->velocityY += 0xA;
+    task->velocityY += 10;
     spawned = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialNapalmVariantSpriteTask);
     spawned->posX = task->posX;
     spawned->posY = task->posY;
     spawned->posZ = task->posZ;
     spawned->variant = 1;
     (task->frameCount)++;
-    if (task->frameCount == 0xA) {
+    if (task->frameCount == 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -358,10 +358,10 @@ void __cdecl BattleFx_SpecialNapalmMissileTask(void)
     g_BattleSpecNapalmScale.modelRes = Gfx_ModelTableGetRenderObject(0, g_BattleSpecNapalmLoadedResTable);
     g_BattleSpecNapalmSpriteReq4.res8 = Gfx_ModelTableGetLoadedRecord(7, g_BattleSpecNapalmLoadedResTable);
     g_BattleSpecNapalmSpriteReq4.res12 = Gfx_ModelTableGetSpriteObject(7, g_BattleSpecNapalmLoadedResTable);
-    g_BattleSpecNapalmSpriteReq4.res24 = Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecNapalmLoadedResTable);
-    g_BattleSpecNapalmSpriteReq4.res28 = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecNapalmLoadedResTable);
-    (g_BattleSpecNapalmSpriteReq4.rotX) = 0xFC00;
-    g_BattleSpecNapalmSpriteReq4.rotY = 0xFC00;
+    g_BattleSpecNapalmSpriteReq4.res24 = Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecNapalmLoadedResTable);
+    g_BattleSpecNapalmSpriteReq4.res28 = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecNapalmLoadedResTable);
+    (g_BattleSpecNapalmSpriteReq4.rotX) = 0xFC00 /* 5670 deg */;
+    g_BattleSpecNapalmSpriteReq4.rotY = 0xFC00 /* 5670 deg */;
     g_BattleSpecNapalmSpriteReq4.rotZ = 0;
     RotMatrixXYZ((short *)&g_BattleSpecNapalmSpriteReq4, &frame.baseMatrix);
     RotateMatrixY(frame.missileSlot->angle, &frame.baseMatrix);
@@ -374,16 +374,16 @@ void __cdecl BattleFx_SpecialNapalmMissileTask(void)
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecNapalmDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecNapalmScale.modelRes, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecNapalmDrawListHead);
-    BattleFx_InstallBillboardMatrix(&frame.missileSlot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.missileSlot->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecNapalmSpriteReq4.firstFrame = frame.missileSlot->frameCounter % 3;
     g_BattleSpecNapalmDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecNapalmSpriteReq4.res8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecNapalmDrawListHead);
     frame.trailX.vx = frame.missileSlot->posX;
     frame.trailX.vy = frame.missileSlot->posY;
     frame.trailX.vz = frame.missileSlot->posZ;
-    frame.stepX = -SinFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 0x50 + 0x50) >> 0xC;
-    frame.stepZ = -CosFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 0x50 + 0x50) >> 0xC;
-    for (frame.trailIndex = 0; frame.trailIndex < 0xC; frame.trailIndex++) {
-        BattleFx_InstallBillboardMatrix(&frame.trailX, 0x2000, 0);
+    frame.stepX = -SinFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 80 + 80) >> 12;
+    frame.stepZ = -CosFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 80 + 80) >> 12;
+    for (frame.trailIndex = 0; frame.trailIndex < 12; frame.trailIndex++) {
+        BattleFx_InstallBillboardMatrix(&frame.trailX, 0x2000 /* 2.0 */, 0);
         g_BattleSpecNapalmSpriteReq4.secondFrame = frame.trailIndex >> 1;
         g_BattleSpecNapalmDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecNapalmSpriteReq4.res24, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecNapalmDrawListHead);
         frame.trailX.vx += frame.stepX;
@@ -396,7 +396,7 @@ void __cdecl BattleFx_SpecialNapalmMissileTask(void)
     frame.missileSlot->posY += frame.missileSlot->velocityY;
     frame.missileSlot->posZ += frame.missileSlot->velocityZ;
     (frame.missileSlot->frameCounter)++;
-    if (frame.missileSlot->frameCounter == 0xA) {
+    if (frame.missileSlot->frameCounter == 10) {
         frame.missileSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -421,17 +421,17 @@ void __cdecl BattleFx_SpecialNapalmBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.bounceSlot = (BattleFxHellBomberBouncingSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecNapalmSpriteReq4.res40 = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecNapalmLoadedResTable);
-    g_BattleSpecNapalmSpriteReq4.res44 = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecNapalmLoadedResTable);
+    g_BattleSpecNapalmSpriteReq4.res40 = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecNapalmLoadedResTable);
+    g_BattleSpecNapalmSpriteReq4.res44 = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecNapalmLoadedResTable);
     for (frame.axisIndex = 0; frame.axisIndex < 3; frame.axisIndex++) {
         frame.scaleMatrix.m[2][frame.axisIndex] = 0;
         frame.scaleMatrix.m[1][frame.axisIndex] = 0;
         frame.scaleMatrix.m[0][frame.axisIndex] = 0;
     }
-    if (frame.bounceSlot->frameCounter < 0x16) {
+    if (frame.bounceSlot->frameCounter < 22) {
         frame.bounceStep = 8;
     } else {
-        frame.bounceStep = 0x1E - frame.bounceSlot->frameCounter;
+        frame.bounceStep = 30 - frame.bounceSlot->frameCounter;
     }
     frame.phase = *(short *)&frame.bounceStep;
     frame.angleX.vy = 0;
@@ -440,7 +440,7 @@ void __cdecl BattleFx_SpecialNapalmBouncingSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.bounceSlot->posX, frame.scaleMatrix.t, &frame.depth);
-    frame.scaleMatrix.m[2][2] = 0x2000;
+    frame.scaleMatrix.m[2][2] = 0x2000 /* 2.0 */;
     frame.scaleMatrix.m[1][1] = frame.scaleMatrix.m[2][2];
     frame.scaleMatrix.m[0][0] = frame.scaleMatrix.m[1][1];
     RotMatrix(&frame.angleX, &frame.rotMatrix);
@@ -463,10 +463,10 @@ void __cdecl BattleFx_SpecialNapalmBouncingSpriteTask(void)
         frame.bounceSlot->posY = 0;
         frame.bounceSlot->velocityY *= -1;
     }
-    frame.bounceSlot->velocityY += 0x14;
-    frame.bounceSlot->angle += 0x200;
+    frame.bounceSlot->velocityY += 20;
+    frame.bounceSlot->angle += 0x200 /* 45 deg */;
     (frame.bounceSlot->frameCounter)++;
-    if (frame.bounceSlot->frameCounter == 0x1E) {
+    if (frame.bounceSlot->frameCounter == 30) {
         frame.bounceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -506,7 +506,7 @@ void __cdecl BattleFx_SpecialNapalmGrowingModelTask(void)
         return;
     }
     (frame.growSlot->growStep)++;
-    if (frame.growSlot->growStep == 0xF) {
+    if (frame.growSlot->growStep == 15) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -569,23 +569,23 @@ void __cdecl BattleFx_SpecialNapalmImpactModelsTask(void)
     if (frame.blendResB != 0 && frame.blendResA != 0) {
         Gfx_ForEachPolygonSetPartPair((DxGroupPairCallback)BattleFx_SpecialNapalmBlendPartVectorsCallback, *(int *)((char *)frame.blendResA + 4), *(int *)((char *)frame.blendResB + 4));
     }
-    if (frame.impactSlot->frameCounter < 0x16) {
-        frame.spawnRadius = frame.impactSlot->frameCounter * 0x50;
+    if (frame.impactSlot->frameCounter < 22) {
+        frame.spawnRadius = frame.impactSlot->frameCounter * 80;
         for (frame.spawnIndex = 0; frame.spawnIndex < 4; frame.spawnIndex++) {
             frame.spawnAngle = (rand() % 4096);
             frame.spawnSlot = (BattleFxNapalmTrailSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialNapalmFadingSpriteTask)]);
-            frame.spawnSlot->posX = frame.impactSlot->originX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
-            frame.spawnSlot->posZ = frame.impactSlot->originZ + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
+            frame.spawnSlot->posX = frame.impactSlot->originX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
+            frame.spawnSlot->posZ = frame.impactSlot->originZ + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
             frame.spawnSlot->posY = 0xFF6A;
             frame.spawnSlot->variant = 2;
         }
     }
     g_BattleCameraFocalPoint.focalPointY += (short)(((frame.impactSlot->frameCounter % 2) << 4) - 8);
-    if (frame.impactSlot->frameCounter > 0x16) {
+    if (frame.impactSlot->frameCounter > 22) {
         g_BattleSpecNapalmModelCounter--;
     }
     (frame.impactSlot->frameCounter)++;
-    if (frame.impactSlot->frameCounter == 0x1E) {
+    if (frame.impactSlot->frameCounter == 30) {
         frame.impactSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -600,9 +600,9 @@ void __cdecl BattleFx_SpecialNapalmFadingSpriteTask(void)
     BattleTaskSlot *task;
 
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
-    g_BattleSpecNapalmSpriteReq2.fadingRecord = Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecNapalmLoadedResTable);
-    g_BattleSpecNapalmSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSpecNapalmLoadedResTable);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800, 0);
+    g_BattleSpecNapalmSpriteReq2.fadingRecord = Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecNapalmLoadedResTable);
+    g_BattleSpecNapalmSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(10, g_BattleSpecNapalmLoadedResTable);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800 /* 1.5 */, 0);
     g_BattleSpecNapalmSpriteReq3.frame = task->frameCounter;
     g_BattleSpecNapalmSpriteReq3.blue = 0x40 - (task->frameCounter << 2);
     g_BattleSpecNapalmSpriteReq3.green = g_BattleSpecNapalmSpriteReq3.blue;

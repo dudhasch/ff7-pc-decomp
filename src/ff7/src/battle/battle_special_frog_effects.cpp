@@ -129,7 +129,7 @@ void __cdecl BattleFx_SpecialRegisterFrogPerTargetCallback(int actorMask, int so
     int r; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
     Battle_CreateBitPatternCallbackTask(actorMask, sourceIndex, 4, BattleFx_SpecialSpawnFrogPerTarget);
-    Battle_StartFixedPointRamp(0x1000, 0xA);
+    Battle_StartFixedPointRamp(0x1000, 10);
     g_BattleFxTimelineState.red = 0x18;
     g_BattleFxTimelineState.channel1 = 0x10;
     g_BattleFxTimelineState.channel2 = 0;
@@ -150,7 +150,7 @@ void __cdecl BattleFx_SpecialSpawnFrogPerTarget(int actor, int sourceIndex)
     spawnRecord = (BattleFxFrogSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFrogTimelineTask);
     Battle_GetBoneWorldPos(sourceIndex, g_BattleActorRecords[sourceIndex].bone34, (short *)((int)spawnRecord + 4));
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)((int)spawnRecord + 0xC));
-    spawnRecord->randomRange = g_BattleActorRecords[actor].radius + 0xC8;
+    spawnRecord->randomRange = g_BattleActorRecords[actor].radius + 200;
     spawnRecord->targetIndex = actor;
     direction[0] = spawnRecord->endX - spawnRecord->startX;
     direction[1] = spawnRecord->endY - spawnRecord->startY;
@@ -196,19 +196,19 @@ void __cdecl BattleFx_SpecialFrogTimelineTask(void)
             frame.spawnSlot->startY = frame.timelineSlot->startY;
             frame.spawnSlot->startZ = frame.timelineSlot->startZ;
             frame.spawnSlot->angle = ArcTangentFixed(frame.timelineSlot->endX - frame.timelineSlot->startX, frame.timelineSlot->endZ - frame.timelineSlot->startZ);
-            frame.spawnSlot->scaleY = frame.distance * 0x1500 / 0xAF0;
+            frame.spawnSlot->scaleY = frame.distance * 0x1500 / 2800;
             frame.spawnSlot->spiralIndex = frame.loopIndex;
             frame.spawnSlot->distance = frame.distance;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x23) {
+    if (frame.timelineSlot->frameCounter == 35) {
         frame.spawnSlot = (BattleFxFrogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFrogGrowingModelTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)((int)frame.spawnSlot + 4));
     }
-    if (frame.timelineSlot->frameCounter == 0x2D) {
+    if (frame.timelineSlot->frameCounter == 45) {
         Battle_PlaySfxPannedToActor(0x134, (short)frame.timelineSlot->actorIndex, 0x40);
     }
-    if (frame.timelineSlot->frameCounter >= 0x2D && frame.timelineSlot->frameCounter < 0x41) {
+    if (frame.timelineSlot->frameCounter >= 45 && frame.timelineSlot->frameCounter < 65) {
         for (frame.loopIndex = 0; frame.loopIndex < 5; frame.loopIndex++) {
             frame.spawnSlot = (BattleFxFrogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFrogAnimatedSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)((int)frame.spawnSlot + 4));
@@ -227,7 +227,7 @@ void __cdecl BattleFx_SpecialFrogTimelineTask(void)
             RotTransPointToInt16(&frame.offsetX, (short *)((int)frame.spawnSlot + 4), &frame.transformedPos);
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x32) {
+    if (frame.timelineSlot->frameCounter == 50) {
         if ((g_BattleHurtMessageActorMask & 1 << frame.timelineSlot->actorIndex) != 0) {
             frame.ringRecord = (BattleFxFrogTimeline *)Battle_AllocSceneMessage(6);
         } else if ((g_BattleTimelineTargetMask & 1 << frame.timelineSlot->actorIndex) != 0) {
@@ -239,8 +239,8 @@ void __cdecl BattleFx_SpecialFrogTimelineTask(void)
         frame.ringRecord->actorIndex = frame.timelineSlot->actorIndex;
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x50) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (frame.timelineSlot->frameCounter == 80) {
+        Battle_StartFixedPointRamp(0, 10);
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -264,7 +264,7 @@ void __cdecl BattleFx_SpecialFrogAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecFrogSpriteRequest.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(5, g_BattleSpecFrogLoadedResTable);
     g_BattleSpecFrogSpriteRequest.reqResource = Gfx_ModelTableGetSpriteObject(5, g_BattleSpecFrogLoadedResTable);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000 /* 3.0 */, 0);
     g_BattleSpecFrogSpriteRequest.reqWord12 = task->frameCounter;
     g_BattleSpecFrogTaskPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecFrogSpriteRequest.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecFrogTaskPtr);
     if (g_BattleIsPaused != 0) {
@@ -306,7 +306,7 @@ void __cdecl BattleFx_SpecialFrogGrowingModelTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(frame.growingModel->data, frame.growMatrixA.t, &frame.projDepth);
-    frame.growMatrixA.m[2][2] = frame.growingModel->frameCounter * 0x3E8 + 0x400;
+    frame.growMatrixA.m[2][2] = frame.growingModel->frameCounter * 1000 + 0x400;
     frame.growMatrixA.m[1][1] = frame.growMatrixA.m[2][2];
     frame.growMatrixA.m[0][0] = frame.growMatrixA.m[1][1];
     RotMatrix((SVECTOR *)&g_BattleSpecFrogTransformData, &frame.rotMatrix);
@@ -320,7 +320,7 @@ void __cdecl BattleFx_SpecialFrogGrowingModelTask(void)
         return;
     }
     (frame.growingModel->frameCounter)++;
-    if (frame.growingModel->frameCounter == 0xF) {
+    if (frame.growingModel->frameCounter == 15) {
         frame.growingModel->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -350,17 +350,17 @@ void __cdecl BattleFx_SpecialFrogSpiralModelTask(void)
 
     frame.spiralSlot = (BattleFxFrogSpiralModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.spiralSign = (frame.spiralSlot->spiralIndex >> 1) * 2 - 1;
-    frame.spiralRotX.vx = SinFixed(frame.spiralSlot->frameCounter << 8) / 0x28 * frame.spiralSign;
+    frame.spiralRotX.vx = SinFixed(frame.spiralSlot->frameCounter << 8) / 40 * frame.spiralSign;
     frame.spriteRotX.vx = frame.spiralRotX.vx;
     frame.spiralRotX.vy = (SinFixed(frame.spiralSlot->frameCounter << 7) >> 5) * frame.spiralSign;
     frame.spriteRotX.vy = frame.spiralRotX.vy;
     frame.spiralRotX.vz = 0;
     frame.spriteRotX.vz = frame.spiralRotX.vz;
-    frame.spiralRotX.vx -= 0x400;
+    frame.spiralRotX.vx -= 0x400 /* 90 deg */;
     RotMatrix(&frame.spiralRotX, &frame.spiralMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecFrogState, &frame.spiralMatrix, &frame.spiralMatrix);
     frame.scaleVector.vy = frame.spiralSlot->scaleY;
-    frame.scaleVector.vz = 0x3000;
+    frame.scaleVector.vz = 0x3000 /* 3.0 */;
     frame.scaleVector.vx = frame.scaleVector.vz;
     ScaleMatrix(&frame.spiralMatrix, &frame.scaleVector);
     frame.spiralMatrix.t[0] = frame.spiralSlot->posX;
@@ -376,7 +376,7 @@ void __cdecl BattleFx_SpecialFrogSpiralModelTask(void)
         g_BattleSpecFrogTransformData.resource8 = Gfx_ModelTableGetRenderObject(0, g_BattleSpecFrogLoadedResTable);
     }
     if ((frame.spiralSlot->spiralIndex % 2) == 0) {
-        frame.fadeWord = 0x1000 - g_BattleSpecFrogActiveCount * 0x60;
+        frame.fadeWord = 0x1000 - g_BattleSpecFrogActiveCount * 96;
     } else {
         frame.fadeWord = 0x1000 - (g_BattleSpecFrogActiveCount << 5);
     }
@@ -409,11 +409,11 @@ void __cdecl BattleFx_SpecialFrogSpiralModelTask(void)
     if (frame.spiralSlot->frameCounter < 8) {
         g_BattleSpecFrogActiveCount++;
     }
-    if (frame.spiralSlot->frameCounter > 0x18) {
+    if (frame.spiralSlot->frameCounter > 24) {
         g_BattleSpecFrogActiveCount--;
     }
     (frame.spiralSlot->frameCounter)++;
-    if (frame.spiralSlot->frameCounter == 0x20) {
+    if (frame.spiralSlot->frameCounter == 32) {
         frame.spiralSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -438,7 +438,7 @@ void __cdecl BattleFx_SpecialFrogTwoPhaseAnimatedSpriteTask(void)
     taskPtr = (BattleFxFrogTwoPhaseSlot *)BATTLE_CURRENT_TASK_SLOT;
     rowTable[0] = 3;
     rowTable[1] = 4;
-    BattleFx_InstallBillboardMatrix((void *)((int)taskPtr + 4), 0x2400, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)taskPtr + 4), 0x2400 /* 2.25 */, 0);
     ((BattleSpecFrogSpriteDef *)&g_BattleSpecFrogSpriteDef)->frameTable = Gfx_ModelTableGetLoadedRecord(rowTable[taskPtr->phase], g_BattleSpecFrogLoadedResTable);
     ((BattleSpecFrogSpriteDef *)&g_BattleSpecFrogSpriteDef)->drawObj = Gfx_ModelTableGetSpriteObject(rowTable[taskPtr->phase], g_BattleSpecFrogLoadedResTable);
     *(short *)((char *)&g_BattleSpecFrogColorData + 0x4) = taskPtr->frameIndex;

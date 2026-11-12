@@ -72,9 +72,9 @@ unsigned int __cdecl Battle_RunArenaNextBattleChooser(void)
                 // STRING: FF7 0x007c28c0
                 "%s/CO.BIN", Battle_GetDataDirectory());
         LoadFileBlock((int)pathBuf, 0, 0, (void **)&g_Battle_sceneBuffer, 0);
-        g_Battle_fileBuffer = (int)GameHeapAllocRaw(0x10000,
+        g_Battle_fileBuffer = (int)GameHeapAllocRaw(65536,
                                         // STRING: FF7 0x007c28cc
-                                        "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 0x57);
+                                        "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 87);
         BinSectionReaderInit((unsigned char *)g_Battle_sceneBuffer);
         while ((*(short *)&sectionId = BinSectionPeekType()), (sectionId & 0xFFFF) != 0xFFFF) {
             dstAddr = g_Battle_fileBuffer + ((sectionId & 0xFFFF) << 15);
@@ -83,11 +83,11 @@ unsigned int __cdecl Battle_RunArenaNextBattleChooser(void)
                 if (g_pBtlMenuUiTextures != 0) {
                     GameHeapFree(g_pBtlMenuUiTextures,
                                  // STRING: FF7 0x007c28f0
-                                 "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 0x69);
+                                 "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 105);
                 }
                 g_pBtlMenuUiTextures = (int *)GameHeapAllocRaw(blockBytes << 2,
                                                 // STRING: FF7 0x007c2914
-                                                "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 0x6B);
+                                                "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 107);
                 if (g_pBtlMenuUiTextures != 0) {
                     memcpy(g_pBtlMenuUiTextures, (void *)g_Battle_fileBuffer, blockBytes);
                 }
@@ -95,11 +95,11 @@ unsigned int __cdecl Battle_RunArenaNextBattleChooser(void)
         }
         GameHeapFree((void *)g_Battle_sceneBuffer,
                      // STRING: FF7 0x007c2938
-                     "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 0x73);
+                     "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 115);
         g_Battle_sceneBuffer = 0;
         GameHeapFree((void *)g_Battle_fileBuffer,
                      // STRING: FF7 0x007c295c
-                     "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 0x76);
+                     "C:\\FF7\\src\\Battle\\yama\\coloss.cpp", 118);
         g_Battle_fileBuffer = 0;
         g_BattleSquareOpponentIndex = Battle_HighestSetBitIndex(Battle_PickRandomBitFromMask(g_BattleSquareCandidateMask));
         for (slotIndex = 0; slotIndex < 3; slotIndex++) {

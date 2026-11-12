@@ -114,8 +114,8 @@ void __cdecl BattleFx_BlueMagicBreathSetupTask(void)
     Battle_GetBoneWorldPos(g_BattleBlueMagicBreathCasterIndex, g_BattleActorRecords[g_BattleBlueMagicBreathCasterIndex].bone33, (short *)&g_BattleBlueMagicBreathSourcePos);
     task = (BattleFxBlueMagikRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueMagicBreathTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleBlueMagicBreathTargetMask, (short *)((int)task + 4));
-    task->initialVelocity = -0x600;
-    task->scale = 0x800;
+    task->initialVelocity = -1536;
+    task->scale = 0x800 /* 0.5 */;
     task->scaleTimes2 = task->scale << 1;
     task->velocity = -(task->initialVelocity >> 1);
     task->velocityTimes3 = task->velocity * 2 + task->velocity;
@@ -146,7 +146,7 @@ void __cdecl BattleFx_BlueMagicBreathTimelineTask(void)
         return;
     }
     selfPtr = (BattleFxBlueMagicBreathTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (selfPtr->phase > 1 && selfPtr->phase < 0x21) {
+    if (selfPtr->phase > 1 && selfPtr->phase < 33) {
         for (loopIdx = 0; loopIdx < 1; loopIdx++) {
             child = (BattleFxBlueMagicBreathTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueMagicBreathFadingSpriteTask);
             *(Int64Pair *)&child->posX = *(Int64Pair *)(&g_BattleBlueMagicBreathSourcePos);
@@ -160,8 +160,8 @@ void __cdecl BattleFx_BlueMagicBreathTimelineTask(void)
                 child->jitterRange = -child->jitterRange;
             }
             child->scale = 0;
-            rnd = rand() % 0x1000 + 0x800;
-            child->scaleStep = (selfPtr->scale * rnd >> 0xC) / 0xB;
+            rnd = rand() % 4096 + 2048;
+            child->scaleStep = (selfPtr->scale * rnd >> 12) / 11;
         }
     }
     if (selfPtr->phase < 8) {
@@ -169,7 +169,7 @@ void __cdecl BattleFx_BlueMagicBreathTimelineTask(void)
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         level = selfPtr->phase << 8;
-    } else if (selfPtr->phase >= 0x2F) {
+    } else if (selfPtr->phase >= 47) {
         level = 0x800 - (selfPtr->phase - 0x2F << 8);
         if (level < 0) {
             level = 0;
@@ -178,13 +178,13 @@ void __cdecl BattleFx_BlueMagicBreathTimelineTask(void)
         level = 0x800;
     }
     if (selfPtr->phase == 0x2D) {
-        for (loopIdx = 0; loopIdx < 0xA; loopIdx++) {
+        for (loopIdx = 0; loopIdx < 10; loopIdx++) {
             if ((g_BattleBlueMagicBreathTargetMask & 1 << loopIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(loopIdx);
             }
         }
     }
-    if (selfPtr->phase >= 0x37) {
+    if (selfPtr->phase >= 55) {
         level = 0;
         selfPtr->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -204,7 +204,7 @@ void __cdecl BattleFx_BlueMagicBreathFadingSpriteTask(void)
     BattleFxBlueMagicBreathSprite *pSprite;
 
     pSprite = (BattleFxBlueMagicBreathSprite *)BATTLE_CURRENT_TASK_SLOT;
-    if (pSprite->elapsed >= 0xA) {
+    if (pSprite->elapsed >= 10) {
         colorByte = 0x80 - (pSprite->elapsed - 0xA << 4);
     } else {
         colorByte = 0x80;
@@ -216,23 +216,23 @@ void __cdecl BattleFx_BlueMagicBreathFadingSpriteTask(void)
     g_BattleMagicBreathResourceHandle = Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueMagicBreathLoadedResTable);
     g_BattleMagicBreathResourceAltHandle = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueMagicBreathLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleMagicBreathResourceHandle, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (pSprite->elapsed >= 0x12) {
+    if (pSprite->elapsed >= 18) {
         pSprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pSprite->elapsed < 0x11) {
+    if (pSprite->elapsed < 17) {
         pSprite->posX += pSprite->velocityX;
         pSprite->posZ += pSprite->velocityZ;
     }
     if (pSprite->elapsed >= 7) {
         pSprite->posY += pSprite->velocityY;
-        if (pSprite->elapsed >= 0x10) {
+        if (pSprite->elapsed >= 16) {
             pSprite->velocityY >>= 1;
         }
     }
-    if (pSprite->elapsed < 0xB) {
+    if (pSprite->elapsed < 11) {
         pSprite->angle += pSprite->angleStep;
     }
     (pSprite->elapsed)++;

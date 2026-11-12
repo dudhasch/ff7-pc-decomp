@@ -329,17 +329,17 @@ void __cdecl BattleFx_RubyTentaclesRunCameraScript(void)
                 ((BattleFxCameraVec *)dirVector)->y = g_RubyTentaclesCameraOther->position.y - g_RubyTentaclesCameraTrack->base.y;
                 ((BattleFxCameraVec *)dirVector)->z = g_RubyTentaclesCameraOther->position.z - g_RubyTentaclesCameraTrack->base.z;
                 VectorNormalToSVector((int *)dirVector, (short *)offset);
-                g_RubyTentaclesCameraTrack->position.x = g_RubyTentaclesCameraOther->position.x - (offset->vx * g_RubyTentaclesCameraTrack->distance >> 0xC);
-                g_RubyTentaclesCameraTrack->position.y = g_RubyTentaclesCameraOther->position.y - (offset->vy * g_RubyTentaclesCameraTrack->distance >> 0xC);
-                g_RubyTentaclesCameraTrack->position.z = g_RubyTentaclesCameraOther->position.z - (offset->vz * g_RubyTentaclesCameraTrack->distance >> 0xC);
+                g_RubyTentaclesCameraTrack->position.x = g_RubyTentaclesCameraOther->position.x - (offset->vx * g_RubyTentaclesCameraTrack->distance >> 12);
+                g_RubyTentaclesCameraTrack->position.y = g_RubyTentaclesCameraOther->position.y - (offset->vy * g_RubyTentaclesCameraTrack->distance >> 12);
+                g_RubyTentaclesCameraTrack->position.z = g_RubyTentaclesCameraOther->position.z - (offset->vz * g_RubyTentaclesCameraTrack->distance >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_RubyTentaclesCameraTrack->distance += g_RubyTentaclesCameraTrack->delta;
                 easedDistance = g_RubyTentaclesCameraTrack->distance;
                 easedDistance = BattleFx_RubyTentaclesApplyCameraEasing(easedDistance, g_RubyTentaclesCameraTrack->easing);
-                g_RubyTentaclesCameraTrack->position.x = g_RubyTentaclesCameraTrack->base.x + (g_RubyTentaclesCameraTrack->velocity.x * easedDistance >> 0xC);
-                g_RubyTentaclesCameraTrack->position.y = g_RubyTentaclesCameraTrack->base.y + (g_RubyTentaclesCameraTrack->velocity.y * easedDistance >> 0xC);
-                g_RubyTentaclesCameraTrack->position.z = g_RubyTentaclesCameraTrack->base.z + (g_RubyTentaclesCameraTrack->velocity.z * easedDistance >> 0xC);
+                g_RubyTentaclesCameraTrack->position.x = g_RubyTentaclesCameraTrack->base.x + (g_RubyTentaclesCameraTrack->velocity.x * easedDistance >> 12);
+                g_RubyTentaclesCameraTrack->position.y = g_RubyTentaclesCameraTrack->base.y + (g_RubyTentaclesCameraTrack->velocity.y * easedDistance >> 12);
+                g_RubyTentaclesCameraTrack->position.z = g_RubyTentaclesCameraTrack->base.z + (g_RubyTentaclesCameraTrack->velocity.z * easedDistance >> 12);
             }
             (g_RubyTentaclesCameraTrack->frames)--;
             g_RubyTentaclesCameraTrack = &g_RubyTentaclesCameraFocus;
@@ -754,11 +754,11 @@ void __cdecl BattleFx_RubyTentaclesMainTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL != 0) {
-        frame.counterPhase = g_RubyTentaclesFrameCounter % 0x200;
+        frame.counterPhase = g_RubyTentaclesFrameCounter % 512;
         g_RubyTentaclesFrameCounter++;
-        frame.quadY = 0x64;
-        frame.quadWidth = 0x100;
-        frame.quadHeight = 0x100;
+        frame.quadY = 100;
+        frame.quadWidth = 256;
+        frame.quadHeight = 256;
         frame.quadParamA = 0;
         frame.quadParamB = 0;
         frame.quadExtra = 0;
@@ -774,11 +774,11 @@ void __cdecl BattleFx_RubyTentaclesMainTimelineTask(void)
         }
     } else {
         frame.timer--;
-        if (frame.timer < 0xA) {
+        if (frame.timer < 10) {
             if (frame.timer == 0) {
-                BattleFx_RubyTentaclesBeginEnvelope(0x32, 0, 0xA, 0);
+                BattleFx_RubyTentaclesBeginEnvelope(0x32, 0, 10, 0);
                 frame.emitSlot = (BattleFxRubyTentaclesTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesRadialSpriteEmitterTask);
-                frame.emitSlot->centerX = 0x9C4;
+                frame.emitSlot->centerX = 2500;
                 frame.emitSlot->centerZ = 0xF254;
                 frame.emitSlot = (BattleFxRubyTentaclesTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesRadialSpriteEmitterTask);
                 frame.emitSlot->centerX = 0xF63C;
@@ -786,22 +786,22 @@ void __cdecl BattleFx_RubyTentaclesMainTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x14C);
             }
         } else {
-            frame.timer -= 0xA;
-            if (frame.timer < 0x1C) {
+            frame.timer -= 10;
+            if (frame.timer < 28) {
                 if (frame.timer == 0) {
                     frame.emitSlot = (BattleFxRubyTentaclesTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesModelTask);
-                    BattleFx_RubyTentaclesBeginEnvelope(0x14, 0, 0x1C, 0xF);
+                    BattleFx_RubyTentaclesBeginEnvelope(0x14, 0, 28, 15);
                 }
             } else {
-                frame.timer -= 0x1C;
-                if (frame.timer < 0xF) {
+                frame.timer -= 28;
+                if (frame.timer < 15) {
                     if (frame.timer == 0) {
                         Battle_CreateBitPatternCallbackTask(0x60, 0, 0, BattleFx_RubyTentaclesSpawnEffectRecord);
                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x152);
                     }
                 } else {
-                    frame.timer -= 0xF;
-                    if (frame.timer < 0x1E) { /* empty first arm: lib/codegen.h */
+                    frame.timer -= 15;
+                    if (frame.timer < 30) { /* empty first arm: lib/codegen.h */
                     } else {
                         frame.timelineTask->ownerSlot = BATTLE_TASK_FREE;
                         g_BattleScriptEffectFlag = 0;
@@ -815,9 +815,9 @@ void __cdecl BattleFx_RubyTentaclesMainTimelineTask(void)
                             g_RubyTentaclesOpcodeBOffscreenSlotIndex = 0xFFFFFFFF;
                         }
                         // STRING: FF7 0x007e2a78
-                        GameHeapFree(g_RubyTentaclesEnemyPointerTable, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 0x346);
+                        GameHeapFree(g_RubyTentaclesEnemyPointerTable, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 838);
                         // STRING: FF7 0x007e2a9c
-                        GameHeapFree(g_RubyTentaclesEnemyFileData, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 0x347);
+                        GameHeapFree(g_RubyTentaclesEnemyFileData, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 839);
                         g_RubyTentaclesEnemyPointerTable = 0;
                         g_RubyTentaclesEnemyFileData = 0;
                         return;
@@ -863,8 +863,8 @@ void __cdecl BattleFx_RubyTentaclesEnvelopeTask(void)
     }
     localFrame = task->frame;
     if (localFrame < task->attackFrames) {
-        ratio = (localFrame << 0xC) / task->attackFrames;
-        envValue = task->amplitude * ratio >> 0xC;
+        ratio = (localFrame << 12) / task->attackFrames;
+        envValue = task->amplitude * ratio >> 12;
     } else {
         localFrame -= task->attackFrames;
         if (localFrame < task->sustainFrames) {
@@ -872,8 +872,8 @@ void __cdecl BattleFx_RubyTentaclesEnvelopeTask(void)
         } else {
             localFrame -= task->sustainFrames;
             if (localFrame < task->releaseFrames) {
-                ratio = (localFrame << 0xC) / task->releaseFrames;
-                envValue = task->amplitude * (0x1000 - ratio) >> 0xC;
+                ratio = (localFrame << 12) / task->releaseFrames;
+                envValue = task->amplitude * (0x1000 - ratio) >> 12;
             } else {
                 task->step = 0xFFFF;
                 g_BattleCameraTransform.posY = 0;
@@ -903,12 +903,12 @@ void __cdecl BattleFx_RubyTentaclesPrepareOffscreenPair(void)
     if (g_BattleUiScalingMode != 2) {
         g_RubyTentaclesOffscreenRect.viewportX = *(short *)&g_BattleViewportOriginX;
         g_RubyTentaclesOffscreenRect.viewportY = *(short *)&g_BattleViewportOriginY;
-        g_RubyTentaclesOffscreenRect.viewportW = 0x40;
-        g_RubyTentaclesOffscreenRect.viewportH = 0x80;
+        g_RubyTentaclesOffscreenRect.viewportW = 64;
+        g_RubyTentaclesOffscreenRect.viewportH = 128;
     } else {
         g_RubyTentaclesOffscreenRect.viewportX = *(short *)&g_BattleViewportOriginX;
         g_RubyTentaclesOffscreenRect.viewportY = *(short *)&g_BattleViewportOriginY;
-        g_RubyTentaclesOffscreenRect.viewportW = 0x80;
+        g_RubyTentaclesOffscreenRect.viewportW = 128;
         g_RubyTentaclesOffscreenRect.viewportH = 0xFF;
     }
     g_RubyTentaclesDirectionMatrix.m22 = *(short *)&g_RubyTentaclesRotationMatrix;
@@ -978,7 +978,7 @@ void __cdecl BattleFx_RubyTentaclesSubmitOffscreenPair(void *matrix, BattleFxRub
 // Per-frame model task for the sting. Unless g_BattleIsPaused is set, it advances timer in three
 // phases. Below 0x1C it blends the base model vertices toward the animation frame at weight
 // timer/0x1C (4096ths), recomputing the deltas every fourth step, and emits vertex particles. The
-// next 0x2D steps hold the blend weight at zero, and after that it kills the slot (ownerSlot =
+// next 45 steps hold the blend weight at zero, and after that it kills the slot (ownerSlot =
 // 0xFFFF). Every frame it then sets up the rotation, scale and translation matrices, multiplies by
 // g_RubyTentaclesCombinedMatrix, and refreshes the global transform state.
 // FUNCTION: FF7 0x0044c0c5
@@ -999,18 +999,18 @@ void __cdecl BattleFx_RubyTentaclesModelTask(void)
     frame.modelTask = BATTLE_CURRENT_TASK_SLOT;
     if (g_BattleIsPaused == 0) {
         frame.timer = frame.modelTask->frameCounter;
-        if (frame.timer < 0x1C) {
-            frame.blendWeight = (frame.timer << 0xC) / 0x1C;
+        if (frame.timer < 28) {
+            frame.blendWeight = (frame.timer << 12) / 28;
             frame.subStep = frame.timer % 4;
             if (frame.subStep == 0) {
                 BattleFx_RubyTentaclesComputeVertexDeltas(&g_RubyTentaclesBaseModelVertices, (&g_RubyTentaclesAnimationFrameTable[1])[frame.timer / 4], (struct SVECTOR *)&g_RubyTentaclesBlendedVertexBuffer);
             }
-            BattleFx_RubyTentaclesBlendVertexDeltas(&g_RubyTentaclesBaseModelVertices, (&g_RubyTentaclesAnimationFrameTable[1])[frame.timer / 4], (struct SVECTOR *)&g_RubyTentaclesBlendedVertexBuffer, ((frame.subStep + 1) << 0xC) / 4);
+            BattleFx_RubyTentaclesBlendVertexDeltas(&g_RubyTentaclesBaseModelVertices, (&g_RubyTentaclesAnimationFrameTable[1])[frame.timer / 4], (struct SVECTOR *)&g_RubyTentaclesBlendedVertexBuffer, ((frame.subStep + 1) << 12) / 4);
             g_RubyTentaclesModelRenderDescriptor.shade = 0x1000 - frame.blendWeight;
             BattleFx_RubyTentaclesEmitVertexParticles();
         } else {
-            frame.timer -= 0x1C;
-            if (frame.timer < 0x2D) {
+            frame.timer -= 28;
+            if (frame.timer < 45) {
                 g_RubyTentaclesModelRenderDescriptor.shade = 0;
             } else {
                 frame.modelTask->ownerSlot = BATTLE_TASK_FREE;
@@ -1555,9 +1555,9 @@ void __cdecl BattleFx_RubyTentaclesBlendVertexDeltas(struct RubyTentaclesBaseMod
     destCursor = (SVECTOR *)&dstList->vertexPtr;
     blendWeight = 0x1000 - blendWeight;
     for (i = 0; i < vertCnt; i++) {
-        destCursor->vx = baseVerts->vx + (deltas->vx * blendWeight >> 0xC);
-        destCursor->vy = baseVerts->vy + (deltas->vy * blendWeight >> 0xC);
-        destCursor->vz = baseVerts->vz + (deltas->vz * blendWeight >> 0xC);
+        destCursor->vx = baseVerts->vx + (deltas->vx * blendWeight >> 12);
+        destCursor->vy = baseVerts->vy + (deltas->vy * blendWeight >> 12);
+        destCursor->vz = baseVerts->vz + (deltas->vz * blendWeight >> 12);
         destCursor++;
         baseVerts++;
         deltas++;
@@ -1566,7 +1566,7 @@ void __cdecl BattleFx_RubyTentaclesBlendVertexDeltas(struct RubyTentaclesBaseMod
 
 // Builds the Sting model matrix from the angles g_RubyTentaclesParticleModelAngles and the scale
 // g_RubyTentaclesParticleModelScale, then spends the accumulated emission budget at
-// g_RubyTentaclesBurstAccumulator1 in 0x100 steps. Each step scans the 0x155 model vertices
+// g_RubyTentaclesBurstAccumulator1 in 256 steps. Each step scans the 0x155 model vertices
 // from a random start for one whose delta Y at g_RubyTentaclesBlendedVertexBuffer is positive,
 // allocates a particle slot running BattleFx_RubyTentaclesParticleSpriteTask, places it at the transformed
 // vertex (mirroring X on alternate particles) and gives it a random 0x1800..0x1FFF speed.
@@ -1600,11 +1600,11 @@ void BattleFx_RubyTentaclesEmitVertexParticles(void)
     SetRotMatrix(&frame.modelMatrix);
     SetTransMatrix(&frame.modelMatrix);
     g_RubyTentaclesBurstAccumulator1 += 0x300;
-    while (g_RubyTentaclesBurstAccumulator1 >= 0x100) {
-        frame.startIndex = rand() % 0x155;
-        for (frame.scanIndex = 0; frame.scanIndex < 0x155; frame.scanIndex++) {
-            frame.vertexIndex = (frame.startIndex + frame.scanIndex) % 0x155;
-            frame.vertexIndex = (frame.startIndex + frame.scanIndex) % 0x155;
+    while (g_RubyTentaclesBurstAccumulator1 >= 256) {
+        frame.startIndex = rand() % 341;
+        for (frame.scanIndex = 0; frame.scanIndex < 341; frame.scanIndex++) {
+            frame.vertexIndex = (frame.startIndex + frame.scanIndex) % 341;
+            frame.vertexIndex = (frame.startIndex + frame.scanIndex) % 341;
             if (((SVECTOR *)&g_RubyTentaclesBlendedVertexBuffer)[frame.vertexIndex].vy > 0) {
                 frame.particleRecord = (BattleFxRubyTentaclesRadialSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesParticleSpriteTask);
                 RotTransPoint((void *)(frame.vertexBase + frame.vertexIndex * 8), &frame.posX, &frame.pointDepth);
@@ -1616,9 +1616,9 @@ void BattleFx_RubyTentaclesEmitVertexParticles(void)
                 }
                 g_RubyTentaclesToggleFlag ^= 1;
                 if (DEAD_IN_RETAIL != 0) {
-                    frame.speed = 0x2000;
+                    frame.speed = 8192;
                 } else {
-                    frame.speed = rand() % 0x800 + 0x1800;
+                    frame.speed = rand() % 2048 + 6144;
                 }
                 frame.particleRecord->size = *(short *)&frame.speed;
                 break;
@@ -1684,9 +1684,9 @@ int __cdecl BattleFx_RubyTentaclesPlaceSpritePosition(void *position, short stat
     RotTransPoint(position, (int *)&g_RubyTentaclesParticleState.posXDword, &otz);
     if (offset != 0) {
         NormalizeVectorFixed((int *)&g_RubyTentaclesParticleState.posXDword, &normal);
-        g_RubyTentaclesParticleState.posXDword += normal.vx * offset >> 0xC;
-        g_RubyTentaclesParticleState.posYDword += normal.vy * offset >> 0xC;
-        g_RubyTentaclesParticleState.posZDword += normal.vz * offset >> 0xC;
+        g_RubyTentaclesParticleState.posXDword += normal.vx * offset >> 12;
+        g_RubyTentaclesParticleState.posYDword += normal.vy * offset >> 12;
+        g_RubyTentaclesParticleState.posZDword += normal.vz * offset >> 12;
     }
     SetRotMatrix(&g_RubyTentaclesPlacementMatrixRow0);
     SetTransMatrix(&g_RubyTentaclesPlacementMatrixRow0);
@@ -1717,13 +1717,13 @@ void __cdecl BattleFx_RubyTentaclesEffectRecordTask(void)
     task = (BattleFxRubyTentaclesEffectRecord *)BATTLE_CURRENT_TASK_SLOT;
     if (g_BattleIsPaused == 0) {
         if (task->timer == 0) {
-            g_BattleActorRecords[task->actorIndex].posY = 0x1388;
+            g_BattleActorRecords[task->actorIndex].posY = 5000;
             (task->timer)++;
             return;
         }
-        if (task->timer < 0xF) {
-            g_BattleActorRecords[task->actorIndex].posY -= 0x14D;
-            if (task->timer == 0xE) {
+        if (task->timer < 15) {
+            g_BattleActorRecords[task->actorIndex].posY -= 333;
+            if (task->timer == 14) {
                 g_BattleActorRecords[task->actorIndex].drawFlags &= 0xFB;
                 g_BattleActorRecords[task->actorIndex].posY = 0;
             }
@@ -1766,10 +1766,10 @@ int __cdecl BattleFx_RubyTentaclesDrawRecordAttachedParts(int actorIndex, int dr
             Battle3d_GetActorAttachMatrix(actorIndex, frame.partIndex + 1, (PsxMatrix *)((int)frame.actorParts + frame.partIndex * 0x34 + 0x174));
             Battle_ComposeMatrixRelativeToCamera((short *)g_BattleCameraTransform.matrix, (void *)((int)frame.actorParts + frame.partIndex * 0x34 + 0x174), &frame.composedMatrix);
             frame.meshHeader = g_RubyTentaclesEnemyPointerTable[frame.partIndex];
-            frame.meshWidth = 0x80;
+            frame.meshWidth = 128;
             frame.meshOriginX = 0;
             frame.meshOriginY = 0;
-            frame.meshHeight = 0x20;
+            frame.meshHeight = 32;
             frame.partsField16 = frame.actorParts->rootYaw;
             primBuf = (BattleFxRubyTentaclesMeshPacket *)(BattleFx_RubyTentaclesDrawPsxMeshPrimitives((BattleFxPsxMeshHeader *)&frame.meshHeader, drawMode, shade, primBuf, &frame.composedMatrix, (void *)g_BattleCameraTransform.matrix));
         }
@@ -1908,7 +1908,7 @@ int __cdecl BattleFx_RubyTentaclesDrawPsxMeshPrimitives(BattleFxPsxMeshHeader *m
     return (int)frame.packetCursor;
 }
 
-// Spends remaining in 0x100 steps, each spawning a particle sprite at a random angle and a distance
+// Spends remaining in 256 steps, each spawning a particle sprite at a random angle and a distance
 // of 0x12C..0x41F from origin in the XZ plane, with a random 0x1800..0x1FFF size. Returns what is left.
 // FUNCTION: FF7 0x0044e2d0
 int __cdecl BattleFx_RubyTentaclesSpawnRadialParticleBurst(Vec3sPacked *origin, int remaining)
@@ -1925,7 +1925,7 @@ int __cdecl BattleFx_RubyTentaclesSpawnRadialParticleBurst(Vec3sPacked *origin, 
     } frame;
 #pragma pack(pop)
 
-    while (remaining >= 0x100) {
+    while (remaining >= 256) {
         frame.angle = rand() & 0xFFF;
         if (DEAD_IN_RETAIL != 0) {
             frame.distanceRoll = 0x320;
@@ -1934,23 +1934,23 @@ int __cdecl BattleFx_RubyTentaclesSpawnRadialParticleBurst(Vec3sPacked *origin, 
         }
         frame.distance = frame.distanceRoll;
         frame.particle = (BattleFxRubyTentaclesRadialSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesParticleSpriteTask);
-        frame.particle->posX = origin->vx + (SinFixed(frame.angle) * frame.distance >> 0xC);
+        frame.particle->posX = origin->vx + (SinFixed(frame.angle) * frame.distance >> 12);
         frame.particle->posY = 0;
-        frame.particle->posZ = origin->vz + (CosFixed(frame.angle) * frame.distance >> 0xC);
+        frame.particle->posZ = origin->vz + (CosFixed(frame.angle) * frame.distance >> 12);
         if (DEAD_IN_RETAIL != 0) {
             frame.spriteParam = 0x2000;
         } else {
-            frame.spriteParam = rand() % 0x800 + 0x1800;
+            frame.spriteParam = rand() % 2048 + 6144;
         }
         frame.particle->size = *(short *)&frame.spriteParam;
-        remaining -= 0x100;
+        remaining -= 256;
     }
     return remaining;
 }
 
 // Per-frame radial emitter of the Sting timeline: adds 0x200 to g_RubyTentaclesBurstAccumulator2 and spends
-// it in 0x100 steps, each spawning a particle sprite at a random angle and a distance of 0x1F4..0x3E7
-// from the emitter centre with a random 0x1800..0x27FF size. Retires after 0xA frames.
+// it in 256 steps, each spawning a particle sprite at a random angle and a distance of 0x1F4..0x3E7
+// from the emitter centre with a random 0x1800..0x27FF size. Retires after 10 frames.
 // FUNCTION: FF7 0x0044e3d3
 void __cdecl BattleFx_RubyTentaclesRadialSpriteEmitterTask(void)
 {
@@ -1972,7 +1972,7 @@ void __cdecl BattleFx_RubyTentaclesRadialSpriteEmitterTask(void)
         return;
     }
     g_RubyTentaclesBurstAccumulator2 += 0x200;
-    while (g_RubyTentaclesBurstAccumulator2 >= 0x100) {
+    while (g_RubyTentaclesBurstAccumulator2 >= 256) {
         frame.angle = rand() & 0xFFF;
         if (DEAD_IN_RETAIL != 0) {
             frame.distanceRoll = 0x3E8;
@@ -1981,19 +1981,19 @@ void __cdecl BattleFx_RubyTentaclesRadialSpriteEmitterTask(void)
         }
         frame.distance = frame.distanceRoll;
         frame.sprite = (BattleFxRubyTentaclesRadialSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesParticleSpriteTask);
-        frame.sprite->posX = frame.emitter->posX + (SinFixed(frame.angle) * frame.distance >> 0xC);
+        frame.sprite->posX = frame.emitter->posX + (SinFixed(frame.angle) * frame.distance >> 12);
         frame.sprite->posY = 0;
-        frame.sprite->posZ = frame.emitter->posZ + (CosFixed(frame.angle) * frame.distance >> 0xC);
+        frame.sprite->posZ = frame.emitter->posZ + (CosFixed(frame.angle) * frame.distance >> 12);
         if (DEAD_IN_RETAIL != 0) {
             frame.spriteParam = 0x2800;
         } else {
-            frame.spriteParam = rand() % 0x1000 + 0x1800;
+            frame.spriteParam = rand() % 4096 + 6144;
         }
         frame.sprite->size = *(short *)&frame.spriteParam;
         g_RubyTentaclesBurstAccumulator2 -= 0x100;
     }
     (frame.emitter->frame)++;
-    if (frame.emitter->frame >= 0xA) {
+    if (frame.emitter->frame >= 10) {
         frame.emitter->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2028,9 +2028,9 @@ void __cdecl BattleFx_RubyTentaclesTimelineTask(void)
         return;
     }
     if (task->frameCounter == 0) {
-        BattleFx_RubyTentaclesBeginEnvelope(0x14, 0, 0x1E, 0xA);
+        BattleFx_RubyTentaclesBeginEnvelope(0x14, 0, 30, 10);
         emitter = (BattleFxRubyTentaclesTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesSecondaryRadialEmitterTask);
-        emitter->centerX = 0x9C4;
+        emitter->centerX = 2500;
         emitter->centerZ = 0xF254;
         emitter = (BattleFxRubyTentaclesTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesSecondaryRadialEmitterTask);
         emitter->centerX = 0xF63C;
@@ -2038,12 +2038,12 @@ void __cdecl BattleFx_RubyTentaclesTimelineTask(void)
         Battle_CreateBitPatternCallbackTask(0x60, 0, 0, BattleFx_RubyTentaclesSpawnRecordCallback);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x278);
     }
-    if (task->frameCounter >= 0x2E) {
+    if (task->frameCounter >= 46) {
         task->ownerSlot = BATTLE_TASK_FREE;
         // STRING: FF7 0x007e2ac0
-        GameHeapFree(g_RubyTentaclesEnemyPointerTable, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 0x36A);
+        GameHeapFree(g_RubyTentaclesEnemyPointerTable, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 874);
         // STRING: FF7 0x007e2ae4
-        GameHeapFree(g_RubyTentaclesEnemyFileData, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 0x36B);
+        GameHeapFree(g_RubyTentaclesEnemyFileData, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 875);
         g_RubyTentaclesEnemyPointerTable = 0;
         g_RubyTentaclesEnemyFileData = 0;
     } else {
@@ -2078,8 +2078,8 @@ void __cdecl BattleFx_RubyTentaclesRecordTask(void)
             (task->frameCount)++;
             return;
         }
-        if (task->frameCount < 0x1E) {
-            g_BattleActorRecords[task->actorIndex].posY += 0xA6;
+        if (task->frameCount < 30) {
+            g_BattleActorRecords[task->actorIndex].posY += 166;
             g_RubyTentaclesParticleProgress2 += 0x100;
             g_RubyTentaclesParticleProgress2 = BattleFx_RubyTentaclesSpawnRadialParticleBurst((Vec3sPacked *)&g_BattleActorRecords[task->actorIndex].posX, g_RubyTentaclesParticleProgress2);
         } else {
@@ -2091,7 +2091,7 @@ void __cdecl BattleFx_RubyTentaclesRecordTask(void)
 }
 
 // The Weapon1 counterpart of BattleFx_RubyTentaclesRadialSpriteEmitterTask: one sprite per frame, from
-// g_RubyTentaclesBurstAccumulator3, for 0x28 frames.
+// g_RubyTentaclesBurstAccumulator3, for 40 frames.
 // FUNCTION: FF7 0x0044e80d
 void __cdecl BattleFx_RubyTentaclesSecondaryRadialEmitterTask(void)
 {
@@ -2113,7 +2113,7 @@ void __cdecl BattleFx_RubyTentaclesSecondaryRadialEmitterTask(void)
         return;
     }
     g_RubyTentaclesBurstAccumulator3 += 0x100;
-    while (g_RubyTentaclesBurstAccumulator3 >= 0x100) {
+    while (g_RubyTentaclesBurstAccumulator3 >= 256) {
         frame.angle = rand() & 0xFFF;
         if (DEAD_IN_RETAIL != 0) {
             frame.distanceRoll = 0x3E8;
@@ -2122,19 +2122,19 @@ void __cdecl BattleFx_RubyTentaclesSecondaryRadialEmitterTask(void)
         }
         frame.distance = frame.distanceRoll;
         frame.sprite = (BattleFxRubyTentaclesRadialSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_RubyTentaclesParticleSpriteTask);
-        frame.sprite->posX = frame.emitter->posX + (SinFixed(frame.angle) * frame.distance >> 0xC);
+        frame.sprite->posX = frame.emitter->posX + (SinFixed(frame.angle) * frame.distance >> 12);
         frame.sprite->posY = 0;
-        frame.sprite->posZ = frame.emitter->posZ + (CosFixed(frame.angle) * frame.distance >> 0xC);
+        frame.sprite->posZ = frame.emitter->posZ + (CosFixed(frame.angle) * frame.distance >> 12);
         if (DEAD_IN_RETAIL != 0) {
             frame.spriteParam = 0x2800;
         } else {
-            frame.spriteParam = rand() % 0x1000 + 0x1800;
+            frame.spriteParam = rand() % 4096 + 6144;
         }
         frame.sprite->size = *(short *)&frame.spriteParam;
         g_RubyTentaclesBurstAccumulator3 -= 0x100;
     }
     (frame.emitter->frame)++;
-    if (frame.emitter->frame >= 0x28) {
+    if (frame.emitter->frame >= 40) {
         frame.emitter->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2186,10 +2186,10 @@ int *__cdecl BattleFx_RubyTentaclesLoadEnemy012PointerTable(void)
         filePosition += 4;
         if (entryCnt > 0) {
             // STRING: FF7 0x007e2b18
-            entries = (int *)GameHeapAlloc(entryCnt, 4, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 0x3D0);
+            entries = (int *)GameHeapAlloc(entryCnt, 4, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 976);
         } else {
             // STRING: FF7 0x007e2b3c
-            entries = (int *)GameHeapAlloc(entryCnt + 1, 4, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 0x3D4);
+            entries = (int *)GameHeapAlloc(entryCnt + 1, 4, "C:\\FF7\\src\\battle\\yasui\\sting.cpp", 980);
         }
         if (entryCnt > 0) {
             filePosition += 2;

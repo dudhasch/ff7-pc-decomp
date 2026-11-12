@@ -63,13 +63,13 @@ void __cdecl Gfx_FreeModelTable(GfxModelTable *table)
                 grp++;
             }
             // STRING: FF7 0x00910658
-            GameHeapFree((void *)table->entries, "C:\\lib\\src\\graphics\\render.cpp", 0x3A);
+            GameHeapFree((void *)table->entries, "C:\\lib\\src\\graphics\\render.cpp", 58);
             if (table->ownerRef != 0) {
                 *(int *)table->ownerRef = 0;
             }
         }
         // STRING: FF7 0x00910678
-        GameHeapFree(table, "C:\\lib\\src\\graphics\\render.cpp", 0x42);
+        GameHeapFree(table, "C:\\lib\\src\\graphics\\render.cpp", 66);
     }
 }
 
@@ -107,7 +107,7 @@ int __cdecl Gfx_LoadModelTableFromRecords(int groupTag, int lifetime, int fileCo
 
     failed = 1;
     // STRING: FF7 0x00910698
-    pTable = (GfxModelTable *)GameHeapAlloc(1, 0x24, "C:\\lib\\src\\graphics\\render.cpp", 0x55);
+    pTable = (GfxModelTable *)GameHeapAlloc(1, 36, "C:\\lib\\src\\graphics\\render.cpp", 85);
     if (pTable != 0) {
         pTable->fileContext = fileContext;
         pTable->count = count;
@@ -116,7 +116,7 @@ int __cdecl Gfx_LoadModelTableFromRecords(int groupTag, int lifetime, int fileCo
         pTable->lifetime = lifetime;
         pTable->ownerRef = ownerRef;
         // STRING: FF7 0x009106b8
-        pTable->entries = (int)GameHeapAlloc(pTable->count, 0xC, "C:\\lib\\src\\graphics\\render.cpp", 0x61);
+        pTable->entries = (int)GameHeapAlloc(pTable->count, 12, "C:\\lib\\src\\graphics\\render.cpp", 97);
         if (pTable->entries != 0) {
             ctx = GetEngineContext();
             optionsPtr = (PfileLoadOptions *)&options;
@@ -429,11 +429,11 @@ void __cdecl Gfx_FreeModelTableBank(GfxModelTableBank *bank)
         Gfx_DestroyDrawPool(bank->drawPool);
         bank->drawPool = 0;
         // STRING: FF7 0x009106d8
-        GameHeapFree((void *)bank->slots, "C:\\lib\\src\\graphics\\render.cpp", 0x264);
+        GameHeapFree((void *)bank->slots, "C:\\lib\\src\\graphics\\render.cpp", 612);
         // STRING: FF7 0x009106f8
-        GameHeapFree((void *)bank->table, "C:\\lib\\src\\graphics\\render.cpp", 0x265);
+        GameHeapFree((void *)bank->table, "C:\\lib\\src\\graphics\\render.cpp", 613);
         // STRING: FF7 0x00910718
-        GameHeapFree(bank, "C:\\lib\\src\\graphics\\render.cpp", 0x267);
+        GameHeapFree(bank, "C:\\lib\\src\\graphics\\render.cpp", 615);
     }
 }
 
@@ -447,14 +447,14 @@ int __cdecl Gfx_CreateModelTableBank(int count, GfxModelTableDesc *desc)
     GfxModelTableBank *tableBank;
 
     // STRING: FF7 0x00910738
-    tableBank = (GfxModelTableBank *)GameHeapAlloc(1, 0x2C, "C:\\lib\\src\\graphics\\render.cpp", 0x270);
+    tableBank = (GfxModelTableBank *)GameHeapAlloc(1, 44, "C:\\lib\\src\\graphics\\render.cpp", 624);
     if (tableBank != 0) {
         failed = 0;
         tableBank->count = count;
         // STRING: FF7 0x00910758
-        tableBank->slots = (int)GameHeapAlloc(count, 4, "C:\\lib\\src\\graphics\\render.cpp", 0x276);
+        tableBank->slots = (int)GameHeapAlloc(count, 4, "C:\\lib\\src\\graphics\\render.cpp", 630);
         // STRING: FF7 0x00910778
-        tableBank->table = (int)GameHeapAlloc(count, 4, "C:\\lib\\src\\graphics\\render.cpp", 0x277);
+        tableBank->table = (int)GameHeapAlloc(count, 4, "C:\\lib\\src\\graphics\\render.cpp", 631);
         tableBank->fileOpenMode = 0;
         if (tableBank->slots == 0) {
             failed = 1;
@@ -600,7 +600,7 @@ void __cdecl Gfx_ModelTableBankRemoveTablesByGroupTag(int groupTag, GfxModelTabl
 void __cdecl Gfx_InitModelTableCreateDescriptor(GfxModelTableCreateDesc *desc)
 {
     if (desc != 0) {
-        ZeroFillMemory32(0x1C, desc);
+        ZeroFillMemory32(28, desc);
         desc->color = 0xFF242424;
     }
 }
@@ -611,9 +611,9 @@ void __cdecl Gfx_InitModelTableCreateDescriptor(GfxModelTableCreateDesc *desc)
 // FUNCTION: FF7 0x0068a9e0
 void __cdecl Gfx_InitResourceRequest(GfxResourceRequest *record)
 {
-    ZeroFillMemory32(0xC, record);
+    ZeroFillMemory32(12, record);
     record->groupTag = 0;
-    record->duration = 0x5DC;
+    record->duration = 1500;
 }
 
 /*

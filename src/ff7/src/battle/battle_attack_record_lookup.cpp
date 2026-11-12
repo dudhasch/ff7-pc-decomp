@@ -30,7 +30,7 @@ unsigned char *__cdecl Battle_FindAttackRecord(unsigned int attackId)
     if ((int)attackId < 0x100) {
         record = &g_BattleAttackTable[attackId].accuracy;
     } else {
-        for (index = 0; index < 0x20; index++) {
+        for (index = 0; index < 32; index++) {
             if (g_BattleState.attackIds[index] == attackId) {
                 record = (unsigned char *)&g_BattleState.attackEntries[index * 0x1C];
                 break;

@@ -173,7 +173,7 @@ void __cdecl BattleFx_SpecialTailLaserSpawnTimeline(int targetMask, int sourceAc
 /*
  * Per-frame handler of the Tele timeline: returns while the battle is paused. On its first frame it
  * spawns the beam task starting 0x1000 right of the targets' centroid, plays the sound and starts
- * the fixed-point ramp; after 0x2D frames it frees its slot and ramps back down.
+ * the fixed-point ramp; after 45 frames it frees its slot and ramps back down.
  */
 // FUNCTION: FF7 0x00526eb8
 void __cdecl BattleFx_SpecialTailLaserTimelineTask(void)
@@ -187,7 +187,7 @@ void __cdecl BattleFx_SpecialTailLaserTimelineTask(void)
     }
     if (timeline->age == 0) {
         beamTask = (BattleFxTailLaserBeamRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTailLaserBeamTask);
-        beamTask->position = timeline->targetX + 0x1000;
+        beamTask->position = timeline->targetX + 4096;
         beamTask->clearedWordA = 0;
         beamTask->base = timeline->targetZ;
         beamTask->velocity = 0xFDDE;
@@ -197,17 +197,17 @@ void __cdecl BattleFx_SpecialTailLaserTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0xC00, 0xA);
+        Battle_StartFixedPointRamp(0xC00, 10);
     }
     (timeline->age)++;
-    if (timeline->age == 0x2D) {
+    if (timeline->age == 45) {
         timeline->ownerSlot = BATTLE_TASK_FREE;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
     }
 }
 
 /*
- * Sweeps the beam along X for 0xF frames, spawning its segments, bouncing and animated sprites, and
+ * Sweeps the beam along X for 15 frames, spawning its segments, bouncing and animated sprites, and
  * a target timeline for every target the beam passes.
  */
 // FUNCTION: FF7 0x00526fd0
@@ -224,12 +224,12 @@ void __cdecl BattleFx_SpecialTailLaserBeamTask(void)
     g_BattleSpecTailLaserSpriteReq7.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecTailLaserLoadedResTable);
     g_BattleSpecTailLaserSpriteReq7.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecTailLaserLoadedResTable);
     ((BattleFxModelDraw *)g_BattleSpecTailLaserSpriteReq8)->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecTailLaserLoadedResTable);
-    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecTailLaserSourceBonePos, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecTailLaserSourceBonePos, 0x3000 /* 3.0 */, 0);
     if (g_BattleSpecTailLaserSpriteReq7.spriteGroup != 0) {
         g_BattleSpecTailLaserSpriteReq7.frame = beam->index % g_BattleSpecTailLaserSpriteReq7.spriteGroup->header->frameCount;
     }
     g_BattleSpecTailLaserDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecTailLaserSpriteReq7, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecTailLaserDrawListHead);
-    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecTailLaserSourceBonePos, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecTailLaserSourceBonePos, 0x1000 /* 1.0 */, 0);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecTailLaserDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecTailLaserSpriteReq8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecTailLaserDrawListHead);
     if (g_BattleIsPaused != 0) {
@@ -247,24 +247,24 @@ void __cdecl BattleFx_SpecialTailLaserBeamTask(void)
         sprite->posY = beam->base;
         sprite->height = 0;
         theta = rand() % 0x1000;
-        sprite->offsetX = CosFixed(theta) * 0x64 >> 0xC;
-        sprite->offsetY = SinFixed(theta) * 0x64 >> 0xC;
-        sprite->driftSpeed = -rand() % 0xC8 - 0x64;
-        sprite->lifetime = rand() % 0x10 + 4;
+        sprite->offsetX = CosFixed(theta) * 0x64 >> 12;
+        sprite->offsetY = SinFixed(theta) * 0x64 >> 12;
+        sprite->driftSpeed = -rand() % 200 - 100;
+        sprite->lifetime = rand() % 16 + 4;
     }
     sprite = (BattleFxTailLaserBeamSegment *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialTailLaserAnimatedSpriteTask)];
-    sprite->posX = beam->position + rand() % 0xC8 + -0x64;
-    sprite->posY = beam->base + rand() % 0xC8 + -0x64;
+    sprite->posX = beam->position + rand() % 200 + -100;
+    sprite->posY = beam->base + rand() % 200 + -100;
     sprite->height = 0;
     sprite->lifetime = 5;
-    for (ai = 0; ai < 0xA; ai++) {
+    for (ai = 0; ai < 10; ai++) {
         if ((g_BattleSpecTailLaserTargetMask & 1 << ai) != 0) {
             Battle_GetBoneWorldPos(ai, g_BattleActorRecords[ai].targetBone, (short *)bonePos);
             p = (short)bonePos[0] - beam->position;
             if (p < 0) {
                 p = -p;
             }
-            if (p < 0x258) {
+            if (p < 600) {
                 sprite = (BattleFxTailLaserBeamSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTailLaserTargetTimelineTask);
                 Battle_GetBoneWorldPos(ai, g_BattleActorRecords[ai].targetBone, &((BattleFxTailLaserTargetTimelineSlot *)sprite)->originX);
                 g_BattleSpecTailLaserTargetMask ^= (short)(1 << ai);
@@ -274,7 +274,7 @@ void __cdecl BattleFx_SpecialTailLaserBeamTask(void)
         }
     }
     (beam->index)++;
-    if (beam->index == 0xF) {
+    if (beam->index == 15) {
         beam->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -290,7 +290,7 @@ void __cdecl BattleFx_SpecialTailLaserAnimatedSpriteTask(void)
     BattleFxTailLaserAnimSprite *task;
 
     task = (BattleFxTailLaserAnimSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecTailLaserSpriteReq1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_BattleSpecTailLaserModelParams[task->variant], g_BattleSpecTailLaserLoadedResTable);
     if (task->variant != 5) {
         g_BattleSpecTailLaserSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(g_BattleSpecTailLaserModelParams[task->variant], g_BattleSpecTailLaserLoadedResTable);
@@ -308,7 +308,7 @@ void __cdecl BattleFx_SpecialTailLaserAnimatedSpriteTask(void)
 }
 
 /*
- * Draws one spark sprite that falls, bounces off the ground and fades out over 0xF frames.
+ * Draws one spark sprite that falls, bounces off the ground and fades out over 15 frames.
  */
 // FUNCTION: FF7 0x005274e2
 void __cdecl BattleFx_SpecialTailLaserBouncingSpriteTask(void)
@@ -371,10 +371,10 @@ void __cdecl BattleFx_SpecialTailLaserBouncingSpriteTask(void)
         frame.spriteSlot->posY = 0;
         frame.spriteSlot->velocityY *= -1;
     }
-    frame.spriteSlot->velocityY += 0x14;
-    frame.spriteSlot->angle += 0x200;
+    frame.spriteSlot->velocityY += 20;
+    frame.spriteSlot->angle += 0x200 /* 45 deg */;
     (frame.spriteSlot->frameCounter)++;
-    if (frame.spriteSlot->frameCounter == 0xF) {
+    if (frame.spriteSlot->frameCounter == 15) {
         frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -407,7 +407,7 @@ void __cdecl BattleFx_SpecialTailLaserBeamSegmentTask(void)
     frame.beamLength = SqrtToInt(frame.relX.vx * frame.relX.vx + frame.relX.vy * frame.relX.vy + frame.relX.vz * frame.relX.vz);
     Gte_BuildLookBasisFromDirection(&frame.relX.vx, frame.lookBasis.m[0]);
     ConcatMatrixPreservingTranslation(&frame.lookBasis, &frame.beamMatrix, &frame.beamMatrix);
-    g_BattleSpecTailLaserScaleVector.y = (frame.beamLength << 0xC) / 0xA28;
+    g_BattleSpecTailLaserScaleVector.y = (frame.beamLength << 12) / 2600;
     ScaleMatrix(&frame.beamMatrix, (int *)&g_BattleSpecTailLaserScaleVector);
     frame.beamMatrix.t[0] = ((BattleSpecTailLaserSourceBonePos *)&g_BattleSpecTailLaserSourceBonePos)->sourceX;
     frame.beamMatrix.t[1] = ((BattleSpecTailLaserSourceBonePos *)&g_BattleSpecTailLaserSourceBonePos)->sourceY;
@@ -416,7 +416,7 @@ void __cdecl BattleFx_SpecialTailLaserBeamSegmentTask(void)
     SetRotMatrix(&frame.worldMatrix);
     SetTransMatrix(&frame.worldMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecTailLaserSpriteReq5.req5Word10 = frame.beamSlot->frameCounter << 0xA;
+    g_BattleSpecTailLaserSpriteReq5.req5Word10 = frame.beamSlot->frameCounter << 10;
     g_BattleSpecTailLaserDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecTailLaserSpriteReq5, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecTailLaserDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -428,7 +428,7 @@ void __cdecl BattleFx_SpecialTailLaserBeamSegmentTask(void)
 }
 
 /*
- * Plays the hit on one target for 0x1E frames: radial sparks, pulsing models, growing fade sprites
+ * Plays the hit on one target for 30 frames: radial sparks, pulsing models, growing fade sprites
  * and animated sprites around its position.
  */
 // FUNCTION: FF7 0x00527932
@@ -454,15 +454,15 @@ void __cdecl BattleFx_SpecialTailLaserTargetTimelineTask(void)
         return;
     }
     if (frame.taskSlot->frameCounter == 0) {
-        for (frame.spawnIndex = 0; frame.spawnIndex < 0xC; frame.spawnIndex++) {
+        for (frame.spawnIndex = 0; frame.spawnIndex < 12; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialTailLaserRadialSparkSpriteTask)];
             frame.spawnSlot->posX = frame.taskSlot->originX;
             frame.spawnSlot->posY = 0;
             frame.spawnSlot->posZ = frame.taskSlot->originZ;
             frame.angle = (-rand() % 1024);
             frame.spawnSlot->angle = frame.angle;
-            frame.offsetX.vx = CosFixed(frame.angle) * 0xA0 >> 0xC;
-            frame.offsetX.vy = SinFixed(frame.angle) * 0xA0 >> 0xC;
+            frame.offsetX.vx = CosFixed(frame.angle) * 0xA0 >> 12;
+            frame.offsetX.vy = SinFixed(frame.angle) * 0xA0 >> 12;
             frame.offsetX.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -472,39 +472,39 @@ void __cdecl BattleFx_SpecialTailLaserTargetTimelineTask(void)
             TransformVectorToInt16(&frame.rotMatrix, &frame.offsetX, &frame.spawnSlot->velocityX);
         }
     }
-    if (frame.taskSlot->frameCounter < 0xC && (frame.taskSlot->frameCounter % 4) == 0) {
+    if (frame.taskSlot->frameCounter < 12 && (frame.taskSlot->frameCounter % 4) == 0) {
         frame.angle = frame.taskSlot->frameCounter >> 2;
         frame.radius = g_BattleActorRecords[frame.taskSlot->actorId].radius;
         frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTailLaserPulsingModelTask);
-        frame.spawnSlot->posX = frame.taskSlot->originX + (SinFixed(frame.angle * 0x555) * frame.radius >> 0xC);
+        frame.spawnSlot->posX = frame.taskSlot->originX + (SinFixed(frame.angle * 1365) * frame.radius >> 12);
         frame.spawnSlot->posY = 0;
-        frame.spawnSlot->posZ = frame.taskSlot->originZ + (CosFixed(frame.angle * 0x555) * frame.radius >> 0xC);
+        frame.spawnSlot->posZ = frame.taskSlot->originZ + (CosFixed(frame.angle * 1365) * frame.radius >> 12);
     }
     if (frame.taskSlot->frameCounter < 6) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTailLaserGrowingFadeSpriteTask);
-            frame.spawnSlot->posX = frame.taskSlot->originX + rand() % 0x640 + -0x320;
-            frame.spawnSlot->posY = -rand() % 0x1F4;
-            frame.spawnSlot->posZ = frame.taskSlot->originZ + rand() % 0x640 + -0x320;
+            frame.spawnSlot->posX = frame.taskSlot->originX + rand() % 1600 + -800;
+            frame.spawnSlot->posY = -rand() % 500;
+            frame.spawnSlot->posZ = frame.taskSlot->originZ + rand() % 1600 + -800;
         }
     }
-    if (frame.taskSlot->frameCounter > 0x12 && frame.taskSlot->frameCounter < 0x1E) {
+    if (frame.taskSlot->frameCounter > 18 && frame.taskSlot->frameCounter < 30) {
         frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialTailLaserAnimatedSpriteTask)];
-        frame.spawnSlot->posX = frame.taskSlot->originX + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posY = frame.taskSlot->originY + -rand() % 0x1F4 + -0xC8;
-        frame.spawnSlot->posZ = frame.taskSlot->originZ + rand() % 0x4B0 + -0x258;
+        frame.spawnSlot->posX = frame.taskSlot->originX + rand() % 1200 + -600;
+        frame.spawnSlot->posY = frame.taskSlot->originY + -rand() % 500 + -200;
+        frame.spawnSlot->posZ = frame.taskSlot->originZ + rand() % 1200 + -600;
         frame.spawnSlot->variant = (rand() % 2) + 2;
         frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialTailLaserAnimatedSpriteTask)];
-        frame.spawnSlot->posX = frame.taskSlot->originX + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posY = frame.taskSlot->originY + -rand() % 0x1F4 + -0xC8;
-        frame.spawnSlot->posZ = frame.taskSlot->originZ + rand() % 0x4B0 + -0x258;
+        frame.spawnSlot->posX = frame.taskSlot->originX + rand() % 1200 + -600;
+        frame.spawnSlot->posY = frame.taskSlot->originY + -rand() % 500 + -200;
+        frame.spawnSlot->posZ = frame.taskSlot->originZ + rand() % 1200 + -600;
         frame.spawnSlot->variant = (rand() % 2);
     }
-    if (frame.taskSlot->frameCounter == 0x14) {
+    if (frame.taskSlot->frameCounter == 20) {
         Battle_PostActorHitOrHurtMessage(frame.taskSlot->actorId);
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x1E) {
+    if (frame.taskSlot->frameCounter == 30) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -520,8 +520,8 @@ void __cdecl BattleFx_SpecialTailLaserGrowingFadeSpriteTask(void)
     int frameVal;
 
     sprite = BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecTailLaserSpriteReq2.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecTailLaserLoadedResTable);
-    g_BattleSpecTailLaserSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecTailLaserLoadedResTable);
+    (g_BattleSpecTailLaserSpriteReq2.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecTailLaserLoadedResTable);
+    g_BattleSpecTailLaserSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecTailLaserLoadedResTable);
     if (sprite->frameCounter < 8) {
         frameVal = sprite->frameCounter;
     } else {
@@ -536,7 +536,7 @@ void __cdecl BattleFx_SpecialTailLaserGrowingFadeSpriteTask(void)
     g_BattleSpecTailLaserDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecTailLaserSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecTailLaserDrawListHead);
     if (g_BattleIsPaused == 0) {
         (sprite->frameCounter)++;
-        if (sprite->frameCounter == 0x18) {
+        if (sprite->frameCounter == 24) {
             sprite->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -562,8 +562,8 @@ void __cdecl BattleFx_SpecialTailLaserRadialSparkSpriteTask(void)
 #pragma pack(pop)
 
     frame.sparkSlot = (BattleFxTailLaserBouncingSpriteSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    g_BattleSpecTailLaserSpriteReq4.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecTailLaserLoadedResTable);
-    g_BattleSpecTailLaserSpriteReq4.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecTailLaserLoadedResTable);
+    g_BattleSpecTailLaserSpriteReq4.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecTailLaserLoadedResTable);
+    g_BattleSpecTailLaserSpriteReq4.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecTailLaserLoadedResTable);
     for (frame.axisIndex = 0; frame.axisIndex < 3; frame.axisIndex++) {
         frame.localMatrix.m[2][frame.axisIndex] = 0;
         frame.localMatrix.m[1][frame.axisIndex] = 0;
@@ -600,7 +600,7 @@ void __cdecl BattleFx_SpecialTailLaserRadialSparkSpriteTask(void)
 }
 
 /*
- * Draws one pulsing model at its position for 0x1E frames.
+ * Draws one pulsing model at its position for 30 frames.
  */
 // FUNCTION: FF7 0x005280b2
 void __cdecl BattleFx_SpecialTailLaserPulsingModelTask(void)
@@ -618,7 +618,7 @@ void __cdecl BattleFx_SpecialTailLaserPulsingModelTask(void)
     frame.pulseSlot = (BattleFxTailLaserPulseSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecTailLaserSpriteReq6.modelField) = Gfx_ModelTableGetRenderObject(0, g_BattleSpecTailLaserLoadedResTable);
     RotMatrix((SVECTOR *)&g_BattleSpecTailLaserRotationVector, &frame.rotMatrix);
-    g_BattleSpecTailLaserScaleStep = (SinFixed(frame.pulseSlot->pulseStep * 0x22) << 0xD >> 0xC) + 0x2000;
+    g_BattleSpecTailLaserScaleStep = (SinFixed(frame.pulseSlot->pulseStep * 0x22) << 13 >> 12) + 0x2000;
     (*(int *)&g_BattleSpecTailLaserScale8) = g_BattleSpecTailLaserScaleStep;
     ScaleMatrix(&frame.rotMatrix, (int *)&g_BattleSpecTailLaserScale8);
     frame.rotMatrix.t[0] = frame.pulseSlot->posX;
@@ -627,13 +627,13 @@ void __cdecl BattleFx_SpecialTailLaserPulsingModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    g_BattleSpecTailLaserSpriteReq6.req6PulseWord = CosFixed(frame.pulseSlot->pulseStep * 0x22) << 7 >> 0xC;
+    g_BattleSpecTailLaserSpriteReq6.req6PulseWord = CosFixed(frame.pulseSlot->pulseStep * 34) << 7 >> 12;
     g_BattleSpecTailLaserDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecTailLaserSpriteReq6, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecTailLaserDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.pulseSlot->pulseStep)++;
-    if (frame.pulseSlot->pulseStep == 0x1E) {
+    if (frame.pulseSlot->pulseStep == 30) {
         frame.pulseSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

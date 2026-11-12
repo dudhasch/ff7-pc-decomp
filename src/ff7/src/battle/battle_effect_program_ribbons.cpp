@@ -230,7 +230,7 @@ unsigned char g_bssPad_00b467e8[464] = {0};
 unsigned char g_BattleLimitTifaDeferredDrawArgs[0x4] = {0};
 unsigned char g_bssPad_00b469bc[4] = {0};
 // GLOBAL: FF7 0x00b469c0
-unsigned char g_BattleLimitTifaPendingResource[0x4] = {0};
+unsigned char g_BattleLimitTifaPendingResource[4] = {0};
 unsigned char g_bssPad_00b469c4[4] = {0};
 unsigned char g_bssPad_00b469c8[464] = {0};
 // GLOBAL: FF7 0x00b46b98
@@ -465,9 +465,9 @@ void __cdecl Battle_EffectProgramAppendRibbonArcPoints(int ribbonIdx, Vec3sPacke
                 frame.curRadius += frame.radiusStep;
                 Gte_BuildAxisAngleMatrix(frame.stepIndex * pt2, &frame.axisMatrix, &frame.axis);
                 TransformVectorToInt32(&frame.axisMatrix, &frame.newVecX, &frame.rotatedX);
-                frame.interpX.vx = (frame.curRadius * frame.rotatedX.vx >> 0xC) + pt1->vx;
-                frame.interpX.vy = (frame.curRadius * frame.rotatedX.vy >> 0xC) + pt1->vy;
-                frame.interpX.vz = (frame.curRadius * frame.rotatedX.vz >> 0xC) + pt1->vz;
+                frame.interpX.vx = (frame.curRadius * frame.rotatedX.vx >> 12) + pt1->vx;
+                frame.interpX.vy = (frame.curRadius * frame.rotatedX.vy >> 12) + pt1->vy;
+                frame.interpX.vz = (frame.curRadius * frame.rotatedX.vz >> 12) + pt1->vz;
                 Battle_EffectProgramAppendRibbonPathPoint(ribbonIdx, (Vec3sPacked *)&frame.interpX);
             }
         }
@@ -532,7 +532,7 @@ void __cdecl Battle_EffectProgramDrawRibbonGradientQuads(void)
  * Initialises the Tifa limit effect: points both g_BattleLimitTifaActiveRibbonHead and g_pBattleLimitTifaParticlePool at the buffer
  * &g_BattleLimitTifaRenderStatePtr, takes two draw lists from Gfx_GetPsxPacketScratchPtr into g_BattleLimitTifaDrawListHandle1 and g_BattleLimitTifaDrawListHandle2,
  * loads the resources with BattleFx_LimitLoadResTifa1, then builds three point tables with
- * BattleFx_LimitTifaFillRingPointBuffer(8, 0x100), BattleFx_LimitTifaFillRingPointsIntoBuffer(0x20, 0x200, &g_BattleLimitTifaRingPointsBuffer2) and BattleFx_LimitTifaFillRingPointsIntoBuffer(0x20, 0x180,
+ * BattleFx_LimitTifaFillRingPointBuffer(8, 256), BattleFx_LimitTifaFillRingPointsIntoBuffer(32, 512, &g_BattleLimitTifaRingPointsBuffer2) and BattleFx_LimitTifaFillRingPointsIntoBuffer(32, 384,
  * &g_BattleLimitTifaRingPointsBuffer1).
  */
 // FUNCTION: FF7 0x004e1bbc
@@ -543,9 +543,9 @@ void __cdecl BattleFx_LimitTifaInitRingPointTables(int targetMask, int actorIdx)
     g_BattleLimitTifaDrawListHandle1 = Gfx_GetPsxPacketScratchPtr();
     g_BattleLimitTifaDrawListHandle2 = Gfx_GetPsxPacketScratchPtr();
     BattleFx_LimitLoadResTifa1();
-    BattleFx_LimitTifaFillRingPointBuffer(8, 0x100);
-    BattleFx_LimitTifaFillRingPointsIntoBuffer(0x20, 0x200, (struct BattleLimitTifaRingPoint *)&g_BattleLimitTifaRingPointsBuffer2);
-    BattleFx_LimitTifaFillRingPointsIntoBuffer(0x20, 0x180, (struct BattleLimitTifaRingPoint *)&g_BattleLimitTifaRingPointsBuffer1);
+    BattleFx_LimitTifaFillRingPointBuffer(8, 256);
+    BattleFx_LimitTifaFillRingPointsIntoBuffer(32, 512, (struct BattleLimitTifaRingPoint *)&g_BattleLimitTifaRingPointsBuffer2);
+    BattleFx_LimitTifaFillRingPointsIntoBuffer(32, 384, (struct BattleLimitTifaRingPoint *)&g_BattleLimitTifaRingPointsBuffer1);
 }
 
 /*
@@ -562,8 +562,8 @@ void __cdecl BattleFx_LimitTifaFillRingPointBuffer(int count, int radius)
 
     angleStep = 0x1000 / count;
     for (pointIndex = 0; pointIndex < count; pointIndex++) {
-        g_BattleLimitTifaRingPointsBuffer3[pointIndex].x = radius * CosFixed(angleStep * pointIndex) >> 0xC;
-        g_BattleLimitTifaRingPointsBuffer3[pointIndex].y = radius * SinFixed(angleStep * pointIndex) >> 0xC;
+        g_BattleLimitTifaRingPointsBuffer3[pointIndex].x = radius * CosFixed(angleStep * pointIndex) >> 12;
+        g_BattleLimitTifaRingPointsBuffer3[pointIndex].y = radius * SinFixed(angleStep * pointIndex) >> 12;
         g_BattleLimitTifaRingPointsBuffer3[pointIndex].z = 0;
     }
 }
@@ -580,8 +580,8 @@ void __cdecl BattleFx_LimitTifaFillRingPointsIntoBuffer(int count, int radius, B
 
     angleStep = 0x1000 / count;
     for (pointIndex = 0; pointIndex < count; pointIndex++) {
-        buffer[pointIndex].x = radius * CosFixed(angleStep * pointIndex) >> 0xC;
-        buffer[pointIndex].y = radius * SinFixed(angleStep * pointIndex) >> 0xC;
+        buffer[pointIndex].x = radius * CosFixed(angleStep * pointIndex) >> 12;
+        buffer[pointIndex].y = radius * SinFixed(angleStep * pointIndex) >> 12;
         buffer[pointIndex].z = 0;
     }
 }
@@ -653,22 +653,22 @@ void __cdecl Battle_EffectProgram1Step(void)
     }
     curSlot = (BattleFxProgram1Slot *)BATTLE_CURRENT_TASK_SLOT;
     blockPointer = (BattleEffectProgram1Data *)Gfx_GetPsxScratchpadPtr(0);
-    if (curSlot->step == 5 || (curSlot->step == 9 || curSlot->step == 0xC)) {
+    if (curSlot->step == 5 || (curSlot->step == 9 || curSlot->step == 12)) {
         spawnedStepPtr = (BattleFxRibbonStep *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramAnimatedSpriteEntry0Task);
         blockPointer->offsetX = 0;
         blockPointer->offsetY = 0;
         blockPointer->offsetZ = 0xFED4;
         Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, (short *)((int)blockPointer + 0x34), (short *)((int)spawnedStepPtr + 4));
-        spawnedStepPtr->posX += (short)(rand() % 0x64 - 0x32);
-        spawnedStepPtr->posY += (short)(rand() % 0x64 - 0x32);
-        spawnedStepPtr->posZ += (short)(rand() % 0x64 - 0x32);
+        spawnedStepPtr->posX += (short)(rand() % 100 - 50);
+        spawnedStepPtr->posY += (short)(rand() % 100 - 50);
+        spawnedStepPtr->posZ += (short)(rand() % 100 - 50);
         baseScale = 0x1400;
-        if (curSlot->step == 0xC) {
+        if (curSlot->step == 12) {
             jitterScale = rand() % 0x600 + 0x1000;
         } else {
             jitterScale = rand() % 0x800 + 0xA00;
         }
-        spawnedStepPtr->scale = baseScale * jitterScale >> 0xC;
+        spawnedStepPtr->scale = baseScale * jitterScale >> 12;
         spawnedStepPtr->segmentCount = 2;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&spawnedStepPtr->posX), 0x15B);
     }
@@ -730,13 +730,13 @@ void __cdecl Battle_EffectProgram1Step(void)
             g_BattleLimitTifaRibbonNextSlot = 0;
         }
     }
-    if (curSlot->step == 5 || curSlot->step == 0xC) {
+    if (curSlot->step == 5 || curSlot->step == 12) {
         Battle_SpawnActorScaleRampTask(g_BattleLimitTifaActorIdx);
     }
-    if (curSlot->step == 0xC) {
+    if (curSlot->step == 12) {
         Battle_PostActorHitOrHurtMessage(curSlot->recordType);
     }
-    if (curSlot->step >= 0x14) {
+    if (curSlot->step >= 20) {
         curSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (curSlot->step)++;
@@ -854,7 +854,7 @@ void __cdecl Battle_EffectProgramTrailTask(void)
         Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, (short *)&state->velocityX, (short *)(trackAddressB + firstRibbonPtr->sampleSlot * 8));
         Battle_EffectProgramPushTrailRingEntry(pSecondRibbon, trackAddressB + pSecondRibbon->sampleSlot * 8);
         state->velocityX = 0xFF92;
-        state->velocityY = 0x78;
+        state->velocityY = 120;
         state->velocityZ = 0xFFB0;
         Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, (short *)&state->velocityX, (short *)(trackEnd + firstRibbonPtr->sampleSlot * 8));
         Battle_EffectProgramPushTrailRingEntry(ribbonC, trackEnd + ribbonC->sampleSlot * 8);
@@ -1061,7 +1061,7 @@ void __cdecl Battle_EffectProgram2Step(void)
     }
     pG = (BattleFxProgram2Effect *)BATTLE_CURRENT_TASK_SLOT;
     chunkPointer = (BattleEffectProgram2Chunk *)Gfx_GetPsxScratchpadPtr(0);
-    if (pG->step == 0xC) {
+    if (pG->step == 12) {
         Battle_GetBoneWorldPos(pG->actorIndex, g_BattleActorRecords[pG->actorIndex].targetBone, (short *)&pG->posX);
         pParticleRecord = (BattleFxProgram2Particle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramAnimatedSpriteEntry0Task);
         chunkPointer->offsetX = 0;
@@ -1072,47 +1072,47 @@ void __cdecl Battle_EffectProgram2Step(void)
             pG->peakValue = chunkPointer->peakValue;
         }
         pParticleRecord->pos = pG->pos;
-        pParticleRecord->posX += (short)(rand() % 0x64 - 0x32);
-        pParticleRecord->posY += (short)(rand() % 0x64 - 0x32);
-        pParticleRecord->posZ += (short)(rand() % 0x64 - 0x32);
-        stepIdx = 0x1400;
+        pParticleRecord->posX += (short)(rand() % 100 - 50);
+        pParticleRecord->posY += (short)(rand() % 100 - 50);
+        pParticleRecord->posZ += (short)(rand() % 100 - 50);
+        stepIdx = 5120;
         angle = rand() % 0x800 + 0x1000;
-        pParticleRecord->scale = stepIdx * angle >> 0xC;
+        pParticleRecord->scale = stepIdx * angle >> 12;
         pParticleRecord->mode = 1;
         panVal = Battle_ComputeScreenPanFromPosition(&pG->posX);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, panVal, 0x125);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, panVal, 0xE7);
     }
-    if (pG->step == 0xC) {
+    if (pG->step == 12) {
         pParticleRecord = (BattleFxProgram2Particle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramParticleEmitterTask);
         pParticleRecord->pos = pG->pos;
         pParticleRecord->scale = 0x32;
-        pParticleRecord->speed = 0x8C;
+        pParticleRecord->speed = 140;
         pParticleRecord->startFrame = 3;
-        pParticleRecord->emitCount = 0x14;
+        pParticleRecord->emitCount = 20;
         pParticleRecord->mode = 8;
         pParticleRecord->phase = 5;
-        for (stepIdx = 0; stepIdx < 0x64; stepIdx++) {
+        for (stepIdx = 0; stepIdx < 100; stepIdx++) {
             g_pBattleLimitTifaParticlePool[stepIdx].active = 0;
         }
     }
-    if (pG->step >= 0xC && pG->step <= 0xD) {
+    if (pG->step >= 12 && pG->step <= 13) {
         g_BattleLimitTifaTargetCentroidPair.pair = pG->pos;
         for (stepIdx = 0; stepIdx < 8; stepIdx++) {
             pTriangle = (BattleEffectRotatingTriangle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramRandomRotatingTriangleTask);
             pTriangle->lifetime = 3;
             pTriangle->driftEnabled = 0;
-            axisX.vx = rand() % 0x1000 - 0x800;
-            axisX.vy = rand() % 0x1000 - 0x800;
-            axisX.vz = rand() % 0x1000 - 0x800;
+            axisX.vx = rand() % 4096 - 2048;
+            axisX.vy = rand() % 4096 - 2048;
+            axisX.vz = rand() % 4096 - 2048;
             NormalizeVectorFixed(&axisX, &axisX);
             pTriangle->axisX = axisX.vx;
             pTriangle->yComp = axisX.vy;
             pTriangle->dirZ = axisX.vz;
-            pTriangle->size = rand() % 0x20 + 0x10;
-            pTriangle->counterReload = rand() % 0x64 + 0x190;
+            pTriangle->size = rand() % 32 + 16;
+            pTriangle->counterReload = rand() % 100 + 400;
             pTriangle->counter = pTriangle->counterReload;
-            pTriangle->counterBReload = rand() % 0xC8 + 0x384;
+            pTriangle->counterBReload = rand() % 200 + 900;
             pTriangle->counterB = pTriangle->counterBReload;
             rotatedX.vx = -axisX.vy - axisX.vz;
             rotatedX.vy = axisX.vx - axisX.vz;
@@ -1126,23 +1126,23 @@ void __cdecl Battle_EffectProgram2Step(void)
             pTriangle->vectorZ = rotatedX.vz;
         }
     }
-    if (pG->step == 0xE) {
+    if (pG->step == 14) {
         pParticleRecord = (BattleFxProgram2Particle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramTableScaledBillboardModelTask);
         pParticleRecord->pos = pG->pos;
-        pParticleRecord->scale = 0x1000;
+        pParticleRecord->scale = 0x1000 /* 1.0 */;
     }
-    if (pG->step == 0xB) {
+    if (pG->step == 11) {
         pParticleRecord = (BattleFxProgram2Particle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram2RibbonTask);
         pParticleRecord->phase = 6;
         Battle_EffectProgramResetRibbonBuffers();
     }
-    if (pG->step == 0xE) {
+    if (pG->step == 14) {
         Battle_SpawnActorScaleRampTask(g_BattleLimitTifaActorIdx);
     }
-    if (pG->step == 0xD) {
+    if (pG->step == 13) {
         Battle_PostActorHitOrHurtMessage(pG->actorIndex);
     }
-    if (pG->step >= 0x1C) {
+    if (pG->step >= 28) {
         pG->ownerSlot = BATTLE_TASK_FREE;
     }
     (pG->step)++;
@@ -1165,7 +1165,7 @@ void __cdecl Battle_EffectProgramTableScaledBillboardModelTask(void)
     int scaled;
 
     pBillboard = (BattleScaledBillboardRecord *)BATTLE_CURRENT_TASK_SLOT;
-    scaled = pBillboard->scale * g_BattleLimitTifaQuadColors1[pBillboard->colorIndex] >> 0xC;
+    scaled = pBillboard->scale * g_BattleLimitTifaQuadColors1[pBillboard->colorIndex] >> 12;
     BattleFx_InstallBillboardMatrix(&pBillboard->posX, (short)scaled, -(scaled >> 4));
     modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
     modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(5, g_BattleLimitTifaLoadedResTable);
@@ -1210,7 +1210,7 @@ void __cdecl Battle_EffectProgramParticleEmitterTask(void)
     blockPointer = (BattleFxRibbonEmitterData *)Gfx_GetPsxScratchpadPtr(0);
     blockPointer->particleBase = 0x523020;
     blockPointer->color = 0x100402;
-    for (particle = 0; particle < 0x64; particle++) {
+    for (particle = 0; particle < 100; particle++) {
         if (g_pBattleLimitTifaParticlePool[particle].active != 0) {
             matrixResult = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&g_pBattleLimitTifaParticlePool[particle].posX, (short)g_pBattleLimitTifaParticlePool[particle].scale, -(g_pBattleLimitTifaParticlePool[particle].scale >> 3));
             tempValue = blockPointer->particleBase + g_pBattleLimitTifaParticlePool[particle].phase;
@@ -1236,27 +1236,27 @@ void __cdecl Battle_EffectProgramParticleEmitterTask(void)
         emitterTask->slotTag = 0xFFFF;
     }
     if (emitterTask->frame < emitterTask->startFrame) {
-        startScale = (emitterTask->baseScale << 0xC) / 256;
+        startScale = (emitterTask->baseScale << 12) / 256;
         for (particle = 0; particle < emitterTask->emitCount; particle++) {
-            for (freeIdx = 0; freeIdx < 0x64 && g_pBattleLimitTifaParticlePool[freeIdx].active != 0; freeIdx++) {
+            for (freeIdx = 0; freeIdx < 100 && g_pBattleLimitTifaParticlePool[freeIdx].active != 0; freeIdx++) {
             }
-            if (freeIdx >= 0x64) {
+            if (freeIdx >= 100) {
                 break;
             }
             g_pBattleLimitTifaParticlePool[freeIdx].active = 1;
             g_pBattleLimitTifaParticlePool[freeIdx].age = 0;
             *(Int64Pair *)&g_pBattleLimitTifaParticlePool[freeIdx].posX = emitterTask->pos;
-            blockPointer->spreadX = ((rand()) % 4096) - 0x800;
-            blockPointer->spreadY = ((rand()) % 4096) - 0x800;
-            blockPointer->spreadZ = ((rand()) % 4096) - 0x800;
+            blockPointer->spreadX = ((rand()) % 4096) - 2048;
+            blockPointer->spreadY = ((rand()) % 4096) - 2048;
+            blockPointer->spreadZ = ((rand()) % 4096) - 2048;
             NormalizeVectorFixed((char *)blockPointer + 0x118, (char *)blockPointer + 0x118);
             tempValue = emitterTask->speed + rand() % (emitterTask->speed >> 1);
-            g_pBattleLimitTifaParticlePool[freeIdx].velocityX = tempValue * blockPointer->spreadX >> 0xC;
-            g_pBattleLimitTifaParticlePool[freeIdx].velocityY = tempValue * blockPointer->spreadY >> 0xC;
-            g_pBattleLimitTifaParticlePool[freeIdx].velocityZ = tempValue * blockPointer->spreadZ >> 0xC;
-            g_pBattleLimitTifaParticlePool[freeIdx].phase = rand() % 0x30;
-            tempValue = ((rand()) % 2048) + 0xA00;
-            g_pBattleLimitTifaParticlePool[freeIdx].scale = startScale * tempValue >> 0xC;
+            g_pBattleLimitTifaParticlePool[freeIdx].velocityX = tempValue * blockPointer->spreadX >> 12;
+            g_pBattleLimitTifaParticlePool[freeIdx].velocityY = tempValue * blockPointer->spreadY >> 12;
+            g_pBattleLimitTifaParticlePool[freeIdx].velocityZ = tempValue * blockPointer->spreadZ >> 12;
+            g_pBattleLimitTifaParticlePool[freeIdx].phase = rand() % 48;
+            tempValue = ((rand()) % 2048) + 2560;
+            g_pBattleLimitTifaParticlePool[freeIdx].scale = startScale * tempValue >> 12;
         }
     }
     (emitterTask->frame)++;
@@ -1345,13 +1345,13 @@ void __cdecl Battle_EffectProgramRandomRotatingTriangleTask(void)
 
     frame.triangle = (BattleFxRotatingTriangle *)BATTLE_CURRENT_TASK_SLOT;
     frame.tmpFactor = frame.triangle->spin;
-    frame.pointAX = g_BattleLimitTifaTargetCentroidPair.x + (frame.tmpFactor * frame.triangle->ampX >> 0xC);
-    frame.pointAY = g_BattleLimitTifaTargetCentroidPair.y + (frame.tmpFactor * frame.triangle->ampY >> 0xC);
-    frame.pointAZ = g_BattleLimitTifaTargetCentroidPair.z + (frame.tmpFactor * frame.triangle->ampZ >> 0xC);
+    frame.pointAX = g_BattleLimitTifaTargetCentroidPair.x + (frame.tmpFactor * frame.triangle->ampX >> 12);
+    frame.pointAY = g_BattleLimitTifaTargetCentroidPair.y + (frame.tmpFactor * frame.triangle->ampY >> 12);
+    frame.pointAZ = g_BattleLimitTifaTargetCentroidPair.z + (frame.tmpFactor * frame.triangle->ampZ >> 12);
     frame.tmpFactor = frame.triangle->angle;
-    frame.pointBX.vx = frame.pointAX + (frame.tmpFactor * frame.triangle->driftX >> 0xC);
-    frame.pointBX.vy = frame.pointAY + (frame.tmpFactor * frame.triangle->driftY >> 0xC);
-    frame.pointBX.vz = frame.pointAZ + (frame.tmpFactor * frame.triangle->driftZ >> 0xC);
+    frame.pointBX.vx = frame.pointAX + (frame.tmpFactor * frame.triangle->driftX >> 12);
+    frame.pointBX.vy = frame.pointAY + (frame.tmpFactor * frame.triangle->driftY >> 12);
+    frame.pointBX.vz = frame.pointAZ + (frame.tmpFactor * frame.triangle->driftZ >> 12);
     SetRotMatrix((void *)g_BattleCameraTransform.matrix);
     SetTransMatrix(g_BattleCameraTransform.matrix);
     RefreshGlobalTransformState();
@@ -1386,9 +1386,9 @@ void __cdecl Battle_EffectProgramRandomRotatingTriangleTask(void)
     TransformVectorToInt16(&frame.rotMatrix, (char *)frame.triangle + 0xC, (char *)frame.triangle + 0xC);
     if (frame.triangle->driftEnabled != 0) {
         frame.tmpFactor = frame.triangle->driftScale;
-        frame.pointAX += (short)(frame.tmpFactor * frame.triangle->driftX >> 0xC);
-        frame.pointAY += (short)(frame.tmpFactor * frame.triangle->driftY >> 0xC);
-        frame.pointAZ += (short)(frame.tmpFactor * frame.triangle->driftZ >> 0xC);
+        frame.pointAX += (short)(frame.tmpFactor * frame.triangle->driftX >> 12);
+        frame.pointAY += (short)(frame.tmpFactor * frame.triangle->driftY >> 12);
+        frame.pointAZ += (short)(frame.tmpFactor * frame.triangle->driftZ >> 12);
         frame.pointAX -= g_BattleLimitTifaTargetCentroidPair.x;
         frame.pointAY -= g_BattleLimitTifaTargetCentroidPair.y;
         frame.pointAZ -= g_BattleLimitTifaTargetCentroidPair.z;
@@ -1438,18 +1438,18 @@ void __cdecl Battle_EffectProgram2RibbonTask(void)
         frame.deltaX.vy = frame.ribbonRecord->endY - frame.ribbonRecord->startY;
         frame.deltaX.vz = frame.ribbonRecord->endZ - frame.ribbonRecord->startZ;
         NormalizeVectorFixed(&frame.deltaX, &frame.deltaX);
-        frame.ribbonRecord->posX = frame.ribbonRecord->startX + (frame.deltaX.vx * 0x258 >> 0xC);
+        frame.ribbonRecord->posX = frame.ribbonRecord->startX + (frame.deltaX.vx * 0x258 >> 12);
         frame.ribbon0PosX = frame.ribbonRecord->posX;
-        frame.ribbonRecord->posY = frame.ribbonRecord->startY + (frame.deltaX.vy * 0x258 >> 0xC);
+        frame.ribbonRecord->posY = frame.ribbonRecord->startY + (frame.deltaX.vy * 0x258 >> 12);
         frame.ribbon0PosY = frame.ribbonRecord->posY;
-        frame.ribbonRecord->posZ = frame.ribbonRecord->startZ + (frame.deltaX.vz * 0x258 >> 0xC);
+        frame.ribbonRecord->posZ = frame.ribbonRecord->startZ + (frame.deltaX.vz * 0x258 >> 12);
         frame.ribbon0PosZ = frame.ribbonRecord->posZ;
         Battle_EffectProgramAppendRibbonArcPoints(0, (Vec3sPacked *)((int)frame.ribbonRecord + 0x3C), (Vec3sPacked *)((int)frame.ribbonRecord + 0x4C), 0xC0);
-        frame.ribbonRecord->posX = frame.ribbonRecord->startX + (frame.deltaX.vx * 0x12C >> 0xC);
+        frame.ribbonRecord->posX = frame.ribbonRecord->startX + (frame.deltaX.vx * 0x12C >> 12);
         frame.ribbon1PosX = frame.ribbonRecord->posX;
-        frame.ribbonRecord->posY = frame.ribbonRecord->startY + (frame.deltaX.vy * 0x12C >> 0xC);
+        frame.ribbonRecord->posY = frame.ribbonRecord->startY + (frame.deltaX.vy * 0x12C >> 12);
         frame.ribbon1PosY = frame.ribbonRecord->posY;
-        frame.ribbonRecord->posZ = frame.ribbonRecord->startZ + (frame.deltaX.vz * 0x12C >> 0xC);
+        frame.ribbonRecord->posZ = frame.ribbonRecord->startZ + (frame.deltaX.vz * 0x12C >> 12);
         frame.ribbon1PosZ = frame.ribbonRecord->posZ;
         Battle_EffectProgramAppendRibbonArcPoints(1, (Vec3sPacked *)((int)frame.ribbonRecord + 0x3C), (Vec3sPacked *)((int)frame.ribbonRecord + 0x4C), 0xC0);
     }
@@ -1500,23 +1500,23 @@ void __cdecl Battle_EffectProgram3Step(void)
     if (currentSlot->step == 6) {
         pNewRecord = (BattleFxProgram3Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramAnimatedSpriteEntry0Task);
         pNewRecord->pos = currentSlot->pos;
-        pNewRecord->posX += (short)(rand() % 0x64 - 0x32);
-        pNewRecord->posY += (short)(rand() % 0x64 - 0x32);
-        pNewRecord->posZ += (short)(rand() % 0x64 - 0x32);
-        idx = 0x1400;
-        spriteCnt = rand() % 0x800 + 0x1100;
-        pNewRecord->speed = idx * spriteCnt >> 0xC;
+        pNewRecord->posX += (short)(rand() % 100 - 50);
+        pNewRecord->posY += (short)(rand() % 100 - 50);
+        pNewRecord->posZ += (short)(rand() % 100 - 50);
+        idx = 5120;
+        spriteCnt = rand() % 2048 + 4352;
+        pNewRecord->speed = idx * spriteCnt >> 12;
         pNewRecord->mode = 1;
         spriteCnt = rand() % 4 + 6;
         for (idx = 0; idx < spriteCnt; idx++) {
             pNewRecord = (BattleFxProgram3Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramAnimatedSpriteEntry1Task);
             pNewRecord->pos = currentSlot->pos;
-            pNewRecord->posX += (short)(rand() % 0x2BC - 0x15E);
-            pNewRecord->posY += (short)(rand() % 0x2BC - 0x15E);
-            pNewRecord->posZ += (short)(rand() % 0x2BC - 0x15E);
+            pNewRecord->posX += (short)(rand() % 700 - 350);
+            pNewRecord->posY += (short)(rand() % 700 - 350);
+            pNewRecord->posZ += (short)(rand() % 700 - 350);
             baseValue = 0xDC0;
-            randValueB = rand() % 0x500 + 0xA00;
-            pNewRecord->speed = baseValue * randValueB >> 0xC;
+            randValueB = rand() % 1280 + 2560;
+            pNewRecord->speed = baseValue * randValueB >> 12;
             pNewRecord->mode = 1;
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&currentSlot->posX), 0x125);
@@ -1530,29 +1530,29 @@ void __cdecl Battle_EffectProgram3Step(void)
         currentSlot->offsetY = g_BattleLimitTifaTargetCentroidPair.y - 0x140;
         pNewRecord = (BattleFxProgram3Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramParticleEmitterTask);
         pNewRecord->pos = currentSlot->pos;
-        pNewRecord->speed = 0x32;
-        pNewRecord->radialSpeed = 0x10E;
+        pNewRecord->speed = 50;
+        pNewRecord->radialSpeed = 270;
         pNewRecord->startFrame = 3;
-        pNewRecord->emitCount = 0x14;
+        pNewRecord->emitCount = 20;
         pNewRecord->mode = 0xA;
         pNewRecord->phase = 6;
-        for (idx = 0; idx < 0x64; idx++) {
+        for (idx = 0; idx < 100; idx++) {
             g_pBattleLimitTifaParticlePool[idx].active = 0;
         }
     }
     if (currentSlot->step == 6) {
         pNewRecord = (BattleFxProgram3Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram3ExpandingFadeRingTask);
         pNewRecord->pos = currentSlot->pos;
-        pNewRecord->radialSpeed = 0xB75;
-        pNewRecord->speed = 0xB75;
+        pNewRecord->radialSpeed = 2933;
+        pNewRecord->speed = 2933;
         pNewRecord->mode = 9;
         pNewRecord->phase = 5;
     }
     if (currentSlot->step == 8) {
         pNewRecord = (BattleFxProgram3Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram3ExpandingFadeRingTask);
         pNewRecord->pos = currentSlot->pos;
-        pNewRecord->radialSpeed = 0x898;
-        pNewRecord->speed = 0x898;
+        pNewRecord->radialSpeed = 2200;
+        pNewRecord->speed = 2200;
         pNewRecord->mode = 7;
         pNewRecord->phase = 3;
     }
@@ -1565,7 +1565,7 @@ void __cdecl Battle_EffectProgram3Step(void)
     if (currentSlot->step == 6) {
         Battle_PostActorHitOrHurtMessage(currentSlot->targetIndex);
     }
-    if (currentSlot->step >= 0x10) {
+    if (currentSlot->step >= 16) {
         currentSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (currentSlot->step)++;
@@ -1634,7 +1634,7 @@ void __cdecl Battle_EffectProgram3ExpandingFadeRingTask(void)
     Gfx_ShadePsxVertexColor((CVECTOR *)&headSource, fadeBlend, (CVECTOR *)&headShaded);
     Gfx_ShadePsxVertexColor((CVECTOR *)&srcColorB, fadeBlend, (CVECTOR *)&currShadedB);
     if (matrixRes->t[2] > 0) {
-        Battle_EffectProgramDrawGradientQuadRing(fadeBlock, 0x20, headShaded, currShadedB);
+        Battle_EffectProgramDrawGradientQuadRing(fadeBlock, 32, headShaded, currShadedB);
     }
     if (ringTaskPtr->frame >= ringTaskPtr->endFrame) {
         ringTaskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -1738,8 +1738,8 @@ void __cdecl Battle_EffectProgram3RibbonTask(void)
         diffA.vy = 0;
         diffA.vz = ribbonState->currentB - ribbonState->targetB;
         NormalizeVectorFixed(&diffA, &diffA);
-        ribbonState->currentA += (short)(diffA.vx * 0x12C >> 0xC);
-        ribbonState->currentB += (short)(diffA.vz * 0x12C >> 0xC);
+        ribbonState->currentA += (short)(diffA.vx * 0x12C >> 12);
+        ribbonState->currentB += (short)(diffA.vz * 0x12C >> 12);
         Battle_EffectProgramAppendRibbonArcPoints(0, (Vec3sPacked *)((int)ribbonState + 0x44), (Vec3sPacked *)((int)ribbonState + 0x4C), 0x80);
         ribbonState->originX = 0;
         ribbonState->originY = 0;
@@ -1756,7 +1756,7 @@ void __cdecl Battle_EffectProgram3RibbonTask(void)
         SetTransMatrix(g_BattleCameraTransform.matrix);
         RefreshGlobalTransformState();
         Battle_EffectProgramDrawRibbonGradientQuads();
-        if (ribbonTaskPtr->frameIndex >= 0xC) {
+        if (ribbonTaskPtr->frameIndex >= 12) {
             ribbonTaskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
@@ -1802,26 +1802,26 @@ void __cdecl Battle_EffectProgram4Step(void)
         newEffect = (BattleFxProgram4Particle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram4ActorOrbitTask);
         newEffect->battlerIndex = pOwnSlot->battlerIndex;
     }
-    if (pOwnSlot->step == 0x24) {
+    if (pOwnSlot->step == 36) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleLimitTifaAttachPos), 0xE7);
     }
-    if (pOwnSlot->step == 0x2A) {
-        sizeValue = g_BattleActorRecords[pOwnSlot->battlerIndex].radius + 0x140;
+    if (pOwnSlot->step == 42) {
+        sizeValue = g_BattleActorRecords[pOwnSlot->battlerIndex].radius + 320;
         newEffect = (BattleFxProgram4Particle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram4ExpandingFadeModelTask);
         newEffect->pos = *(Int64Pair *)&g_BattleLimitTifaAttachPos;
         newEffect->posY = 0;
-        newEffect->targetValue = ((sizeValue << 0xC) / 0x384) / 4;
+        newEffect->targetValue = ((sizeValue << 12) / 900) / 4;
         newEffect->currentValue = newEffect->targetValue;
-        newEffect->timer = 0xA;
+        newEffect->timer = 10;
         newEffect->fadeStart = 6;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleLimitTifaAttachPos), 0x14);
     }
-    if (pOwnSlot->step >= 0x2A && pOwnSlot->step <= 0x2B) {
-        radius = g_BattleActorRecords[pOwnSlot->battlerIndex].radius + 0x140;
+    if (pOwnSlot->step >= 42 && pOwnSlot->step <= 43) {
+        radius = g_BattleActorRecords[pOwnSlot->battlerIndex].radius + 320;
         doubleRadius = radius << 1;
         loopHalfRadius = radius >> 1;
-        if (loopHalfRadius < 0x140) {
-            loopHalfRadius = 0x140;
+        if (loopHalfRadius < 320) {
+            loopHalfRadius = 320;
         }
         for (sizeValue = 0; sizeValue < 6; sizeValue++) {
             newEffect = (BattleFxProgram4Particle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramAnimatedSpriteEntry1Task);
@@ -1829,21 +1829,21 @@ void __cdecl Battle_EffectProgram4Step(void)
             newEffect->posY = -(rand() % radius);
             newEffect->posZ = ((BattleFxVertex *)&g_BattleLimitTifaAttachPos)->baseZ + rand() % doubleRadius - radius;
             randomScale = rand() % 0xA00 + 0x800;
-            newEffect->currentValue = (((loopHalfRadius << 0xC) / 0x100) * randomScale) >> 0xC;
+            newEffect->currentValue = (((loopHalfRadius << 12) / 256) * randomScale) >> 12;
             newEffect->timer = 0;
         }
     }
-    if (pOwnSlot->step == 0x22) {
+    if (pOwnSlot->step == 34) {
         Battle_SpawnActorScaleRampTask(g_BattleLimitTifaActorIdx);
         Battle_EffectProgramSpawnBoneWorldSpritePair(1);
     }
-    if (pOwnSlot->step >= 0x2B && pOwnSlot->step <= 0x2E) {
-        g_BattleCameraTransform.posY = (pOwnSlot->step & 1) * 0xA0;
+    if (pOwnSlot->step >= 43 && pOwnSlot->step <= 46) {
+        g_BattleCameraTransform.posY = (pOwnSlot->step & 1) * 160;
     }
-    if (pOwnSlot->step == 0x2B) {
+    if (pOwnSlot->step == 43) {
         Battle_PostActorHitOrHurtMessage(pOwnSlot->battlerIndex);
     }
-    if (pOwnSlot->step >= 0x2F) {
+    if (pOwnSlot->step >= 47) {
         g_BattleCameraTransform.posY = 0;
         pOwnSlot->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -1864,11 +1864,11 @@ void __cdecl Battle_EffectProgramSpawnBoneWorldSpritePair(int boneIdx)
     } else {
         Battle_GetBoneWorldPos(g_BattleLimitTifaActorIdx, 0x10, pos);
     }
-    Battle_SpawnWorldSpriteTask((Vec3sPacked *)pos, 0x1000, 0x1000);
+    Battle_SpawnWorldSpriteTask((Vec3sPacked *)pos, 4096, 4096);
     pos[0] += rand() % 100 - 50;
     pos[1] += rand() % 30;
     pos[2] += rand() % 100 - 50;
-    Battle_SpawnWorldSpriteTask((Vec3sPacked *)pos, 0x1000, 0x1000);
+    Battle_SpawnWorldSpriteTask((Vec3sPacked *)pos, 4096, 4096);
 }
 
 /*
@@ -1917,7 +1917,7 @@ void __cdecl Battle_EffectProgram4ExpandingFadeModelTask(void)
     frame.drawDesc->stateFlags = 0;
     frame.drawDesc->texturePageBits = 0;
     if (frame.fadeSlot->frame >= frame.fadeSlot->startFrame) {
-        frame.drawDesc->fadeLevel = 0x1000 / (frame.fadeSlot->endFrame - frame.fadeSlot->startFrame) * (frame.fadeSlot->frame - frame.fadeSlot->startFrame);
+        frame.drawDesc->fadeLevel = 4096 / (frame.fadeSlot->endFrame - frame.fadeSlot->startFrame) * (frame.fadeSlot->frame - frame.fadeSlot->startFrame);
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.drawDesc, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
@@ -1974,7 +1974,7 @@ void __cdecl Battle_EffectProgram4ActorOrbitTask(void)
         g_BattleActorRecords[frame.orbitSlot->actorIndex].yaw = g_BattleActorRecords[frame.orbitSlot->actorIndex].facing;
         g_BattleActorRecords[frame.orbitSlot->actorIndex].drawFlags |= 0x11;
         frame.recordIndex = 0;
-        for (g_BattleLimitTifaTargetLoopIndex = 0; frame.recordIndex < 0xA; frame.recordIndex++) {
+        for (g_BattleLimitTifaTargetLoopIndex = 0; frame.recordIndex < 10; frame.recordIndex++) {
             if (frame.recordIndex == frame.orbitSlot->actorIndex) {
                 continue;
             }
@@ -1994,7 +1994,7 @@ void __cdecl Battle_EffectProgram4ActorOrbitTask(void)
         if (frame.orbitSlot->phase == 1) {
             frame.anchorX = 0;
             frame.anchorY = 0;
-            frame.anchorZ = 0xFF9C;
+            frame.anchorZ = 0xFF9C /* -100 */;
             Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, &frame.anchorX, (short *)&g_BattleLimitTifaAttachPos);
             Battle_GetBoneWorldPos(g_BattleLimitTifaActorIdx, 0x1C, &frame.anchorX);
             *(short *)&g_BattleLimitTifaAttachPos += (short)((frame.anchorX - *(short *)&g_BattleLimitTifaAttachPos) / 4);
@@ -2021,16 +2021,16 @@ void __cdecl Battle_EffectProgram4ActorOrbitTask(void)
                 g_BattleLimitTifaCrossVec[0] = -g_BattleLimitTifaCrossVec[0];
                 g_BattleLimitTifaCrossVec[1] = -g_BattleLimitTifaCrossVec[1];
                 g_BattleLimitTifaCrossVec[2] = -g_BattleLimitTifaCrossVec[2];
-                frame.recordIndex = 0x1000 - frame.recordIndex;
+                frame.recordIndex = 4096 - frame.recordIndex;
                 g_BattleLimitTifaRelativeVec.flag = 1;
             } else {
                 g_BattleLimitTifaRelativeVec.flag = 0;
             }
-            frame.orbitSlot->rotStepX = frame.recordIndex / 0xE;
+            frame.orbitSlot->rotStepX = frame.recordIndex / 14;
         }
         frame.anchorX = 0;
         frame.anchorY = 0;
-        frame.anchorZ = 0xFF9C;
+        frame.anchorZ = 0xFF9C /* -100 */;
         Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, &frame.anchorX, (short *)&g_BattleLimitTifaAttachPos);
         Battle_GetBoneWorldPos(g_BattleLimitTifaActorIdx, 0x1C, &frame.anchorX);
         *(short *)&g_BattleLimitTifaAttachPos += (short)((frame.anchorX - *(short *)&g_BattleLimitTifaAttachPos) / 4);
@@ -2039,7 +2039,7 @@ void __cdecl Battle_EffectProgram4ActorOrbitTask(void)
         g_BattleLimitTifaRelativeVec.x = *(short *)&g_BattleLimitTifaAttachPos - g_BattleLimitTifaTargetBonePos[0];
         g_BattleLimitTifaRelativeVec.y = ((BattleFxVertex *)&g_BattleLimitTifaAttachPos)->baseY - g_BattleLimitTifaTargetBonePos[1];
         g_BattleLimitTifaRelativeVec.z = ((BattleFxVertex *)&g_BattleLimitTifaAttachPos)->baseZ - g_BattleLimitTifaTargetBonePos[2];
-        if (frame.orbitSlot->phase < 0xF) {
+        if (frame.orbitSlot->phase < 15) {
             g_BattleActorRecords[frame.orbitSlot->actorIndex].rotX += frame.orbitSlot->rotStepX;
         }
         Gte_BuildAxisAngleMatrix(g_BattleActorRecords[frame.orbitSlot->actorIndex].rotX, &frame.rotMatrix, (VECTOR *)(&g_BattleLimitTifaCrossVec[0]));
@@ -2055,7 +2055,7 @@ void __cdecl Battle_EffectProgram4ActorOrbitTask(void)
             *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitTifaSortedTargetIndices[frame.recordIndex]].posX = *(Int64Pair *)&g_BattleActorRecords[frame.orbitSlot->actorIndex].posX;
             *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitTifaSortedTargetIndices[frame.recordIndex]].rotX = *(Int64Pair *)&g_BattleActorRecords[frame.orbitSlot->actorIndex].rotX;
         }
-        if (frame.orbitSlot->phase >= 0x2F) {
+        if (frame.orbitSlot->phase >= 47) {
             *(Int64Pair *)&g_BattleActorRecords[frame.orbitSlot->actorIndex].posX = g_BattleLimitTifaTargetPos1.pair;
             *(Int64Pair *)&g_BattleActorRecords[frame.orbitSlot->actorIndex].rotX = g_BattleLimitTifaTargetPos2;
             if ((g_BattleLimitTifaTargetState & 0x10) == 0) {
@@ -2111,68 +2111,68 @@ void __cdecl Battle_EffectProgram5Step(void)
     currentSlot = (BattleFxEffectProgram *)BATTLE_CURRENT_TASK_SLOT;
     selBlockPtr = Gfx_GetPsxScratchpadPtr(0);
     Battle_GetBoneWorldPos(g_BattleLimitTifaActorIdx, 1, &g_BattleLimitTifaActorBonePos.x);
-    if (currentSlot->step == 0xA) {
+    if (currentSlot->step == 10) {
         heading = g_BattleActorRecords[g_BattleLimitTifaActorIdx].yaw;
-        sizeVal = g_BattleActorRecords[g_BattleLimitTifaActorIdx].radius + 0x32;
-        if (sizeVal > 0x640) {
-            sizeVal = 0x640;
+        sizeVal = g_BattleActorRecords[g_BattleLimitTifaActorIdx].radius + 50;
+        if (sizeVal > 1600) {
+            sizeVal = 1600;
         }
-        if (sizeVal < 0x100) {
-            sizeVal = 0x100;
+        if (sizeVal < 256) {
+            sizeVal = 256;
         }
         currentSlot->offset = sizeVal;
         pFadeChild = (BattleFxLimitTifaFadeParticle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram5AnimatedFadeModelTask);
-        ofsDistance = -(sizeVal * 0x12C / 0x100);
-        pFadeChild->posX = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 0xC);
-        pFadeChild->posZ = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 0xC);
-        pFadeChild->posY -= (short)(sizeVal * 0x190 / 0x100);
-        pFadeChild->velocityX = (g_BattleLimitTifaActorBonePos.x - pFadeChild->posX) / 0x14;
-        pFadeChild->velocityY = sizeVal * -0x1E0 / 0x100;
-        pFadeChild->velocityZ = (g_BattleLimitTifaActorBonePos.z - pFadeChild->posZ) / 0x14;
-        pFadeChild->accelY = sizeVal * 0x3C / 0x100;
-        pFadeChild->scale = (sizeVal << 0xC) / 0x100;
+        ofsDistance = -(sizeVal * 300 / 256);
+        pFadeChild->posX = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 12);
+        pFadeChild->posZ = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 12);
+        pFadeChild->posY -= (short)(sizeVal * 400 / 256);
+        pFadeChild->velocityX = (g_BattleLimitTifaActorBonePos.x - pFadeChild->posX) / 20;
+        pFadeChild->velocityY = sizeVal * -480 / 256;
+        pFadeChild->velocityZ = (g_BattleLimitTifaActorBonePos.z - pFadeChild->posZ) / 20;
+        pFadeChild->accelY = sizeVal * 60 / 256;
+        pFadeChild->scale = (sizeVal << 12) / 256;
         pFadeChild->angle = 0;
         pFadeChild->angularVelocity = 5;
-        pFadeChild->lifetime = 0x14;
+        pFadeChild->lifetime = 20;
         pFadeChild->phase = 0xE;
         tifaParticle = (BattleFxTifaParticle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram5GrowingStretchFadeModelTask);
-        ofsDistance = -(sizeVal * 0x12C / 0x100);
-        tifaParticle->posX = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 0xC);
+        ofsDistance = -(sizeVal * 300 / 256);
+        tifaParticle->posX = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 12);
         tifaParticle->posY = 0;
-        tifaParticle->posZ = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 0xC);
-        tifaParticle->speed = (sizeVal << 0xC) / 0x2EE;
+        tifaParticle->posZ = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 12);
+        tifaParticle->speed = (sizeVal << 12) / 750;
         tifaParticle->velocityY = tifaParticle->speed / 3;
         tifaParticle->velocityX = tifaParticle->velocityY;
-        tifaParticle->verticalSpeed = -(tifaParticle->speed / 0x18);
-        tifaParticle->lifetime = 0x14;
-        tifaParticle->stepTimer = 0xE;
+        tifaParticle->verticalSpeed = -(tifaParticle->speed / 24);
+        tifaParticle->lifetime = 20;
+        tifaParticle->stepTimer = 14;
         tifaParticle = (BattleFxTifaParticle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram5GrowingFadeModelTask);
-        ofsDistance = -(sizeVal * 0x12C / 0x100);
-        tifaParticle->posX = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 0xC);
+        ofsDistance = -(sizeVal * 300 / 256);
+        tifaParticle->posX = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 12);
         tifaParticle->posY = 0;
-        tifaParticle->posZ = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 0xC);
-        tifaParticle->velocityY = (sizeVal << 0xC) / 0x1C2 / 3;
+        tifaParticle->posZ = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 12);
+        tifaParticle->velocityY = (sizeVal << 12) / 450 / 3;
         tifaParticle->velocityX = tifaParticle->velocityY;
-        tifaParticle->lifetime = 0x14;
-        tifaParticle->stepTimer = 0xE;
+        tifaParticle->lifetime = 20;
+        tifaParticle->stepTimer = 14;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleLimitTifaActorBonePos), 0x196);
     }
-    if (currentSlot->step >= 0xA && currentSlot->step <= 0xD) {
+    if (currentSlot->step >= 10 && currentSlot->step <= 13) {
         heading = g_BattleActorRecords[g_BattleLimitTifaActorIdx].yaw;
         sizeVal = g_BattleActorRecords[g_BattleLimitTifaActorIdx].radius;
-        if (sizeVal > 0x4F2) {
-            sizeVal = 0x4F2;
+        if (sizeVal > 1266) {
+            sizeVal = 1266;
         }
-        if (sizeVal < 0x100) {
-            sizeVal = 0x100;
+        if (sizeVal < 256) {
+            sizeVal = 256;
         }
-        ofsDistance = -(currentSlot->offset * 0x12C / 0x100);
-        g_BattleLimitTifaTargetCentroidPair.x = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 0xC);
-        g_BattleLimitTifaTargetCentroidPair.z = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 0xC);
-        spreadX = sizeVal * 0x244 / 0x100;
-        upSpeed = sizeVal * 0x1D6 / 0x100;
-        riseAccel = sizeVal * 0x3A / 0x100;
-        hRange = sizeVal * 0x12C / 0x100;
+        ofsDistance = -(currentSlot->offset * 300 / 256);
+        g_BattleLimitTifaTargetCentroidPair.x = g_BattleLimitTifaActorBonePos.x + (ofsDistance * SinFixed(heading) >> 12);
+        g_BattleLimitTifaTargetCentroidPair.z = g_BattleLimitTifaActorBonePos.z + (ofsDistance * CosFixed(heading) >> 12);
+        spreadX = sizeVal * 580 / 256;
+        upSpeed = sizeVal * 470 / 256;
+        riseAccel = sizeVal * 58 / 256;
+        hRange = sizeVal * 300 / 256;
         for (heading = 0; heading < 0x12; heading++) {
             pFadeChild = (BattleFxLimitTifaFadeParticle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram5RisingFadeSpriteTask);
             pFadeChild->posX = g_BattleLimitTifaTargetCentroidPair.x + rand() % (spreadX << 1) - spreadX;
@@ -2180,9 +2180,9 @@ void __cdecl Battle_EffectProgram5Step(void)
             pFadeChild->posZ = g_BattleLimitTifaTargetCentroidPair.z + rand() % (spreadX << 1) - spreadX;
             pFadeChild->velocityY = -(upSpeed + rand() % (upSpeed >> 2));
             pFadeChild->accelY = riseAccel + rand() % (riseAccel >> 2);
-            ofsDistance = rand() % 0x500 + 0x700;
-            pFadeChild->scale = ((sizeVal << 0xB) / 0x100) * ofsDistance >> 0xC;
-            pFadeChild->lifetime = 0xA;
+            ofsDistance = rand() % 1280 + 1792;
+            pFadeChild->scale = ((sizeVal << 11) / 256) * ofsDistance >> 12;
+            pFadeChild->lifetime = 10;
             pFadeChild->phase = rand() % 4;
         }
     }
@@ -2191,22 +2191,22 @@ void __cdecl Battle_EffectProgram5Step(void)
         for (heading = 0; heading < 6; heading++) {
             if (currentSlot->step == g_BattleLimitTifaStepIndices[heading]) {
                 tifaParticle = (BattleFxTifaParticle *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramTableScaledBillboardModelTask);
-                tifaParticle->posX = g_BattleLimitTifaTargetCentroidPair.x + rand() % 0x1F4 + -0xFA;
+                tifaParticle->posX = g_BattleLimitTifaTargetCentroidPair.x + rand() % 500 + -250;
                 tifaParticle->posY = *(short *)&g_BattleLimitTifaHeightDeltas[heading];
-                tifaParticle->posZ = g_BattleLimitTifaTargetCentroidPair.z + rand() % 0x1F4 + -0xFA;
-                sizeVal = rand() % 0x400 + 0xD00;
-                tifaParticle->velocityX = sizeVal * 0x999 >> 0xC;
+                tifaParticle->posZ = g_BattleLimitTifaTargetCentroidPair.z + rand() % 500 + -250;
+                sizeVal = rand() % 1024 + 3328;
+                tifaParticle->velocityX = sizeVal * 0x999 >> 12;
             }
         }
     }
-    if (currentSlot->step == 0xA || currentSlot->step == 0x10) {
+    if (currentSlot->step == 10 || currentSlot->step == 16) {
         Battle_SpawnActorScaleRampTask(g_BattleLimitTifaActorIdx);
         Battle_EffectProgramSpawnBoneWorldSpritePair(1);
     }
-    if (currentSlot->step == 0xB) {
+    if (currentSlot->step == 11) {
         Battle_PostActorHitOrHurtMessage(currentSlot->battlerIndex);
     }
-    if (currentSlot->step >= 0x17) {
+    if (currentSlot->step >= 23) {
         currentSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (currentSlot->step)++;
@@ -2295,14 +2295,14 @@ void __cdecl Battle_EffectProgram5GrowingFadeModelTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     frame.drawDesc = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.drawDesc->modelGroup = Gfx_ModelTableGetRenderObject(0xA, g_BattleLimitTifaLoadedResTable);
+    frame.drawDesc->modelGroup = Gfx_ModelTableGetRenderObject(10, g_BattleLimitTifaLoadedResTable);
     frame.drawDesc->flags = 8;
     frame.drawDesc->uvScroll = 0;
-    frame.drawDesc->fadeLevel = 0x80;
+    frame.drawDesc->fadeLevel = 128;
     frame.drawDesc->stateFlags = 0x20;
     frame.drawDesc->texturePageBits = 0;
     if (frame.growSlot->timer >= frame.growSlot->fadeStart) {
-        frame.drawDesc->fadeLevel = 0x80 - 0x80 / (frame.growSlot->fadeEnd - frame.growSlot->fadeStart) * (frame.growSlot->timer - frame.growSlot->fadeStart);
+        frame.drawDesc->fadeLevel = 128 - 128 / (frame.growSlot->fadeEnd - frame.growSlot->fadeStart) * (frame.growSlot->timer - frame.growSlot->fadeStart);
     }
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.drawDesc, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
     if (frame.growSlot->timer >= frame.growSlot->fadeEnd) {
@@ -2357,11 +2357,11 @@ void __cdecl Battle_EffectProgram5GrowingStretchFadeModelTask(void)
     frame.drawDesc->modelGroup = Gfx_ModelTableGetRenderObject(9, g_BattleLimitTifaLoadedResTable);
     frame.drawDesc->flags = 8;
     frame.drawDesc->uvScroll = 0;
-    frame.drawDesc->fadeLevel = 0x80;
+    frame.drawDesc->fadeLevel = 128;
     frame.drawDesc->stateFlags = 0x20;
     frame.drawDesc->texturePageBits = 0;
     if (frame.stretchSlot->timer >= frame.stretchSlot->fadeStart) {
-        frame.drawDesc->fadeLevel = 0x80 - 0x80 / (frame.stretchSlot->fadeEnd - frame.stretchSlot->fadeStart) * (frame.stretchSlot->timer - frame.stretchSlot->fadeStart);
+        frame.drawDesc->fadeLevel = 128 - 128 / (frame.stretchSlot->fadeEnd - frame.stretchSlot->fadeStart) * (frame.stretchSlot->timer - frame.stretchSlot->fadeStart);
     }
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.drawDesc, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
     if (frame.stretchSlot->timer >= frame.stretchSlot->fadeEnd) {
@@ -2419,8 +2419,8 @@ void __cdecl Battle_EffectProgram5AnimatedFadeModelTask(void)
     SetTransMatrix(&frame.rotMatrix);
     RefreshGlobalTransformState();
     frame.drawCtx = (BattleFxProgram5Context *)Gfx_GetPsxScratchpadPtr(0);
-    if (frame.animSlot->frame > 0xC) {
-        frame.animFrame = 0xC;
+    if (frame.animSlot->frame > 12) {
+        frame.animFrame = 12;
     } else {
         frame.animFrame = frame.animSlot->frame;
     }
@@ -2431,7 +2431,7 @@ void __cdecl Battle_EffectProgram5AnimatedFadeModelTask(void)
     frame.drawCtx->drawListHandle2 = g_BattleLimitTifaDrawListHandle2;
     frame.drawCtx->drawListHandle2 = g_BattleLimitTifaDrawListHandle2;
     if (frame.animSlot->frame >= frame.animSlot->fadeStart) {
-        frame.fadeLevel = 0x1000 / (frame.animSlot->fadeEnd - frame.animSlot->fadeStart) * (frame.animSlot->frame - frame.animSlot->fadeStart);
+        frame.fadeLevel = 4096 / (frame.animSlot->fadeEnd - frame.animSlot->fadeStart) * (frame.animSlot->frame - frame.animSlot->fadeStart);
     } else {
         frame.fadeLevel = 0;
     }
@@ -2450,7 +2450,7 @@ void __cdecl Battle_EffectProgram5AnimatedFadeModelTask(void)
     if (frame.animSlot->velocityY > 0) {
         frame.animSlot->velocityY >>= 2;
     }
-    frame.animSlot->accelY += (short)(frame.animSlot->accelY / 0xE);
+    frame.animSlot->accelY += (short)(frame.animSlot->accelY / 14);
     if (frame.animSlot->frame >= 8) {
         frame.animSlot->angleX += frame.animSlot->angleXVelocity;
         frame.animSlot->angleXVelocity += 5;
@@ -2551,75 +2551,75 @@ void __cdecl Battle_EffectProgram6Step(void)
     }
     if (currentSlot->step == 9) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleLimitTifaAttachPos), 0x15);
-    } else if (currentSlot->step == 0x1F) {
+    } else if (currentSlot->step == 31) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleLimitTifaAttachPos), 0x21);
     }
-    if (currentSlot->step == 0x2D) {
+    if (currentSlot->step == 45) {
         pChildRecord = (BattleFxProgram6Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram6AlignedModelTask);
-        rangeBytes = g_BattleActorRecords[currentSlot->typeIndex].radius + 0x2A8;
-        if (rangeBytes > 0x76C) {
-            rangeBytes = 0x76C;
+        rangeBytes = g_BattleActorRecords[currentSlot->typeIndex].radius + 680;
+        if (rangeBytes > 1900) {
+            rangeBytes = 1900;
         }
         currentSlot->range = rangeBytes;
         pChildRecord->range = rangeBytes;
         pChildRecord->typeIndex = currentSlot->typeIndex;
         pChildRecord->duration = 5;
     }
-    if (currentSlot->step == 0x32) {
+    if (currentSlot->step == 50) {
         pChildRecord = (BattleFxProgram6Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram6SpinningGrowingFadeModelTask);
         pChildRecord->pos = g_BattleLimitTifaTargetPos1.pair;
         pChildRecord->posY = 0;
-        pChildRecord->stepSize = (currentSlot->range << 0xC) / 0x384 / 3;
+        pChildRecord->stepSize = (currentSlot->range << 12) / 900 / 3;
         pChildRecord->range = pChildRecord->stepSize;
         pChildRecord->angle = rand() % 0x1000;
-        pChildRecord->speed = rand() % 0xB4 + 0x106;
+        pChildRecord->speed = rand() % 180 + 262;
         pChildRecord->fadeLevel = 0;
-        pChildRecord->duration = 0x12;
-        pChildRecord->fadeStart = 0xC;
+        pChildRecord->duration = 18;
+        pChildRecord->fadeStart = 12;
         pChildRecord = (BattleFxProgram6Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram6SpinningGrowingFadeModelTask);
         pChildRecord->pos = g_BattleLimitTifaTargetPos1.pair;
         pChildRecord->posY = 0;
-        pChildRecord->stepSize = (currentSlot->range << 0xC) / 0x44C / 3;
+        pChildRecord->stepSize = (currentSlot->range << 12) / 1100 / 3;
         pChildRecord->range = pChildRecord->stepSize;
         pChildRecord->angle = rand() % 0x1000;
-        pChildRecord->speed = -(rand() % 0xB4 + 0x106);
-        pChildRecord->fadeLevel = 0x40;
-        pChildRecord->duration = 0x12;
-        pChildRecord->fadeStart = 0xC;
+        pChildRecord->speed = -(rand() % 180 + 262);
+        pChildRecord->fadeLevel = 64;
+        pChildRecord->duration = 18;
+        pChildRecord->fadeStart = 12;
         pChildRecord = (BattleFxProgram6Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram6GrowingFadeModelTask);
         pChildRecord->pos = g_BattleLimitTifaTargetPos1.pair;
         pChildRecord->posY = 0;
-        pChildRecord->stepSize = (currentSlot->range << 0xC) / 0x46A / 3;
+        pChildRecord->stepSize = (currentSlot->range << 12) / 1130 / 3;
         pChildRecord->range = pChildRecord->stepSize;
-        pChildRecord->duration = 0x12;
-        pChildRecord->fadeStart = 0xC;
+        pChildRecord->duration = 18;
+        pChildRecord->fadeStart = 12;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleLimitTifaTargetPos1), 0xFA);
     }
-    if (currentSlot->step >= 0x32 && currentSlot->step <= 0x3C && (currentSlot->step & 1) != 0) {
+    if (currentSlot->step >= 50 && currentSlot->step <= 60 && (currentSlot->step & 1) != 0) {
         pChildRecord = (BattleFxProgram6Record *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram6DecayingFadeModelTask);
         pChildRecord->posX = g_BattleLimitTifaTargetPos1.x;
         pChildRecord->posZ = g_BattleLimitTifaTargetPos1.z;
-        rangeBytes = (currentSlot->step - 0x32) * (rand() % 0x37 + 0xBE) + 0x122;
-        pChildRecord->posY = -(currentSlot->range * rangeBytes / 0x320);
-        rangeBytes = rand() % 0x12C + (currentSlot->step - 0x32) * (rand() % 0x19) + 0xDC;
-        pChildRecord->stepSize = ((currentSlot->range << 0xC) / rangeBytes) / 4;
+        rangeBytes = (currentSlot->step - 50) * (rand() % 55 + 190) + 290;
+        pChildRecord->posY = -(currentSlot->range * rangeBytes / 800);
+        rangeBytes = rand() % 300 + (currentSlot->step - 50) * (rand() % 25) + 220;
+        pChildRecord->stepSize = ((currentSlot->range << 12) / rangeBytes) / 4;
         pChildRecord->range = pChildRecord->stepSize;
         pChildRecord->speed = 5;
-        pChildRecord->duration = 0xA;
+        pChildRecord->duration = 10;
         pChildRecord->fadeStart = 4;
     }
-    if (currentSlot->step == 0x1C || currentSlot->step == 0x3A) {
+    if (currentSlot->step == 28 || currentSlot->step == 58) {
         Battle_SpawnActorScaleRampTask(g_BattleLimitTifaActorIdx);
         Battle_EffectProgramSpawnBoneWorldSpritePair(1);
         Battle_EffectProgramSpawnBoneWorldSpritePair(0);
     }
-    if (currentSlot->step >= 0x31 && currentSlot->step <= 0x38) {
-        g_BattleCameraTransform.posY = (currentSlot->step & 1) * 0xFA;
+    if (currentSlot->step >= 49 && currentSlot->step <= 56) {
+        g_BattleCameraTransform.posY = (currentSlot->step & 1) * 250;
     }
-    if (currentSlot->step == 0x37) {
+    if (currentSlot->step == 55) {
         Battle_PostActorHitOrHurtMessage(currentSlot->typeIndex);
     }
-    if (currentSlot->step >= 0x3C) {
+    if (currentSlot->step >= 60) {
         g_BattleCameraTransform.posY = 0;
         currentSlot->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -2671,7 +2671,7 @@ void __cdecl Battle_EffectProgram6DecayingFadeModelTask(void)
     frame.drawDesc->stateFlags = 0;
     frame.drawDesc->texturePageBits = 0;
     if (frame.decaySlot->timer >= frame.decaySlot->fadeStart) {
-        frame.drawDesc->fadeLevel = 0x1000 / (frame.decaySlot->fadeEnd - frame.decaySlot->fadeStart) * (frame.decaySlot->timer - frame.decaySlot->fadeStart);
+        frame.drawDesc->fadeLevel = 4096 / (frame.decaySlot->fadeEnd - frame.decaySlot->fadeStart) * (frame.decaySlot->timer - frame.decaySlot->fadeStart);
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.drawDesc, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
@@ -2726,11 +2726,11 @@ void __cdecl Battle_EffectProgram6GrowingFadeModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(8, g_BattleLimitTifaLoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.growingFadeModel->timer >= frame.growingFadeModel->fadeStart) {
-        frame.modelDraw->fadeLevel = 0x80 - 0x80 / (frame.growingFadeModel->fadeEnd - frame.growingFadeModel->fadeStart) * (frame.growingFadeModel->timer - frame.growingFadeModel->fadeStart);
+        frame.modelDraw->fadeLevel = 128 - 128 / (frame.growingFadeModel->fadeEnd - frame.growingFadeModel->fadeStart) * (frame.growingFadeModel->timer - frame.growingFadeModel->fadeStart);
     }
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
     if (frame.growingFadeModel->timer >= frame.growingFadeModel->fadeEnd) {
@@ -2786,11 +2786,11 @@ void __cdecl Battle_EffectProgram6SpinningGrowingFadeModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(4, g_BattleLimitTifaLoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = frame.spinGrowFadeRecord->drawAttribute;
     if (frame.spinGrowFadeRecord->timer >= frame.spinGrowFadeRecord->fadeStart) {
-        frame.modelDraw->fadeLevel = 0x80 - 0x80 / (frame.spinGrowFadeRecord->fadeEnd - frame.spinGrowFadeRecord->fadeStart) * (frame.spinGrowFadeRecord->timer - frame.spinGrowFadeRecord->fadeStart);
+        frame.modelDraw->fadeLevel = 128 - 128 / (frame.spinGrowFadeRecord->fadeEnd - frame.spinGrowFadeRecord->fadeStart) * (frame.spinGrowFadeRecord->timer - frame.spinGrowFadeRecord->fadeStart);
     }
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
     if (frame.spinGrowFadeRecord->timer >= frame.spinGrowFadeRecord->fadeEnd) {
@@ -2848,11 +2848,11 @@ void __cdecl Battle_EffectProgram6AlignedModelTask(void)
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
-    frame.modelMatrix.t[0] = *(short *)&frame.actorPosX + (frame.tmpAngleOffset * frame.dirX.vx >> 0xC);
-    frame.modelMatrix.t[1] = frame.actorPosY + (frame.tmpAngleOffset * frame.dirX.vy >> 0xC) - g_BattleLimitTifaTargetBonePos[1] + g_BattleLimitTifaRibbonPointBuffer0.targetBoneMaxY;
-    frame.modelMatrix.t[2] = *(short *)&frame.actorPosZ + (frame.tmpAngleOffset * frame.dirX.vz >> 0xC);
+    frame.modelMatrix.t[0] = *(short *)&frame.actorPosX + (frame.tmpAngleOffset * frame.dirX.vx >> 12);
+    frame.modelMatrix.t[1] = frame.actorPosY + (frame.tmpAngleOffset * frame.dirX.vy >> 12) - g_BattleLimitTifaTargetBonePos[1] + g_BattleLimitTifaRibbonPointBuffer0.targetBoneMaxY;
+    frame.modelMatrix.t[2] = *(short *)&frame.actorPosZ + (frame.tmpAngleOffset * frame.dirX.vz >> 12);
     ConcatMatrixInPlace(&frame.alignMatrix, &frame.modelMatrix);
-    frame.scaleX.vz = (frame.alignedSlot->range << 0xC) / 0x348;
+    frame.scaleX.vz = (frame.alignedSlot->range << 12) / 840;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.modelMatrix, &frame.scaleX);
@@ -2863,7 +2863,7 @@ void __cdecl Battle_EffectProgram6AlignedModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(6, g_BattleLimitTifaLoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = (frame.alignedSlot->frame & 1) << 6;
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
@@ -2910,14 +2910,14 @@ void __cdecl Battle_EffectProgram6CarryTargetActorTask(void)
     if (frame.effectSlot->timer == 0) {
         Battle_GetActorBoneYExtents((short)frame.effectSlot->actorIndex, (short *)&g_BattleLimitTifaTargetBonePos[1], &g_BattleLimitTifaRibbonPointBuffer0.targetBoneMaxY);
         g_BattleLimitTifaActorBonePos.pair = *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitTifaActorIdx].posX;
-        frame.effectSlot->riseStepY = 0x348;
-        frame.effectSlot->fallStepY = 0x1D2;
+        frame.effectSlot->riseStepY = 840;
+        frame.effectSlot->fallStepY = 466;
         g_BattleLimitTifaTargetPos1.pair = *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX;
         g_BattleLimitTifaTargetPos2 = *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].rotX;
         g_BattleLimitTifaTargetState = g_BattleActorRecords[frame.effectSlot->actorIndex].drawFlags;
         g_BattleActorRecords[frame.effectSlot->actorIndex].drawFlags |= 0x11;
         frame.peerIndex = 0;
-        for (g_BattleLimitTifaTargetLoopIndex = 0; frame.peerIndex < 0xA; frame.peerIndex++) {
+        for (g_BattleLimitTifaTargetLoopIndex = 0; frame.peerIndex < 10; frame.peerIndex++) {
             if (frame.peerIndex == frame.effectSlot->actorIndex) {
                 continue;
             }
@@ -2945,50 +2945,50 @@ void __cdecl Battle_EffectProgram6CarryTargetActorTask(void)
     } else {
         frame.tmpBoneMinY = 0;
         frame.cameraOffsetY = 0;
-        frame.tmpBoneMaxY = 0xFF9C;
+        frame.tmpBoneMaxY = 0xFF9C /* -100 */;
         Battle_ComputeAttachPointCameraOffset(g_BattleLimitTifaActorIdx, 0x20, &frame.tmpBoneMinY, (short *)&g_BattleLimitTifaAttachPos);
-        if (frame.effectSlot->timer < 0x1F) { /* empty first arm: lib/codegen.h */
+        if (frame.effectSlot->timer < 31) { /* empty first arm: lib/codegen.h */
         } else {
-            if (frame.effectSlot->timer < 0x24) {
+            if (frame.effectSlot->timer < 36) {
                 g_BattleActorRecords[g_BattleLimitTifaActorIdx].posY -= frame.effectSlot->riseStepY;
                 ((BattleFxVertex *)&g_BattleLimitTifaAttachPos)->baseY -= frame.effectSlot->riseStepY;
-            } else if (frame.effectSlot->timer < 0x30) { /* empty first arm: lib/codegen.h */
+            } else if (frame.effectSlot->timer < 48) { /* empty first arm: lib/codegen.h */
             } else {
-                if (frame.effectSlot->timer < 0x39) {
+                if (frame.effectSlot->timer < 57) {
                     g_BattleActorRecords[g_BattleLimitTifaActorIdx].posY += frame.effectSlot->fallStepY;
                 }
             }
         }
         if (frame.effectSlot->timer < 8) { /* empty first arm: lib/codegen.h */
         } else {
-            if (frame.effectSlot->timer < 0x13) {
+            if (frame.effectSlot->timer < 19) {
                 *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX = *(Int64Pair *)(&g_BattleLimitTifaAttachPos);
                 g_BattleActorRecords[frame.effectSlot->actorIndex].posY -= (short)(-g_BattleLimitTifaTargetPos1.y + g_BattleLimitTifaRibbonPointBuffer0.targetBoneMaxY);
-            } else if (frame.effectSlot->timer <= 0x2C) {
+            } else if (frame.effectSlot->timer <= 44) {
                 *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX = *(Int64Pair *)(&g_BattleLimitTifaAttachPos);
                 g_BattleActorRecords[frame.effectSlot->actorIndex].posY -= (short)(-g_BattleLimitTifaTargetPos1.y + g_BattleLimitTifaRibbonPointBuffer0.targetBoneMaxY);
                 g_BattleActorRecords[frame.effectSlot->actorIndex].yaw = Battle_GetActorAnimAngle(g_BattleLimitTifaActorIdx);
-                if (frame.effectSlot->timer == 0x1E) {
+                if (frame.effectSlot->timer == 30) {
                     g_BattleActorRecords[frame.effectSlot->actorIndex].posY -= frame.effectSlot->riseStepY;
                 }
-                if (frame.effectSlot->timer == 0x2C) {
+                if (frame.effectSlot->timer == 44) {
                     frame.effectSlot->pos = *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX;
                     frame.effectSlot->posY -= g_BattleLimitTifaRibbonPointBuffer0.targetBoneMaxY;
                     g_BattleLimitTifaRelativeVec.x = (g_BattleLimitTifaTargetPos1.x - g_BattleActorRecords[frame.effectSlot->actorIndex].posX) / 5;
                     g_BattleLimitTifaRelativeVec.y = -g_BattleActorRecords[frame.effectSlot->actorIndex].posY / 5;
                     g_BattleLimitTifaRelativeVec.z = (g_BattleLimitTifaTargetPos1.z - g_BattleActorRecords[frame.effectSlot->actorIndex].posZ) / 5;
                 }
-            } else if (frame.effectSlot->timer < 0x32) {
+            } else if (frame.effectSlot->timer < 50) {
                 frame.effectSlot->posX += g_BattleLimitTifaRelativeVec.x;
                 frame.effectSlot->posY += g_BattleLimitTifaRelativeVec.y;
                 frame.effectSlot->posZ += g_BattleLimitTifaRelativeVec.z;
                 *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX = frame.effectSlot->pos;
                 g_BattleActorRecords[frame.effectSlot->actorIndex].posY += (short)(g_BattleLimitTifaTargetBonePos[1] + g_BattleLimitTifaRibbonPointBuffer0.targetBoneMaxY);
-                g_BattleActorRecords[frame.effectSlot->actorIndex].rotX = 0x800;
+                g_BattleActorRecords[frame.effectSlot->actorIndex].rotX = 0x800 /* 180 deg */;
             } else {
                 *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX = g_BattleLimitTifaTargetPos1.pair;
                 g_BattleActorRecords[frame.effectSlot->actorIndex].posY = g_BattleLimitTifaTargetBonePos[1];
-                g_BattleActorRecords[frame.effectSlot->actorIndex].rotX = 0x800;
+                g_BattleActorRecords[frame.effectSlot->actorIndex].rotX = 0x800 /* 180 deg */;
                 g_BattleActorRecords[frame.effectSlot->actorIndex].yaw += (short)(0x3C - frame.effectSlot->timer << 7);
             }
         }
@@ -2996,7 +2996,7 @@ void __cdecl Battle_EffectProgram6CarryTargetActorTask(void)
             *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitTifaSortedTargetIndices[frame.peerIndex]].posX = *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX;
             *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitTifaSortedTargetIndices[frame.peerIndex]].rotX = *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].rotX;
         }
-        if (frame.effectSlot->timer >= 0x3C) {
+        if (frame.effectSlot->timer >= 60) {
             g_BattleActorRecords[g_BattleLimitTifaActorIdx].posY = g_BattleLimitTifaActorBonePos.y;
             *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].posX = g_BattleLimitTifaTargetPos1.pair;
             *(Int64Pair *)&g_BattleActorRecords[frame.effectSlot->actorIndex].rotX = g_BattleLimitTifaTargetPos2;
@@ -3118,49 +3118,49 @@ void __cdecl Battle_EffectProgram7Step(void)
         frame.piece->scaleOrSpeed = 0;
         frame.piece->scaleStep = 0x96;
         frame.piece->angleOrPull = 0;
-        BattleFx_LimitTifaFillRingPointBuffer(0x20, 0x400);
+        BattleFx_LimitTifaFillRingPointBuffer(32, 1024);
     }
-    if (frame.tifaSlot->step == 0xC) {
+    if (frame.tifaSlot->step == 12) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleLimitTifaAttachPos), 0x241);
     }
-    if (frame.tifaSlot->step >= 0xC && frame.tifaSlot->step <= 0x3D) {
+    if (frame.tifaSlot->step >= 12 && frame.tifaSlot->step <= 61) {
         frame.tmpStepCap = frame.tifaSlot->step >> 2;
         if (frame.tmpStepCap > 8) {
             frame.tmpStepCap = 8;
         }
         for (frame.emitIndex = 0; frame.emitIndex < 6; frame.emitIndex++) {
-            if (g_BattleSecondaryTaskActiveCount >= 0x5A) {
+            if (g_BattleSecondaryTaskActiveCount >= 90) {
                 break;
             }
             frame.piece = (BattleFxProgram7Piece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram7ConvergingStreakTask);
             frame.piece->pos = *(Int64Pair *)(&g_BattleLimitTifaAttachPos);
-            frame.dirX = rand() % 0x1000 - 0x800;
-            frame.dirY = rand() % 0x1000 - 0x800;
-            frame.dirZ = rand() % 0x1000 - 0x800;
+            frame.dirX = rand() % 4096 - 2048;
+            frame.dirY = rand() % 4096 - 2048;
+            frame.dirZ = rand() % 4096 - 2048;
             NormalizeVectorFixed(&frame.dirX, &frame.dirX);
-            frame.tmpMagnitude = frame.tifaSlot->step * 9 + rand() % 0xF0 + 0x15E;
-            frame.piece->posX += (short)(frame.tmpMagnitude * frame.dirX >> 0xC);
-            frame.piece->posY += (short)(frame.tmpMagnitude * frame.dirY >> 0xC);
-            frame.piece->posZ += (short)(frame.tmpMagnitude * frame.dirZ >> 0xC);
-            frame.piece->scaleOrSpeed = rand() % 0x64 + 0xD2;
+            frame.tmpMagnitude = frame.tifaSlot->step * 9 + rand() % 240 + 350;
+            frame.piece->posX += (short)(frame.tmpMagnitude * frame.dirX >> 12);
+            frame.piece->posY += (short)(frame.tmpMagnitude * frame.dirY >> 12);
+            frame.piece->posZ += (short)(frame.tmpMagnitude * frame.dirZ >> 12);
+            frame.piece->scaleOrSpeed = rand() % 100 + 210;
             frame.piece->scaleStep = (frame.tifaSlot->step >> 1) + (rand() % 0x10) + 0x10;
-            frame.piece->angleOrPull = (frame.tifaSlot->step >> 1) + rand() % 0x1A + 0x16;
-            frame.piece->rotStepOrShade = (frame.tifaSlot->step >> 1) + rand() % 0x38 + 0xA;
+            frame.piece->angleOrPull = (frame.tifaSlot->step >> 1) + rand() % 26 + 22;
+            frame.piece->rotStepOrShade = (frame.tifaSlot->step >> 1) + rand() % 56 + 10;
             frame.piece->fadeStartOrDur = 0x2710;
             frame.piece->fadeEndOrSlot = 0x2710;
         }
     }
-    if (frame.tifaSlot->step == 0x44) {
-        for (frame.emitIndex = 0; frame.emitIndex < 0xA; frame.emitIndex++) {
+    if (frame.tifaSlot->step == 68) {
+        for (frame.emitIndex = 0; frame.emitIndex < 10; frame.emitIndex++) {
             *(short *)&g_BattleActorStates[frame.emitIndex].flags |= 2;
         }
         Battle_GetBoneWorldPos(frame.tifaSlot->actorIndex, g_BattleActorRecords[frame.tifaSlot->actorIndex].targetBone, (short *)((int)frame.tifaSlot + 4));
-        frame.emitIndex = g_BattleActorRecords[frame.tifaSlot->actorIndex].radius + 0x12C;
-        if (frame.emitIndex < 0x3E8) {
-            frame.emitIndex = 0x3E8;
+        frame.emitIndex = g_BattleActorRecords[frame.tifaSlot->actorIndex].radius + 300;
+        if (frame.emitIndex < 1000) {
+            frame.emitIndex = 1000;
         }
-        if (frame.emitIndex > 0x76C) {
-            frame.emitIndex = 0x76C;
+        if (frame.emitIndex > 1900) {
+            frame.emitIndex = 1900;
         }
         frame.tifaSlot->effectRadius = frame.emitIndex + (frame.emitIndex >> 1);
         frame.stagePosX = frame.tifaSlot->posX;
@@ -3175,16 +3175,16 @@ void __cdecl Battle_EffectProgram7Step(void)
         frame.ringRecord->messageParam = 0x1A;
         frame.ringRecord->clearedWord = 0;
     }
-    if (frame.tifaSlot->step >= 0x44 && frame.tifaSlot->step <= 0x46) {
+    if (frame.tifaSlot->step >= 68 && frame.tifaSlot->step <= 70) {
         (*(int *)&g_BattleLimitTifaTargetCentroidPair) = g_BattleLimitTifaAttachPos;
         *(int *)&g_BattleLimitTifaTargetCentroidPair.z = ((GfxPsxInputVertex *)&g_BattleLimitTifaAttachPos)->z;
         for (frame.emitIndex = 0; frame.emitIndex < 7; frame.emitIndex++) {
             frame.arcPiece = (BattleFxProgram7ArcPiece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgramRandomRotatingTriangleTask);
-            frame.arcPiece->lifetime = 0xA;
+            frame.arcPiece->lifetime = 10;
             frame.arcPiece->driftOrFadeStart = 1;
-            frame.dirX = rand() % 0x1000 - 0x800;
-            frame.dirY = rand() % 0x1000 - 0x800;
-            frame.dirZ = rand() % 0x1000 - 0x800;
+            frame.dirX = rand() % 4096 - 2048;
+            frame.dirY = rand() % 4096 - 2048;
+            frame.dirZ = rand() % 4096 - 2048;
             NormalizeVectorFixed(&frame.dirX, &frame.dirX);
             frame.arcPiece->posX = *(short *)&frame.dirX;
             frame.arcPiece->posY = *(short *)&frame.dirY;
@@ -3198,7 +3198,7 @@ void __cdecl Battle_EffectProgram7Step(void)
             frame.arcVecY = frame.dirX - frame.dirZ;
             frame.arcVecZ = frame.dirX + frame.dirY;
             NormalizeVectorFixed(&frame.arcVecX, &frame.arcVecX);
-            frame.tmpMagnitude = rand() % 0x1000;
+            frame.tmpMagnitude = rand() % 4096;
             Gte_BuildAxisAngleMatrix(frame.tmpMagnitude, &frame.rotMatrix, (VECTOR *)&frame.dirX);
             TransformVectorToInt32(&frame.rotMatrix, &frame.arcVecX, &frame.arcVecX);
             frame.arcPiece->driftXOrAngleX = *(short *)&frame.arcVecX;
@@ -3212,91 +3212,91 @@ void __cdecl Battle_EffectProgram7Step(void)
     }
     if (REG_ALLOC_HINT) {
     }
-    if (frame.tifaSlot->step == 0x52) {
-        for (frame.emitIndex = 0; frame.emitIndex < 0xA; frame.emitIndex++) {
+    if (frame.tifaSlot->step == 82) {
+        for (frame.emitIndex = 0; frame.emitIndex < 10; frame.emitIndex++) {
             g_BattleActorStates[frame.emitIndex].flags &= ~2;
         }
     }
-    if (frame.tifaSlot->step == 0x55) {
+    if (frame.tifaSlot->step == 85) {
         frame.piece = (BattleFxProgram7Piece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram7TableScaledBillboardModelTask);
         frame.piece->pos = frame.tifaSlot->pos;
-        frame.piece->scaleOrSpeed = (frame.tifaSlot->effectRadius * 3 << 0xC) / 0x3E8;
+        frame.piece->scaleOrSpeed = (frame.tifaSlot->effectRadius * 3 << 12) / 1000;
     }
-    if (frame.tifaSlot->step == 0x59) {
+    if (frame.tifaSlot->step == 89) {
         frame.piece = (BattleFxProgram7Piece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram7GrowingFadeModelTask);
         frame.piece->pos = frame.tifaSlot->pos;
         frame.piece->posY = 0;
-        frame.piece->scaleStep = (frame.tifaSlot->effectRadius << 0xC) / 0x596 / 3;
+        frame.piece->scaleStep = (frame.tifaSlot->effectRadius << 12) / 1430 / 3;
         frame.piece->scaleOrSpeed = frame.piece->scaleStep;
-        frame.piece->angleOrPull = rand() % 0x1000;
+        frame.piece->angleOrPull = rand() % 4096;
         frame.piece->fadeEndOrSlot = 0x12;
         frame.piece->fadeStartOrDur = 0xC;
         for (frame.emitIndex = 0; frame.emitIndex < 3; frame.emitIndex++) {
-            frame.tmpStepCap = rand() % 0x64;
-            frame.tmpMagnitude = 0x64 + frame.tifaSlot->effectRadius + frame.emitIndex * (frame.tmpStepCap + 0x64) + rand() % 0xC8;
+            frame.tmpStepCap = rand() % 100;
+            frame.tmpMagnitude = 0x64 + frame.tifaSlot->effectRadius + frame.emitIndex * (frame.tmpStepCap + 0x64) + rand() % 200;
             frame.piece = (BattleFxProgram7Piece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram7SpinningStretchFadeModelTask);
             frame.piece->pos = frame.tifaSlot->pos;
-            frame.piece->posY = -(frame.emitIndex * (frame.tmpStepCap * 4 + 0x2BC) + rand() % 0x28A + 0x1F4);
+            frame.piece->posY = -(frame.emitIndex * (frame.tmpStepCap * 4 + 700) + rand() % 650 + 500);
             frame.piece->scaleY = 0x8F5;
-            frame.piece->scaleStep = (frame.tmpMagnitude << 0xC) / 0x4E2 / 3;
+            frame.piece->scaleStep = (frame.tmpMagnitude << 12) / 1250 / 3;
             frame.piece->scaleOrSpeed = frame.piece->scaleStep;
-            frame.piece->angleOrPull = rand() % 0x1000;
-            frame.piece->rotStepOrShade = rand() % 0x40 + 0x2E;
+            frame.piece->angleOrPull = rand() % 4096;
+            frame.piece->rotStepOrShade = rand() % 64 + 46;
             frame.piece->fadeEndOrSlot = 0x12;
             frame.piece->fadeStartOrDur = 0xC;
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.tifaSlot->pos), 0x176);
     }
-    if (frame.tifaSlot->step >= 0x59 && frame.tifaSlot->step <= 0x5E) {
+    if (frame.tifaSlot->step >= 89 && frame.tifaSlot->step <= 94) {
         frame.tmpMagnitude = frame.tifaSlot->effectRadius + (frame.tifaSlot->effectRadius >> 1);
         frame.tmpStepCap = frame.tmpMagnitude << 1;
-        for (frame.emitIndex = 0; frame.emitIndex < 0xC; frame.emitIndex++) {
+        for (frame.emitIndex = 0; frame.emitIndex < 12; frame.emitIndex++) {
             frame.variantIndex = rand() % 3;
             frame.arcPiece = (BattleFxProgram7ArcPiece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram7ArcingModelTask);
             frame.arcPiece->pos = frame.tifaSlot->pos;
             frame.arcPiece->posX += (short)(rand() % frame.tmpStepCap - frame.tmpMagnitude);
-            frame.arcPiece->posY += (short)-(rand() % (frame.tmpMagnitude >> 2) + 0x1C2);
+            frame.arcPiece->posY += (short)-(rand() % (frame.tmpMagnitude >> 2) + 450);
             frame.arcPiece->posZ += (short)(rand() % frame.tmpStepCap - frame.tmpMagnitude);
-            frame.arcPiece->driftYOrVelY = -(rand() % 0xF0 + 0x17C);
-            frame.arcPiece->accelerationY = rand() % 0x10 + 0x18;
+            frame.arcPiece->driftYOrVelY = -(rand() % 240 + 380);
+            frame.arcPiece->accelerationY = rand() % 16 + 24;
             frame.arcPiece->driftZOrAngleZ = rand() % 0x1000;
             frame.arcPiece->driftXOrAngleX = frame.arcPiece->driftZOrAngleZ;
             frame.arcPiece->driftOrAngleY = frame.arcPiece->driftXOrAngleX;
             frame.arcPiece->angleStep = rand() % 0xB4 + 0x60;
             frame.arcPiece->spinStep = rand() % 0xC8 + 0x4E;
-            frame.scaleRatio = (g_BattleLimitTifaScaleOffsets2[frame.variantIndex] << 0xC) / g_BattleLimitTifaScaleOffsets1[frame.variantIndex];
-            frame.randMagnitude = rand() % 0x1600 + 0x500;
-            frame.arcPiece->angleOrScale = frame.scaleRatio * frame.randMagnitude >> 0xC;
+            frame.scaleRatio = (g_BattleLimitTifaScaleOffsets2[frame.variantIndex] << 12) / g_BattleLimitTifaScaleOffsets1[frame.variantIndex];
+            frame.randMagnitude = rand() % 5632 + 1280;
+            frame.arcPiece->angleOrScale = frame.scaleRatio * frame.randMagnitude >> 12;
             frame.arcPiece->spinOrVariant = *(short *)&frame.variantIndex;
-            frame.arcPiece->lifetime = rand() % 0xA + 0xC;
+            frame.arcPiece->lifetime = rand() % 10 + 12;
             frame.arcPiece->driftOrFadeStart = frame.arcPiece->lifetime - 6;
         }
     }
-    if (frame.tifaSlot->step == 0x59) {
+    if (frame.tifaSlot->step == 89) {
         frame.piece = (BattleFxProgram7Piece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram7ActorTumbleTask);
         frame.piece->targetIndex = frame.tifaSlot->actorIndex;
     }
-    if (frame.tifaSlot->step == 0xB || frame.tifaSlot->step == 0x45) {
+    if (frame.tifaSlot->step == 11 || frame.tifaSlot->step == 69) {
         Battle_SpawnActorScaleRampTask(g_BattleLimitTifaActorIdx);
     }
-    if (frame.tifaSlot->step >= 0x52 && frame.tifaSlot->step <= 0x57) {
+    if (frame.tifaSlot->step >= 82 && frame.tifaSlot->step <= 87) {
         Battle_SpawnActorScaleRampTask(g_BattleLimitTifaActorIdx);
     }
-    if (frame.tifaSlot->step >= 0x55 && frame.tifaSlot->step <= 0x5E) {
-        g_BattleCameraTransform.posY = (frame.tifaSlot->step & 1) * 0x154;
+    if (frame.tifaSlot->step >= 85 && frame.tifaSlot->step <= 94) {
+        g_BattleCameraTransform.posY = (frame.tifaSlot->step & 1) * 340;
     }
-    if (frame.tifaSlot->step >= 0x54 && frame.tifaSlot->step <= 0x56) {
+    if (frame.tifaSlot->step >= 84 && frame.tifaSlot->step <= 86) {
         g_BattleActorRecords[g_BattleLimitTifaActorIdx].posX += g_BattleLimitTifaVelocityX;
         g_BattleActorRecords[g_BattleLimitTifaActorIdx].posZ += g_BattleLimitTifaVelocityZ;
     }
-    if (frame.tifaSlot->step == 0x52) {
+    if (frame.tifaSlot->step == 82) {
         frame.piece = (BattleFxProgram7Piece *)BATTLE_NEW_TASK_SLOT(Battle_EffectProgram7RibbonTask);
         frame.piece->fadeEndOrSlot = *(short *)&g_BattleLimitTifaRibbonNextSlot;
         frame.piece->fadeStartOrDur = 0xA;
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].lifetime = 0;
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].head = 0;
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleSlot = 0;
-        g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleCount = 0xF;
+        g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleCount = 15;
         g_BattleLimitTifaRibbonNextSlot++;
         if (g_BattleLimitTifaRibbonNextSlot >= 8) {
             g_BattleLimitTifaRibbonNextSlot = 0;
@@ -3304,7 +3304,7 @@ void __cdecl Battle_EffectProgram7Step(void)
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].lifetime = 0;
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].head = 0;
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleSlot = 0;
-        g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleCount = 0xF;
+        g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleCount = 15;
         g_BattleLimitTifaRibbonNextSlot++;
         if (g_BattleLimitTifaRibbonNextSlot >= 8) {
             g_BattleLimitTifaRibbonNextSlot = 0;
@@ -3312,24 +3312,24 @@ void __cdecl Battle_EffectProgram7Step(void)
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].lifetime = 0;
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].head = 0;
         g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleSlot = 0;
-        g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleCount = 0xF;
+        g_BattleLimitTifaRibbonInstances[g_BattleLimitTifaRibbonNextSlot].sampleCount = 15;
         g_BattleLimitTifaRibbonNextSlot++;
         if (g_BattleLimitTifaRibbonNextSlot >= 8) {
             g_BattleLimitTifaRibbonNextSlot = 0;
         }
         Battle_EffectProgramResetRibbonBuffers();
     }
-    if (frame.tifaSlot->step < 0x10) {
+    if (frame.tifaSlot->step < 16) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         frame.fadeRamp = frame.tifaSlot->step << 7;
-    } else if (frame.tifaSlot->step >= 0x75) {
-        frame.fadeRamp = 0x800 - (frame.tifaSlot->step - 0x75 << 8);
+    } else if (frame.tifaSlot->step >= 117) {
+        frame.fadeRamp = 2048 - (frame.tifaSlot->step - 117 << 8);
     } else {
-        frame.fadeRamp = 0x800;
+        frame.fadeRamp = 2048;
     }
-    if (frame.tifaSlot->step >= 0x7D) {
+    if (frame.tifaSlot->step >= 125) {
         g_BattleCameraTransform.posY = 0;
         frame.fadeRamp = 0;
         frame.tifaSlot->ownerSlot = BATTLE_TASK_FREE;
@@ -3373,13 +3373,13 @@ void __cdecl Battle_EffectProgram7RequestStageOffscreenRender(BattleEffectStageC
     frame.heightRatio = pMatrix->stageHeight / pAngles->height;
     frame.heading = g_BattleActorRecords[g_BattleLimitTifaActorIdx].yaw + 0x800 & 0xFFF;
     if (frame.heading != 0) {
-        frame.rotX.vx = 0x400;
-        frame.rotX.vy = 0x800;
+        frame.rotX.vx = 0x400 /* 90 deg */;
+        frame.rotX.vy = 0x800 /* 180 deg */;
         frame.rotX.vz = 0;
         frame.stageMatrix.t[0] = pMatrix->offsetX / frame.widthRatio;
         frame.stageMatrix.t[1] = -(pMatrix->offsetY / frame.heightRatio);
     } else {
-        frame.rotX.vx = 0x400;
+        frame.rotX.vx = 0x400 /* 90 deg */;
         frame.rotX.vy = 0;
         frame.rotX.vz = 0;
         frame.stageMatrix.t[0] = -(pMatrix->offsetX / frame.widthRatio);
@@ -3428,7 +3428,7 @@ void __cdecl Battle_EffectProgram7TableScaledBillboardModelTask(void)
     int scaled;
 
     pBillboard = (BattleScaledBillboardRecord *)BATTLE_CURRENT_TASK_SLOT;
-    scaled = pBillboard->scale * g_BattleLimitTifaQuadColors2[pBillboard->colorIndex] >> 0xC;
+    scaled = pBillboard->scale * g_BattleLimitTifaQuadColors2[pBillboard->colorIndex] >> 12;
     BattleFx_InstallBillboardMatrix(&pBillboard->posX, (short)scaled, -(scaled >> 4));
     modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
     modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(5, g_BattleLimitTifaLoadedResTable);
@@ -3555,7 +3555,7 @@ void __cdecl Battle_EffectProgram7ActorTumbleTask(void)
         g_BattleLimitTifaTargetState = g_BattleActorRecords[frame.tumbleSlot->targetIndex].drawFlags;
         g_BattleActorRecords[frame.tumbleSlot->targetIndex].drawFlags |= 0x11;
         frame.actorIndex = 0;
-        for (g_BattleLimitTifaTargetLoopIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (g_BattleLimitTifaTargetLoopIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if (frame.actorIndex == frame.tumbleSlot->targetIndex) {
                 continue;
             }
@@ -3572,10 +3572,10 @@ void __cdecl Battle_EffectProgram7ActorTumbleTask(void)
         }
         Battle_GetActorBoneYExtents((short)frame.tumbleSlot->targetIndex, &g_BattleLimitTifaTargetBonePos[0], (short *)&g_BattleLimitTifaRibbonPointBuffer0);
         Battle_GetBoneWorldPos(frame.tumbleSlot->targetIndex, g_BattleActorRecords[frame.tumbleSlot->targetIndex].targetBone, g_BattleLimitTifaBonePos);
-        frame.tumbleSlot->velocityX = rand() % 0xB4 + 0xA8;
-        frame.tumbleSlot->velocityZ = rand() % 0xD0 + 0x96;
-        frame.tumbleSlot->velocityY = -(rand() % 0x64 + 0x28A);
-        frame.tumbleSlot->gravity = rand() % 0xE + 0x26;
+        frame.tumbleSlot->velocityX = rand() % 180 + 168;
+        frame.tumbleSlot->velocityZ = rand() % 208 + 150;
+        frame.tumbleSlot->velocityY = -(rand() % 100 + 650);
+        frame.tumbleSlot->gravity = rand() % 14 + 38;
         g_BattleLimitTifaRelativeVec.y = g_BattleLimitTifaTargetPos1.y;
         (frame.tumbleSlot->frame)++;
     } else {
@@ -3597,7 +3597,7 @@ void __cdecl Battle_EffectProgram7ActorTumbleTask(void)
         } else if (frame.tumbleSlot->velocityX != 0 && frame.tumbleSlot->velocityZ != 0) {
             *(Int64Pair *)&g_BattleActorRecords[frame.tumbleSlot->targetIndex].posX = g_BattleLimitTifaTargetPos1.pair;
             g_BattleActorRecords[frame.tumbleSlot->targetIndex].posY = g_BattleLimitTifaTargetBonePos[1];
-            g_BattleActorRecords[frame.tumbleSlot->targetIndex].rotX = 0x800;
+            g_BattleActorRecords[frame.tumbleSlot->targetIndex].rotX = 0x800 /* 180 deg */;
             g_BattleActorRecords[frame.tumbleSlot->targetIndex].yaw = frame.tumbleSlot->velocityX + frame.tumbleSlot->velocityZ << 2;
             g_BattleActorRecords[frame.tumbleSlot->targetIndex].rotZ = 0;
             frame.tumbleSlot->velocityZ = 0;
@@ -3605,7 +3605,7 @@ void __cdecl Battle_EffectProgram7ActorTumbleTask(void)
             Battle_PostActorHitOrHurtMessage(frame.tumbleSlot->targetIndex);
         }
         if (frame.tumbleSlot->velocityZ < 6) {
-            g_BattleCameraTransform.posY = (frame.tumbleSlot->frame & 1) * 0x12C;
+            g_BattleCameraTransform.posY = (frame.tumbleSlot->frame & 1) * 300;
             (frame.tumbleSlot->velocityZ)++;
         } else if (frame.tumbleSlot->velocityZ < 8 && (frame.tumbleSlot->frame & 1) == 0) {
             g_BattleCameraTransform.posY = 0;
@@ -3614,7 +3614,7 @@ void __cdecl Battle_EffectProgram7ActorTumbleTask(void)
             *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitTifaSortedTargetIndices[frame.actorIndex]].posX = *(Int64Pair *)&g_BattleActorRecords[frame.tumbleSlot->targetIndex].posX;
             *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitTifaSortedTargetIndices[frame.actorIndex]].rotX = *(Int64Pair *)&g_BattleActorRecords[frame.tumbleSlot->targetIndex].rotX;
         }
-        if (frame.tumbleSlot->frame >= 0x1F) {
+        if (frame.tumbleSlot->frame >= 31) {
             g_BattleCameraTransform.posY = 0;
             *(Int64Pair *)&g_BattleActorRecords[frame.tumbleSlot->targetIndex].posX = g_BattleLimitTifaTargetPos1.pair;
             *(Int64Pair *)&g_BattleActorRecords[frame.tumbleSlot->targetIndex].rotX = g_BattleLimitTifaTargetPos2;
@@ -3719,7 +3719,7 @@ void __cdecl Battle_EffectProgram7ArcingModelTask(void)
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleLimitTifaVector2[frame.arcingModel->tableIndex], g_BattleLimitTifaLoadedResTable);
         frame.modelDraw->flags = 0x80;
         frame.modelDraw->uvScroll = 0;
-        frame.modelDraw->fadeLevel = 0x1000;
+        frame.modelDraw->fadeLevel = 4096;
         frame.modelDraw->stateFlags = 0x20;
         frame.modelDraw->texturePageBits = 0;
         SetDrawColorRGB(0, 0, 0);
@@ -3779,14 +3779,14 @@ void __cdecl Battle_EffectProgram7SpinningStretchFadeModelTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0xC, g_BattleLimitTifaLoadedResTable);
+    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(12, g_BattleLimitTifaLoadedResTable);
     frame.modelDraw->flags = 0x88;
     frame.modelDraw->uvScroll = 0;
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     if (frame.spinState->timer >= frame.spinState->fadeStart) {
-        frame.modelDraw->fadeLevel = 0x1000 / (frame.spinState->fadeEnd - frame.spinState->fadeStart) * (frame.spinState->timer - frame.spinState->fadeStart);
+        frame.modelDraw->fadeLevel = 4096 / (frame.spinState->fadeEnd - frame.spinState->fadeStart) * (frame.spinState->timer - frame.spinState->fadeStart);
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
@@ -3839,14 +3839,14 @@ void __cdecl Battle_EffectProgram7GrowingFadeModelTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_BattleLimitTifaLoadedResTable);
+    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(11, g_BattleLimitTifaLoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.growState->timer >= frame.growState->fadeStart) {
-        frame.modelDraw->fadeLevel = 0x80 - 0x80 / (frame.growState->fadeEnd - frame.growState->fadeStart) * (frame.growState->timer - frame.growState->fadeStart);
+        frame.modelDraw->fadeLevel = 128 - 128 / (frame.growState->fadeEnd - frame.growState->fadeStart) * (frame.growState->timer - frame.growState->fadeStart);
     }
     g_BattleLimitTifaDrawListHandle2 = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitTifaDrawListHandle2);
     if (frame.growState->timer >= frame.growState->fadeEnd) {
@@ -3880,13 +3880,13 @@ void __cdecl Battle_EffectProgram7OscillatingDiscTask(void)
 
     pDisc = (BattleFxOscillatingDiscRecord *)BATTLE_CURRENT_TASK_SLOT;
     fanData = (BattleFxRibbonEmitterData *)Gfx_GetPsxScratchpadPtr(0);
-    if (pDisc->timer < 0xC) {
+    if (pDisc->timer < 12) {
         if (g_BattleIsPaused == 0) {
             (pDisc->timer)++;
         }
     } else {
-        if (pDisc->timer >= 0x54) {
-            amount = pDisc->timer - 0x54 << 0xA;
+        if (pDisc->timer >= 84) {
+            amount = pDisc->timer - 84 << 10;
         } else {
             amount = 0;
         }
@@ -3896,17 +3896,17 @@ void __cdecl Battle_EffectProgram7OscillatingDiscTask(void)
         Gfx_ShadePsxVertexColor((CVECTOR *)&baseColorA, amount, (CVECTOR *)&nextShadedA);
         Gfx_ShadePsxVertexColor((CVECTOR *)&baseColorB, amount, (CVECTOR *)&litColorB);
         BattleFx_InstallBillboardMatrix(&g_BattleLimitTifaAttachPos, (short)pDisc->position, -(pDisc->position >> 4));
-        Battle_EffectProgramDrawGradientTriangleFan(fanData, 0x20, nextShadedA, litColorB);
-        if (pDisc->timer >= 0x58) {
+        Battle_EffectProgramDrawGradientTriangleFan(fanData, 32, nextShadedA, litColorB);
+        if (pDisc->timer >= 88) {
             pDisc->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
             return;
         }
-        if (pDisc->timer < 0x12) {
+        if (pDisc->timer < 18) {
             pDisc->position += pDisc->velocity;
-        } else if (pDisc->timer < 0x44) {
-            pDisc->position += (short)(SinFixed(pDisc->angle) * 0xF0 >> 0xC);
+        } else if (pDisc->timer < 68) {
+            pDisc->position += (short)(SinFixed(pDisc->angle) * 0xF0 >> 12);
             pDisc->angle += 0x17C;
         } else {
             pDisc->position -= (short)(pDisc->position >> 3);
@@ -3952,9 +3952,9 @@ void __cdecl Battle_EffectProgram7ConvergingStreakTask(void)
     frame.deltaX.vz = g_BattleLimitTifaSoundPosZ - frame.streak->posZ;
     frame.distance = NormalizeVectorFixed(&frame.deltaX, &frame.deltaX);
     frame.distance = SqrtToInt(frame.distance);
-    frame.endX.vx = frame.streak->posX + (-frame.streak->speed * frame.deltaX.vx >> 0xC);
-    frame.endX.vy = frame.streak->posY + (-frame.streak->speed * frame.deltaX.vy >> 0xC);
-    frame.endX.vz = frame.streak->posZ + (-frame.streak->speed * frame.deltaX.vz >> 0xC);
+    frame.endX.vx = frame.streak->posX + (-frame.streak->speed * frame.deltaX.vx >> 12);
+    frame.endX.vy = frame.streak->posY + (-frame.streak->speed * frame.deltaX.vy >> 12);
+    frame.endX.vz = frame.streak->posZ + (-frame.streak->speed * frame.deltaX.vz >> 12);
     frame.color = frame.streak->colorCounter + 0x38 << 8 | 0x200020;
     SetRotMatrix((void *)g_BattleCameraTransform.matrix);
     SetTransMatrix(g_BattleCameraTransform.matrix);
@@ -3969,15 +3969,15 @@ void __cdecl Battle_EffectProgram7ConvergingStreakTask(void)
     Gfx_DrawPsxPrimitive(frame.streakPacket);
     frame.streak->prevDistance = frame.streak->distance;
     frame.streak->distance = *(short *)&frame.distance;
-    if (frame.distance < 0x3C || (frame.streak->prevDistance < frame.streak->distance || frame.streak->speed < 0)) {
+    if (frame.distance < 60 || (frame.streak->prevDistance < frame.streak->distance || frame.streak->speed < 0)) {
         frame.streak->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.streak->posX += (short)(frame.streak->attraction * frame.deltaX.vx >> 0xC);
-    frame.streak->posY += (short)(frame.streak->attraction * frame.deltaX.vy >> 0xC);
-    frame.streak->posZ += (short)(frame.streak->attraction * frame.deltaX.vz >> 0xC);
+    frame.streak->posX += (short)(frame.streak->attraction * frame.deltaX.vx >> 12);
+    frame.streak->posY += (short)(frame.streak->attraction * frame.deltaX.vy >> 12);
+    frame.streak->posZ += (short)(frame.streak->attraction * frame.deltaX.vz >> 12);
     frame.streak->speed -= frame.streak->deceleration;
     frame.streak->deceleration += (short)(frame.streak->deceleration >> 3);
     (frame.streak->colorCounter)++;

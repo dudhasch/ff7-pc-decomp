@@ -16,14 +16,14 @@ extern "C" {
 // clang-format off
 // g_TextReverseCharCodeTable maps a character code to its position in g_TextCharCodeTable.
 // GLOBAL: FF7 0x00dc3d18
-unsigned char g_TextReverseCharCodeTable[0x20] = {0};
+unsigned char g_TextReverseCharCodeTable[32] = {0};
 // GLOBAL: FF7 0x00dc3d38
 char g_TextCharCodeCount = 0;
 unsigned char g_bssPad_00dc3d3c[4] = {0};
 unsigned char g_bssPad_00dc3d40[216] = {0};
 // g_TextCharCodeTable holds the game-text code for each of the 225 positions in the character order.
 // GLOBAL: FF7 0x00dc3e18
-int g_TextCharCodeTable[0xE1] = {0};
+int g_TextCharCodeTable[225] = {0};
 unsigned char g_bssPad_00dc419c[4] = {0};
 unsigned char g_bssPad_00dc41a0[120] = {0};
 // clang-format on
@@ -38,7 +38,7 @@ void __cdecl Text_BuildCharCodeTable(void)
 {
     int i;
 
-    for (i = 0; i < 0x60; i++) {
+    for (i = 0; i < 96; i++) {
         g_TextCharCodeTable[i] = i + 0x20;
     }
     g_TextCharCodeTable[96] = 0xC4;
@@ -181,7 +181,7 @@ void __cdecl Text_BuildCharCodeReverseTable(void)
 {
     int i;
 
-    for (i = 0; i < 0xE1; i++) {
+    for (i = 0; i < 225; i++) {
         g_TextReverseCharCodeTable[g_TextCharCodeTable[i]] = i;
     }
     g_TextCharCodeCount = 0;

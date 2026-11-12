@@ -597,7 +597,7 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                     case BATTLE_LAYOUT_SIDE_ATTACK_2:
                     case BATTLE_LAYOUT_SIDE_ATTACK_3:
                     case BATTLE_LAYOUT_SIDE_ATTACK_4:
-                        for (loopIndex = 4; loopIndex < 0xA; loopIndex++) {
+                        for (loopIndex = 4; loopIndex < 10; loopIndex++) {
                             if (g_BattleActorRecords[actor].facing == 0) {
                                 g_BattleActorRecords[loopIndex].facing = 0x800;
                             } else {
@@ -610,7 +610,7 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                             g_BattleActorRecords[actor].yaw = 0;
                         }
                         if ((g_BattleScene.targetMaskTable[2] & g_BattleEffectScratch.targetMask) != 0) {
-                            g_BattleActorRecords[actor].yaw = 0x800;
+                            g_BattleActorRecords[actor].yaw = 0x800 /* 180 deg */;
                         }
                     }
                 } else if (g_BattleActorRecords[actor].effectId != 0x15 || g_BattleActorRecords[actor].effectCategory != BATTLE_EFFECT_CATEGORY_ENEMY_SKILL) {
@@ -625,9 +625,9 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                 animStatus->distance = Battle_ScriptFetchWord((short)actor, animStatus->scriptPtr);
                 animStatus->posY = Battle_ScriptFetchWord((short)actor, animStatus->scriptPtr);
                 animStatus->angle = 0x1000 - (g_BattleActorStates[g_BattleSavedSpecialActorId].yaw + 0x800);
-                animStatus->secondarySlot = (animStatus->distance * g_BattleActorRecords[actor].scale >> 0xC) + (g_BattleActorRecords[g_BattleSavedSpecialActorId].radius * g_BattleActorRecords[g_BattleSavedSpecialActorId].scale >> 0xC);
-                g_BattleActorRecords[actor].posX = g_BattleActorRecords[g_BattleSavedSpecialActorId].posX - (SinFixed(animStatus->angle) * animStatus->secondarySlot >> 0xC);
-                g_BattleActorRecords[actor].posZ = g_BattleActorRecords[g_BattleSavedSpecialActorId].posZ + (CosFixed(animStatus->angle) * animStatus->secondarySlot >> 0xC);
+                animStatus->secondarySlot = (animStatus->distance * g_BattleActorRecords[actor].scale >> 12) + (g_BattleActorRecords[g_BattleSavedSpecialActorId].radius * g_BattleActorRecords[g_BattleSavedSpecialActorId].scale >> 12);
+                g_BattleActorRecords[actor].posX = g_BattleActorRecords[g_BattleSavedSpecialActorId].posX - (SinFixed(animStatus->angle) * animStatus->secondarySlot >> 12);
+                g_BattleActorRecords[actor].posZ = g_BattleActorRecords[g_BattleSavedSpecialActorId].posZ + (CosFixed(animStatus->angle) * animStatus->secondarySlot >> 12);
                 g_BattleActorRecords[actor].posY = animStatus->posY;
                 break;
             case BATTLE_MOTION_RETURN_TO_SPAWN_POS:
@@ -732,7 +732,7 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                         g_BattleActorRecords[actor].yaw = 0;
                         g_BattleVmReg_4 = g_BattleVmReg_1;
                     } else {
-                        g_BattleActorRecords[actor].yaw = 0x800;
+                        g_BattleActorRecords[actor].yaw = 0x800 /* 180 deg */;
                         g_BattleVmReg_4 = -g_BattleVmReg_1;
                     }
                 }
@@ -760,9 +760,9 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                 animStatus->distance = *(short *)&g_BattleVmReg_0;
                 animStatus->posY = 0;
                 animStatus->angle = 0x1000 - (g_BattleActorRecords[g_BattleActiveActorId].yaw + 0x800);
-                animStatus->secondarySlot = (animStatus->distance * g_BattleActorRecords[g_BattleSequenceActorIndex].scale >> 0xC) + (g_BattleActorRecords[actor].radius * g_BattleActorRecords[actor].scale >> 0xC);
-                g_BattleActorRecords[g_BattleSequenceActorIndex].posX = g_BattleActorRecords[actor].posX - (SinFixed(animStatus->angle) * animStatus->secondarySlot >> 0xC);
-                g_BattleActorRecords[g_BattleSequenceActorIndex].posZ = g_BattleActorRecords[actor].posZ + (CosFixed(animStatus->angle) * animStatus->secondarySlot >> 0xC);
+                animStatus->secondarySlot = (animStatus->distance * g_BattleActorRecords[g_BattleSequenceActorIndex].scale >> 12) + (g_BattleActorRecords[actor].radius * g_BattleActorRecords[actor].scale >> 12);
+                g_BattleActorRecords[g_BattleSequenceActorIndex].posX = g_BattleActorRecords[actor].posX - (SinFixed(animStatus->angle) * animStatus->secondarySlot >> 12);
+                g_BattleActorRecords[g_BattleSequenceActorIndex].posZ = g_BattleActorRecords[actor].posZ + (CosFixed(animStatus->angle) * animStatus->secondarySlot >> 12);
                 g_BattleActorRecords[g_BattleSequenceActorIndex].posY = animStatus->posY;
                 break;
             case BATTLE_MOTION_MOVE_TO_CENTROID_DOUBLED:
@@ -956,23 +956,23 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                 break;
             case BATTLE_MOTION_STEP_FORWARD_LONG:
                 g_BattleVmReg_0 = g_BattleActorRecords[actor].yaw;
-                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x204 >> 0xC);
-                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x204 >> 0xC);
+                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x204 >> 12);
+                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x204 >> 12);
                 break;
             case BATTLE_MOTION_STEP_BACK_LONG:
                 g_BattleVmReg_0 = g_BattleActorRecords[actor].yaw + 0x800;
-                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x204 >> 0xC);
-                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x204 >> 0xC);
+                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x204 >> 12);
+                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x204 >> 12);
                 break;
             case BATTLE_MOTION_STEP_FORWARD_SHORT:
                 g_BattleVmReg_0 = g_BattleActorRecords[actor].yaw;
-                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x102 >> 0xC);
-                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x102 >> 0xC);
+                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x102 >> 12);
+                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x102 >> 12);
                 break;
             case BATTLE_MOTION_STEP_BACK_SHORT:
                 g_BattleVmReg_0 = g_BattleActorRecords[actor].yaw + 0x800;
-                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x102 >> 0xC);
-                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x102 >> 0xC);
+                g_BattleActorRecords[actor].posX -= (short)(SinFixed(g_BattleVmReg_0) * 0x102 >> 12);
+                g_BattleActorRecords[actor].posZ -= (short)(CosFixed(g_BattleVmReg_0) * 0x102 >> 12);
                 break;
             case BATTLE_MOTION_DELAYED_HIT_MARK:
                 g_BattleVmReg_0 = *(unsigned char *)(animStatus->scriptPtr + (g_BattleActorRecords[actor].scriptPos));
@@ -1035,7 +1035,7 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                 g_BattleActorRecords[g_BattleSavedSpecialActorId].posZ = 0;
                 g_BattleActorRecords[g_BattleSavedSpecialActorId].posY = 0;
                 g_BattleActorRecords[g_BattleSavedSpecialActorId].posX = 0;
-                g_BattleActorRecords[g_BattleSavedSpecialActorId].rotZ = 0x800;
+                g_BattleActorRecords[g_BattleSavedSpecialActorId].rotZ = 0x800 /* 180 deg */;
                 g_BattleActorRecords[g_BattleSavedSpecialActorId].drawFlags = *(unsigned char *)&g_BattleActorRecords[g_BattleSavedSpecialActorId].drawFlags | 0x10;
                 g_BattleActorRecords[g_BattleSavedSpecialActorId].attachActor = (int)*(volatile short *)&actor;
                 g_BattleActorRecords[g_BattleSavedSpecialActorId].attachBone = g_BattleVmReg_0;
@@ -1111,7 +1111,7 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
             case BATTLE_MOTION_SET_PARTICLE_OFFSET:
                 animStatus->secondarySlot = (unsigned short)*(volatile unsigned char *)(animStatus->scriptPtr + (g_BattleActorRecords[actor].scriptPos));
                 (g_BattleActorRecords[actor].scriptPos)++;
-                (&g_BattleActorRecords[actor].burstOffsetA)[animStatus->secondarySlot] = (short)Battle_ScriptFetchWord((short)actor, animStatus->scriptPtr) * g_BattleActorRecords[actor].scale >> 0xC;
+                (&g_BattleActorRecords[actor].burstOffsetA)[animStatus->secondarySlot] = (short)Battle_ScriptFetchWord((short)actor, animStatus->scriptPtr) * g_BattleActorRecords[actor].scale >> 12;
                 break;
             case BATTLE_MOTION_BONE_PARTICLES_PRIMARY:
                 animStatus->secondarySlot = (unsigned short)*(volatile unsigned char *)(animStatus->scriptPtr + (g_BattleActorRecords[actor].scriptPos));
@@ -1295,7 +1295,7 @@ void __cdecl Battle_RunActorAnimScript(short actor, int scriptTable, int animMod
                 Battle_SetPartyActorRootParent(actor);
                 Battle_TouchPartyStatBlock(actor);
                 windowBase = *(int *)g_BattleModelBankSlots[actor];
-                for (loopIndex = 0; loopIndex < 0x4A; loopIndex++) {
+                for (loopIndex = 0; loopIndex < 74; loopIndex++) {
                     *(int *)((char *)windowBase + loopIndex * 4 + 0x68) += *(int *)g_BattleModelBankSlots[actor];
                 }
                 Battle_BindPartyActorToModel((char)actor);
@@ -1430,7 +1430,7 @@ int __cdecl Battle_IsWeaponAnimIndex(int partySlot, int animIndex)
     int result;
 
     result = 0;
-    if (partySlot >= 0 && partySlot < 3 && animIndex >= 0x2C && animIndex < 0x34) {
+    if (partySlot >= 0 && partySlot < 3 && animIndex >= 44 && animIndex < 52) {
         result = 1;
     }
     return result;
@@ -1464,7 +1464,7 @@ void __cdecl Battle_AdvanceActorAnimation(short actor, int animMode, int animFla
             if (Battle_IsWeaponAnimIndex(actor, animId) != 0) {
                 if (animSet->weaponClipTable != 0) {
                     g_BattleActorRecords[actor].useSecondAngleTable = 1;
-                    weaponIdx = animId - 0x2C;
+                    weaponIdx = animId - 44;
                     clip = animSet->weaponClipTable[weaponIdx];
                     if (clip != 0) {
                         g_BattleActorRecords[actor].animFrame = weaponIdx;
@@ -1552,9 +1552,9 @@ int __cdecl Battle_ScriptFetchWord(short actor, char *script)
 void __cdecl Battle_PlaceActorInFrontOfActor(char actor, char anchor, short distance, short height)
 {
     g_BattleVmReg_0 = 0x1000 - (g_BattleActorRecords[anchor].facing + 0x800);
-    g_BattleVmReg_1 = (distance * g_BattleActorRecords[actor].scale >> 0xC) + (g_BattleActorRecords[anchor].radius * g_BattleActorRecords[anchor].scale >> 0xC);
-    g_BattleActorRecords[actor].posX = g_BattleActorRecords[anchor].posX - (SinFixed(g_BattleVmReg_0) * g_BattleVmReg_1 >> 0xC);
-    g_BattleActorRecords[actor].posZ = g_BattleActorRecords[anchor].posZ + (CosFixed(g_BattleVmReg_0) * g_BattleVmReg_1 >> 0xC);
+    g_BattleVmReg_1 = (distance * g_BattleActorRecords[actor].scale >> 12) + (g_BattleActorRecords[anchor].radius * g_BattleActorRecords[anchor].scale >> 12);
+    g_BattleActorRecords[actor].posX = g_BattleActorRecords[anchor].posX - (SinFixed(g_BattleVmReg_0) * g_BattleVmReg_1 >> 12);
+    g_BattleActorRecords[actor].posZ = g_BattleActorRecords[anchor].posZ + (CosFixed(g_BattleVmReg_0) * g_BattleVmReg_1 >> 12);
     g_BattleActorRecords[actor].posY = height;
     g_BattleActorRecords[actor].yaw = *(short *)&g_BattleVmReg_0;
 }
@@ -1602,7 +1602,7 @@ void __cdecl Battle_SpawnActorMoveToTargetTask(short actor, char *unused, short 
 
     if (g_BattleSequenceStepBusy == 0) {
         heading = 0x1000 - (g_BattleActorStates[g_BattleSavedSpecialActorId].yaw + 0x800);
-        dist = (distance * g_BattleActorRecords[actor].scale >> 0xC) + (g_BattleActorRecords[g_BattleSavedSpecialActorId].radius * g_BattleActorRecords[g_BattleSavedSpecialActorId].scale >> 0xC);
+        dist = (distance * g_BattleActorRecords[actor].scale >> 12) + (g_BattleActorRecords[g_BattleSavedSpecialActorId].radius * g_BattleActorRecords[g_BattleSavedSpecialActorId].scale >> 12);
     } else {
         angleSum = 0;
         taskIdx = angleSum;
@@ -1620,10 +1620,10 @@ void __cdecl Battle_SpawnActorMoveToTargetTask(short actor, char *unused, short 
         posX /= taskIdx;
         posZ /= taskIdx;
         heading = 0x1000 - (angleSum + 0x800);
-        dist = (distance * g_BattleActorRecords[actor].scale >> 0xC) + (posX * posZ >> 0xC);
+        dist = (distance * g_BattleActorRecords[actor].scale >> 12) + (posX * posZ >> 12);
     }
-    posX = targetPos[0] - (SinFixed(heading) * dist >> 0xC);
-    posZ = targetPos[2] + (CosFixed(heading) * dist >> 0xC);
+    posX = targetPos[0] - (SinFixed(heading) * dist >> 12);
+    posZ = targetPos[2] + (CosFixed(heading) * dist >> 12);
     taskIdx = Battle_AllocateOverlayTaskSlot((BattleTaskFn)(callback));
     g_BattleOverlayTaskSlotBuffer[taskIdx].actorId = actor;
     g_BattleOverlayTaskSlotBuffer[taskIdx].battleActorIndex = (short)g_BattleSavedSpecialActorId;
@@ -1713,8 +1713,8 @@ void __cdecl Battle_EffectTaskDelayedWhiteFlash(void)
 void __cdecl Battle_ResetActorScaleAxes(short actor)
 {
     g_BattleActorStates[actor].poseAngleC = 0x1000;
-    g_BattleActorStates[actor].poseAngleB = 0x1000;
-    g_BattleActorStates[actor].poseAngleA = 0x1000;
+    g_BattleActorStates[actor].poseAngleB = 0x1000 /* 360 deg */;
+    g_BattleActorStates[actor].poseAngleA = 0x1000 /* 360 deg */;
     g_BattleActorStates[actor].flags = g_BattleActorStates[actor].flags | 0x20;
 }
 
@@ -1746,7 +1746,7 @@ void __cdecl Battle_SpawnStatusPoseTask(short actor, char poseKind, char param)
         slot = (short)Battle_AllocateOverlayTaskSlot(Battle_OverlayTaskDeathSink);
         g_BattleOverlayTaskSlotBuffer[slot].actorId = actor;
         g_BattleOverlayTaskSlotBuffer[slot].sfxPan = (short)param;
-        g_BattleOverlayTaskSlotBuffer[slot].battleActorIndex = 0xF8;
+        g_BattleOverlayTaskSlotBuffer[slot].battleActorIndex = 248;
         break;
     case BATTLE_POSE_HURT:
         slot = (short)Battle_AllocateResourceSlot(Battle_StatusPoseMode2Task);
@@ -1799,7 +1799,7 @@ void __cdecl Battle_SpawnPoseTaskFromHud(short actor, char poseArg)
         slot = (short)Battle_AllocateOverlayTaskSlot(Battle_OverlayTaskDeathSink);
         g_BattleOverlayTaskSlotBuffer[slot].actorId = actor;
         g_BattleOverlayTaskSlotBuffer[slot].sfxPan = (short)poseArg;
-        g_BattleOverlayTaskSlotBuffer[slot].battleActorIndex = 0xF8;
+        g_BattleOverlayTaskSlotBuffer[slot].battleActorIndex = 248;
         break;
     case BATTLE_POSE_HURT:
         slot = (short)Battle_AllocateResourceSlot(Battle_StatusPoseMode2Task);
@@ -2016,7 +2016,7 @@ void __cdecl Battle_CompleteCurrentMainTask(void)
         default:
             g_BattleActorRecords[BATTLE_MAIN_VIEW(BattleHitReactionSlot)->actor].isDirty = 0;
             if (g_BattleScene.locationId == 0x4E) {
-                if (g_BattleHitReactionCount == 0xF && g_BattleActorRecords[g_BattleActiveActorId].effectId == 6 && g_BattleActorRecords[g_BattleActiveActorId].effectCategory == BATTLE_EFFECT_CATEGORY_LIMIT) {
+                if (g_BattleHitReactionCount == 15 && g_BattleActorRecords[g_BattleActiveActorId].effectId == 6 && g_BattleActorRecords[g_BattleActiveActorId].effectCategory == BATTLE_EFFECT_CATEGORY_LIMIT) {
                     g_BattleActorRecords[BATTLE_MAIN_VIEW(BattleHitReactionSlot)->actor].scriptId = 1;
                     g_BattleScene.actors[4].scriptId = 5;
                 } else if (g_BattleSpecialActorId == 4) {
@@ -2131,7 +2131,7 @@ void __cdecl Battle_OverlayTaskApproachTarget(void)
         if (g_BattleVmReg_3 < 4) {
             g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sfxPan = 0;
         } else if (g_BattleSequenceStepBusy == 0) {
-            g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sfxPan = ((g_BattleActorRecords[g_BattleVmReg_2].posY * g_BattleActorRecords[g_BattleVmReg_2].scale >> 0xC) - (g_BattleActorRecords[g_BattleVmReg_3].posY * g_BattleActorRecords[g_BattleVmReg_3].scale >> 0xC)) / g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sinkCountdown;
+            g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sfxPan = ((g_BattleActorRecords[g_BattleVmReg_2].posY * g_BattleActorRecords[g_BattleVmReg_2].scale >> 12) - (g_BattleActorRecords[g_BattleVmReg_3].posY * g_BattleActorRecords[g_BattleVmReg_3].scale >> 12)) / g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sinkCountdown;
         } else {
             g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sfxPan = 0;
         }
@@ -2279,7 +2279,7 @@ void __cdecl Battle_OverlayTaskTravelThenDrop(void)
     case BATTLE_TRAVEL_DROP_PHASE_TRAVEL:
         if (g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sinkCountdown == 0) {
             g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sinkCountdown = (short)g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].spawnArg;
-            g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sfxPan = ((g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].velocityY - g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].duration) * g_BattleActorRecords[g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].battleActorIndex].scale >> 0xC) / g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].spawnArg;
+            g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sfxPan = ((g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].velocityY - g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].duration) * g_BattleActorRecords[g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].battleActorIndex].scale >> 12) / g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].spawnArg;
             g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].state = BATTLE_TRAVEL_DROP_PHASE_DROP;
         } else {
             g_BattleActorRecords[g_BattleVmReg_3].posX += g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].velocityX;

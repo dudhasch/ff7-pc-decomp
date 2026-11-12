@@ -122,17 +122,17 @@ void __cdecl BattleFx_SBariaFadingActorModelTask(void)
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.effectMatrix, &frame.scaleX);
     Battle_GetBoneWorldPos(frame.fadeSlot->actorIndex, frame.actorState->targetBone, &frame.boneWorldX.vx);
-    frame.boneWorldX.vx -= (short)(SinFixed(frame.actorState->yaw) * (frame.actorState->radius + 0x64) >> 0xC);
-    frame.boneWorldX.vz -= (short)(CosFixed(frame.actorState->yaw) * (frame.actorState->radius + 0x64) >> 0xC);
-    frame.effectMatrix.t[0] = frame.boneWorldX.vx * frame.actorState->scale >> 0xC;
-    frame.effectMatrix.t[1] = frame.boneWorldX.vy * frame.actorState->scale >> 0xC;
-    frame.effectMatrix.t[2] = frame.boneWorldX.vz * frame.actorState->scale >> 0xC;
+    frame.boneWorldX.vx -= (short)(SinFixed(frame.actorState->yaw) * (frame.actorState->radius + 100) >> 12);
+    frame.boneWorldX.vz -= (short)(CosFixed(frame.actorState->yaw) * (frame.actorState->radius + 100) >> 12);
+    frame.effectMatrix.t[0] = frame.boneWorldX.vx * frame.actorState->scale >> 12;
+    frame.effectMatrix.t[1] = frame.boneWorldX.vy * frame.actorState->scale >> 12;
+    frame.effectMatrix.t[2] = frame.boneWorldX.vz * frame.actorState->scale >> 12;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.effectMatrix, &frame.effectMatrix);
     SetRotMatrix(&frame.effectMatrix);
     SetTransMatrix(&frame.effectMatrix);
     frame.frameIndex = frame.fadeSlot->frame;
     if (frame.frameIndex < 4) {
-        frame.fadeFraction = (frame.frameIndex << 0xC) / 4;
+        frame.fadeFraction = (frame.frameIndex << 12) / 4;
         frame.opacity = 0x1000 - frame.fadeFraction;
     } else {
         frame.frameIndex -= 4;
@@ -141,7 +141,7 @@ void __cdecl BattleFx_SBariaFadingActorModelTask(void)
         } else {
             frame.frameIndex -= 8;
             if (frame.frameIndex < 4) {
-                frame.fadeFraction = (frame.frameIndex << 0xC) / 4;
+                frame.fadeFraction = (frame.frameIndex << 12) / 4;
                 frame.opacity = *(short *)&frame.fadeFraction;
             } else {
                 frame.fadeSlot->ownerSlot = BATTLE_TASK_FREE;

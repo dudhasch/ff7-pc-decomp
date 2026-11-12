@@ -227,15 +227,15 @@ void __cdecl BattleFx_SpecialColdAirTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0x1000, 0x10);
+        Battle_StartFixedPointRamp(0x1000, 16);
     }
-    if (mainSelf->frameCounter == 0xC) {
+    if (mainSelf->frameCounter == 12) {
         Battle_AllocateResourceSlot(BattleFx_SpecialColdAirWhiteFlashPulseTask);
     }
-    if (mainSelf->frameCounter == 0x1C) {
-        Battle_StartFixedPointRamp(0, 0x10);
+    if (mainSelf->frameCounter == 28) {
+        Battle_StartFixedPointRamp(0, 16);
     }
-    if (mainSelf->frameCounter == 0x23) {
+    if (mainSelf->frameCounter == 35) {
         for (bitIdx = 0; bitIdx < 0xA; bitIdx++) {
             if ((g_BattleSpecColdAirTargetMask & 1 << bitIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(bitIdx);
@@ -243,7 +243,7 @@ void __cdecl BattleFx_SpecialColdAirTimelineTask(void)
         }
     }
     (mainSelf->frameCounter)++;
-    if (mainSelf->frameCounter == 0x32) {
+    if (mainSelf->frameCounter == 50) {
         mainSelf->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -263,14 +263,14 @@ void __cdecl BattleFx_SpecialColdAirWhiteFlashPulseTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x10) {
+    if (task->frameCounter < 16) {
         g_BattleSpecColdAirFlashIntensity += 0xF;
     }
-    if (task->frameCounter > 0x10) {
+    if (task->frameCounter > 16) {
         g_BattleSpecColdAirFlashIntensity -= 0xF;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x20) {
+    if (task->frameCounter == 32) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -295,13 +295,13 @@ void __cdecl BattleFx_SpecialColdAirDrawExpandingModelsTask(void)
 #pragma pack(pop)
 
     frame.effectSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecColdAirSpriteReq2.drawBlock = Gfx_ModelTableGetLoadedRecord(0x12, g_BattleSpecColdAirLoadedResTable);
-    g_BattleSpecColdAirSpriteReq2.handle = Gfx_ModelTableGetSpriteObject(0x12, g_BattleSpecColdAirLoadedResTable);
+    g_BattleSpecColdAirSpriteReq2.drawBlock = Gfx_ModelTableGetLoadedRecord(18, g_BattleSpecColdAirLoadedResTable);
+    g_BattleSpecColdAirSpriteReq2.handle = Gfx_ModelTableGetSpriteObject(18, g_BattleSpecColdAirLoadedResTable);
     frame.angleX.vz = 0;
     frame.angleX.vx = frame.angleX.vz;
     frame.angleX.vy = 0;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecColdAirScaleVector3_Z = frame.effectSlot->frameCounter << 0xA;
+    g_BattleSpecColdAirScaleVector3_Z = frame.effectSlot->frameCounter << 10;
     g_BattleSpecColdAirScaleVector3_Y = g_BattleSpecColdAirScaleVector3_Z;
     g_BattleSpecColdAirScaleVector3_X = g_BattleSpecColdAirScaleVector3_Y;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecColdAirScaleVector3_X);
@@ -312,14 +312,14 @@ void __cdecl BattleFx_SpecialColdAirDrawExpandingModelsTask(void)
     SetRotMatrix(&frame.worldMatrix);
     SetTransMatrix(&frame.worldMatrix);
     (g_BattleSpecColdAirSpriteReq1.modelResource) = Gfx_ModelTableGetRenderObject(1, g_BattleSpecColdAirLoadedResTable);
-    g_BattleSpecColdAirSpriteReq1.size = 0xA8;
+    g_BattleSpecColdAirSpriteReq1.size = 168;
     g_BattleSpecColdAirSpriteReq1.scaleWord = 0x1000 - (g_BattleSpecColdAirScaleFactor << 7);
     g_BattleSpecColdAirPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecColdAirSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecColdAirPacketCursor);
-    (g_BattleSpecColdAirSpriteReq1.modelResource) = Gfx_ModelTableGetRenderObject(g_BattleSpecColdAirModelIndices1[frame.effectSlot->frameCounter % 0xA], g_BattleSpecColdAirLoadedResTable);
-    g_BattleSpecColdAirSpriteReq1.size = 0x28;
+    (g_BattleSpecColdAirSpriteReq1.modelResource) = Gfx_ModelTableGetRenderObject(g_BattleSpecColdAirModelIndices1[frame.effectSlot->frameCounter % 10], g_BattleSpecColdAirLoadedResTable);
+    g_BattleSpecColdAirSpriteReq1.size = 40;
     g_BattleSpecColdAirSpriteReq1.scaleWord = g_BattleSpecColdAirScaleFactor << 3;
     g_BattleSpecColdAirPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecColdAirSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecColdAirPacketCursor);
-    BattleFx_InstallBillboardMatrix(&frame.effectSlot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.effectSlot->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecColdAirSpriteReq3.blue = g_BattleSpecColdAirScaleFactor << 3;
     g_BattleSpecColdAirSpriteReq3.green = g_BattleSpecColdAirSpriteReq3.blue;
     g_BattleSpecColdAirSpriteReq3.red = g_BattleSpecColdAirSpriteReq3.green;
@@ -327,12 +327,12 @@ void __cdecl BattleFx_SpecialColdAirDrawExpandingModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - ((frame.effectSlot->frameCounter % 2) << 6));
-    if (frame.effectSlot->frameCounter > 0xE) {
+    g_BattleCameraFocalPoint.focalPointY += (short)(32 - ((frame.effectSlot->frameCounter % 2) << 6));
+    if (frame.effectSlot->frameCounter > 14) {
         g_BattleSpecColdAirScaleFactor--;
     }
     (frame.effectSlot->frameCounter)++;
-    if (frame.effectSlot->frameCounter == 0x1E) {
+    if (frame.effectSlot->frameCounter == 30) {
         frame.effectSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -362,13 +362,13 @@ void __cdecl BattleFx_SpecialColdAirDrawSpinModelsEmitTask(void)
 
     frame.emitSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecColdAirSpriteReq4.modelDraw.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecColdAirLoadedResTable);
-    g_BattleSpecColdAirSpriteReq4.drawBlock = Gfx_ModelTableGetLoadedRecord(0x13, g_BattleSpecColdAirLoadedResTable);
-    g_BattleSpecColdAirSpriteReq4.handle = Gfx_ModelTableGetSpriteObject(0x13, g_BattleSpecColdAirLoadedResTable);
+    g_BattleSpecColdAirSpriteReq4.drawBlock = Gfx_ModelTableGetLoadedRecord(19, g_BattleSpecColdAirLoadedResTable);
+    g_BattleSpecColdAirSpriteReq4.handle = Gfx_ModelTableGetSpriteObject(19, g_BattleSpecColdAirLoadedResTable);
     frame.angleX.vx = 0;
     frame.angleX.vy = frame.emitSlot->frameCounter << 6;
     frame.angleX.vz = 0;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecColdAirScaleVector2_Z = frame.emitSlot->frameCounter * 0x7D0;
+    g_BattleSpecColdAirScaleVector2_Z = frame.emitSlot->frameCounter * 2000;
     g_BattleSpecColdAirScaleVector2_Y = g_BattleSpecColdAirScaleVector2_Z;
     g_BattleSpecColdAirScaleVector2_X = g_BattleSpecColdAirScaleVector2_Y;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecColdAirScaleVector2_X);
@@ -378,13 +378,13 @@ void __cdecl BattleFx_SpecialColdAirDrawSpinModelsEmitTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.worldMatrix);
     SetRotMatrix(&frame.worldMatrix);
     SetTransMatrix(&frame.worldMatrix);
-    g_BattleSpecColdAirSpriteReq4.modelDraw.fadeLevel = 0x80 - frame.emitSlot->frameCounter * 6;
+    g_BattleSpecColdAirSpriteReq4.modelDraw.fadeLevel = 128 - frame.emitSlot->frameCounter * 6;
     g_BattleSpecColdAirPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecColdAirSpriteReq4.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecColdAirPacketCursor);
     frame.angleX.vy = 0;
     frame.angleX.vz = frame.angleX.vy;
-    frame.angleX.vx = 0x400;
+    frame.angleX.vx = 0x400 /* 90 deg */;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecColdAirScaleVector2_Z = frame.emitSlot->frameCounter * 0x320;
+    g_BattleSpecColdAirScaleVector2_Z = frame.emitSlot->frameCounter * 800;
     g_BattleSpecColdAirScaleVector2_Y = g_BattleSpecColdAirScaleVector2_Z;
     g_BattleSpecColdAirScaleVector2_X = g_BattleSpecColdAirScaleVector2_Y;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecColdAirScaleVector2_X);
@@ -401,31 +401,31 @@ void __cdecl BattleFx_SpecialColdAirDrawSpinModelsEmitTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.radius = frame.emitSlot->frameCounter * 0xF0;
+    frame.radius = frame.emitSlot->frameCounter * 240;
     frame.spawnSlot = (BattleFxColdAirEmitterTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialColdAirRisingFadeSpriteTask);
     for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
         frame.spawnAngle = (rand() % 4096);
-        frame.spawnSlot->offsetX = CosFixed(frame.spawnAngle) * frame.radius >> 0xC;
-        frame.spawnSlot->offsetZ = SinFixed(frame.spawnAngle) * frame.radius >> 0xC;
+        frame.spawnSlot->offsetX = CosFixed(frame.spawnAngle) * frame.radius >> 12;
+        frame.spawnSlot->offsetZ = SinFixed(frame.spawnAngle) * frame.radius >> 12;
         frame.spawnSlot->offsetY = 0;
         frame.spawnSlot->randomIndex = (rand() % 16);
     }
     frame.spawnSlot = (BattleFxColdAirEmitterTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialColdAirRisingSpinningModelTask);
     frame.spawnAngle = (rand() % 4096);
-    frame.spawnSlot->offsetX = CosFixed(frame.spawnAngle) * frame.radius >> 0xC;
-    frame.spawnSlot->offsetZ = SinFixed(frame.spawnAngle) * frame.radius >> 0xC;
+    frame.spawnSlot->offsetX = CosFixed(frame.spawnAngle) * frame.radius >> 12;
+    frame.spawnSlot->offsetZ = SinFixed(frame.spawnAngle) * frame.radius >> 12;
     frame.spawnSlot->offsetY = 0;
     frame.spawnSlot->randomIndex = (rand() % 4);
     frame.spawnSlot->randomAngle = (rand() % 4096);
     for (frame.spawnIndex = 0; frame.spawnIndex < 4; frame.spawnIndex++) {
         frame.spawnSlot = (BattleFxColdAirEmitterTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialColdAirAnimatedSpriteTask);
         frame.spawnAngle = (rand() % 4096);
-        frame.spawnSlot->offsetX = CosFixed(frame.spawnAngle) * frame.radius >> 0xC;
-        frame.spawnSlot->offsetZ = SinFixed(frame.spawnAngle) * frame.radius >> 0xC;
+        frame.spawnSlot->offsetX = CosFixed(frame.spawnAngle) * frame.radius >> 12;
+        frame.spawnSlot->offsetZ = SinFixed(frame.spawnAngle) * frame.radius >> 12;
         frame.spawnSlot->offsetY = 0;
     }
     (frame.emitSlot->frameCounter)++;
-    if (frame.emitSlot->frameCounter == 0x14) {
+    if (frame.emitSlot->frameCounter == 20) {
         frame.emitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -444,9 +444,9 @@ void __cdecl BattleFx_SpecialColdAirAnimatedSpriteTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecColdAirSpriteReq3.drawBlock = Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSpecColdAirLoadedResTable);
+    g_BattleSpecColdAirSpriteReq3.drawBlock = Gfx_ModelTableGetLoadedRecord(17, g_BattleSpecColdAirLoadedResTable);
     g_BattleSpecColdAirSpriteReq3.sceneObject = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(task->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecColdAirSpriteReq3.frameIndex = task->frameCounter;
     g_BattleSpecColdAirPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecColdAirSpriteReq3.drawBlock, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecColdAirPacketCursor);
     if (g_BattleIsPaused == 0 && g_BattleSpecColdAirSpriteReq3.drawBlock != 0) {
@@ -480,7 +480,7 @@ void __cdecl BattleFx_SpecialColdAirRisingSpinningModelTask(void)
     frame.angleX.vx = frame.angleX.vy;
     frame.angleX.vz = frame.risingSlot->spinAngle;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecColdAirScaleVector1_Z = 0x1000;
+    g_BattleSpecColdAirScaleVector1_Z = 4096;
     g_BattleSpecColdAirScaleVector1_Y = g_BattleSpecColdAirScaleVector1_Z;
     g_BattleSpecColdAirScaleVector1_X = g_BattleSpecColdAirScaleVector1_Y;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecColdAirScaleVector1_X);
@@ -490,16 +490,16 @@ void __cdecl BattleFx_SpecialColdAirRisingSpinningModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.worldMatrix);
     SetRotMatrix(&frame.worldMatrix);
     SetTransMatrix(&frame.worldMatrix);
-    g_BattleSpecColdAirSpriteReq3.fadeLevel = 0x80 - (frame.risingSlot->frameCounter << 3);
+    g_BattleSpecColdAirSpriteReq3.fadeLevel = 128 - (frame.risingSlot->frameCounter << 3);
     g_BattleSpecColdAirSpriteReq3.modelGroup = Gfx_ModelTableGetRenderObject(g_BattleSpecColdAirModelIndices2.modelIds[frame.risingSlot->modelIndex], g_BattleSpecColdAirLoadedResTable);
     g_BattleSpecColdAirPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecColdAirSpriteReq3.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecColdAirPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.risingSlot->posY -= 0x64;
-    frame.risingSlot->spinAngle += 0x100;
+    frame.risingSlot->posY -= 100;
+    frame.risingSlot->spinAngle += 0x100 /* 22.5 deg */;
     (frame.risingSlot->frameCounter)++;
-    if (frame.risingSlot->frameCounter == 0xF) {
+    if (frame.risingSlot->frameCounter == 15) {
         frame.risingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -518,9 +518,9 @@ void __cdecl BattleFx_SpecialColdAirRisingFadeSpriteTask(void)
     BattleFxColdAirRisingFadeSprite *task;
 
     task = (BattleFxColdAirRisingFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecColdAirModelIndices2.risingFadeDrawBlock = Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecColdAirLoadedResTable);
-    g_BattleSpecColdAirModelIndices2.risingFadeHandle = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSpecColdAirLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    g_BattleSpecColdAirModelIndices2.risingFadeDrawBlock = Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecColdAirLoadedResTable);
+    g_BattleSpecColdAirModelIndices2.risingFadeHandle = Gfx_ModelTableGetSpriteObject(16, g_BattleSpecColdAirLoadedResTable);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecColdAirSpriteReq4.frameIndex = task->frame;
     g_BattleSpecColdAirSpriteReq4.blue = 0x80 - (task->fadeStep << 3);
     g_BattleSpecColdAirSpriteReq4.green = g_BattleSpecColdAirSpriteReq4.blue;
@@ -529,9 +529,9 @@ void __cdecl BattleFx_SpecialColdAirRisingFadeSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY -= 0x12C;
+    task->posY -= 300;
     (task->fadeStep)++;
-    if (task->fadeStep == 0xF) {
+    if (task->fadeStep == 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

@@ -169,15 +169,15 @@ void __cdecl BattleFx_SpecialMortarTimelineTask(void)
         Battle_GetBoneWorldPos(taskPtr->actorIndex, g_BattleActorRecords[taskPtr->actorIndex].bone33, &pShell->posX);
         pShell->rotOrVelX = 0;
         pShell->spinRate = theta + 0x400;
-        pShell->rotOrVelZ = 0xFE00;
+        pShell->rotOrVelZ = 0xFE00 /* -512 */;
     }
-    if (taskPtr->frame == 0x14) {
-        for (i8 = 0; i8 < 0x18; i8++) {
+    if (taskPtr->frame == 20) {
+        for (i8 = 0; i8 < 24; i8++) {
             pShell = (BattleFxMortarShellRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMortarGravitySpriteTask);
-            pShell->posX = taskPtr->endX + rand() % 0x190 + -0xC8;
-            pShell->posZ = taskPtr->endZ + rand() % 0x190 + -0xC8;
+            pShell->posX = taskPtr->endX + rand() % 400 + -200;
+            pShell->posZ = taskPtr->endZ + rand() % 400 + -200;
             pShell->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFED4, 0x32, &pShell->rotOrVelX);
+            BattleFx_MakeRandomConeVector(0xFFFFFED4, 50, &pShell->rotOrVelX);
             pShell->variant = rand() % 9;
         }
         pShell = (BattleFxMortarShellRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMortarExpandingShellsTask);
@@ -189,18 +189,18 @@ void __cdecl BattleFx_SpecialMortarTimelineTask(void)
             pShell->posX = taskPtr->endX;
             pShell->posY = taskPtr->endY;
             pShell->posZ = taskPtr->endZ;
-            pShell->posY = -(4 - i8) * 0x50;
+            pShell->posY = -(4 - i8) * 80;
             pShell->scale = g_BattleSpecMortarShellScales[i8];
             pShell->spinRate = -(4 - i8) * 0xA;
             pShell->angle = rand() % 0x1000;
         }
         Battle_PlaySfxPannedToActor(0xFA, (short)taskPtr->recordType, 0);
     }
-    if (taskPtr->frame == 0x23) {
+    if (taskPtr->frame == 35) {
         Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
     }
     (taskPtr->frame)++;
-    if (taskPtr->frame == 0x2D) {
+    if (taskPtr->frame == 45) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -234,7 +234,7 @@ void __cdecl BattleFx_SpecialMortarOrientedSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.slot->posX, frame.scaleMatrix.t, &frame.pointDepth);
-    frame.scaleMatrix.m[2][2] = 0x3000;
+    frame.scaleMatrix.m[2][2] = 0x3000 /* 3.0 */;
     frame.scaleMatrix.m[1][1] = frame.scaleMatrix.m[2][2];
     frame.scaleMatrix.m[0][0] = frame.scaleMatrix.m[1][1];
     ConcatMatrixIntoFirst(&frame.scaleMatrix, &g_BattleCameraTransform);
@@ -253,7 +253,7 @@ void __cdecl BattleFx_SpecialMortarOrientedSpriteTask(void)
 }
 
 /*
- * Draws one debris sprite that falls under gravity and fades out over 0x14 frames.
+ * Draws one debris sprite that falls under gravity and fades out over 20 frames.
  */
 // FUNCTION: FF7 0x005230ee
 void __cdecl BattleFx_SpecialMortarGravitySpriteTask(void)
@@ -283,10 +283,10 @@ void __cdecl BattleFx_SpecialMortarGravitySpriteTask(void)
         frame.scaleMatrix.m[1][frame.axisIndex] = 0;
         frame.scaleMatrix.m[0][frame.axisIndex] = 0;
     }
-    if (frame.slot->frameCounter < 0xC) {
+    if (frame.slot->frameCounter < 12) {
         frame.fadeAmount = 8;
     } else {
-        frame.fadeAmount = 0x14 - frame.slot->frameCounter;
+        frame.fadeAmount = 20 - frame.slot->frameCounter;
     }
     frame.fadeLevel = *(short *)&frame.fadeAmount;
     frame.angleX.vy = 0;
@@ -295,7 +295,7 @@ void __cdecl BattleFx_SpecialMortarGravitySpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.slot->posX, frame.scaleMatrix.t, &frame.pointDepth);
-    frame.scaleMatrix.m[2][2] = 0x2000;
+    frame.scaleMatrix.m[2][2] = 0x2000 /* 2.0 */;
     frame.scaleMatrix.m[1][1] = frame.scaleMatrix.m[2][2];
     frame.scaleMatrix.m[0][0] = frame.scaleMatrix.m[1][1];
     RotMatrix(&frame.angleX, &frame.rotMatrix);
@@ -315,16 +315,16 @@ void __cdecl BattleFx_SpecialMortarGravitySpriteTask(void)
     frame.slot->posX += frame.slot->velocityX;
     frame.slot->posY += frame.slot->velocityY;
     frame.slot->posZ += frame.slot->velocityZ;
-    frame.slot->velocityY += 0x14;
-    frame.slot->spinAngle += 0x200;
+    frame.slot->velocityY += 20;
+    frame.slot->spinAngle += 0x200 /* 45 deg */;
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x14) {
+    if (frame.slot->frameCounter == 20) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Draws one spinning, tilting model that rises for 0x14 frames.
+ * Draws one spinning, tilting model that rises for 20 frames.
  */
 // FUNCTION: FF7 0x0052336d
 void __cdecl BattleFx_SpecialMortarSpinModelTask(void)
@@ -347,7 +347,7 @@ void __cdecl BattleFx_SpecialMortarSpinModelTask(void)
     frame.angleX.vx = frame.angleX.vz;
     frame.angleX.vy = frame.modelSlot->tiltAngle;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
-    frame.rollScale.vy = 0x1000;
+    frame.rollScale.vy = 0x1000 /* 360 deg */;
     frame.rollScale.vz = frame.modelSlot->rollAngle;
     frame.rollScale.vx = frame.rollScale.vz;
     ScaleMatrix(&frame.rotMatrix, &frame.rollScale);
@@ -357,22 +357,22 @@ void __cdecl BattleFx_SpecialMortarSpinModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.modelMatrix);
     SetRotMatrix(&frame.modelMatrix);
     SetTransMatrix(&frame.modelMatrix);
-    g_BattleSpecMortarSpriteReq2.alpha = frame.modelSlot->frameCounter * 0xC8;
+    g_BattleSpecMortarSpriteReq2.alpha = frame.modelSlot->frameCounter * 200;
     g_BattleSpecMortarDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecMortarSpriteReq2.res8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecMortarDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.modelSlot->rollAngle += 0x200;
+    frame.modelSlot->rollAngle += 0x200 /* 45 deg */;
     frame.modelSlot->tiltAngle += 0x80;
     frame.modelSlot->posY += frame.modelSlot->velocityY;
     (frame.modelSlot->frameCounter)++;
-    if (frame.modelSlot->frameCounter == 0x14) {
+    if (frame.modelSlot->frameCounter == 20) {
         frame.modelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Draws the expanding shell models around the target for 0x14 frames.
+ * Draws the expanding shell models around the target for 20 frames.
  */
 // FUNCTION: FF7 0x005234e1
 void __cdecl BattleFx_SpecialMortarExpandingShellsTask(void)
@@ -436,17 +436,17 @@ void __cdecl BattleFx_SpecialMortarExpandingShellsTask(void)
     SetTransMatrix(&frame.combinedMatrix);
     g_BattleSpecMortarSpriteReq2.flags = 0xA8;
     g_BattleSpecMortarSpriteReq2.res24 = Gfx_ModelTableGetRenderObject(1, g_BattleSpecMortarLoadedResTable);
-    g_BattleSpecMortarSpriteReq2.secondAlpha = frame.shellSlot->frameCounter * 0x30 + 0xC00;
+    g_BattleSpecMortarSpriteReq2.secondAlpha = frame.shellSlot->frameCounter * 48 + 0xC00;
     g_BattleSpecMortarDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecMortarSpriteReq2.res24, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecMortarDrawListHead);
     g_BattleSpecMortarSpriteReq2.flags = 0xA8;
     g_BattleSpecMortarSpriteReq2.res24 = Gfx_ModelTableGetRenderObject(4, g_BattleSpecMortarLoadedResTable);
-    g_BattleSpecMortarSpriteReq2.secondAlpha = frame.shellSlot->frameCounter * 0x60;
+    g_BattleSpecMortarSpriteReq2.secondAlpha = frame.shellSlot->frameCounter * 96;
     g_BattleSpecMortarDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecMortarSpriteReq2.res24, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecMortarDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.shellSlot->frameCounter)++;
-    if (frame.shellSlot->frameCounter == 0x14) {
+    if (frame.shellSlot->frameCounter == 20) {
         frame.shellSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

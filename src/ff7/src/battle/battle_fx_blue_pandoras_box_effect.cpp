@@ -126,7 +126,7 @@ unsigned char g_BattleBluePandorasBoxTransformWorking[16] = {0};
 // BattleFxShatterCellUv); the cells' own shorts start in g_BattleBluePandorasBoxTransformWorking.
 // The span runs to the next named definition of the TU.
 // GLOBAL: FF7 0x00b77030
-unsigned char g_BattleBluePandorasBoxShatterCellUvs[0x4eb0] = {0};
+unsigned char g_BattleBluePandorasBoxShatterCellUvs[20144] = {0};
 
 // GLOBAL: FF7 0x00b7bee0
 int g_BattleBluePandorasBoxTargetMask = 0;
@@ -235,10 +235,10 @@ void __cdecl BattleFx_BluePandorasBoxInitShatterFragments(void)
     blockX = 0;
     projDist = GetGeomScreen() << 2;
     GetGeomOffset(&halfWidth, &screenCy);
-    halfWidth = 0xA0;
-    screenCy = 0x78;
-    for (gridY = 0; gridY < 0x15; gridY++) {
-        for (xIdx = 0; xIdx < 0x28; xIdx++) {
+    halfWidth = 160;
+    screenCy = 120;
+    for (gridY = 0; gridY < 21; gridY++) {
+        for (xIdx = 0; xIdx < 40; xIdx++) {
             ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[gridY][xIdx].x = xIdx * 8 + 4 - halfWidth;
             ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[gridY][xIdx].y = gridY * 8 + 4 - screenCy;
             ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[gridY][xIdx].z = projDist;
@@ -247,43 +247,43 @@ void __cdecl BattleFx_BluePandorasBoxInitShatterFragments(void)
             ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[gridY][xIdx].velocityX = xIdx * 2 - 0x28 - (xIdx - 0x14 >> 1);
             ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[gridY][xIdx].velocityY = gridY * 2 - 0x30 - (tileRow & 3);
             tileRow = tileRow % 5;
-            ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[gridY][xIdx].velocityZ = -((0x20 - gridY << 1) * tileRow);
+            ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[gridY][xIdx].velocityZ = -((32 - gridY << 1) * tileRow);
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord = gridY << 0xB | xIdx << 3;
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tpageWord = ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord + 8 | blockX;
         }
     }
     gridY = 0;
     for (tileRow = 0; gridY < 7; gridY++, tileRow++) {
-        xIdx = 0x1E;
-        for (blockX = 0; xIdx < 0x28; xIdx++, blockX++) {
+        xIdx = 30;
+        for (blockX = 0; xIdx < 40; xIdx++, blockX++) {
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord = tileRow << 0xB | blockX << 3;
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tpageWord &= 0xFFFF0000;
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tpageWord |= ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord + 8;
         }
     }
     gridY = 7;
-    for (tileRow = 0; gridY < 0xE; gridY++, tileRow++) {
-        xIdx = 0x1E;
-        for (blockX = 0; xIdx < 0x28; xIdx++, blockX++) {
+    for (tileRow = 0; gridY < 14; gridY++, tileRow++) {
+        xIdx = 30;
+        for (blockX = 0; xIdx < 40; xIdx++, blockX++) {
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord = tileRow << 0xB | blockX << 3;
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tpageWord &= 0xFFFF0000;
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tpageWord |= ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord + 8;
         }
     }
-    gridY = 0xE;
-    for (tileRow = 0; gridY < 0x15; gridY++, tileRow++) {
-        xIdx = 0x1E;
-        for (blockX = 0; xIdx < 0x28; xIdx++, blockX++) {
+    gridY = 14;
+    for (tileRow = 0; gridY < 21; gridY++, tileRow++) {
+        xIdx = 30;
+        for (blockX = 0; xIdx < 40; xIdx++, blockX++) {
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord = tileRow << 0xB | blockX << 3;
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tpageWord &= 0xFFFF0000;
             ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tpageWord |= ((BattleFxShatterCellUvRow *)&g_BattleBluePandorasBoxShatterCellUvs)[gridY][xIdx].tileWord + 8;
         }
     }
-    for (gridY = 0; gridY < 0xF; gridY++) {
+    for (gridY = 0; gridY < 15; gridY++) {
         g_BattleBluePandorasBoxRenderRecordsA[gridY].vz = 0;
         g_BattleBluePandorasBoxRenderRecordsA[gridY].vy = 0;
         g_BattleBluePandorasBoxRenderRecordsA[gridY].vx = 0;
-        xIdx = gridY * 0x30 + 0x48;
+        xIdx = gridY * 48 + 72;
         tileRow = xIdx << 1;
         g_BattleBluePandorasBoxRenderRecordsB[gridY].velX = rand() % tileRow - xIdx;
         g_BattleBluePandorasBoxRenderRecordsB[gridY].velY = rand() % tileRow - xIdx;
@@ -307,12 +307,12 @@ void __cdecl BattleFx_BluePandorasBoxTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL != 0) {
-        xRemaining = g_BattleBluePandorasBoxParticleCounter % 0x200;
-        dstXB = (xRemaining + 0x100) % 0x200;
+        xRemaining = g_BattleBluePandorasBoxParticleCounter % 512;
+        dstXB = (xRemaining + 0x100) % 512;
         g_BattleBluePandorasBoxParticleCounter++;
         posY = 0;
-        width = 0x100;
-        spriteHeight = 0x100;
+        width = 256;
+        spriteHeight = 256;
         sourceX = 0;
         sourceY = 0;
         quadFlags = 0;
@@ -332,18 +332,18 @@ void __cdecl BattleFx_BluePandorasBoxTimelineTask(void)
         (taskPtr->state)++;
         break;
     case BLUE_NANNTOKA_PHASE_SPIN_MODELS:
-        if (taskPtr->frame == 0x17) {
+        if (taskPtr->frame == 23) {
             g_BattleStageHideFlags |= BATTLE_STAGE_HIDE_OTHER_PARTS | BATTLE_STAGE_HIDE_PART_1_GROUP | BATTLE_STAGE_HIDE_PARTS_2_TO_4;
-            for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+            for (actorIdx = 0; actorIdx < 10; actorIdx++) {
                 g_BattleActorRecords[actorIdx].drawFlags |= 6;
             }
         }
-        if (taskPtr->frame == 0x18) {
+        if (taskPtr->frame == 24) {
             currChild = (BattleFxPandorasBoxChildRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BluePandorasBoxScaledSpinModelTask);
             currChild->posX = 0;
             currChild->posY = 0xFB8C;
-            currChild->posZ = 0x4BC8;
-            currChild->rotZ = 0x100;
+            currChild->posZ = 19400;
+            currChild->rotZ = 0x100 /* 22.5 deg */;
             currChild->segmentCount = 4;
             currChild->rotY = 0;
             currChild->rotYStep = 6;
@@ -351,7 +351,7 @@ void __cdecl BattleFx_BluePandorasBoxTimelineTask(void)
             currChild = (BattleFxPandorasBoxChildRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BluePandorasBoxScaledSpinModelTask);
             currChild->posX = 0;
             currChild->posY = 0xFBA0;
-            currChild->posZ = 0x4A9C;
+            currChild->posZ = 19100;
             currChild->rotZ = 0;
             currChild->segmentCount = 3;
             currChild->rotY = 0;
@@ -361,82 +361,82 @@ void __cdecl BattleFx_BluePandorasBoxTimelineTask(void)
         }
         break;
     case BLUE_NANNTOKA_PHASE_TUMBLING_MODELS:
-        if (taskPtr->frame == 0x22) {
+        if (taskPtr->frame == 34) {
             modelTaskPtr = (BattleFxBluePandorasBoxSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BluePandorasBoxTumblingModelTask);
             modelTaskPtr->offsetX = 0xFAEC;
             modelTaskPtr->offsetY = 0x64;
-            modelTaskPtr->radius = 0x7D0;
-            modelTaskPtr->speed = 0x3F;
-            modelTaskPtr->drift = 0xFFF5;
+            modelTaskPtr->radius = 2000;
+            modelTaskPtr->speed = 63;
+            modelTaskPtr->drift = 0xFFF5 /* -11 */;
             modelTaskPtr->velocityY = 0xFFDE;
             modelTaskPtr->gravity = 0;
-            modelTaskPtr->lifetime = 0x20;
+            modelTaskPtr->lifetime = 32;
             modelTaskPtr->tumbleAngle = 0;
-            modelTaskPtr->delay = 0x18;
-            modelTaskPtr->scale = 0x200;
+            modelTaskPtr->delay = 24;
+            modelTaskPtr->scale = 0x200 /* 0.125 */;
             modelTaskPtr->phase = 0;
         }
-        if (taskPtr->frame == 0x23) {
+        if (taskPtr->frame == 35) {
             modelTaskPtr = (BattleFxBluePandorasBoxSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BluePandorasBoxTumblingModelTask);
             modelTaskPtr->offsetX = 0xFAEC;
             modelTaskPtr->offsetY = 0xFF9C;
-            modelTaskPtr->radius = 0x898;
-            modelTaskPtr->speed = 0x34;
+            modelTaskPtr->radius = 2200;
+            modelTaskPtr->speed = 52;
             modelTaskPtr->drift = 3;
             modelTaskPtr->velocityY = 0xFFC0;
             modelTaskPtr->gravity = 0;
-            modelTaskPtr->lifetime = 0x14;
+            modelTaskPtr->lifetime = 20;
             modelTaskPtr->tumbleAngle = 0;
-            modelTaskPtr->delay = 0x26;
+            modelTaskPtr->delay = 38;
             modelTaskPtr->scale = 0x1F4;
             modelTaskPtr->phase = 1;
         }
-        if (taskPtr->frame == 0x25) {
+        if (taskPtr->frame == 37) {
             modelTaskPtr = (BattleFxBluePandorasBoxSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BluePandorasBoxTumblingModelTask);
             modelTaskPtr->offsetX = 0x514;
             modelTaskPtr->offsetY = 0x50;
-            modelTaskPtr->radius = 0x708;
+            modelTaskPtr->radius = 1800;
             modelTaskPtr->speed = 0xFFD9;
-            modelTaskPtr->drift = 0xFFFC;
+            modelTaskPtr->drift = 0xFFFC /* -4 */;
             modelTaskPtr->velocityY = 0xFFEA;
             modelTaskPtr->gravity = 0;
-            modelTaskPtr->lifetime = 0x1C;
+            modelTaskPtr->lifetime = 28;
             modelTaskPtr->tumbleAngle = 0;
-            modelTaskPtr->delay = 0x24;
+            modelTaskPtr->delay = 36;
             modelTaskPtr->scale = 0x199;
             modelTaskPtr->phase = 2;
             (taskPtr->state)++;
         }
         break;
     case BLUE_NANNTOKA_PHASE_DRIFT_MODEL:
-        if (taskPtr->frame == 0x5A) {
+        if (taskPtr->frame == 90) {
             modelTaskPtr = (BattleFxBluePandorasBoxSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BluePandorasBoxSpinDriftModelTask);
             modelTaskPtr->offsetX = 0xFF38;
             modelTaskPtr->offsetY = 0xFFD8;
-            modelTaskPtr->radius = 0x200;
+            modelTaskPtr->radius = 512;
             modelTaskPtr->gravity = 0xFC00;
-            modelTaskPtr->lifetime = 0x11;
+            modelTaskPtr->lifetime = 17;
             modelTaskPtr->scale = 0xB60;
             (taskPtr->state)++;
         }
         break;
     case BLUE_NANNTOKA_PHASE_RESTORE_STAGE:
-        if (taskPtr->frame == 0xE1) {
+        if (taskPtr->frame == 225) {
             g_BattleStageHideFlags &= 0xFF & ~(BATTLE_STAGE_HIDE_OTHER_PARTS | BATTLE_STAGE_HIDE_PART_1_GROUP | BATTLE_STAGE_HIDE_PARTS_2_TO_4);
-            for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+            for (actorIdx = 0; actorIdx < 10; actorIdx++) {
                 g_BattleActorRecords[actorIdx].drawFlags &= 0xF9;
             }
             (taskPtr->state)++;
         }
     }
-    if (taskPtr->frame == 0xFA) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (taskPtr->frame == 250) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleBluePandorasBoxTargetMask & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
     }
-    if (taskPtr->frame >= 0xFF) {
+    if (taskPtr->frame >= 255) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
         if (g_BattleBluePandorasBoxOffscreenSlot1 >= 0) {
             Battle3d_ReleaseOffscreenSlot(g_BattleBluePandorasBoxOffscreenSlot1);
@@ -479,7 +479,7 @@ void __cdecl BattleFx_BluePandorasBoxSpinDriftModelTask(void)
 #pragma pack(pop)
 
     frame.driftSlot = (BattleFxPandorasBoxSpinDriftModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     frame.rotX.vy = frame.driftSlot->angle;
     frame.rotX.vz = 0;
     RotMatrix(&frame.rotX, &frame.rotMatrix);
@@ -500,7 +500,7 @@ void __cdecl BattleFx_BluePandorasBoxSpinDriftModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.driftSlot->frameCounter >= 0x87) {
+    if (frame.driftSlot->frameCounter >= 135) {
         frame.driftSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -510,8 +510,8 @@ void __cdecl BattleFx_BluePandorasBoxSpinDriftModelTask(void)
         frame.driftSlot->velocityX += 2;
     }
     frame.driftSlot->velocityY -= 3;
-    frame.driftSlot->velocityZ += 0x50;
-    if (frame.driftSlot->frameCounter < 0x3C) {
+    frame.driftSlot->velocityZ += 80;
+    if (frame.driftSlot->frameCounter < 60) {
         frame.driftSlot->angle += frame.driftSlot->spinStep;
     }
     (frame.driftSlot->frameCounter)++;
@@ -553,11 +553,11 @@ void __cdecl BattleFx_BluePandorasBoxTumblingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleBluePandorasBoxModelIndices[frame.tumbleSlot->modelIndex], g_BattleBluePandorasBoxLoadedRes);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.tumbleSlot->frameCounter >= 0x41) {
+    if (frame.tumbleSlot->frameCounter >= 65) {
         frame.tumbleSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -608,11 +608,11 @@ void __cdecl BattleFx_BluePandorasBoxScaledSpinModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(5, g_BattleBluePandorasBoxLoadedRes);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x30;
+    frame.modelDraw->fadeLevel = 48;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.scaledSlot->frameCounter >= 0xC9) {
+    if (frame.scaledSlot->frameCounter >= 201) {
         frame.scaledSlot->ownerSlot = BATTLE_TASK_FREE;
         if (g_BattleBluePandorasBoxStateFlag != 0) {
             frame.shatterSlot = (int)BATTLE_NEW_TASK_SLOT(BattleFx_BluePandorasBoxShatterFragmentsDrawTask);
@@ -661,53 +661,53 @@ void __cdecl BattleFx_BluePandorasBoxQueueOffscreenRequests(int count)
 
     frame.rectX1 = 0;
     frame.rectY1 = 0;
-    frame.rectW1 = 0xF0;
-    frame.rectH1 = 0xA8;
-    frame.rectX2 = 0x1E0;
+    frame.rectW1 = 240;
+    frame.rectH1 = 168;
+    frame.rectX2 = 480;
     frame.rectY2 = 0;
-    frame.rectW2 = 0x50;
-    frame.rectH2 = 0x38;
-    frame.rectX3 = 0x1E0;
-    frame.rectY3 = 0x70;
-    frame.rectW3 = 0x50;
-    frame.rectH3 = 0x38;
-    frame.rectX4 = 0x1E0;
-    frame.rectY4 = 0xE0;
-    frame.rectW4 = 0x50;
-    frame.rectH4 = 0x38;
+    frame.rectW2 = 80;
+    frame.rectH2 = 56;
+    frame.rectX3 = 480;
+    frame.rectY3 = 112;
+    frame.rectW3 = 80;
+    frame.rectH3 = 56;
+    frame.rectX4 = 480;
+    frame.rectY4 = 224;
+    frame.rectW4 = 80;
+    frame.rectH4 = 56;
     frame.kind = 1;
     switch (g_BattleUiScalingMode) {
     case MAIN_GRAPHICS_MODE_320X240:
         frame.rectX1 = 0;
         frame.rectY1 = 0;
-        frame.rectX2 = 0xF0;
+        frame.rectX2 = 240;
         frame.rectY2 = 0;
-        frame.rectX3 = 0xF0;
-        frame.rectY3 = 0x38;
-        frame.rectX4 = 0xF0;
-        frame.rectY4 = 0x70;
+        frame.rectX3 = 240;
+        frame.rectY3 = 56;
+        frame.rectX4 = 240;
+        frame.rectY4 = 112;
         frame.kind = 1;
         break;
     case MAIN_GRAPHICS_MODE_320X240_CENTERED:
-        frame.rectX1 = 0xA0;
-        frame.rectY1 = 0x78;
-        frame.rectX2 = 0x190;
-        frame.rectY2 = 0x78;
-        frame.rectX3 = 0x190;
-        frame.rectY3 = 0xB0;
-        frame.rectX4 = 0x190;
-        frame.rectY4 = 0xE8;
+        frame.rectX1 = 160;
+        frame.rectY1 = 120;
+        frame.rectX2 = 400;
+        frame.rectY2 = 120;
+        frame.rectX3 = 400;
+        frame.rectY3 = 176;
+        frame.rectX4 = 400;
+        frame.rectY4 = 232;
         frame.kind = 1;
         break;
     case MAIN_GRAPHICS_MODE_640X480:
         frame.rectX1 = 0;
         frame.rectY1 = 0;
-        frame.rectX2 = 0x1E0;
+        frame.rectX2 = 480;
         frame.rectY2 = 0;
-        frame.rectX3 = 0x1E0;
-        frame.rectY3 = 0x70;
-        frame.rectX4 = 0x1E0;
-        frame.rectY4 = 0xE0;
+        frame.rectX3 = 480;
+        frame.rectY3 = 112;
+        frame.rectX4 = 480;
+        frame.rectY4 = 224;
         frame.kind = 2;
     }
     if (g_pBattle3dScene != 0) {
@@ -786,7 +786,7 @@ void __cdecl BattleFx_BluePandorasBoxShatterFragmentsDrawTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     shatterState = (BattleFxShatterState *)Gfx_GetPsxScratchpadPtr(0);
     BattleFx_BluePandorasBoxDrawShatterFragments(shatterState);
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -809,14 +809,14 @@ void __cdecl BattleFx_BluePandorasBoxDrawShatterFragments(BattleFxShatterState *
     drawState->vertex0X = 0xFFF0;
     drawState->vertex0Y = 0xFFF0;
     drawState->vertex0Z = 0;
-    drawState->vertex1X = 0x10;
+    drawState->vertex1X = 16;
     drawState->vertex1Y = 0xFFF0;
     drawState->vertex1Z = 0;
     drawState->vertex2X = 0xFFF0;
-    drawState->vertex2Y = 0x10;
+    drawState->vertex2Y = 16;
     drawState->vertex2Z = 0;
-    drawState->vertex3X = 0x10;
-    drawState->vertex3Y = 0x10;
+    drawState->vertex3X = 16;
+    drawState->vertex3Y = 16;
     drawState->vertex3Z = 0;
     for (group = 0; group < 0xF; group++) {
         RotMatrixXYZ(&g_BattleBluePandorasBoxRenderRecordsA[group], &drawState->rotations[group]);
@@ -828,7 +828,7 @@ void __cdecl BattleFx_BluePandorasBoxDrawShatterFragments(BattleFxShatterState *
     }
     prim = (BattleFxShatterFragmentPrim *)Gfx_GetPsxPacketScratchPtr();
     for (group = 0; group < 0x15; group++) {
-        for (cellIndex = 0; cellIndex < 0x28; cellIndex++) {
+        for (cellIndex = 0; cellIndex < 40; cellIndex++) {
             drawState->matrix.t[0] = ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[group][cellIndex].x << 2;
             drawState->matrix.t[1] = ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[group][cellIndex].y << 2;
             drawState->matrix.t[2] = ((BattleFxShatterCellRow *)&g_BattleBluePandorasBoxTransformWorking)[group][cellIndex].z;
@@ -860,7 +860,7 @@ void __cdecl BattleFx_BluePandorasBoxDrawShatterFragments(BattleFxShatterState *
             prim->uvWord3 = decayVal + 0x808;
             prim->tag = prim->tag & 0xFFFFFF | 0x9000000;
             prim->gpuCode = 0x2C;
-            if (cellIndex < 0x1E) {
+            if (cellIndex < 30) {
                 Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleBluePandorasBoxOffscreenSlot1));
             } else if (group < 7) {
                 Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleBluePandorasBoxOffscreenSlot2));
@@ -900,7 +900,7 @@ void __cdecl BattleFx_BluePandorasBoxGrowShrinkModelTask(void)
     RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
     frame.rotMatrix.t[0] = 0xFFFFFF56;
     frame.rotMatrix.t[1] = 0xFFFFFF7E;
-    frame.rotMatrix.t[2] = 0x200;
+    frame.rotMatrix.t[2] = 0x200 /* 45 deg */;
     frame.scaleX.vz = frame.growSlot->scale;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
@@ -915,19 +915,19 @@ void __cdecl BattleFx_BluePandorasBoxGrowShrinkModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.growSlot->frameCounter >= 0x32) {
+    if (frame.growSlot->frameCounter >= 50) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.growSlot->frameCounter < 0x14) {
+    if (frame.growSlot->frameCounter < 20) {
         frame.growSlot->scale += frame.growSlot->scaleStep;
     }
-    if (frame.growSlot->frameCounter == 0x1E) {
-        frame.growSlot->scaleStep = frame.growSlot->scale / 0x14;
+    if (frame.growSlot->frameCounter == 30) {
+        frame.growSlot->scaleStep = frame.growSlot->scale / 20;
     }
-    if (frame.growSlot->frameCounter > 0x1E) {
+    if (frame.growSlot->frameCounter > 30) {
         frame.growSlot->scale -= frame.growSlot->scaleStep;
     }
     (frame.growSlot->frameCounter)++;
@@ -955,23 +955,23 @@ void __cdecl BattleFx_BluePandorasBoxParticleFieldTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pFieldTask->frameCounter >= 0x1E && pFieldTask->frameCounter <= 0xD7) {
-        if (pFieldTask->frameCounter < 0x64) {
+    if (pFieldTask->frameCounter >= 30 && pFieldTask->frameCounter <= 215) {
+        if (pFieldTask->frameCounter < 100) {
             spawnCount = 7;
             frameParam = pFieldTask->frameCounter;
-        } else if (pFieldTask->frameCounter < 0x8C) {
-            spawnCount = 0xA;
+        } else if (pFieldTask->frameCounter < 140) {
+            spawnCount = 10;
             frameParam = pFieldTask->frameCounter << 2;
-        } else if (pFieldTask->frameCounter < 0xA0) {
-            spawnCount = 0xE;
+        } else if (pFieldTask->frameCounter < 160) {
+            spawnCount = 14;
             frameParam = pFieldTask->frameCounter << 3;
         } else {
-            spawnCount = 0x12;
+            spawnCount = 18;
             frameParam = (pFieldTask->frameCounter << 4) + pFieldTask->frameCounter;
         }
         for (i = 0; i < spawnCount; i++) {
             searchIdx = 0;
-            for (emptyIndex = 0xFFFFFFFF; searchIdx < 0x12C; searchIdx++) {
+            for (emptyIndex = 0xFFFFFFFF; searchIdx < 300; searchIdx++) {
                 if (g_BattleBluePandorasBoxFragmentRecords.fragments[searchIdx].age == 0) {
                     emptyIndex = searchIdx;
                     break;
@@ -982,25 +982,25 @@ void __cdecl BattleFx_BluePandorasBoxParticleFieldTask(void)
             }
             g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].posX = 0;
             g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].posY = 0xFBB4;
-            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].posZ = 0x4E20;
+            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].posZ = 20000;
             g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].age = 1;
-            radius = 0xAAA;
+            radius = 2730;
             fullRange = radius << 1;
             pBlock->velocityX = rand() % fullRange - radius;
             pBlock->velocityY = rand() % fullRange - radius;
             pBlock->velocityZ = -((rand()) % 4096);
             NormalizeVectorFixed(&pBlock->velocityX, &pBlock->velocityX);
-            radius = pFieldTask->frameCounter + (pFieldTask->frameCounter >> 1) + rand() % 0xAA + 0x64;
-            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].velocityX = radius * pBlock->velocityX >> 0xC;
-            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].velocityY = radius * pBlock->velocityY >> 0xC;
-            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].velocityZ = radius * pBlock->velocityZ >> 0xC;
+            radius = pFieldTask->frameCounter + (pFieldTask->frameCounter >> 1) + rand() % 170 + 100;
+            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].velocityX = radius * pBlock->velocityX >> 12;
+            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].velocityY = radius * pBlock->velocityY >> 12;
+            g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].velocityZ = radius * pBlock->velocityZ >> 12;
             g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].step = frameParam;
             g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].colorR = (pBlock->velocityX & 0x3F) + 0x48;
             g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].colorG = (pBlock->velocityY & 0x3F) + 0x4A;
             g_BattleBluePandorasBoxFragmentRecords.fragments[emptyIndex].colorB = (pBlock->velocityZ & 0x3F) + 0x44;
         }
     }
-    if (pFieldTask->frameCounter >= 0xE1) {
+    if (pFieldTask->frameCounter >= 225) {
         pFieldTask->ownerSlot = BATTLE_TASK_FREE;
     }
     (pFieldTask->frameCounter)++;
@@ -1034,7 +1034,7 @@ void __cdecl BattleFx_BluePandorasBoxRenderRecordPool(BattleFxPandorasBoxFieldSt
     record->matrix.t[0] = 0;
     record->originX = 0;
     record->originY = 0xFBB4;
-    record->originZ = 0x4E20;
+    record->originZ = 20000;
     SetRotMatrix(&record->matrix);
     SetTransMatrix(&record->matrix);
     RefreshGlobalTransformState();
@@ -1051,7 +1051,7 @@ void __cdecl BattleFx_BluePandorasBoxClearRecordPool(void)
 {
     int i;
 
-    for (i = 0; i < 0x190; i++) {
+    for (i = 0; i < 400; i++) {
         g_BattleBluePandorasBoxFragmentRecords.fragments[i].age = 0;
     }
 }

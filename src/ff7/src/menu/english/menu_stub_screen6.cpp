@@ -25,9 +25,9 @@ unsigned char g_rawData_00920534[4] = {0x80, 0x02, 0xad, 0x01};
 // GLOBAL: FF7 0x00920538
 unsigned char g_MenuStubScreen6Text[8] = {0x53, 0x69, 0x17, 0x61, 0xa1, 0x69, 0xff};
 // GLOBAL: FF7 0x00dca3d0
-int g_MenuStubScreen6Cursor0[0xe] = {0};
+int g_MenuStubScreen6Cursor0[14] = {0};
 // GLOBAL: FF7 0x00dca408
-int g_MenuStubScreen6Cursor1[0xe] = {0};
+int g_MenuStubScreen6Cursor1[14] = {0};
 unsigned char g_bssPad_00dca440[56] = {0};
 // clang-format on
 
@@ -77,7 +77,7 @@ void __cdecl Menu_StubScreen6Frame(unsigned int frameCounter)
                             0.0f);
         break;
     }
-    Menu_DrawEncodedString2x(0x10, 0xb, g_MenuStubScreen6Text, 7, 0.0f);
+    Menu_DrawEncodedString2x(16, 11, g_MenuStubScreen6Text, 7, 0.0f);
     for (y = 0; y < 2; y++) {
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)(&g_MenuStubScreen6WindowRects[y * 8]), 0.0f);
     }

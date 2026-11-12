@@ -26,7 +26,7 @@ char g_ThreadEmptyName[1] = {0};
 void __cdecl ThreadInitCallbackRecord(int callback, ThreadCallbackRecord *record)
 {
     if (record != 0) {
-        ZeroFillMemory32(0x10, record);
+        ZeroFillMemory32(16, record);
         record->kind = THREAD_KIND_CRT;
         record->stackSize = 0x10000;
         record->callback = callback;
@@ -41,7 +41,7 @@ void __cdecl ThreadFreeOwnedRecord(ThreadRecord *record)
 {
     if (record != 0 && record->ownsRecord != 0) {
         // STRING: FF7 0x00910480
-        GameHeapFree(record, "C:\\lib\\src\\thread\\thread.cpp", 0x23);
+        GameHeapFree(record, "C:\\lib\\src\\thread\\thread.cpp", 35);
     }
 }
 
@@ -56,7 +56,7 @@ int __cdecl ThreadCreateRecordFromTemplate(int params)
     record = 0;
     if (params != 0) {
         // STRING: FF7 0x009104a0
-        record = (ThreadRecord *)GameHeapAlloc(1, 0x24, "C:\\lib\\src\\thread\\thread.cpp", 0x3B);
+        record = (ThreadRecord *)GameHeapAlloc(1, 36, "C:\\lib\\src\\thread\\thread.cpp", 59);
         if (record != 0) {
             record = (ThreadRecord *)ThreadInitRecordFromTemplate(record, params);
             record->ownsRecord = 1;
@@ -72,7 +72,7 @@ int __cdecl ThreadCreateRecordFromTemplate(int params)
 int __cdecl ThreadInitRecordFromTemplate(ThreadRecord *record, int params)
 {
     if (record != 0) {
-        ZeroFillMemory32(0x24, record);
+        ZeroFillMemory32(36, record);
         *(ThreadTemplate *)((int)record) = *(ThreadTemplate *)(params);
     }
     return (int)record;
@@ -214,11 +214,11 @@ void __cdecl ThreadSystemDestroy(ThreadSystemManager *manager)
                 }
             }
             // STRING: FF7 0x00910574
-            GameHeapFree(manager->threadSlots, "C:\\lib\\src\\thread\\thread.cpp", 0x132);
+            GameHeapFree(manager->threadSlots, "C:\\lib\\src\\thread\\thread.cpp", 306);
         }
         DestroyBlockHeapChain(manager->threadHeap);
         // STRING: FF7 0x00910594
-        GameHeapFree(manager, "C:\\lib\\src\\thread\\thread.cpp", 0x137);
+        GameHeapFree(manager, "C:\\lib\\src\\thread\\thread.cpp", 311);
     }
 }
 
@@ -231,12 +231,12 @@ int __cdecl ThreadSystemCreate(int maxThreads)
     ThreadSystemManager *manager;
     int error;
     // STRING: FF7 0x009105b4
-    manager = (ThreadSystemManager *)GameHeapAlloc(1, 16, "C:\\lib\\src\\thread\\thread.cpp", 0x13f);
+    manager = (ThreadSystemManager *)GameHeapAlloc(1, 16, "C:\\lib\\src\\thread\\thread.cpp", 319);
     if (manager != 0) {
         error = 1;
         manager->maxThreads = maxThreads;
         // STRING: FF7 0x009105d4
-        manager->threadSlots = (ThreadRecord ** )GameHeapAlloc(maxThreads, 4, "C:\\lib\\src\\thread\\thread.cpp", 0x148);
+        manager->threadSlots = (ThreadRecord ** )GameHeapAlloc(maxThreads, 4, "C:\\lib\\src\\thread\\thread.cpp", 328);
         if (manager->threadSlots != 0) {
             manager->threadHeap = (MemBlockHeap *)CreateBlockHeap(36, maxThreads * 36, 0);
             if (manager->threadHeap != 0)

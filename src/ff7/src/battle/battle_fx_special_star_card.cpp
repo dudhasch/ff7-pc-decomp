@@ -249,23 +249,23 @@ void __cdecl BattleFx_SpecialStarCardTimelineTask(void)
         }
         frame.slot->distance = frame.distance;
         frame.slot->velocityY = 0xFED4;
-        frame.slot->scale = 0x2000;
+        frame.slot->scale = 0x2000 /* 2.0 */;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleSpecialStarCardTargetPos), 0x1D5);
     }
-    if (frame.current->step == 0x18) {
+    if (frame.current->step == 24) {
         frame.slot = (BattleFxStarCardSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialStarCardOscillatingModelTask);
         frame.slot->offsetY = 0xFEF6;
-        frame.slot->velocityY = 0x21;
+        frame.slot->velocityY = 33;
         frame.slot->angle = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x1D6);
     }
-    if (frame.current->step == 0x48) {
+    if (frame.current->step == 72) {
         Battle_GetBoneWorldPos(g_BattleSpecialStarCardDrawListHandle, g_BattleActorRecords[g_BattleSpecialStarCardDrawListHandle].targetBone, (short *)((char *)frame.current + 4));
         frame.vector[0] = frame.current->posX - g_BattleCameraPosition.cameraPosX;
         frame.vector[1] = 0;
         frame.vector[2] = frame.current->posZ - g_BattleCameraPosZ;
         frame.distance = NormalizeVectorFixed(&frame.vector[0], &frame.vector[0]);
-        frame.distance = SqrtToInt(frame.distance) / 0xC;
+        frame.distance = SqrtToInt(frame.distance) / 12;
         frame.angle = ComputeAngleBetweenVectors(&g_BattleSpecialStarCardForwardAxis, (VECTOR *)(&frame.vector[0]), (VECTOR *)(&frame.axis[0]));
         Gte_BuildAxisAngleMatrix(frame.angle, (PsxMatrix *)(&frame.matrix[0]), (VECTOR *)(&frame.axis[0]));
         TransformVectorToInt32((PsxMatrix *)(&frame.matrix[0]), &g_BattleSpecialStarCardForwardAxis, &frame.vector[0]);
@@ -276,14 +276,14 @@ void __cdecl BattleFx_SpecialStarCardTimelineTask(void)
         frame.slot->posX = g_BattleCameraPosition.cameraPosX;
         frame.slot->offsetY = frame.current->posY;
         frame.slot->posZ = g_BattleCameraPosZ;
-        frame.slot->offsetX = frame.distance * frame.vector[0] >> 0xC;
+        frame.slot->offsetX = frame.distance * frame.vector[0] >> 12;
         frame.slot->velocityY = 0;
-        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 0xC;
+        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 12;
         frame.slot->angle = frame.angle;
         frame.slot->scale = 0x2666;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)frame.current + 4), 0x1D7);
     }
-    if (frame.current->step >= 0x5A) {
+    if (frame.current->step >= 90) {
         frame.current->ownerSlot = 0xFFFF;
     }
     (frame.current->step)++;
@@ -318,7 +318,7 @@ void __cdecl BattleFx_SpecialStarCardSpinningModelTask(void)
     if (frame.clubSpinRecord->step <= 8) {
         frame.axisAngle = frame.clubSpinRecord->step << 7;
     } else {
-        frame.axisAngle = 0x400;
+        frame.axisAngle = 0x400 /* 90 deg */;
     }
     frame.targetRotX.vx = 0;
     frame.targetRotX.vy = (((short *)&g_BattleSpecialStarCardTargetPos)[3]);
@@ -332,7 +332,7 @@ void __cdecl BattleFx_SpecialStarCardSpinningModelTask(void)
     TransformVectorToInt16(&frame.axisMatrix, &frame.rotOffsetX, &frame.rotOffsetX.vx);
     frame.rotX.vx = 0;
     frame.rotX.vy = 0;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.modelMatrix);
     frame.modelMatrix.t[0] = frame.clubSpinRecord->posX + frame.rotOffsetX.vx;
@@ -349,11 +349,11 @@ void __cdecl BattleFx_SpecialStarCardSpinningModelTask(void)
     frame.drawRecord->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialStarCardFadeStep);
     frame.drawRecord->flags = 0;
     frame.drawRecord->uvScroll = 0;
-    frame.drawRecord->fadeLevel = 0x80;
+    frame.drawRecord->fadeLevel = 128;
     frame.drawRecord->stateFlags = 0x20;
     frame.drawRecord->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.clubSpinRecord->step >= 0x12) {
+    if (frame.clubSpinRecord->step >= 18) {
         frame.clubSpinRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -390,7 +390,7 @@ void __cdecl BattleFx_SpecialStarCardOscillatingModelTask(void)
 #pragma pack(pop)
 
     frame.oscModel = (BattleFxOscillatingModel *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.matrix);
@@ -408,11 +408,11 @@ void __cdecl BattleFx_SpecialStarCardOscillatingModelTask(void)
     frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialStarCardFadeStep);
     frame.drawModel->flags = 0;
     frame.drawModel->uvScroll = 0;
-    frame.drawModel->fadeLevel = 0x80;
+    frame.drawModel->fadeLevel = 128;
     frame.drawModel->stateFlags = 0x20;
     frame.drawModel->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.oscModel->phase >= 0x30) {
+    if (frame.oscModel->phase >= 48) {
         frame.oscModel->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -424,10 +424,10 @@ void __cdecl BattleFx_SpecialStarCardOscillatingModelTask(void)
         if (frame.oscModel->velocity < 2) {
             frame.oscModel->velocity = 1;
         }
-    } else if (frame.oscModel->phase < 0x28) {
+    } else if (frame.oscModel->phase < 40) {
         frame.sinAngle = frame.oscModel->phase - 8 << 7;
-        frame.oscModel->offset = SinFixed(frame.sinAngle) * 0x18 >> 0xC;
-        if (frame.oscModel->phase >= 0x16 && frame.oscModel->phase < 0x22) {
+        frame.oscModel->offset = SinFixed(frame.sinAngle) * 0x18 >> 12;
+        if (frame.oscModel->phase >= 22 && frame.oscModel->phase < 34) {
             frame.oscModel->angle -= 0xAA;
         }
     } else {
@@ -463,7 +463,7 @@ void __cdecl BattleFx_SpecialStarCardAcceleratingModelTask(void)
     frame.accelRecord = (BattleFxSpecialAcceleratingSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.accelRecord->angleY;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.matrix);
     frame.matrix.t[0] = frame.accelRecord->posA;
     frame.matrix.t[1] = frame.accelRecord->posY;
@@ -479,23 +479,23 @@ void __cdecl BattleFx_SpecialStarCardAcceleratingModelTask(void)
     frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialStarCardFadeStep);
     frame.drawModel->flags = 0;
     frame.drawModel->uvScroll = 0;
-    frame.drawModel->fadeLevel = 0x80;
+    frame.drawModel->fadeLevel = 128;
     frame.drawModel->stateFlags = 0x20;
     frame.drawModel->texturePageBits = 0;
-    if (frame.accelRecord->timer >= 0xC) {
+    if (frame.accelRecord->timer >= 12) {
         frame.drawModel->flags = 8;
-        frame.drawModel->fadeLevel = 0x80 - (frame.accelRecord->timer - 0xC << 4);
+        frame.drawModel->fadeLevel = 128 - (frame.accelRecord->timer - 12 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.accelRecord->timer >= 0x14) {
+    if (frame.accelRecord->timer >= 20) {
         frame.accelRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.accelRecord->timer == 0xA) {
+    if (frame.accelRecord->timer == 10) {
         frame.screenPan = Battle_ComputeScreenPanFromPosition((char *)frame.accelRecord + 4);
-        if (frame.screenPan > 0x40) {
+        if (frame.screenPan > 64) {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialStarCardDrawListHandle, 0x118);
         } else {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialStarCardDrawListHandle, 0x18);
@@ -559,22 +559,22 @@ void __cdecl BattleFx_SpecialStarCardStageFadeTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x5A) {
+    if (task->frameCounter == 90) {
         BattleFx_SpecialStarCardSpawnImpactTimeline(g_BattleSpecialStarCardDrawListHandle, g_BattleSpecialStarCardActorIdx);
     }
-    if (task->frameCounter < 0x4E) {
+    if (task->frameCounter < 78) {
         level = 0;
-    } else if (task->frameCounter < 0x5A) {
+    } else if (task->frameCounter < 90) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        level = (task->frameCounter - 0x4E) * 0x155;
-    } else if (task->frameCounter >= 0x8E) {
+        level = (task->frameCounter - 0x4E) * 341;
+    } else if (task->frameCounter >= 142) {
         level = 0x1000 - (task->frameCounter - 0x8E << 9);
     } else {
         level = 0x1000;
     }
-    if (task->frameCounter >= 0x96) {
+    if (task->frameCounter >= 150) {
         level = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -646,27 +646,27 @@ void __cdecl BattleFx_SpecialStarCardImpactTimelineTask(void)
         child = (BattleFxStarCardImpactParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialStarCardPulsingModelTask);
         *(Int64Pair *)((char *)child + 4) = *&g_BattleSpecialStarCardTargetPos;
         child->angle = 0;
-        child->velocityY = rand() % 0x48 + 0x40;
+        child->velocityY = rand() % 72 + 64;
         child->velocityX = 0;
-        child->size = rand() % 0x3A + 0x2C;
+        child->size = rand() % 58 + 44;
         child->scale = 0x5B6;
     }
     if (pImpact->step == 0) {
         child = (BattleFxStarCardImpactParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialStarCardCyclingModelTask);
         *(Int64Pair *)((char *)child + 4) = *&g_BattleSpecialStarCardTargetPos;
         child->angle = 0xE0;
-        child->velocityY = -(rand() % 0x1E + 0x18);
+        child->velocityY = -(rand() % 30 + 24);
         child->velocityX = 0xFF9C;
-        child->size = rand() % 0x14 + 0xC;
+        child->size = rand() % 20 + 12;
         child->scale = 0x560;
     }
     if (pImpact->step == 0) {
         child = (BattleFxStarCardImpactParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialStarCardBlackModelTask);
         *(Int64Pair *)((char *)child + 4) = *&g_BattleSpecialStarCardTargetPos;
         child->angle = 0x12;
-        child->velocityY = -(rand() % 0x28 + 0x24);
-        child->velocityX = 0x24;
-        child->size = rand() % 0x20 + 0x16;
+        child->velocityY = -(rand() % 40 + 36);
+        child->velocityX = 36;
+        child->size = rand() % 32 + 22;
         child->scale = 0x53B;
     }
     if (pImpact->step == 6) {
@@ -689,7 +689,7 @@ void __cdecl BattleFx_SpecialStarCardImpactTimelineTask(void)
             child->targetZ += (short)(rand() % width - half);
         }
     }
-    if (pImpact->step >= 0xA && pImpact->step <= 0x31) {
+    if (pImpact->step >= 10 && pImpact->step <= 49) {
         width = pImpact->angle;
         half = width >> 1;
         baseScale = 0xC80;
@@ -700,11 +700,11 @@ void __cdecl BattleFx_SpecialStarCardImpactTimelineTask(void)
             child->posY += (short)(rand() % width - half);
             child->posZ += (short)(rand() % width - half);
             scaleRoll = rand() % 0xE00 + 0xA00;
-            child->scale = baseScale * scaleRoll >> 0xC;
+            child->scale = baseScale * scaleRoll >> 12;
         }
     }
-    if (pImpact->step >= 0xE && pImpact->step <= 0x27 && (pImpact->step & 1) != 0) {
-        idx = rand() % 4 + 0xC;
+    if (pImpact->step >= 14 && pImpact->step <= 39 && (pImpact->step & 1) != 0) {
+        idx = rand() % 4 + 12;
         half = pImpact->angle / 3 << 1;
         width = half << 1;
         child = (BattleFxStarCardImpactParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialStarCardFallingModelTask);
@@ -720,17 +720,17 @@ void __cdecl BattleFx_SpecialStarCardImpactTimelineTask(void)
         child->variant = rand() % 6;
         child->velocityX = 0;
         child->angle = 0;
-        child->velocityY = rand() % 0x60 + 0x30;
+        child->velocityY = rand() % 96 + 48;
         child->size = child->velocityY >> 1;
-        baseScale = rand() % 0xE00 + 0xA00;
-        scaleRoll = baseScale * 0x6E4 >> 0xC;
+        baseScale = rand() % 3584 + 2560;
+        scaleRoll = baseScale * 0x6E4 >> 12;
         child->scale = scaleRoll >> 1;
         child->scaleRate = (scaleRoll >> 1) / idx;
     }
-    if (pImpact->step == 0x37) {
+    if (pImpact->step == 55) {
         Battle_PostActorHitOrHurtMessage(g_BattleSpecialStarCardDrawListHandle);
     }
-    if (pImpact->step >= 0x3C) {
+    if (pImpact->step >= 60) {
         pImpact->ownerSlot = BATTLE_TASK_FREE;
     }
     (pImpact->step)++;
@@ -779,11 +779,11 @@ void __cdecl BattleFx_SpecialStarCardFallingModelTask(void)
     frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(((int *)&g_BattleSpecialStarCardFallingModelIndices)[frame.fallRecord->modelIndex], g_BattleSpecialStarCardFadeStep);
     frame.drawModel->flags = 0;
     frame.drawModel->uvScroll = 0;
-    frame.drawModel->fadeLevel = 0x80;
+    frame.drawModel->fadeLevel = 128;
     frame.drawModel->stateFlags = 0x20;
     frame.drawModel->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.fallRecord->phase >= frame.fallRecord->endPhase + 4 || frame.fallRecord->posY >= -0x78) {
+    if (frame.fallRecord->phase >= frame.fallRecord->endPhase + 4 || frame.fallRecord->posY >= -120) {
         frame.spawnedModel = (BattleStarCardFallingModel *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialStarCardSpreadingModelTask);
         *(Int64Pair *)((char *)frame.spawnedModel + 4) = *(Int64Pair *)((char *)frame.fallRecord + 4);
         frame.spawnedModel->posY = 0;
@@ -849,11 +849,11 @@ void __cdecl BattleFx_SpecialStarCardSpreadingModelTask(void)
     frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleSpecialStarCardFadeStep);
     frame.drawModel->flags = 0x28;
     frame.drawModel->uvScroll = 0;
-    frame.drawModel->fadeLevel = 0x80 - frame.spreadRecord->step * 0xC;
+    frame.drawModel->fadeLevel = 128 - frame.spreadRecord->step * 12;
     frame.drawModel->stateFlags = 0x20;
     frame.drawModel->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spreadRecord->step >= 0xA) {
+    if (frame.spreadRecord->step >= 10) {
         frame.spreadRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -910,23 +910,23 @@ void __cdecl BattleFx_SpecialStarCardStretchedSprite1Task(void)
     frame.axisAngle = ComputeAngleBetweenVectors((VECTOR *)&g_BattleSpecialStarCardUpAxis, &frame.dirX, &frame.axis);
     Gte_BuildAxisAngleMatrix(frame.axisAngle, &frame.axisMatrix, &frame.axis);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.matrix);
-    frame.scaleX.vz = 0x2000;
+    frame.scaleX.vz = 0x2000 /* 2.0 */;
     frame.scaleX.vx = frame.scaleX.vz;
-    frame.scaleX.vy = (frame.distance << 0xC) / 0x780;
-    if (frame.scaleX.vy > 0x7FFF) {
+    frame.scaleX.vy = (frame.distance << 12) / 1920;
+    if (frame.scaleX.vy > 32767) {
         frame.scaleX.vy = 0x7FFF;
     }
     ScaleMatrix(&frame.matrix, &frame.scaleX);
     MultiplyMatrix(&g_BattleCameraTransform, &frame.matrix, &frame.matrix);
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    if (frame.stretchRecord->spriteFrame < 0xC) {
+    if (frame.stretchRecord->spriteFrame < 12) {
         g_BattleSpecialStarCardSpriteRequest1.frame = frame.stretchRecord->spriteFrame;
     } else {
-        g_BattleSpecialStarCardSpriteRequest1.frame = ((frame.stretchRecord->spriteFrame - 0xC) % 4) + 0xC;
+        g_BattleSpecialStarCardSpriteRequest1.frame = ((frame.stretchRecord->spriteFrame - 12) % 4) + 12;
     }
-    if (frame.stretchRecord->spriteFrame >= 0x24) {
-        frame.colorLevel = 0x80 - (frame.stretchRecord->spriteFrame - 0x24) * 0xA;
+    if (frame.stretchRecord->spriteFrame >= 36) {
+        frame.colorLevel = 0x80 - (frame.stretchRecord->spriteFrame - 0x24) * 10;
     } else {
         frame.colorLevel = 0x80;
     }
@@ -936,7 +936,7 @@ void __cdecl BattleFx_SpecialStarCardStretchedSprite1Task(void)
     (g_BattleSpecialStarCardSpriteRequest1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialStarCardFadeStep);
     g_BattleSpecialStarCardSpriteRequest1.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialStarCardFadeStep);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&(g_BattleSpecialStarCardSpriteRequest1.spriteGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.stretchRecord->spriteFrame >= 0x30) {
+    if (frame.stretchRecord->spriteFrame >= 48) {
         frame.stretchRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -989,10 +989,10 @@ void __cdecl BattleFx_SpecialStarCardStretchedSprite2Task(void)
     frame.axisAngle = ComputeAngleBetweenVectors((VECTOR *)&g_BattleSpecialStarCardUpAxis, &frame.dirX, &frame.axis);
     Gte_BuildAxisAngleMatrix(frame.axisAngle, &frame.axisMatrix, &frame.axis);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.matrix);
-    frame.scaleX.vz = 0x2000;
+    frame.scaleX.vz = 0x2000 /* 2.0 */;
     frame.scaleX.vx = frame.scaleX.vz;
-    frame.scaleX.vy = (frame.distance << 0xC) / 0x780;
-    if (frame.scaleX.vy > 0x7FFF) {
+    frame.scaleX.vy = (frame.distance << 12) / 1920;
+    if (frame.scaleX.vy > 32767) {
         frame.scaleX.vy = 0x7FFF;
     }
     ScaleMatrix(&frame.matrix, &frame.scaleX);
@@ -1004,8 +1004,8 @@ void __cdecl BattleFx_SpecialStarCardStretchedSprite2Task(void)
     } else {
         g_BattleSpecialStarCardSpriteRequest2.frame = ((frame.stretchRecord->spriteFrame - 4) % 4) + 4;
     }
-    if (frame.stretchRecord->spriteFrame >= 0x24) {
-        frame.colorLevel = 0x80 - (frame.stretchRecord->spriteFrame - 0x24) * 0xA;
+    if (frame.stretchRecord->spriteFrame >= 36) {
+        frame.colorLevel = 0x80 - (frame.stretchRecord->spriteFrame - 0x24) * 10;
     } else {
         frame.colorLevel = 0x80;
     }
@@ -1015,7 +1015,7 @@ void __cdecl BattleFx_SpecialStarCardStretchedSprite2Task(void)
     (g_BattleSpecialStarCardSpriteRequest2.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialStarCardFadeStep);
     g_BattleSpecialStarCardSpriteRequest2.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialStarCardFadeStep);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&(g_BattleSpecialStarCardSpriteRequest2.spriteGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.stretchRecord->spriteFrame >= 0x30) {
+    if (frame.stretchRecord->spriteFrame >= 48) {
         frame.stretchRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1027,7 +1027,7 @@ void __cdecl BattleFx_SpecialStarCardStretchedSprite2Task(void)
 /*
  * One frame of a battle effect drawing the sprite record at g_BattleSpecialStarCardSpriteRequest3. Copies the frame counter
  * at +2 into g_BattleSpecialStarCardSpriteRequest3.frameIndex, installs the billboard matrix from the size at +0x1C with -(size >> 4),
- * fills g_BattleSpecialStarCardSpriteRequest3 from Gfx_ModelTableGetLoadedRecord(0x16, g_BattleSpecialStarCardFadeStep) and g_BattleSpecialStarCardSpriteRequest3.drawObj from
+ * fills g_BattleSpecialStarCardSpriteRequest3 from Gfx_ModelTableGetLoadedRecord(22, g_BattleSpecialStarCardFadeStep) and g_BattleSpecialStarCardSpriteRequest3.drawObj from
  * Battle3d_GetSceneRenderObject(3, g_pBattle3dScene), and chains the sprite through
  * BattleFx_SubmitSpriteDraw into the list head g_BattleFxActiveDrawListPtr. Retires the effect with 0xFFFF at +0
  * at or above frame 3 and advances the counter unless g_BattleIsPaused is set. Unreferenced padding
@@ -1042,7 +1042,7 @@ void __cdecl BattleFx_SpecialStarCardDrawBillboardSpriteTask(void)
     s = (BattleFxStarCardBillboardSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialStarCardSpriteRequest3.frameIndex = s->age;
     BattleFx_InstallBillboardMatrix((char *)s + 4, (short)s->scale, -(s->scale >> 4));
-    (g_BattleSpecialStarCardSpriteRequest3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x16, g_BattleSpecialStarCardFadeStep);
+    (g_BattleSpecialStarCardSpriteRequest3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(22, g_BattleSpecialStarCardFadeStep);
     g_BattleSpecialStarCardSpriteRequest3.drawObj = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&(g_BattleSpecialStarCardSpriteRequest3.spriteGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     if (s->age >= 3) {
@@ -1091,21 +1091,21 @@ void __cdecl BattleFx_SpecialStarCardBlackModelTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_BattleSpecialStarCardFadeStep);
+    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(11, g_BattleSpecialStarCardFadeStep);
     frame.modelDraw->flags = 0xA8;
     frame.modelDraw->uvScroll = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     if (frame.clubState->timer < 8) {
-        frame.modelDraw->fadeLevel = 0x1000 - (frame.clubState->timer << 9);
-    } else if (frame.clubState->timer >= 0x2E) {
-        frame.modelDraw->fadeLevel = frame.clubState->timer - 0x2E << 9;
+        frame.modelDraw->fadeLevel = 4096 - (frame.clubState->timer << 9);
+    } else if (frame.clubState->timer >= 46) {
+        frame.modelDraw->fadeLevel = frame.clubState->timer - 46 << 9;
     } else {
         frame.modelDraw->fadeLevel = 0;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.clubState->timer >= 0x36) {
+    if (frame.clubState->timer >= 54) {
         frame.clubState->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1153,7 +1153,7 @@ void __cdecl BattleFx_SpecialStarCardCyclingModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    frame.modelIndex = frame.cycleState->step % 0xA;
+    frame.modelIndex = frame.cycleState->step % 10;
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(((int *)&g_BattleSpecialStarCardCyclingModelIndices)[frame.modelIndex], g_BattleSpecialStarCardFadeStep);
     frame.modelDraw->flags = 0x28;
@@ -1161,14 +1161,14 @@ void __cdecl BattleFx_SpecialStarCardCyclingModelTask(void)
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.cycleState->step < 8) {
-        frame.modelDraw->fadeLevel = frame.cycleState->step * 0x18;
-    } else if (frame.cycleState->step >= 0x2E) {
-        frame.modelDraw->fadeLevel = 0xC0 - (frame.cycleState->step - 0x2E) * 0x18;
+        frame.modelDraw->fadeLevel = frame.cycleState->step * 24;
+    } else if (frame.cycleState->step >= 46) {
+        frame.modelDraw->fadeLevel = 192 - (frame.cycleState->step - 46) * 24;
     } else {
-        frame.modelDraw->fadeLevel = 0xC0;
+        frame.modelDraw->fadeLevel = 192;
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.cycleState->step >= 0x36) {
+    if (frame.cycleState->step >= 54) {
         frame.cycleState->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1219,17 +1219,17 @@ void __cdecl BattleFx_SpecialStarCardPulsingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(4, g_BattleSpecialStarCardFadeStep);
     frame.modelDraw->flags = 0x28;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     frame.pulsePhase = frame.pulseState->timer % 6;
     if (frame.pulsePhase < 3) {
-        frame.modelDraw->fadeLevel = frame.pulsePhase * 0x2A;
+        frame.modelDraw->fadeLevel = frame.pulsePhase * 42;
     } else {
-        frame.modelDraw->fadeLevel = 0x80 - (frame.pulsePhase - 3) * 0x2A;
+        frame.modelDraw->fadeLevel = 128 - (frame.pulsePhase - 3) * 42;
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.pulseState->timer >= 0x36) {
+    if (frame.pulseState->timer >= 54) {
         frame.pulseState->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

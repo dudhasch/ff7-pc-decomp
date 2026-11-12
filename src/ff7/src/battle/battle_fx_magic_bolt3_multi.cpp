@@ -162,53 +162,53 @@ void __cdecl BattleFx_MagicBolt3MultiTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         Battle_StartFixedPointRamp(0x800, 4);
     }
-    if (timeline->stage >= 6 && timeline->stage < 0x1A && (timeline->stage - 6) % 4 == 0) {
+    if (timeline->stage >= 6 && timeline->stage < 26 && (timeline->stage - 6) % 4 == 0) {
         particle = (BattleFxBolt3MultiParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt3MultiFlashSpriteTask);
-        particle->posX = *(short *)&g_BattleMagicBolt3Multi_CentroidXY + rand() % 0xBB8 * 2 + -0xBB8;
+        particle->posX = *(short *)&g_BattleMagicBolt3Multi_CentroidXY + rand() % 3000 * 2 + -3000;
         particle->posY = 0;
-        particle->posZ = g_BattleMagicBolt3Multi_CentroidZ + rand() % 0x5DC * 2 + -0x5DC;
+        particle->posZ = g_BattleMagicBolt3Multi_CentroidZ + rand() % 1500 * 2 + -1500;
         for (i = 0; i < 3; i++) {
             pBounce = (BattleFxBolt3MultiBounceTask *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt3MultiBouncingModelTask);
             *(Int64Pair *)&pBounce->posX = *(Int64Pair *)&particle->posX;
-            pBounce->velocityX = rand() % 0xC8 - 0x64;
-            pBounce->velocityY = -(rand() % 0xC8 + 0xC8);
-            pBounce->velocityZ = rand() % 0xC8 - 0x64;
-            pBounce->angleStepX = rand() % 0xA - 5;
-            pBounce->angleStepY = rand() % 0x14 - 0xA;
-            pBounce->angleStepZ = rand() % 0x28 - 0x14;
+            pBounce->velocityX = rand() % 200 - 100;
+            pBounce->velocityY = -(rand() % 200 + 200);
+            pBounce->velocityZ = rand() % 200 - 100;
+            pBounce->angleStepX = rand() % 10 - 5;
+            pBounce->angleStepY = rand() % 20 - 10;
+            pBounce->angleStepZ = rand() % 40 - 20;
             pBounce->scale = rand() % 0x2400 + 0x400;
             pBounce->ownerSlot = 0;
         }
         grow = (BattleFxBolt3MultiGrowRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt3MultiGrowHoldFadeModelTask);
         *(Int64Pair *)&grow->offsetX = *(Int64Pair *)&particle->posX;
     }
-    if (timeline->stage == 0x28) {
-        for (i = 0; i < 0xA; i++) {
+    if (timeline->stage == 40) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicBolt3Multi_ActorMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (timeline->stage >= 0x18 && timeline->stage < 0x1C) {
+    if (timeline->stage >= 24 && timeline->stage < 28) {
         for (i = 0; i < 1; i++) {
-            for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+            for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                 if ((g_BattleMagicBolt3Multi_ActorMask & 1 << actorIndex) != 0) {
                     particle = (BattleFxBolt3MultiParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt3MultiBillboardSpriteTask);
                     Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].targetBone, &particle->posX);
-                    particle->posX += (short)(rand() % 0x960 - 0x4B0);
-                    particle->posY += (short)(rand() % 0x960 - 0x4B0);
-                    particle->posZ += (short)(rand() % 0x960 - 0x4B0);
+                    particle->posX += (short)(rand() % 2400 - 1200);
+                    particle->posY += (short)(rand() % 2400 - 1200);
+                    particle->posZ += (short)(rand() % 2400 - 1200);
                 }
             }
         }
     }
-    if (timeline->stage == 0x24) {
+    if (timeline->stage == 36) {
         Battle_AllocateResourceSlot(BattleFx_MagicBolt3MultiFlippedSpriteTask);
     }
-    if (timeline->stage == 0x44) {
+    if (timeline->stage == 68) {
         Battle_StartFixedPointRamp(0, 4);
     }
-    if (timeline->stage == 0x44) {
+    if (timeline->stage == 68) {
         timeline->ownerSlot = BATTLE_TASK_FREE;
     }
     (timeline->stage)++;
@@ -258,7 +258,7 @@ void __cdecl BattleFx_MagicBolt3MultiFlashSpriteTask(void)
         } else {
             frame.tmpFrameIndex = frame.tmpFrameIndex;
             if (frame.tmpFrameIndex < 1) {
-                g_BattleMagicBolt3Multi_InitialAngle = 0x2500;
+                g_BattleMagicBolt3Multi_InitialAngle = 0x2500 /* 832.5 deg */;
             } else {
                 frame.tmpFrameIndex--;
                 if (frame.tmpFrameIndex < 4) {
@@ -279,10 +279,10 @@ void __cdecl BattleFx_MagicBolt3MultiFlashSpriteTask(void)
     g_BattleMagicBolt3Multi_ChainTail = BattleFx_SubmitSpriteDraw(&frame.tableWordA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicBolt3Multi_ChainTail);
     if (g_BattleIsPaused == 0) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 3; frame.spawnIndex++) {
-            frame.spawnX.vx = frame.slot->posX + rand() % 0x640 + -0x320;
+            frame.spawnX.vx = frame.slot->posX + rand() % 1600 + -800;
             frame.spawnX.vy = 0;
-            frame.spawnX.vz = frame.slot->posZ + rand() % 0x640 + -0x320;
-            Battle_SpawnWorldSpriteTask((Vec3sPacked *)&frame.spawnX, 0x3000, 0x3000);
+            frame.spawnX.vz = frame.slot->posZ + rand() % 1600 + -800;
+            Battle_SpawnWorldSpriteTask((Vec3sPacked *)&frame.spawnX, 12288, 12288);
         }
         (frame.slot->frameIndex)++;
     }
@@ -316,7 +316,7 @@ void __cdecl BattleFx_MagicBolt3MultiBouncingModelTask(void)
     } else {
         (g_BattleMagicBolt3Multi_ModelReq1.modelHandle) = Gfx_ModelTableGetRenderObject(2, g_BattleMagicBolt3Multi_ResourceTable);
         (g_BattleMagicBolt3Multi_ModelReq1.flags) = 0x88;
-        (g_BattleMagicBolt3Multi_ModelReq1.fadeLevel) = ((frame.slot->frameCount << 0xC) / 4);
+        (g_BattleMagicBolt3Multi_ModelReq1.fadeLevel) = ((frame.slot->frameCount << 12) / 4);
     }
     frame.angleX.vx = frame.slot->angleX << 4;
     frame.angleX.vy = frame.slot->angleY << 4;
@@ -353,7 +353,7 @@ void __cdecl BattleFx_MagicBolt3MultiBouncingModelTask(void)
         frame.slot->posX += frame.slot->velocityX;
         frame.slot->posY += frame.slot->velocityY;
         frame.slot->posZ += frame.slot->velocityZ;
-        frame.slot->velocityY += 0x1E;
+        frame.slot->velocityY += 30;
         if (frame.slot->posY > 0) {
             frame.slot->posY = -frame.slot->posY;
             frame.slot->velocityY = (-frame.slot->velocityY) / 4;
@@ -381,10 +381,10 @@ void __cdecl BattleFx_MagicBolt3MultiFlippedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     phase = task->frameCounter & 7;
     if (phase < 4) {
-        g_BattleMagicBolt3Multi_InitialScale = 0x1800;
+        g_BattleMagicBolt3Multi_InitialScale = 0x1800 /* 1.5 */;
     } else {
         phase -= 4;
-        g_BattleMagicBolt3Multi_InitialScale = 0xE800;
+        g_BattleMagicBolt3Multi_InitialScale = 0xE800 /* 14.5 */;
     }
     if (phase < 2) {
         (g_BattleMagicBolt3Multi_ModelReq3.tableValueA) = Gfx_ModelTableGetLoadedRecord(4, g_BattleMagicBolt3Multi_ResourceTable);
@@ -401,12 +401,12 @@ void __cdecl BattleFx_MagicBolt3MultiFlippedSpriteTask(void)
         g_BattleMagicBolt3Multi_SpriteColors.colorR = g_BattleMagicBolt3Multi_SpriteColors.colorG;
     } else {
         age -= 4;
-        if (age < 0xF) {
+        if (age < 15) {
             g_BattleMagicBolt3Multi_SpriteColors.colorB = 0x80;
             g_BattleMagicBolt3Multi_SpriteColors.colorG = g_BattleMagicBolt3Multi_SpriteColors.colorB;
             g_BattleMagicBolt3Multi_SpriteColors.colorR = g_BattleMagicBolt3Multi_SpriteColors.colorG;
         } else {
-            age -= 0xF;
+            age -= 15;
             if (age < 4) {
                 g_BattleMagicBolt3Multi_SpriteColors.colorB = (age * -0x80 / 4) + 0x80;
                 g_BattleMagicBolt3Multi_SpriteColors.colorG = g_BattleMagicBolt3Multi_SpriteColors.colorB;
@@ -436,10 +436,10 @@ void __cdecl BattleFx_MagicBolt3MultiBillboardSpriteTask(void)
     g_BattleMagicBolt3Multi_SpriteReq1.drawReq = (BattleFxMagicDemi3MultiDrawReq *)Gfx_ModelTableGetLoadedRecord(3, g_BattleMagicBolt3Multi_ResourceTable);
     g_BattleMagicBolt3Multi_SpriteReq1.resource = Gfx_ModelTableGetSpriteObject(3, g_BattleMagicBolt3Multi_ResourceTable);
     g_BattleMagicBolt3Multi_SpriteReq1.frame = task->frameCounter >> 8;
-    BattleFx_InstallBillboardMatrix((short *)(task->data + 4), 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((short *)(task->data + 4), 0x3000 /* 3.0 */, 0);
     g_BattleMagicBolt3Multi_ChainTail = BattleFx_SubmitSpriteDraw(&g_BattleMagicBolt3Multi_SpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicBolt3Multi_ChainTail);
     if (g_BattleIsPaused == 0) {
-        task->frameCounter += 0x100;
+        task->frameCounter += 256;
         if (g_BattleMagicBolt3Multi_SpriteReq1.drawReq != 0 && task->frameCounter >> 8 >= g_BattleMagicBolt3Multi_SpriteReq1.drawReq->frameTable->frameCount) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }

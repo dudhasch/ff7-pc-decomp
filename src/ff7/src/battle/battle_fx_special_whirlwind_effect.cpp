@@ -184,11 +184,11 @@ void __cdecl BattleFx_SpecialWhirlwindSetupTask(void)
     frame.timelineSlot->centerY = 0;
     if (g_BattleSpecWhirlwindVariant != 0) {
         frame.timelineSlot->angle = (rand() % 4096);
-        frame.timelineSlot->angularVelocity = rand() % 0x60 + 0x48;
+        frame.timelineSlot->angularVelocity = rand() % 96 + 72;
         frame.timelineSlot->jitterOffset = 0xD80;
         frame.timelineSlot->jitterRange = frame.timelineSlot->jitterOffset << 1;
         frame.timelineSlot->baseScale = 0x2507;
-        frame.range = 0x7E0;
+        frame.range = 2016;
         frame.rangeSpan = frame.range << 1;
         *(short *)&frame.endX = (rand() % frame.rangeSpan - frame.range) * 3;
         *(short *)&frame.endZ = (rand() % frame.rangeSpan - frame.range) * 3;
@@ -205,13 +205,13 @@ void __cdecl BattleFx_SpecialWhirlwindSetupTask(void)
         g_BattleSpecWhirlwindDeltaY = 0;
         g_BattleSpecWhirlwindDeltaZ = frame.startZ - *(short *)&frame.endZ;
         frame.stepSize = NormalizeVectorFixed(&g_BattleSpecWhirlwindDeltaX, &g_BattleSpecWhirlwindDeltaX);
-        frame.stepSize = SqrtToInt(frame.stepSize) / 0x3C;
+        frame.stepSize = SqrtToInt(frame.stepSize) / 60;
         g_BattleSpecWhirlwindNormalX = -g_BattleSpecWhirlwindDeltaZ;
         g_BattleSpecWhirlwindNormalY = 0;
         g_BattleSpecWhirlwindNormalZ = g_BattleSpecWhirlwindDeltaX;
-        g_BattleSpecWhirlwindStepX = frame.stepSize * g_BattleSpecWhirlwindDeltaX >> 0xC;
+        g_BattleSpecWhirlwindStepX = frame.stepSize * g_BattleSpecWhirlwindDeltaX >> 12;
         g_BattleSpecWhirlwindStepY = 0;
-        g_BattleSpecWhirlwindStepZ = frame.stepSize * g_BattleSpecWhirlwindDeltaZ >> 0xC;
+        g_BattleSpecWhirlwindStepZ = frame.stepSize * g_BattleSpecWhirlwindDeltaZ >> 12;
         frame.timelineSlot->stepSize = *(short *)&frame.stepSize;
     } else {
         frame.timelineSlot->jitterOffset = 0x900;
@@ -237,40 +237,40 @@ void __cdecl BattleFx_SpecialWhirlwindTimelineTask(void)
         return;
     }
     whirl = (BattleFxWhirlwindWhirlState *)BATTLE_CURRENT_TASK_SLOT;
-    if (whirl->step > 1 && whirl->step < 0x2D) {
+    if (whirl->step > 1 && whirl->step < 45) {
         writeIndex = g_BattleSpecWhirlwindWhirlwind.writeIndex;
         pOrbit = (BattleFxWhirlwindOrbit *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWhirlwindConvergingSpritesTask);
         pOrbit->poolStartIndex = writeIndex;
         spawnCount = (g_BattleSpecWhirlwindVariant != 0) + 4;
         for (i = 0; i < spawnCount; i++) {
-            rnd = rand() % 0x1000 + 0x800;
+            rnd = rand() % 4096 + 2048;
             g_BattleSpecWhirlwindWhirlwind.points[writeIndex].x = whirl->posX + rand() % whirl->jitterRange - whirl->jitterOffset;
             g_BattleSpecWhirlwindWhirlwind.points[writeIndex].y = 0;
             g_BattleSpecWhirlwindWhirlwind.points[writeIndex].z = whirl->posZ + rand() % whirl->jitterRange - whirl->jitterOffset;
-            g_BattleSpecWhirlwindWhirlwind.points[writeIndex].scale = whirl->baseScale * rnd >> 0xC;
+            g_BattleSpecWhirlwindWhirlwind.points[writeIndex].scale = whirl->baseScale * rnd >> 12;
             writeIndex++;
-            if (writeIndex >= 0x137) {
+            if (writeIndex >= 311) {
                 writeIndex = 0;
             }
         }
         g_BattleSpecWhirlwindWhirlwind.writeIndex = writeIndex;
     }
-    if (whirl->step > 4 && whirl->step < 0x32) {
+    if (whirl->step > 4 && whirl->step < 50) {
         for (i = 0; i < 3; i++) {
-            rnd = rand() % 0xA00 + 0xC00;
+            rnd = rand() % 2560 + 3072;
             pOrbit = (BattleFxWhirlwindOrbit *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWhirlwindOrbitingSpriteTask);
             pOrbit->position = whirl->position;
             pOrbit->angle = (g_BattleSpecWhirlwindWhirlwind.writeIndex + i & 0xFFF) << 6;
             pOrbit->angleStep = rand() % 0x1C + 0x20;
-            pOrbit->scale = whirl->baseScale * rnd >> 0xC;
+            pOrbit->scale = whirl->baseScale * rnd >> 12;
             if (g_BattleSpecWhirlwindVariant != 0) {
-                pOrbit->radius = rand() % 0x6E + 0x20;
-                pOrbit->fallSpeed = -(rand() % 0xDC + 0x190);
-                pOrbit->orbitSpeed = rand() % 0x50 + 0x64;
+                pOrbit->radius = rand() % 110 + 32;
+                pOrbit->fallSpeed = -(rand() % 220 + 400);
+                pOrbit->orbitSpeed = rand() % 80 + 100;
             } else {
-                pOrbit->radius = rand() % 0xB4 + 0x30;
-                pOrbit->fallSpeed = -(rand() % 0x104 + 0x1F4);
-                pOrbit->orbitSpeed = rand() % 0x64 + 0x78;
+                pOrbit->radius = rand() % 180 + 48;
+                pOrbit->fallSpeed = -(rand() % 260 + 500);
+                pOrbit->orbitSpeed = rand() % 100 + 120;
             }
         }
     }
@@ -279,19 +279,19 @@ void __cdecl BattleFx_SpecialWhirlwindTimelineTask(void)
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         level = whirl->step << 8;
-    } else if (whirl->step >= 0x30) {
-        level = 0x800 - (whirl->step - 0x30) * 0xAA;
+    } else if (whirl->step >= 48) {
+        level = 0x800 - (whirl->step - 0x30) * 170;
     } else {
         level = 0x800;
     }
-    if (whirl->step == 0x37) {
-        for (i = 0; i < 0xA; i++) {
+    if (whirl->step == 55) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleSpecWhirlwindSourceActor & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (whirl->step >= 0x3C) {
+    if (whirl->step >= 60) {
         level = 0;
         whirl->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -303,10 +303,10 @@ void __cdecl BattleFx_SpecialWhirlwindTimelineTask(void)
         i = SinFixed(whirl->angle);
         whirl->angle += whirl->angularVelocity;
         writeIndex = whirl->stepSize << 3;
-        rnd = writeIndex * i >> 0xC;
-        whirl->posX = (rnd * g_BattleSpecWhirlwindNormalX >> 0xC) + g_BattleSpecWhirlwindTargetOffset.x;
+        rnd = writeIndex * i >> 12;
+        whirl->posX = (rnd * g_BattleSpecWhirlwindNormalX >> 12) + g_BattleSpecWhirlwindTargetOffset.x;
         whirl->posY = 0;
-        whirl->posZ = (rnd * g_BattleSpecWhirlwindNormalZ >> 0xC) + g_BattleSpecWhirlwindTargetOffset.z;
+        whirl->posZ = (rnd * g_BattleSpecWhirlwindNormalZ >> 12) + g_BattleSpecWhirlwindTargetOffset.z;
     }
     g_BattleSpecWhirlwindTargetPos.pair = whirl->position;
     (whirl->step)++;
@@ -346,7 +346,7 @@ void __cdecl BattleFx_SpecialWhirlwindOrbitingSpriteTask(void)
     ((BattleFxWhirlwindSpriteReq *)&g_BattleSpecWhirlwindSpriteReq)->orbitHandle = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecWhirlwindLoadedResTable);
     (((BattleFxWhirlwindSpriteReq *)&g_BattleSpecWhirlwindSpriteReq)->orbitResource) = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecWhirlwindLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecWhirlwindSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.orbitSlot->frameCounter >= 0xB) {
+    if (frame.orbitSlot->frameCounter >= 11) {
         frame.orbitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -384,18 +384,18 @@ void __cdecl BattleFx_SpecialWhirlwindConvergingSpritesTask(void)
             normal.vz = g_BattleSpecWhirlwindTargetPos.z - g_BattleSpecWhirlwindWhirlwind.points[q].z;
             r = NormalizeVectorFixed(&normal, &normal);
             r = SqrtToInt(r) >> 5;
-            g_BattleSpecWhirlwindWhirlwind.points[q].x += (short)(r * normal.vx >> 0xC);
-            g_BattleSpecWhirlwindWhirlwind.points[q].y += (short)(r * normal.vy >> 0xC);
-            g_BattleSpecWhirlwindWhirlwind.points[q].z += (short)(r * normal.vz >> 0xC);
+            g_BattleSpecWhirlwindWhirlwind.points[q].x += (short)(r * normal.vx >> 12);
+            g_BattleSpecWhirlwindWhirlwind.points[q].y += (short)(r * normal.vy >> 12);
+            g_BattleSpecWhirlwindWhirlwind.points[q].z += (short)(r * normal.vz >> 12);
         }
         BattleFx_InstallBillboardMatrix(&g_BattleSpecWhirlwindWhirlwind.points[q].x, g_BattleSpecWhirlwindWhirlwind.points[q].scale, -(g_BattleSpecWhirlwindWhirlwind.points[q].scale >> 2));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&((BattleFxWhirlwindSpriteReq *)&g_BattleSpecWhirlwindSpriteReq)->convergeHandle, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         q++;
-        if (q >= 0x137) {
+        if (q >= 311) {
             q = 0;
         }
     }
-    if (nodePtr->frame >= 0xB) {
+    if (nodePtr->frame >= 11) {
         nodePtr->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

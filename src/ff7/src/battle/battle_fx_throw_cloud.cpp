@@ -254,7 +254,7 @@ void __cdecl Battle_ThrowFxWeaponBlock00Index9(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004d38ca
 void __cdecl Battle_ThrowFxWeaponBlock00Index10(int targetMask, int actorIdx)
 {
-    g_BattleThrowCloudWeaponIndex = 0xA;
+    g_BattleThrowCloudWeaponIndex = 10;
     g_BattleThrowCloudWeaponFlag = BATTLE_CLOUD_THROW_STRAIGHT;
     Battle_ThrowFxSpawnWeapons00to61(targetMask, actorIdx);
 }
@@ -263,7 +263,7 @@ void __cdecl Battle_ThrowFxWeaponBlock00Index10(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004d38f3
 void __cdecl Battle_ThrowFxWeaponBlock00Index11(int targetMask, int actorIdx)
 {
-    g_BattleThrowCloudWeaponIndex = 0xB;
+    g_BattleThrowCloudWeaponIndex = 11;
     g_BattleThrowCloudWeaponFlag = BATTLE_CLOUD_THROW_STRAIGHT;
     Battle_ThrowFxSpawnWeapons00to61(targetMask, actorIdx);
 }
@@ -272,7 +272,7 @@ void __cdecl Battle_ThrowFxWeaponBlock00Index11(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004d391c
 void __cdecl Battle_ThrowFxWeaponBlock00Index12(int targetMask, int actorIdx)
 {
-    g_BattleThrowCloudWeaponIndex = 0xC;
+    g_BattleThrowCloudWeaponIndex = 12;
     g_BattleThrowCloudWeaponFlag = BATTLE_CLOUD_THROW_STRAIGHT;
     Battle_ThrowFxSpawnWeapons00to61(targetMask, actorIdx);
 }
@@ -281,7 +281,7 @@ void __cdecl Battle_ThrowFxWeaponBlock00Index12(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004d3945
 void __cdecl Battle_ThrowFxWeaponBlock00Index13(int targetMask, int actorIdx)
 {
-    g_BattleThrowCloudWeaponIndex = 0xD;
+    g_BattleThrowCloudWeaponIndex = 13;
     g_BattleThrowCloudWeaponFlag = BATTLE_CLOUD_THROW_STRAIGHT;
     Battle_ThrowFxSpawnWeapons00to61(targetMask, actorIdx);
 }
@@ -290,7 +290,7 @@ void __cdecl Battle_ThrowFxWeaponBlock00Index13(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004d396e
 void __cdecl Battle_ThrowFxWeaponBlock16(int targetMask, int actorIdx)
 {
-    g_BattleThrowCloudWeaponIndex = 0xE;
+    g_BattleThrowCloudWeaponIndex = 14;
     g_BattleThrowCloudWeaponFlag = BATTLE_CLOUD_THROW_STRAIGHT;
     Battle_ThrowFxSpawnWeapons00to61(targetMask, actorIdx);
 }
@@ -367,15 +367,15 @@ void __cdecl BattleFx_ThrowCloudWeaponsStraightTimelineTask(void)
         speed = SqrtToInt(norm) / 4;
         pProjectile = (BattleFxAerisThrowDelta *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowCloudWeaponsStraightProjectileTask);
         *(Int64Pair *)((char *)pProjectile + 4) = *(Int64Pair *)&g_BattleThrowCloudSourcePos;
-        pProjectile->deltaX = speed * g_BattleThrowCloudDeltaVectorX >> 0xC;
-        pProjectile->deltaY = speed * g_BattleThrowCloudDeltaVectorY >> 0xC;
-        pProjectile->deltaZ = speed * g_BattleThrowCloudDeltaVectorZ >> 0xC;
+        pProjectile->deltaX = speed * g_BattleThrowCloudDeltaVectorX >> 12;
+        pProjectile->deltaY = speed * g_BattleThrowCloudDeltaVectorY >> 12;
+        pProjectile->deltaZ = speed * g_BattleThrowCloudDeltaVectorZ >> 12;
     }
     if (task->frameCounter == 4) {
         Battle_PostActorHitOrHurtMessage(g_BattleThrowCloudTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowCloudTargetPos.x), 0x12);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -415,7 +415,7 @@ void __cdecl BattleFx_ThrowCloudWeaponsStraightProjectileTask(void)
     SetRotMatrix(&frame.rotMatrix);
     frame.offsetX.vx = 0;
     frame.offsetX.vy = 0;
-    frame.offsetX.vz = 0x17C;
+    frame.offsetX.vz = 380;
     TransformVectorToInt32(&frame.rotMatrix, &frame.offsetX, &frame.offsetX);
     frame.rotMatrix.t[0] += frame.offsetX.vx;
     frame.rotMatrix.t[1] += frame.offsetX.vy;
@@ -428,14 +428,14 @@ void __cdecl BattleFx_ThrowCloudWeaponsStraightProjectileTask(void)
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.projectile->timer >= 0x16) {
+    if (frame.projectile->timer >= 22) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowCloudWeaponIndex + 0xF, g_BattleThrowCloudLoadedResTable);
-        frame.modelDraw->fadeLevel = frame.projectile->timer - 0x16 << 9;
+        frame.modelDraw->fadeLevel = frame.projectile->timer - 22 << 9;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.projectile->timer >= 0x1E) {
+    if (frame.projectile->timer >= 30) {
         frame.projectile->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

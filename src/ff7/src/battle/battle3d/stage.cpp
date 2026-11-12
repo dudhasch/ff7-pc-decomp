@@ -31,9 +31,9 @@ void __cdecl BattleStage_FreeStageDatModel(BattleStageDat *stage)
         Pfile_FreeModelSet(stage->modelSet,
                            (void *)GetEngineContext());
         // STRING: FF7 0x008ffb10
-        GameHeapFree(stage->heapBlock, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 0x3b);
+        GameHeapFree(stage->heapBlock, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 59);
         // STRING: FF7 0x008ffb38
-        GameHeapFree(stage, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 0x3d);
+        GameHeapFree(stage, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 61);
     }
 }
 
@@ -53,12 +53,12 @@ void *__cdecl BattleStage_LoadStageDatLegacy(int stageId, int *battleLoadDesc, v
     unsigned int hz;
     int hj;
     int gn;
-    char fr[0xC8];
+    char fr[200];
     int fb;
     int f2;
     unsigned int *ev;
-    char ef[0xC8];
-    char e6[0xC8];
+    char ef[200];
+    char e6[200];
     Battle3dLmdFaceData *dz;
     int dj;
     int *cn;
@@ -68,7 +68,7 @@ void *__cdecl BattleStage_LoadStageDatLegacy(int stageId, int *battleLoadDesc, v
     PolygonTim *av;
     int af;
     void *a6;
-    char p[0xCC];
+    char p[204];
 
     dj = 0;
     av = 0;
@@ -84,7 +84,7 @@ void *__cdecl BattleStage_LoadStageDatLegacy(int stageId, int *battleLoadDesc, v
             dz->allowLargeAtlas = 1;
             (*(void **)&dz->loadOptions) = loadOptions;
             // STRING: FF7 0x008ffb60
-            br = (Battle3dStageRecord *)GameHeapAlloc(1, 0xC, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 0x71);
+            br = (Battle3dStageRecord *)GameHeapAlloc(1, 12, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 113);
             if (br != 0) {
                 br->stageId = stageId;
                 a6 = b2;
@@ -165,7 +165,7 @@ void *__cdecl BattleStage_LoadStageDatLegacy(int stageId, int *battleLoadDesc, v
             Lmd_DestroyTextureAtlas(dz);
         }
         // STRING: FF7 0x008ffbd8
-        GameHeapFree(b2, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 0x10A);
+        GameHeapFree(b2, "C:\\FF7\\src\\battle\\battle3d\\stage.cpp", 266);
     }
     Battle_PopDataDirectory((int *)p);
     return (void *)br;

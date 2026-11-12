@@ -465,7 +465,7 @@ enum MenuKeyConfigEditState {
 
 /* Commands of the scripted input stream (g_pInputScriptStream) that Input_ReadScriptedInputCommand
  * runs in place of the pad: the button commands press one InputButton for a frame, then wait
- * 0x14 frames. */
+ * 20 frames. */
 enum MenuInputScriptOp {
     MENU_INPUT_SCRIPT_WAIT = 0x00,              /* 16-bit frame count follows */
     MENU_INPUT_SCRIPT_PRESS_UP = 0x02,
@@ -480,7 +480,7 @@ enum MenuInputScriptOp {
     MENU_INPUT_SCRIPT_PRESS_R2 = 0x0B,
     MENU_INPUT_SCRIPT_PRESS_L1 = 0x0C,
     MENU_INPUT_SCRIPT_PRESS_L2 = 0x0D,
-    MENU_INPUT_SCRIPT_SHOW_TEXT = 0x10,         /* inline 0xFF-terminated popup text, then 0x50 frames */
+    MENU_INPUT_SCRIPT_SHOW_TEXT = 0x10,         /* inline 0xFF-terminated popup text, then 80 frames */
     MENU_INPUT_SCRIPT_END = 0x11,               /* ends scripted input */
     MENU_INPUT_SCRIPT_SET_POPUP_POS = 0x12      /* 16-bit x and y of the next popup */
 };

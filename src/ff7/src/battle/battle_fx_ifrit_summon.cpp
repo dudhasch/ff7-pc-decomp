@@ -582,7 +582,7 @@ void __cdecl BattleFx_SummonLoadResIfrit(void)
 // FUNCTION: FF7 0x005927c1
 int __cdecl BattleFx_SummonEnterIfrit(int targetMask, int actorIdx)
 {
-    memcpy(g_BattleSummonIfritMeshSource1, g_BattleSummonIfritMeshSource2, 0x1308);
+    memcpy(g_BattleSummonIfritMeshSource1, g_BattleSummonIfritMeshSource2, 4872);
     g_BattleSummonIfritFacingAngles[2] = 0;
     g_BattleSummonIfritFacingAngles[1] = g_BattleSummonIfritFacingAngles[2];
     g_BattleSummonIfritFacingAngles[0] = g_BattleSummonIfritFacingAngles[1];
@@ -594,11 +594,11 @@ int __cdecl BattleFx_SummonEnterIfrit(int targetMask, int actorIdx)
     g_BattleSummonIfritModelPosition[2] = 0;
     g_BattleSummonIfritModelPosition[1] = g_BattleSummonIfritModelPosition[2];
     g_BattleSummonIfritModelPosition[0] = g_BattleSummonIfritModelPosition[1];
-    g_BattleSummonIfritSpinScaleY = 0x400;
+    g_BattleSummonIfritSpinScaleY = 0x400 /* 0.25 */;
     g_BattleSummonIfritSpinScaleX = g_BattleSummonIfritSpinScaleY;
-    g_BattleSummonIfritSpinScaleZ = 0x100;
-    g_BattleSummonIfritSpinAngles.angleX = 0x100;
-    g_BattleSummonIfritSpinAngles.angleY = 0x800;
+    g_BattleSummonIfritSpinScaleZ = 0x100 /* 0.0625 */;
+    g_BattleSummonIfritSpinAngles.angleX = 0x100 /* 22.5 deg */;
+    g_BattleSummonIfritSpinAngles.angleY = 0x800 /* 180 deg */;
     g_BattleSummonIfritSpinAngles.angleZ = 0;
     memset(&g_BattleSummonIfritMeshState, 0, 30);
     g_BattleSummonIfritMeshState.matrixM22 = 0x400;
@@ -629,7 +629,7 @@ void __cdecl BattleFx_SummonBeginIfrit(int targetMask, int actorIdx)
     Battle_GetActorMaskCentroid(g_BattleSummonIfritTargetMask = targetMask, block);
     if (block[2] < g_BattleActorRecords[actorIdx].posZ) {
         (*(int *)((char *)&g_BattleSummonIfritRotMatrix + 26)) = block[2] + 0x1388;
-        g_BattleSummonIfritFacingAngles[1] = 0x800;
+        g_BattleSummonIfritFacingAngles[1] = 0x800 /* 180 deg */;
     } else {
         (*(int *)((char *)&g_BattleSummonIfritRotMatrix + 26)) = block[2] - 0x1388;
     }
@@ -959,14 +959,14 @@ void __cdecl BattleFx_SummonIfritTimelineTask(void)
         }
     } else {
         stage -= 4;
-        if (stage < 0xA) {
+        if (stage < 10) {
             if (stage == 0) {
                 Battle_AllocateResourceSlot(BattleFx_SummonIfritMorphMeshTask);
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            stage -= 0xA;
-            if (stage < 0xA) {
+            stage -= 10;
+            if (stage < 10) {
                 if (stage == 0) {
                     ringRecord = (BattleFxSummonIfritRingRecord *)Battle_AllocSceneMessage(1);
                     ringRecord->rotX = *(short *)((char *)&g_BattleSummonIfritRotMatrix + 18);
@@ -978,18 +978,18 @@ void __cdecl BattleFx_SummonIfritTimelineTask(void)
                     Battle_AllocateResourceSlot(BattleFx_SummonIfritMoveSummonActorTask);
                 }
             } else {
-                stage -= 0xA;
-                if (stage < 0x14) { /* empty first arm: lib/codegen.h */
+                stage -= 10;
+                if (stage < 20) { /* empty first arm: lib/codegen.h */
                 } else {
-                    stage -= 0x14;
-                    if (stage < 0x32) {
+                    stage -= 20;
+                    if (stage < 50) {
                         if (stage == 0) {
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                         }
                         if (stage < 5) {
                             pSubtask = (BattleFxIfritTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonIfritPulsingFadeModelTask);
                             pSubtask->posX = 0;
-                            pSubtask->posY = rand() % 0x3E8 - 0xDAC;
+                            pSubtask->posY = rand() % 1000 - 3500;
                             pSubtask->posZ = 0;
                             pSubtask->shakeX = 0;
                             pSubtask->shakeY = rand() & 0xFFF;
@@ -997,8 +997,8 @@ void __cdecl BattleFx_SummonIfritTimelineTask(void)
                             pSubtask->scale = rand() % 0x80 + 0x180;
                         }
                     } else {
-                        stage -= 0x32;
-                        if (stage < 0x15) {
+                        stage -= 50;
+                        if (stage < 21) {
                             if (stage == 0) {
                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                 Sfx_ReleaseCachedBuffer(0x1AC, 0);
@@ -1006,8 +1006,8 @@ void __cdecl BattleFx_SummonIfritTimelineTask(void)
                                 Sfx_ReleaseCachedBuffer(0x1AE, 0);
                             }
                         } else {
-                            stage -= 0x15;
-                            if (stage < 0x1D) {
+                            stage -= 21;
+                            if (stage < 29) {
                                 Battle3d_GetActorAttachMatrix(3, 5, (PsxMatrix *)((int)g_BattleActorRecords[3].boneNodes5));
                                 Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, g_BattleActorRecords[3].boneNodes5, (PsxMatrix *)g_BattleSummonIfritTimelineState);
                                 SetRotMatrix((void *)g_BattleSummonIfritTimelineState);
@@ -1018,20 +1018,20 @@ void __cdecl BattleFx_SummonIfritTimelineTask(void)
                                     pSubtask->posX = g_BattleSummonIfritTimelineState->transformedX;
                                     pSubtask->posY = g_BattleSummonIfritTimelineState->transformedY;
                                     pSubtask->posZ = g_BattleSummonIfritTimelineState->transformedZ;
-                                    pSubtask->shakeX = g_BattleSummonIfritActorShakeParams[i].x + rand() % 0xA + -5;
-                                    pSubtask->shakeY = g_BattleSummonIfritActorShakeParams[i].y + rand() % 0xA + -5;
-                                    pSubtask->shakeZ = g_BattleSummonIfritActorShakeParams[i].z + rand() % 0xA + -5;
+                                    pSubtask->shakeX = g_BattleSummonIfritActorShakeParams[i].x + rand() % 10 + -5;
+                                    pSubtask->shakeY = g_BattleSummonIfritActorShakeParams[i].y + rand() % 10 + -5;
+                                    pSubtask->shakeZ = g_BattleSummonIfritActorShakeParams[i].z + rand() % 10 + -5;
                                     pSubtask->scale = rand() % 0x200 + 0x200;
                                 }
                             } else {
-                                stage -= 0x1D;
-                                if (stage < 0x12) {
+                                stage -= 29;
+                                if (stage < 18) {
                                     if (stage == 0) {
                                         Battle_AllocateResourceSlot(BattleFx_SummonIfritSpinningMeshTask);
                                     }
                                 } else {
-                                    stage -= 0x12;
-                                    if (stage < 0x14) {
+                                    stage -= 18;
+                                    if (stage < 20) {
                                         if (stage == 0) {
                                             Battle_AllocateResourceSlot(BattleFx_SummonIfritDrawMeshSpawnParticlesTask);
                                         }
@@ -1042,17 +1042,17 @@ void __cdecl BattleFx_SummonIfritTimelineTask(void)
                                             Sfx_ReleaseCachedBuffer(0x1B1, 1);
                                         }
                                     } else {
-                                        stage -= 0x14;
-                                        if (stage < 0xF) {
+                                        stage -= 20;
+                                        if (stage < 15) {
                                             if (stage == 0) {
                                                 Battle_AllocateResourceSlot(BattleFx_SummonIfritSpawnAnimatedSpritesTask);
                                                 ringRecord = (BattleFxSummonIfritRingRecord *)Battle_AllocSceneMessage(2);
                                             }
                                         } else {
-                                            stage -= 0xF;
-                                            if (stage < 0xF) {
+                                            stage -= 15;
+                                            if (stage < 15) {
                                                 if (stage == 0) {
-                                                    for (i = 0; i < 0xA; i++) {
+                                                    for (i = 0; i < 10; i++) {
                                                         if ((g_BattleSummonIfritTargetMask & 1 << i) != 0) {
                                                             Battle_PostActorHitOrHurtMessage(i);
                                                         }
@@ -1111,13 +1111,13 @@ void __cdecl BattleFx_SummonIfritMorphMeshTask(void)
     task = (BattleFxPhaseControllerTask *)BATTLE_CURRENT_TASK_SLOT;
     dataBlock = (void *)Gfx_GetPsxScratchpadPtr(0);
     frameCount = task->frameCount;
-    if (frameCount < 0xA) {
-        g_BattleSummonIfritModelIndices1[0] = (frameCount << 0xC) / 0xA;
+    if (frameCount < 10) {
+        g_BattleSummonIfritModelIndices1[0] = (frameCount << 12) / 10;
         g_BattleSummonIfritScaleParam1 = g_BattleSummonIfritModelIndices1[0];
         g_BattleSummonIfritModelScale1[0] = g_BattleSummonIfritScaleParam1;
     } else {
-        frameCount -= 0xA;
-        if (frameCount < 0x1E) {
+        frameCount -= 10;
+        if (frameCount < 30) {
             g_BattleSummonIfritModelIndices1[0] = 0x1000;
             g_BattleSummonIfritScaleParam1 = g_BattleSummonIfritModelIndices1[0];
             g_BattleSummonIfritModelScale1[0] = g_BattleSummonIfritScaleParam1;
@@ -1132,19 +1132,19 @@ void __cdecl BattleFx_SummonIfritMorphMeshTask(void)
     SetTransMatrix(dataBlock);
     (*(int *)&g_BattleSummonIfritModelColor1) = Gfx_ModelTableGetRenderObject(0, g_BattleSummonIfritLoadedRes);
     RefreshGlobalTransformState();
-    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x13, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x14, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x15, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x16, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(19, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(20, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(21, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(22, g_BattleSummonIfritLoadedRes)));
     g_BattleOverlayDrawListHead = BattleFx_SummonIfritDrawPsxMesh((BattleFxIfritPsxMesh *)&g_BattleSummonIfritModelReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonIfritModelColor1, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         frameCount = task->frameCount;
-        if (frameCount < 0x24) {
+        if (frameCount < 36) {
             if (frameCount % 4 == 0) {
                 pSrcPose = (SVECTOR *)g_BattleSummonIfritMorphPoses[frameCount / 4];
                 cur = (SVECTOR *)(((unsigned char *)g_BattleSummonIfritMeshSource1) + 4);
-                for (vertexIndex = 0; vertexIndex < 0xCA; vertexIndex++) {
+                for (vertexIndex = 0; vertexIndex < 202; vertexIndex++) {
                     g_BattleSummonIfritMeshVertexBuffer[vertexIndex].stepX = (pSrcPose->vx - cur->vx) / 4;
                     g_BattleSummonIfritMeshVertexBuffer[vertexIndex].stepY = (pSrcPose->vy - cur->vy) / 4;
                     g_BattleSummonIfritMeshVertexBuffer[vertexIndex].stepZ = (pSrcPose->vz - cur->vz) / 4;
@@ -1153,7 +1153,7 @@ void __cdecl BattleFx_SummonIfritMorphMeshTask(void)
                 }
             }
             cur = (SVECTOR *)(((unsigned char *)g_BattleSummonIfritMeshSource1) + 4);
-            for (vertexIndex = 0; vertexIndex < 0xCA; vertexIndex++) {
+            for (vertexIndex = 0; vertexIndex < 202; vertexIndex++) {
                 cur->vx += g_BattleSummonIfritMeshVertexBuffer[vertexIndex].stepX;
                 cur->vy += g_BattleSummonIfritMeshVertexBuffer[vertexIndex].stepY;
                 cur->vz += g_BattleSummonIfritMeshVertexBuffer[vertexIndex].stepZ;
@@ -1386,18 +1386,18 @@ void __cdecl BattleFx_SummonIfritGrowFadeModelTask(void)
     matrix = (void *)Gfx_GetPsxScratchpadPtr(0);
     (*(int *)&g_BattleSummonIfritModelColor2) = Gfx_ModelTableGetRenderObject(1, g_BattleSummonIfritLoadedRes);
     frameCount = task->frameCounter;
-    if (frameCount < 0xA) {
-        (*(short *)&g_BattleSummonIfritModelReq3) = (frameCount << 0xB) / 0xA + 0x2000;
+    if (frameCount < 10) {
+        (*(short *)&g_BattleSummonIfritModelReq3) = (frameCount << 11) / 0xA + 0x2000;
         g_BattleSummonIfritModelScale2[0] = (*(short *)&g_BattleSummonIfritModelReq3);
-        g_BattleSummonIfritScaleParam2 = frameCount * 0x3000 / 0xA;
+        g_BattleSummonIfritScaleParam2 = frameCount * 0x3000 / 10;
         (((BattleFxModelDraw *)&g_BattleSummonIfritModelColor2)->fadeLevel) = 0;
     } else {
-        frameCount -= 0xA;
+        frameCount -= 10;
         if (frameCount < 5) {
             (*(short *)&g_BattleSummonIfritModelReq3) = 0x2800;
             g_BattleSummonIfritModelScale2[0] = (*(short *)&g_BattleSummonIfritModelReq3);
-            g_BattleSummonIfritScaleParam2 = 0x3000;
-            (((BattleFxModelDraw *)&g_BattleSummonIfritModelColor2)->fadeLevel) = (frameCount << 0xC) / 5;
+            g_BattleSummonIfritScaleParam2 = 0x3000 /* 3.0 */;
+            (((BattleFxModelDraw *)&g_BattleSummonIfritModelColor2)->fadeLevel) = (frameCount << 12) / 5;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1433,25 +1433,25 @@ void __cdecl BattleFx_SummonIfritTwinRotatingModelTask(void)
     scaleA = (BattleFxVector3 *)((char *)matrix + 0x1E);
     scaleB = (BattleFxVector3 *)((int)scaleA + 0x10);
     stage = task->index;
-    if (stage < 0x1E) {
-        scaleA->z = 0x1A00;
-        scaleA->y = 0x1A00;
-        scaleA->x = 0x1A00;
-        scaleB->z = 0x1C00;
-        scaleB->y = 0x1C00;
-        scaleB->x = 0x1C00;
+    if (stage < 30) {
+        scaleA->z = 0x1A00 /* 1.625 */;
+        scaleA->y = 0x1A00 /* 1.625 */;
+        scaleA->x = 0x1A00 /* 1.625 */;
+        scaleB->z = 0x1C00 /* 1.75 */;
+        scaleB->y = 0x1C00 /* 1.75 */;
+        scaleB->x = 0x1C00 /* 1.75 */;
         (g_BattleSummonIfritModelReq3.rotateStep) = 0;
-        turn = stage * -0x7D0 / 0x1E - 0x4B0;
+        turn = stage * -0x7D0 / 30 - 0x4B0;
     } else {
-        stage -= 0x1E;
-        if (stage < 0x32) {
-            scaleA->y = (stage * 0x5000 / 0x32 + 0x1000) * 0x1A00 >> 0xC;
-            scaleA->z = ((stage << 0xC) / 0x32 + 0x1000) * 0x1A00 >> 0xC;
+        stage -= 30;
+        if (stage < 50) {
+            scaleA->y = (stage * 0x5000 / 50 + 0x1000) * 0x1A00 /* 1.625 */ >> 12;
+            scaleA->z = ((stage << 12) / 50 + 0x1000) * 0x1A00 /* 1.625 */ >> 12;
             scaleA->x = scaleA->z;
-            scaleB->x = (stage * 0x5000 / 0x32 + 0x1000) * 0x1C00 >> 0xC;
-            scaleB->z = ((stage << 0xC) / 0x32 + 0x1000) * 0x1C00 >> 0xC;
+            scaleB->x = (stage * 0x5000 / 50 + 0x1000) * 0x1C00 /* 1.75 */ >> 12;
+            scaleB->z = ((stage << 12) / 50 + 0x1000) * 0x1C00 /* 1.75 */ >> 12;
             scaleB->y = scaleB->z;
-            (g_BattleSummonIfritModelReq3.rotateStep) = (stage << 0xC) / 0x32;
+            (g_BattleSummonIfritModelReq3.rotateStep) = (stage << 12) / 50;
             turn = -0xC80;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -1507,9 +1507,9 @@ void __cdecl BattleFx_SummonIfritDrawMeshSpawnParticlesTask(void)
     edgeRecordPtr = (BattleFxIfritMeshParticleRecord *)(cameraMatrix + 0x1E);
     pPos = (BattleFxPosition3s *)((int)edgeRecordPtr + 8);
     stage = taskPtr->frameCount;
-    if (stage < 0x14) {
-        (g_BattleSummonIfritBasisMatrix.matrixM22) = -(stage * 0x1500 / 0x14 + 0x300);
-        g_BattleSummonIfritBasisMatrix.transZ = stage * 0x7530 / 0x14 - 0x1388;
+    if (stage < 20) {
+        (g_BattleSummonIfritBasisMatrix.matrixM22) = -(stage * 5376 / 20 + 0x300);
+        g_BattleSummonIfritBasisMatrix.transZ = stage * 30000 / 20 - 5000;
     } else {
         taskPtr->stage = BATTLE_TASK_FREE;
         return;
@@ -1519,38 +1519,38 @@ void __cdecl BattleFx_SummonIfritDrawMeshSpawnParticlesTask(void)
     SetRotMatrix(cameraMatrix);
     SetTransMatrix(cameraMatrix);
     RefreshGlobalTransformState();
-    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xF, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x10, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x11, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x12, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(15, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(16, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(17, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(18, g_BattleSummonIfritLoadedRes)));
     g_BattleOverlayDrawListHead = BattleFx_SummonIfritDrawPsxMesh((BattleFxIfritPsxMesh *)&g_BattleSummonIfritParticleConfig, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         if (taskPtr->frameCount % 2 == 0) {
             pNewSlot = (BattleFxIfritParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonIfritScaleFadeModelTask);
             pNewSlot->posX = (g_BattleSummonIfritBasisMatrix.posX);
             pNewSlot->posY = (g_BattleSummonIfritBasisMatrix.y.posY);
-            pNewSlot->posZ = g_BattleSummonIfritBasisMatrix.transZ - 0x3E8;
-            pNewSlot->screenX = rand() % 256 + 0x300;
-            pNewSlot->screenY = rand() % 512 + 0x400;
+            pNewSlot->posZ = g_BattleSummonIfritBasisMatrix.transZ - 1000;
+            pNewSlot->screenX = rand() % 256 + 768;
+            pNewSlot->screenY = rand() % 512 + 1024;
         }
         SetRotMatrix(baseMatrix);
         SetTransMatrix(baseMatrix);
-        for (i = 0; i < 0xF; i++) {
+        for (i = 0; i < 15; i++) {
             pNewSlot = (BattleFxIfritParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonIfritPointParticleTask);
             resourceDef = (SVECTOR *)&g_BattleSummonIfritResourceDefs;
-            resourceDef += rand() % 0x89;
+            resourceDef += rand() % 137;
             RotTransPoint(resourceDef, (int *)pPos, &screenZ);
             pNewSlot->posX = pPos->posX;
             pNewSlot->posY = pPos->posY;
             pNewSlot->posZ = pPos->posZ;
             edgeRecordPtr->halfExtentX = resourceDef->vx / 2;
             edgeRecordPtr->halfExtentY = resourceDef->vy / 2;
-            edgeRecordPtr->jitterZ = rand() % 0x32;
+            edgeRecordPtr->jitterZ = rand() % 50;
             RotateSVectorByInstalledMatrix((void *)edgeRecordPtr, pPos);
             pNewSlot->screenX = pPos->posX;
             pNewSlot->screenY = pPos->posY;
             pNewSlot->velocityZ = pPos->posZ;
-            pNewSlot->frameCounter = 0xF;
+            pNewSlot->frameCounter = 15;
         }
         (taskPtr->frameCount)++;
     }
@@ -1600,9 +1600,9 @@ void __cdecl BattleFx_SummonIfritPointParticleTask(void)
         frame.slot->posX += frame.slot->velocityX;
         frame.slot->posY += frame.slot->velocityY;
         frame.slot->posZ += frame.slot->velocityZ;
-        frame.slot->velocityX = frame.slot->velocityX * 0xe00 >> 12;
-        frame.slot->velocityY = frame.slot->velocityY * 0xe00 >> 12;
-        frame.slot->velocityZ = frame.slot->velocityZ * 0xe00 >> 12;
+        frame.slot->velocityX = frame.slot->velocityX * 0xe00 /* 0.875 */ >> 12;
+        frame.slot->velocityY = frame.slot->velocityY * 0xe00 /* 0.875 */ >> 12;
+        frame.slot->velocityZ = frame.slot->velocityZ * 0xe00 /* 0.875 */ >> 12;
         --frame.slot->framesLeft;
         if (frame.slot->framesLeft == 0) {
             frame.slot->ownerSlot = BATTLE_TASK_FREE;
@@ -1629,13 +1629,13 @@ void __cdecl BattleFx_SummonIfritScaleFadeModelTask(void)
     } else {
         frameCount -= 5;
         if (frameCount < 5) {
-            (g_BattleSummonIfritModelReq3.fadeStep) = (frameCount << 0xC) / 5;
+            (g_BattleSummonIfritModelReq3.fadeStep) = (frameCount << 12) / 5;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    g_BattleSummonIfritScaleParam3 = (task->targetA - 0x300) * task->frame / 0xA + 0x300;
+    g_BattleSummonIfritScaleParam3 = (task->targetA - 0x300) * task->frame / 10 + 0x300;
     g_BattleSummonIfritModelScale3[0] = g_BattleSummonIfritScaleParam3;
     (*(short *)&g_BattleSummonIfritSpriteDrawReq1) = (task->targetB - 0x300) * task->frame / 0xA + 0x300;
     (*(int *)((char *)&g_BattleSummonIfritSpriteDrawReq1 + 2)) = task->posX;
@@ -1667,10 +1667,10 @@ void __cdecl BattleFx_SummonIfritSpawnAnimatedSpritesTask(void)
     }
     for (i = 0; i < 3; i++) {
         child = (BattleFxSummonIfritAnimatedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonIfritAnimatedSpriteTask);
-        child->posX = rand() % 0x1770 - 0xBB8;
-        child->posY = rand() % 0x2710;
-        child->sizeW = rand() % 0x1000 + 0x1800;
-        child->sizeH = rand() % 0x1000 + 0x1800;
+        child->posX = rand() % 6000 - 3000;
+        child->posY = rand() % 10000;
+        child->sizeW = rand() % 4096 + 6144;
+        child->sizeH = rand() % 4096 + 6144;
     }
     (taskPtr->frameCounter)++;
     if (taskPtr->frameCounter >= 6) {
@@ -1958,29 +1958,29 @@ void __cdecl BattleFx_SummonIfritMoveSummonActorTask(void)
         return;
     }
     frameCount = task->frameCounter;
-    if (frameCount < 0x1E) {
-        g_BattleSummonIfritModelPosition[1] = frameCount * -0x7D0 / 0x1E;
+    if (frameCount < 30) {
+        g_BattleSummonIfritModelPosition[1] = frameCount * -0x7D0 / 30;
     } else {
-        frameCount -= 0x1E;
-        if (frameCount < 0x64) { /* empty first arm: lib/codegen.h */
+        frameCount -= 30;
+        if (frameCount < 100) { /* empty first arm: lib/codegen.h */
         } else {
-            frameCount -= 0x64;
-            if (frameCount < 0xF) {
+            frameCount -= 100;
+            if (frameCount < 15) {
                 g_BattleSummonIfritModelPosition[0] = g_BattleSummonIfritModelPosition[0];
                 g_BattleSummonIfritModelPosition[1] += -0xA;
                 g_BattleSummonIfritModelPosition[2] += 0xFFEC;
             } else {
-                frameCount -= 0xF;
+                frameCount -= 15;
                 if (frameCount < 3) {
                     g_BattleSummonIfritModelPosition[0] = g_BattleSummonIfritModelPosition[0];
                     g_BattleSummonIfritModelPosition[1] += 0x3E8;
                     g_BattleSummonIfritModelPosition[2] += 0x7D0;
                 } else {
                     frameCount -= 3;
-                    if (frameCount < 0x14) {
+                    if (frameCount < 20) {
                         g_BattleSummonIfritModelPosition[0] = 0;
                         g_BattleSummonIfritModelPosition[1] = 0x1F4;
-                        g_BattleSummonIfritModelPosition[2] = frameCount * 0x7530 / 0x14 - 0x1388;
+                        g_BattleSummonIfritModelPosition[2] = frameCount * 30000 / 20 - 0x1388;
                     } else {
                         task->ownerSlot = BATTLE_TASK_FREE;
                         return;
@@ -2015,21 +2015,21 @@ void __cdecl BattleFx_SummonIfritSpinningMeshTask(void)
     }
     bytes = ((task->frameCounter & 1) != 0 ? 0xFFFFF800 : 0) + 0x800;
     frameCount = task->frameCounter;
-    if (frameCount < 0xF) {
-        bytes = (bytes - 0x1000) * frameCount / 0xF + 0x1000;
+    if (frameCount < 15) {
+        bytes = (bytes - 0x1000) * frameCount / 15 + 0x1000;
         if (g_BattleIsPaused == 0) {
             g_BattleSummonIfritMeshState.transX = g_BattleSummonIfritMeshState.transX;
-            g_BattleSummonIfritMeshState.transY -= 0xA;
-            g_BattleSummonIfritMeshState.transZ -= 0x14;
+            g_BattleSummonIfritMeshState.transY -= 10;
+            g_BattleSummonIfritMeshState.transZ -= 20;
         }
     } else {
-        frameCount -= 0xF;
+        frameCount -= 15;
         if (frameCount < 3) {
             bytes = 0;
             if (g_BattleIsPaused == 0) {
                 g_BattleSummonIfritMeshState.transX = g_BattleSummonIfritMeshState.transX;
-                g_BattleSummonIfritMeshState.transY += 0x3E8;
-                g_BattleSummonIfritMeshState.transZ += 0x7D0;
+                g_BattleSummonIfritMeshState.transY += 1000;
+                g_BattleSummonIfritMeshState.transZ += 2000;
             }
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -2044,15 +2044,15 @@ void __cdecl BattleFx_SummonIfritSpinningMeshTask(void)
     SetDrawColorRGB(0, 0, 0);
     (*(short *)((char *)&g_BattleSummonIfritRotAngles1 + 10)) = bytes;
     RefreshGlobalTransformState();
-    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xF, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x10, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x11, g_BattleSummonIfritLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x12, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(15, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(16, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(17, g_BattleSummonIfritLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(18, g_BattleSummonIfritLoadedRes)));
     g_BattleOverlayDrawListHead = BattleFx_SummonIfritDrawPsxMesh((BattleFxIfritPsxMesh *)&g_BattleSummonIfritRotAngles1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        g_BattleSummonIfritSpinAngles.angleZ += (short)(task->frameCounter * 0x30 / 0x12 + 0x10);
-        g_BattleSummonIfritSpinScaleZ = task->frameCounter * 0x700 / 0xF + 0x100;
+        g_BattleSummonIfritSpinAngles.angleZ += (short)(task->frameCounter * 0x30 / 18 + 0x10);
+        g_BattleSummonIfritSpinScaleZ = task->frameCounter * 0x700 / 15 + 0x100;
     }
 }
 
@@ -2071,21 +2071,21 @@ void __cdecl BattleFx_SummonIfritPulsingFadeModelTask(void)
         g_BattleSummonIfritPulseReady |= 1;
         g_BattleSummonIfritPulseMatrix = (BattleFxIfritPulseMatrix *)Gfx_GetPsxScratchpadPtr(0);
     }
-    (*(int *)&g_BattleSummonIfritSpriteDrawReq2) = Gfx_ModelTableGetRenderObject(0xD, g_BattleSummonIfritLoadedRes);
+    (*(int *)&g_BattleSummonIfritSpriteDrawReq2) = Gfx_ModelTableGetRenderObject(13, g_BattleSummonIfritLoadedRes);
     frameCount = task->frame;
-    if (frameCount < 0xA) {
+    if (frameCount < 10) {
         (((BattleFxModelDraw *)&g_BattleSummonIfritSpriteDrawReq2)->fadeLevel) = frameCount * -0x1000 / 0xA + 0x1000;
     } else {
-        frameCount -= 0xA;
-        if (frameCount < 0xA) {
-            (((BattleFxModelDraw *)&g_BattleSummonIfritSpriteDrawReq2)->fadeLevel) = (frameCount << 0xC) / 0xA;
+        frameCount -= 10;
+        if (frameCount < 10) {
+            (((BattleFxModelDraw *)&g_BattleSummonIfritSpriteDrawReq2)->fadeLevel) = (frameCount << 12) / 0xA;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    pulsePhase = (task->frame << 0xC) / 0x14;
-    g_BattleSummonIfritPulseMatrix->scaleZ = task->amplitude * ((SinFixed(pulsePhase / 4) * 0x3000 >> 0xC) + 0x1000) >> 0xC;
+    pulsePhase = (task->frame << 12) / 20;
+    g_BattleSummonIfritPulseMatrix->scaleZ = task->amplitude * ((SinFixed(pulsePhase / 4) * 0x3000 /* 3.0 */ >> 12) + 0x1000) >> 12;
     g_BattleSummonIfritPulseMatrix->scaleX = g_BattleSummonIfritPulseMatrix->scaleZ;
     g_BattleSummonIfritPulseMatrix->scaleY = task->amplitude;
     RotMatrix((SVECTOR *)&task->angleX, (PsxMatrix *)g_BattleSummonIfritPulseMatrix);
@@ -2117,23 +2117,23 @@ void __cdecl BattleFx_SummonIfritBillboardSpriteTask(void)
         g_BattleSummonIfritBillboardReady |= 1;
         g_BattleSummonIfritBillboardStep = (struct BattleFxIfritShakeAmplitude *)Gfx_GetPsxScratchpadPtr(0);
     }
-    (*(int *)&g_BattleSummonIfritSpriteDrawReq3) = Gfx_ModelTableGetLoadedRecord(0xE, g_BattleSummonIfritLoadedRes);
-    (((BattleFxWeapon4BoneReq *)&g_BattleSummonIfritSpriteDrawReq3)->drawObj) = Gfx_ModelTableGetSpriteObject(0xE, g_BattleSummonIfritLoadedRes);
+    (*(int *)&g_BattleSummonIfritSpriteDrawReq3) = Gfx_ModelTableGetLoadedRecord(14, g_BattleSummonIfritLoadedRes);
+    (((BattleFxWeapon4BoneReq *)&g_BattleSummonIfritSpriteDrawReq3)->drawObj) = Gfx_ModelTableGetSpriteObject(14, g_BattleSummonIfritLoadedRes);
     BattleFx_InstallBillboardMatrix(&task->posX, (short)task->scale, 0);
     (((BattleFxWeapon4BoneReq *)&g_BattleSummonIfritSpriteDrawReq3)->frame) = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonIfritSpriteDrawReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->frame)++;
-        if (task->frame >= 0x10) {
+        if (task->frame >= 16) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             TransformVectorToInt16((PsxMatrix *)g_BattleSummonIfritRotMatrix, (SVECTOR *)&task->velocityX, &g_BattleSummonIfritBillboardStep->amplitudeX);
             task->posX -= g_BattleSummonIfritBillboardStep->amplitudeX;
             task->posY += g_BattleSummonIfritBillboardStep->amplitudeY;
             task->posZ -= g_BattleSummonIfritBillboardStep->amplitudeZ;
-            task->velocityX = task->velocityX * 0xF00 >> 0xC;
-            task->velocityY = task->velocityY * 0xF00 >> 0xC;
-            task->velocityZ = (task->velocityZ * 0xF00 >> 0xC) + 5;
+            task->velocityX = task->velocityX * 0xF00 /* 0.9375 */ >> 12;
+            task->velocityY = task->velocityY * 0xF00 /* 0.9375 */ >> 12;
+            task->velocityZ = (task->velocityZ * 0xF00 /* 0.9375 */ >> 12) + 5;
         }
     }
 }

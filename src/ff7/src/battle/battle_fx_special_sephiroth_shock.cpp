@@ -288,7 +288,7 @@ void __cdecl BattleFx_SpecialSephirothShockSpawnTimeline(int actorMask, int acto
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0x10);
+    Battle_StartFixedPointRamp(0x1000, 16);
 }
 
 /*
@@ -338,39 +338,39 @@ void __cdecl BattleFx_SpecialSephirothShockTimelineTask(void)
         s->velocityY = 0;
         s->velocityZ = 0;
     }
-    if (pCur->frameCounter >= 5 && pCur->frameCounter < 0x14 && pCur->frameCounter % 5 == 0) {
+    if (pCur->frameCounter >= 5 && pCur->frameCounter < 20 && pCur->frameCounter % 5 == 0) {
         s = (BattleFxSpecialSephirothShockSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSephirothShockExpandingModelTask);
         s->velocityX = 0;
         s->velocityY = 0;
         s->velocityZ = 0;
     }
-    if (pCur->frameCounter >= 5 && pCur->frameCounter < 0x14) {
-        tempRadius = pCur->frameCounter * 0x168;
+    if (pCur->frameCounter >= 5 && pCur->frameCounter < 20) {
+        tempRadius = pCur->frameCounter * 360;
         s = (BattleFxSpecialSephirothShockSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSephirothShockRisingSpinningModelTask);
         heading = rand() % 0x1000;
-        s->velocityX = CosFixed(heading) * tempRadius >> 0xC;
-        s->velocityZ = SinFixed(heading) * tempRadius >> 0xC;
+        s->velocityX = CosFixed(heading) * tempRadius >> 12;
+        s->velocityZ = SinFixed(heading) * tempRadius >> 12;
         s->velocityY = 0;
         s->variant = rand() % 4;
         s->angle = rand() % 0x1000;
         s = (BattleFxSpecialSephirothShockSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSephirothShockRisingFadeSpriteTask)];
         for (mainTargetIdx = 0; mainTargetIdx < 2; mainTargetIdx++) {
             heading = rand() % 0x1000;
-            s->velocityX = CosFixed(heading) * tempRadius >> 0xC;
-            s->velocityZ = SinFixed(heading) * tempRadius >> 0xC;
+            s->velocityX = CosFixed(heading) * tempRadius >> 12;
+            s->velocityZ = SinFixed(heading) * tempRadius >> 12;
             s->velocityY = 0;
             s->variant = rand() % 6;
         }
         for (mainTargetIdx = 0; mainTargetIdx < 4; mainTargetIdx++) {
             s = (BattleFxSpecialSephirothShockSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSephirothShockAnimatedSpriteEntry15Task);
             heading = rand() % 0x1000;
-            s->velocityX = CosFixed(heading) * tempRadius >> 0xC;
-            s->velocityZ = SinFixed(heading) * tempRadius >> 0xC;
+            s->velocityX = CosFixed(heading) * tempRadius >> 12;
+            s->velocityZ = SinFixed(heading) * tempRadius >> 12;
             s->velocityY = 0;
         }
-        g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - (pCur->frameCounter % 2 << 6));
+        g_BattleCameraFocalPoint.focalPointY += (short)(32 - (pCur->frameCounter % 2 << 6));
     }
-    if (pCur->frameCounter == 0x19) {
+    if (pCur->frameCounter == 25) {
         for (mainTargetIdx = 0; mainTargetIdx < 0xA; mainTargetIdx++) {
             if ((g_BattleSpecSephirothShockTargetMask & 1 << mainTargetIdx) != 0) {
                 s = (BattleFxSpecialSephirothShockSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSephirothShockGrowingSpinningModelTask);
@@ -379,45 +379,45 @@ void __cdecl BattleFx_SpecialSephirothShockTimelineTask(void)
                 for (n5 = 0; n5 < 8; n5++) {
                     s = (BattleFxSpecialSephirothShockSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSephirothShockBouncingSpriteTask)];
                     Battle_GetBoneWorldPos(mainTargetIdx, g_BattleActorRecords[mainTargetIdx].targetBone, (short *)((int)s + 4));
-                    BattleFx_MakeRandomConeVector(0xFFFFFF38, 0x64, (void *)((int)s + 0xC));
+                    BattleFx_MakeRandomConeVector(0xFFFFFF38, 100, (void *)((int)s + 0xC));
                     s->variant = rand() % 6;
                 }
             }
         }
         Battle_PlaySfxPannedToActor(0xFA, -1, 0x40);
     }
-    if (pCur->frameCounter > 0x19 && pCur->frameCounter < 0x21) {
+    if (pCur->frameCounter > 25 && pCur->frameCounter < 33) {
         for (mainTargetIdx = 0; mainTargetIdx < 0xA; mainTargetIdx++) {
             if ((g_BattleSpecSephirothShockTargetMask & 1 << mainTargetIdx) != 0) {
                 s = (BattleFxSpecialSephirothShockSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSephirothShockAnimatedSpriteEntry19Task);
                 Battle_GetBoneWorldPos(mainTargetIdx, g_BattleActorRecords[mainTargetIdx].targetBone, (short *)((int)s + 4));
-                s->velocityX += (short)(rand() % 0x4B0 - 0x258);
-                s->velocityY += (short)(-rand() % 0x1F4);
-                s->velocityZ += (short)(rand() % 0x4B0 - 0x258);
+                s->velocityX += (short)(rand() % 1200 - 600);
+                s->velocityY += (short)(-rand() % 500);
+                s->velocityZ += (short)(rand() % 1200 - 600);
             }
         }
     }
-    if (pCur->frameCounter > 0x21 && pCur->frameCounter < 0x2B) {
+    if (pCur->frameCounter > 33 && pCur->frameCounter < 43) {
         for (mainTargetIdx = 0; mainTargetIdx < 0xA; mainTargetIdx++) {
             if ((g_BattleSpecSephirothShockTargetMask & 1 << mainTargetIdx) != 0) {
                 s = (BattleFxSpecialSephirothShockSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSephirothShockAnimatedSpriteEntry15Task);
                 Battle_GetBoneWorldPos(mainTargetIdx, g_BattleActorRecords[mainTargetIdx].targetBone, (short *)((int)s + 4));
-                s->velocityX += (short)(rand() % 0x4B0 - 0x258);
-                s->velocityY += (short)(rand() % 0x4B0 - 0x258);
-                s->velocityZ += (short)(rand() % 0x4B0 - 0x258);
+                s->velocityX += (short)(rand() % 1200 - 600);
+                s->velocityY += (short)(rand() % 1200 - 600);
+                s->velocityZ += (short)(rand() % 1200 - 600);
             }
         }
     }
-    if (pCur->frameCounter == 0x23) {
+    if (pCur->frameCounter == 35) {
         for (mainTargetIdx = 0; mainTargetIdx < 0xA; mainTargetIdx++) {
             if ((g_BattleSpecSephirothShockTargetMask & 1 << mainTargetIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(mainTargetIdx);
             }
         }
-        Battle_StartFixedPointRamp(0, 0x10);
+        Battle_StartFixedPointRamp(0, 16);
     }
     (pCur->frameCounter)++;
-    if (pCur->frameCounter == 0x37) {
+    if (pCur->frameCounter == 55) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x173, 0xF);
         Sfx_ReleaseCachedBuffer(0x7C, 0xF);
@@ -444,8 +444,8 @@ void __cdecl BattleFx_SpecialSephirothShockDrawExpandingBurstTask(void)
 #pragma pack(pop)
 
     frame.burstSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecSephirothShockSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x12, g_BattleSpecSephirothShockLoadedResTable);
-    g_BattleSpecSephirothShockSpriteReq1.handle = Gfx_ModelTableGetSpriteObject(0x12, g_BattleSpecSephirothShockLoadedResTable);
+    (g_BattleSpecSephirothShockSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(18, g_BattleSpecSephirothShockLoadedResTable);
+    g_BattleSpecSephirothShockSpriteReq1.handle = Gfx_ModelTableGetSpriteObject(18, g_BattleSpecSephirothShockLoadedResTable);
     frame.burstRes[0] = 1;
     frame.burstRes[1] = 2;
     frame.burstRes[2] = 3;
@@ -454,7 +454,7 @@ void __cdecl BattleFx_SpecialSephirothShockDrawExpandingBurstTask(void)
     frame.rotAngleX.vx = frame.rotAngleX.vz;
     frame.rotAngleX.vy = 0;
     RotMatrixXYZ(&frame.rotAngleX, &frame.rotMatrix);
-    g_BattleSpecSephirothShockScaleVector3_Z = frame.burstSlot->frameCounter * 0x280;
+    g_BattleSpecSephirothShockScaleVector3_Z = frame.burstSlot->frameCounter * 640;
     g_BattleSpecSephirothShockScaleVector3_Y = g_BattleSpecSephirothShockScaleVector3_Z;
     g_BattleSpecSephirothShockScaleVector3_X = g_BattleSpecSephirothShockScaleVector3_Y;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecSephirothShockScaleVector3_X);
@@ -465,13 +465,13 @@ void __cdecl BattleFx_SpecialSephirothShockDrawExpandingBurstTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     (g_BattleSpecSephirothShockSpriteReq2.frameResource) = Gfx_ModelTableGetRenderObject(frame.burstRes[(frame.burstSlot->frameCounter) % 4], g_BattleSpecSephirothShockLoadedResTable);
-    g_BattleSpecSephirothShockSpriteReq2.size = 0x28;
+    g_BattleSpecSephirothShockSpriteReq2.size = 40;
     g_BattleSpecSephirothShockSpriteReq2.alphaWord = 0x80 - (frame.burstSlot->frameCounter << 3);
     g_BattleSpecSephirothShockPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecSephirothShockSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSephirothShockPacketCursor);
     (g_BattleSpecSephirothShockSpriteReq2.frameResource) = Gfx_ModelTableGetRenderObject(frame.burstRes[(frame.burstSlot->frameCounter + 1) % 4], g_BattleSpecSephirothShockLoadedResTable);
     g_BattleSpecSephirothShockSpriteReq2.alphaWord = 0x40 - (frame.burstSlot->frameCounter << 2);
     g_BattleSpecSephirothShockPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecSephirothShockSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSephirothShockPacketCursor);
-    BattleFx_InstallBillboardMatrix((void *)((int)frame.burstSlot + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)frame.burstSlot + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecSephirothShockSpriteReq1.colorB = 0x40 - (frame.burstSlot->frameCounter << 2);
     g_BattleSpecSephirothShockSpriteReq1.colorG = g_BattleSpecSephirothShockSpriteReq1.colorB;
     g_BattleSpecSephirothShockSpriteReq1.colorR = g_BattleSpecSephirothShockSpriteReq1.colorG;
@@ -480,7 +480,7 @@ void __cdecl BattleFx_SpecialSephirothShockDrawExpandingBurstTask(void)
         return;
     }
     (frame.burstSlot->frameCounter)++;
-    if (frame.burstSlot->frameCounter == 0xF) {
+    if (frame.burstSlot->frameCounter == 15) {
         frame.burstSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -500,9 +500,9 @@ void __cdecl BattleFx_SpecialSephirothShockAnimatedSpriteEntry15Task(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecSephirothShockSpriteReq3.spriteEntry) = Gfx_ModelTableGetLoadedRecord(0xF, g_BattleSpecSephirothShockLoadedResTable);
+    (g_BattleSpecSephirothShockSpriteReq3.spriteEntry) = Gfx_ModelTableGetLoadedRecord(15, g_BattleSpecSephirothShockLoadedResTable);
     g_BattleSpecSephirothShockSpriteReq3.sceneObject = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecSephirothShockSpriteReq3.taskWord = task->frameCounter;
     g_BattleSpecSephirothShockPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecSephirothShockSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSephirothShockPacketCursor);
     if (g_BattleIsPaused == 0 && (g_BattleSpecSephirothShockSpriteReq3.spriteEntry) != 0) {
@@ -527,9 +527,9 @@ void __cdecl BattleFx_SpecialSephirothShockAnimatedSpriteEntry19Task(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecSephirothShockSpriteReq4.spriteEntry) = Gfx_ModelTableGetLoadedRecord(0x13, g_BattleSpecSephirothShockLoadedResTable);
+    (g_BattleSpecSephirothShockSpriteReq4.spriteEntry) = Gfx_ModelTableGetLoadedRecord(19, g_BattleSpecSephirothShockLoadedResTable);
     g_BattleSpecSephirothShockSpriteReq4.sceneObject = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecSephirothShockSpriteReq4.taskWord = task->frameCounter;
     g_BattleSpecSephirothShockPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecSephirothShockSpriteReq4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSephirothShockPacketCursor);
     if (g_BattleIsPaused == 0 && (g_BattleSpecSephirothShockSpriteReq4.spriteEntry) != 0) {
@@ -578,7 +578,7 @@ void __cdecl BattleFx_SpecialSephirothShockExpandingModelTask(void)
         return;
     }
     (frame.growSlot->growStep)++;
-    if (frame.growSlot->growStep == 0xF) {
+    if (frame.growSlot->growStep == 15) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -601,7 +601,7 @@ void __cdecl BattleFx_SpecialSephirothShockExpandingBlackModelTask(void)
 #pragma pack(pop)
 
     frame.growSlot = (BattleFxHellBomberGrowSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecSephirothShockSpriteReq6.modelGroup) = Gfx_ModelTableGetRenderObject(0xE, g_BattleSpecSephirothShockLoadedResTable);
+    (g_BattleSpecSephirothShockSpriteReq6.modelGroup) = Gfx_ModelTableGetRenderObject(14, g_BattleSpecSephirothShockLoadedResTable);
     frame.rotAngleX.vz = 0;
     frame.rotAngleX.vy = frame.rotAngleX.vz;
     frame.rotAngleX.vx = frame.rotAngleX.vy;
@@ -616,13 +616,13 @@ void __cdecl BattleFx_SpecialSephirothShockExpandingBlackModelTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecSephirothShockSpriteReq6.scaleWord = frame.growSlot->growStep * 0x199;
+    g_BattleSpecSephirothShockSpriteReq6.scaleWord = frame.growSlot->growStep * 409;
     g_BattleSpecSephirothShockPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecSephirothShockSpriteReq6, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSephirothShockPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.growSlot->growStep)++;
-    if (frame.growSlot->growStep == 0xA) {
+    if (frame.growSlot->growStep == 10) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -666,7 +666,7 @@ void __cdecl BattleFx_SpecialSephirothShockExpandingCyclingModelTask(void)
         return;
     }
     (frame.cycleSlot->frameCounter)++;
-    if (frame.cycleSlot->frameCounter == 0xF) {
+    if (frame.cycleSlot->frameCounter == 15) {
         frame.cycleSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -698,7 +698,7 @@ void __cdecl BattleFx_SpecialSephirothShockRisingSpinningModelTask(void)
     frame.rotAngleX.vx = frame.rotAngleX.vy;
     frame.rotAngleX.vz = frame.risingSlot->spinAngle;
     RotMatrixXYZ(&frame.rotAngleX, &frame.rotMatrix);
-    g_BattleSpecSephirothShockScaleVector2_Z = 0x1000;
+    g_BattleSpecSephirothShockScaleVector2_Z = 4096;
     g_BattleSpecSephirothShockScaleVector2_Y = g_BattleSpecSephirothShockScaleVector2_Z;
     g_BattleSpecSephirothShockScaleVector2_X = g_BattleSpecSephirothShockScaleVector2_Y;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecSephirothShockScaleVector2_X);
@@ -714,10 +714,10 @@ void __cdecl BattleFx_SpecialSephirothShockRisingSpinningModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.risingSlot->posY -= 0x64;
-    frame.risingSlot->spinAngle += 0x100;
+    frame.risingSlot->posY -= 100;
+    frame.risingSlot->spinAngle += 0x100 /* 22.5 deg */;
     (frame.risingSlot->frameCounter)++;
-    if (frame.risingSlot->frameCounter == 0xF) {
+    if (frame.risingSlot->frameCounter == 15) {
         frame.risingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -738,9 +738,9 @@ void __cdecl BattleFx_SpecialSephirothShockRisingFadeSpriteTask(void)
     BattleFxSephirothShockRisingFadeSprite *task;
 
     task = (BattleFxSephirothShockRisingFadeSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    (g_BattleSpecSephirothShockSpriteReq9.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecSephirothShockLoadedResTable);
-    g_BattleSpecSephirothShockSpriteReq9.handle = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSpecSephirothShockLoadedResTable);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    (g_BattleSpecSephirothShockSpriteReq9.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecSephirothShockLoadedResTable);
+    g_BattleSpecSephirothShockSpriteReq9.handle = Gfx_ModelTableGetSpriteObject(16, g_BattleSpecSephirothShockLoadedResTable);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecSephirothShockSpriteReq9.taskWord = task->taskWord;
     g_BattleSpecSephirothShockSpriteReq9.colorB = 0x80 - (task->fadeStep << 3);
     g_BattleSpecSephirothShockSpriteReq9.colorG = g_BattleSpecSephirothShockSpriteReq9.colorB;
@@ -749,9 +749,9 @@ void __cdecl BattleFx_SpecialSephirothShockRisingFadeSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY -= 0x12C;
+    task->posY -= 300;
     (task->fadeStep)++;
-    if (task->fadeStep == 0xF) {
+    if (task->fadeStep == 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -778,8 +778,8 @@ void __cdecl BattleFx_SpecialSephirothShockBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.bounceSlot = (BattleFxPoisonGasBouncingSpriteSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    (g_BattleSpecSephirothShockSpriteReq10.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecSephirothShockLoadedResTable);
-    g_BattleSpecSephirothShockSpriteReq10.handle = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSpecSephirothShockLoadedResTable);
+    (g_BattleSpecSephirothShockSpriteReq10.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecSephirothShockLoadedResTable);
+    g_BattleSpecSephirothShockSpriteReq10.handle = Gfx_ModelTableGetSpriteObject(16, g_BattleSpecSephirothShockLoadedResTable);
     for (frame.axisIdx = 0; frame.axisIdx < 3; frame.axisIdx++) {
         frame.transformMatrix.m[2][frame.axisIdx] = 0;
         frame.transformMatrix.m[1][frame.axisIdx] = 0;
@@ -788,7 +788,7 @@ void __cdecl BattleFx_SpecialSephirothShockBouncingSpriteTask(void)
     if (frame.bounceSlot->frameCounter < 7) {
         frame.fadeLevel = 8;
     } else {
-        frame.fadeLevel = 0xF - frame.bounceSlot->frameCounter;
+        frame.fadeLevel = 15 - frame.bounceSlot->frameCounter;
     }
     frame.fadeCopy = *(short *)&frame.fadeLevel;
     frame.rotAngleX.vy = 0;
@@ -820,10 +820,10 @@ void __cdecl BattleFx_SpecialSephirothShockBouncingSpriteTask(void)
         frame.bounceSlot->posY = 0;
         frame.bounceSlot->velocityY *= -1;
     }
-    frame.bounceSlot->velocityY += 0x14;
+    frame.bounceSlot->velocityY += 20;
     frame.bounceSlot->phase += 0x200;
     (frame.bounceSlot->frameCounter)++;
-    if (frame.bounceSlot->frameCounter == 0xF) {
+    if (frame.bounceSlot->frameCounter == 15) {
         frame.bounceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -846,14 +846,14 @@ void __cdecl BattleFx_SpecialSephirothShockGrowingSpinningModelTask(void)
 #pragma pack(pop)
 
     frame.growingSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecSephirothShockSpriteReq11.modelGroup) = Gfx_ModelTableGetRenderObject(0xD, g_BattleSpecSephirothShockLoadedResTable);
+    (g_BattleSpecSephirothShockSpriteReq11.modelGroup) = Gfx_ModelTableGetRenderObject(13, g_BattleSpecSephirothShockLoadedResTable);
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.growingSlot->frameCounter << 6;
     frame.rotX.vz = 0;
     RotMatrix(&frame.rotX, &frame.rotMatrix);
-    g_BattleSpecSephirothShockScaleVector1_Z = (frame.growingSlot->frameCounter << 8) + 0x3000;
+    g_BattleSpecSephirothShockScaleVector1_Z = (frame.growingSlot->frameCounter << 8) + 12288;
     g_BattleSpecSephirothShockScaleVector1_X = g_BattleSpecSephirothShockScaleVector1_Z;
-    g_BattleSpecSephirothShockScaleVector1_Y = (frame.growingSlot->frameCounter << 8) + 0x2000;
+    g_BattleSpecSephirothShockScaleVector1_Y = (frame.growingSlot->frameCounter << 8) + 8192;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecSephirothShockScaleVector1_X);
     frame.rotMatrix.t[0] = frame.growingSlot->posX;
     frame.rotMatrix.t[1] = frame.growingSlot->posY;
@@ -867,7 +867,7 @@ void __cdecl BattleFx_SpecialSephirothShockGrowingSpinningModelTask(void)
         return;
     }
     (frame.growingSlot->frameCounter)++;
-    if (frame.growingSlot->frameCounter == 0xF) {
+    if (frame.growingSlot->frameCounter == 15) {
         frame.growingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

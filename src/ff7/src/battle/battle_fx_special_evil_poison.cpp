@@ -128,14 +128,14 @@ void __cdecl BattleFx_SpecialSpawnEvilPoisonPerTarget(int actor, int attackerId)
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &frame.targetX.vx);
     switch (g_BattleSpecialEvilPoisonMode) {
     case BATTLE_EVIL_POISON_MODE_DEFAULT:
-        frame.sumiSprite->velocityX = (frame.targetX.vx - frame.sumiSprite->posX) / 0xC;
-        frame.sumiSprite->velocityY = (frame.targetX.vy - frame.sumiSprite->posY) / 0xC;
-        frame.sumiSprite->velocityZ = (frame.targetX.vz - frame.sumiSprite->posZ) / 0xC;
+        frame.sumiSprite->velocityX = (frame.targetX.vx - frame.sumiSprite->posX) / 12;
+        frame.sumiSprite->velocityY = (frame.targetX.vy - frame.sumiSprite->posY) / 12;
+        frame.sumiSprite->velocityZ = (frame.targetX.vz - frame.sumiSprite->posZ) / 12;
         break;
     case BATTLE_EVIL_POISON_MODE_ALT:
-        frame.sumiSprite->velocityX = (frame.targetX.vx - frame.sumiSprite->posX) / 0xA;
-        frame.sumiSprite->velocityY = (frame.targetX.vy - frame.sumiSprite->posY) / 0xA;
-        frame.sumiSprite->velocityZ = (frame.targetX.vz - frame.sumiSprite->posZ) / 0xA;
+        frame.sumiSprite->velocityX = (frame.targetX.vx - frame.sumiSprite->posX) / 10;
+        frame.sumiSprite->velocityY = (frame.targetX.vy - frame.sumiSprite->posY) / 10;
+        frame.sumiSprite->velocityZ = (frame.targetX.vz - frame.sumiSprite->posZ) / 10;
     }
     frame.sumiSprite->targetIndex = actor;
 }
@@ -157,7 +157,7 @@ void __cdecl BattleFx_SpecialEvilPoisonTimelineTask(void)
     }
     switch (g_BattleSpecialEvilPoisonMode) {
     case BATTLE_EVIL_POISON_MODE_DEFAULT:
-        if (taskPtr->step < 0xC && (taskPtr->step % 4) != 3) {
+        if (taskPtr->step < 12 && (taskPtr->step % 4) != 3) {
             for (spriteIndex = 0; spriteIndex < 2; spriteIndex++) {
                 sprite = (BattleFxSpecialEvilPoisonSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEvilPoisonDriftingSpriteTask);
                 sprite->posX = taskPtr->posX - (taskPtr->spreadX / 2) * spriteIndex;
@@ -169,16 +169,16 @@ void __cdecl BattleFx_SpecialEvilPoisonTimelineTask(void)
                 sprite->index = (taskPtr->step % 4) * 2 + spriteIndex;
             }
         }
-        if (taskPtr->step == 0xC) {
+        if (taskPtr->step == 12) {
             Battle_PostActorHitOrHurtMessage(taskPtr->targetIndex);
         }
-        if (taskPtr->step == 0xC) {
+        if (taskPtr->step == 12) {
             sprite = (BattleFxSpecialEvilPoisonSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEvilPoisonPulseEmitterTask);
             Battle_GetBoneWorldPos(taskPtr->targetIndex, g_BattleActorRecords[taskPtr->targetIndex].targetBone, &sprite->posX);
             sprite->index = 0;
         }
         (taskPtr->step)++;
-        if (taskPtr->step == 0x28) {
+        if (taskPtr->step == 40) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
         break;
@@ -195,7 +195,7 @@ void __cdecl BattleFx_SpecialEvilPoisonTimelineTask(void)
                 sprite->index = (taskPtr->step % 3) * 2 + spriteIndex;
             }
         }
-        if (taskPtr->step == 0xA) {
+        if (taskPtr->step == 10) {
             Battle_PostActorHitOrHurtMessage(taskPtr->targetIndex);
         }
         if (taskPtr->step == 8) {
@@ -203,7 +203,7 @@ void __cdecl BattleFx_SpecialEvilPoisonTimelineTask(void)
             Battle_GetBoneWorldPos(taskPtr->targetIndex, g_BattleActorRecords[taskPtr->targetIndex].targetBone, &sprite->posX);
         }
         (taskPtr->step)++;
-        if (taskPtr->step == 0x28) {
+        if (taskPtr->step == 40) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -234,7 +234,7 @@ void __cdecl BattleFx_SpecialEvilPoisonPulseEmitterTask(void)
     g_BattleSpecialEvilPoisonSpriteReq2.pulse.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialEvilPoisonLoadedRes);
     g_BattleSpecialEvilPoisonSpriteReq2.pulse.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialEvilPoisonLoadedRes);
     g_BattleSpecialEvilPoisonSpriteReq2.pulse.frame = 0;
-    frame.emitterSlot->pulseRadius = SinFixed(frame.emitterSlot->frameCounter * 0x44) * 0x28 >> 0xC;
+    frame.emitterSlot->pulseRadius = SinFixed(frame.emitterSlot->frameCounter * 68) * 0x28 >> 12;
     frame.billboardRecord = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&frame.emitterSlot->posX, frame.emitterSlot->pulseRadius * 0x190, 0);
     if (frame.billboardRecord->t[2] > 0) {
         g_BattleSpecialEvilPoisonDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEvilPoisonSpriteReq2.pulse, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEvilPoisonDrawListHandle);
@@ -242,15 +242,15 @@ void __cdecl BattleFx_SpecialEvilPoisonPulseEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.emitterSlot->frameCounter < 0xA) {
+    if (frame.emitterSlot->frameCounter < 10) {
         frame.emitterSlot->pulseRadius += 4;
     } else {
         (frame.emitterSlot->pulseRadius)--;
     }
     frame.variantSprite = (BattleFxEvilPoisonVariantSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEvilPoisonVariantSpriteTask);
     frame.pulseAngle = rand() & 0xFFF;
-    frame.pulseX.vx = CosFixed(frame.pulseAngle) * frame.emitterSlot->pulseRadius * 0xA >> 0xC;
-    frame.pulseX.vy = SinFixed(frame.pulseAngle) * frame.emitterSlot->pulseRadius * 0xA >> 0xC;
+    frame.pulseX.vx = CosFixed(frame.pulseAngle) * frame.emitterSlot->pulseRadius * 0xA >> 12;
+    frame.pulseX.vy = SinFixed(frame.pulseAngle) * frame.emitterSlot->pulseRadius * 0xA >> 12;
     frame.pulseX.vz = 0;
     frame.rotX.vz = 0;
     frame.rotX.vx = frame.rotX.vz;
@@ -265,7 +265,7 @@ void __cdecl BattleFx_SpecialEvilPoisonPulseEmitterTask(void)
     frame.variantSprite->variant = (rand() % 4);
     frame.variantSprite->scaleIndex = frame.emitterSlot->pulseRadius;
     (frame.emitterSlot->frameCounter)++;
-    if (frame.emitterSlot->frameCounter == 0x1E) {
+    if (frame.emitterSlot->frameCounter == 30) {
         frame.emitterSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -316,7 +316,7 @@ void __cdecl BattleFx_SpecialEvilPoisonDriftingSpriteTask(void)
     sprite->posY += sprite->velocityY;
     sprite->posZ += sprite->velocityZ;
     (sprite->frameIndex)++;
-    if (sprite->frameIndex == 0xC) {
+    if (sprite->frameIndex == 12) {
         sprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }

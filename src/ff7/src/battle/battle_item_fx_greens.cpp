@@ -138,7 +138,7 @@ void __cdecl Battle_ItemFxGreens2(int target, int param)
 {
     Battle_ItemFxGreensInit();
     g_BattleItemGreensVariantIndex = 2;
-    g_BattleItemGreensModelResourceIndex = 0xA;
+    g_BattleItemGreensModelResourceIndex = 10;
     Battle_ItemFxGreensSpawn(target, param);
 }
 
@@ -151,7 +151,7 @@ void __cdecl Battle_ItemFxGreens3(int target, int param)
 {
     Battle_ItemFxGreensInit();
     g_BattleItemGreensVariantIndex = 3;
-    g_BattleItemGreensModelResourceIndex = 0xB;
+    g_BattleItemGreensModelResourceIndex = 11;
     Battle_ItemFxGreensSpawn(target, param);
 }
 
@@ -164,7 +164,7 @@ void __cdecl Battle_ItemFxGreens4(int targetIndex, int sourceIndex)
 {
     Battle_ItemFxGreensInit();
     g_BattleItemGreensVariantIndex = 4;
-    g_BattleItemGreensModelResourceIndex = 0xC;
+    g_BattleItemGreensModelResourceIndex = 12;
     Battle_ItemFxGreensSpawn(targetIndex, sourceIndex);
 }
 
@@ -177,7 +177,7 @@ void __cdecl Battle_ItemFxGreens5(int targetIndex, int sourceIndex)
 {
     Battle_ItemFxGreensInit();
     g_BattleItemGreensVariantIndex = 5;
-    g_BattleItemGreensModelResourceIndex = 0xD;
+    g_BattleItemGreensModelResourceIndex = 13;
     Battle_ItemFxGreensSpawn(targetIndex, sourceIndex);
 }
 
@@ -190,7 +190,7 @@ void __cdecl Battle_ItemFxGreens6(int targetIndex, int sourceIndex)
 {
     Battle_ItemFxGreensInit();
     g_BattleItemGreensVariantIndex = 6;
-    g_BattleItemGreensModelResourceIndex = 0xE;
+    g_BattleItemGreensModelResourceIndex = 14;
     Battle_ItemFxGreensSpawn(targetIndex, sourceIndex);
 }
 
@@ -203,7 +203,7 @@ void __cdecl Battle_ItemFxGreens7(int targetIndex, int sourceIndex)
 {
     Battle_ItemFxGreensInit();
     g_BattleItemGreensVariantIndex = 7;
-    g_BattleItemGreensModelResourceIndex = 0xF;
+    g_BattleItemGreensModelResourceIndex = 15;
     Battle_ItemFxGreensSpawn(targetIndex, sourceIndex);
 }
 
@@ -236,13 +236,13 @@ void __cdecl Battle_ItemFxGreensSpawnPerTarget(int actor, int sourceIndex)
     projectile->actorIndex = actor;
     Battle_GetBoneWorldPos(sourceIndex, g_BattleActorRecords[sourceIndex].targetBone, (short *)g_BattleItemGreensSourcePos);
     projectile->pos = *g_BattleItemGreensSourcePos;
-    g_BattleItemGreensSourcePos[1].vx = g_BattleActorRecords[actor].posX - (SinFixed(g_BattleActorRecords[actor].yaw) * (g_BattleActorRecords[actor].radius + 0x12C) >> 0xC);
+    g_BattleItemGreensSourcePos[1].vx = g_BattleActorRecords[actor].posX - (SinFixed(g_BattleActorRecords[actor].yaw) * (g_BattleActorRecords[actor].radius + 300) >> 12);
     g_BattleItemGreensSourcePos[1].vy = 0;
-    g_BattleItemGreensSourcePos[1].vz = g_BattleActorRecords[actor].posZ - (CosFixed(g_BattleActorRecords[actor].yaw) * (g_BattleActorRecords[actor].radius + 0x12C) >> 0xC);
+    g_BattleItemGreensSourcePos[1].vz = g_BattleActorRecords[actor].posZ - (CosFixed(g_BattleActorRecords[actor].yaw) * (g_BattleActorRecords[actor].radius + 300) >> 12);
     projectile->velocityX = (g_BattleItemGreensSourcePos[1].vx - g_BattleItemGreensSourcePos->vx) / 16;
     projectile->velocityY = 0xFF38;
     projectile->velocityZ = (g_BattleItemGreensSourcePos[1].vz - g_BattleItemGreensSourcePos->vz) / 16;
-    projectile->accelerationY = (0xAF0 - g_BattleItemGreensSourcePos->vy << 1) / 0xC4;
+    projectile->accelerationY = (2800 - g_BattleItemGreensSourcePos->vy << 1) / 196;
     projectile->angles.vz = 0;
     projectile->angles.vy = 0;
     projectile->angles.vx = 0;
@@ -294,51 +294,51 @@ void __cdecl Battle_ItemFxGreensProjectileTask(void)
     g_BattleItemGreensPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleItemGreensSpriteRequest2, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_2, 0, g_BattleItemGreensPacketCursor);
     if (g_BattleIsPaused == 0) {
         phaseFrame = pProjectile->frame;
-        if (phaseFrame < 0xF) {
+        if (phaseFrame < 15) {
             pProjectile->pos.vx += pProjectile->velocityX;
             pProjectile->pos.vy += pProjectile->velocityY;
             pProjectile->pos.vz += pProjectile->velocityZ;
             pProjectile->velocityY += pProjectile->accelerationY;
         } else {
-            phaseFrame -= 0xF;
+            phaseFrame -= 15;
             if (phaseFrame < 4) {
                 if (phaseFrame == 0) {
                     pProjectile->velocityX = pProjectile->velocityX / 4;
                     pProjectile->velocityY = 0xFFC4;
                     pProjectile->velocityZ = pProjectile->velocityZ / 4;
                     for (i = 0; i < 5; i++) {
-                        angle = (i << 0xC) / 5 + rand() % 0x333;
-                        g_pBattleItemGreensScratch->pos.vx = pProjectile->pos.vx + (SinFixed(angle) * 0x64 >> 0xC);
+                        angle = (i << 12) / 5 + rand() % 0x333;
+                        g_pBattleItemGreensScratch->pos.vx = pProjectile->pos.vx + (SinFixed(angle) * 0x64 >> 12);
                         g_pBattleItemGreensScratch->pos.vy = 0;
-                        g_pBattleItemGreensScratch->pos.vz = pProjectile->pos.vz + (CosFixed(angle) * 0x64 >> 0xC);
-                        Battle_SpawnWorldSpriteTask(&g_pBattleItemGreensScratch->pos, 0x1000, 0x1000);
+                        g_pBattleItemGreensScratch->pos.vz = pProjectile->pos.vz + (CosFixed(angle) * 0x64 >> 12);
+                        Battle_SpawnWorldSpriteTask(&g_pBattleItemGreensScratch->pos, 4096, 4096);
                     }
                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&pProjectile->pos), 0xCC);
                 }
                 pProjectile->pos.vx += pProjectile->velocityX;
                 pProjectile->pos.vy += pProjectile->velocityY;
                 pProjectile->pos.vz += pProjectile->velocityZ;
-                pProjectile->velocityY += 0x1E;
+                pProjectile->velocityY += 30;
             } else {
                 phaseFrame -= 4;
-                if (phaseFrame < 0xA) {
+                if (phaseFrame < 10) {
                     if (phaseFrame == 0) {
                         for (i = 0; i < 5; i++) {
-                            angle = (i << 0xC) / 5 + rand() % 0x333;
-                            g_pBattleItemGreensScratch->pos.vx = pProjectile->pos.vx + (SinFixed(angle) * 0x64 >> 0xC);
+                            angle = (i << 12) / 5 + rand() % 0x333;
+                            g_pBattleItemGreensScratch->pos.vx = pProjectile->pos.vx + (SinFixed(angle) * 0x64 >> 12);
                             g_pBattleItemGreensScratch->pos.vy = 0;
-                            g_pBattleItemGreensScratch->pos.vz = pProjectile->pos.vz + (CosFixed(angle) * 0x64 >> 0xC);
-                            Battle_SpawnWorldSpriteTask(&g_pBattleItemGreensScratch->pos, 0x1000, 0x1000);
+                            g_pBattleItemGreensScratch->pos.vz = pProjectile->pos.vz + (CosFixed(angle) * 0x64 >> 12);
+                            Battle_SpawnWorldSpriteTask(&g_pBattleItemGreensScratch->pos, 4096, 4096);
                         }
                         pProjectile->pos.vy = 0;
                     }
                 } else {
-                    phaseFrame -= 0xA;
-                    if (phaseFrame < 0xA) {
+                    phaseFrame -= 10;
+                    if (phaseFrame < 10) {
                         if (phaseFrame == 0) {
                             g_BattleItemGreensFading = 1;
                         }
-                        g_BattleItemGreensSpriteRequest2.fadeLevel = (phaseFrame << 0xC) / 0xA;
+                        g_BattleItemGreensSpriteRequest2.fadeLevel = (phaseFrame << 12) / 10;
                         g_BattleItemGreensSpriteRequest1.fadeLevel = g_BattleItemGreensSpriteRequest2.fadeLevel;
                     } else {
                         Battle_PostActorHitOrHurtMessage(pProjectile->actorIndex);

@@ -62,10 +62,10 @@ int __cdecl Field_AllocAdListBuffer(void)
 {
     if (g_pFieldAdListBuffer != 0) {
         // STRING: FF7 0x00907f64
-        GameHeapFree(g_pFieldAdListBuffer, "C:\\FF7\\field\\src\\ad_list.cpp", 0x9A);
+        GameHeapFree(g_pFieldAdListBuffer, "C:\\FF7\\field\\src\\ad_list.cpp", 154);
     }
     // STRING: FF7 0x00907f84
-    g_pFieldAdListBuffer = (FieldAdListBank *)GameHeapAllocRaw(0x3F0A8, "C:\\FF7\\field\\src\\ad_list.cpp", 0x9D);
+    g_pFieldAdListBuffer = (FieldAdListBank *)GameHeapAllocRaw(258216, "C:\\FF7\\field\\src\\ad_list.cpp", 157);
     if (g_pFieldAdListBuffer == 0) {
         return 0;
     } else {
@@ -82,7 +82,7 @@ void __cdecl Field_FreeAdListBuffer(void)
 {
     if (g_pFieldAdListBuffer != 0) {
         // STRING: FF7 0x00907fa4
-        GameHeapFree(g_pFieldAdListBuffer, "C:\\FF7\\field\\src\\ad_list.cpp", 0xab);
+        GameHeapFree(g_pFieldAdListBuffer, "C:\\FF7\\field\\src\\ad_list.cpp", 171);
         g_pFieldAdListBuffer = 0;
     }
 }
@@ -96,7 +96,7 @@ void __cdecl Field_ResetAdListBankCounts(void)
     int i;
 
     if (g_pFieldAdListBuffer != 0) {
-        for (i = 0; i < 0x2A; i++) {
+        for (i = 0; i < 42; i++) {
             g_pFieldAdListBuffer[i].count = 0;
         }
     }

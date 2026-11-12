@@ -174,10 +174,10 @@ void __cdecl BattleFx_SpecialGrandSparkTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (mainSelf->phase < 0x10) {
+    if (mainSelf->phase < 16) {
         g_BattleSpecGrandSparkFlashCounter += 4;
     }
-    if (mainSelf->phase > 0xE) {
+    if (mainSelf->phase > 14) {
         g_BattleSpecGrandSparkFlashCounter -= 4;
     }
     if (mainSelf->phase == 0) {
@@ -186,21 +186,21 @@ void __cdecl BattleFx_SpecialGrandSparkTimelineTask(void)
         pParticle->spawnY = 0;
         pParticle->spawnZ = g_BattleSpecGrandSparkSourceBonePosZ;
         pParticle->posX = (mainSelf->posX - *(short *)&g_BattleSpecGrandSparkSourceBonePos) / 0xA;
-        pParticle->posZ = (mainSelf->posZ - g_BattleSpecGrandSparkSourceBonePosZ) / 0xA;
+        pParticle->posZ = (mainSelf->posZ - g_BattleSpecGrandSparkSourceBonePosZ) / 10;
         pParticle->posY = 0;
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, 0x40, 0x173, 0, 0, 0, 0, 0, 0);
     }
     if (mainSelf->phase == 0xA) {
         for (idx = 0; idx < 8; idx++) {
             pParticle = (BattleFxGrandSparkParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGrandSparkBouncingSpriteTask);
-            pParticle->spawnX = mainSelf->posX + rand() % 0x190 + -0xC8;
-            pParticle->spawnZ = mainSelf->posZ + rand() % 0x190 + -0xC8;
+            pParticle->spawnX = mainSelf->posX + rand() % 400 + -200;
+            pParticle->spawnZ = mainSelf->posZ + rand() % 400 + -200;
             pParticle->spawnY = 0;
             heading = rand() % 0x1000;
-            pParticle->posX = CosFixed(heading) * 0x64 >> 0xC;
-            pParticle->posZ = SinFixed(heading) * 0x64 >> 0xC;
-            pParticle->posY = -rand() % 0xC8 - 0x64;
-            pParticle->variant = rand() % 0x14;
+            pParticle->posX = CosFixed(heading) * 0x64 >> 12;
+            pParticle->posZ = SinFixed(heading) * 0x64 >> 12;
+            pParticle->posY = -rand() % 200 - 100;
+            pParticle->variant = rand() % 20;
         }
         pParticle = (BattleFxGrandSparkParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGrandSparkGrowingSpinModelTask);
         pParticle->spawnX = mainSelf->posX;
@@ -208,18 +208,18 @@ void __cdecl BattleFx_SpecialGrandSparkTimelineTask(void)
         pParticle->spawnZ = mainSelf->posZ;
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, 0x40, 0xFA, 0, 0, 0, 0, 0, 0);
     }
-    if (mainSelf->phase > 6 && mainSelf->phase < 0xE) {
+    if (mainSelf->phase > 6 && mainSelf->phase < 14) {
         pParticle = (BattleFxGrandSparkParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialGrandSparkAnimatedSpriteTask)];
-        pParticle->spawnX = mainSelf->posX + rand() % 0x4B0 + -0x258;
-        pParticle->spawnY = mainSelf->posY + rand() % 0x4B0 + -0x258;
-        pParticle->spawnZ = mainSelf->posZ + rand() % 0x4B0 + -0x258;
+        pParticle->spawnX = mainSelf->posX + rand() % 1200 + -600;
+        pParticle->spawnY = mainSelf->posY + rand() % 1200 + -600;
+        pParticle->spawnZ = mainSelf->posZ + rand() % 1200 + -600;
         pParticle->variant = 0;
         pParticle = (BattleFxGrandSparkParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialGrandSparkAnimatedSpriteTask)];
-        pParticle->spawnX = mainSelf->posX + rand() % 0x640 + -0x320;
-        pParticle->spawnY = mainSelf->posY + rand() % 0x640 + -0x320;
-        pParticle->spawnZ = mainSelf->posZ + rand() % 0x640 + -0x320;
+        pParticle->spawnX = mainSelf->posX + rand() % 1600 + -800;
+        pParticle->spawnY = mainSelf->posY + rand() % 1600 + -800;
+        pParticle->spawnZ = mainSelf->posZ + rand() % 1600 + -800;
         pParticle->variant = 1;
-        g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - (mainSelf->phase % 2 << 6));
+        g_BattleCameraFocalPoint.focalPointY += (short)(32 - (mainSelf->phase % 2 << 6));
     }
     if (mainSelf->phase == 0xC) {
         Battle_PostActorHitOrHurtMessage(mainSelf->actorIndex);
@@ -247,7 +247,7 @@ void __cdecl BattleFx_SpecialGrandSparkAnimatedSpriteTask(void)
     task = (BattleFxTailLaserAnimSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
     entryIds[0] = 2;
     entryIds[1] = 3;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     ((BattleSpecGrandSparkModelRows *)&g_BattleSpecGrandSparkResourceModelRows)->spriteEntry = Gfx_ModelTableGetLoadedRecord(entryIds[task->variant], g_BattleSpecGrandSparkLoadedResTable);
     if (task->variant != 1) {
         ((BattleSpecGrandSparkModelRows *)&g_BattleSpecGrandSparkResourceModelRows)->sceneObject = Gfx_ModelTableGetSpriteObject(entryIds[task->variant], g_BattleSpecGrandSparkLoadedResTable);
@@ -303,7 +303,7 @@ void __cdecl BattleFx_SpecialGrandSparkGrowingSpinModelTask(void)
         return;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x1E) {
+    if (frame.spinSlot->frameCounter == 30) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -372,10 +372,10 @@ void __cdecl BattleFx_SpecialGrandSparkBouncingSpriteTask(void)
         frame.spriteSlot->posY = 0;
         frame.spriteSlot->velocityY *= -1;
     }
-    frame.spriteSlot->velocityY += 0x14;
-    frame.spriteSlot->angle += 0x200;
+    frame.spriteSlot->velocityY += 20;
+    frame.spriteSlot->angle += 0x200 /* 45 deg */;
     (frame.spriteSlot->frameCounter)++;
-    if (frame.spriteSlot->frameCounter == 0xF) {
+    if (frame.spriteSlot->frameCounter == 15) {
         frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -410,16 +410,16 @@ void __cdecl BattleFx_SpecialGrandSparkProjectileTask(void)
     child->posZ = taskPtr->posZ;
     child->posY = 0;
     angle = rand() % 0x1000;
-    child->velocityX = CosFixed(angle) * 0x64 >> 0xC;
-    child->velocityZ = SinFixed(angle) * 0x64 >> 0xC;
-    child->velocityY = -rand() % 0xC8 - 0x64;
-    child->frameIndex = rand() % 0x10 + 4;
+    child->velocityX = CosFixed(angle) * 0x64 >> 12;
+    child->velocityZ = SinFixed(angle) * 0x64 >> 12;
+    child->velocityY = -rand() % 200 - 100;
+    child->frameIndex = rand() % 16 + 4;
     child = (BattleFxSwampShootTrailEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGrandSparkFixedAnimSpriteTask);
-    child->posX = taskPtr->posX + rand() % 0x258 + -0x12C;
-    child->posZ = taskPtr->posZ + rand() % 0x258 + -0x12C;
+    child->posX = taskPtr->posX + rand() % 600 + -300;
+    child->posZ = taskPtr->posZ + rand() % 600 + -300;
     child->posY = 0;
     (taskPtr->frameIndex)++;
-    if (taskPtr->frameIndex == 0xC) {
+    if (taskPtr->frameIndex == 12) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -441,7 +441,7 @@ void __cdecl BattleFx_SpecialGrandSparkFixedAnimSpriteTask(void)
     p = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecGrandSparkSpriteReq2.res16 = Gfx_ModelTableGetLoadedRecord(5, g_BattleSpecGrandSparkLoadedResTable);
     g_BattleSpecGrandSparkSpriteReq2.res20 = Gfx_ModelTableGetSpriteObject(5, g_BattleSpecGrandSparkLoadedResTable);
-    BattleFx_InstallBillboardMatrix((void *)((int)p + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)p + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecGrandSparkSpriteReq2.frame = p->frameCounter;
     g_BattleSpecGrandSparkDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecGrandSparkSpriteReq2.res16, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecGrandSparkDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleSpecGrandSparkSpriteReq2.res16 != 0) {
@@ -489,7 +489,7 @@ void __cdecl BattleFx_SpecialGrandSparkStreakModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.streakMatrix, &frame.worldMatrix);
     SetRotMatrix(&frame.worldMatrix);
     SetTransMatrix(&frame.worldMatrix);
-    g_BattleSpecGrandSparkModelScale.offset = 0x60 - frame.streakSlot->frameCounter * 0x18;
+    g_BattleSpecGrandSparkModelScale.offset = 0x60 - frame.streakSlot->frameCounter * 24;
     g_BattleSpecGrandSparkDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecGrandSparkModelScale.drawRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecGrandSparkDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;

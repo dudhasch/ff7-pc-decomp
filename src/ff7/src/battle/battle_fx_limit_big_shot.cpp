@@ -200,20 +200,20 @@ void __cdecl BattleFx_LimitBigShotTimelineTask(void)
     if (frame.timer < 0) { /* empty first arm: lib/codegen.h */
     } else {
         frame.timer = frame.timer;
-        if (frame.timer < 0x16) {
+        if (frame.timer < 22) {
             if (frame.timer == 0) {
                 frame.particle = (BattleFxBigShotParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBigShotModelPairTask);
                 frame.particle->actorSlot = frame.timeline->actorSlot;
                 frame.particle->sourceActor = frame.timeline->sourceActor;
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[frame.timeline->sourceActor].posX), 0x28);
             }
-            if (frame.timer < 0xE) {
+            if (frame.timer < 14) {
                 Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, (void *)((frame.timeline->sourceActor << 6) + (int)g_BattleActorTransformRecords[0].auxNode), &frame.actorMatrix);
                 for (frame.i = 0; frame.i < 2; frame.i++) {
                     frame.particle = (BattleFxBigShotParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBigShotRampHoldSpriteTask);
                     frame.offsetX.vy = 0;
                     frame.offsetX.vx = frame.offsetX.vy;
-                    frame.offsetX.vz = -(rand() % 0x3E8 + 0x3E8);
+                    frame.offsetX.vz = -(rand() % 1000 + 1000);
                     frame.angleX.vx = (rand() & 0x3FF) - 0x200;
                     frame.angleX.vy = (rand() & 0x3FF) - 0x200;
                     frame.angleX.vz = 0;
@@ -232,22 +232,22 @@ void __cdecl BattleFx_LimitBigShotTimelineTask(void)
                     frame.particle->velocityY = (frame.rotMatrix.t[1] - frame.pointY) / 8;
                     frame.particle->velocityZ = (frame.rotMatrix.t[2] - frame.pointZ) / 8;
                     frame.particle->variant = rand() % 3;
-                    frame.particle->scale = 0x1000;
+                    frame.particle->scale = 0x1000 /* 1.0 */;
                 }
             }
         } else {
-            frame.timer -= 0x16;
+            frame.timer -= 22;
             if (frame.timer < 7) {
                 if (frame.timer == 0) {
                     BattleFx_FadeOutScreenFlashRamp(2);
                     Battle_PostActorHitOrHurtMessage(frame.timeline->actorSlot);
-                    for (frame.i = 0; frame.i < 0x32; frame.i++) {
+                    for (frame.i = 0; frame.i < 50; frame.i++) {
                         frame.slotIndex = (short)Battle_AllocateResourceSlot(BattleFx_LimitBigShotSpinningSpriteTask);
                         frame.particle = (BattleFxBigShotParticle *)&g_BattleTaskSlotBuffer.mainSlots[frame.slotIndex];
                         Battle_GetBoneWorldPos(frame.timeline->actorSlot, g_BattleActorRecords[frame.timeline->actorSlot].targetBone, &frame.particle->posX);
                         frame.offsetX.vy = 0;
                         frame.offsetX.vx = frame.offsetX.vy;
-                        frame.offsetX.vz = 0xFFFFFF9C - rand() % 0xC8;
+                        frame.offsetX.vz = 0xFFFFFF9C - rand() % 200;
                         frame.angleX.vx = (rand() & 0x7FF) - 0x400;
                         frame.angleX.vy = g_BattleActorRecords[frame.timeline->sourceActor].yaw + (rand() & 0x7FF) + 0x400;
                         frame.angleX.vz = 0;
@@ -258,16 +258,16 @@ void __cdecl BattleFx_LimitBigShotTimelineTask(void)
                         g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].angle = rand() & 0xFFF;
                         g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].angleX = rand() & 0xFFF;
                         g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].angleY = rand() & 0xFFF;
-                        g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].radius = rand() % 0x96 + 0x32;
-                        g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].speedX = rand() % 0x96 + 0x32;
-                        g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].speedY = rand() % 0x96 + 0x32;
+                        g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].radius = rand() % 150 + 50;
+                        g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].speedX = rand() % 150 + 50;
+                        g_BattleLimitBigShot_TargetStateBlob.entries[frame.slotIndex].speedY = rand() % 150 + 50;
                     }
-                    for (frame.i = 0; frame.i < 0x1E; frame.i++) {
+                    for (frame.i = 0; frame.i < 30; frame.i++) {
                         frame.particle = (BattleFxBigShotParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBigShotHoldFadeSpriteTask);
                         Battle_GetBoneWorldPos(frame.timeline->actorSlot, g_BattleActorRecords[frame.timeline->actorSlot].targetBone, &frame.particle->posX);
                         frame.offsetX.vy = 0;
                         frame.offsetX.vx = frame.offsetX.vy;
-                        frame.offsetX.vz = 0xFFFFFE0C - rand() % 0x12C;
+                        frame.offsetX.vz = 0xFFFFFE0C - rand() % 300;
                         frame.angleX.vx = (rand() & 0x7FF) - 0x400;
                         frame.angleX.vy = g_BattleActorRecords[frame.timeline->sourceActor].yaw + (rand() & 0x7FF) + 0x400;
                         frame.angleX.vz = 0;
@@ -279,7 +279,7 @@ void __cdecl BattleFx_LimitBigShotTimelineTask(void)
                 }
             } else {
                 frame.timer -= 7;
-                if (frame.timer < 0xF) { /* empty first arm: lib/codegen.h */
+                if (frame.timer < 15) { /* empty first arm: lib/codegen.h */
                 } else {
                     frame.timeline->ownerSlot = BATTLE_TASK_FREE;
                 }
@@ -302,13 +302,13 @@ void __cdecl BattleFx_LimitBigShotModelPairTask(void)
 
     selfPtr = (BattleFxBigShotModelPair *)BATTLE_CURRENT_TASK_SLOT;
     frameIdx = selfPtr->frameIndex;
-    if (frameIdx < 0x16) {
-        growZ.vz = frameIdx * 0xE00 / 0x16 + 0x200;
+    if (frameIdx < 22) {
+        growZ.vz = frameIdx * 3584 / 22 + 512;
         growZ.vy = growZ.vz;
         growZ.vx = growZ.vy;
         if (g_BattleIsPaused == 0) {
-            g_BattleLimitBigShot_Timer1 += 0x280;
-            g_BattleLimitBigShot_Timer2 -= 0x1C0;
+            g_BattleLimitBigShot_Timer1 += 640;
+            g_BattleLimitBigShot_Timer2 -= 448;
         }
         RotMatrix((SVECTOR *)&g_BattleLimitBigShot_State1, &g_BattleLimitBigShot_Scale);
         ScaleMatrix(&g_BattleLimitBigShot_Scale, &growZ);
@@ -326,7 +326,7 @@ void __cdecl BattleFx_LimitBigShotModelPairTask(void)
         g_BattleLimitBigShot_ModelReq.mode = 8;
         g_BattleLimitBigShot_ModelReq.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleLimitBigShot_LoadedRes);
         g_BattleLimitBigShot_DrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitBigShot_ModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitBigShot_DrawListHandle);
-        if (frameIdx == 0x15) {
+        if (frameIdx == 21) {
             BattleFx_StartScreenFlashRamp(1);
             selfPtr->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -356,9 +356,9 @@ void __cdecl BattleFx_LimitBigShotRampHoldSpriteTask(void)
     } else {
         age -= 4;
         if (age < 4) {
-            *(char *)(&g_BattleLimitBigShot_QuadColor1.colorB + task->quadIndex * 0x14) = 0x80;
-            *(char *)(&g_BattleLimitBigShot_QuadColor1.colorG + task->quadIndex * 0x14) = 0x80;
-            *(char *)(((char *)&g_BattleLimitBigShot_QuadColor1) + task->quadIndex * 0x14) = 0x80;
+            *(char *)(&g_BattleLimitBigShot_QuadColor1.colorB + task->quadIndex * 0x14) = 128;
+            *(char *)(&g_BattleLimitBigShot_QuadColor1.colorG + task->quadIndex * 0x14) = 128;
+            *(char *)(((char *)&g_BattleLimitBigShot_QuadColor1) + task->quadIndex * 0x14) = 128;
         } else {
             task->quadIndex = 0xFFFF;
             return;
@@ -395,18 +395,18 @@ void __cdecl BattleFx_LimitBigShotSpinningSpriteTask(void)
 
     frame.sprite = (BattleFxBigShotSpriteRecord *)BATTLE_CURRENT_TASK_SLOT;
     frame.fadeStep = frame.sprite->frameCount;
-    if (frame.fadeStep < 0xE) {
-        *(char *)(&g_BattleLimitBigShot_QuadColor2.colorB + frame.sprite->spriteIndex * 0x14) = 0x80;
-        *(char *)(&g_BattleLimitBigShot_QuadColor2.colorG + frame.sprite->spriteIndex * 0x14) = 0x80;
-        *(char *)(((char *)&g_BattleLimitBigShot_QuadColor2) + frame.sprite->spriteIndex * 0x14) = 0x80;
-        *(char *)(&g_BattleLimitBigShot_QuadColor2.code + frame.sprite->spriteIndex * 0x14) = 0x2C;
+    if (frame.fadeStep < 14) {
+        *(char *)(&g_BattleLimitBigShot_QuadColor2.colorB + frame.sprite->spriteIndex * 0x14) = 128;
+        *(char *)(&g_BattleLimitBigShot_QuadColor2.colorG + frame.sprite->spriteIndex * 0x14) = 128;
+        *(char *)(((char *)&g_BattleLimitBigShot_QuadColor2) + frame.sprite->spriteIndex * 0x14) = 128;
+        *(char *)(&g_BattleLimitBigShot_QuadColor2.code + frame.sprite->spriteIndex * 0x14) = 44;
     } else {
-        frame.fadeStep -= 0xE;
+        frame.fadeStep -= 14;
         if (frame.fadeStep < 8) {
             *(char *)(&g_BattleLimitBigShot_QuadColor2.colorB + frame.sprite->spriteIndex * 0x14) = ((frame.fadeStep * -0x80) / 8) + 0x80;
             *(char *)(&g_BattleLimitBigShot_QuadColor2.colorG + frame.sprite->spriteIndex * 0x14) = *(char *)(&g_BattleLimitBigShot_QuadColor2.colorB + frame.sprite->spriteIndex * 0x14);
             *(char *)(((char *)&g_BattleLimitBigShot_QuadColor2) + frame.sprite->spriteIndex * 0x14) = *(char *)(&g_BattleLimitBigShot_QuadColor2.colorG + frame.sprite->spriteIndex * 0x14);
-            *(char *)(&g_BattleLimitBigShot_QuadColor2.code + frame.sprite->spriteIndex * 0x14) = 0x2E;
+            *(char *)(&g_BattleLimitBigShot_QuadColor2.code + frame.sprite->spriteIndex * 0x14) = 46;
         } else {
             frame.sprite->spriteIndex = 0xFFFF;
             return;
@@ -429,7 +429,7 @@ void __cdecl BattleFx_LimitBigShotSpinningSpriteTask(void)
         frame.sprite->posX += frame.sprite->velocityX;
         frame.sprite->posY += frame.sprite->velocityY;
         frame.sprite->angle += frame.sprite->spinRate;
-        frame.sprite->velocityY += 0xA;
+        frame.sprite->velocityY += 10;
         g_BattleLimitBigShot_TargetStateBlob.entries[g_BattleActiveTaskSlotIdx].angle += g_BattleLimitBigShot_TargetStateBlob.entries[g_BattleActiveTaskSlotIdx].radius;
         g_BattleLimitBigShot_TargetStateBlob.entries[g_BattleActiveTaskSlotIdx].angleX += g_BattleLimitBigShot_TargetStateBlob.entries[g_BattleActiveTaskSlotIdx].speedX;
         g_BattleLimitBigShot_TargetStateBlob.entries[g_BattleActiveTaskSlotIdx].angleY += g_BattleLimitBigShot_TargetStateBlob.entries[g_BattleActiveTaskSlotIdx].speedY;
@@ -450,12 +450,12 @@ void __cdecl BattleFx_LimitBigShotHoldFadeSpriteTask(void)
 
     task = (BattleFxBigShotHoldFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
     age = task->frame;
-    if (age < 0xE) {
+    if (age < 14) {
         *(char *)(&g_BattleLimitBigShot_QuadColor3.colorB + task->slot * 0x14) = 0x80;
         *(char *)(&g_BattleLimitBigShot_QuadColor3.colorG + task->slot * 0x14) = 0x80;
         *(char *)(((char *)&g_BattleLimitBigShot_QuadColor3) + task->slot * 0x14) = 0x80;
     } else {
-        age -= 0xE;
+        age -= 14;
         if (age < 8) {
             *(char *)(&g_BattleLimitBigShot_QuadColor3.colorB + task->slot * 0x14) = (age * -0x80 / 8) + 0x80;
             *(char *)(&g_BattleLimitBigShot_QuadColor3.colorG + task->slot * 0x14) = *(char *)(&g_BattleLimitBigShot_QuadColor3.colorB + task->slot * 0x14);

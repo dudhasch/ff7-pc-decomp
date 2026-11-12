@@ -235,7 +235,7 @@ enum WorldModel {
     WORLD_MODEL_CHOCOBO = 19,                   /* the ridden chocobo */
     WORLD_MODEL_ROCK = 25,                      /* rock */
     WORLD_MODEL_RED_SUBMARINE = 28,             /* sbmrn2 */
-    WORLD_MODEL_OVERLAY_CHOCOBO_41 = 41,        /* overlay chocobo actor (>= 0x20) */
+    WORLD_MODEL_OVERLAY_CHOCOBO_41 = 41,        /* overlay chocobo actor (>= 32) */
     WORLD_MODEL_OVERLAY_CHOCOBO_42 = 42,
     WORLD_MODEL_ZOLOM = 100                     /* Midgar Zolom swamp actor */
 };

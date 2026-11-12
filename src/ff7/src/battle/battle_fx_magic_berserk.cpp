@@ -150,10 +150,10 @@ void __cdecl BattleFx_MagicBerserkTimelineTask(void)
             *(Int64Pair *)((char *)pSprite + 8) = *(Int64Pair *)((char *)timeline + 8);
             pSprite->posHeight = 0;
             angle = rand() & 0xFFF;
-            pSprite->posX += (short)(SinFixed(angle) * 0xFA >> 0xC);
-            pSprite->posY += (short)(CosFixed(angle) * 0xFA >> 0xC);
-            pSprite->orbitX = SinFixed(angle) * 0x46 >> 0xC;
-            pSprite->orbitZ = CosFixed(angle) * 0x46 >> 0xC;
+            pSprite->posX += (short)(SinFixed(angle) * 0xFA >> 12);
+            pSprite->posY += (short)(CosFixed(angle) * 0xFA >> 12);
+            pSprite->orbitX = SinFixed(angle) * 0x46 >> 12;
+            pSprite->orbitZ = CosFixed(angle) * 0x46 >> 12;
             pSprite->velocityHeight = 0;
         }
     }
@@ -187,18 +187,18 @@ void __cdecl BattleFx_MagicBerserkSpinningModelTask(void)
     g_BattleMagicBerserk_Config = (frame.angleBits & 2) >> 1 | 0x20;
     g_BattleMagicBerserk_LoadedRes.alpha = frame.spinRecord->angle * 0x50 & 0xFFF;
     if (frame.spinRecord->angle < 0) {
-        frame.scaleX.vz = (frame.spinRecord->angle << 0xC) / 0;
+        frame.scaleX.vz = (frame.spinRecord->angle << 12) / 0;
         frame.scaleX.vy = frame.scaleX.vz;
         frame.scaleX.vx = frame.scaleX.vy;
     } else {
-        frame.scaleX.vz = 0x1000;
+        frame.scaleX.vz = 0x1000 /* 1.0 */;
         frame.scaleX.vy = frame.scaleX.vz;
         frame.scaleX.vx = frame.scaleX.vy;
     }
     if (frame.spinRecord->angle < 0xC) {
         g_BattleMagicBerserk_SpriteReq.alpha = 0x80;
     } else {
-        g_BattleMagicBerserk_SpriteReq.alpha = 0x80 - (frame.spinRecord->angle - 0xC << 7) / 0xA;
+        g_BattleMagicBerserk_SpriteReq.alpha = 0x80 - (frame.spinRecord->angle - 0xC << 7) / 10;
     }
     SetDrawColorRGB(0, 0, 0);
     RotMatrix((SVECTOR *)&g_BattleMagicBerserk_LoadedRes.rotByte8, &frame.rotMatrix);
@@ -250,7 +250,7 @@ void __cdecl BattleFx_MagicBerserkFadingSpriteTask(void)
     frame.tableWordA = Gfx_ModelTableGetLoadedRecord(1, g_BattleMagicBerserk_LoadedRes.cursor);
     frame.tableWordB = Gfx_ModelTableGetSpriteObject(1, g_BattleMagicBerserk_LoadedRes.cursor);
     *(short *)&frame.frameMod4 = frame.sprite->frame & 3;
-    if (frame.sprite->frame < 0xC) {
+    if (frame.sprite->frame < 12) {
         frame.colorB = 0x80;
         frame.colorG = frame.colorB;
         frame.colorR = frame.colorG;
@@ -259,11 +259,11 @@ void __cdecl BattleFx_MagicBerserkFadingSpriteTask(void)
         frame.colorG = frame.colorB;
         frame.colorR = frame.colorG;
     }
-    BattleFx_InstallBillboardMatrix((void *)((int)frame.sprite + 8), 0x2500, frame.sprite->ringIndex);
+    BattleFx_InstallBillboardMatrix((void *)((int)frame.sprite + 8), 0x2500 /* 2.3125 */, frame.sprite->ringIndex);
     (g_BattleMagicBerserk_LoadedRes.drawHandle) = BattleFx_SubmitSpriteDraw(&frame.tableWordA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, (g_BattleMagicBerserk_LoadedRes.drawHandle));
     if (g_BattleIsPaused == 0) {
         (frame.sprite->frame)++;
-        if (frame.sprite->frame >= 0x11) {
+        if (frame.sprite->frame >= 17) {
             frame.sprite->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -301,7 +301,7 @@ void __cdecl BattleFx_MagicBerserkFallingSpriteTask(void)
     frame.tableWordA = Gfx_ModelTableGetLoadedRecord(2, g_BattleMagicBerserk_LoadedRes.cursor);
     frame.tableWordB = Gfx_ModelTableGetSpriteObject(2, g_BattleMagicBerserk_LoadedRes.cursor);
     *(short *)&frame.spriteFrame = frame.sprite->frame;
-    BattleFx_InstallBillboardMatrix((void *)((int)frame.sprite + 8), 0x1500, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)frame.sprite + 8), 0x1500 /* 1.3125 */, 0);
     (g_BattleMagicBerserk_LoadedRes.drawHandle) = BattleFx_SubmitSpriteDraw(&frame.tableWordA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, (g_BattleMagicBerserk_LoadedRes.drawHandle));
     if (g_BattleIsPaused == 0) {
         frame.sprite->posX += frame.sprite->velocityX;
@@ -309,7 +309,7 @@ void __cdecl BattleFx_MagicBerserkFallingSpriteTask(void)
         frame.sprite->posZ += frame.sprite->velocityZ;
         frame.sprite->velocityY -= 8;
         (frame.sprite->frame)++;
-        if (frame.sprite->frame >= 0xE) {
+        if (frame.sprite->frame >= 14) {
             frame.sprite->slotTag = 0xFFFF;
         }
     }

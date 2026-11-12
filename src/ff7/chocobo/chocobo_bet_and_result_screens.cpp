@@ -157,7 +157,7 @@ void __cdecl Mini_ChocoboRaceUpdateBetScreen(void)
     g_ChocoboBetMoveSoundPending = 0;
     g_ChocoboSubmittedRecordCount = 0;
     Mini_ChocoboRaceUpdateBetGridCells(1);
-    if (g_ChocoboFadeLevel > 0xFF && g_ChocoboFadeStep > 0) {
+    if (g_ChocoboFadeLevel > 255 && g_ChocoboFadeStep > 0) {
         g_ChocoboFadeStep = 0;
         *g_pChocoboGil -= *(int *)(g_ChocoboBetBaseOffsets + ((g_ChocoboRaceClass << 4) + g_ChocoboBetStepIndex * 4));
         g_ChocoboRacePhase = CHOCOBO_RACE_PHASE_START;
@@ -168,7 +168,7 @@ void __cdecl Mini_ChocoboRaceUpdateBetScreen(void)
         Mini_ChocoboPackInputLatches();
         if ((int)g_ChocoboPackedInputLatches != g_ChocoboPrevInputLatch) {
             if ((g_ChocoboPackedInputLatches & INPUT_START) != 0) {
-                g_ChocoboFadeStep = 0x10;
+                g_ChocoboFadeStep = 16;
             }
             g_ChocoboBetScreenState = 0;
             if ((g_ChocoboPackedInputLatches & INPUT_L1) != 0) {
@@ -193,7 +193,7 @@ void __cdecl Mini_ChocoboRaceUpdateBetScreen(void)
                         if (g_ChocoboBetSlotIndex > 2) {
                             g_ChocoboBetSlotIndex = 0;
                         }
-                        if (g_ChocoboBetWork[g_ChocoboBetSlotIndex] == g_ChocoboBetGridCol * 0xA + g_ChocoboBetGridRow) {
+                        if (g_ChocoboBetWork[g_ChocoboBetSlotIndex] == g_ChocoboBetGridCol * 10 + g_ChocoboBetGridRow) {
                             (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[g_ChocoboBetGridCol][g_ChocoboBetGridRow].mode = CHOCOBO_BET_CELL_MODE_TURN_TO_BACK;
                             g_ChocoboBetWork[g_ChocoboBetSlotIndex] = 0xFFFFFFFF;
                             break;
@@ -205,9 +205,9 @@ void __cdecl Mini_ChocoboRaceUpdateBetScreen(void)
                             if (g_ChocoboBetSlotIndex > 2) {
                                 g_ChocoboBetSlotIndex = 0;
                             }
-                            if (g_ChocoboBetWork[g_ChocoboBetSlotIndex] == -1 || g_ChocoboBetWork[g_ChocoboBetSlotIndex] == g_ChocoboBetGridCol * 0xA + g_ChocoboBetGridRow) {
+                            if (g_ChocoboBetWork[g_ChocoboBetSlotIndex] == -1 || g_ChocoboBetWork[g_ChocoboBetSlotIndex] == g_ChocoboBetGridCol * 10 + g_ChocoboBetGridRow) {
                                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[g_ChocoboBetGridCol][g_ChocoboBetGridRow].mode = CHOCOBO_BET_CELL_MODE_TURN_TO_FRONT;
-                                g_ChocoboBetWork[g_ChocoboBetSlotIndex] = g_ChocoboBetGridCol * 0xA + g_ChocoboBetGridRow;
+                                g_ChocoboBetWork[g_ChocoboBetSlotIndex] = g_ChocoboBetGridCol * 10 + g_ChocoboBetGridRow;
                                 break;
                             }
                         }
@@ -216,11 +216,11 @@ void __cdecl Mini_ChocoboRaceUpdateBetScreen(void)
                             if (g_ChocoboBetSlotIndex > 2) {
                                 g_ChocoboBetSlotIndex = 0;
                             }
-                            colVal = g_ChocoboBetWork[g_ChocoboBetSlotIndex] / 0xA;
-                            cellRow = g_ChocoboBetWork[g_ChocoboBetSlotIndex] % 0xA;
+                            colVal = g_ChocoboBetWork[g_ChocoboBetSlotIndex] / 10;
+                            cellRow = g_ChocoboBetWork[g_ChocoboBetSlotIndex] % 10;
                             (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[colVal][cellRow].mode = CHOCOBO_BET_CELL_MODE_TURN_TO_BACK;
                             (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[g_ChocoboBetGridCol][g_ChocoboBetGridRow].mode = CHOCOBO_BET_CELL_MODE_TURN_TO_FRONT;
-                            g_ChocoboBetWork[g_ChocoboBetSlotIndex] = g_ChocoboBetGridCol * 0xA + g_ChocoboBetGridRow;
+                            g_ChocoboBetWork[g_ChocoboBetSlotIndex] = g_ChocoboBetGridCol * 10 + g_ChocoboBetGridRow;
                         }
                     }
                     g_ChocoboBetStepIndex = 0;
@@ -278,10 +278,10 @@ void __cdecl Mini_ChocoboRaceUpdateBetScreen(void)
         Mini_ChocoboEmitSpriteObject((struct ChocoboSpriteObject *)&g_ChocoboUiSpriteRecord);
         Mini_ChocoboEmitSpriteObject((struct ChocoboSpriteObject *)&g_ChocoboSpriteQueueRequest);
         Mini_ChocoboRaceUpdateSelectedRacerModelEntries(g_ChocoboViewedRacer);
-        for (idx = 0; idx < 0xA; idx++) {
+        for (idx = 0; idx < 10; idx++) {
             if (idx == 6 || idx == 7) {
                 if (g_ChocoboHudRaceClass == 1 || g_ChocoboHudRaceClass == 2) {
-                    *(int *)(g_ChocoboBetScreenPanels2x + idx * 0x48) = 0x1A;
+                    *(int *)(g_ChocoboBetScreenPanels2x + idx * 0x48) = 26;
                 }
             }
             Mini_ChocoboEmitSpriteBatchQuad(&g_ChocoboBetScreenPanels[idx]);
@@ -295,10 +295,10 @@ void __cdecl Mini_ChocoboRaceUpdateBetScreen(void)
         Mini_ChocoboEmitSpriteBatchQuad(&g_ChocoboBetRacerSprites[g_ChocoboViewedRacer]);
         g_ChocoboSubmittedRecordCount++;
         g_ChocoboDrawNumberFn(*g_pChocoboGil - *(int *)(g_ChocoboBetBaseOffsets + ((g_ChocoboRaceClass << 4) + g_ChocoboBetStepIndex * 4)), 0x114, 0xD6);
-        g_ChocoboDrawNumberFn(g_ChocoboRacers[g_ChocoboViewedRacer].topSpeed / 0x22, 0x11C, 0x2B);
-        g_ChocoboDrawNumberFn(g_ChocoboRacers[g_ChocoboViewedRacer].stamina / 0xA, 0x11C, 0x42);
+        g_ChocoboDrawNumberFn(g_ChocoboRacers[g_ChocoboViewedRacer].topSpeed / 34, 0x11C, 0x2B);
+        g_ChocoboDrawNumberFn(g_ChocoboRacers[g_ChocoboViewedRacer].stamina / 10, 0x11C, 0x42);
         Mini_ChocoboRaceDrawBetGridLegend();
-        Mini_ChocoboDrawEncodedText((int)&g_ChocoboRacers[g_ChocoboViewedRacer].nameText, 6, 0xF0, 0x58);
+        Mini_ChocoboDrawEncodedText((int)&g_ChocoboRacers[g_ChocoboViewedRacer].nameText, 6, 240, 88);
         Mini_ChocoboRaceUpdateFadeOverlay();
         Mini_ChocoboDrawFrame();
     }
@@ -393,20 +393,20 @@ void __cdecl Mini_ChocoboDrawNumber2x(unsigned int number, int x, int y)
 // FUNCTION: FF7 0x00776f0d
 void __cdecl Mini_ChocoboRaceUpdateSelectedRacerModelEntries(int racerIndex)
 {
-    char p[0x20];
+    char p[32];
     ChocoboRacer *rec;
     int pad;
     int btn;
     int v;
     int active;
-    char w[0x40];
+    char w[64];
     int x;
     ChocoboRacerEntry *one;
     int i;
     int j;
     ChocoboRacerEntry *two;
     int k;
-    char l[0x48];
+    char l[72];
 
     rec = &g_ChocoboRacers[racerIndex];
     if (rec->personality == CHOCOBO_PERSONALITY_DASHES_WHEN_SPURRED) {
@@ -417,7 +417,7 @@ void __cdecl Mini_ChocoboRaceUpdateSelectedRacerModelEntries(int racerIndex)
     one = &g_pChocoboRacerTable[rec->lane];
     two = &g_pChocoboRacerTable[rec->tableIndex];
     if ((g_ChocoboPackedInputLatches & INPUT_R2) != 0) {
-        btn = g_ChocoboPackedInputLatches >> 0x10;
+        btn = g_ChocoboPackedInputLatches >> 16;
         if ((btn & INPUT_LEFT) != 0) {
             g_ChocoboBetModelSpin = g_ChocoboBetModelSpin + 1;
         }
@@ -438,13 +438,13 @@ void __cdecl Mini_ChocoboRaceUpdateSelectedRacerModelEntries(int racerIndex)
         }
         if ((btn & INPUT_R1) != 0) {
             g_ChocoboDebugTuneB = g_ChocoboDebugTuneB - 0x14;
-            if (g_ChocoboDebugTuneB < 0x96) {
+            if (g_ChocoboDebugTuneB < 150) {
                 g_ChocoboDebugTuneB = 0x96;
             }
         }
         if ((btn & INPUT_R2) != 0) {
             g_ChocoboDebugTuneB = g_ChocoboDebugTuneB + 0x14;
-            if (g_ChocoboDebugTuneB > 0x800) {
+            if (g_ChocoboDebugTuneB > 2048) {
                 g_ChocoboDebugTuneB = 0x800;
             }
         }
@@ -462,13 +462,13 @@ void __cdecl Mini_ChocoboRaceUpdateSelectedRacerModelEntries(int racerIndex)
         }
         if ((btn & INPUT_TRIANGLE) != 0) {
             g_ChocoboDebugTuneA = g_ChocoboDebugTuneA - 0x14;
-            if (g_ChocoboDebugTuneA < -0x400) {
+            if (g_ChocoboDebugTuneA < -1024) {
                 g_ChocoboDebugTuneA = -0x400;
             }
         }
         if ((btn & INPUT_CROSS) != 0) {
             g_ChocoboDebugTuneA = g_ChocoboDebugTuneA + 0x14;
-            if (g_ChocoboDebugTuneA > 0x400) {
+            if (g_ChocoboDebugTuneA > 1024) {
                 g_ChocoboDebugTuneA = 0x400;
             }
         }
@@ -603,17 +603,17 @@ void __cdecl Mini_ChocoboRaceBuildBetGrid(void)
         frame.cellValues[frame.prizeCount] = g_ChocoboBetPrizes[0];
         frame.cellKinds[frame.prizeCount] = 0;
     }
-    for (frame.prizeCount = 7; frame.prizeCount < 0xC; frame.prizeCount++) {
+    for (frame.prizeCount = 7; frame.prizeCount < 12; frame.prizeCount++) {
         frame.cellValues[frame.prizeCount] = g_ChocoboBetPrizes[1];
         frame.cellKinds[frame.prizeCount] = 1;
     }
-    for (frame.prizeCount = 0xC; frame.prizeCount < 0xF; frame.prizeCount++) {
+    for (frame.prizeCount = 12; frame.prizeCount < 15; frame.prizeCount++) {
         frame.cellValues[frame.prizeCount] = g_ChocoboBetPrizes[2];
         frame.cellKinds[frame.prizeCount] = 2;
     }
-    for (frame.prizeCount = 0; frame.prizeCount < 0x64; frame.prizeCount++) {
-        frame.swapIndexA = rand() % 0xF;
-        frame.swapIndexB = rand() % 0xF;
+    for (frame.prizeCount = 0; frame.prizeCount < 100; frame.prizeCount++) {
+        frame.swapIndexA = rand() % 15;
+        frame.swapIndexB = rand() % 15;
         frame.swapTmp = frame.cellValues[frame.swapIndexA];
         frame.cellValues[frame.swapIndexA] = frame.cellValues[frame.swapIndexB];
         frame.cellValues[frame.swapIndexB] = frame.swapTmp;
@@ -639,8 +639,8 @@ void __cdecl Mini_ChocoboRaceBuildBetGrid(void)
             g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].fu = 0.0f;
             g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].depth = 0.9555f;
             g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].palette = 0;
-            g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].outerHeight = 0x22;
-            g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].outerWidth = 0x22;
+            g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].outerHeight = 34;
+            g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].outerWidth = 34;
             g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].texVOffset = 0.53125f;
             g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].texUOffset = 0.53125f;
             g_ChocoboBetGridRecords1[frame.prizeCount][frame.prizeIndex].quadHeight = 34.0f;
@@ -649,14 +649,14 @@ void __cdecl Mini_ChocoboRaceBuildBetGrid(void)
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].colorB = 0x80;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].colorG = 0x80;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].colorR = 0x80;
-            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].u = frame.prizeCount * 0x22;
-            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].v = frame.prizeIndex * 0x22 + 0x11;
+            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].u = frame.prizeCount * 34;
+            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].v = frame.prizeIndex * 34 + 0x11;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].fu = (float)g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].u / 256.0f;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].fv = (float)g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].v / 128.0f;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].depth = 0.9444f;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].palette = 0;
-            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].outerHeight = 0x22;
-            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].outerWidth = 0x22;
+            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].outerHeight = 34;
+            g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].outerWidth = 34;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].texUOffset = 0.13f;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].texVOffset = 0.27f;
             g_ChocoboBetGridRecords2[frame.prizeCount][frame.prizeIndex].quadHeight = 34.0f;
@@ -671,8 +671,8 @@ void __cdecl Mini_ChocoboRaceBuildBetGrid(void)
             g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].fv = 0.0f;
             g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].depth = 0.9333f;
             g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].palette = 0;
-            g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].outerHeight = 0x22;
-            g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].outerWidth = 0x22;
+            g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].outerHeight = 34;
+            g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].outerWidth = 34;
             g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].texUOffset = 0.53f;
             g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].texVOffset = 0.27f;
             g_ChocoboBetGridRecords0[frame.prizeCount][frame.prizeIndex].quadHeight = 34.0f;
@@ -747,7 +747,7 @@ void __cdecl Mini_ChocoboRaceUpdateBetGridCells(int showPairResults)
             case CHOCOBO_BET_CELL_FRONT_OPENING:
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].face = 0;
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].slide += 2;
-                if ((*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].slide >= 0x10) {
+                if ((*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].slide >= 16) {
                     (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].state = CHOCOBO_BET_CELL_FRONT;
                 }
                 break;
@@ -761,7 +761,7 @@ void __cdecl Mini_ChocoboRaceUpdateBetGridCells(int showPairResults)
             case CHOCOBO_BET_CELL_BACK_OPENING:
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].face = 0xFF;
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].slide += 2;
-                if ((*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].slide >= 0x10) {
+                if ((*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].slide >= 16) {
                     (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[col][row].state = CHOCOBO_BET_CELL_BACK;
                 }
             }
@@ -864,12 +864,12 @@ void __cdecl Mini_ChocoboRaceBeginResultScreen(void)
         g_ChocoboWinningPairA = g_ChocoboWinningPairB;
         g_ChocoboWinningPairB = i;
     }
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         if (g_ChocoboWinningPairA == g_ChocoboPairResultGridMap[i].stateA && g_ChocoboWinningPairB == g_ChocoboPairResultGridMap[i].stateB) {
             break;
         }
     }
-    if (i == 0x10) {
+    if (i == 16) {
         i = 0;
     }
     g_ChocoboBetGridCol = g_ChocoboPairResultGridMap[i].resultA;
@@ -899,48 +899,48 @@ void __cdecl Mini_ChocoboRaceUpdateResultScreen(void)
     for (rank = 0; rank < 6; rank++) {
         for (laneIndex = 0; laneIndex < 6; laneIndex++) {
             if (g_ChocoboRacers[laneIndex].place == rank + 1) {
-                Mini_ChocoboDrawEncodedText((int)&g_ChocoboRacers[laneIndex].nameText, 7, 0xDC, g_ChocoboBetGridRows[rank]);
-                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x2 = 0x12A;
-                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x0 = 0x12A;
-                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x3 = 0x13A;
-                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x1 = 0x13A;
+                Mini_ChocoboDrawEncodedText((int)&g_ChocoboRacers[laneIndex].nameText, 7, 220, g_ChocoboBetGridRows[rank]);
+                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x2 = 298;
+                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x0 = 298;
+                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x3 = 314;
+                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].x1 = 314;
                 g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].y2 = (short)g_ChocoboBetGridRows[rank];
                 g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].y0 = g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].y2;
-                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].y3 = g_ChocoboBetGridRows[rank] + 0x10;
+                g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].y3 = g_ChocoboBetGridRows[rank] + 16;
                 g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].y1 = g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane].y3;
                 Mini_ChocoboEmitSpriteBatchQuad((ChocoboSpriteRecord *)&g_ChocoboResultDisplaySpriteRecords.sprites[g_ChocoboRacers[laneIndex].lane]);
                 g_ChocoboSubmittedRecordCount++;
             }
         }
     }
-    if (g_ChocoboResultTimer == 0xA) {
+    if (g_ChocoboResultTimer == 10) {
         g_pChocoboSoundCommand->soundCommand = SOUND_SFX_PLAY_CH1;
         g_pChocoboSoundCommand->soundArg = 0x40;
         g_pChocoboSoundCommand->soundParam1 = 0x84;
         SoundDispatchCommand((short)g_pChocoboSoundCommand->soundCommand, g_pChocoboSoundCommand->soundArg, g_pChocoboSoundCommand->soundParam1, 0, 0, 0, 0, 0, 0);
     }
-    if (g_ChocoboResultTimer == 0xA) {
+    if (g_ChocoboResultTimer == 10) {
         for (rowIdx = 0; rowIdx < 3; rowIdx++) {
             for (column = 0; column < 5; column++) {
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[column][rowIdx].mode = (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[column][rowIdx].face != 0 ? CHOCOBO_BET_CELL_MODE_TURN_TO_FRONT : CHOCOBO_BET_CELL_MODE_TURN_TO_BACK;
             }
         }
     }
-    if (g_ChocoboResultTimer == 0x1E && g_ChocoboPlayerRides != 0 && g_ChocoboFirstPlaceRacer != g_ChocoboRacers[0].lane) {
+    if (g_ChocoboResultTimer == 30 && g_ChocoboPlayerRides != 0 && g_ChocoboFirstPlaceRacer != g_ChocoboRacers[0].lane) {
         for (yCell = 0; yCell < 3; yCell++) {
             for (cellXIdx = 0; cellXIdx < 5; cellXIdx++) {
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[cellXIdx][yCell].mode = CHOCOBO_BET_CELL_MODE_TURN_TO_FRONT;
             }
         }
     }
-    if (g_ChocoboResultTimer == 0x6E) {
+    if (g_ChocoboResultTimer == 110) {
         for (yIdx = 0; yIdx < 3; yIdx++) {
             for (xIdx = 0; xIdx < 5; xIdx++) {
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[xIdx][yIdx].mode = (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[xIdx][yIdx].face != 0 ? CHOCOBO_BET_CELL_MODE_TURN_TO_FRONT : CHOCOBO_BET_CELL_MODE_TURN_TO_BACK;
             }
         }
     }
-    if (g_ChocoboResultTimer == 0x73) {
+    if (g_ChocoboResultTimer == 115) {
         for (betY = 0; betY < 3; betY++) {
             for (betX = 0; betX < 5; betX++) {
                 (*(struct ChocoboBetCell (*)[5][3])&g_ChocoboBetGrid)[betX][betY].showPrize = 0xFF;
@@ -955,10 +955,10 @@ void __cdecl Mini_ChocoboRaceUpdateResultScreen(void)
     g_ChocoboFrameCounter++;
     g_ChocoboBetScreenState += 2;
     Mini_ChocoboPackInputLatches();
-    if ((int)g_ChocoboPackedInputLatches != g_ChocoboPrevInputLatch && (g_ChocoboPackedInputLatches & (INPUT_START | INPUT_TRIANGLE | INPUT_CIRCLE | INPUT_CROSS | INPUT_SQUARE)) != 0 && g_ChocoboResultTimer >= 0xA0) {
-        g_ChocoboFadeStep = 0x10;
+    if ((int)g_ChocoboPackedInputLatches != g_ChocoboPrevInputLatch && (g_ChocoboPackedInputLatches & (INPUT_START | INPUT_TRIANGLE | INPUT_CIRCLE | INPUT_CROSS | INPUT_SQUARE)) != 0 && g_ChocoboResultTimer >= 160) {
+        g_ChocoboFadeStep = 16;
     }
-    if (g_ChocoboFadeLevel > 0xFF && g_ChocoboFadeStep > 0) {
+    if (g_ChocoboFadeLevel > 255 && g_ChocoboFadeStep > 0) {
         g_ChocoboFadeStep = 0;
         g_pChocoboSoundCommand->soundCommand = SOUND_MUSIC_VOLUME_TRANS;
         g_pChocoboSoundCommand->soundArg = 0x1E;
@@ -973,16 +973,16 @@ void __cdecl Mini_ChocoboRaceUpdateResultScreen(void)
             Mini_ChocoboEmitSpriteBatchQuad(&g_ChocoboResultScreenPanels[rank]);
             g_ChocoboSubmittedRecordCount++;
         }
-        for (rank = 0; rank < 0xB; rank++) {
+        for (rank = 0; rank < 11; rank++) {
             Mini_ChocoboEmitSpriteBatchQuad(&g_ChocoboResultScreenLabels[rank]);
             g_ChocoboSubmittedRecordCount++;
         }
-        g_ChocoboResultLayout[g_ChocoboWinningPairA].screenY = 0xD5;
-        g_ChocoboResultLayout[g_ChocoboWinningPairA].rowHeight = 0xA;
+        g_ChocoboResultLayout[g_ChocoboWinningPairA].screenY = 213;
+        g_ChocoboResultLayout[g_ChocoboWinningPairA].rowHeight = 10;
         Mini_ChocoboEmitSpriteBatchQuad((ChocoboSpriteRecord *)&g_ChocoboResultLayout[g_ChocoboWinningPairA]);
         g_ChocoboSubmittedRecordCount++;
-        g_ChocoboResultLayout[g_ChocoboWinningPairB].screenY = 0xF3;
-        g_ChocoboResultLayout[g_ChocoboWinningPairB].rowHeight = 0xA;
+        g_ChocoboResultLayout[g_ChocoboWinningPairB].screenY = 243;
+        g_ChocoboResultLayout[g_ChocoboWinningPairB].rowHeight = 10;
         Mini_ChocoboEmitSpriteBatchQuad((ChocoboSpriteRecord *)&g_ChocoboResultLayout[g_ChocoboWinningPairB]);
         g_ChocoboSubmittedRecordCount++;
         g_ChocoboSubmittedRecordCount++;
@@ -999,17 +999,17 @@ void __cdecl Mini_ChocoboRaceDrawBetGridLegend(void)
 {
     int i;
 
-    Mini_ChocoboDrawEncodedText((g_ChocoboBetPrizes[0] << 4) + (int)g_ChocoboRacePrizeNames, 0xE, 0x25, 0xAC);
-    Mini_ChocoboDrawEncodedText((g_ChocoboBetPrizes[1] << 4) + (int)g_ChocoboRacePrizeNames, 0xE, 0x25, 0xC0);
-    Mini_ChocoboDrawEncodedText((g_ChocoboBetPrizes[2] << 4) + (int)g_ChocoboRacePrizeNames, 0xE, 0x25, 0xD4);
+    Mini_ChocoboDrawEncodedText((g_ChocoboBetPrizes[0] << 4) + (int)g_ChocoboRacePrizeNames, 0xE, 37, 172);
+    Mini_ChocoboDrawEncodedText((g_ChocoboBetPrizes[1] << 4) + (int)g_ChocoboRacePrizeNames, 0xE, 37, 192);
+    Mini_ChocoboDrawEncodedText((g_ChocoboBetPrizes[2] << 4) + (int)g_ChocoboRacePrizeNames, 0xE, 37, 212);
     for (i = 0; i < 3; i++) {
-        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x2 = 0xF;
-        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x0 = 0xF;
-        g_ChocoboHudLayoutEntries[i].posX = i * 0x15 + 0xA9;
+        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x2 = 15;
+        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x0 = 15;
+        g_ChocoboHudLayoutEntries[i].posX = i * 21 + 169;
         g_ChocoboHudLayoutEntries[i].prevPosX = g_ChocoboHudLayoutEntries[i].posX;
-        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x3 = 0x1F;
-        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x1 = 0x1F;
-        g_ChocoboHudLayoutEntries[i].posY = i * 0x15 + 0xB9;
+        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x3 = 31;
+        ((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i].x1 = 31;
+        g_ChocoboHudLayoutEntries[i].posY = i * 21 + 185;
         g_ChocoboHudLayoutEntries[i].prevPosY = g_ChocoboHudLayoutEntries[i].posY;
         Mini_ChocoboEmitSpriteBatchQuad((ChocoboSpriteRecord *)&((struct ChocoboQuadSprite *)&g_ChocoboHudLayoutEntries)[i]);
         g_ChocoboSubmittedRecordCount++;
@@ -1043,8 +1043,8 @@ void __cdecl Mini_ChocoboRaceUpdateFadeOverlay(void)
     if (g_ChocoboFadeLevel < 0) {
         g_ChocoboFadeLevel = 0;
         g_ChocoboFadeStep = 0;
-    } else if (g_ChocoboFadeLevel > 0x100) {
-        g_ChocoboFadeLevel = 0x100;
+    } else if (g_ChocoboFadeLevel > 256) {
+        g_ChocoboFadeLevel = 256;
     }
 }
 } /* extern "C" */

@@ -230,7 +230,7 @@ int __cdecl InputConfig_CaptureSource(int source)
 // FUNCTION: FF7 0x006cde2b
 void __cdecl InputConfig_ScreenEnter(void)
 {
-    MenuCursor_Init(&g_MenuKeyConfigCursor, 0, 0, 2, 0xE, 0, 0, 2, 0xE, 0, 0, 0, 1, 0, 0);
+    MenuCursor_Init(&g_MenuKeyConfigCursor, 0, 0, 2, 14, 0, 0, 2, 14, 0, 0, 0, 1, 0, 0);
     g_MenuKeyConfigEditState = MENU_KEY_CONFIG_BROWSE;
     g_MenuKeyConfigFlashTimer = 0;
     InputConfig_BeginEdit();
@@ -277,19 +277,19 @@ void __cdecl InputConfig_ScreenFrame(int *exitFlag)
     } frame;
 #pragma pack(pop)
 
-    frame.labelX = 0x32;
+    frame.labelX = 50;
     frame.labelStride = 0x32;
     if (g_MenuIsSmallViewport320x240 != 1) {
         for (frame.windowIndex = 0; frame.windowIndex < 2; frame.windowIndex++) {
             Menu_DrawWindowFrame2x(&g_MenuKeyConfigWindowRects2x[frame.windowIndex], 0.2f);
         }
-        Menu_DrawEncodedString2x(0xC8, 0x4B, g_MenuKeyConfigPromptLabels.rows[17], 4, 0.1f);
-        Menu_DrawEncodedString2x(0x190, 0x4B, g_MenuKeyConfigPromptLabels.joystickTitle, 4, 0.1f);
-        for (frame.labelRow2x = 0; frame.labelRow2x < 0xE; frame.labelRow2x++) {
-            Menu_DrawEncodedString2x(frame.labelX, frame.labelRow2x * 0x18 + 0x7C, g_MenuKeyConfigPromptLabels.rows[frame.labelRow2x + 3], 3, 0.1f);
+        Menu_DrawEncodedString2x(200, 75, g_MenuKeyConfigPromptLabels.rows[17], 4, 0.1f);
+        Menu_DrawEncodedString2x(400, 75, g_MenuKeyConfigPromptLabels.joystickTitle, 4, 0.1f);
+        for (frame.labelRow2x = 0; frame.labelRow2x < 14; frame.labelRow2x++) {
+            Menu_DrawEncodedString2x(frame.labelX, frame.labelRow2x * 24 + 0x7C, g_MenuKeyConfigPromptLabels.rows[frame.labelRow2x + 3], 3, 0.1f);
         }
         for (frame.column2x = 0; frame.column2x < 2; frame.column2x++) {
-            for (frame.row2x = 0; frame.row2x < 0xE; frame.row2x++) {
+            for (frame.row2x = 0; frame.row2x < 14; frame.row2x++) {
                 frame.bindSlot = 0;
                 while (*(int *)((char *)g_MenuKeyConfigSlotMasks + (frame.column2x * 0xA8 + frame.row2x * 0xC)) >> frame.bindSlot != 0) {
                     frame.bindSlot++;
@@ -298,38 +298,38 @@ void __cdecl InputConfig_ScreenFrame(int *exitFlag)
                 if (frame.column2x == g_MenuKeyConfigCursor.col && frame.row2x == g_MenuKeyConfigCursor.row && g_MenuKeyConfigEditState != MENU_KEY_CONFIG_BROWSE) {
                     frame.textWidth = Menu_MeasureEncodedString2x((unsigned char *)&frame.encodedText);
                     frame.boxX = *(int *)((char *)g_MenuKeyConfigSlotPos + (frame.column2x * 0xA8 + frame.row2x * 0xC)) - 4;
-                    frame.boxY = frame.row2x * 0x18 + 0x7A;
+                    frame.boxY = frame.row2x * 24 + 122;
                     frame.boxWidth = frame.textWidth + 6;
-                    frame.boxHeight = 0x1A;
+                    frame.boxHeight = 26;
                     Menu_DrawRaisedBox2x(&frame.boxX, 0.1f);
                 }
                 Menu_DrawEncodedString2x(*(int *)((char *)g_MenuKeyConfigSlotPos + (frame.column2x * 0xA8 + frame.row2x * 0xC)), frame.row2x * 0x18 + 0x7C, (unsigned char *)&frame.encodedText, 7, 0.1f);
             }
         }
-        Menu_DrawMoreTextArrow2x(g_MenuKeyConfigCursor.col * 0xC8 + 0x9B, g_MenuKeyConfigCursor.row * 0x18 + 0x81, 0);
+        Menu_DrawMoreTextArrow2x(g_MenuKeyConfigCursor.col * 200 + 0x9B, g_MenuKeyConfigCursor.row * 24 + 0x81, 0);
         switch (g_MenuKeyConfigEditState) {
         case MENU_KEY_CONFIG_BROWSE:
             if ((g_MenuKeyConfigFlashTimer & 0x80) != 0) {
-                Menu_DrawEncodedString2x(0x1A, 0xD, g_MenuKeyConfigPromptLabels.rows[1], 7, 0.1f);
+                Menu_DrawEncodedString2x(26, 13, g_MenuKeyConfigPromptLabels.rows[1], 7, 0.1f);
             } else {
-                Menu_DrawEncodedString2x(0x1A, 0xD, g_MenuKeyConfigPromptLabels.rows[0], 7, 0.1f);
+                Menu_DrawEncodedString2x(26, 13, g_MenuKeyConfigPromptLabels.rows[0], 7, 0.1f);
             }
             break;
         case MENU_KEY_CONFIG_CAPTURE_KEYBOARD:
         case MENU_KEY_CONFIG_CAPTURE_JOYSTICK:
-            Menu_DrawEncodedString2x(0x1A, 0xD, g_MenuKeyConfigPromptLabels.rows[2], 7, 0.1f);
+            Menu_DrawEncodedString2x(26, 13, g_MenuKeyConfigPromptLabels.rows[2], 7, 0.1f);
         }
     } else {
         for (frame.windowIndex = 0; frame.windowIndex < 2; frame.windowIndex++) {
             Menu_DrawWindowFrame1x(&g_MenuKeyConfigWindowRects1x[frame.windowIndex], 0.2f);
         }
-        Menu_DrawEncodedString1x(0x64, 0x26, g_MenuKeyConfigPromptLabels.rows[17], 4, 0.1f);
-        Menu_DrawEncodedString1x(0xC8, 0x26, g_MenuKeyConfigPromptLabels.joystickTitle, 4, 0.1f);
-        for (frame.labelRow1x = 0; frame.labelRow1x < 0xE; frame.labelRow1x++) {
-            Menu_DrawEncodedString1x(frame.labelX >> 1, frame.labelRow1x * 0xC + 0x3A, g_MenuKeyConfigPromptLabels.rows[frame.labelRow1x + 3], 3, 0.1f);
+        Menu_DrawEncodedString1x(100, 38, g_MenuKeyConfigPromptLabels.rows[17], 4, 0.1f);
+        Menu_DrawEncodedString1x(200, 38, g_MenuKeyConfigPromptLabels.joystickTitle, 4, 0.1f);
+        for (frame.labelRow1x = 0; frame.labelRow1x < 14; frame.labelRow1x++) {
+            Menu_DrawEncodedString1x(frame.labelX >> 1, frame.labelRow1x * 12 + 0x3A, g_MenuKeyConfigPromptLabels.rows[frame.labelRow1x + 3], 3, 0.1f);
         }
         for (frame.column1x = 0; frame.column1x < 2; frame.column1x++) {
-            for (frame.row1x = 0; frame.row1x < 0xE; frame.row1x++) {
+            for (frame.row1x = 0; frame.row1x < 14; frame.row1x++) {
                 frame.bindSlot = 0;
                 while (*(int *)((char *)g_MenuKeyConfigSlotMasks + (frame.column1x * 0xA8 + frame.row1x * 0xC)) >> frame.bindSlot != 0) {
                     frame.bindSlot++;
@@ -338,26 +338,26 @@ void __cdecl InputConfig_ScreenFrame(int *exitFlag)
                 if (frame.column1x == g_MenuKeyConfigCursor.col && frame.row1x == g_MenuKeyConfigCursor.row && g_MenuKeyConfigEditState != MENU_KEY_CONFIG_BROWSE) {
                     frame.textWidth = Menu_MeasureEncodedString1x((unsigned char *)&frame.encodedText);
                     frame.boxX = (*(int *)((char *)g_MenuKeyConfigSlotPos + (frame.column1x * 0xA8 + frame.row1x * 0xC)) >> 1) - 2;
-                    frame.boxY = frame.row1x * 0xC + 0x39;
+                    frame.boxY = frame.row1x * 12 + 57;
                     frame.boxWidth = frame.textWidth + 3;
-                    frame.boxHeight = 0xD;
+                    frame.boxHeight = 13;
                     Menu_DrawRaisedBox1x(&frame.boxX, 0.1f);
                 }
                 Menu_DrawEncodedString1x(*(int *)((char *)g_MenuKeyConfigSlotPos + (frame.column1x * 0xA8 + frame.row1x * 0xC)) >> 1, frame.row1x * 0xC + 0x3A, (unsigned char *)&frame.encodedText, 7, 0.1f);
             }
         }
-        Menu_DrawMoreTextArrow1x(g_MenuKeyConfigCursor.col * 0x64 + 0x4D, g_MenuKeyConfigCursor.row * 0xC + 0x3D, 0);
+        Menu_DrawMoreTextArrow1x(g_MenuKeyConfigCursor.col * 100 + 0x4D, g_MenuKeyConfigCursor.row * 12 + 0x3D, 0);
         switch (g_MenuKeyConfigEditState) {
         case MENU_KEY_CONFIG_BROWSE:
             if ((g_MenuKeyConfigFlashTimer & 0x80) != 0) {
-                Menu_DrawEncodedString1x(0xD, 7, g_MenuKeyConfigPromptLabels.rows[1], 7, 0.1f);
+                Menu_DrawEncodedString1x(13, 7, g_MenuKeyConfigPromptLabels.rows[1], 7, 0.1f);
             } else {
-                Menu_DrawEncodedString1x(0xD, 7, g_MenuKeyConfigPromptLabels.rows[0], 7, 0.1f);
+                Menu_DrawEncodedString1x(13, 7, g_MenuKeyConfigPromptLabels.rows[0], 7, 0.1f);
             }
             break;
         case MENU_KEY_CONFIG_CAPTURE_KEYBOARD:
         case MENU_KEY_CONFIG_CAPTURE_JOYSTICK:
-            Menu_DrawEncodedString1x(0xD, 7, g_MenuKeyConfigPromptLabels.rows[2], 7, 0.1f);
+            Menu_DrawEncodedString1x(13, 7, g_MenuKeyConfigPromptLabels.rows[2], 7, 0.1f);
         }
     }
     switch (g_MenuKeyConfigEditState) {
@@ -393,7 +393,7 @@ void __cdecl InputConfig_ScreenFrame(int *exitFlag)
                 frame.bindSlot++;
             }
             frame.bindSlot--;
-            for (frame.actionRow = 0; frame.actionRow < 0xE; frame.actionRow++) {
+            for (frame.actionRow = 0; frame.actionRow < 14; frame.actionRow++) {
                 frame.bitIndex = 0;
                 while (*(int *)((char *)g_MenuKeyConfigSlotMasks + frame.actionRow * 0xC) >> frame.bitIndex != 0) {
                     frame.bitIndex++;
@@ -451,7 +451,7 @@ void __cdecl InputConfig_SaveToFile(void)
     fileHandle = OpenFileSimple(FILE_OPEN_CREATE, g_LoadMenuSlotBuffer);
     if (fileHandle != 0) {
         WriteFileData(1, &inputMode, (FileHandle *)fileHandle);
-        WriteFileData(0x12C, &g_InputBindings, (FileHandle *)fileHandle);
+        WriteFileData(300, &g_InputBindings, (FileHandle *)fileHandle);
         CloseFileEx((FileHandle *)fileHandle);
     }
 }
@@ -474,7 +474,7 @@ void __cdecl InputConfig_LoadFromFile(void)
     if (fileHandle != 0) {
         ReadFileData(1, &headerByte, (FileHandle *)fileHandle);
         if ((headerByte & 0xFF) == 1) {
-            ReadFileData(0x12C, &g_InputBindings, (FileHandle *)fileHandle);
+            ReadFileData(300, &g_InputBindings, (FileHandle *)fileHandle);
             g_MenuKeyConfigAssignTarget = 1;
         } else {
             Input_LoadKeyboardDefaults();

@@ -128,14 +128,14 @@ void __cdecl BattleFx_BlueGoblinPunchSetupTask(void)
     Battle_GetBoneWorldPos(g_BattleBlueGoblinPunchTargetIndex, g_BattleActorRecords[g_BattleBlueGoblinPunchTargetIndex].targetBone,
                            &task->pos.vx);
     rad = g_BattleActorRecords[g_BattleBlueGoblinPunchTargetIndex].radius + 0xE0;
-    if (rad > 0x4F2) {
+    if (rad > 1266) {
         rad = 0x4F2;
     }
     task->baseValue = rad;
     task->jitterRange = task->baseValue << 1;
     task->unitStep = -(task->pos.vy >> 1);
     task->rangeY = task->unitStep * 2 + task->unitStep;
-    task->streakLength = rad / 10 + 0x8C;
+    task->streakLength = rad / 10 + 140;
     task->seed = rad / 8 + 0x37;
 }
 
@@ -165,16 +165,16 @@ void __cdecl BattleFx_BlueGoblinPunchTimelineTask(void)
         pNewTask->pos.vx = task->pos.vx + rand() % task->jitterRange - task->jitterOffset;
         pNewTask->pos.vy = task->pos.vy - rand() % task->rangeY + task->offsetY;
         pNewTask->pos.vz = task->pos.vz + rand() % task->jitterRange - task->jitterOffset;
-        lineIdx = (task->jitterOffset << 0xC) / 0x190;
-        vertexIdx = rand() % 0x1000 + 0x800;
-        pNewTask->scaledOffset = lineIdx * vertexIdx >> 0xC;
+        lineIdx = (task->jitterOffset << 12) / 400;
+        vertexIdx = rand() % 4096 + 2048;
+        pNewTask->scaledOffset = lineIdx * vertexIdx >> 12;
         pNewTask->step = task->step;
     }
-    if (task->step >= 8 && task->step <= 0xA) {
+    if (task->step >= 8 && task->step <= 10) {
         if (task->step == 9) {
             BattleFx_StartScreenFlashRamp(1);
         }
-        if (task->step == 0xA) {
+        if (task->step == 10) {
             BattleFx_FadeOutScreenFlashRamp(4);
         }
         vertexIdx = g_BattleBlueGoblinPunchStreakCount;
@@ -183,7 +183,7 @@ void __cdecl BattleFx_BlueGoblinPunchTimelineTask(void)
         baseJitX = rand() % task->jitterRange - task->jitterOffset;
         jitterY = rand() % task->jitterRange - task->jitterOffset;
         currBaseJitZ = rand() % task->jitterRange - task->jitterOffset;
-        for (lineIdx = 0; lineIdx < 0x12; lineIdx++) {
+        for (lineIdx = 0; lineIdx < 18; lineIdx++) {
             ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos = task->pos;
             nx.vx = rand() % task->jitterRange - task->jitterOffset + baseJitX;
             nx.vy = rand() % task->jitterRange - task->jitterOffset + jitterY;
@@ -191,23 +191,23 @@ void __cdecl BattleFx_BlueGoblinPunchTimelineTask(void)
             NormalizeVectorFixed(&nx, &nx);
             bitMix = nx.vx + nx.vy + nx.vz;
             nextSpeed = task->streakOffsetBase + (bitMix & 0x1F);
-            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetX = nx.vx * nextSpeed >> 0xC;
-            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetY = nx.vy * nextSpeed >> 0xC;
-            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetZ = nx.vz * nextSpeed >> 0xC;
+            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetX = nx.vx * nextSpeed >> 12;
+            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetY = nx.vy * nextSpeed >> 12;
+            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetZ = nx.vz * nextSpeed >> 12;
             if (bitMix < 0) {
                 nextSpeed = task->seed >> 1;
             } else {
                 nextSpeed = 0;
             }
             nextSpeed = (nextSpeed + ((task->seed + (bitMix & 0xF)) + (nx.vx & 0xF)));
-            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityX = nx.vx * nextSpeed >> 0xC;
-            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityY = nx.vy * nextSpeed >> 0xC;
-            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityZ = nx.vz * nextSpeed >> 0xC;
+            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityX = nx.vx * nextSpeed >> 12;
+            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityY = nx.vy * nextSpeed >> 12;
+            ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityZ = nx.vz * nextSpeed >> 12;
             ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos.vx += ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetY;
             ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos.vy += ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityZ;
             ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos.vz += ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetX;
             vertexIdx++;
-            if (vertexIdx >= 0xDE) {
+            if (vertexIdx >= 222) {
                 vertexIdx = 0;
             }
         }
@@ -216,12 +216,12 @@ void __cdecl BattleFx_BlueGoblinPunchTimelineTask(void)
     if (task->step == 9) {
         pNewTask = (BattleFxGoblinPunchParticleSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueGoblinPunchAnimatedSpriteTask);
         pNewTask->pos = task->pos;
-        pNewTask->scaledOffset = (task->jitterOffset << 0xC) / 0x15E;
+        pNewTask->scaledOffset = (task->jitterOffset << 12) / 350;
     }
     if (task->step == 9) {
         Battle_PostActorHitOrHurtMessage(g_BattleBlueGoblinPunchTargetIndex);
     }
-    if (task->step >= 0x18) {
+    if (task->step >= 24) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -291,7 +291,7 @@ void __cdecl BattleFx_BlueGoblinPunchStreakLinesTask(void)
     Gfx_ShadePsxVertexColor(&drawState8->baseColor1.rgb, newBlend, &drawState8->shadedColor1.rgb);
     drawState8->shadedColor0.rgb.cd = 0x52;
     vertexIdx = task->ringIndex;
-    for (streakIdx8 = 0; streakIdx8 < 0x12; streakIdx8++) {
+    for (streakIdx8 = 0; streakIdx8 < 18; streakIdx8++) {
         drawState8->pos.x = ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos.vx + ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetX;
         drawState8->pos.y = ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos.vy + ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetY;
         drawState8->pos.z = ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos.vz + ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].offsetZ;
@@ -307,7 +307,7 @@ void __cdecl BattleFx_BlueGoblinPunchStreakLinesTask(void)
             ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].pos.vz += ((BattleFxBlueGoblinStreakVertex *)&g_BattleBlueGoblinPunchStreakVertices)[vertexIdx].velocityZ;
         }
         vertexIdx++;
-        if (vertexIdx >= 0xDE) {
+        if (vertexIdx >= 222) {
             vertexIdx = 0;
         }
     }
@@ -334,7 +334,7 @@ void __cdecl BattleFx_BlueGoblinPunchAnimatedSpriteTask(void)
     g_BattleBlueGoblinPunchSpriteReqs[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueGoblinPunchLoadedResTable);
     g_BattleBlueGoblinPunchSpriteReqs[1].drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueGoblinPunchLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueGoblinPunchSpriteReqs[1], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (q->frame >= 0xB) {
+    if (q->frame >= 11) {
         q->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

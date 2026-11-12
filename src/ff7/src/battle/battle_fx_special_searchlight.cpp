@@ -116,7 +116,7 @@ void __cdecl BattleFx_SpecialEnterSearchlight(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x400, 0xA);
+    Battle_StartFixedPointRamp(0x400, 10);
     Battle_PlaySfxPannedToActor(0x62, (short)actorIdx, 0x40);
 }
 
@@ -181,18 +181,18 @@ void __cdecl BattleFx_SpecialSearchlightTimelineTask(void)
             subSweep->startY = taskPtr->startY;
             subSweep->startZ = taskPtr->startZ;
             subSweep->angle = ArcTangentFixed(taskPtr->endX - taskPtr->startX, taskPtr->endZ - taskPtr->startZ);
-            subSweep->scaledLength = curLength * 0x1500 / 0xAF0;
+            subSweep->scaledLength = curLength * 5376 / 2800;
             subSweep->variant = i8;
             subSweep->pathLength = curLength;
         }
     }
-    if (taskPtr->step == 0x10) {
+    if (taskPtr->step == 16) {
         Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x28) {
+    if (taskPtr->step == 40) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
     }
 }
 
@@ -221,13 +221,13 @@ void __cdecl BattleFx_SpecialSearchlightSweepModelTask(void)
 
     frame.sweepSlot = (BattleFxSearchlightSweepModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.direction = (frame.sweepSlot->variant >> 1) * 2 - 1;
-    frame.rotX.vx = SinFixed(frame.sweepSlot->frameCounter << 8) / 0x28 * frame.direction;
+    frame.rotX.vx = SinFixed(frame.sweepSlot->frameCounter << 8) / 40 * frame.direction;
     frame.baseRotX.vx = frame.rotX.vx;
     frame.rotX.vy = (SinFixed(frame.sweepSlot->frameCounter << 7) >> 5) * frame.direction;
     frame.baseRotX.vy = frame.rotX.vy;
     frame.rotX.vz = 0;
     frame.baseRotX.vz = frame.rotX.vz;
-    frame.rotX.vx -= 0x400;
+    frame.rotX.vx -= 0x400 /* 90 deg */;
     RotMatrix(&frame.rotX, &frame.rotMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialSearchlightBasisMatrix, &frame.rotMatrix, &frame.rotMatrix);
     frame.scaleVec.vy = frame.sweepSlot->scaledLength;
@@ -249,7 +249,7 @@ void __cdecl BattleFx_SpecialSearchlightSweepModelTask(void)
     if ((frame.sweepSlot->variant % 2) == 0) {
         frame.spriteFrameWord = 0x1000 - (g_BattleSpecialSearchlightStep << 5);
     } else {
-        frame.spriteFrameWord = 0x1000 - g_BattleSpecialSearchlightStep * 0x18;
+        frame.spriteFrameWord = 0x1000 - g_BattleSpecialSearchlightStep * 24;
     }
     ((BattleFxModelDraw *)(g_BattleSpecialSearchlightSpriteData + 0x10))->fadeLevel = *(short *)&frame.spriteFrameWord;
     g_BattleSpecialSearchlightDrawListHandle = BattleFx_SubmitModelDraw(((BattleFxModelDraw *)(g_BattleSpecialSearchlightSpriteData + 0x10)), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSearchlightDrawListHandle);
@@ -279,11 +279,11 @@ void __cdecl BattleFx_SpecialSearchlightSweepModelTask(void)
     if (frame.sweepSlot->frameCounter < 8) {
         g_BattleSpecialSearchlightStep++;
     }
-    if (frame.sweepSlot->frameCounter > 0x18) {
+    if (frame.sweepSlot->frameCounter > 24) {
         g_BattleSpecialSearchlightStep--;
     }
     (frame.sweepSlot->frameCounter)++;
-    if (frame.sweepSlot->frameCounter == 0x20) {
+    if (frame.sweepSlot->frameCounter == 32) {
         frame.sweepSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -299,7 +299,7 @@ void __cdecl BattleFx_SpecialSearchlightTrailSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     ((BattleFxSpriteRequest *)g_BattleSpecialSearchlightSpriteData)->spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialSearchlightLoadedRes);
     ((BattleFxSpriteRequest *)g_BattleSpecialSearchlightSpriteData)->drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialSearchlightLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800 /* 1.5 */, 0);
     ((BattleFxSpriteRequest *)g_BattleSpecialSearchlightSpriteData)->frame = task->frameCounter;
     g_BattleSpecialSearchlightDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSearchlightSpriteData, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSearchlightDrawListHandle);
     if (g_BattleIsPaused == 0 && ((BattleFxSpriteRequest *)g_BattleSpecialSearchlightSpriteData)->spriteGroup != 0) {

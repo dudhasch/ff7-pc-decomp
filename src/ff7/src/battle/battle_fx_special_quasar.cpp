@@ -212,22 +212,22 @@ void __cdecl BattleFx_SpecialQuasarTimelineTask(void)
         s->posZ = pCur->posZ;
         g_BattleFxTimelineState.startValue = 0x1000;
     }
-    if (pCur->step == 0xD) {
+    if (pCur->step == 13) {
         BattleFx_StartScreenFlashRamp(2);
     }
-    if (pCur->step == 0xF) {
-        BattleFx_FadeOutScreenFlashRamp(0xF);
+    if (pCur->step == 15) {
+        BattleFx_FadeOutScreenFlashRamp(15);
     }
-    if (pCur->step == 0x46) {
-        for (i8 = 0; i8 < 0xA; i8++) {
+    if (pCur->step == 70) {
+        for (i8 = 0; i8 < 10; i8++) {
             if ((g_BattleSpecialQuasarTargetMask & 1 << i8) != 0) {
                 Battle_PostActorHitOrHurtMessage(i8);
             }
         }
     }
     (pCur->step)++;
-    if (pCur->step == 0x50) {
-        Battle_StartFixedPointRamp(0, 0x14);
+    if (pCur->step == 80) {
+        Battle_StartFixedPointRamp(0, 20);
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -250,9 +250,9 @@ void __cdecl BattleFx_SpecialQuasarPulsingSpriteSpawnBeamTask(void)
 #pragma pack(pop)
 
     frame.pulseSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialQuasarColor2.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x14, g_BattleSpecialQuasarModelTable);
-    g_BattleSpecialQuasarColor2.spriteObject = Gfx_ModelTableGetSpriteObject(0x14, g_BattleSpecialQuasarModelTable);
-    BattleFx_InstallBillboardMatrix(&frame.pulseSlot->posX, (SinFixed(frame.pulseSlot->frameCounter * 0x300) << 0xB >> 0xC) + 0x3000, 0);
+    g_BattleSpecialQuasarColor2.spriteRecord = Gfx_ModelTableGetLoadedRecord(20, g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarColor2.spriteObject = Gfx_ModelTableGetSpriteObject(20, g_BattleSpecialQuasarModelTable);
+    BattleFx_InstallBillboardMatrix(&frame.pulseSlot->posX, (SinFixed(frame.pulseSlot->frameCounter * 0x300) << 11 >> 12) + 0x3000, 0);
     g_BattleSpecialQuasarColor3.spriteFrame = g_BattleSpecialQuasarPulseSpriteFrame;
     g_BattleSpecialQuasarColor3.blue = g_BattleSpecialQuasarGlowLevel << 3;
     g_BattleSpecialQuasarColor3.green = g_BattleSpecialQuasarColor3.blue;
@@ -261,16 +261,16 @@ void __cdecl BattleFx_SpecialQuasarPulsingSpriteSpawnBeamTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.pulseSlot->frameCounter < 0xF) {
-        frame.pulseSlot->posY -= 0x64;
+    if (frame.pulseSlot->frameCounter < 15) {
+        frame.pulseSlot->posY -= 100;
     }
-    if (frame.pulseSlot->frameCounter == 0xF) {
+    if (frame.pulseSlot->frameCounter == 15) {
         g_BattleSpecialQuasarPulseSpriteFrame++;
         frame.spawnSlot = (BattleFxQuasarBeamTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialQuasarGrowingFadeSpriteTask);
         frame.spawnSlot->posX = frame.pulseSlot->posX;
         frame.spawnSlot->posY = frame.pulseSlot->posY;
         frame.spawnSlot->posZ = frame.pulseSlot->posZ;
-        frame.spawnSlot->scale = 0x800;
+        frame.spawnSlot->scale = 0x800 /* 0.5 */;
         frame.spawnSlot = (BattleFxQuasarBeamTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialQuasarBeamCoreTask);
         frame.spawnSlot->posX = frame.pulseSlot->posX;
         frame.spawnSlot->posY = frame.pulseSlot->posY;
@@ -280,24 +280,24 @@ void __cdecl BattleFx_SpecialQuasarPulsingSpriteSpawnBeamTask(void)
         frame.dirX.vz = g_BattleSpecialQuasarCentroidZ - frame.pulseSlot->posZ;
         Gte_BuildLookBasisFromDirection(&frame.dirX.vx, (short *)&g_BattleSpecialQuasarBeamBasis);
         g_BattleSpecialQuasarBeamLength = SqrtToInt(frame.dirX.vx * frame.dirX.vx + frame.dirX.vy * frame.dirX.vy + frame.dirX.vz * frame.dirX.vz);
-        for (frame.beamIndex = 0; frame.beamIndex < 0xA; frame.beamIndex++) {
+        for (frame.beamIndex = 0; frame.beamIndex < 10; frame.beamIndex++) {
             frame.spawnSlot = (BattleFxQuasarBeamTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialQuasarBeamAlignedSpriteTask);
             frame.spawnSlot->posX = frame.pulseSlot->posX;
             frame.spawnSlot->posY = frame.pulseSlot->posY;
             frame.spawnSlot->posZ = frame.pulseSlot->posZ;
-            frame.spawnSlot->scale = (g_BattleSpecialQuasarBeamLength << 0xC) / 0x7D0;
+            frame.spawnSlot->scale = (g_BattleSpecialQuasarBeamLength << 12) / 2000;
             frame.spawnSlot->rotX = (rand() % 1024) - 0x200;
             frame.spawnSlot->rotY = (rand() % 1024) + 0x200;
-            frame.spawnSlot->rotZ = 0x400;
+            frame.spawnSlot->rotZ = 0x400 /* 90 deg */;
             frame.spawnSlot->timer = (rand() % 8);
             frame.spawnSlot->modelIndex = (frame.beamIndex % 2);
         }
     }
-    if (frame.pulseSlot->frameCounter > 0xF) {
+    if (frame.pulseSlot->frameCounter > 15) {
         g_BattleSpecialQuasarGlowLevel--;
     }
     (frame.pulseSlot->frameCounter)++;
-    if (frame.pulseSlot->frameCounter == 0x1E) {
+    if (frame.pulseSlot->frameCounter == 30) {
         frame.pulseSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -322,7 +322,7 @@ void __cdecl BattleFx_SpecialQuasarBeamAlignedSpriteTask(void)
 #pragma pack(pop)
 
     frame.alignedSlot = (BattleFxQuasarBeamAlignedSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.alignedSlot->frameCounter < 0x2F) {
+    if (frame.alignedSlot->frameCounter < 47) {
         frame.rampValue = 8;
     } else {
         frame.rampValue = 0x37 - frame.alignedSlot->frameCounter;
@@ -331,7 +331,7 @@ void __cdecl BattleFx_SpecialQuasarBeamAlignedSpriteTask(void)
     RotMatrixXYZ(&frame.alignedSlot->rotation, &frame.rotMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialQuasarBeamBasis, &frame.rotMatrix, &frame.rotMatrix);
     g_BattleSpecialQuasarAlignedScaleY = frame.alignedSlot->scaleY;
-    g_BattleSpecialQuasarAlignedScaleZ = 0x2000;
+    g_BattleSpecialQuasarAlignedScaleZ = 0x2000 /* 2.0 */;
     g_BattleSpecialQuasarAlignedScaleX = g_BattleSpecialQuasarAlignedScaleZ;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecialQuasarAlignedScaleX);
     frame.rotMatrix.t[0] = frame.alignedSlot->posX;
@@ -341,11 +341,11 @@ void __cdecl BattleFx_SpecialQuasarBeamAlignedSpriteTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     if (frame.alignedSlot->modelIndex == 0) {
-        g_BattleSpecialQuasarMatrix.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x17, g_BattleSpecialQuasarModelTable);
-        g_BattleSpecialQuasarMatrix.spriteObject = Gfx_ModelTableGetSpriteObject(0x17, g_BattleSpecialQuasarModelTable);
+        g_BattleSpecialQuasarMatrix.spriteRecord = Gfx_ModelTableGetLoadedRecord(23, g_BattleSpecialQuasarModelTable);
+        g_BattleSpecialQuasarMatrix.spriteObject = Gfx_ModelTableGetSpriteObject(23, g_BattleSpecialQuasarModelTable);
     } else {
-        g_BattleSpecialQuasarMatrix.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x18, g_BattleSpecialQuasarModelTable);
-        g_BattleSpecialQuasarMatrix.spriteObject = Gfx_ModelTableGetSpriteObject(0x18, g_BattleSpecialQuasarModelTable);
+        g_BattleSpecialQuasarMatrix.spriteRecord = Gfx_ModelTableGetLoadedRecord(24, g_BattleSpecialQuasarModelTable);
+        g_BattleSpecialQuasarMatrix.spriteObject = Gfx_ModelTableGetSpriteObject(24, g_BattleSpecialQuasarModelTable);
     }
     g_BattleSpecialQuasarColor1.spriteFrame = g_BattleSpecialQuasarModelIndicesTable.modelIndices[frame.alignedSlot->modelIndex][frame.alignedSlot->timer];
     g_BattleSpecialQuasarColor1.blue = frame.alphaLevel << 4;
@@ -355,13 +355,13 @@ void __cdecl BattleFx_SpecialQuasarBeamAlignedSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.timerLimit = (frame.alignedSlot->modelIndex != 0 ? 0xFFFFFFF8 : 0) + 0x14;
+    frame.timerLimit = (frame.alignedSlot->modelIndex != 0 ? 0xFFFFFFF8 : 0) + 20;
     (frame.alignedSlot->timer)++;
     if (frame.alignedSlot->timer == frame.timerLimit) {
         frame.alignedSlot->timer -= 4;
     }
     (frame.alignedSlot->frameCounter)++;
-    if (frame.alignedSlot->frameCounter == 0x37) {
+    if (frame.alignedSlot->frameCounter == 55) {
         frame.alignedSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -391,7 +391,7 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
     frame.angleX.vy = frame.angleX.vz;
     frame.angleX.vx = frame.angleX.vy;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecialQuasarCoreScaleZ = 0x1000;
+    g_BattleSpecialQuasarCoreScaleZ = 0x1000 /* 1.0 */;
     g_BattleSpecialQuasarCoreScaleY = g_BattleSpecialQuasarCoreScaleZ;
     g_BattleSpecialQuasarCoreScaleX = g_BattleSpecialQuasarCoreScaleY;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecialQuasarCoreScaleX);
@@ -403,13 +403,13 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
     SetTransMatrix(&frame.combinedMatrix);
     g_BattleSpecialQuasarModelReq.flags = 8;
     g_BattleSpecialQuasarModelReq.fadeLevel = g_BattleSpecialQuasarCoreFade << 4;
-    g_BattleSpecialQuasarModelReq.modelGroup = Gfx_ModelTableGetRenderObject(g_BattleSpecialQuasarModelIndices4[frame.coreSlot->frameCounter % 0xA], g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarModelReq.modelGroup = Gfx_ModelTableGetRenderObject(g_BattleSpecialQuasarModelIndices4[frame.coreSlot->frameCounter % 10], g_BattleSpecialQuasarModelTable);
     g_BattleSpecialQuasarDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialQuasarModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialQuasarDrawListHandle);
     frame.angleX.vx = 0;
     frame.angleX.vy = frame.coreSlot->frameCounter << 9;
     frame.angleX.vz = frame.coreSlot->frameCounter << 8;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecialQuasarCoreScaleZ = 0x1000;
+    g_BattleSpecialQuasarCoreScaleZ = 0x1000 /* 1.0 */;
     g_BattleSpecialQuasarCoreScaleY = g_BattleSpecialQuasarCoreScaleZ;
     g_BattleSpecialQuasarCoreScaleX = g_BattleSpecialQuasarCoreScaleY;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecialQuasarCoreScaleX);
@@ -419,14 +419,14 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    g_BattleSpecialQuasarModelReq.modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_BattleSpecialQuasarModelTable);
-    g_BattleSpecialQuasarModelReq.fadeLevel = (((rand() % 64) + 0x40) * g_BattleSpecialQuasarCoreFade) / 8;
+    g_BattleSpecialQuasarModelReq.modelGroup = Gfx_ModelTableGetRenderObject(11, g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarModelReq.fadeLevel = (((rand() % 64) + 64) * g_BattleSpecialQuasarCoreFade) / 8;
     g_BattleSpecialQuasarDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialQuasarModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialQuasarDrawListHandle);
     frame.angleX.vx = 0;
     frame.angleX.vy = frame.coreSlot->frameCounter << 6;
     frame.angleX.vz = frame.coreSlot->frameCounter << 6;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecialQuasarCoreScaleZ = 0x1000;
+    g_BattleSpecialQuasarCoreScaleZ = 0x1000 /* 1.0 */;
     g_BattleSpecialQuasarCoreScaleY = g_BattleSpecialQuasarCoreScaleZ;
     g_BattleSpecialQuasarCoreScaleX = g_BattleSpecialQuasarCoreScaleY;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecialQuasarCoreScaleX);
@@ -437,7 +437,7 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecialQuasarModelReq.fadeLevel = 0x1000 - (g_BattleSpecialQuasarCoreFade << 9);
+    g_BattleSpecialQuasarModelReq.fadeLevel = 4096 - (g_BattleSpecialQuasarCoreFade << 9);
     g_BattleSpecialQuasarModelReq.flags = 0x80;
     g_BattleSpecialQuasarModelReq.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialQuasarModelTable);
     g_BattleSpecialQuasarDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialQuasarModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialQuasarDrawListHandle);
@@ -447,7 +447,7 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
     if (frame.coreSlot->frameCounter < 8) {
         g_BattleSpecialQuasarCoreFade++;
     }
-    if (frame.coreSlot->frameCounter > 0x2A) {
+    if (frame.coreSlot->frameCounter > 42) {
         g_BattleSpecialQuasarCoreFade--;
     }
     if ((frame.coreSlot->frameCounter % 2) == 0) {
@@ -468,7 +468,7 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
         SetTransMatrix(&frame.rotMatrix);
         frame.pointX.vx = 0;
         frame.pointX.vy = 0;
-        frame.pointX.vz = g_BattleSpecialQuasarBeamLength / 0xF;
+        frame.pointX.vz = g_BattleSpecialQuasarBeamLength / 15;
         RotTransPointToInt16(&frame.pointX, &frame.spawnSlot->rotation.vx, &frame.rotPoint);
     }
     if (frame.coreSlot->frameCounter % 3 == 0) {
@@ -477,7 +477,7 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
         frame.spawnSlot->posY = frame.coreSlot->posY;
         frame.spawnSlot->posZ = frame.coreSlot->posZ;
         frame.spawnSlot->variant = rand() % 6;
-        frame.spawnSlot->scale = 0x800;
+        frame.spawnSlot->scale = 0x800 /* 0.5 */;
         frame.angleX.vx = (rand() % 512) - 0x100;
         frame.angleX.vy = (rand() % 512) - 0x100;
         frame.angleX.vz = 0;
@@ -490,11 +490,11 @@ void __cdecl BattleFx_SpecialQuasarBeamCoreTask(void)
         SetTransMatrix(&frame.rotMatrix);
         frame.pointX.vx = 0;
         frame.pointX.vy = 0;
-        frame.pointX.vz = g_BattleSpecialQuasarBeamLength / 0xF;
+        frame.pointX.vz = g_BattleSpecialQuasarBeamLength / 15;
         RotTransPointToInt16(&frame.pointX, &frame.spawnSlot->rotation.vx, &frame.rotPoint);
     }
     (frame.coreSlot->frameCounter)++;
-    if (frame.coreSlot->frameCounter == 0x32) {
+    if (frame.coreSlot->frameCounter == 50) {
         frame.coreSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -510,8 +510,8 @@ void __cdecl BattleFx_SpecialQuasarDriftingFadeSpriteTask(void)
     int raw;
 
     taskPtr = (BattleFxQuasarDriftTask *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialQuasarModelIndicesTable.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x16, g_BattleSpecialQuasarModelTable);
-    g_BattleSpecialQuasarModelIndicesTable.spriteObject = Gfx_ModelTableGetSpriteObject(0x16, g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarModelIndicesTable.spriteRecord = Gfx_ModelTableGetLoadedRecord(22, g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarModelIndicesTable.spriteObject = Gfx_ModelTableGetSpriteObject(22, g_BattleSpecialQuasarModelTable);
     if (taskPtr->fadeStep < 7) {
         raw = 8;
     } else {
@@ -530,7 +530,7 @@ void __cdecl BattleFx_SpecialQuasarDriftingFadeSpriteTask(void)
     taskPtr->posY += taskPtr->velY;
     taskPtr->posZ += taskPtr->velZ;
     (taskPtr->fadeStep)++;
-    if (taskPtr->fadeStep == 0xF) {
+    if (taskPtr->fadeStep == 15) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -557,7 +557,7 @@ void __cdecl BattleFx_SpecialQuasarBeamSpinModelTask(void)
 
     frame.spinModelSlot = (BattleFxQuasarBeamSpinModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.animScale = 0;
-    if (frame.spinModelSlot->frameCounter < 0xC) {
+    if (frame.spinModelSlot->frameCounter < 12) {
         frame.rampValue = 8;
     } else {
         frame.rampValue = 0x14 - frame.spinModelSlot->frameCounter;
@@ -587,7 +587,7 @@ void __cdecl BattleFx_SpecialQuasarBeamSpinModelTask(void)
     frame.spinModelSlot->posY += frame.spinModelSlot->velocityY;
     frame.spinModelSlot->posZ += frame.spinModelSlot->velocityZ;
     frame.spinModelSlot->scaleZ += 0x80;
-    if (frame.spinModelSlot->posY > -0x64) {
+    if (frame.spinModelSlot->posY > -100) {
         frame.spawnSlot = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialQuasarExpandingSpinModelTask);
         frame.spawnSlot->posX = frame.spinModelSlot->posX;
         frame.spawnSlot->posY = 0;
@@ -595,7 +595,7 @@ void __cdecl BattleFx_SpecialQuasarBeamSpinModelTask(void)
         frame.spinModelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.spinModelSlot->frameCounter)++;
-    if (frame.spinModelSlot->frameCounter == 0x14) {
+    if (frame.spinModelSlot->frameCounter == 20) {
         frame.spinModelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -618,7 +618,7 @@ void __cdecl BattleFx_SpecialQuasarExpandingSpinModelTask(void)
 #pragma pack(pop)
 
     frame.spinTask = (BattleFxQuasarSpinTask *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialQuasarAnimParams.expandModelGroup = Gfx_ModelTableGetRenderObject(0x12, g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarAnimParams.expandModelGroup = Gfx_ModelTableGetRenderObject(18, g_BattleSpecialQuasarModelTable);
     frame.angleX.vx = 0;
     frame.angleX.vy = frame.spinTask->progress << 8;
     frame.angleX.vz = 0;
@@ -653,8 +653,8 @@ void __cdecl BattleFx_SpecialQuasarGrowingFadeSpriteTask(void)
     BattleFxQuasarFadeSpriteTask *task;
 
     task = (BattleFxQuasarFadeSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialQuasarTable.spriteRecord = Gfx_ModelTableGetLoadedRecord(0x15, g_BattleSpecialQuasarModelTable);
-    g_BattleSpecialQuasarTable.spriteObject = Gfx_ModelTableGetSpriteObject(0x15, g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarTable.spriteRecord = Gfx_ModelTableGetLoadedRecord(21, g_BattleSpecialQuasarModelTable);
+    g_BattleSpecialQuasarTable.spriteObject = Gfx_ModelTableGetSpriteObject(21, g_BattleSpecialQuasarModelTable);
     BattleFx_InstallBillboardMatrix(&task->posX, (short)task->scale, 0);
     g_BattleSpecialQuasarColor2.blue = g_BattleSpecialQuasarGlowLevel << 3;
     g_BattleSpecialQuasarColor2.green = g_BattleSpecialQuasarColor2.blue;
@@ -663,10 +663,10 @@ void __cdecl BattleFx_SpecialQuasarGrowingFadeSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->scale += 0x800;
+    task->scale += 0x800 /* 0.5 */;
     g_BattleSpecialQuasarGlowLevel--;
     (task->step)++;
-    if (task->step == 0x10) {
+    if (task->step == 16) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

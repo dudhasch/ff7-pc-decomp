@@ -119,7 +119,7 @@ void __cdecl BattleFx_SpecialBeginVacuum(int targetMask, int actorIdx)
     short i;
 
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 4, BattleFx_SpecialSpawnVacuumPerTarget);
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleSpecVacuumSegmentRecords.segments[i].active = 0;
     }
     Battle_PlaySfxPannedToActor(0x61, (short)actorIdx, 0x40);
@@ -174,7 +174,7 @@ void __cdecl BattleFx_SpecialVacuumTimelineTask(void)
         SetTransMatrix(&g_BattleSpecVacuumSegmentRecords.rotMatrixA);
         (g_BattleSpecVacuumPointOffset.offsetX) = 0;
         g_BattleSpecVacuumPointOffset.offsetY = 0;
-        g_BattleSpecVacuumDistance = 0x960;
+        g_BattleSpecVacuumDistance = 2400;
         RotTransPointToInt16((short *)&g_BattleSpecVacuumPointOffset, (short *)&g_BattleSpecVacuumPointOffset, &zOut);
         child = (BattleFxVacuumChildSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialVacuumJitterModelTask);
         child->posX = pCurrent->startX + (g_BattleSpecVacuumPointOffset.offsetX);
@@ -184,12 +184,12 @@ void __cdecl BattleFx_SpecialVacuumTimelineTask(void)
         child->roll = 0;
         child->pitch = 0;
     }
-    if (pCurrent->step > 0 && pCurrent->step < 0x18) {
+    if (pCurrent->step > 0 && pCurrent->step < 24) {
         child = (BattleFxVacuumChildSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialVacuumDecelSegmentSpawnerTask);
         g_BattleSpecVacuumAngle = rand() % 0x1000;
-        child->velocityX = CosFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 0xC;
-        child->velocityZ = SinFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 0xC;
-        child->velocityY = 0x1388;
+        child->velocityX = CosFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 12;
+        child->velocityZ = SinFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 12;
+        child->velocityY = 5000;
         child->posX = pCurrent->startX;
         child->posY = pCurrent->posY;
         child->posZ = pCurrent->startZ;
@@ -199,9 +199,9 @@ void __cdecl BattleFx_SpecialVacuumTimelineTask(void)
         for (spriteIndex = 0; spriteIndex < 2; spriteIndex++) {
             child = (BattleFxVacuumChildSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialVacuumDecelSpriteTask);
             g_BattleSpecVacuumAngle = rand() % 0x1000;
-            child->velocityX = CosFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 0xC;
-            child->velocityZ = SinFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 0xC;
-            child->velocityY = 0x1388;
+            child->velocityX = CosFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 12;
+            child->velocityZ = SinFixed(g_BattleSpecVacuumAngle) * 0xBB8 >> 12;
+            child->velocityY = 5000;
             child->posX = pCurrent->startX;
             child->posY = pCurrent->posY;
             child->posZ = pCurrent->startZ;
@@ -210,13 +210,13 @@ void __cdecl BattleFx_SpecialVacuumTimelineTask(void)
             child->pitch = 0;
         }
     }
-    if (pCurrent->step == 0x14) {
-        BattleFx_HitMarkSpawnScriptAtActorBone(pCurrent->actorIndex, 0x31, 0x4000);
+    if (pCurrent->step == 20) {
+        BattleFx_HitMarkSpawnScriptAtActorBone(pCurrent->actorIndex, 0x31, 0x4000 /* 4.0 */);
         Battle_PostActorHitOrHurtMessage(pCurrent->actorIndex);
     }
     (pCurrent->step)++;
-    if (pCurrent->step >= 0x1E && sum == 0) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (pCurrent->step >= 30 && sum == 0) {
+        Battle_StartFixedPointRamp(0, 10);
         pCurrent->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -230,7 +230,7 @@ int __cdecl BattleFx_SpecialVacuumDrawLiveSegmentRecords(void)
     int i, liveCount;
 
     liveCount = 0;
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSpecVacuumSegmentRecords.segments[i].active != 0) {
             BattleFx_SpecialVacuumDrawSegmentRecord(&g_BattleSpecVacuumSegmentRecords.segments[i]);
             liveCount++;
@@ -264,8 +264,8 @@ void __cdecl BattleFx_SpecialVacuumDrawSegmentRecord(BattleFxVacuumSegment *segm
 #pragma pack(pop)
 
     frame.colorWord = 0x3A000000;
-    frame.spreadA = (segment->segmentIndex + 1) * 0x1E + 0x1E;
-    frame.spreadB = segment->segmentIndex * 0x1E + 0x1E;
+    frame.spreadA = (segment->segmentIndex + 1) * 30 + 30;
+    frame.spreadB = segment->segmentIndex * 30 + 30;
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
@@ -284,7 +284,7 @@ void __cdecl BattleFx_SpecialVacuumDrawSegmentRecord(BattleFxVacuumSegment *segm
     frame.packetCursor = (BattleFxVacuumSegmentRecordPacketCursor *)g_BattleSpecVacuumPacketCursor;
     frame.quadDepth = Gfx_TransformQuadReturnDepth(&frame.pointAX, &frame.pointBX, &frame.pointDX, &frame.pointCX, &frame.transformOutB, &frame.transformOutA);
     if (frame.quadDepth > 0) {
-        frame.colorWord += (8 - segment->segmentIndex) * 0x101010;
+        frame.colorWord += (8 - segment->segmentIndex) * 1052688;
         frame.packetCursor->tag = 0x8000000;
         frame.packetCursor->color2 = frame.colorWord - 0x101010;
         frame.packetCursor->color0 = frame.packetCursor->color2;
@@ -331,7 +331,7 @@ void __cdecl BattleFx_SpecialVacuumDecelSpriteTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     RotTransPointToInt16(&frame.velocityX, (short *)&frame.velocityX, &frame.pointDepth);
-    BattleFx_InstallBillboardMatrix(&frame.velocityX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.velocityX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecVacuumSpriteReq.frame = (frame.spriteSlot->frameCounter % 2);
     g_BattleSpecVacuumPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecVacuumSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecVacuumPacketCursor);
     if (g_BattleIsPaused != 0) {
@@ -339,9 +339,9 @@ void __cdecl BattleFx_SpecialVacuumDecelSpriteTask(void)
     }
     frame.spriteSlot->velocityX += (short)((0 - frame.spriteSlot->velocityX) / 4);
     frame.spriteSlot->velocityZ += (short)((0 - frame.spriteSlot->velocityZ) / 4);
-    frame.spriteSlot->velocityY -= 0x12C;
+    frame.spriteSlot->velocityY -= 300;
     (frame.spriteSlot->frameCounter)++;
-    if (frame.spriteSlot->frameCounter == 0xA) {
+    if (frame.spriteSlot->frameCounter == 10) {
         frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -376,7 +376,7 @@ void __cdecl BattleFx_SpecialVacuumDecelSegmentSpawnerTask(void)
     frame.decayedVelX.vx = frame.spawnerSlot->velocityX;
     frame.spawnerSlot->velocityZ += (short)((0 - frame.spawnerSlot->velocityZ) / 4);
     frame.decayedVelX.vy = frame.spawnerSlot->velocityZ;
-    frame.spawnerSlot->velocityY -= 0x12C;
+    frame.spawnerSlot->velocityY -= 300;
     frame.decayedVelX.vz = frame.spawnerSlot->velocityY;
     RotMatrix((SVECTOR *)&frame.spawnerSlot->pitch, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.spawnerSlot->posX;
@@ -397,7 +397,7 @@ void __cdecl BattleFx_SpecialVacuumDecelSegmentSpawnerTask(void)
         frame.segment->segmentIndex = 0;
     }
     (frame.spawnerSlot->frameCounter)++;
-    if (frame.spawnerSlot->frameCounter == 0xA) {
+    if (frame.spawnerSlot->frameCounter == 10) {
         frame.spawnerSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -410,7 +410,7 @@ BattleFxVacuumSegment *__cdecl BattleFx_SpecialVacuumClaimSegmentRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSpecVacuumSegmentRecords.segments[i].active == 0) {
             g_BattleSpecVacuumSegmentRecords.segments[i].active = 1;
             return &g_BattleSpecVacuumSegmentRecords.segments[i];
@@ -446,7 +446,7 @@ void __cdecl BattleFx_SpecialVacuumJitterModelTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     g_BattleSpecVacuumModelReq.draw.texturePageBits = frame.jitterSlot->frameCounter % 5 * 3 << 6;
-    g_BattleSpecVacuumModelReq.draw.fadeLevel = g_BattleSpecVacuumModelStep * 0x70 / 6;
+    g_BattleSpecVacuumModelReq.draw.fadeLevel = g_BattleSpecVacuumModelStep * 112 / 6;
     g_BattleSpecVacuumPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecVacuumModelReq.draw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecVacuumPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
@@ -454,12 +454,12 @@ void __cdecl BattleFx_SpecialVacuumJitterModelTask(void)
     if (frame.jitterSlot->frameCounter < 6) {
         g_BattleSpecVacuumModelStep++;
     }
-    if (frame.jitterSlot->frameCounter > 0x1E) {
+    if (frame.jitterSlot->frameCounter > 30) {
         g_BattleSpecVacuumModelStep--;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(((frame.jitterSlot->frameCounter % 2) << 6) - 0x20);
+    g_BattleCameraFocalPoint.focalPointY += (short)(((frame.jitterSlot->frameCounter % 2) << 6) - 32);
     (frame.jitterSlot->frameCounter)++;
-    if (frame.jitterSlot->frameCounter == 0x24) {
+    if (frame.jitterSlot->frameCounter == 36) {
         frame.jitterSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

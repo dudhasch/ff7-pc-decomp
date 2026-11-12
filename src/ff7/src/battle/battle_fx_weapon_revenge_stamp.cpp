@@ -95,7 +95,7 @@ RevengeStampActorVec g_WeaponFxRevengeStampSavedActorPos[10] = {0};
 // GLOBAL: FF7 0x009f28b8
 RevengeStampActorVec g_WeaponFxRevengeStampSavedActorRot[10] = {0};
 // GLOBAL: FF7 0x009f2908
-unsigned char g_WeaponFxRevengeStampSavedActorFlags[0x4] = {0};
+unsigned char g_WeaponFxRevengeStampSavedActorFlags[4] = {0};
 unsigned char g_bssPad_009f290c[4] = {0};
 unsigned char g_bssPad_009f2910[4] = {0};
 // GLOBAL: FF7 0x009f2914
@@ -150,7 +150,7 @@ void __cdecl BattleFx_WeaponBeginRevengeStamp(int targetMask, int actorIdx)
     Battle_AllocateResourceSlot(BattleFx_RevengeStampSpawnTimeline);
     g_WeaponFxRevengeStampTargetMask = targetMask;
     actorIndex = 0;
-    for (g_WeaponFxRevengeStampTargetCount = 0; actorIndex < 0xA; actorIndex++) {
+    for (g_WeaponFxRevengeStampTargetCount = 0; actorIndex < 10; actorIndex++) {
         if ((targetMask & 1 << actorIndex) != 0) {
             g_WeaponFxRevengeStampTargetActorIndices[g_WeaponFxRevengeStampTargetCount] = actorIndex;
             g_WeaponFxRevengeStampTargetCount++;
@@ -216,16 +216,16 @@ void __cdecl BattleFx_RevengeStampTimelineTask(void)
         frame.particle->bufferIndex = frame.timeline->counter;
         (frame.timeline->counter)++;
     }
-    if (frame.timeline->timer == 0x5C) {
+    if (frame.timeline->timer == 92) {
         frame.posX = ((short *)&g_WeaponFxRevengeStampBonePos)[0] - 0xBB8;
         frame.posY = ((short *)&g_WeaponFxRevengeStampBonePos)[1] + 0xC8;
         frame.posZ = ((short *)&g_WeaponFxRevengeStampBonePos)[2] + 0xC8;
         frame.particleIndex = 0;
-        for (frame.travelled = 0; frame.travelled < 0x1770; frame.particleIndex++) {
+        for (frame.travelled = 0; frame.travelled < 6000; frame.particleIndex++) {
             frame.particle = (BattleFxRevengeStampParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_RevengeStampGrayGradientStripTask);
-            frame.stepLen = rand() % 0x1F4 + 0x190 & 0xFFFFFFFE;
-            if (frame.travelled + frame.stepLen > 0x1770) {
-                frame.stepLen = 0x1770 - frame.travelled + 2;
+            frame.stepLen = rand() % 500 + 0x190 & 0xFFFFFFFE;
+            if (frame.travelled + frame.stepLen > 6000) {
+                frame.stepLen = 6000 - frame.travelled + 2;
             }
             frame.travelled += frame.stepLen;
             frame.particle->speed = *(short *)&frame.stepLen;
@@ -233,18 +233,18 @@ void __cdecl BattleFx_RevengeStampTimelineTask(void)
             frame.particle->posY = frame.posY;
             frame.particle->posZ = frame.posZ;
             frame.posX += *(short *)&frame.stepLen;
-            frame.particle->lifetime = (rand() % 8) + 0x14;
-            frame.particle->stepSize = frame.particle->speed / (0x1E - frame.particle->lifetime);
+            frame.particle->lifetime = (rand() % 8) + 20;
+            frame.particle->stepSize = frame.particle->speed / (30 - frame.particle->lifetime);
         }
         frame.posX = ((short *)&g_WeaponFxRevengeStampBonePos)[0] - 0xAF0;
         frame.posY = ((short *)&g_WeaponFxRevengeStampBonePos)[1] + 0x12C;
         frame.posZ = ((short *)&g_WeaponFxRevengeStampBonePos)[2] + 0x12C;
         frame.particleIndex = 0;
-        for (frame.travelled = 0; frame.travelled < 0x15E0; frame.particleIndex++) {
+        for (frame.travelled = 0; frame.travelled < 5600; frame.particleIndex++) {
             frame.particle = (BattleFxRevengeStampParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_RevengeStampBlueGradientStripTask);
-            frame.stepLen = rand() % 0x12C + 0xC8 & 0xFFFFFFFE;
-            if (frame.travelled + frame.stepLen > 0x15E0) {
-                frame.stepLen = 0x15E0 - frame.travelled + 2;
+            frame.stepLen = rand() % 300 + 0xC8 & 0xFFFFFFFE;
+            if (frame.travelled + frame.stepLen > 5600) {
+                frame.stepLen = 5600 - frame.travelled + 2;
             }
             frame.travelled += frame.stepLen;
             frame.particle->speed = *(short *)&frame.stepLen;
@@ -252,18 +252,18 @@ void __cdecl BattleFx_RevengeStampTimelineTask(void)
             frame.particle->posY = frame.posY;
             frame.particle->posZ = frame.posZ;
             frame.posX += *(short *)&frame.stepLen;
-            frame.particle->lifetime = rand() % 6 + 0x12;
-            frame.particle->stepSize = frame.particle->speed / (0x1A - frame.particle->lifetime);
+            frame.particle->lifetime = rand() % 6 + 18;
+            frame.particle->stepSize = frame.particle->speed / (26 - frame.particle->lifetime);
         }
         frame.posX = ((short *)&g_WeaponFxRevengeStampBonePos)[0] - 0xA28;
         frame.posY = ((short *)&g_WeaponFxRevengeStampBonePos)[1] + 0x12C;
         frame.posZ = ((short *)&g_WeaponFxRevengeStampBonePos)[2] + 0x64;
         frame.particleIndex = 0;
-        for (frame.travelled = 0; frame.travelled < 0x1450; frame.particleIndex++) {
+        for (frame.travelled = 0; frame.travelled < 5200; frame.particleIndex++) {
             frame.particle = (BattleFxRevengeStampParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_RevengeStampGreenGradientStripTask);
-            frame.stepLen = rand() % 0xDC + 0xB4 & 0xFFFFFFFE;
-            if (frame.travelled + frame.stepLen > 0x1450) {
-                frame.stepLen = 0x1450 - frame.travelled + 2;
+            frame.stepLen = rand() % 220 + 0xB4 & 0xFFFFFFFE;
+            if (frame.travelled + frame.stepLen > 5200) {
+                frame.stepLen = 5200 - frame.travelled + 2;
             }
             frame.travelled += frame.stepLen;
             frame.particle->speed = *(short *)&frame.stepLen;
@@ -271,9 +271,9 @@ void __cdecl BattleFx_RevengeStampTimelineTask(void)
             frame.particle->posY = frame.posY;
             frame.particle->posZ = frame.posZ;
             frame.posX += *(short *)&frame.stepLen;
-            frame.particle->lifetime = rand() % 6 + 0x12;
-            frame.particle->stepSize = frame.particle->speed / (0x1A - frame.particle->lifetime);
-            frame.tmpSpeed = rand() % 0xA0 + 0x3C;
+            frame.particle->lifetime = rand() % 6 + 18;
+            frame.particle->stepSize = frame.particle->speed / (26 - frame.particle->lifetime);
+            frame.tmpSpeed = rand() % 160 + 60;
             if (((short *)&g_WeaponFxRevengeStampBonePos)[0] > frame.posX) {
                 frame.particle->centerVelocity = *(short *)&frame.tmpSpeed;
             } else {
@@ -281,7 +281,7 @@ void __cdecl BattleFx_RevengeStampTimelineTask(void)
             }
         }
     }
-    if (frame.timeline->timer == 0x7E) {
+    if (frame.timeline->timer == 126) {
         frame.travelled = 0x2A1A;
         for (frame.particleIndex = 0; frame.particleIndex < g_WeaponFxRevengeStampTargetCount; frame.particleIndex++) {
             frame.particle = (BattleFxRevengeStampParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_RevengeStampStretchingModelTask);
@@ -291,14 +291,14 @@ void __cdecl BattleFx_RevengeStampTimelineTask(void)
             frame.particle->posY = 0;
             frame.particle->posZ += (short)(rand() % (frame.stepLen << 1) - frame.stepLen);
             frame.particle->angleY = (rand() % 4096);
-            frame.stepLen = rand() % 0x14 + 0xA;
+            frame.stepLen = rand() % 20 + 10;
             if ((frame.particle->angleY & 1) != 0) {
                 frame.particle->angleYStep = *(short *)&frame.stepLen;
             } else {
                 frame.particle->angleYStep = -frame.stepLen;
             }
-            frame.stepLen = rand() % 0x600 + 0xC00;
-            frame.tmpSpeed = frame.travelled * frame.stepLen >> 0xC;
+            frame.stepLen = rand() % 1536 + 3072;
+            frame.tmpSpeed = frame.travelled * frame.stepLen >> 12;
             frame.particle->speed = *(short *)&frame.tmpSpeed;
             frame.particle->lifetime = 0;
             frame.particle->stepSize = frame.tmpSpeed / 2;
@@ -308,72 +308,72 @@ void __cdecl BattleFx_RevengeStampTimelineTask(void)
         for (frame.particleIndex = 0; frame.particleIndex < frame.tmpRatio; frame.particleIndex++) {
             frame.particle = (BattleFxRevengeStampParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_RevengeStampStretchingModelTask);
             *(Int64Pair *)((char *)frame.particle + 4) = *(Int64Pair *)&g_WeaponFxRevengeStampBonePos;
-            frame.particle->posX += (short)(rand() % 0x157C - 0xABE);
+            frame.particle->posX += (short)(rand() % 5500 - 2750);
             frame.particle->posY = 0;
-            frame.particle->posZ += (short)(rand() % 0xBB8 - 0x5DC);
+            frame.particle->posZ += (short)(rand() % 3000 - 1500);
             frame.particle->angleY = (rand() % 4096);
-            frame.stepLen = rand() % 0x14 + 0xA;
+            frame.stepLen = rand() % 20 + 10;
             if ((frame.particle->angleY & 1) != 0) {
                 frame.particle->angleYStep = *(short *)&frame.stepLen;
             } else {
                 frame.particle->angleYStep = -frame.stepLen;
             }
-            frame.stepLen = rand() % 0x600 + 0xC00;
-            frame.tmpSpeed = frame.travelled * frame.stepLen >> 0xC;
+            frame.stepLen = rand() % 1536 + 3072;
+            frame.tmpSpeed = frame.travelled * frame.stepLen >> 12;
             frame.particle->speed = *(short *)&frame.tmpSpeed;
             frame.particle->lifetime = 0;
             frame.particle->stepSize = frame.tmpSpeed / 2;
             frame.particle->bufferIndex = rand() % 6;
         }
     }
-    if (frame.timeline->timer >= 0x80 && frame.timeline->timer <= 0x84) {
+    if (frame.timeline->timer >= 128 && frame.timeline->timer <= 132) {
         frame.travelled = 0xBB8;
         frame.stepLen = frame.travelled << 1;
-        for (frame.particleIndex = 0; frame.particleIndex < 0xA; frame.particleIndex++) {
+        for (frame.particleIndex = 0; frame.particleIndex < 10; frame.particleIndex++) {
             frame.tmpSpeed = rand() % 3;
             frame.pieceRecord = (BattleFxRevengeStampPieceRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_RevengeStampRisingSpinningModelTask);
             *(Int64Pair *)((char *)frame.pieceRecord + 4) = *(Int64Pair *)&g_WeaponFxRevengeStampBonePos;
             frame.pieceRecord->posX += (short)(rand() % frame.stepLen - frame.travelled);
-            frame.pieceRecord->posY = -(rand() % (frame.travelled >> 2) + 0x1C2);
+            frame.pieceRecord->posY = -(rand() % (frame.travelled >> 2) + 450);
             frame.pieceRecord->posZ += (short)(rand() % frame.stepLen - frame.travelled);
-            frame.pieceRecord->velocityY = -(rand() % 0x15E + 0xBE);
-            frame.pieceRecord->accelerationY = (rand() % 32) + 0x12;
+            frame.pieceRecord->velocityY = -(rand() % 350 + 190);
+            frame.pieceRecord->accelerationY = (rand() % 32) + 18;
             frame.pieceRecord->startAngle = (rand() % 4096);
             frame.pieceRecord->angle = frame.pieceRecord->startAngle;
             frame.pieceRecord->prevAngle = frame.pieceRecord->angle;
             frame.pieceRecord->angleStep = rand() % 0xB4 + 0x60;
             frame.pieceRecord->spinStep = rand() % 0xC8 + 0x4E;
-            frame.tmpRatio = (g_WeaponFxRevengeStampScaleNumerators[frame.tmpSpeed] << 0xC) / g_WeaponFxRevengeStampScaleDenominators[frame.tmpSpeed];
-            frame.randomSpeed = rand() % 0xC00 + 0x500;
-            frame.pieceRecord->scale = frame.tmpRatio * frame.randomSpeed >> 0xC;
+            frame.tmpRatio = (g_WeaponFxRevengeStampScaleNumerators[frame.tmpSpeed] << 12) / g_WeaponFxRevengeStampScaleDenominators[frame.tmpSpeed];
+            frame.randomSpeed = rand() % 3072 + 1280;
+            frame.pieceRecord->scale = frame.tmpRatio * frame.randomSpeed >> 12;
             frame.pieceRecord->modelIndex = *(short *)&frame.tmpSpeed;
-            frame.pieceRecord->lifetimeOrActor = rand() % 0xA + 0xC;
+            frame.pieceRecord->lifetimeOrActor = rand() % 10 + 12;
             frame.pieceRecord->fadeStartFrame = frame.pieceRecord->lifetimeOrActor - 6;
         }
     }
-    if (frame.timeline->timer == 0x80) {
+    if (frame.timeline->timer == 128) {
         for (frame.particleIndex = 0; frame.particleIndex < g_WeaponFxRevengeStampTargetCount; frame.particleIndex++) {
             frame.travelled = g_WeaponFxRevengeStampTargetActorIndices[frame.particleIndex];
             frame.pieceRecord = (BattleFxRevengeStampPieceRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_RevengeStampActorTumbleTask);
             frame.pieceRecord->lifetimeOrActor = *(short *)&frame.travelled;
         }
     }
-    if (frame.timeline->timer == 0x7C) {
+    if (frame.timeline->timer == 124) {
         BattleFx_StartScreenFlashRamp(1);
     }
-    if (frame.timeline->timer == 0x7D) {
+    if (frame.timeline->timer == 125) {
         BattleFx_FadeOutScreenFlashRamp(4);
     }
     if (frame.timeline->timer == 1) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(((short *)&g_WeaponFxRevengeStampBonePos)), 0x18C);
     }
-    if (frame.timeline->timer == 0x5C) {
+    if (frame.timeline->timer == 92) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(((short *)&g_WeaponFxRevengeStampBonePos)), 0x130);
     }
-    if (frame.timeline->timer == 0x7E) {
+    if (frame.timeline->timer == 126) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_WeaponFxRevengeStampCentroidPos), 0x176);
     }
-    if (frame.timeline->timer >= 0xA0) {
+    if (frame.timeline->timer >= 160) {
         frame.timeline->ownerSlot = BATTLE_TASK_FREE;
         g_BattleScriptEffectFlag = 0;
     }
@@ -406,10 +406,10 @@ void __cdecl BattleFx_RevengeStampActorTumbleTask(void)
         g_BattleActorRecords[actorIndex].drawFlags |= 0x11;
         Battle_GetActorBoneYRange((short)actorIndex, &pTumble->boneMinY, &offset.x);
         Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].targetBone, &pTumble->posX);
-        pTumble->rotVelX = (short)(rand() % 0xB4 + 0xA8);
-        pTumble->rotVelZ = (short)(rand() % 0xD0 + 0x96);
-        pTumble->velocityY = (short)-(rand() % 0xC8 + 0x226);
-        pTumble->accelY = (short)(rand() % 0xE + 0x22);
+        pTumble->rotVelX = (short)(rand() % 180 + 168);
+        pTumble->rotVelZ = (short)(rand() % 208 + 150);
+        pTumble->velocityY = (short)-(rand() % 200 + 550);
+        pTumble->accelY = (short)(rand() % 14 + 34);
         pTumble->currentY = g_WeaponFxRevengeStampSavedActorPos[actorIndex].y;
         (pTumble->frame)++;
     } else {
@@ -431,14 +431,14 @@ void __cdecl BattleFx_RevengeStampActorTumbleTask(void)
         } else if (pTumble->rotVelX != 0 && pTumble->rotVelZ != 0) {
             *(RevengeStampActorVec *)&g_BattleActorRecords[actorIndex].posX = g_WeaponFxRevengeStampSavedActorPos[actorIndex];
             g_BattleActorRecords[actorIndex].posY = pTumble->posY;
-            g_BattleActorRecords[actorIndex].rotX = 0x800;
+            g_BattleActorRecords[actorIndex].rotX = 0x800 /* 180 deg */;
             g_BattleActorRecords[actorIndex].yaw = (short)((pTumble->rotVelX + pTumble->rotVelZ) << 2);
             g_BattleActorRecords[actorIndex].rotZ = 0;
             pTumble->rotVelZ = 0;
             pTumble->rotVelX = 0;
             Battle_PostActorHitOrHurtMessage(actorIndex);
         }
-        if (pTumble->frame >= 0x1E) {
+        if (pTumble->frame >= 30) {
             *(RevengeStampActorVec *)&g_BattleActorRecords[actorIndex].posX = g_WeaponFxRevengeStampSavedActorPos[actorIndex];
             *(RevengeStampActorVec *)&g_BattleActorRecords[actorIndex].rotX = g_WeaponFxRevengeStampSavedActorRot[actorIndex];
             if ((g_WeaponFxRevengeStampSavedActorFlags[actorIndex] & 0x10) == 0) {
@@ -523,13 +523,13 @@ void __cdecl BattleFx_RevengeStampRisingSpinningModelTask(void)
     frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(g_WeaponFxRevengeStampModelResIndices1[frame.risingModel->modelIndex], (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
     frame.drawModel->flags = 0;
     frame.drawModel->uvScroll = 0;
-    frame.drawModel->fadeLevel = 0x80;
+    frame.drawModel->fadeLevel = 128;
     frame.drawModel->stateFlags = 0x20;
     frame.drawModel->texturePageBits = 0;
     if (frame.risingModel->frame >= frame.risingModel->fadeStartFrame) {
         frame.drawModel->flags |= 8;
         frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(g_WeaponFxRevengeStampModelResIndices2[frame.risingModel->modelIndex], (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
-        frame.drawModel->fadeLevel = 0x80 - (frame.risingModel->frame - frame.risingModel->fadeStartFrame) * 0x15;
+        frame.drawModel->fadeLevel = 128 - (frame.risingModel->frame - frame.risingModel->fadeStartFrame) * 21;
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     if (frame.risingModel->frame >= frame.risingModel->lifetimeFrames) {
@@ -540,7 +540,7 @@ void __cdecl BattleFx_RevengeStampRisingSpinningModelTask(void)
     }
     frame.risingModel->posY += frame.risingModel->velocityY;
     frame.risingModel->velocityY += frame.risingModel->accelerationY;
-    if (frame.risingModel->velocityY > -0x32) {
+    if (frame.risingModel->velocityY > -50) {
         frame.risingModel->velocityY = 0xFFCE;
     } else {
         frame.risingModel->accelerationY += (short)(frame.risingModel->accelerationY >> 4);
@@ -592,14 +592,14 @@ void __cdecl BattleFx_RevengeStampStretchingModelTask(void)
         frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(2, (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
         frame.drawModel->flags = 8;
         frame.drawModel->uvScroll = 0;
-        frame.drawModel->fadeLevel = 0x80;
+        frame.drawModel->fadeLevel = 128;
         frame.drawModel->stateFlags = 0x20;
         frame.drawModel->texturePageBits = 0;
-        if (frame.stretchSlot->elapsed >= 0xC) {
-            frame.drawModel->fadeLevel = 0x80 - (frame.stretchSlot->elapsed - 0xC << 4);
+        if (frame.stretchSlot->elapsed >= 12) {
+            frame.drawModel->fadeLevel = 128 - (frame.stretchSlot->elapsed - 12 << 4);
         }
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-        if (frame.stretchSlot->elapsed >= 0x14) {
+        if (frame.stretchSlot->elapsed >= 20) {
             frame.stretchSlot->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
@@ -656,7 +656,7 @@ void __cdecl BattleFx_RevengeStampGreenGradientStripTask(void)
     frame.v0x.vy = frame.v1x.vy;
     frame.v3x.vy = 0;
     frame.v2x.vy = frame.v3x.vy;
-    frame.v5x.vy = frame.gradStrip->posY - 0x1F4;
+    frame.v5x.vy = frame.gradStrip->posY - 500;
     frame.v4x.vy = frame.v5x.vy;
     frame.v5x.vz = frame.gradStrip->posZ;
     frame.v4x.vz = frame.v5x.vz;
@@ -706,7 +706,7 @@ void __cdecl BattleFx_RevengeStampGreenGradientStripTask(void)
         Gfx_DrawPsxPrimitive(frame.stripPrimB);
     }
     g_BattleFxActiveDrawListPtr = (int)frame.stripPrimB;
-    if (frame.gradStrip->frameCount >= 0x1A) {
+    if (frame.gradStrip->frameCount >= 26) {
         frame.gradStrip->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -765,7 +765,7 @@ void __cdecl BattleFx_RevengeStampBlueGradientStripTask(void)
     frame.v0x.vy = frame.v1x.vy;
     frame.v3x.vy = 0;
     frame.v2x.vy = frame.v3x.vy;
-    frame.v5x.vy = frame.gradStrip->centerB - 0x1F4;
+    frame.v5x.vy = frame.gradStrip->centerB - 500;
     frame.v4x.vy = frame.v5x.vy;
     frame.v5x.vz = frame.gradStrip->posZ;
     frame.v4x.vz = frame.v5x.vz;
@@ -815,7 +815,7 @@ void __cdecl BattleFx_RevengeStampBlueGradientStripTask(void)
         Gfx_DrawPsxPrimitive(frame.stripPrimB);
     }
     g_BattleFxActiveDrawListPtr = (int)frame.stripPrimB;
-    if (frame.gradStrip->step >= 0x1A) {
+    if (frame.gradStrip->step >= 26) {
         frame.gradStrip->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -872,7 +872,7 @@ void __cdecl BattleFx_RevengeStampGrayGradientStripTask(void)
     frame.v0x.vy = frame.v1x.vy;
     frame.v3x.vy = 0;
     frame.v2x.vy = frame.v3x.vy;
-    frame.v5x.vy = frame.gradStrip->posY - 0x190;
+    frame.v5x.vy = frame.gradStrip->posY - 400;
     frame.v4x.vy = frame.v5x.vy;
     frame.v5x.vz = frame.gradStrip->posZ;
     frame.v4x.vz = frame.v5x.vz;
@@ -922,7 +922,7 @@ void __cdecl BattleFx_RevengeStampGrayGradientStripTask(void)
         Gfx_DrawPsxPrimitive(frame.stripPrimB);
     }
     g_BattleFxActiveDrawListPtr = (int)frame.stripPrimB;
-    if (frame.gradStrip->timer >= 0x1E) {
+    if (frame.gradStrip->timer >= 30) {
         frame.gradStrip->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -969,11 +969,11 @@ void __cdecl BattleFx_RevengeStampBone8And10ParticleTask(void)
     Battle_GetBoneWorldPos(g_WeaponFxRevengeStampSourceActor, 8, &frame.bone8PosX.vx);
     Battle_GetBoneWorldPos(g_WeaponFxRevengeStampSourceActor, 0xA, &frame.bone10PosX.vx);
     frame.rotX.vx = 0;
-    frame.rotX.vy = 0x800;
+    frame.rotX.vy = 0x800 /* 180 deg */;
     frame.rotX.vz = 0;
     g_WeaponFxRevengeStampBoneParticleSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
     g_WeaponFxRevengeStampBoneParticleSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0, (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
-    for (frame.particleIndex = 0; frame.particleIndex < 0x64; frame.particleIndex++) {
+    for (frame.particleIndex = 0; frame.particleIndex < 100; frame.particleIndex++) {
         if (frame.particleBuf[frame.particleIndex].active != 0) {
             g_WeaponFxRevengeStampBoneParticleSpriteReq.frame = frame.particleBuf[frame.particleIndex].frame;
             frame.particleF10 = frame.particleBuf[frame.particleIndex].depthVelocity;
@@ -1004,10 +1004,10 @@ void __cdecl BattleFx_RevengeStampBone8And10ParticleTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.particle2->frameIndex >= 0x76) {
+    if (frame.particle2->frameIndex >= 118) {
         frame.particle2->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (frame.particle2->frameIndex >= 0x20 && frame.particle2->frameIndex <= 0x6F) {
+    if (frame.particle2->frameIndex >= 32 && frame.particle2->frameIndex <= 111) {
         frame.sizeBase = 0x1900;
         frame.spawnCount = frame.particle2->frameIndex >> 4;
         if (frame.spawnCount == 0) {
@@ -1017,36 +1017,36 @@ void __cdecl BattleFx_RevengeStampBone8And10ParticleTask(void)
             frame.spawnCount = 2;
         }
         for (frame.particleIndex = 0; frame.particleIndex < frame.spawnCount; frame.particleIndex++) {
-            for (frame.freeIndex = 0; frame.freeIndex < 0x64 && frame.particleBuf[frame.freeIndex].active != 0; frame.freeIndex++) {
+            for (frame.freeIndex = 0; frame.freeIndex < 100 && frame.particleBuf[frame.freeIndex].active != 0; frame.freeIndex++) {
             }
-            if (frame.freeIndex >= 0x64) {
+            if (frame.freeIndex >= 100) {
                 break;
             }
             frame.particleBuf[frame.freeIndex].active = 1;
             frame.particleBuf[frame.freeIndex].frame = 0;
-            frame.particleBuf[frame.freeIndex].position = frame.bone8PosX.vx - (rand() % 0x44C - 0x2BC);
-            frame.particleBuf[frame.freeIndex].height = frame.bone8PosX.vy + rand() % 0x578 + -0x384;
-            frame.particleBuf[frame.freeIndex].depth = rand() % 0x3E8 + 0x2BC;
-            frame.particleBuf[frame.freeIndex].velocity = -(rand() % 0x37 + 0x1E);
-            frame.particleBuf[frame.freeIndex].heightVelocity = rand() % 0x28 + 0x1C;
+            frame.particleBuf[frame.freeIndex].position = frame.bone8PosX.vx - (rand() % 1100 - 700);
+            frame.particleBuf[frame.freeIndex].height = frame.bone8PosX.vy + rand() % 1400 + -900;
+            frame.particleBuf[frame.freeIndex].depth = rand() % 1000 + 700;
+            frame.particleBuf[frame.freeIndex].velocity = -(rand() % 55 + 30);
+            frame.particleBuf[frame.freeIndex].heightVelocity = rand() % 40 + 28;
             frame.randScale = rand() % 0xB00 + 0xB00;
-            frame.particleBuf[frame.freeIndex].scale = frame.sizeBase * frame.randScale >> 0xC;
+            frame.particleBuf[frame.freeIndex].scale = frame.sizeBase * frame.randScale >> 12;
         }
         for (frame.particleIndex = 0; frame.particleIndex < frame.spawnCount; frame.particleIndex++) {
-            for (frame.freeIndex = 0; frame.freeIndex < 0x64 && frame.particleBuf[frame.freeIndex].active != 0; frame.freeIndex++) {
+            for (frame.freeIndex = 0; frame.freeIndex < 100 && frame.particleBuf[frame.freeIndex].active != 0; frame.freeIndex++) {
             }
-            if (frame.freeIndex >= 0x64) {
+            if (frame.freeIndex >= 100) {
                 break;
             }
             frame.particleBuf[frame.freeIndex].active = 1;
             frame.particleBuf[frame.freeIndex].frame = 0;
-            frame.particleBuf[frame.freeIndex].position = frame.bone10PosX.vx - (rand() % 0x834 - 0x514) + 0x2BC;
-            frame.particleBuf[frame.freeIndex].height = frame.bone10PosX.vy + rand() % 0x4B0 + -0x258;
-            frame.particleBuf[frame.freeIndex].depth = rand() % 0x384 + 0x2BC;
-            frame.particleBuf[frame.freeIndex].velocity = -(rand() % 0x69 + 0x3C);
-            frame.particleBuf[frame.freeIndex].heightVelocity = rand() % 0x28 + 0x1C;
+            frame.particleBuf[frame.freeIndex].position = frame.bone10PosX.vx - (rand() % 2100 - 1300) + 700;
+            frame.particleBuf[frame.freeIndex].height = frame.bone10PosX.vy + rand() % 1200 + -600;
+            frame.particleBuf[frame.freeIndex].depth = rand() % 900 + 700;
+            frame.particleBuf[frame.freeIndex].velocity = -(rand() % 105 + 60);
+            frame.particleBuf[frame.freeIndex].heightVelocity = rand() % 40 + 28;
             frame.randScale = rand() % 0x800 + 0xA00;
-            frame.particleBuf[frame.freeIndex].scale = frame.sizeBase * frame.randScale >> 0xC;
+            frame.particleBuf[frame.freeIndex].scale = frame.sizeBase * frame.randScale >> 12;
         }
     }
     (frame.particle2->frameIndex)++;
@@ -1076,7 +1076,7 @@ void __cdecl BattleFx_RevengeStampBone21And23ParticleTask(void)
     Battle_GetBoneWorldPos(g_WeaponFxRevengeStampSourceActor, 0x17, positionB);
     g_WeaponFxRevengeStampSpriteReq1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
     g_WeaponFxRevengeStampSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(0, (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (pParticles[i].active != 0) {
             g_WeaponFxRevengeStampSpriteReq1.frame = pParticles[i].frame;
             depthVel = pParticles[i].depthVelocity;
@@ -1102,10 +1102,10 @@ void __cdecl BattleFx_RevengeStampBone21And23ParticleTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (emitter->timer >= 0x76) {
+    if (emitter->timer >= 118) {
         emitter->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (emitter->timer >= 0x20 && emitter->timer <= 0x6F) {
+    if (emitter->timer >= 32 && emitter->timer <= 111) {
         scaleBase = 0x1900;
         spawnCnt = emitter->timer >> 4;
         if (spawnCnt == 0) {
@@ -1115,36 +1115,36 @@ void __cdecl BattleFx_RevengeStampBone21And23ParticleTask(void)
             spawnCnt = 2;
         }
         for (i = 0; i < spawnCnt; i++) {
-            for (freeIndex = 0; freeIndex < 0x64 && pParticles[freeIndex].active != 0; freeIndex++) {
+            for (freeIndex = 0; freeIndex < 100 && pParticles[freeIndex].active != 0; freeIndex++) {
             }
-            if (freeIndex >= 0x64) {
+            if (freeIndex >= 100) {
                 break;
             }
             pParticles[freeIndex].active = 1;
             pParticles[freeIndex].frame = 0;
-            pParticles[freeIndex].position = (short)(bone21Pos[0] + (rand() % 0x44C - 0x2BC));
-            pParticles[freeIndex].height = (short)(bone21Pos[1] + (rand() % 0x578 - 0x384));
-            pParticles[freeIndex].depth = (short)(rand() % 0x3E8 + 0x2BC);
-            pParticles[freeIndex].velocity = (short)(rand() % 0x37 + 0x1E);
-            pParticles[freeIndex].heightVelocity = (short)(rand() % 0x28 + 0x1C);
+            pParticles[freeIndex].position = (short)(bone21Pos[0] + (rand() % 1100 - 700));
+            pParticles[freeIndex].height = (short)(bone21Pos[1] + (rand() % 1400 - 900));
+            pParticles[freeIndex].depth = (short)(rand() % 1000 + 700);
+            pParticles[freeIndex].velocity = (short)(rand() % 55 + 30);
+            pParticles[freeIndex].heightVelocity = (short)(rand() % 40 + 28);
             sizeRollSpan = rand() % 0xB00 + 0xB00;
-            pParticles[freeIndex].scale = (short)(scaleBase * sizeRollSpan >> 0xC);
+            pParticles[freeIndex].scale = (short)(scaleBase * sizeRollSpan >> 12);
         }
         for (i = 0; i < spawnCnt; i++) {
-            for (freeIndex = 0; freeIndex < 0x64 && pParticles[freeIndex].active != 0; freeIndex++) {
+            for (freeIndex = 0; freeIndex < 100 && pParticles[freeIndex].active != 0; freeIndex++) {
             }
-            if (freeIndex >= 0x64) {
+            if (freeIndex >= 100) {
                 break;
             }
             pParticles[freeIndex].active = 1;
             pParticles[freeIndex].frame = 0;
-            pParticles[freeIndex].position = (short)(positionB[0] + (rand() % 0x834 - 0x7D0));
-            pParticles[freeIndex].height = (short)(positionB[1] + (rand() % 0x4B0 - 0x258));
-            pParticles[freeIndex].depth = (short)(rand() % 0x384 + 0x2BC);
-            pParticles[freeIndex].velocity = (short)(rand() % 0x69 + 0x3C);
-            pParticles[freeIndex].heightVelocity = (short)(rand() % 0x28 + 0x1C);
+            pParticles[freeIndex].position = (short)(positionB[0] + (rand() % 2100 - 2000));
+            pParticles[freeIndex].height = (short)(positionB[1] + (rand() % 1200 - 600));
+            pParticles[freeIndex].depth = (short)(rand() % 900 + 700);
+            pParticles[freeIndex].velocity = (short)(rand() % 105 + 60);
+            pParticles[freeIndex].heightVelocity = (short)(rand() % 40 + 28);
             sizeRollSpan = rand() % 0x800 + 0xA00;
-            pParticles[freeIndex].scale = (short)(scaleBase * sizeRollSpan >> 0xC);
+            pParticles[freeIndex].scale = (short)(scaleBase * sizeRollSpan >> 12);
         }
     }
     (emitter->timer)++;
@@ -1170,7 +1170,7 @@ void __cdecl BattleFx_RevengeStampSideBurstParticleTask(void)
     buf = (BattleFxRevengeStampBufferParticle *)(ep->bufferIndex * 0x960 + (char *)&g_WeaponFxRevengeStampParticleBuffers);
     g_WeaponFxRevengeStampSpriteReq2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
     g_WeaponFxRevengeStampSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(1, (GfxTableCursor *)(g_WeaponFxRevengeStampResourceContext));
-    for (idx = 0; idx < 0x64; idx++) {
+    for (idx = 0; idx < 100; idx++) {
         if (buf[idx].active != 0) {
             g_WeaponFxRevengeStampSpriteReq2.frame = buf[idx].frame;
             BattleFx_InstallBillboardMatrix(&buf[idx].position, (short)buf[idx].scale, -(buf[idx].scale >> 3));
@@ -1182,7 +1182,7 @@ void __cdecl BattleFx_RevengeStampSideBurstParticleTask(void)
                 buf[idx].velocity -= (short)(buf[idx].velocity >> 4);
                 buf[idx].heightVelocity -= (short)(buf[idx].heightVelocity >> 4);
                 buf[idx].depthVelocity -= (short)(buf[idx].depthVelocity >> 4);
-                if (buf[idx].frame >= 0xF) {
+                if (buf[idx].frame >= 15) {
                     buf[idx].active = 0;
                 }
                 (buf[idx].frame)++;
@@ -1192,10 +1192,10 @@ void __cdecl BattleFx_RevengeStampSideBurstParticleTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (ep->timer >= 0x5B) {
+    if (ep->timer >= 91) {
         ep->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (ep->timer >= 1 && ep->timer <= 0x4C) {
+    if (ep->timer >= 1 && ep->timer <= 76) {
         baseScale = 0x1900;
         quota = ep->timer >> 3;
         if (quota == 0) {
@@ -1205,38 +1205,38 @@ void __cdecl BattleFx_RevengeStampSideBurstParticleTask(void)
             quota = 3;
         }
         for (idx = 0; idx < quota; idx++) {
-            for (slot = 0; slot < 0x64 && buf[slot].active != 0; slot++) {
+            for (slot = 0; slot < 100 && buf[slot].active != 0; slot++) {
             }
-            if (slot >= 0x64) {
+            if (slot >= 100) {
                 break;
             }
             buf[slot].active = 1;
             buf[slot].frame = 0;
-            buf[slot].position = (short)(rand() % 0xA28 + 0x190);
+            buf[slot].position = (short)(rand() % 2600 + 400);
             buf[slot].height = (short)(((short *)&g_WeaponFxRevengeStampBonePos)[1] - 0x190);
-            buf[slot].depth = (short)(((short *)&g_WeaponFxRevengeStampBonePos)[2] + (rand() % 0x12C - 0x96));
-            buf[slot].velocity = (short)(rand() % 0x37 + 0x1E);
-            buf[slot].heightVelocity = (short)(rand() % 0x50 + 0xA0);
-            buf[slot].depthVelocity = (short)-(rand() % 0x3C + 0x14);
+            buf[slot].depth = (short)(((short *)&g_WeaponFxRevengeStampBonePos)[2] + (rand() % 300 - 150));
+            buf[slot].velocity = (short)(rand() % 55 + 30);
+            buf[slot].heightVelocity = (short)(rand() % 80 + 160);
+            buf[slot].depthVelocity = (short)-(rand() % 60 + 20);
             scaleRoll = rand() % 0x800 + 0xB00;
-            buf[slot].scale = (short)(baseScale * scaleRoll >> 0xC);
+            buf[slot].scale = (short)(baseScale * scaleRoll >> 12);
         }
         for (idx = 0; idx < quota; idx++) {
-            for (slot = 0; slot < 0x64 && buf[slot].active != 0; slot++) {
+            for (slot = 0; slot < 100 && buf[slot].active != 0; slot++) {
             }
-            if (slot >= 0x64) {
+            if (slot >= 100) {
                 break;
             }
             buf[slot].active = 1;
             buf[slot].frame = 0;
-            buf[slot].position = (short)-(rand() % 0xA28 + 0x190);
+            buf[slot].position = (short)-(rand() % 2600 + 400);
             buf[slot].height = (short)(((short *)&g_WeaponFxRevengeStampBonePos)[1] - 0x190);
-            buf[slot].depth = (short)(((short *)&g_WeaponFxRevengeStampBonePos)[2] - (rand() % 0x12C - 0x96));
-            buf[slot].velocity = (short)-(rand() % 0x37 + 0x1E);
-            buf[slot].heightVelocity = (short)(rand() % 0x50 + 0xA0);
-            buf[slot].depthVelocity = (short)(rand() % 0x3C + 0x14);
+            buf[slot].depth = (short)(((short *)&g_WeaponFxRevengeStampBonePos)[2] - (rand() % 300 - 150));
+            buf[slot].velocity = (short)-(rand() % 55 + 30);
+            buf[slot].heightVelocity = (short)(rand() % 80 + 160);
+            buf[slot].depthVelocity = (short)(rand() % 60 + 20);
             scaleRoll = rand() % 0x800 + 0xB00;
-            buf[slot].scale = (short)(baseScale * scaleRoll >> 0xC);
+            buf[slot].scale = (short)(baseScale * scaleRoll >> 12);
         }
     }
     (ep->timer)++;

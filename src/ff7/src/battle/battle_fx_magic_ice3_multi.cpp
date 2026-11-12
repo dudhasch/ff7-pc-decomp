@@ -183,7 +183,7 @@ void __cdecl BattleFx_MagicIce3MultiSetupTask(void)
     task = (BattleMagicIce3MultiSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleMagicIce3MultiTargetMask, (short *)&task->pos);
     task->posY = 0xFA00;
-    task->effectScale = 0x900;
+    task->effectScale = 0x900 /* 0.5625 */;
     g_BattleMagicIce3MultiCentroidPos.pair = task->pos;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputePanForEntity(g_BattleMagicIce3MultiTargetMask), 0xA3);
 }
@@ -220,7 +220,7 @@ void __cdecl BattleFx_MagicIce3MultiTimelineTask(void)
     }
     task = (BattleFxIce3MultiTimelineSlot *)BATTLE_CURRENT_TASK_SLOT;
     if (task->timer < 4) {
-        for (actorIdx = 0; actorIdx < 0x12; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 18; actorIdx++) {
             if (task->timer == g_BattleMagicIce3MultiRibbonSpawnTable[actorIdx].startFrame) {
                 ribbonPtr = (BattleFxIce3MultiSpiralRibbon *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiSpiralRibbonTask);
                 ribbonPtr->param0 = g_BattleMagicIce3MultiRibbonSpawnTable[actorIdx].param0;
@@ -233,75 +233,75 @@ void __cdecl BattleFx_MagicIce3MultiTimelineTask(void)
             }
         }
     }
-    if (task->timer == 0x14) {
+    if (task->timer == 20) {
         pChild = (BattleFxIce3MultiSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiSpawnConvergingModelsTask);
         pChild->pos = task->pos;
         pChild->elapsed = task->elapsed;
         pChild->stageIndex = 0;
     }
-    if (task->timer == 0x12) {
+    if (task->timer == 18) {
         pChild = (BattleFxIce3MultiSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiShatterModelTask);
         pChild->pos = task->pos;
         pChild->timer = 0;
         pChild->elapsed = 0;
-        pChild->stepSize = (task->elapsed << 0xC) / 0x226 / 0x12;
+        pChild->stepSize = (task->elapsed << 12) / 550 / 18;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, Battle_ComputePanForEntity(g_BattleMagicIce3MultiTargetMask), 0x1DF);
     }
-    if (task->timer == 0x1C) {
+    if (task->timer == 28) {
         pChild = (BattleFxIce3MultiSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiFadingSpriteLineTask);
         pChild->pos = task->pos;
         debris = (BattleFxIce3MultiDebris *)Gfx_GetPsxScratchpadPtr(0);
         debris->meshPtr = (int)&g_BattleMagicIce3MultiMesh1;
         debris->debrisPtr = (BattleFxBrizagDebrisShadedTri *)&g_BattleMagicIce3MultiDebrisRecord1;
         debris->prevX = 0;
-        debris->prevY = 0x384;
+        debris->prevY = 900;
         debris->prevZ = 0;
         BattleFx_MagicIce3MultiBuildDebrisFromMesh(debris);
         debris->meshPtr = (int)&g_BattleMagicIce3MultiMesh2;
         debris->debrisPtr = (BattleFxBrizagDebrisShadedTri *)&g_BattleMagicIce3MultiDebrisRecord2;
         debris->prevX = 0;
-        debris->prevY = 0x12C;
+        debris->prevY = 300;
         debris->prevZ = 0;
         BattleFx_MagicIce3MultiBuildDebrisFromMesh(debris);
     }
-    if (task->timer == 0x34) {
+    if (task->timer == 52) {
         pChild = (BattleFxIce3MultiSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiShatterOffsetModelTask);
         pChild->pos = task->pos;
-        pChild->timer -= 0x15E;
-        pChild->elapsed = (task->elapsed << 0xC) / 0x44C;
+        pChild->timer -= 350;
+        pChild->elapsed = (task->elapsed << 12) / 1100;
         pChild->yOffset = 0xE890;
         pChild->yOffsetStep = 0xBB8;
     }
-    if (task->timer == 0x36) {
+    if (task->timer == 54) {
         pChild = (BattleFxIce3MultiSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiExpandingGroundModelTask);
         pChild->pos = task->pos;
         pChild->timer = 0;
         pChild->elapsed = 0;
-        pChild->stepSize = (task->elapsed << 0xC) / 0x4B0 / 3;
+        pChild->stepSize = (task->elapsed << 12) / 1200 / 3;
     }
-    if (task->timer == 0x35) {
+    if (task->timer == 53) {
         pChild = (BattleFxIce3MultiSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiSpawnDirectedSpritesTask);
         pChild->pos = task->pos;
         pChild->elapsed = task->elapsed;
     }
-    if (task->timer < 0xA) {
+    if (task->timer < 10) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        level = task->timer * 0xCC;
-    } else if (task->timer >= 0x3C) {
-        level = 0x800 - (task->timer - 0x3C) * 0xCC;
+        level = task->timer * 204;
+    } else if (task->timer >= 60) {
+        level = 0x800 - (task->timer - 0x3C) * 204;
     } else {
         level = 0x800;
     }
-    if (task->timer == 0x3E) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (task->timer == 62) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleMagicIce3MultiTargetMask & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
     }
-    if (task->timer >= 0x46) {
+    if (task->timer >= 70) {
         level = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -392,12 +392,12 @@ int __cdecl BattleFx_MagicIce3MultiBuildDebrisFromTexturedTriangles(BattleFxIce3
         debris->deltaY = centroidY - debris->prevY;
         debris->deltaZ = sumZ - debris->prevZ;
         len = NormalizeVectorFixed(&debris->delta, &debris->delta);
-        len >>= 0xC;
-        len = len + rand() % 0xA0 + 0x84;
-        dest->velocityX = len * debris->deltaX >> 0xC;
-        dest->velocityY = len * debris->deltaY >> 0xC;
-        dest->velocityZ = len * debris->deltaZ >> 0xC;
-        dest->accelY = rand() % 0x64 + 0x48;
+        len >>= 12;
+        len = len + rand() % 160 + 132;
+        dest->velocityX = len * debris->deltaX >> 12;
+        dest->velocityY = len * debris->deltaY >> 12;
+        dest->velocityZ = len * debris->deltaZ >> 12;
+        dest->accelY = rand() % 100 + 72;
     }
     debris->debrisPtr = dest;
     return cursor;
@@ -474,12 +474,12 @@ int __cdecl BattleFx_MagicIce3MultiBuildDebrisFromTexturedQuads(BattleFxIce3Mult
         debris->deltaY = sumY - debris->prevY;
         debris->deltaZ = sumZ - debris->prevZ;
         normScale = NormalizeVectorFixed(&debris->delta, &debris->delta);
-        normScale >>= 0xC;
+        normScale >>= 12;
         normScale = normScale + rand() % 0xA0 + 0x84;
-        dest->velocityX = normScale * debris->deltaX >> 0xC;
-        dest->velocityY = normScale * debris->deltaY >> 0xC;
-        dest->velocityZ = normScale * debris->deltaZ >> 0xC;
-        dest->accelY = rand() % 0x64 + 0x48;
+        dest->velocityX = normScale * debris->deltaX >> 12;
+        dest->velocityY = normScale * debris->deltaY >> 12;
+        dest->velocityZ = normScale * debris->deltaZ >> 12;
+        dest->accelY = rand() % 100 + 72;
     }
     debris->debrisPtr = dest;
     return cursor;
@@ -552,12 +552,12 @@ int __cdecl BattleFx_MagicIce3MultiBuildDebrisFromShadedTriangles(BattleFxIce3Mu
         debris->deltaY = sumY - debris->prevY;
         debris->deltaZ = sumZ - debris->prevZ;
         normScale = NormalizeVectorFixed(&debris->delta, &debris->delta);
-        normScale >>= 0xC;
+        normScale >>= 12;
         normScale = normScale + rand() % 0xA0 + 0x84;
-        dest->velocityX = normScale * debris->deltaX >> 0xC;
-        dest->velocityY = normScale * debris->deltaY >> 0xC;
-        dest->velocityZ = normScale * debris->deltaZ >> 0xC;
-        dest->accelY = rand() % 0x64 + 0x48;
+        dest->velocityX = normScale * debris->deltaX >> 12;
+        dest->velocityY = normScale * debris->deltaY >> 12;
+        dest->velocityZ = normScale * debris->deltaZ >> 12;
+        dest->accelY = rand() % 100 + 72;
     }
     debris->debrisPtr = dest;
     return cursor;
@@ -634,12 +634,12 @@ int __cdecl BattleFx_MagicIce3MultiBuildDebrisFromShadedQuads(BattleFxIce3MultiD
         debris->deltaY = sumY - debris->prevY;
         debris->deltaZ = sumZ - debris->prevZ;
         normScale = NormalizeVectorFixed(&debris->delta, &debris->delta);
-        normScale >>= 0xC;
+        normScale >>= 12;
         normScale = normScale + rand() % 0xA0 + 0x84;
-        dest->velocityX = normScale * debris->deltaX >> 0xC;
-        dest->velocityY = normScale * debris->deltaY >> 0xC;
-        dest->velocityZ = normScale * debris->deltaZ >> 0xC;
-        dest->accelY = rand() % 0x64 + 0x48;
+        dest->velocityX = normScale * debris->deltaX >> 12;
+        dest->velocityY = normScale * debris->deltaY >> 12;
+        dest->velocityZ = normScale * debris->deltaZ >> 12;
+        dest->accelY = rand() % 100 + 72;
     }
     debris->debrisPtr = dest;
     return cursor;
@@ -681,18 +681,18 @@ void __cdecl BattleFx_MagicIce3MultiFadingSpriteLineTask(void)
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
     TransformVectorToInt32(&frame.rotMatrix, &frame.dirX, &frame.dirX);
-    frame.endX.vx = frame.fadeLine->posX + (frame.extent * frame.dirX.vx >> 0xC);
-    frame.endX.vy = frame.fadeLine->posY + 0xE0 - frame.fadeLine->step * 0x12;
-    frame.endX.vz = frame.fadeLine->posZ + (frame.extent * frame.dirX.vz >> 0xC);
+    frame.endX.vx = frame.fadeLine->posX + (frame.extent * frame.dirX.vx >> 12);
+    frame.endX.vy = frame.fadeLine->posY + 224 - frame.fadeLine->step * 18;
+    frame.endX.vz = frame.fadeLine->posZ + (frame.extent * frame.dirX.vz >> 12);
     if (frame.fadeLine->step < 6) {
-        frame.fadeColour = frame.fadeLine->step * 0x15;
-    } else if (frame.fadeLine->step >= 0xA) {
+        frame.fadeColour = frame.fadeLine->step * 21;
+    } else if (frame.fadeLine->step >= 10) {
         frame.fadeColour = 0x80 - (frame.fadeLine->step - 0xA << 4);
     } else {
         frame.fadeColour = 0x80;
     }
     BattleFx_MagicIce3MultiDrawSpriteLine((Vec3sPacked *)((int)frame.fadeLine + 4), (Vec3sPacked *)&frame.endX, (char)frame.fadeColour);
-    if (frame.fadeLine->step >= 0x12) {
+    if (frame.fadeLine->step >= 18) {
         frame.fadeLine->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -730,11 +730,11 @@ void __cdecl BattleFx_MagicIce3MultiDrawSpriteLine(Vec3sPacked *origin, Vec3sPac
     frame.dirX.vz = target->vz - origin->vz;
     frame.extent = NormalizeVectorFixed(&frame.dirX, &frame.dirX);
     frame.extent = SqrtToInt(frame.extent);
-    for (frame.tableIndex = 0; frame.tableIndex < 0x1E; frame.tableIndex += 3) {
-        frame.tmpFraction = frame.extent * (&g_BattleMagicIce3MultiSpriteQuadDrawIndexTable[1])[frame.tableIndex] >> 0xC;
-        frame.pointX.vx = origin->vx + (frame.tmpFraction * frame.dirX.vx >> 0xC);
-        frame.pointX.vy = origin->vy + (frame.tmpFraction * frame.dirX.vy >> 0xC);
-        frame.pointX.vz = origin->vz + (frame.tmpFraction * frame.dirX.vz >> 0xC);
+    for (frame.tableIndex = 0; frame.tableIndex < 30; frame.tableIndex += 3) {
+        frame.tmpFraction = frame.extent * (&g_BattleMagicIce3MultiSpriteQuadDrawIndexTable[1])[frame.tableIndex] >> 12;
+        frame.pointX.vx = origin->vx + (frame.tmpFraction * frame.dirX.vx >> 12);
+        frame.pointX.vy = origin->vy + (frame.tmpFraction * frame.dirX.vy >> 12);
+        frame.pointX.vz = origin->vz + (frame.tmpFraction * frame.dirX.vz >> 12);
         *(char *)((char *)&(((BattleMagicIce3MultiQuadColors *)((char *)&g_BattleMagicIce3MultiSpriteQuadDrawReqColors))->colorB) + g_BattleMagicIce3MultiSpriteQuadDrawIndexTable[frame.tableIndex] * 0x14) = color;
         *(char *)((char *)&(((BattleMagicIce3MultiQuadColors *)((char *)&g_BattleMagicIce3MultiSpriteQuadDrawReqColors))->colorG) + g_BattleMagicIce3MultiSpriteQuadDrawIndexTable[frame.tableIndex] * 0x14) = color;
         *(char *)((char *)((char *)&g_BattleMagicIce3MultiSpriteQuadDrawReqColors) + g_BattleMagicIce3MultiSpriteQuadDrawIndexTable[frame.tableIndex] * 0x14) = color;
@@ -794,7 +794,7 @@ void __cdecl BattleFx_MagicIce3MultiShatterModelTask(void)
     SetDrawColorRGB(0, 0, 0);
     Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_BattleMagicIce3MultiLoadedResTable)));
     Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(1, g_BattleMagicIce3MultiLoadedResTable)));
-    if (frame.shatterSlot->frame < 0x24) {
+    if (frame.shatterSlot->frame < 36) {
         MultiplyMatrix(&g_BattleCameraTransform, &frame.modelMatrix, &frame.modelMatrix);
         SetRotMatrix(&frame.modelMatrix);
         SetTransMatrix(&frame.modelMatrix);
@@ -807,13 +807,13 @@ void __cdecl BattleFx_MagicIce3MultiShatterModelTask(void)
         frame.scratch->debris = (BattleFxBrizagDebrisShadedTri *)&g_BattleMagicIce3MultiDebrisRecord2;
         g_BattleMagicIce3MultiDrawBufferCurrent = BattleFx_MagicIce3MultiDrawDebris(frame.scratch, 0);
     }
-    if (frame.shatterSlot->frame >= 0x32) {
+    if (frame.shatterSlot->frame >= 50) {
         frame.shatterSlot->slotTag = 0xFFFF;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.shatterSlot->frame < 0x12) {
+    if (frame.shatterSlot->frame < 18) {
         frame.shatterSlot->scale += frame.shatterSlot->scaleStep;
     }
     (frame.shatterSlot->frame)++;
@@ -1055,7 +1055,7 @@ int __cdecl BattleFx_MagicIce3MultiDrawDebrisTexturedTriangles(BattleFxIce3Multi
     int i;
 
     triCnt = *(int *)topology & 0xFFFF;
-    stage = 0xE - shatter->otShift;
+    stage = 14 - shatter->otShift;
     recordPtr = (BattleFxTexturedTriRecord *)(topology + 4);
     debris = shatter->debris;
     prim = (BattleDebrisTexturedPrimitive *)shatter->renderState;
@@ -1139,7 +1139,7 @@ int __cdecl BattleFx_MagicIce3MultiDrawDebrisTexturedQuads(BattleFxIce3MultiShat
     int numQuads;
 
     numQuads = *(int *)quadList;
-    stage = 0xE - shatter->otShift;
+    stage = 14 - shatter->otShift;
     recordPtr = (BattleFxShardQuadSlot *)(quadList + 4);
     debris = shatter->debris;
     prim = (BattleFxIce3MultiDebrisQuad *)shatter->renderState;
@@ -1229,7 +1229,7 @@ int __cdecl BattleFx_MagicIce3MultiDrawDebrisShadedTriangles(BattleFxIce3MultiSh
     int i;
 
     triCnt = *(int *)triList;
-    stage = 0xE - shatter->otShift;
+    stage = 14 - shatter->otShift;
     recordPtr = (BattleFxBrizagShadedTriRecord *)(triList + 4);
     debris = shatter->debris;
     prim = (BattleFxPsxPolygonPacket *)shatter->renderState;
@@ -1312,7 +1312,7 @@ int __cdecl BattleFx_MagicIce3MultiDrawDebrisShadedQuads(BattleFxIce3MultiShatte
     int numQuads;
 
     numQuads = *(int *)quadList;
-    stage = 0xE - shatter->otShift;
+    stage = 14 - shatter->otShift;
     recordPtr = (BattleFxFaigaGouraudQuadRecord *)(quadList + 4);
     debris = shatter->debris;
     prim = (BattleFxRubyTentaclesMeshPacket *)shatter->renderState;
@@ -1439,7 +1439,7 @@ void __cdecl BattleFx_MagicIce3MultiShatterOffsetModelTask(void)
         frame.scratch->debris = (BattleFxBrizagDebrisShadedTri *)&g_BattleMagicIce3MultiDebrisRecord1;
         g_BattleMagicIce3MultiDrawBufferCurrent = BattleFx_MagicIce3MultiDrawDebris(frame.scratch, 0);
     }
-    if (frame.shatterRecord->step >= 0x10) {
+    if (frame.shatterRecord->step >= 16) {
         frame.shatterRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1474,7 +1474,7 @@ void __cdecl BattleFx_MagicIce3MultiExpandingGroundModelTask(void)
 #pragma pack(pop)
 
     frame.groundSlot = (BattleFxGrowingModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0xFC00;
+    frame.rotX.vx = 0xFC00 /* 5670 deg */;
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrix(&frame.rotX, &frame.modelMatrix);
@@ -1500,7 +1500,7 @@ void __cdecl BattleFx_MagicIce3MultiExpandingGroundModelTask(void)
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleMagicIce3MultiDrawBufferCurrent = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicIce3MultiDrawBufferCurrent);
-    if (frame.groundSlot->frame >= 0xC) {
+    if (frame.groundSlot->frame >= 12) {
         frame.groundSlot->slotTag = 0xFFFF;
     }
     if (g_BattleIsPaused != 0) {
@@ -1535,19 +1535,19 @@ void __cdecl BattleFx_MagicIce3MultiSpawnConvergingModelsTask(void)
     wave = pSlot->stageIndex;
     if (pSlot->stage == g_BattleMagicIce3MultiConvergingStageIndex[wave] && wave < 6) {
         clamped = pSlot->savedScale;
-        if (clamped > 0x3E8) {
+        if (clamped > 1000) {
             clamped = 0x3E8;
         }
-        scaleFrac = (clamped << 0xC) / 0x4E2;
+        scaleFrac = (clamped << 12) / 1250;
         for (loop = 0; loop < 6; loop++) {
             if (wave < 3) {
                 pSub = (BattleFxIce3MultiConvergingModel *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiConvergingFadeModelTask);
-                pSub->decay = rand() % 0x7D0 + 0xFA0;
+                pSub->decay = rand() % 2000 + 4000;
                 pSub->convergeStart = g_BattleMagicIce3MultiConvergingStepTable[wave] + (pSub->decay & 3);
                 pSub->decayStep = pSub->decay / pSub->convergeStart;
             } else {
                 pSub = (BattleFxIce3MultiConvergingModel *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiConvergingModelTask);
-                pSub->decay = rand() % 0x7D0 + 0xFA0;
+                pSub->decay = rand() % 2000 + 4000;
                 pSub->decayStep = pSub->decay / (g_BattleMagicIce3MultiConvergingStepTable[wave] + (pSub->decay & 3));
                 pSub->convergeStart = 0x18 - g_BattleMagicIce3MultiConvergingStageIndex[wave];
             }
@@ -1559,9 +1559,9 @@ void __cdecl BattleFx_MagicIce3MultiSpawnConvergingModelsTask(void)
         wave++;
         pSlot->stageIndex = wave;
     }
-    if (pSlot->stage == 0x18) {
+    if (pSlot->stage == 24) {
         BattleFx_StartScreenFlashRamp(1);
-    } else if (pSlot->stage == 0x1A) {
+    } else if (pSlot->stage == 26) {
         BattleFx_FadeOutScreenFlashRamp(4);
         pSlot->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -1615,7 +1615,7 @@ void __cdecl BattleFx_MagicIce3MultiConvergingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(6, g_BattleMagicIce3MultiLoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleMagicIce3MultiDrawBufferCurrent = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicIce3MultiDrawBufferCurrent);
@@ -1679,11 +1679,11 @@ void __cdecl BattleFx_MagicIce3MultiConvergingFadeModelTask(void)
     frame.drawItem = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
     frame.drawItem->flags = 8;
     frame.drawItem->uvScroll = 0;
-    frame.drawItem->fadeLevel = 0x80;
+    frame.drawItem->fadeLevel = 128;
     frame.drawItem->stateFlags = 0x20;
     frame.drawItem->texturePageBits = 0;
     if (frame.brizagTask->timer >= frame.brizagTask->convergeStart) {
-        frame.drawItem->fadeLevel -= (short)((frame.brizagTask->timer - frame.brizagTask->convergeStart) * 0x15);
+        frame.drawItem->fadeLevel -= (short)((frame.brizagTask->timer - frame.brizagTask->convergeStart) * 21);
     }
     frame.drawItem->modelGroup = Gfx_ModelTableGetRenderObject(6, g_BattleMagicIce3MultiLoadedResTable);
     g_BattleMagicIce3MultiDrawBufferCurrent = BattleFx_SubmitModelDraw(frame.drawItem, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicIce3MultiDrawBufferCurrent);
@@ -1732,21 +1732,21 @@ void __cdecl BattleFx_MagicIce3MultiSpawnDirectedSpritesTask(void)
         baseScale = 0x2BC0;
         for (i6 = 0; i6 < 8; i6++) {
             pSprite = (BattleFxDirectedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3MultiDirectedSpriteTask);
-            rx.vx = rand() % 0x1000 - 0x800;
-            rx.vy = -(rand() % 0x800);
-            rx.vz = rand() % 0x1000 - 0x800;
+            rx.vx = rand() % 4096 - 2048;
+            rx.vy = -(rand() % 2048);
+            rx.vz = rand() % 4096 - 2048;
             NormalizeVectorFixed(&rx, &rx);
             radiusVal = half + rand() % range;
-            pSprite->posX = task->posX + (radiusVal * rx.vx >> 0xC);
-            pSprite->posY = radiusVal * rx.vy >> 0xC;
-            pSprite->posZ = task->posZ + (radiusVal * rx.vz >> 0xC);
+            pSprite->posX = task->posX + (radiusVal * rx.vx >> 12);
+            pSprite->posY = radiusVal * rx.vy >> 12;
+            pSprite->posZ = task->posZ + (radiusVal * rx.vz >> 12);
             pSprite->direction = rx;
-            randMul = rand() % 0x1100 + 0xA00;
-            pSprite->scale = baseScale * randMul >> 0xC;
-            pSprite->speed = rand() % 0xD2 + 0x82;
+            randMul = rand() % 4352 + 2560;
+            pSprite->scale = baseScale * randMul >> 12;
+            pSprite->speed = rand() % 210 + 130;
         }
     }
-    if (task->frameIndex >= 0x10) {
+    if (task->frameIndex >= 16) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameIndex)++;
@@ -1759,7 +1759,7 @@ void __cdecl BattleFx_MagicIce3MultiSpawnDirectedSpritesTask(void)
 // then ScaleMatrix, MultiplyMatrix against g_BattleCameraTransform, SetRotMatrix and SetTransMatrix. Row 4 of
 // g_BattleMagicIce3MultiLoadedResTable goes to the spriteGroup and drawObj of g_BattleMagicIce3MultiSpriteDrawRequest and the sprite is submitted into
 // g_BattleMagicIce3MultiDrawBufferCurrent; the slot retires with 0xFFFF in ownerSlot at frame 7. Unless g_BattleIsPaused is set it
-// advances the position by the record speed times the direction vector, Q12 (>> 0xC), and
+// advances the position by the record speed times the direction vector, Q12 (>> 12), and
 // increments the frame counter.
 // FUNCTION: FF7 0x0049eee7
 void __cdecl BattleFx_MagicIce3MultiDirectedSpriteTask(void)
@@ -1796,9 +1796,9 @@ void __cdecl BattleFx_MagicIce3MultiDirectedSpriteTask(void)
         return;
     }
     spd = task->speed;
-    task->posX += (short)(spd * work->velocityX >> 0xC);
-    task->posY += (short)(spd * work->velocityY >> 0xC);
-    task->posZ += (short)(spd * work->velocityZ >> 0xC);
+    task->posX += (short)(spd * work->velocityX >> 12);
+    task->posY += (short)(spd * work->velocityY >> 12);
+    task->posZ += (short)(spd * work->velocityZ >> 12);
     (task->spriteFrame)++;
 }
 
@@ -1884,7 +1884,7 @@ void __cdecl BattleFx_MagicIce3MultiSpiralRibbonTask(void)
         Gfx_ShadePsxTriVertexColors((CVECTOR *)&frame.ribbonData->colorBase, (CVECTOR *)&frame.ribbonData->colorPrimary, (CVECTOR *)&frame.ribbonData->colorSecondary, frame.shadeWeight, (CVECTOR *)&frame.ribbonData->colorBase, (CVECTOR *)&frame.ribbonData->colorPrimary, (CVECTOR *)&frame.ribbonData->colorSecondary);
         Gfx_ShadePsxVertexColor((CVECTOR *)&frame.ribbonData->colorTertiary, frame.shadeWeight, (CVECTOR *)&frame.ribbonData->colorTertiary);
     } else if (frame.ribbonTask->frameCount < 6) {
-        frame.shadeWeight = 0x1000 - frame.ribbonTask->frameCount * 0x2AA;
+        frame.shadeWeight = 0x1000 - frame.ribbonTask->frameCount * 682;
         SetDrawColorRGB(0, 0, 0);
         Gfx_ShadePsxTriVertexColors((CVECTOR *)&frame.ribbonData->colorBase, (CVECTOR *)&frame.ribbonData->colorPrimary, (CVECTOR *)&frame.ribbonData->colorSecondary, frame.shadeWeight, (CVECTOR *)&frame.ribbonData->colorBase, (CVECTOR *)&frame.ribbonData->colorPrimary, (CVECTOR *)&frame.ribbonData->colorSecondary);
         Gfx_ShadePsxVertexColor((CVECTOR *)&frame.ribbonData->colorTertiary, frame.shadeWeight, (CVECTOR *)&frame.ribbonData->colorTertiary);
@@ -1931,9 +1931,9 @@ void __cdecl BattleFx_MagicIce3MultiSpiralRibbonTask(void)
         frame.projA2BlendA = frame.projRecordA->blendFactorA;
         frame.projA2BlendB = frame.projRecordA->blendFactorB;
         if (frame.segmentIndex < frame.halfCount) {
-            frame.shadeWeight = (frame.segmentIndex + 1 << 0xC) / frame.halfCount;
+            frame.shadeWeight = (frame.segmentIndex + 1 << 12) / frame.halfCount;
         } else {
-            frame.shadeWeight = (frame.segmentCount - frame.segmentIndex << 0xC) / frame.halfCount;
+            frame.shadeWeight = (frame.segmentCount - frame.segmentIndex << 12) / frame.halfCount;
         }
         frame.ribbonData->projectedDepth = Gfx_ProjectTriangleToScreen(&frame.ribbonData->rotIn1, (SVECTOR *)&frame.ribbonData->pos1, (SVECTOR *)&frame.ribbonData->rotIn2, &frame.ribbonHead->vertex0, &frame.ribbonHead->vertex1, &frame.ribbonTail->vertex2, &frame.ribbonData->projectScratchA, &frame.ribbonData->projectScratchB);
         frame.projRecordB = (GfxProjectedVertexRecord *)Gfx_GetProjectedVertexRecord(0);

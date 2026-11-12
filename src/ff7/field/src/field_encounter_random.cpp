@@ -39,9 +39,9 @@ struct FieldLineDrawScratch g_FieldLineDrawScratch[64] = {0};
 // g_FieldMovieOffset is indexed by the code as an array. The span runs to the next named definition
 // of the TU; the TU's pieces inside 0xcc14c8..0xcc14d0 are aliases.
 // GLOBAL: FF7 0x00cc14c8
-unsigned char g_FieldMovieOffset[0x8] = {0};
+unsigned char g_FieldMovieOffset[8] = {0};
 // GLOBAL: FF7 0x00cc14d0
-unsigned char g_FieldTempBank[0x100] = {0};
+unsigned char g_FieldTempBank[256] = {0};
 // GLOBAL: FF7 0x00cc15d0
 short g_FieldEntryMapId = 0;
 // GLOBAL: FF7 0x00cc15d4
@@ -130,7 +130,7 @@ int __cdecl Field_NextEncounterRandom(void)
 {
     g_FieldRandomIndex1++;
     if (*(unsigned char *)&g_FieldRandomIndex1 == 0) {
-        g_FieldRandomIndex2 += 0xD;
+        g_FieldRandomIndex2 += 13;
     }
     return g_FieldRandomTable[*(unsigned char *)&g_FieldRandomIndex1] - *(unsigned char *)&g_FieldRandomIndex2;
 }
@@ -151,8 +151,8 @@ unsigned char __cdecl Field_NextFormationRandom(void)
  * that are bad for the party.
  */
 #define ENCOUNTER_FORMATION(entry) ((entry) & 0x3FF)
-#define ENCOUNTER_CHANCE(entry) ((char)((entry) >> 0xA))
-#define ENCOUNTER_CHANCE_HALVED(entry) ((char)((entry) >> 0xB))
+#define ENCOUNTER_CHANCE(entry) ((char)((entry) >> 10))
+#define ENCOUNTER_CHANCE_HALVED(entry) ((char)((entry) >> 11))
 
 /*
  * The random encounter check, run after each walkmesh step of the player.
@@ -183,7 +183,7 @@ void __cdecl Field_CheckRandomEncounter(void)
         pTable = &g_pFieldEncountersAlias[1];
     }
     // Wraps to 0 on every eighth step.
-    g_FieldEncounterStepCounter += 0x20;
+    g_FieldEncounterStepCounter += 32;
     if (g_FieldEncounterStepCounter == 0) {
         Party_TickAccessoryRegen();
         gSavemap.encounterStepCountLow++;
@@ -200,7 +200,7 @@ void __cdecl Field_CheckRandomEncounter(void)
                 g_FieldEncounterState = 0;
             }
             rnd = Field_NextEncounterRandom();
-            if ((unsigned int)rnd < (unsigned int)((unsigned int)(*(unsigned short *)&g_FieldEncounterRateAccum * g_PartyBattleModifiers.encounterRate) >> 0xC)) {
+            if ((unsigned int)rnd < (unsigned int)((unsigned int)(*(unsigned short *)&g_FieldEncounterRateAccum * g_PartyBattleModifiers.encounterRate) >> 12)) {
                 g_FieldActorState.state.requestCode = FIELD_REQUEST_BATTLE;
                 g_FieldEncounterTriggered = 1;
                 cumulative = 0;
@@ -292,9 +292,9 @@ void __cdecl Field_UpdateEncountersUnused(void)
     int slot;
     short step[4];
 
-    step[0] = 0x28;
-    step[1] = 0x14;
-    step[2] = 0xC;
+    step[0] = 40;
+    step[1] = 20;
+    step[2] = 12;
     step[3] = 8;
     if (*(char *)&g_FieldActorState.state.encounterTable == 0) {
         pTable = g_pFieldEncountersAlias;
@@ -302,12 +302,12 @@ void __cdecl Field_UpdateEncountersUnused(void)
         pTable = &g_pFieldEncountersAlias[1];
     }
     if ((pTable->flags & 1) != 0 && *(char *)&g_FieldActorState.state.encountersDisabled == 0) {
-        g_FieldEncounterStepCounter += 0x10;
+        g_FieldEncounterStepCounter += 16;
         if (g_FieldEncounterStepCounter == 0) {
             *(unsigned short *)&g_FieldEncounterRateAccum += g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed / step[(pTable->flags & 0xC000) >> 14];
             *(unsigned char *)&g_FieldRandomIndex1 += 1;
             if (*(unsigned char *)&g_FieldRandomIndex1 == 0) {
-                *(unsigned char *)&g_FieldRandomIndex2 += 0xD;
+                *(unsigned char *)&g_FieldRandomIndex2 += 13;
             }
             rnd = g_FieldRandomTable[*(unsigned char *)&g_FieldRandomIndex1] - *(unsigned char *)&g_FieldRandomIndex2;
             if (rnd < ((*(unsigned short *)&g_FieldEncounterRateAccum >> 8) & 0xFF)) {

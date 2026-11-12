@@ -33,7 +33,7 @@ struct VECTOR g_BattleSpecialEmperorCardRightAxisFixed12 = {0x1000, 0, 0, 0};
 // (BattleFx_SpecialEmperorCardBoneParticleSpriteTask (0x004f89a9), unbounded); its last four bytes were
 // the fill g_rawData_00857c24. The strings after it stay a fill: the TU's pointer words reach them.
 // GLOBAL: FF7 0x00857c20
-unsigned char g_BattleSpecialEmperorCardAlphaTable[0x8] = {0x00, 0x20, 0x40, 0x60, 0x80, 0xa0, 0xc0, 0xe0};
+unsigned char g_BattleSpecialEmperorCardAlphaTable[8] = {0x00, 0x20, 0x40, 0x60, 0x80, 0xa0, 0xc0, 0xe0};
 unsigned char g_BattleSpecialEmperorCardResourceNames[16] = {0x00, 0x00, 0x00, 0x00, 0x63, 0x61, 0x72, 0x64, 0x31, 0x2e, 0x72, 0x73, 0x64, 0x00, 0x00, 0x00};
 // GLOBAL: FF7 0x00b49d70
 int g_BattleSpecialEmperorCardTargetActorIdx = 0;
@@ -181,23 +181,23 @@ void __cdecl BattleFx_SpecialEmperorCardTimelineTask(void)
         }
         frame.slot->distance = frame.distance;
         frame.slot->velocityY = 0xFED4;
-        frame.slot->scale = 0x2000;
+        frame.slot->scale = 0x2000 /* 2.0 */;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(((short *)&g_BattleSpecialEmperorCardActorBoneWorldPos)), 0x1D5);
     }
-    if (frame.current->stage == 0x18) {
+    if (frame.current->stage == 24) {
         frame.slot = (BattleFxDiamondCardSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEmperorCardOscillatingModelTask);
         frame.slot->posY = 0xFEF6;
-        frame.slot->velocityY = 0x21;
+        frame.slot->velocityY = 33;
         frame.slot->angle = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x1D6);
     }
-    if (frame.current->stage == 0x48) {
+    if (frame.current->stage == 72) {
         Battle_GetBoneWorldPos(g_BattleSpecialEmperorCardTargetActorIdx, g_BattleActorRecords[g_BattleSpecialEmperorCardTargetActorIdx].targetBone, &frame.current->posX);
         frame.vector[0] = frame.current->posX - g_BattleCameraPosition.cameraPosX;
         frame.vector[1] = 0;
         frame.vector[2] = frame.current->posZ - g_BattleCameraPosZ;
         frame.distance = NormalizeVectorFixed(&frame.vector[0], &frame.vector[0]);
-        frame.distance = SqrtToInt(frame.distance) / 0xC;
+        frame.distance = SqrtToInt(frame.distance) / 12;
         frame.angle = ComputeAngleBetweenVectors(&g_BattleSpecialEmperorCardForwardAxisFixed12, (VECTOR *)(&frame.vector[0]), (VECTOR *)(&frame.axis[0]));
         Gte_BuildAxisAngleMatrix(frame.angle, (PsxMatrix *)(&frame.matrix[0]), (VECTOR *)(&frame.axis[0]));
         TransformVectorToInt32((PsxMatrix *)(&frame.matrix[0]), &g_BattleSpecialEmperorCardForwardAxisFixed12, &frame.vector[0]);
@@ -208,14 +208,14 @@ void __cdecl BattleFx_SpecialEmperorCardTimelineTask(void)
         frame.slot->posX = g_BattleCameraPosition.cameraPosX;
         frame.slot->posY = frame.current->posY;
         frame.slot->posZ = g_BattleCameraPosZ;
-        frame.slot->offsetX = frame.distance * frame.vector[0] >> 0xC;
+        frame.slot->offsetX = frame.distance * frame.vector[0] >> 12;
         frame.slot->velocityY = 0;
-        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 0xC;
+        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 12;
         frame.slot->angle = frame.angle;
         frame.slot->scale = 0x2666;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.current->posX), 0x1D7);
     }
-    if (frame.current->stage >= 0x5A) {
+    if (frame.current->stage >= 90) {
         frame.current->ownerSlot = 0xFFFF;
     }
     (frame.current->stage)++;
@@ -248,7 +248,7 @@ void __cdecl BattleFx_SpecialEmperorCardSpinningModelTask(void)
     if (frame.spinRecord->step <= 8) {
         frame.axisAngle = frame.spinRecord->step << 7;
     } else {
-        frame.axisAngle = 0x400;
+        frame.axisAngle = 0x400 /* 90 deg */;
     }
     frame.actorRotX.vx = 0;
     frame.actorRotX.vy = ((short *)&g_BattleSpecialEmperorCardActorBoneWorldPos)[3];
@@ -262,7 +262,7 @@ void __cdecl BattleFx_SpecialEmperorCardSpinningModelTask(void)
     TransformVectorToInt16(&frame.axisMatrix, &frame.offsetX, &frame.offsetX.vx);
     frame.rotX.vx = 0;
     frame.rotX.vy = 0;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.modelMatrix);
     frame.modelMatrix.t[0] = frame.spinRecord->posX + frame.offsetX.vx;
@@ -279,11 +279,11 @@ void __cdecl BattleFx_SpecialEmperorCardSpinningModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialEmperorCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinRecord->step >= 0x12) {
+    if (frame.spinRecord->step >= 18) {
         frame.spinRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -318,7 +318,7 @@ void __cdecl BattleFx_SpecialEmperorCardOscillatingModelTask(void)
 #pragma pack(pop)
 
     frame.oscRecord = (BattleFxOscillatingModel *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
@@ -336,11 +336,11 @@ void __cdecl BattleFx_SpecialEmperorCardOscillatingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialEmperorCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.oscRecord->phase >= 0x30) {
+    if (frame.oscRecord->phase >= 48) {
         frame.oscRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -352,10 +352,10 @@ void __cdecl BattleFx_SpecialEmperorCardOscillatingModelTask(void)
         if (frame.oscRecord->velocity < 2) {
             frame.oscRecord->velocity = 1;
         }
-    } else if (frame.oscRecord->phase < 0x28) {
+    } else if (frame.oscRecord->phase < 40) {
         frame.sineAngle = frame.oscRecord->phase - 8 << 7;
-        frame.oscRecord->offset = SinFixed(frame.sineAngle) * 0x18 >> 0xC;
-        if (frame.oscRecord->phase >= 0x16 && frame.oscRecord->phase < 0x22) {
+        frame.oscRecord->offset = SinFixed(frame.sineAngle) * 0x18 >> 12;
+        if (frame.oscRecord->phase >= 22 && frame.oscRecord->phase < 34) {
             frame.oscRecord->angle -= 0xAA;
         }
     } else {
@@ -389,7 +389,7 @@ void __cdecl BattleFx_SpecialEmperorCardAcceleratingModelTask(void)
     frame.accelRecord = (BattleFxSpecialAcceleratingSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.accelRecord->angleY;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     frame.modelMatrix.t[0] = frame.accelRecord->posA;
     frame.modelMatrix.t[1] = frame.accelRecord->posY;
@@ -405,23 +405,23 @@ void __cdecl BattleFx_SpecialEmperorCardAcceleratingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialEmperorCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.accelRecord->timer >= 0xC) {
+    if (frame.accelRecord->timer >= 12) {
         frame.modelDraw->flags = 8;
-        frame.modelDraw->fadeLevel = 0x80 - (frame.accelRecord->timer - 0xC << 4);
+        frame.modelDraw->fadeLevel = 128 - (frame.accelRecord->timer - 12 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.accelRecord->timer >= 0x14) {
+    if (frame.accelRecord->timer >= 20) {
         frame.accelRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.accelRecord->timer == 0xA) {
+    if (frame.accelRecord->timer == 10) {
         frame.screenPan = Battle_ComputeScreenPanFromPosition(&frame.accelRecord->posA);
-        if (frame.screenPan > 0x40) {
+        if (frame.screenPan > 64) {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialEmperorCardTargetActorIdx, 0x118);
         } else {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialEmperorCardTargetActorIdx, 0x18);
@@ -451,7 +451,7 @@ void __cdecl BattleFx_SpecialEmperorCardBuildFacingVectors(void)
     Battle_GetBoneWorldPos(g_BattleSpecialEmperorCardActorIndex,
                            g_BattleActorRecords[g_BattleSpecialEmperorCardActorIndex].altBone,
                            ((short *)&g_BattleSpecialEmperorCardActorBoneWorldPos));
-    ((short *)&g_BattleSpecialEmperorCardActorBoneWorldPos)[1] -= 0xe0;
+    ((short *)&g_BattleSpecialEmperorCardActorBoneWorldPos)[1] -= 224;
     ((short *)&g_BattleSpecialEmperorCardActorBoneWorldPos)[3] = g_BattleActorRecords[g_BattleSpecialEmperorCardActorIndex].yaw;
     frame.rot[0] = 0;
     frame.rot[1] = ((short *)&g_BattleSpecialEmperorCardActorBoneWorldPos)[3];
@@ -474,7 +474,7 @@ void __cdecl BattleFx_SpecialEmperorCardDelayedImpactTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x5A) {
+    if (task->frameCounter == 90) {
         BattleFx_SpecialEmperorCardSpawnBoneParticleEmitterWithSound(g_BattleSpecialEmperorCardTargetActorIdx, g_BattleSpecialEmperorCardActorIndex);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -500,7 +500,7 @@ void __cdecl BattleFx_SpecialEmperorCardSpawnBoneParticleEmitter(int targetActor
     slot = (BattleHeartCardBoneEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEmperorCardBoneParticleEmitterTask);
     slot->targetActor = targetActorIdx;
     slot->boneIndex = 0;
-    slot->cellRow = 0x40;
+    slot->cellRow = 64;
     slot->cellWord = 0x7947;
     slot->spriteFlags = 0x3A;
 }
@@ -524,16 +524,16 @@ void __cdecl BattleFx_SpecialEmperorCardBoneParticleEmitterTask(void)
             pEmitter->boneIndex = (pEmitter->boneIndex + (rand() & 3) + 1) % g_BattleActorRecords[pEmitter->actorIndex].boneCount;
             particle = (BattleFxHeartBoneEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEmperorCardBoneParticleSpriteTask);
             Battle_GetBoneWorldPos(pEmitter->actorIndex, pEmitter->boneIndex, &particle->posX);
-            particle->posX += (short)(rand() % 0x1F4 - 0xFA);
-            particle->posY += (short)(rand() % 0x1F4 - 0xFA);
-            particle->posZ += (short)(rand() % 0x1F4 - 0xFA);
+            particle->posX += (short)(rand() % 500 - 250);
+            particle->posY += (short)(rand() % 500 - 250);
+            particle->posZ += (short)(rand() % 500 - 250);
             particle->cellRow = pEmitter->cellRow;
             particle->cellWord = pEmitter->cellWord;
             particle->scale = (rand() & 0xFFF) + 0x1000;
             particle->spriteFlags = pEmitter->spriteFlags;
         }
         (pEmitter->timer)++;
-        if (pEmitter->timer >= 0x1E) {
+        if (pEmitter->timer >= 30) {
             Battle_PostActorHitOrHurtMessage(pEmitter->actorIndex);
             pEmitter->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -557,8 +557,8 @@ void __cdecl BattleFx_SpecialEmperorCardBoneParticleSpriteTask(void)
     request->offsetX = 0xFFF0;
     request->cellX = *(char *)((char *)&g_BattleSpecialEmperorCardAlphaTable + task->alphaIndex);
     request->cellY = task->cellY;
-    request->widthUnits = 0x1F;
-    request->heightUnits = 0x1F;
+    request->widthUnits = 31;
+    request->heightUnits = 31;
     request->flags = task->flags;
     request->cellWord = task->cellWord;
     *(int *)((char *)request + 8) = 0x2E808080;
@@ -566,7 +566,7 @@ void __cdecl BattleFx_SpecialEmperorCardBoneParticleSpriteTask(void)
     BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)request, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, 0);
     if (g_BattleIsPaused == 0) {
         (task->alphaIndex)++;
-        if (task->alphaIndex >= ((unsigned char)task->cellY != 0x80) + 8) {
+        if (task->alphaIndex >= ((unsigned char)task->cellY != 128) + 8) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }

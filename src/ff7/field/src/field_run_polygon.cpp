@@ -67,8 +67,8 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
         frame.runtimeRecord->animFrame = 0;
         frame.runtimeRecord->animTick = 0;
         frame.runtimeRecord->effectFlags = 0;
-        frame.runtimeRecord->rampStep = 0x10;
-        frame.runtimeRecord->rampLimit = 0x64;
+        frame.runtimeRecord->rampStep = 16;
+        frame.runtimeRecord->rampLimit = 100;
         frame.runtimeRecord->rampRate = 0x800;
         frame.runtimeRecord->curveShiftX = 4;
         frame.runtimeRecord->curveShiftY = 4;
@@ -77,8 +77,8 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
         frame.runtimeRecord->curveOffset = 0;
         if (ramp->count == 1) {
             if (ramp->kind0 == 0x36) {
-                frame.runtimeRecord->rampStep = 0x20;
-                frame.runtimeRecord->rampLimit = 0x10;
+                frame.runtimeRecord->rampStep = 32;
+                frame.runtimeRecord->rampLimit = 16;
                 frame.runtimeRecord->rampRate = 0x400;
                 frame.runtimeRecord->curveShiftZ = 9;
             } else if (ramp->kind0 == 0x23) {
@@ -96,9 +96,9 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
                 frame.runtimeRecord->curveShiftY = 6;
                 frame.runtimeRecord->curveShiftZ = 7;
             } else if (ramp->kind0 == 0x48 && ramp->subKind0 == 0x8C) {
-                frame.runtimeRecord->rampStep = 0x20;
+                frame.runtimeRecord->rampStep = 32;
             } else if (ramp->kind0 == 0x50 && ramp->subKind0 == 0x4C) {
-                frame.runtimeRecord->rampStep = 0xC;
+                frame.runtimeRecord->rampStep = 12;
                 frame.runtimeRecord->rampRate = 0x400;
                 frame.runtimeRecord->curveShiftX = 7;
                 frame.runtimeRecord->curveShiftY = 7;
@@ -106,14 +106,14 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
             }
         } else if (ramp->count == 4) {
             if (ramp->kind0 == 0x23 && ramp->kind1 == 0x24) {
-                frame.runtimeRecord->rampStep = 0x18;
+                frame.runtimeRecord->rampStep = 24;
                 frame.runtimeRecord->rampRate = 0x400;
                 frame.runtimeRecord->curveShiftX = 5;
                 frame.runtimeRecord->curveShiftY = 5;
                 frame.runtimeRecord->curveShiftZ = 6;
                 frame.runtimeRecord->curveOffset = 0x28;
             } else if (ramp->kind0 == 0x10 && ramp->kind1 == 0x2A) {
-                frame.runtimeRecord->rampStep = 0x10;
+                frame.runtimeRecord->rampStep = 16;
                 frame.runtimeRecord->rampRate = 0x400;
                 frame.runtimeRecord->curveShiftX = 6;
                 frame.runtimeRecord->curveShiftY = 6;
@@ -124,7 +124,7 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
                 return 0;
             }
         } else if (ramp->count == 2 || ramp->count == 3) {
-            frame.runtimeRecord->rampStep = 0x18;
+            frame.runtimeRecord->rampStep = 24;
             frame.runtimeRecord->rampRate = 0x400;
             frame.runtimeRecord->curveShiftX = 5;
             frame.runtimeRecord->curveShiftY = 5;
@@ -136,7 +136,7 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
     case FIELD_RAMP_COMMAND_STEP:
         frame.commandRecord = (FieldModelCommandRecord *)&g_FieldModelRuntimeFlags;
         frame.dataBlock = Gfx_GetPsxScratchpadPtr(0);
-        frame.rateScale = g_pFieldModelSlots[frame.modelIndex].scale > 0x200 ? g_pFieldModelSlots[frame.modelIndex].scale / 0x200 : 1;
+        frame.rateScale = g_pFieldModelSlots[frame.modelIndex].scale > 0x200 ? g_pFieldModelSlots[frame.modelIndex].scale / 512 : 1;
         frame.rampDelta = frame.runtimeRecord->rampRate * frame.rateScale;
         frame.commandRecord->command = frame.commandP & 0xFF;
         frame.commandRecord->pHigh = frame.commandP >> 8 & 0xFF;
@@ -174,7 +174,7 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
             }
         }
         if (frame.runtimeRecord->rampStep <= 0) {
-            frame.runtimeRecord->rampStep = 0x10;
+            frame.runtimeRecord->rampStep = 16;
         }
         frame.curveStep.magnitude = frame.rateScale;
         frame.curveStep.shiftX = frame.runtimeRecord->curveShiftX;
@@ -190,15 +190,15 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
             (frame.runtimeRecord->rampCounter)++;
             if (frame.runtimeRecord->rampCounter >= frame.runtimeRecord->rampLimit) {
                 frame.runtimeRecord->rampPos = 0;
-                frame.runtimeRecord->animFrame = 0x100;
-                frame.runtimeRecord->animTick = 0x100;
+                frame.runtimeRecord->animFrame = 256;
+                frame.runtimeRecord->animTick = 256;
                 frame.runtimeRecord->effectFlags = 0x100;
                 frame.runtimeRecord->rampPhase = FIELD_POLYGON_RAMP_SWEEP;
             }
             break;
         case FIELD_POLYGON_RAMP_SWEEP:
             frame.runtimeRecord->rampPos += frame.runtimeRecord->rampStep;
-            if (frame.runtimeRecord->rampPos >= 0x120) {
+            if (frame.runtimeRecord->rampPos >= 288) {
                 frame.runtimeRecord->rampCounter = 0;
                 frame.runtimeRecord->animFrame = 0;
                 frame.runtimeRecord->animTick = 0;
@@ -208,17 +208,17 @@ int __cdecl Field_RunPolygonRampCycle(FieldModelInstance *model, FieldPolygonRam
             break;
         case FIELD_POLYGON_RAMP_PAUSE:
             (frame.runtimeRecord->rampCounter)++;
-            if (frame.runtimeRecord->rampCounter >= 0xA) {
+            if (frame.runtimeRecord->rampCounter >= 10) {
                 frame.runtimeRecord->rampPos = 0;
-                frame.runtimeRecord->animFrame = 0x100;
-                frame.runtimeRecord->animTick = 0x100;
+                frame.runtimeRecord->animFrame = 256;
+                frame.runtimeRecord->animTick = 256;
                 frame.runtimeRecord->effectFlags = 0x100;
                 frame.runtimeRecord->rampPhase = FIELD_POLYGON_RAMP_SWEEP_AGAIN;
             }
             break;
         case FIELD_POLYGON_RAMP_SWEEP_AGAIN:
             frame.runtimeRecord->rampPos += frame.runtimeRecord->rampStep;
-            if (frame.runtimeRecord->rampPos >= 0x120) {
+            if (frame.runtimeRecord->rampPos >= 288) {
                 frame.runtimeRecord->rampCounter = 0;
                 frame.runtimeRecord->animFrame = 0;
                 frame.runtimeRecord->animTick = 0;

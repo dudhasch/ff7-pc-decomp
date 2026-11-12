@@ -18,7 +18,7 @@ extern "C" {
 // FUNCTION: FF7 0x0068f7a0
 void __cdecl Gfx_InitPolygonSetStateRecord(void *record)
 {
-    ZeroFillMemory32(0x18, record);
+    ZeroFillMemory32(24, record);
     *(int *)((char *)record + 8) = 2;
 }
 
@@ -31,7 +31,7 @@ void __cdecl Gfx_DestroyDrawPool(int pool)
     if (pool != 0) {
         DestroyBlockHeapChain((MemBlockHeap *)(*(int *)((char *)pool + 4)));
         // STRING: FF7 0x00910a1c
-        GameHeapFree((void *)pool, "C:\\lib\\src\\graphics\\instance.cpp", 0x15);
+        GameHeapFree((void *)pool, "C:\\lib\\src\\graphics\\instance.cpp", 21);
     }
 }
 
@@ -44,10 +44,10 @@ int __cdecl Gfx_CreateDrawPool(int nodeCount)
     GfxDrawPool *pool;
 
     // STRING: FF7 0x00910a40
-    pool = (GfxDrawPool *)GameHeapAlloc(1, 8, "C:\\lib\\src\\graphics\\instance.cpp", 0x1D);
+    pool = (GfxDrawPool *)GameHeapAlloc(1, 8, "C:\\lib\\src\\graphics\\instance.cpp", 29);
     if (pool != 0) {
         pool->generation = 1;
-        pool->blockHeap = CreateBlockHeap(0x90, nodeCount * 0x90, 0);
+        pool->blockHeap = CreateBlockHeap(144, nodeCount * 144, 0);
     }
     return (int)pool;
 }

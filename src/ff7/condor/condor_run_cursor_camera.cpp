@@ -52,17 +52,17 @@ void __cdecl Mini_CondorRunRecordLayoutLoop(void)
     g_CondorLayoutStart = g_CondorLayoutCounter;
     g_CondorLayoutIndex = g_CondorLayoutStart;
     if (g_CondorRecordLayoutCount > 7) {
-        halfWidth = 0x60;
-        g_CondorLayoutPanelHeight = 0x100;
-        g_CondorRecordPanelHeight = (g_CondorRecordLayoutCount / 7 + 1 << 5) + 0x10;
+        halfWidth = 96;
+        g_CondorLayoutPanelHeight = 256;
+        g_CondorRecordPanelHeight = (g_CondorRecordLayoutCount / 7 + 1 << 5) + 16;
     } else {
         halfWidth = (g_CondorRecordLayoutCount / 2) << 5;
-        g_CondorLayoutPanelHeight = (g_CondorRecordLayoutCount << 5) + 0x20;
+        g_CondorLayoutPanelHeight = (g_CondorRecordLayoutCount << 5) + 32;
         if ((g_CondorRecordLayoutCount & 1) == 0) {
-            halfWidth -= 0x10;
-            g_CondorLayoutPanelHeight -= 0x10;
+            halfWidth -= 16;
+            g_CondorLayoutPanelHeight -= 16;
         }
-        g_CondorRecordPanelHeight = 0x30;
+        g_CondorRecordPanelHeight = 48;
     }
     if (g_CondorRecordMode != CONDOR_RECORD_MODE_TARGET) {
         pointX = g_CondorCursorPos.x;
@@ -71,17 +71,17 @@ void __cdecl Mini_CondorRunRecordLayoutLoop(void)
         pointX = g_CondorCursor.x;
         cursorY = g_CondorCursor.y;
     }
-    if (pointX - g_CondorCameraX - halfWidth <= 0x40) {
-        pointX = g_CondorCameraX + halfWidth + 0x40;
-    } else if (pointX + g_CondorLayoutPanelHeight - g_CondorCameraX - halfWidth >= 0x110) {
-        pointX = g_CondorCameraX + 0x140 - g_CondorLayoutPanelHeight + halfWidth + -8;
+    if (pointX - g_CondorCameraX - halfWidth <= 64) {
+        pointX = g_CondorCameraX + halfWidth + 64;
+    } else if (pointX + g_CondorLayoutPanelHeight - g_CondorCameraX - halfWidth >= 272) {
+        pointX = g_CondorCameraX + 320 - g_CondorLayoutPanelHeight + halfWidth + -8;
     }
-    tileX = pointX - 0x100 - halfWidth;
+    tileX = pointX - 256 - halfWidth;
     remainingX = tileX;
-    yPosition = cursorY - 0x1F0;
+    yPosition = cursorY - 496;
     topEdge = yPosition;
-    g_CondorPanelRectX = pointX - halfWidth - 0x10;
-    g_CondorPanelRectY = cursorY - 0x10;
+    g_CondorPanelRectX = pointX - halfWidth - 16;
+    g_CondorPanelRectY = cursorY - 16;
     for (matchIdx = 0; matchIdx < g_CondorRecordLayoutCount; matchIdx++) {
         sourceUnit = (CondorRunRecordSource *)listCursor->peer;
         if (((int)sourceUnit - (int)&g_CondorRecordTable.records[0].status) / 0x78 == g_CondorSelectedRecord) {
@@ -106,10 +106,10 @@ void __cdecl Mini_CondorRunRecordLayoutLoop(void)
         pLayoutPtr->targetY = yPosition;
         sourceUnit->layoutX = *(int *)&g_CondorScreenDistanceBuf - 0x50;
         sourceUnit->pendingOffset = 0;
-        tileX += 0x20;
-        if (matchIdx == 6 || matchIdx == 0xD) {
+        tileX += 32;
+        if (matchIdx == 6 || matchIdx == 13) {
             tileX = remainingX;
-            yPosition += 0x20;
+            yPosition += 32;
         }
         pLayoutPtr++;
         listCursor++;
@@ -168,7 +168,7 @@ short __cdecl Mini_CondorOpenSelectedRecordActionMenu(void)
 void __cdecl Mini_CondorClearActiveRecord(void)
 {
     g_CondorSelectedRecord = 0xFFFF;
-    g_CondorCameraZoomInit = 0x100;
+    g_CondorCameraZoomInit = 0x100 /* 0.0625 */;
     g_CondorCameraOffsetInit = 0;
 }
 
@@ -228,7 +228,7 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
     g_CondorFrameInput = 0;
     if ((g_CondorInputMask & (INPUT_UP | INPUT_RIGHT | INPUT_DOWN | INPUT_LEFT | INPUT_L2 | INPUT_R2 | INPUT_L1 | INPUT_R1)) != 0) {
         if ((g_CondorInputPressed & (INPUT_UP | INPUT_RIGHT | INPUT_DOWN | INPUT_LEFT | INPUT_L2 | INPUT_R2 | INPUT_L1 | INPUT_R1)) != 0) {
-            g_CondorCycleTimer = 0xA;
+            g_CondorCycleTimer = 10;
             g_CondorFrameInput = g_CondorInputPressed;
         }
         g_CondorCycleTimer--;
@@ -237,7 +237,7 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
             g_CondorFrameInput = g_CondorInputMask & (INPUT_UP | INPUT_RIGHT | INPUT_DOWN | INPUT_LEFT | INPUT_L2 | INPUT_R2 | INPUT_L1 | INPUT_R1);
         }
     } else {
-        g_CondorCycleTimer = 0xA;
+        g_CondorCycleTimer = 10;
     }
     if (g_CondorMainState != CONDOR_STATE_IDLE) {
         Mini_CondorDispatchStateHandler();
@@ -273,7 +273,7 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
                     if (g_CondorLayoutStart != 2) {
                         Mini_CondorClearActiveRecord();
                         g_CondorSelectPanelPhase = CONDOR_PANEL_OPEN;
-                        g_CondorWobbleTimer = 0x1E;
+                        g_CondorWobbleTimer = 30;
                         g_CondorSpriteSlotAHeightX.screenX = 0xFFF8;
                         g_CondorSpriteSlotAScreenY = 0xFFFFFFE8 - ((int)*(unsigned short *)&g_CondorWobbleTimer / 4) % 3;
                         g_CondorMainState = CONDOR_STATE_CURSOR_GLIDE;
@@ -300,7 +300,7 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
                     index = Mini_CondorPickRecordNearPoint(&g_CondorCursorPos);
                     if (g_CondorMatchCount != 0) {
                         if (g_CondorMatchCount == 1) {
-                            if (g_CondorRecordTable.records[g_CondorSelectedRecord].unitIndex < 0x10) {
+                            if (g_CondorRecordTable.records[g_CondorSelectedRecord].unitIndex < 16) {
                                 Mini_CondorOpenSelectedRecordActionMenu();
                             }
                         } else {
@@ -308,7 +308,7 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
                         }
                     }
                 } else {
-                    g_CondorRedFadeLevel = 0xC0;
+                    g_CondorRedFadeLevel = 192;
                     if (*(unsigned short *)&g_CondorCursorProbeFlag != 0) {
                         g_CondorChoiceTimer++;
                     } else {
@@ -324,10 +324,10 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
                 g_CondorSelectPanelPhase = CONDOR_PANEL_OPEN;
                 g_CondorSelectedRecord = 0xFFFF;
                 Mini_CondorRequestDisplayMode2();
-                g_CondorSelectRowY = 0x10;
-                g_CondorSpriteSlot6HeightX.screenX = g_CondorCameraX + 0x30;
-                g_CondorSpriteSlot6ScreenY = g_CondorCameraY + g_CondorSelectRowY + 0x4C;
-                g_CondorBannerIndex = 0xD;
+                g_CondorSelectRowY = 16;
+                g_CondorSpriteSlot6HeightX.screenX = g_CondorCameraX + 48;
+                g_CondorSpriteSlot6ScreenY = g_CondorCameraY + g_CondorSelectRowY + 76;
+                g_CondorBannerIndex = 13;
                 Mini_CondorSetSelectedReadout(-1, 0);
             } else {
                 switch (g_CondorRecordMode) {
@@ -368,7 +368,7 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
                         g_CondorSelectedRecord = 0xFFFF;
                     }
                     if (g_CondorSelectedRecord != -1) {
-                        if (g_CondorSelectedRecord >= 0x14) {
+                        if (g_CondorSelectedRecord >= 20) {
                             g_CondorHudBlinkPhase = 1;
                         } else {
                             g_CondorHudBlinkPhase = 0;
@@ -433,16 +433,16 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
                     g_CondorSelectRowY = g_CondorSelectRowBase + (g_CondorActionRowIndex << 4);
                 }
                 g_CondorActionCursor--;
-                g_CondorSelectRowY -= 0x10;
+                g_CondorSelectRowY -= 16;
             }
             if ((g_CondorFrameInput & INPUT_DOWN) != 0) {
                 Mini_CondorSubmitSfxPlay(1, 4);
                 if (g_CondorActionCursor == g_CondorActionRowIndex - 1) {
                     g_CondorActionCursor = 0xFFFF;
-                    g_CondorSelectRowY = g_CondorSelectRowBase - 0x10;
+                    g_CondorSelectRowY = g_CondorSelectRowBase - 16;
                 }
                 g_CondorActionCursor++;
-                g_CondorSelectRowY += 0x10;
+                g_CondorSelectRowY += 16;
             }
         } else {
             g_CondorCursorProbeFlag = 0;
@@ -460,8 +460,8 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
                     g_CondorCursor.y = g_CondorRecordTable.records[g_CondorPickedRecordIndex].posY;
                     if (g_CondorSelectedRecord == g_CondorPickedRecordIndex) {
                         g_CondorCommandCode = 4;
-                    } else if (g_CondorRecordTable.records[g_CondorPickedRecordIndex].unitIndex <= 0xF) {
-                        if (g_CondorRecordTable.records[g_CondorSelectedRecord].unitIndex == 0xC) {
+                    } else if (g_CondorRecordTable.records[g_CondorPickedRecordIndex].unitIndex <= 15) {
+                        if (g_CondorRecordTable.records[g_CondorSelectedRecord].unitIndex == 12) {
                             g_CondorCommandCode = 2;
                         } else {
                             g_CondorCommandCode = 3;
@@ -494,8 +494,8 @@ int __cdecl Mini_CondorUpdateFrameInput(void *context, void *inputBlock)
             Mini_CondorSubmitSfxPlay(0, 3);
             g_CondorCursorScreenX = g_CondorCursorPos.x - g_CondorCameraX;
             g_CondorCursorScreenY = g_CondorCursorPos.y - g_CondorCameraY;
-            g_CondorCursorPos.x = g_CondorCameraX + 0xA0;
-            g_CondorCursorPos.y = g_CondorCameraY + 0x68;
+            g_CondorCursorPos.x = g_CondorCameraX + 160;
+            g_CondorCursorPos.y = g_CondorCameraY + 104;
         }
         if ((g_CondorInputPressed & INPUT_SELECT) != 0 && g_CondorRecordMode <= CONDOR_RECORD_MODE_CURSOR && g_CondorMainState == CONDOR_STATE_IDLE && g_CondorPhase != 1) {
             Mini_CondorSaveCameraAndEnterState0E();
@@ -552,18 +552,18 @@ short __cdecl Mini_CondorProbeGatedCursorPosPlacement(void)
         return 1;
     } else if (g_CondorSelectedRecord != -1) {
         return 1;
-    } else if (g_CondorPlayerUnitCount >= 0x14) {
+    } else if (g_CondorPlayerUnitCount >= 20) {
         return 1;
     } else if (g_CondorPhase == 1) {
-        if (g_CondorCursorPos.y >= 0x2A0) {
+        if (g_CondorCursorPos.y >= 672) {
             return 1;
         }
     } else if (g_CondorCursorPos.y >= (*(int *)&g_CondorHighestUnitY)) {
         return 1;
     }
     frame.placeX.x = g_CondorCursorPos.x;
-    frame.placeX.y = 0x400 - g_CondorCursorPos.y;
-    frame.placeZ = 0xFFD8;
+    frame.placeX.y = 1024 - g_CondorCursorPos.y;
+    frame.placeZ = 0xFFD8 /* -40 */;
     frame.hitResult = Mini_CondorTestRecordPlacementWithPeers(0, &frame.placeX);
     if (frame.hitResult == 1) {
         return 1;
@@ -590,8 +590,8 @@ short __cdecl Mini_CondorProbeCursorPlacement(void)
 #pragma pack(pop)
 
     frame.placeX.x = g_CondorCursor.x;
-    frame.placeX.y = 0x400 - g_CondorCursor.y;
-    frame.placeZ = 0xFFD8;
+    frame.placeX.y = 1024 - g_CondorCursor.y;
+    frame.placeZ = 0xFFD8 /* -40 */;
     frame.hitResult = Mini_CondorTestRecordPlacement(0, &frame.placeX);
     if (frame.hitResult == 1) {
         return 1;
@@ -608,8 +608,8 @@ short __cdecl Mini_CondorProbeCursorPlacement(void)
 short __cdecl Mini_CondorAccelerateHeldStep(void)
 {
     g_CondorHeldStepCount++;
-    if (*(unsigned short *)&g_CondorHeldStepCount > 0x10) {
-        g_CondorHeldStepCount = 0x10;
+    if (*(unsigned short *)&g_CondorHeldStepCount > 16) {
+        g_CondorHeldStepCount = 16;
     }
     Mini_CondorMoveActiveCursor(g_CondorInputMask);
     if (*(unsigned short *)&g_CondorHeldStepCount <= 2) {
@@ -709,11 +709,11 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
         frame.relY = cursor->y - g_CondorCameraY;
         if ((moveFlags & INPUT_UP) != 0) {
             frame.edgeCount = 0;
-            if (frame.relY > 0x68) {
+            if (frame.relY > 104) {
                 frame.edgeCount++;
             } else {
                 g_CondorCameraY--;
-                if (g_CondorCameraY > 0x8000) {
+                if (g_CondorCameraY > 32768) {
                     g_CondorCameraY = 0;
                     frame.edgeCount++;
                 } else {
@@ -729,12 +729,12 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
         }
         if ((moveFlags & INPUT_DOWN) != 0) {
             frame.edgeCount = 0;
-            if (frame.relY < 0x68) {
+            if (frame.relY < 104) {
                 frame.edgeCount++;
             } else {
                 g_CondorCameraY++;
-                if (g_CondorCameraY > 0x324) {
-                    g_CondorCameraY = 0x324;
+                if (g_CondorCameraY > 804) {
+                    g_CondorCameraY = 804;
                     frame.edgeCount++;
                 } else {
                     g_CondorCameraTranslateY--;
@@ -742,18 +742,18 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
             }
             if (frame.edgeCount != 0) {
                 frame.relY++;
-                if (frame.relY >= 0xCC) {
-                    frame.relY = 0xCC;
+                if (frame.relY >= 204) {
+                    frame.relY = 204;
                 }
             }
         }
         if ((moveFlags & INPUT_LEFT) != 0) {
             frame.edgeCount = 0;
-            if (frame.relX > 0xA0) {
+            if (frame.relX > 160) {
                 frame.edgeCount++;
             } else {
                 g_CondorCameraX--;
-                if (g_CondorCameraX > 0x8000) {
+                if (g_CondorCameraX > 32768) {
                     g_CondorCameraX = 0;
                     g_CondorCameraTranslateX &= 0xFFFFFFF8;
                     frame.edgeCount++;
@@ -770,12 +770,12 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
         }
         if ((moveFlags & INPUT_RIGHT) != 0) {
             frame.edgeCount = 0;
-            if (frame.relX < 0xA0) {
+            if (frame.relX < 160) {
                 frame.edgeCount++;
             } else {
                 g_CondorCameraX++;
-                if (g_CondorCameraX > 0xC0) {
-                    g_CondorCameraX = 0xC0;
+                if (g_CondorCameraX > 192) {
+                    g_CondorCameraX = 192;
                     g_CondorCameraTranslateX &= 0xFFFFFFF8;
                     frame.edgeCount++;
                 } else {
@@ -784,8 +784,8 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
             }
             if (frame.edgeCount != 0) {
                 frame.relX++;
-                if (frame.relX >= 0x140) {
-                    frame.relX = 0x140;
+                if (frame.relX >= 320) {
+                    frame.relX = 320;
                 }
             }
         }
@@ -799,7 +799,7 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
         if ((moveFlags & INPUT_UP) != 0) {
             frame.edgeCount = 0;
             frame.scrollDelta = g_CondorCursorSpeedY;
-            if (frame.relY > 0x68) {
+            if (frame.relY > 104) {
                 frame.edgeCount++;
             } else {
                 frame.scrollY -= (short)g_CondorCursorSpeedY;
@@ -823,14 +823,14 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
         if ((moveFlags & INPUT_DOWN) != 0) {
             frame.edgeCount = 0;
             frame.scrollDelta = g_CondorCursorSpeedY;
-            if (frame.relY < 0x68) {
+            if (frame.relY < 104) {
                 frame.edgeCount++;
             } else {
                 g_CondorCameraY += (short)g_CondorCursorSpeedY;
-                if (g_CondorCameraY > 0x324) {
+                if (g_CondorCameraY > 804) {
                     frame.scrollDelta = g_CondorCameraY - 0x324;
                     g_CondorCameraTranslateY += frame.scrollDelta;
-                    g_CondorCameraY = 0x324;
+                    g_CondorCameraY = 804;
                     frame.edgeCount++;
                 } else {
                     g_CondorCameraTranslateY -= g_CondorCursorSpeedY;
@@ -838,15 +838,15 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
             }
             if (frame.edgeCount != 0) {
                 frame.relY += (short)frame.scrollDelta;
-                if (frame.relY >= 0xCC) {
-                    frame.relY = 0xCC;
+                if (frame.relY >= 204) {
+                    frame.relY = 204;
                 }
             }
         }
         if ((moveFlags & INPUT_LEFT) != 0) {
             frame.edgeCount = 0;
             frame.scrollDelta = g_CondorCursorSpeedX;
-            if (frame.relX > 0xA0) {
+            if (frame.relX > 160) {
                 frame.edgeCount++;
             } else {
                 frame.scrollX -= (short)g_CondorCursorSpeedX;
@@ -871,14 +871,14 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
         if ((moveFlags & INPUT_RIGHT) != 0) {
             frame.edgeCount = 0;
             frame.scrollDelta = g_CondorCursorSpeedX;
-            if (frame.relX < 0xA0) {
+            if (frame.relX < 160) {
                 frame.edgeCount++;
             } else {
                 g_CondorCameraX += (short)g_CondorCursorSpeedX;
-                if (g_CondorCameraX > 0xC0) {
+                if (g_CondorCameraX > 192) {
                     frame.scrollDelta = g_CondorCameraX - 0xC0;
                     g_CondorCameraTranslateY += frame.scrollDelta;
-                    g_CondorCameraX = 0xC0;
+                    g_CondorCameraX = 192;
                     g_CondorCameraTranslateX &= 0xFFFFFFF8;
                     frame.edgeCount++;
                 } else {
@@ -887,8 +887,8 @@ void __cdecl Mini_CondorMoveCursorAndScroll(int moveFlags, CondorCursor *cursor)
             }
             if (frame.edgeCount != 0) {
                 frame.relX += (short)frame.scrollDelta;
-                if (frame.relX >= 0x140) {
-                    frame.relX = 0x140;
+                if (frame.relX >= 320) {
+                    frame.relX = 320;
                 }
             }
         }
@@ -911,7 +911,7 @@ void __cdecl Mini_CondorScrollCamera(int scrollFlags)
     if (g_CondorCursorMode == 0) {
         if ((scrollFlags & INPUT_UP) != 0) {
             g_CondorCameraY--;
-            if (g_CondorCameraY > 0x8000) {
+            if (g_CondorCameraY > 32768) {
                 g_CondorCameraY = 0;
                 edgeHits++;
             } else {
@@ -920,8 +920,8 @@ void __cdecl Mini_CondorScrollCamera(int scrollFlags)
         }
         if ((scrollFlags & INPUT_DOWN) != 0) {
             g_CondorCameraY++;
-            if (g_CondorCameraY > 0x324) {
-                g_CondorCameraY = 0x324;
+            if (g_CondorCameraY > 804) {
+                g_CondorCameraY = 804;
                 edgeHits++;
             } else {
                 g_CondorCameraTranslateY--;
@@ -929,7 +929,7 @@ void __cdecl Mini_CondorScrollCamera(int scrollFlags)
         }
         if ((scrollFlags & INPUT_LEFT) != 0) {
             g_CondorCameraX--;
-            if (g_CondorCameraX > 0x8000) {
+            if (g_CondorCameraX > 32768) {
                 g_CondorCameraX = 0;
                 g_CondorCameraTranslateX &= 0xFFFFFFF8;
                 edgeHits++;
@@ -939,8 +939,8 @@ void __cdecl Mini_CondorScrollCamera(int scrollFlags)
         }
         if ((scrollFlags & INPUT_RIGHT) != 0) {
             g_CondorCameraX++;
-            if (g_CondorCameraX > 0xC0) {
-                g_CondorCameraX = 0xC0;
+            if (g_CondorCameraX > 192) {
+                g_CondorCameraX = 192;
                 g_CondorCameraTranslateX &= 0xFFFFFFF8;
                 edgeHits++;
             } else {
@@ -965,9 +965,9 @@ void __cdecl Mini_CondorScrollCamera(int scrollFlags)
         }
         if ((scrollFlags & INPUT_DOWN) != 0) {
             g_CondorCameraY += (short)g_CondorCursorSpeedY;
-            if (g_CondorCameraY > 0x324) {
-                step = g_CondorCameraY - 0x324;
-                g_CondorCameraY = 0x324;
+            if (g_CondorCameraY > 804) {
+                step = g_CondorCameraY - 804;
+                g_CondorCameraY = 804;
                 g_CondorCameraTranslateY -= step;
                 edgeHits++;
             } else {
@@ -989,9 +989,9 @@ void __cdecl Mini_CondorScrollCamera(int scrollFlags)
         }
         if ((scrollFlags & INPUT_RIGHT) != 0) {
             g_CondorCameraX += (short)g_CondorCursorSpeedX;
-            if (g_CondorCameraX > 0xC0) {
-                g_CondorCameraX = 0xC0;
-                step = g_CondorCameraX - 0xC0;
+            if (g_CondorCameraX > 192) {
+                g_CondorCameraX = 192;
+                step = g_CondorCameraX - 192;
                 g_CondorCameraTranslateX &= 0xFFFFFFF8;
                 g_CondorCameraTranslateX -= step;
                 edgeHits++;

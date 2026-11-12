@@ -73,7 +73,7 @@ static const char REG_MIDI_KEY[] = "Software\\Square Soft, Inc.\\Final Fantasy V
 // FUNCTION: FF7 0x00406d10
 void __cdecl InitPathsFromRegistry(void)
 {
-    char sysMsg[0x100];
+    char sysMsg[256];
     char valBuf[0x100];
     DWORD dataBytes;
     DWORD regType;
@@ -85,23 +85,23 @@ void __cdecl InitPathsFromRegistry(void)
     HKEY regKey;
 
     // STRING: FF7 0x007ba758
-    g_InitPath_AppPath = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x37);
+    g_InitPath_AppPath = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 55);
     // STRING: FF7 0x007ba778
-    g_InitPath_MoviePath = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x38);
+    g_InitPath_MoviePath = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 56);
     // STRING: FF7 0x007ba798
-    g_InitPath_DataDrive = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x39);
+    g_InitPath_DataDrive = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 57);
     // STRING: FF7 0x007ba7b8
-    g_InitPath_DataPath = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x3A);
+    g_InitPath_DataPath = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 58);
     // STRING: FF7 0x007ba7d8
-    g_InitPath_SoundPath = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x3B);
+    g_InitPath_SoundPath = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 59);
     // STRING: FF7 0x007ba7f8
-    g_InitPath_MusicPath = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x3C);
+    g_InitPath_MusicPath = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 60);
     // STRING: FF7 0x007ba818
-    g_InitPath_MidiPath = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x3D);
+    g_InitPath_MidiPath = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 61);
     // STRING: FF7 0x007ba838
-    g_InitPath_MinigameDir = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x3E);
+    g_InitPath_MinigameDir = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 62);
     // STRING: FF7 0x007ba858
-    g_InitPath_CdDataPath = (char *)GameHeapAlloc(0x100, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 0x3F);
+    g_InitPath_CdDataPath = (char *)GameHeapAlloc(256, 1, "C:\\FF7\\Src\\main\\initpath.cpp", 63);
 
     state = RegOpenKeyExA(HKEY_LOCAL_MACHINE,
                               REG_APP_KEY, 0, KEY_READ, &regKey);
@@ -219,23 +219,23 @@ void __cdecl InitPathsFromRegistry(void)
 void __cdecl Engine_FreePathGlobals(void)
 {
     // STRING: FF7 0x007ba8d0
-    GameHeapFree(g_InitPath_AppPath, "C:\\FF7\\Src\\main\\initpath.cpp", 0xDF);
+    GameHeapFree(g_InitPath_AppPath, "C:\\FF7\\Src\\main\\initpath.cpp", 223);
     // STRING: FF7 0x007ba8f0
-    GameHeapFree(g_InitPath_MoviePath, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE0);
+    GameHeapFree(g_InitPath_MoviePath, "C:\\FF7\\Src\\main\\initpath.cpp", 224);
     // STRING: FF7 0x007ba910
-    GameHeapFree(g_InitPath_DataDrive, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE1);
+    GameHeapFree(g_InitPath_DataDrive, "C:\\FF7\\Src\\main\\initpath.cpp", 225);
     // STRING: FF7 0x007ba930
-    GameHeapFree(g_InitPath_DataPath, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE2);
+    GameHeapFree(g_InitPath_DataPath, "C:\\FF7\\Src\\main\\initpath.cpp", 226);
     // STRING: FF7 0x007ba950
-    GameHeapFree(g_InitPath_SoundPath, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE3);
+    GameHeapFree(g_InitPath_SoundPath, "C:\\FF7\\Src\\main\\initpath.cpp", 227);
     // STRING: FF7 0x007ba970
-    GameHeapFree(g_InitPath_MusicPath, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE4);
+    GameHeapFree(g_InitPath_MusicPath, "C:\\FF7\\Src\\main\\initpath.cpp", 228);
     // STRING: FF7 0x007ba990
-    GameHeapFree(g_InitPath_MidiPath, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE5);
+    GameHeapFree(g_InitPath_MidiPath, "C:\\FF7\\Src\\main\\initpath.cpp", 229);
     // STRING: FF7 0x007ba9b0
-    GameHeapFree(g_InitPath_MinigameDir, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE6);
+    GameHeapFree(g_InitPath_MinigameDir, "C:\\FF7\\Src\\main\\initpath.cpp", 230);
     // STRING: FF7 0x007ba9d0
-    GameHeapFree(g_InitPath_CdDataPath, "C:\\FF7\\Src\\main\\initpath.cpp", 0xE7);
+    GameHeapFree(g_InitPath_CdDataPath, "C:\\FF7\\Src\\main\\initpath.cpp", 231);
 }
 
 /*

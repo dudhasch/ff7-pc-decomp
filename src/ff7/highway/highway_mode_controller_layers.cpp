@@ -46,13 +46,13 @@ char HighwayModeController::createLayers()
 
     other = (HighwayModelNode *)g_pHighwayIndexBlock;
     this->layers[0] =
-        g_pHighwayIndexBlock->createRaw(0xAE, other, 0, 0, 0, 0, 0, 0);
+        g_pHighwayIndexBlock->createRaw(174, other, 0, 0, 0, 0, 0, 0);
     this->layers[1] =
-        g_pHighwayIndexBlock->createRaw(0xA5, other, 0, 0, 0, 0, 0, 0);
+        g_pHighwayIndexBlock->createRaw(165, other, 0, 0, 0, 0, 0, 0);
     this->layers[2] =
-        g_pHighwayIndexBlock->createRaw(0xA3, other, 0, 0, 0, 0, 0, 0);
+        g_pHighwayIndexBlock->createRaw(163, other, 0, 0, 0, 0, 0, 0);
     this->layers[3] =
-        g_pHighwayIndexBlock->createRaw(0xA7, other, 0, 0, 0, 0, 0, 0);
+        g_pHighwayIndexBlock->createRaw(167, other, 0, 0, 0, 0, 0, 0);
     return 1;
 }
 

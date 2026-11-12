@@ -171,18 +171,18 @@ void __cdecl Mini_ChocoboRaceInitFromSavemap(void)
     g_ChocoboRacePhase = 0;
     g_ChocoboRaceClass = gSavemap.raceClass;
     if (g_ChocoboCourseVariant == 0) {
-        g_ChocoboCourseSegmentCount = 0x49D;
+        g_ChocoboCourseSegmentCount = 1181;
     } else {
-        g_ChocoboCourseSegmentCount = 0x3B1;
+        g_ChocoboCourseSegmentCount = 945;
     }
     g_ChocoboSkipPromptActive = 0;
     g_ChocoboFadeLevel = 0xFF;
-    g_ChocoboFadeStep = -0x10;
+    g_ChocoboFadeStep = -16;
     g_ChocoboLateGamePrizesEnabled = gSavemap.storyProgressLo + (gSavemap.storyProgressHi << 8) >= 1000 ? -1 : 0;
     g_ChocoboCameraSnapFlag = 1;
     Mini_ChocoboPollInputLatches();
     Mini_ChocoboPackInputLatches();
-    bits = g_ChocoboPackedInputLatches >> 0x10;
+    bits = g_ChocoboPackedInputLatches >> 16;
     if ((bits & 0xF0) == 0xF0) {
         if ((bits & 8) != 0) {
             gSavemap.playerRacerRow = 1;
@@ -204,7 +204,7 @@ void __cdecl Mini_ChocoboRaceInitFromSavemap(void)
     g_ChocoboSelectedRacerIndex = -1;
     g_ChocoboDashActiveFlag = 0;
     g_ChocoboRaceWinnerIndex = -1;
-    g_ChocoboRacers[0].countdown = 0x1E;
+    g_ChocoboRacers[0].countdown = 30;
     g_ChocoboViewedRacer = 0;
 }
 
@@ -252,7 +252,7 @@ void __cdecl Mini_ChocoboRaceInitRenderAndAssets(GfxEngineContext *engineCtx, vo
     Mini_ChocoboCreateFixedRenderObjects(engineCtx, loadOptions);
     Mini_ChocoboRaceCreateCourseSpriteObjects((struct PfileLoadOptions *)loadOptions, engineCtx, g_ChocoboCourseVariant);
     SetGeomOffset(0xA0, 0x78);
-    SetGeomScreen(0x10E);
+    SetGeomScreen(270);
     g_ChocoboFlags.clearedShort0 = 0;
     g_ChocoboFlags.clearedShort1 = 0;
     g_ChocoboFlags.clearedShort2 = 0;
@@ -266,7 +266,7 @@ void __cdecl Mini_ChocoboRaceInitRenderAndAssets(GfxEngineContext *engineCtx, vo
     g_ChocoboCourseQuadCount = g_ChocoboTrackData->segmentCount;
     g_ChocoboCurrentRouteEvent.eventKind = 0xFF;
     for (i = 0; i < 6; i++) {
-        g_ChocoboRacerTable[i].renderObjectIndex = 0x19;
+        g_ChocoboRacerTable[i].renderObjectIndex = 25;
         g_ChocoboRacerTable[i].colorR = (i & 2) != 0 ? 0xFF : 0;
         g_ChocoboRacerTable[i].colorG = (i & 4) != 0 ? 0xFF : 0;
         g_ChocoboRacerTable[i].colorB = (i & 1) != 0 ? 0xFF : 0;
@@ -278,17 +278,17 @@ void __cdecl Mini_ChocoboRaceInitRenderAndAssets(GfxEngineContext *engineCtx, vo
     g_ChocoboCameraRecord.vertexAY = g_ChocoboCameraRecord.vertexCY;
     g_ChocoboCameraRecord.vertexBX = g_ChocoboCameraRecord.vertexAY;
     g_ChocoboCameraRecord.left = g_ChocoboCameraRecord.vertexBX;
-    g_ChocoboCameraRecord.vertexDX = 0x140;
+    g_ChocoboCameraRecord.vertexDX = 320;
     g_ChocoboCameraRecord.right = g_ChocoboCameraRecord.vertexDX;
-    g_ChocoboCameraRecord.vertexDY = 0xE8;
+    g_ChocoboCameraRecord.vertexDY = 232;
     g_ChocoboCameraRecord.vertexBY = g_ChocoboCameraRecord.vertexDY;
-    g_ChocoboCameraRecord.width = 0x140;
-    g_ChocoboCameraRecord.height = 0xE8;
+    g_ChocoboCameraRecord.width = 320;
+    g_ChocoboCameraRecord.height = 232;
     g_ChocoboCameraRecord.depth = FLOAT_0_001_BITS;
     g_ChocoboCameraRecord.texY = 0;
     g_ChocoboCameraRecord.texX = g_ChocoboCameraRecord.texY;
     g_ChocoboCameraRecord.isActive = 1;
-    g_ChocoboCameraRecord.renderObjectIndex = 0x19;
+    g_ChocoboCameraRecord.renderObjectIndex = 25;
     g_ChocoboCourseRecord0.colorR = g_ChocoboColorHudInitTable.course0ColorR;
     g_ChocoboCourseRecord0.colorG = g_ChocoboColorHudInitTable.course0ColorG;
     g_ChocoboCourseRecord0.colorB = g_ChocoboColorHudInitTable.course0ColorB;
@@ -302,12 +302,12 @@ void __cdecl Mini_ChocoboRaceInitRenderAndAssets(GfxEngineContext *engineCtx, vo
     g_ChocoboCourseRecord0.vertexDY = g_ChocoboColorHudInitTable.course0VertexDY;
     g_ChocoboCourseRecord0.texX = g_ChocoboColorHudInitTable.course0TexX;
     g_ChocoboCourseRecord0.texY = g_ChocoboColorHudInitTable.course0TexY;
-    g_ChocoboCourseRecord0.width = 0x40;
-    g_ChocoboCourseRecord0.height = 0x20;
+    g_ChocoboCourseRecord0.width = 64;
+    g_ChocoboCourseRecord0.height = 32;
     g_ChocoboCourseRecord0.texUSize = CHOCOBO_FLOAT_0_98_BITS;
     g_ChocoboCourseRecord0.texVSize = CHOCOBO_FLOAT_0_97_BITS;
     g_ChocoboCourseRecord0.depth = CHOCOBO_FLOAT_0_444_BITS;
-    g_ChocoboCourseRecord0.renderObjectIndex = 0x13;
+    g_ChocoboCourseRecord0.renderObjectIndex = 19;
     g_ChocoboCourseRecord0.palette = 0;
     g_ChocoboCourseRecord0.isActive = 1;
     g_ChocoboStaminaGaugeRecord.colorR = g_ChocoboColorHudInitTable.course2ColorR;
@@ -325,26 +325,26 @@ void __cdecl Mini_ChocoboRaceInitRenderAndAssets(GfxEngineContext *engineCtx, vo
     g_ChocoboStaminaGaugeRecord.texY = 0;
     g_ChocoboStaminaGaugeRecord.texU = 0;
     g_ChocoboStaminaGaugeRecord.texV = 0;
-    g_ChocoboStaminaGaugeRecord.width = 0x10;
-    g_ChocoboStaminaGaugeRecord.height = 0x60;
+    g_ChocoboStaminaGaugeRecord.width = 16;
+    g_ChocoboStaminaGaugeRecord.height = 96;
     g_ChocoboStaminaGaugeRecord.texelWidth = CHOCOBO_FLOAT_16_BITS;
     g_ChocoboStaminaGaugeRecord.texelHeight = CHOCOBO_FLOAT_96_BITS;
     g_ChocoboStaminaGaugeRecord.texUSize = CHOCOBO_FLOAT_0_94_BITS;
     g_ChocoboStaminaGaugeRecord.texVSize = FLOAT_0_75_BITS;
-    g_ChocoboStaminaGaugeRecord.renderObjectIndex = 0x16;
+    g_ChocoboStaminaGaugeRecord.renderObjectIndex = 22;
     g_ChocoboStaminaGaugeRecord.palette = 0;
     g_ChocoboStaminaGaugeRecord.isActive = 0;
     g_ChocoboCourseRecord1.vertexBX = 0x19;
     g_ChocoboCourseRecord1.left = g_ChocoboCourseRecord1.vertexBX;
-    g_ChocoboCourseRecord1.vertexDX = 0x1E;
+    g_ChocoboCourseRecord1.vertexDX = 30;
     g_ChocoboCourseRecord1.right = g_ChocoboCourseRecord1.vertexDX;
-    g_ChocoboCourseRecord1.vertexDY = 0xD1;
+    g_ChocoboCourseRecord1.vertexDY = 209;
     g_ChocoboCourseRecord1.vertexBY = g_ChocoboCourseRecord1.vertexDY;
     g_ChocoboCourseRecord1.width = 5;
     g_ChocoboCourseRecord1.colorR = 0xFF;
     g_ChocoboCourseRecord1.colorG = 0x14;
     g_ChocoboCourseRecord1.colorB = 0x14;
-    g_ChocoboCourseRecord1.renderObjectIndex = 0x18;
+    g_ChocoboCourseRecord1.renderObjectIndex = 24;
     Mini_ChocoboRaceInitRacerModels(gSavemap.chocoboCourse);
     Mini_ChocoboRaceInitLaneHudStatesFromSavedColor();
 }
@@ -469,7 +469,7 @@ char *__cdecl Mini_ChocoboLoadFile(char *path)
         if (fp == 0)
             return 0;
         size = Field_FileSize(fp);
-        buffer = (char *)GameHeapAllocRaw(size + 2, Chocobo_LoadFileName1(), 0x203);
+        buffer = (char *)GameHeapAllocRaw(size + 2, Chocobo_LoadFileName1(), 515);
         if (buffer == 0)
             return 0;
         Field_FileRead(fp, buffer, size);
@@ -481,7 +481,7 @@ char *__cdecl Mini_ChocoboLoadFile(char *path)
         pHandle = FindLgpFile(baseName, LGP_ARCHIVE_CHOCOBO);
         if (pHandle) {
             size = GetLgpEntrySize((int)pHandle, LGP_ARCHIVE_CHOCOBO);
-            buffer = (char *)GameHeapAllocRaw(size + 2, Chocobo_LoadFileName2(), 0x215);
+            buffer = (char *)GameHeapAllocRaw(size + 2, Chocobo_LoadFileName2(), 533);
             if (buffer == 0)
                 return 0;
             ReadLgpEntry(pHandle, LGP_ARCHIVE_CHOCOBO, buffer, size);
@@ -511,7 +511,7 @@ void __cdecl Mini_ChocoboLoadAllAssets(int variant, int unused)
     int w;
     int numberRecords;
     // STRING: FF7 0x0096e218
-    g_ChocoboTrackData = (ChocoboTrackData *)GameHeapAllocRaw(85, "C:\\FF7\\chocobo\\ch_init.cpp", 0x2ed);
+    g_ChocoboTrackData = (ChocoboTrackData *)GameHeapAllocRaw(85, "C:\\FF7\\chocobo\\ch_init.cpp", 749);
     if (g_ChocoboTrackData == 0)
         return;
     g_ChocoboTrackData->racerFieldBase = Mini_ChocoboGetRacerStatBaseByVariant(variant);
@@ -520,24 +520,24 @@ void __cdecl Mini_ChocoboLoadAllAssets(int variant, int unused)
     g_ChocoboTrackData->courseSounds = (int)Mini_ChocoboSelectCourseSounds(variant);
     if (g_ChocoboCourseVariant == 0) {
         g_ChocoboTrackData->courseId = 0x49d;
-        g_ChocoboTrackData->segmentCount = 0xf;
-        g_ChocoboTrackData->entryCount40 = 0x1269;
-        g_ChocoboTrackData->entryCount28 = 0x2e49;
-        g_ChocoboTrackData->entryCount36 = 0x19e;
+        g_ChocoboTrackData->segmentCount = 15;
+        g_ChocoboTrackData->entryCount40 = 4713;
+        g_ChocoboTrackData->entryCount28 = 11849;
+        g_ChocoboTrackData->entryCount36 = 414;
         g_ChocoboTrackData->subEntryCount40 = 0xff;
         bytePos = 0;
-        numberRecords = 0x4a1;
-        cnt = 0x3c38;
+        numberRecords = 1185;
+        cnt = 15416;
     } else {
         g_ChocoboTrackData->courseId = 0x3b1;
-        g_ChocoboTrackData->segmentCount = 0x13;
-        g_ChocoboTrackData->entryCount40 = 0x103d;
-        g_ChocoboTrackData->entryCount28 = 0x27a2;
-        g_ChocoboTrackData->entryCount36 = 0x19e;
-        g_ChocoboTrackData->subEntryCount40 = 0x5a;
+        g_ChocoboTrackData->segmentCount = 19;
+        g_ChocoboTrackData->entryCount40 = 4157;
+        g_ChocoboTrackData->entryCount28 = 10146;
+        g_ChocoboTrackData->entryCount36 = 414;
+        g_ChocoboTrackData->subEntryCount40 = 90;
         bytePos = 0x9e078;
-        numberRecords = 0x3b5;
-        cnt = 0x2f8a;
+        numberRecords = 949;
+        cnt = 12170;
     }
     strcpy(path, g_ChocoboAssetDirPath);
     // STRING: FF7 0x0096e234
@@ -548,41 +548,41 @@ void __cdecl Mini_ChocoboLoadAllAssets(int variant, int unused)
         Field_FileSeek(pStream, bytePos, 0);
         Field_FileSeek(pStream, 2, 1);
         // STRING: FF7 0x0096e244
-        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->courseId * 24, "C:\\FF7\\chocobo\\ch_init.cpp", 0x31b);
+        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->courseId * 24, "C:\\FF7\\chocobo\\ch_init.cpp", 795);
         Field_FileRead(pStream, cursor, g_ChocoboTrackData->courseId * 24);
         g_ChocoboTrackData->watBuffer = cursor;
         Field_FileSeek(pStream, 6, 1);
         // STRING: FF7 0x0096e260
-        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->courseId * 8, "C:\\FF7\\chocobo\\ch_init.cpp", 0x321);
+        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->courseId * 8, "C:\\FF7\\chocobo\\ch_init.cpp", 801);
         Field_FileRead(pStream, cursor, g_ChocoboTrackData->courseId * 8);
         g_ChocoboTrackData->entries8 = cursor;
         // STRING: FF7 0x0096e27c
-        cursor = (char *)GameHeapAllocRaw(numberRecords * 2, "C:\\FF7\\chocobo\\ch_init.cpp", 0x325);
+        cursor = (char *)GameHeapAllocRaw(numberRecords * 2, "C:\\FF7\\chocobo\\ch_init.cpp", 805);
         Field_FileSeek(pStream, 12, 1);
         Field_FileRead(pStream, cursor, numberRecords * 2);
         g_ChocoboTrackData->entries2 = cursor;
         // STRING: FF7 0x0096e298
-        cursor = (char *)GameHeapAllocRaw(cnt * 4, "C:\\FF7\\chocobo\\ch_init.cpp", 0x32a);
+        cursor = (char *)GameHeapAllocRaw(cnt * 4, "C:\\FF7\\chocobo\\ch_init.cpp", 810);
         Field_FileSeek(pStream, 11, 1);
         Field_FileRead(pStream, cursor, cnt * 4);
         g_ChocoboTrackData->entries4 = cursor;
         // STRING: FF7 0x0096e2b4
-        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->entryCount36 * 36, "C:\\FF7\\chocobo\\ch_init.cpp", 0x32f);
+        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->entryCount36 * 36, "C:\\FF7\\chocobo\\ch_init.cpp", 815);
         Field_FileSeek(pStream, 9, 1);
         Field_FileRead(pStream, cursor, g_ChocoboTrackData->entryCount36 * 36);
         g_ChocoboTrackData->entries36 = cursor;
         // STRING: FF7 0x0096e2d0
-        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->entryCount28 * 28, "C:\\FF7\\chocobo\\ch_init.cpp", 0x334);
+        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->entryCount28 * 28, "C:\\FF7\\chocobo\\ch_init.cpp", 820);
         Field_FileSeek(pStream, 6, 1);
         Field_FileRead(pStream, cursor, g_ChocoboTrackData->entryCount28 * 28);
         g_ChocoboTrackData->entries28 = cursor;
         // STRING: FF7 0x0096e2ec
-        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->entryCount40 * 40, "C:\\FF7\\chocobo\\ch_init.cpp", 0x339);
+        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->entryCount40 * 40, "C:\\FF7\\chocobo\\ch_init.cpp", 825);
         Field_FileSeek(pStream, 6, 1);
         Field_FileRead(pStream, cursor, g_ChocoboTrackData->entryCount40 * 40);
         g_ChocoboTrackData->entries40 = cursor;
         // STRING: FF7 0x0096e308
-        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->subEntryCount40 * 40, "C:\\FF7\\chocobo\\ch_init.cpp", 0x33e);
+        cursor = (char *)GameHeapAllocRaw(g_ChocoboTrackData->subEntryCount40 * 40, "C:\\FF7\\chocobo\\ch_init.cpp", 830);
         Field_FileSeek(pStream, 9, 1);
         Field_FileRead(pStream, cursor, g_ChocoboTrackData->subEntryCount40 * 40);
         g_ChocoboTrackData->subEntries40 = cursor;
@@ -593,7 +593,7 @@ void __cdecl Mini_ChocoboLoadAllAssets(int variant, int unused)
         if (ent) {
             size = GetLgpEntrySize((int)ent, LGP_ARCHIVE_CHOCOBO);
             // STRING: FF7 0x0096e330
-            cursor = (char *)GameHeapAllocRaw(size + 2, "C:\\FF7\\chocobo\\ch_init.cpp", 0x349);
+            cursor = (char *)GameHeapAllocRaw(size + 2, "C:\\FF7\\chocobo\\ch_init.cpp", 841);
             ReadLgpEntry(ent, LGP_ARCHIVE_CHOCOBO, cursor, size);
             g_pChocoboWatBuffer = cursor;
             cursor[size] = 0;
@@ -644,7 +644,7 @@ void __cdecl Mini_ChocoboBuildFloatVertexTable(void)
     unsigned char p;
     ChocoboTriangleEntry *destEntry;
 
-    g_ChocoboTrackData->builtFloatVertices = (int)GameHeapAllocRaw(g_ChocoboTrackData->floatVertexCount * 0x30 + 1, Chocobo_VertexTableFileName(), 0x22E);
+    g_ChocoboTrackData->builtFloatVertices = (int)GameHeapAllocRaw(g_ChocoboTrackData->floatVertexCount * 48 + 1, Chocobo_VertexTableFileName(), 558);
     for (recordIdx = 0; recordIdx < g_ChocoboTrackData->floatVertexCount; recordIdx++) {
         destEntry = (ChocoboTriangleEntry *)(g_ChocoboTrackData->builtFloatVertices + recordIdx * 0x30);
         trackVertexPtr = (ChocoboTrackVertex *)(g_ChocoboTrackData->trackVertexTable + recordIdx * 0x24);
@@ -698,7 +698,7 @@ void __cdecl Mini_ChocoboRaceBuildCourseTriangleVertices(void)
     ChocoboTriangleEntry *dstEntry;
     ChocoboCourseVertex *sourceVertex;
     int color0;
-    g_ChocoboTrackData->builtTriangles = (int)GameHeapAllocRaw(g_ChocoboTrackData->triangleCount * 48 + 1, Chocobo_Table4cFileName(), 0x262);
+    g_ChocoboTrackData->builtTriangles = (int)GameHeapAllocRaw(g_ChocoboTrackData->triangleCount * 48 + 1, Chocobo_Table4cFileName(), 610);
     for (triangleIndex = 0; triangleIndex < g_ChocoboTrackData->triangleCount; triangleIndex++) {
         dstEntry = (ChocoboTriangleEntry *)(g_ChocoboTrackData->builtTriangles + triangleIndex * 48);
         sourceVertex = (ChocoboCourseVertex *)(g_ChocoboTrackData->floatVertexTable + triangleIndex * 28);
@@ -752,7 +752,7 @@ void __cdecl Mini_ChocoboRaceBuildCourseQuadVertices(void)
     unsigned short quadIndex;
     ChocoboCourseQuad *entry;
     int color0;
-    g_ChocoboTrackData->builtQuads = (int)GameHeapAllocRaw((g_ChocoboTrackData->quadCount << 6) + 1, Chocobo_Table50FileName(), 0x2a3);
+    g_ChocoboTrackData->builtQuads = (int)GameHeapAllocRaw((g_ChocoboTrackData->quadCount << 6) + 1, Chocobo_Table50FileName(), 675);
     for (quadIndex = 0; quadIndex < g_ChocoboTrackData->quadCount; quadIndex++) {
         entry = (ChocoboCourseQuad *)(g_ChocoboTrackData->builtQuads + quadIndex * 64);
         srcQuadPtr = (ChocoboRaceCourseQuad *)(g_ChocoboTrackData->block + quadIndex * 40);

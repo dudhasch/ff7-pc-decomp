@@ -414,19 +414,19 @@ void __cdecl Gfx_PackDoubledColorToBgra(char redByte, char greenByte, char blueB
     int doubledBlue;
 
     redDoubledValue = (unsigned char)redByte;
-    if (redDoubledValue >= 0x80) {
+    if (redDoubledValue >= 128) {
         redDoubledValue = 0xFF;
     } else {
         redDoubledValue <<= 1;
     }
     doubledGreen = (unsigned char)greenByte;
-    if (doubledGreen >= 0x80) {
+    if (doubledGreen >= 128) {
         doubledGreen = 0xFF;
     } else {
         doubledGreen <<= 1;
     }
     doubledBlue = (unsigned char)blueByte;
-    if (doubledBlue >= 0x80) {
+    if (doubledBlue >= 128) {
         doubledBlue = 0xFF;
     } else {
         doubledBlue <<= 1;
@@ -1595,7 +1595,7 @@ void __cdecl Gfx_EmitPsxDotTriangleScreen(int x, int y, int word0, int word1, in
 
 /*
  * Computes integer x+width and y+height before float conversion. On successful AcquireBatchNode
- * writes four stride 0x20 vertices for(x, y), (x+width, y), (x, y+height), (x+width, y+height) with
+ * writes four stride 32 vertices for(x, y), (x+width, y), (x, y+height), (x+width, y+height) with
  * common raw fields word0, word1 and color color. Does nothing on acquisition failure.
  */
 // FUNCTION: FF7 0x00669327
@@ -2418,7 +2418,7 @@ void __cdecl Gfx_DrawPsxPrimitive(void *primitive)
             frame.flatColor.bgra.alpha = *(char *)&frame.alpha;
             if (g_GfxPsxBlendFactorPairEnable == 0) { /* empty first arm: lib/codegen.h */
             } else {
-                Gfx_EmitPsxFlatRectScreen(frame.rect16->x, frame.rect16->y, 0x10, 0x10, frame.blendFirst, frame.blendSecond, frame.flatColor.packed, frame.primAttrs->flatQuadBatch);
+                Gfx_EmitPsxFlatRectScreen(frame.rect16->x, frame.rect16->y, 16, 16, frame.blendFirst, frame.blendSecond, frame.flatColor.packed, frame.primAttrs->flatQuadBatch);
             }
             break;
         case GFX_PSX_PRIM_POLY_FT3:
@@ -2502,7 +2502,7 @@ void __cdecl Gfx_DrawPsxPrimitive(void *primitive)
             if (g_GfxPsxBlendFactorPairEnable == 0) {
                 break;
             }
-            Gfx_EmitPsxTexturedSpriteQuad(frame.sprite16->x, frame.sprite16->y, 0x10, 0x10, frame.sprite16->u, frame.sprite16->v, frame.blendFirst, frame.blendSecond, frame.flatColor.packed, frame.clutY, (GfxPsxSpriteQuadState *)frame.primAttrs->texQuadBatch);
+            Gfx_EmitPsxTexturedSpriteQuad(frame.sprite16->x, frame.sprite16->y, 16, 16, frame.sprite16->u, frame.sprite16->v, frame.blendFirst, frame.blendSecond, frame.flatColor.packed, frame.clutY, (GfxPsxSpriteQuadState *)frame.primAttrs->texQuadBatch);
         }
     }
     g_GfxPsxBlendFactorPairEnable = 0;
@@ -2524,7 +2524,7 @@ void __cdecl Gfx_PsxFreeRenderObjectSet(GfxPsxRenderObjectSet *objectSet)
         DestroyRenderObject((void *)objectSet->renderObjectSlot4);
         DestroyRenderObject((void *)objectSet->renderObjectSlot5);
         // STRING: FF7 0x0090c9f4
-        GameHeapFree(objectSet, "C:\\lib\\src\\graphics\\psxgraph.cpp", 0x775);
+        GameHeapFree(objectSet, "C:\\lib\\src\\graphics\\psxgraph.cpp", 1909);
     }
 }
 
@@ -2545,7 +2545,7 @@ int __cdecl Gfx_PsxCreateRenderObjectSet(int blendMode, int flags, int context)
     optPtr->drawPool = flags;
     optPtr->emitterFlags = 2;
     // STRING: FF7 0x0090ca18
-    pObjectSet = (GfxPsxRenderObjectSet *)GameHeapAlloc(1, 0x38, "C:\\lib\\src\\graphics\\psxgraph.cpp", 0x788);
+    pObjectSet = (GfxPsxRenderObjectSet *)GameHeapAlloc(1, 56, "C:\\lib\\src\\graphics\\psxgraph.cpp", 1928);
     if (pObjectSet != 0) {
         objectType = 0x12;
         pObjectSet->renderObjectSlot0 = (int)Gfx_CreateRenderObject(1, objectType, optPtr, 0, (void *)context);
@@ -2578,7 +2578,7 @@ void __cdecl Gfx_PsxFreePrimitiveSystem(void)
         Gfx_PsxFreeRenderObjectSet((GfxPsxRenderObjectSet *)(g_pGfxPsxPrimitiveSystem[1].attrs));
         Gfx_PsxFreeRenderObjectSet((GfxPsxRenderObjectSet *)(g_pGfxPsxPrimitiveSystem[1].renderObjectSet));
         // STRING: FF7 0x0090ca3c
-        GameHeapFree(g_pGfxPsxPrimitiveSystem, "C:\\lib\\src\\graphics\\psxgraph.cpp", 0x7B1);
+        GameHeapFree(g_pGfxPsxPrimitiveSystem, "C:\\lib\\src\\graphics\\psxgraph.cpp", 1969);
         g_pGfxPsxPrimitiveSystem = 0;
     }
 }
@@ -2599,7 +2599,7 @@ int __cdecl Gfx_PsxCreatePrimitiveSystem(int flags, int context)
         Gfx_PsxFreePrimitiveSystem();
     }
     // STRING: FF7 0x0090ca60
-    g_pGfxPsxPrimitiveSystem = (GfxPsxPrimitiveSet *)GameHeapAlloc(1, 0x1C, "C:\\lib\\src\\graphics\\psxgraph.cpp", 0x7C2);
+    g_pGfxPsxPrimitiveSystem = (GfxPsxPrimitiveSet *)GameHeapAlloc(1, 28, "C:\\lib\\src\\graphics\\psxgraph.cpp", 1986);
     if (g_pGfxPsxPrimitiveSystem != 0) {
         for (idx = 0; idx < 5; idx++) {
             switch (idx) {

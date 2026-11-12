@@ -643,25 +643,25 @@ void __cdecl BattleFx_MagicBio2TimelineTask(void)
     if (timeline->timer >= 0 && timeline->timer < 8 && timeline->timer % 2 == 0) {
         child = (BattleFxBio2Task *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio2WobblingMeshTask);
         child->ownerSlot = timeline->timer / 2;
-        child->posX = timeline->posX + rand() % 0x640 + -0x320;
-        child->posY = timeline->posY + rand() % 0x640 + -0x320;
-        child->posZ = timeline->posZ + rand() % 0x640 + -0x320;
+        child->posX = timeline->posX + rand() % 1600 + -800;
+        child->posY = timeline->posY + rand() % 1600 + -800;
+        child->posZ = timeline->posZ + rand() % 1600 + -800;
     }
-    if (timeline->timer >= 0 && timeline->timer < 0x14 && timeline->timer % 2 == 0) {
+    if (timeline->timer >= 0 && timeline->timer < 20 && timeline->timer % 2 == 0) {
         child = (BattleFxBio2Task *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio2SixFrameSpriteTask);
-        child->posX = timeline->posX + rand() % 0x4B0 + -0x258;
-        child->posY = timeline->posY + rand() % 0x4B0 + -0x258;
-        child->posZ = timeline->posZ + rand() % 0x4B0 + -0x258;
+        child->posX = timeline->posX + rand() % 1200 + -600;
+        child->posY = timeline->posY + rand() % 1200 + -600;
+        child->posZ = timeline->posZ + rand() % 1200 + -600;
         child->scale = rand() % 0x1000 + 0x1000;
     }
     if (timeline->timer == 0) {
         child = (BattleFxBio2Task *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio2SpawnRisingFadeSpritesTask);
         *(Int64Pair *)&child->posX = *(Int64Pair *)&timeline->posX;
     }
-    if (timeline->timer == 0x14) {
+    if (timeline->timer == 20) {
         Battle_PostActorHitOrHurtMessage(timeline->recordType);
     }
-    if (timeline->timer == 0x14) {
+    if (timeline->timer == 20) {
         timeline->ownerSlot = BATTLE_TASK_FREE;
     }
     (timeline->timer)++;
@@ -681,17 +681,17 @@ void __cdecl BattleFx_MagicBio2WobblingMeshTask(void)
     BattleMagicBio3WobbleBase *pBases;
 
     taskPtr = (BattleFxBio2WobbleState *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleMagicBio2_InitialScale = (SinFixed((taskPtr->step + taskPtr->phaseOffset * 3) * 0x111) * 0x50 >> 0xC) + 0x1000;
-    g_BattleMagicBio2_InitialAngles[0] = (SinFixed((taskPtr->step + taskPtr->phaseOffset * 3) * 0x199) * 0x50 >> 0xC) + 0x1000;
+    g_BattleMagicBio2_InitialScale = (SinFixed((taskPtr->step + taskPtr->phaseOffset * 3) * 0x111) * 0x50 >> 12) + 0x1000;
+    g_BattleMagicBio2_InitialAngles[0] = (SinFixed((taskPtr->step + taskPtr->phaseOffset * 3) * 0x199) * 0x50 >> 12) + 0x1000;
     stage = taskPtr->step;
     if (stage < 5) {
         g_BattleMagicBio2_InitialScale = g_BattleMagicBio2_InitialScale * taskPtr->step / 5;
         g_BattleMagicBio2_InitialAngles[0] = g_BattleMagicBio2_InitialAngles[0] * taskPtr->step / 5;
     } else {
         stage -= 5;
-        if (stage < 0x14) { /* empty first arm: lib/codegen.h */
+        if (stage < 20) { /* empty first arm: lib/codegen.h */
         } else {
-            stage -= 0x14;
+            stage -= 20;
             if (stage < 5) {
                 g_BattleMagicBio2_InitialScale = g_BattleMagicBio2_InitialScale * (5 - stage) / 5;
                 g_BattleMagicBio2_InitialAngles[0] = g_BattleMagicBio2_InitialAngles[0] * (5 - stage) / 5;
@@ -705,8 +705,8 @@ void __cdecl BattleFx_MagicBio2WobblingMeshTask(void)
     pBases = (BattleMagicBio3WobbleBase *)(g_BattleMagicBio2_MeshFramesB[taskPtr->phaseOffset] + 4);
     limit = *(int *)g_BattleMagicBio2_MeshFramesA[taskPtr->phaseOffset] / 8;
     for (i = 0; i < limit; i++) {
-        offsetsPtr[i].offsetX = pBases[i].baseX + (SinFixed(i * 0x1F4 + taskPtr->step * 0x12C) * 0x32 >> 0xC);
-        offsetsPtr[i].offsetY = pBases[i].baseY + (CosFixed(0) * 0 >> 0xC);
+        offsetsPtr[i].offsetX = pBases[i].baseX + (SinFixed(i * 500 + taskPtr->step * 300) * 0x32 >> 12);
+        offsetsPtr[i].offsetY = pBases[i].baseY + (CosFixed(0) * 0 >> 12);
     }
     BattleFx_MakeViewSpacePointPushed(&taskPtr->posX, 0, (Vec3sPacked *)&g_BattleMagicBio2_InitialScale);
     SetRotMatrix(&g_BattleMagicBio2_InitialScale);
@@ -964,14 +964,14 @@ void __cdecl BattleFx_MagicBio2SpawnRisingFadeSpritesTask(void)
     }
     if (task->frameIndex % 4 == 0) {
         pSprite = (BattleMagicBio3RisingSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio2RisingFadeSpriteTask);
-        pSprite->posX = task->posX + rand() % 0x7D0 - 0x3E8;
+        pSprite->posX = task->posX + rand() % 2000 - 1000;
         pSprite->heightY = 0;
-        pSprite->posY = task->posZ + rand() % 0x7D0 - 0x3E8;
-        pSprite->size = rand() % 0x500 + 0x1000;
-        pSprite->riseSpeed = rand() % 0x32 + 0x32;
+        pSprite->posY = task->posZ + rand() % 2000 - 1000;
+        pSprite->size = rand() % 1280 + 4096;
+        pSprite->riseSpeed = rand() % 50 + 50;
     }
     (task->frameIndex)++;
-    if (task->frameIndex >= 0x14) {
+    if (task->frameIndex >= 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -989,13 +989,13 @@ void __cdecl BattleFx_MagicBio2RisingFadeSpriteTask(void)
     g_BattleMagicBio2_SpriteDrawReq[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleMagicBio2_TargetMask);
     g_BattleMagicBio2_SpriteDrawReq[1].drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleMagicBio2_TargetMask);
     localFrame = task->frame;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         *(int *)&g_BattleMagicBio2_SpriteDrawReq[1].colorR = 0x2C808080;
     } else {
-        localFrame -= 0xA;
-        if (localFrame < 0xA) {
+        localFrame -= 10;
+        if (localFrame < 10) {
             g_BattleMagicBio2_SpriteDrawReq[1].code = PSX_PRIM_POLY_FT4_TRANS;
-            g_BattleMagicBio2_SpriteDrawReq[1].colorB = localFrame * -0x80 / 0xA + 0x80;
+            g_BattleMagicBio2_SpriteDrawReq[1].colorB = localFrame * -0x80 / 10 + 0x80;
             g_BattleMagicBio2_SpriteDrawReq[1].colorG = g_BattleMagicBio2_SpriteDrawReq[1].colorB;
             g_BattleMagicBio2_SpriteDrawReq[1].colorR = g_BattleMagicBio2_SpriteDrawReq[1].colorG;
         } else {

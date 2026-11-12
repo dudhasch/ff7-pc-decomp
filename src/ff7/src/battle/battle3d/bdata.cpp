@@ -35,7 +35,7 @@ void __cdecl Battle_InitLmdLoadDesc(int *desc)
 {
     /* No local: the original reloads the parameter for each store. Caching it
        in a pointer variable costs a frame slot the target does not have. */
-    ZeroFillMemory32(0x44, desc);
+    ZeroFillMemory32(68, desc);
     desc[1] = 0;
     desc[2] = 1;
     desc[3] = 1;
@@ -69,7 +69,7 @@ void __cdecl Battle_PushDataDirectory(int *saveSlot)
 {
     char *dir;
 
-    ZeroFillMemory32(0xcc, saveSlot);
+    ZeroFillMemory32(204, saveSlot);
     dir = Battle_GetDataDirectory();
     if (dir != 0 && *dir != 0) {
         saveSlot[0] = ChangeDirectorySaving(dir, (char *)(saveSlot + 1));
@@ -132,7 +132,7 @@ void __cdecl BattleFx_PushResourceDirectory(void *fileCtx, int *saveSlot)
 {
     char *root;
 
-    ZeroFillMemory32(0xcc, saveSlot);
+    ZeroFillMemory32(204, saveSlot);
     root = BattleFx_GetResourceRoot();
     if (root != 0 && *root != 0) {
         saveSlot[0] =
@@ -270,7 +270,7 @@ void *__cdecl Lmd_LoadModelFile(int flatShading, int wantMatrixSet, unsigned int
             Lmd_DestroyTextureAtlas((Battle3dLmdFaceData *)atlas);
         }
         // STRING: FF7 0x008ff2b4
-        GameHeapFree(fileData, "C:\\FF7\\src\\battle\\battle3d\\bdata.cpp", 0xE5);
+        GameHeapFree(fileData, "C:\\FF7\\src\\battle\\battle3d\\bdata.cpp", 229);
     }
     return resultPtr;
 }

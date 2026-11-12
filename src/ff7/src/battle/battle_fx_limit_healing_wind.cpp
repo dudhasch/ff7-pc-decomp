@@ -131,7 +131,7 @@ void __cdecl BattleFx_LimitBeginHealingWind(int targetMask, int actorIndex)
     g_BattleLimitHealingWind_ActorHeight = actorIndex;
     g_BattleLimitHealingWind_LoadedRes = (int)&g_BattleActorRecords[actorIndex].modelId;
     (g_BattleLimitHealingWind_TaskHandle.posXAddr) = (int)&g_BattleActorRecords[actorIndex].posX;
-    for (idx = 0; idx < 0x64; idx++) {
+    for (idx = 0; idx < 100; idx++) {
         g_BattleLimitHealingWind_ParticleRecords[idx].active = 0;
     }
 }
@@ -161,14 +161,14 @@ void __cdecl BattleFx_LimitHealingWindTimelineTask(void)
     if (timelineStep == 0) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_BattleLimitHealingWind_ActorHeight].posX), 0x22);
     }
-    if (timelineStep == 0xB) {
+    if (timelineStep == 11) {
         pSpawn = (BattleFxHealingWindTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHealingWindMidpointModelTask);
     }
-    if (timelineStep == 0xB) {
+    if (timelineStep == 11) {
         Battle_AllocateResourceSlot(BattleFx_LimitHealingWindParticleControllerTask);
     }
-    if (timelineStep == 0x34) {
-        for (index = 0; index < 0xA; index++) {
+    if (timelineStep == 52) {
+        for (index = 0; index < 10; index++) {
             if ((g_BattleLimitHealingWind_ActorCenterZ & 1 << index) != 0) {
                 pSpawn = (BattleFxHealingWindTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHealingWindSpawnSpiralSpritesTask);
                 pSpawn->index = index;
@@ -176,18 +176,18 @@ void __cdecl BattleFx_LimitHealingWindTimelineTask(void)
                 pSpawn->offsetY = 0xFC18;
                 pSpawn->offsetZ = 0;
                 pSpawn->angle = rand() & 0xFFF;
-                pSpawn->angleStep = 0x200;
+                pSpawn->angleStep = 0x200 /* 45 deg */;
             }
         }
     }
-    if (timelineStep < 0xB) { /* empty first arm: lib/codegen.h */
+    if (timelineStep < 11) { /* empty first arm: lib/codegen.h */
     } else {
-        timelineStep -= 0xB;
-        if (timelineStep < 0x50 && timelineStep % 4 == 0) {
+        timelineStep -= 11;
+        if (timelineStep < 80 && timelineStep % 4 == 0) {
             particle = (BattleFxLimitHealingWindParticle *)BattleFx_LimitHealingWindClaimParticleRecord();
             if (particle != 0) {
-                base = timelineStep * 0x19 + 0x3E8;
-                range = timelineStep * 6 + 0x1F4;
+                base = timelineStep * 25 + 0x3E8;
+                range = timelineStep * 6 + 500;
                 particle->velocityX = rand() % base + base;
                 particle->velocityY = -(rand() % range) - range;
                 particle->velocityZ = 0;
@@ -198,7 +198,7 @@ void __cdecl BattleFx_LimitHealingWindTimelineTask(void)
             }
         }
     }
-    if (task->frameCounter == 0x5B) {
+    if (task->frameCounter == 91) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -222,12 +222,12 @@ void __cdecl BattleFx_LimitHealingWindMidpointModelTask(void)
 
     midpoint = (BattleFxHealingWindMidpoint *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitHealingWind_SpriteReq.modelDrawRequest = Gfx_ModelTableGetRenderObject(0, (GfxTableCursor *)g_BattleLimitHealingWind_TaskHandle.cursor);
-    Battle3d_GetActorAttachMatrix(g_BattleLimitHealingWind_ActorHeight, 0xC, (PsxMatrix *)boneMatrixA);
+    Battle3d_GetActorAttachMatrix(g_BattleLimitHealingWind_ActorHeight, 12, (PsxMatrix *)boneMatrixA);
     Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, boneMatrixA, (PsxMatrix *)matrix);
     SetRotMatrix(matrix);
     SetTransMatrix(matrix);
     RotTransPoint((int *)&g_BattleLimitHealingWind_SpriteReq, &sxFirst.vx, &projDepth);
-    Battle3d_GetActorAttachMatrix(g_BattleLimitHealingWind_ActorHeight, 0x11, (PsxMatrix *)mtxB);
+    Battle3d_GetActorAttachMatrix(g_BattleLimitHealingWind_ActorHeight, 17, (PsxMatrix *)mtxB);
     Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, mtxB, (PsxMatrix *)matrix);
     SetRotMatrix(matrix);
     SetTransMatrix(matrix);
@@ -236,16 +236,16 @@ void __cdecl BattleFx_LimitHealingWindMidpointModelTask(void)
     midpoint->midY = (sxFirst.vy + secondX.vy) / 2;
     midpoint->midZ = (sxFirst.vz + secondX.vz) / 2;
     age = midpoint->frameIndex;
-    if (age < 0xA) {
-        billboardScale = (age << 0xB) / 0xA;
+    if (age < 10) {
+        billboardScale = (age << 11) / 10;
     } else {
-        age -= 0xA;
-        if (age < 0x1E) {
-            billboardScale = 0x800;
+        age -= 10;
+        if (age < 30) {
+            billboardScale = 0x800 /* 0.5 */;
         } else {
-            age -= 0x1E;
-            if (age < 0xA) {
-                billboardScale = age * -0x800 / 0xA + 0x800;
+            age -= 30;
+            if (age < 10) {
+                billboardScale = age * -0x800 / 10 + 0x800;
             } else {
                 midpoint->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -298,12 +298,12 @@ void __cdecl BattleFx_LimitHealingWindSpawnSpiralSpritesTask(void)
             frame.spawnedSprite->spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, (GfxTableCursor *)g_BattleLimitHealingWind_TaskHandle.cursor);
             frame.spawnedSprite->drawObj = Gfx_ModelTableGetSpriteObject(2, (GfxTableCursor *)g_BattleLimitHealingWind_TaskHandle.cursor);
         }
-        frame.spawnedSprite->scale = 0x1000;
+        frame.spawnedSprite->scale = 0x1000 /* 1.0 */;
     }
     frame.spiralRecord->angle = frame.spiralRecord->angle + frame.spiralRecord->angleStep & 0xFFF;
     frame.spiralRecord->offsetY -= -0x21;
     (frame.spiralRecord->step)++;
-    if (frame.spiralRecord->step >= 0x1E) {
+    if (frame.spiralRecord->step >= 30) {
         Battle_PostActorHitOrHurtMessage(frame.spiralRecord->actorSlot);
         frame.spiralRecord->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -343,7 +343,7 @@ void __cdecl BattleFx_LimitHealingWindParticleControllerTask(void)
 
     taskSlot = (int)BATTLE_CURRENT_TASK_SLOT;
     activeCnt = 0;
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (g_BattleLimitHealingWind_ParticleRecords[i].active != 0) {
             BattleFx_LimitHealingWindStepParticle((BattleFxLimitHealingWindParticle *)(i * 0x5C + (char *)&g_BattleLimitHealingWind_ParticleRecords));
             activeCnt++;
@@ -374,7 +374,7 @@ void __cdecl BattleFx_LimitHealingWindStepParticle(BattleFxLimitHealingWindParti
         particle->velocityX -= (short)(particle->velocityX >> 2);
         particle->velocityY -= (short)(particle->velocityY >> 3);
         (particle->age)++;
-        if (particle->age > 0x13) {
+        if (particle->age > 19) {
             particle->active = 0;
             return;
         }
@@ -411,10 +411,10 @@ void __cdecl BattleFx_LimitHealingWindDrawParticleRibbon(BattleFxLimitHealingWin
     frame.colorWord = 0x3A000000;
     if (particle->age <= 8) {
         frame.segmentCount = particle->age;
-    } else if (particle->age <= 0xC) {
+    } else if (particle->age <= 12) {
         frame.segmentCount = 8;
-    } else if (particle->age <= 0x14) {
-        frame.segmentCount = 0x14 - particle->age;
+    } else if (particle->age <= 20) {
+        frame.segmentCount = 20 - particle->age;
     } else {
         return;
     }
@@ -424,7 +424,7 @@ void __cdecl BattleFx_LimitHealingWindDrawParticleRibbon(BattleFxLimitHealingWin
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    frame.widthOffset = frame.segmentCount * 0x14;
+    frame.widthOffset = frame.segmentCount * 20;
     frame.ringIndex = particle->vectorIndex - frame.segmentCount & 7;
     for (frame.segmentIndex = 1; frame.segmentIndex < frame.segmentCount; frame.segmentIndex++) {
         frame.startX.vx = *(short *)((char *)particle + frame.ringIndex * 8 + 0x1C);
@@ -463,7 +463,7 @@ int __cdecl BattleFx_LimitHealingWindClaimParticleRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (g_BattleLimitHealingWind_ParticleRecords[i].active == 0) {
             g_BattleLimitHealingWind_ParticleRecords[i].active = 1;
             return i * 0x5C + (int)&g_BattleLimitHealingWind_ParticleRecords;

@@ -140,7 +140,7 @@ void __cdecl BattleFx_SpecialStareDownTimelineTask(void)
         frame.particle->angle = ArcTangentFixed(frame.track->targetX - frame.track->posX, frame.track->targetZ - frame.track->posZ);
         frame.offX.vy = 0;
         frame.offX.vx = frame.offX.vy;
-        frame.offX.vz = 0x64;
+        frame.offX.vz = 100;
         RotMatrix((SVECTOR *)&frame.particle->angleX, &frame.rotMatrix);
         frame.rotMatrix.t[2] = 0;
         frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
@@ -157,32 +157,32 @@ void __cdecl BattleFx_SpecialStareDownTimelineTask(void)
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         g_BattleFxTimelineState.startValue = 0x1000;
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             g_BattleSpecialStareDownSavedTargetStates[frame.actorIndex] = (short)*(unsigned char *)&g_BattleActorRecords[frame.actorIndex].drawFlags;
             g_BattleActorRecords[frame.actorIndex].drawFlags |= 2;
         }
     }
     if (frame.track->phase == 4) {
         g_BattleFxTimelineState.startValue = 0;
-        BattleFx_StartScreenFlashRamp(0xF);
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        BattleFx_StartScreenFlashRamp(15);
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             g_BattleActorRecords[frame.actorIndex].drawFlags = *(char *)((char *)&g_BattleSpecialStareDownSavedTargetStates + frame.actorIndex * 2);
         }
     }
     if (frame.track->phase == 0x14) {
-        BattleFx_FadeOutScreenFlashRamp(0xF);
+        BattleFx_FadeOutScreenFlashRamp(15);
     }
     if (frame.track->phase == 0x1E) {
         Battle_PostActorHitOrHurtMessage(frame.track->actorIndex);
         Battle_PlaySfxPannedToActor(0x95, (short)frame.track->actorIndex, 0x40);
     }
-    if (frame.track->phase > 0x1E && frame.track->phase < 0x23) {
+    if (frame.track->phase > 30 && frame.track->phase < 35) {
         for (frame.actorIndex = 0; frame.actorIndex < 2; frame.actorIndex++) {
             frame.particle = (BattleFxStareDownParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialStareDownAnimatedSpriteEntry1Task);
             Battle_GetBoneWorldPos(frame.track->actorIndex, g_BattleActorRecords[frame.track->actorIndex].targetBone, &frame.particle->posX);
-            frame.particle->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.particle->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.particle->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            frame.particle->posX += (short)(rand() % 1000 - 500);
+            frame.particle->posY += (short)(rand() % 1000 - 500);
+            frame.particle->posZ += (short)(rand() % 1000 - 500);
         }
     }
     (frame.track->phase)++;
@@ -202,7 +202,7 @@ void __cdecl BattleFx_SpecialStareDownAnimatedSpriteEntry0Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecialStareDownSpriteData.spriteResource) = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecialStareDownLoadedRes);
     g_BattleSpecialStareDownSpriteData.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecialStareDownLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800 /* 1.5 */, 0);
     g_BattleSpecialStareDownSpriteData.hikariSpriteArgWord = task->frameCounter;
     g_BattleSpecialStareDownDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialStareDownSpriteData, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialStareDownDrawListHandle);
     if (g_BattleIsPaused != 0) {
@@ -227,7 +227,7 @@ void __cdecl BattleFx_SpecialStareDownAnimatedSpriteEntry1Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialStareDownSpriteData.hikariSpriteDataTable16 = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialStareDownLoadedRes);
     g_BattleSpecialStareDownSpriteData.secondDrawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialStareDownLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialStareDownSpriteData.hikariSpriteArgWord28 = task->frameCounter;
     g_BattleSpecialStareDownDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialStareDownSpriteData.hikariSpriteDataTable16, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialStareDownDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecialStareDownSpriteData.hikariSpriteDataTable16 != 0) {

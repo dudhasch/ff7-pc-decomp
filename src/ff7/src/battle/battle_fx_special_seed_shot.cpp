@@ -142,7 +142,7 @@ void __cdecl BattleFx_SpecialSeedShotTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.timelineSlot->frameCounter < 0xF) {
+    if (frame.timelineSlot->frameCounter < 15) {
         frame.angleA.vy = ArcTangentFixed(frame.timelineSlot->endX - frame.timelineSlot->startX, frame.timelineSlot->endY - frame.timelineSlot->startY);
         frame.angleA.vz = 0;
         frame.angleA.vx = frame.angleA.vz;
@@ -157,9 +157,9 @@ void __cdecl BattleFx_SpecialSeedShotTimelineTask(void)
         frame.stepY = (frame.timelineSlot->endY - frame.timelineSlot->startY) / 8;
         for (frame.seedIndex = 0; frame.seedIndex < 2; frame.seedIndex++) {
             frame.spawnSlot = (BattleFxSeedShotTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSeedShotBounceModelTask);
-            frame.scatterX.vx = rand() % 0x12C - 0x96;
-            frame.scatterX.vy = rand() % 0x12C - 0x96;
-            frame.scatterX.vz = rand() % 0x64 - 0x32;
+            frame.scatterX.vx = rand() % 300 - 150;
+            frame.scatterX.vy = rand() % 300 - 150;
+            frame.scatterX.vz = rand() % 100 - 50;
             RotTransPointToInt16(&frame.scatterX, (short *)&frame.scatterX, &frame.projDepth);
             frame.spawnSlot->posX = frame.timelineSlot->startX + frame.scatterX.vx;
             frame.spawnSlot->posY = frame.timelineSlot->startZ + frame.scatterX.vy;
@@ -168,24 +168,24 @@ void __cdecl BattleFx_SpecialSeedShotTimelineTask(void)
             frame.spawnSlot->velocityY = frame.stepZ;
             frame.spawnSlot->velocityZ = frame.stepY;
             frame.spawnSlot->rotY = frame.angleA.vy;
-            frame.spawnSlot->rotX = 0xFC00;
+            frame.spawnSlot->rotX = 0xFC00 /* 5670 deg */;
             frame.spawnSlot->modelVariant = (rand() % 2);
         }
     }
-    if (frame.timelineSlot->frameCounter == 0xF) {
+    if (frame.timelineSlot->frameCounter == 15) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
-    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 0x1C) {
+    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 28) {
         frame.spawnSlot = (BattleFxSeedShotTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSeedShotScatteredSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posY += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posZ += (short)(rand() % 0x320 - 0x190);
+        frame.spawnSlot->posX += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posY += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posZ += (short)(rand() % 800 - 400);
         frame.spawnSlot->modelVariant = 0x3000;
         frame.spawnSlot->pushLength = -g_BattleActorRecords[g_BattleSpecialActorId].radius;
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -201,7 +201,7 @@ void __cdecl BattleFx_SpecialSeedShotScatteredSpriteTask(void)
     task = (BattleFxSeedShotScatterSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialSeedShotSpriteData.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialSeedShotLoadedRes);
     g_BattleSpecialSeedShotSpriteData.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialSeedShotLoadedRes);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000 /* 1.0 */, task->pushLength);
     g_BattleSpecialSeedShotSpriteData.frame = task->frame;
     g_BattleSpecialSeedShotDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSeedShotSpriteData, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSeedShotDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecialSeedShotSpriteData.spriteGroup != 0) {
@@ -266,7 +266,7 @@ void __cdecl BattleFx_SpecialSeedShotBounceModelTask(void)
     }
     if (frame.bounceSlot->frameCounter > 8) {
         frame.bounceSlot->angleB += 0x80;
-        frame.bounceSlot->velocityY += 0x34;
+        frame.bounceSlot->velocityY += 52;
     }
     frame.bounceSlot->posX += frame.bounceSlot->velocityX;
     frame.bounceSlot->posY += frame.bounceSlot->velocityY;
@@ -276,7 +276,7 @@ void __cdecl BattleFx_SpecialSeedShotBounceModelTask(void)
         frame.bounceSlot->posY = 0;
     }
     (frame.bounceSlot->frameCounter)++;
-    if (frame.bounceSlot->frameCounter == 0x1E) {
+    if (frame.bounceSlot->frameCounter == 30) {
         frame.bounceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

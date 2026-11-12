@@ -1554,7 +1554,7 @@ void __cdecl BattleFx_SuperNovaInitState(int param1, int param2)
     g_SuperNova_RenderStateBlock = (struct BattleFxSuperNovaPointPrim *)(Gfx_GetPsxPacketScratchPtr());
     g_SuperNova_RenderStateCopy = g_SuperNova_RenderStateBlock;
     g_SuperNova_RenderStatePrev = g_SuperNova_RenderStateCopy;
-    for (p = 0; p < 0xA; p++) {
+    for (p = 0; p < 10; p++) {
         g_SuperNova_CameraScriptState[p] = (short)*(unsigned char *)&g_BattleActorRecords[p].drawFlags;
     }
     g_SuperNova_AngleSpreadActive = 0;
@@ -1588,10 +1588,10 @@ void __cdecl BattleFx_SuperNovaWaitForAngleSpreadTask(void)
         diffA = -((g_BattleStageNodes[1].rotZ & 0xFFF) - (g_BattleStageNodes[2].rotZ & 0xFFF));
     }
     spread = diffA;
-    if (spread > 0x800) {
-        spread = 0x1000 - spread;
+    if (spread > 2048) {
+        spread = 4096 - spread;
     }
-    if (spread > 0x100) {
+    if (spread > 256) {
         farPairs++;
     }
     if ((g_BattleStageNodes[1].rotZ & 0xFFF) - (g_BattleStageNodes[3].rotZ & 0xFFF) >= 0) {
@@ -1600,10 +1600,10 @@ void __cdecl BattleFx_SuperNovaWaitForAngleSpreadTask(void)
         diffB = -((g_BattleStageNodes[1].rotZ & 0xFFF) - (g_BattleStageNodes[3].rotZ & 0xFFF));
     }
     spread = diffB;
-    if (spread > 0x800) {
-        spread = 0x1000 - spread;
+    if (spread > 2048) {
+        spread = 4096 - spread;
     }
-    if (spread > 0x100) {
+    if (spread > 256) {
         farPairs++;
     }
     if ((g_BattleStageNodes[2].rotZ & 0xFFF) - (g_BattleStageNodes[3].rotZ & 0xFFF) >= 0) {
@@ -1612,10 +1612,10 @@ void __cdecl BattleFx_SuperNovaWaitForAngleSpreadTask(void)
         diffC = -((g_BattleStageNodes[2].rotZ & 0xFFF) - (g_BattleStageNodes[3].rotZ & 0xFFF));
     }
     spread = diffC;
-    if (spread > 0x800) {
-        spread = 0x1000 - spread;
+    if (spread > 2048) {
+        spread = 4096 - spread;
     }
-    if (spread > 0x100) {
+    if (spread > 256) {
         farPairs++;
     }
     if (farPairs != 0) {
@@ -1754,7 +1754,7 @@ void __cdecl BattleFx_SuperNovaRunCameraScript(void)
                 g_pSuperNovaCameraTrack[1].mode = *(short *)scriptState->scriptCursor;
                 scriptState->scriptCursor += 2;
                 g_pSuperNovaCameraTrack->progress = 0;
-                g_pSuperNovaCameraTrack->stepSize = 0x1000 / g_pSuperNovaCameraTrack->stepCount;
+                g_pSuperNovaCameraTrack->stepSize = 4096 / g_pSuperNovaCameraTrack->stepCount;
                 g_pSuperNovaCameraTrack->deltaX = g_pSuperNovaCameraTrack->posX;
                 g_pSuperNovaCameraTrack->deltaY = g_pSuperNovaCameraTrack->posY;
                 g_pSuperNovaCameraTrack->deltaZ = g_pSuperNovaCameraTrack->posZ;
@@ -1811,17 +1811,17 @@ void __cdecl BattleFx_SuperNovaRunCameraScript(void)
                 delta->deltaY = g_SuperNova_CameraScriptPointPtr->posY - g_pSuperNovaCameraTrack->deltaY;
                 delta->deltaZ = g_SuperNova_CameraScriptPointPtr->posZ - g_pSuperNovaCameraTrack->deltaZ;
                 VectorNormalToSVector((int *)delta, (short *)workVec);
-                g_pSuperNovaCameraTrack->posX = g_SuperNova_CameraScriptPointPtr->posX - (workVec->vx * g_pSuperNovaCameraTrack->progress >> 0xC);
-                g_pSuperNovaCameraTrack->posY = g_SuperNova_CameraScriptPointPtr->posY - (workVec->vy * g_pSuperNovaCameraTrack->progress >> 0xC);
-                g_pSuperNovaCameraTrack->posZ = g_SuperNova_CameraScriptPointPtr->posZ - (workVec->vz * g_pSuperNovaCameraTrack->progress >> 0xC);
+                g_pSuperNovaCameraTrack->posX = g_SuperNova_CameraScriptPointPtr->posX - (workVec->vx * g_pSuperNovaCameraTrack->progress >> 12);
+                g_pSuperNovaCameraTrack->posY = g_SuperNova_CameraScriptPointPtr->posY - (workVec->vy * g_pSuperNovaCameraTrack->progress >> 12);
+                g_pSuperNovaCameraTrack->posZ = g_SuperNova_CameraScriptPointPtr->posZ - (workVec->vz * g_pSuperNovaCameraTrack->progress >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_pSuperNovaCameraTrack->progress += g_pSuperNovaCameraTrack->stepSize;
                 easedVal = g_pSuperNovaCameraTrack->progress;
                 easedVal = BattleFx_SuperNovaApplyCameraEasing(easedVal, g_pSuperNovaCameraTrack[1].mode);
-                g_pSuperNovaCameraTrack->posX = g_pSuperNovaCameraTrack->deltaX + (g_pSuperNovaCameraTrack->stepX * easedVal >> 0xC);
-                g_pSuperNovaCameraTrack->posY = g_pSuperNovaCameraTrack->deltaY + (g_pSuperNovaCameraTrack->stepY * easedVal >> 0xC);
-                g_pSuperNovaCameraTrack->posZ = g_pSuperNovaCameraTrack->deltaZ + (g_pSuperNovaCameraTrack->stepZ * easedVal >> 0xC);
+                g_pSuperNovaCameraTrack->posX = g_pSuperNovaCameraTrack->deltaX + (g_pSuperNovaCameraTrack->stepX * easedVal >> 12);
+                g_pSuperNovaCameraTrack->posY = g_pSuperNovaCameraTrack->deltaY + (g_pSuperNovaCameraTrack->stepY * easedVal >> 12);
+                g_pSuperNovaCameraTrack->posZ = g_pSuperNovaCameraTrack->deltaZ + (g_pSuperNovaCameraTrack->stepZ * easedVal >> 12);
             }
             (g_pSuperNovaCameraTrack->stepCount)--;
             g_pSuperNovaCameraTrack = (struct BattleFxCameraOrbitState *)&g_SuperNova_CameraScriptScratchPointA;
@@ -1963,7 +1963,7 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
     }
     frame.frameNumber = frame.task->counter - 1;
     frame.frameNumber = frame.frameNumber;
-    if (frame.frameNumber < 0x14) {
+    if (frame.frameNumber < 20) {
         if (frame.frameNumber == 1) {
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x29);
         }
@@ -1982,12 +1982,12 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
         }
         if (REG_ALLOC_HINT) {
         }
-        if (frame.frameNumber == 0x13) {
+        if (frame.frameNumber == 19) {
             g_BattleStageHideFlags |= 7;
         }
     } else {
-        frame.frameNumber -= 0x14;
-        if (frame.frameNumber < 0x3C) {
+        frame.frameNumber -= 20;
+        if (frame.frameNumber < 60) {
             if (frame.frameNumber == 0) {
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x2E4);
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x1F7);
@@ -2003,9 +2003,9 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                 frame.slot->velocityY = 0;
                 frame.slot->velocityZ = 0;
                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaProjectedQuadTask);
-                frame.slot->velocityX = 0xBB8;
+                frame.slot->velocityX = 3000;
                 frame.slot->velocityY = 0;
-                frame.slot->velocityZ = 0xBB8;
+                frame.slot->velocityZ = 3000;
                 frame.slot->timer = 0;
                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaProjectedQuadTask);
                 frame.slot->velocityX = 0xF830;
@@ -2014,28 +2014,28 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                 frame.slot->timer = 1;
             }
         } else {
-            frame.frameNumber -= 0x3C;
-            if (frame.frameNumber < 0x14) {
-                if (frame.frameNumber == 0x13) {
-                    for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+            frame.frameNumber -= 60;
+            if (frame.frameNumber < 20) {
+                if (frame.frameNumber == 19) {
+                    for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
                         g_BattleActorRecords[frame.actorIndex].drawFlags |= 6;
                     }
                 }
             } else {
-                frame.frameNumber -= 0x14;
-                if (frame.frameNumber < 0x3C) {
-                    if (frame.frameNumber == 0xA) {
+                frame.frameNumber -= 20;
+                if (frame.frameNumber < 60) {
+                    if (frame.frameNumber == 10) {
                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x2D4);
                     }
-                    if (frame.frameNumber == 0xA) {
+                    if (frame.frameNumber == 10) {
                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaRisingFadingSpriteTask);
                         frame.slot->velocityX = 0;
-                        frame.slot->velocityY = 0x190;
-                        frame.slot->velocityZ = 0xFA0;
+                        frame.slot->velocityY = 400;
+                        frame.slot->velocityZ = 4000;
                     }
                 } else {
-                    frame.frameNumber -= 0x3C;
-                    if (frame.frameNumber < 0x4B) {
+                    frame.frameNumber -= 60;
+                    if (frame.frameNumber < 75) {
                         if (frame.frameNumber == 0) {
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x2A8);
                         }
@@ -2043,13 +2043,13 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                             frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaDeceleratingSpriteEmitterTask);
                             frame.slot->timer = 0;
                         }
-                        if (frame.frameNumber == 0x32) {
+                        if (frame.frameNumber == 50) {
                             frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaPulsingSpriteEmitterTask);
                             frame.slot->timer = 0;
                         }
                     } else {
-                        frame.frameNumber -= 0x4B;
-                        if (frame.frameNumber < 0x5A) {
+                        frame.frameNumber -= 75;
+                        if (frame.frameNumber < 90) {
                             if (frame.frameNumber == 0) {
                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, 0x40, 0x132);
                             }
@@ -2057,17 +2057,17 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaTimedSpriteFadeTask);
                                 frame.slot->velocityX = 0xFD44;
                                 frame.slot->velocityY = 0xFE70;
-                                frame.slot->velocityZ = 0xFA0;
+                                frame.slot->velocityZ = 4000;
                                 frame.slot->timer = 0;
-                                frame.slot->duration = 0x1E;
+                                frame.slot->duration = 30;
                             }
-                            if (frame.frameNumber == 0x1E) {
+                            if (frame.frameNumber == 30) {
                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaTimedSpriteFadeTask);
                                 frame.slot->velocityX = 0;
-                                frame.slot->velocityY = 0x64;
-                                frame.slot->velocityZ = 0xFA0;
+                                frame.slot->velocityY = 100;
+                                frame.slot->velocityZ = 4000;
                                 frame.slot->timer = 1;
-                                frame.slot->duration = 0x1E;
+                                frame.slot->duration = 30;
                             }
                             if (frame.frameNumber == 0) {
                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSpinningModelPairTask);
@@ -2077,29 +2077,29 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                 frame.slot->angleX = 0xFFFF;
                                 frame.slot->angleY = 0x1B;
                                 frame.slot->spinRate = 0xFFCA;
-                                g_SuperNova_InitialScaleX = 0x1000;
-                                g_SuperNova_InitialScaleY = 0x1000;
+                                g_SuperNova_InitialScaleX = 0x1000 /* 1.0 */;
+                                g_SuperNova_InitialScaleY = 0x1000 /* 1.0 */;
                                 g_SuperNova_InitialScaleZ = 0;
-                                g_SuperNova_InitialStepX = 0x1000;
-                                g_SuperNova_InitialStepY = 0x1000;
-                                g_SuperNova_InitialStepZ = 0x1000;
+                                g_SuperNova_InitialStepX = 4096;
+                                g_SuperNova_InitialStepY = 4096;
+                                g_SuperNova_InitialStepZ = 4096;
                                 frame.slot->phase = 0x5A;
                             }
                         } else {
-                            frame.frameNumber -= 0x5A;
-                            if (frame.frameNumber < 0x87) {
+                            frame.frameNumber -= 90;
+                            if (frame.frameNumber < 135) {
                                 if (frame.frameNumber == 0) {
                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH3, 0x40, 0x28C);
                                 }
-                                if (frame.frameNumber == 0xF) {
+                                if (frame.frameNumber == 15) {
                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x132);
                                 }
-                                if (frame.frameNumber == 0x73) {
+                                if (frame.frameNumber == 115) {
                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x130);
                                 }
                                 if (frame.frameNumber == 0) {
                                     frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaGrowingTumblingModelTask);
-                                    g_SuperNova_BaseRotationAngles.angleX = 0x100;
+                                    g_SuperNova_BaseRotationAngles.angleX = 0x100 /* 22.5 deg */;
                                     g_SuperNova_BaseRotationAngles.angleY = 0;
                                     g_SuperNova_BaseRotationAngles.angleZ = 0;
                                     frame.slot->velocityX = 0;
@@ -2107,7 +2107,7 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                     frame.slot->velocityZ = 0xB1E0;
                                     frame.slot->angleX = 0;
                                     frame.slot->angleY = 0;
-                                    frame.slot->spinRate = 0x800;
+                                    frame.slot->spinRate = 0x800 /* 180 deg */;
                                     frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSpinningModelPairTask);
                                     frame.slot->velocityX = 0xFF6A;
                                     frame.slot->velocityY = 0xF60A;
@@ -2115,21 +2115,21 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                     frame.slot->angleX = 0xFFFF;
                                     frame.slot->angleY = 0x1B;
                                     frame.slot->spinRate = 0xFFCA;
-                                    g_SuperNova_InitialScaleX = 0x1000;
-                                    g_SuperNova_InitialScaleY = 0x1000;
-                                    g_SuperNova_InitialScaleZ = 0x1000;
+                                    g_SuperNova_InitialScaleX = 0x1000 /* 1.0 */;
+                                    g_SuperNova_InitialScaleY = 0x1000 /* 1.0 */;
+                                    g_SuperNova_InitialScaleZ = 0x1000 /* 1.0 */;
                                     g_SuperNova_InitialStepX = 0;
                                     g_SuperNova_InitialStepY = 0;
                                     g_SuperNova_InitialStepZ = 0;
                                     frame.slot->phase = 0x5A;
                                 }
-                                if (frame.frameNumber == 0x73) {
+                                if (frame.frameNumber == 115) {
                                     frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaWhiteFlashPulseTask);
-                                    frame.slot->timer = 0x3C;
+                                    frame.slot->timer = 60;
                                 }
                             } else {
-                                frame.frameNumber -= 0x87;
-                                if (frame.frameNumber < 0x14) {
+                                frame.frameNumber -= 135;
+                                if (frame.frameNumber < 20) {
                                     if (REG_ALLOC_HINT) {
                                     }
                                     if (frame.frameNumber == 9) {
@@ -2146,15 +2146,15 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                     }
                                     if (REG_ALLOC_HINT) {
                                     }
-                                    frame.frameNumber -= 0x14;
-                                    if (frame.frameNumber < 0x55) {
+                                    frame.frameNumber -= 20;
+                                    if (frame.frameNumber < 85) {
                                         if (frame.frameNumber == 0) {
                                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x2E5);
                                         }
-                                        if (frame.frameNumber == 0x1E) {
+                                        if (frame.frameNumber == 30) {
                                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x1B5);
                                         }
-                                        if (frame.frameNumber == 0x32) {
+                                        if (frame.frameNumber == 50) {
                                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x291);
                                         }
                                         if (frame.frameNumber == 0) {
@@ -2168,44 +2168,44 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                             frame.slot->velocityZ = 0;
                                             frame.vec.vx = 0;
                                             frame.vec.vy = 0;
-                                            frame.vec.vz = 0x2710;
+                                            frame.vec.vz = 10000;
                                             BattleFx_SuperNovaBeginTriangleRanking((int)&g_SuperNova_TriangleMeshResource27, &frame.vec);
                                             frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSpinningModelPairTask);
                                             frame.slot->velocityX = 0;
                                             frame.slot->velocityY = 0;
-                                            frame.slot->velocityZ = 0x2EE0;
+                                            frame.slot->velocityZ = 12000;
                                             frame.slot->angleX = 0;
                                             frame.slot->angleY = 0;
                                             frame.slot->spinRate = 0xFF10;
                                             frame.slot->phase = 0x55;
-                                            g_SuperNova_InitialScaleX = 0x3F00;
-                                            g_SuperNova_InitialScaleY = 0x3F00;
-                                            g_SuperNova_InitialScaleZ = 0x3F00;
+                                            g_SuperNova_InitialScaleX = 0x3F00 /* 3.9375 */;
+                                            g_SuperNova_InitialScaleY = 0x3F00 /* 3.9375 */;
+                                            g_SuperNova_InitialScaleZ = 0x3F00 /* 3.9375 */;
                                             g_SuperNova_InitialStepX = 0;
                                             g_SuperNova_InitialStepY = 0;
                                             g_SuperNova_InitialStepZ = 0;
                                         }
-                                        if (frame.frameNumber == 0x14) {
+                                        if (frame.frameNumber == 20) {
                                             frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaFadingSpriteBlendTask);
-                                            frame.slot->velocityX = 0x1F4;
-                                            frame.slot->velocityY = 0xC8;
-                                            frame.slot->velocityZ = 0xFA0;
+                                            frame.slot->velocityX = 500;
+                                            frame.slot->velocityY = 200;
+                                            frame.slot->velocityZ = 4000;
                                             frame.slot->timer = 0;
                                         }
-                                        if (frame.frameNumber == 0x32) {
+                                        if (frame.frameNumber == 50) {
                                             frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSineScaledModelWithShortTask);
                                             frame.slot->velocityX = 0;
                                             frame.slot->velocityY = 0;
                                             frame.slot->velocityZ = 0;
-                                            frame.slot->scale = 0x3000;
+                                            frame.slot->scale = 0x3000 /* 3.0 */;
                                         }
                                     } else {
                                         if (REG_ALLOC_HINT) {
                                         }
                                         if (REG_ALLOC_HINT) {
                                         }
-                                        frame.frameNumber -= 0x55;
-                                        if (frame.frameNumber < 0x32) {
+                                        frame.frameNumber -= 85;
+                                        if (frame.frameNumber < 50) {
                                             if (frame.frameNumber == 0) {
                                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x6F);
                                             }
@@ -2217,9 +2217,9 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                             }
                                             if (frame.frameNumber == 0) {
                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaFadingSpriteBlendTask);
-                                                frame.slot->velocityX = 0x1F4;
-                                                frame.slot->velocityY = 0xC8;
-                                                frame.slot->velocityZ = 0xFA0;
+                                                frame.slot->velocityX = 500;
+                                                frame.slot->velocityY = 200;
+                                                frame.slot->velocityZ = 4000;
                                                 frame.slot->timer = 1;
                                             }
                                         } else {
@@ -2227,12 +2227,12 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                             }
                                             if (REG_ALLOC_HINT) {
                                             }
-                                            frame.frameNumber -= 0x32;
-                                            if (frame.frameNumber < 0x5F) {
-                                                if (frame.frameNumber == 0x28) {
+                                            frame.frameNumber -= 50;
+                                            if (frame.frameNumber < 95) {
+                                                if (frame.frameNumber == 40) {
                                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x1B5);
                                                 }
-                                                if (frame.frameNumber == 0x46 || (frame.frameNumber == 0x4B || frame.frameNumber == 0x50)) {
+                                                if (frame.frameNumber == 70 || (frame.frameNumber == 75 || frame.frameNumber == 80)) {
                                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0xFA);
                                                 }
                                                 if (frame.frameNumber == 0) {
@@ -2242,21 +2242,21 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                     frame.slot->velocityZ = 0;
                                                     frame.rotation.vx = 0;
                                                     frame.rotation.vy = 0;
-                                                    frame.rotation.vz = 0x100;
+                                                    frame.rotation.vz = 0x100 /* 22.5 deg */;
                                                     RotMatrixXYZ(&frame.rotation, &frame.matrix);
                                                     frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaFixedPoseModel4Task);
-                                                    frame.vec.vx = 0x7D0;
+                                                    frame.vec.vx = 2000;
                                                     frame.vec.vy = 0;
                                                     frame.vec.vz = 0;
                                                     TransformVectorToInt16(&frame.matrix, &frame.vec, &frame.vec);
                                                     frame.slot->velocityX = frame.vec.vx;
                                                     frame.slot->velocityY = frame.vec.vy;
-                                                    frame.slot->velocityZ = frame.vec.vz + 0x7D0;
-                                                    for (frame.actorIndex = 0; frame.actorIndex < 0x20; frame.actorIndex++) {
+                                                    frame.slot->velocityZ = frame.vec.vz + 2000;
+                                                    for (frame.actorIndex = 0; frame.actorIndex < 32; frame.actorIndex++) {
                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaVariantModelHandoffTask);
-                                                        frame.slot->velocityX = frame.actorIndex * 0x82 - 0x244;
-                                                        frame.slot->velocityY = (rand() % 0x1F4) * 2 - 0x1F4;
-                                                        frame.slot->velocityZ = (rand() % 0x9C4) * 2 + 0x3E8;
+                                                        frame.slot->velocityX = frame.actorIndex * 130 - 580;
+                                                        frame.slot->velocityY = (rand() % 500) * 2 - 500;
+                                                        frame.slot->velocityZ = (rand() % 2500) * 2 + 1000;
                                                         frame.slot->angleX = rand() % 0x400;
                                                         frame.slot->angleY = rand() % 0x400;
                                                         frame.slot->spinRate = rand() % 0x400;
@@ -2270,34 +2270,34 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                     frame.slot->velocityY = 0;
                                                     frame.slot->velocityZ = 0xEE93;
                                                     TransformVectorToInt16(&frame.matrix, &frame.slot->velocityX, &frame.slot->velocityX);
-                                                    frame.slot->angleX = 0x6400;
+                                                    frame.slot->angleX = 0x6400 /* 2250 deg */;
                                                     frame.slot->angleY = 0;
                                                     frame.slot->spinRate = 0x3E80;
                                                     TransformVectorToInt16(&frame.matrix, &frame.slot->angleX, &frame.slot->angleX);
-                                                    frame.slot->angleX = (frame.slot->angleX - frame.slot->velocityX) / 0x5F;
-                                                    frame.slot->angleY = (frame.slot->angleY - frame.slot->velocityY) / 0x5F;
-                                                    frame.slot->spinRate = (frame.slot->spinRate - frame.slot->velocityZ) / 0x5F;
+                                                    frame.slot->angleX = (frame.slot->angleX - frame.slot->velocityX) / 95;
+                                                    frame.slot->angleY = (frame.slot->angleY - frame.slot->velocityY) / 95;
+                                                    frame.slot->spinRate = (frame.slot->spinRate - frame.slot->velocityZ) / 95;
                                                     frame.slot->phase = 0x5F;
-                                                    g_SuperNova_InitialScaleX = 0x4F00;
-                                                    g_SuperNova_InitialScaleY = 0x4F00;
-                                                    g_SuperNova_InitialScaleZ = 0x7E00;
-                                                    g_SuperNova_InitialStepX = 0x4F00;
-                                                    g_SuperNova_InitialStepY = 0x4F00;
-                                                    g_SuperNova_InitialStepZ = 0x7E00;
+                                                    g_SuperNova_InitialScaleX = 0x4F00 /* 4.9375 */;
+                                                    g_SuperNova_InitialScaleY = 0x4F00 /* 4.9375 */;
+                                                    g_SuperNova_InitialScaleZ = 0x7E00 /* 7.875 */;
+                                                    g_SuperNova_InitialStepX = 20224;
+                                                    g_SuperNova_InitialStepY = 20224;
+                                                    g_SuperNova_InitialStepZ = 32256;
                                                 }
                                             } else {
                                                 if (REG_ALLOC_HINT) {
                                                 }
-                                                frame.frameNumber -= 0x5F;
-                                                if (frame.frameNumber < 0x8C) {
+                                                frame.frameNumber -= 95;
+                                                if (frame.frameNumber < 140) {
                                                     if (frame.frameNumber == 0) {
                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x117);
                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, 0x40, 0x73);
                                                     }
-                                                    if (frame.frameNumber == 0x46) {
+                                                    if (frame.frameNumber == 70) {
                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH3, 0x40, 0xA3);
                                                     }
-                                                    if (frame.frameNumber == 0x64) {
+                                                    if (frame.frameNumber == 100) {
                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x82);
                                                     }
                                                     if (frame.frameNumber == 0) {
@@ -2308,26 +2308,26 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSpinningModelPairTask);
                                                         frame.slot->velocityX = 0;
                                                         frame.slot->velocityY = 0;
-                                                        frame.slot->velocityZ = 0x61A8;
+                                                        frame.slot->velocityZ = 25000;
                                                         frame.slot->angleX = 0;
                                                         frame.slot->angleY = 0;
                                                         frame.slot->spinRate = 0xFE9B;
                                                         frame.slot->phase = 0x64;
-                                                        g_SuperNova_InitialScaleX = 0x1000;
-                                                        g_SuperNova_InitialScaleY = 0x1000;
-                                                        g_SuperNova_InitialScaleZ = 0x2000;
-                                                        g_SuperNova_InitialStepX = 0x1000;
-                                                        g_SuperNova_InitialStepY = 0x1000;
-                                                        g_SuperNova_InitialStepZ = 0x2000;
+                                                        g_SuperNova_InitialScaleX = 0x1000 /* 1.0 */;
+                                                        g_SuperNova_InitialScaleY = 0x1000 /* 1.0 */;
+                                                        g_SuperNova_InitialScaleZ = 0x2000 /* 2.0 */;
+                                                        g_SuperNova_InitialStepX = 4096;
+                                                        g_SuperNova_InitialStepY = 4096;
+                                                        g_SuperNova_InitialStepZ = 8192;
                                                     }
                                                     if (frame.frameNumber == 5) {
                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaFadingSpriteBlendTask);
-                                                        frame.slot->velocityX = 0x1F4;
-                                                        frame.slot->velocityY = 0xC8;
-                                                        frame.slot->velocityZ = 0xFA0;
+                                                        frame.slot->velocityX = 500;
+                                                        frame.slot->velocityY = 200;
+                                                        frame.slot->velocityZ = 4000;
                                                         frame.slot->timer = 2;
                                                     }
-                                                    if (frame.frameNumber >= 0x64 && frame.frameNumber < 0x82 && (frame.frameNumber % 1) == 0) {
+                                                    if (frame.frameNumber >= 100 && frame.frameNumber < 130 && (frame.frameNumber % 1) == 0) {
                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSineScaledRotatedModelTask);
                                                         frame.slot->velocityX = 0;
                                                         frame.slot->velocityY = 0;
@@ -2337,27 +2337,27 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                         frame.slot->spinRate = rand() % 0x1000;
                                                         frame.slot->scale = rand() % 0x1F00 + 0x6000;
                                                     }
-                                                    if (frame.frameNumber == 0x78) {
+                                                    if (frame.frameNumber == 120) {
                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSineScaledModelTask);
                                                         frame.slot->velocityX = 0;
                                                         frame.slot->velocityY = 0;
                                                         frame.slot->velocityZ = 0;
-                                                        frame.slot->scale = 0x7F00;
+                                                        frame.slot->scale = 0x7F00 /* 7.9375 */;
                                                     }
-                                                    if (frame.frameNumber == 0x8B) {
+                                                    if (frame.frameNumber == 139) {
                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaWhiteFlashFadeOutTask);
-                                                        frame.slot->timer = 0x28;
+                                                        frame.slot->timer = 40;
                                                     }
                                                 } else {
-                                                    frame.frameNumber -= 0x8C;
-                                                    if (frame.frameNumber < 0x14) { /* empty first arm: lib/codegen.h */
+                                                    frame.frameNumber -= 140;
+                                                    if (frame.frameNumber < 20) { /* empty first arm: lib/codegen.h */
                                                     } else {
-                                                        frame.frameNumber -= 0x14;
-                                                        if (frame.frameNumber < 0x78) {
+                                                        frame.frameNumber -= 20;
+                                                        if (frame.frameNumber < 120) {
                                                             if (frame.frameNumber == 0) {
                                                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x23C);
                                                             }
-                                                            if (frame.frameNumber == 0x5A) {
+                                                            if (frame.frameNumber == 90) {
                                                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x189);
                                                             }
                                                             if (frame.frameNumber == 0) {
@@ -2365,48 +2365,48 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                 frame.slot->velocityX = 0;
                                                                 frame.slot->velocityY = 0;
                                                                 frame.slot->velocityZ = 0;
-                                                                frame.slot->scale = 0x3000;
+                                                                frame.slot->scale = 0x3000 /* 3.0 */;
                                                                 frame.slot->timer = 0;
                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaBillboardSpriteTask);
-                                                                frame.slot->velocityX = 0x5DC;
-                                                                frame.slot->velocityY = 0x258;
-                                                                frame.slot->velocityZ = 0x7D0;
-                                                                frame.slot->scale = 0x2000;
+                                                                frame.slot->velocityX = 1500;
+                                                                frame.slot->velocityY = 600;
+                                                                frame.slot->velocityZ = 2000;
+                                                                frame.slot->scale = 0x2000 /* 2.0 */;
                                                                 frame.slot->timer = 1;
                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaIndexedModelTask);
                                                                 frame.slot->velocityX = 0xF8F8;
                                                                 frame.slot->velocityY = 0;
-                                                                frame.slot->velocityZ = 0x1F40;
-                                                                frame.slot->scale = 0x4000;
+                                                                frame.slot->velocityZ = 8000;
+                                                                frame.slot->scale = 0x4000 /* 4.0 */;
                                                                 frame.slot->timer = 0;
                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaIndexedModelTask);
-                                                                frame.slot->velocityX = 0x708;
+                                                                frame.slot->velocityX = 1800;
                                                                 frame.slot->velocityY = 0xFDA8;
-                                                                frame.slot->velocityZ = 0x2EE0;
-                                                                frame.slot->scale = 0x4000;
+                                                                frame.slot->velocityZ = 12000;
+                                                                frame.slot->scale = 0x4000 /* 4.0 */;
                                                                 frame.slot->timer = 1;
                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaRelocatingModelTask);
                                                                 frame.slot->velocityX = 0xFF38;
-                                                                frame.slot->velocityY = 0x190;
-                                                                frame.slot->velocityZ = 0x3A98;
+                                                                frame.slot->velocityY = 400;
+                                                                frame.slot->velocityZ = 15000;
                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSpinningModelPairTask);
-                                                                frame.slot->velocityX = 0x190;
-                                                                frame.slot->velocityY = 0x320;
-                                                                frame.slot->velocityZ = 0x4E20;
+                                                                frame.slot->velocityX = 400;
+                                                                frame.slot->velocityY = 800;
+                                                                frame.slot->velocityZ = 20000;
                                                                 frame.slot->angleX = 0xFFFB;
                                                                 frame.slot->angleY = 0xFFF6;
                                                                 frame.slot->spinRate = 0xFEA8;
                                                                 frame.slot->phase = 0x3C;
-                                                                g_SuperNova_InitialScaleX = 0x3000;
-                                                                g_SuperNova_InitialScaleY = 0x3000;
-                                                                g_SuperNova_InitialScaleZ = 0x6000;
+                                                                g_SuperNova_InitialScaleX = 0x3000 /* 3.0 */;
+                                                                g_SuperNova_InitialScaleY = 0x3000 /* 3.0 */;
+                                                                g_SuperNova_InitialScaleZ = 0x6000 /* 6.0 */;
                                                                 g_SuperNova_InitialStepX = 0;
                                                                 g_SuperNova_InitialStepY = 0;
                                                                 g_SuperNova_InitialStepZ = 0;
                                                             }
                                                             if (REG_ALLOC_HINT) {
                                                             }
-                                                            if (frame.frameNumber == 0x5A) {
+                                                            if (frame.frameNumber == 90) {
                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaTrailingSpritesTask);
                                                                 frame.slot->velocityX = 0;
                                                                 frame.slot->velocityY = 0;
@@ -2415,19 +2415,19 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                 frame.slot->angleY = 0xFED4;
                                                                 frame.slot->spinRate = 0xFED4;
                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaWhiteFlashFadeOutTask);
-                                                                frame.slot->timer = 0x14;
+                                                                frame.slot->timer = 20;
                                                             }
-                                                            if (frame.frameNumber == 0x77) {
+                                                            if (frame.frameNumber == 119) {
                                                                 g_SuperNova_BlendThirdsCounter = 0;
                                                                 g_SuperNova_CameraEasingState.thirdIndex = 1;
-                                                                g_SuperNova_ModelDrawRequestA.modelGroup = Gfx_ModelTableGetRenderObject(0x12, g_SuperNova_ResourceHandle);
+                                                                g_SuperNova_ModelDrawRequestA.modelGroup = Gfx_ModelTableGetRenderObject(18, g_SuperNova_ResourceHandle);
                                                                 if (g_SuperNova_ModelDrawRequestA.modelGroup != 0) {
                                                                     Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_SuperNovaBlendPolygonPartPositionThirds, *(int *)((char *)g_SuperNova_ModelDrawRequestA.modelGroup + 4));
                                                                 }
                                                             }
                                                         } else {
-                                                            frame.frameNumber -= 0x78;
-                                                            if (frame.frameNumber < 0x16) {
+                                                            frame.frameNumber -= 120;
+                                                            if (frame.frameNumber < 22) {
                                                                 if (frame.frameNumber == 0) {
                                                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x17F);
                                                                 }
@@ -2438,8 +2438,8 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                     frame.slot->velocityZ = 0;
                                                                 }
                                                             } else {
-                                                                frame.frameNumber -= 0x16;
-                                                                if (frame.frameNumber < 0x16D) {
+                                                                frame.frameNumber -= 22;
+                                                                if (frame.frameNumber < 365) {
                                                                     if (frame.frameNumber == 8) {
                                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0x182);
                                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, 0x40, 0x2E7);
@@ -2453,7 +2453,7 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                         frame.slot->velocityX = 0;
                                                                         frame.slot->velocityY = 0;
                                                                         frame.slot->velocityZ = 0;
-                                                                        frame.slot->scale = 0x200;
+                                                                        frame.slot->scale = 0x200 /* 0.125 */;
                                                                     }
                                                                     if (frame.frameNumber == 8) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSineOrientedModelTask);
@@ -2461,49 +2461,49 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                         frame.slot->velocityY = 0;
                                                                         frame.slot->velocityZ = 0;
                                                                     }
-                                                                    if (frame.frameNumber == 0xA) {
+                                                                    if (frame.frameNumber == 10) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaSineScaledBillboardModelTask);
                                                                         frame.slot->velocityX = 0;
                                                                         frame.slot->velocityY = 0;
                                                                         frame.slot->velocityZ = 0;
                                                                     }
-                                                                    if (frame.frameNumber == 0x12) {
+                                                                    if (frame.frameNumber == 18) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaFlashModelSequenceTask);
                                                                         frame.slot->velocityX = 0;
                                                                         frame.slot->velocityY = 0;
                                                                         frame.slot->velocityZ = 0;
                                                                     }
-                                                                    if (frame.frameNumber == 0x41) {
+                                                                    if (frame.frameNumber == 65) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaFadingSpriteBlendTask);
-                                                                        frame.slot->velocityX = 0x1F4;
-                                                                        frame.slot->velocityY = 0xC8;
-                                                                        frame.slot->velocityZ = 0xFA0;
+                                                                        frame.slot->velocityX = 500;
+                                                                        frame.slot->velocityY = 200;
+                                                                        frame.slot->velocityZ = 4000;
                                                                         frame.slot->timer = 3;
                                                                     }
-                                                                    if (frame.frameNumber == 0x41) {
+                                                                    if (frame.frameNumber == 65) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaShatteringModel29Task);
                                                                         frame.slot->velocityX = 0;
                                                                         frame.slot->velocityY = 0;
-                                                                        frame.slot->velocityZ = 0x384;
+                                                                        frame.slot->velocityZ = 900;
                                                                         frame.vec.vx = 0;
                                                                         frame.vec.vy = 0;
-                                                                        frame.vec.vz = 0x7D00;
+                                                                        frame.vec.vz = 32000;
                                                                         RotMatrixXYZ(&g_SuperNova_Event41RotationShorts, &frame.matrix);
                                                                         TransformVectorToInt16(&frame.matrix, &frame.vec, &frame.vec);
                                                                         BattleFx_SuperNovaBeginTriangleRanking((int)&g_SuperNova_TriangleMeshResource29, &frame.vec);
                                                                     }
-                                                                    if (frame.frameNumber == 0x9B) {
+                                                                    if (frame.frameNumber == 155) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaFadingSpriteBlendTask);
-                                                                        frame.slot->velocityX = 0x1F4;
-                                                                        frame.slot->velocityY = 0xC8;
-                                                                        frame.slot->velocityZ = 0xFA0;
+                                                                        frame.slot->velocityX = 500;
+                                                                        frame.slot->velocityY = 200;
+                                                                        frame.slot->velocityZ = 4000;
                                                                         frame.slot->timer = 4;
                                                                     }
-                                                                    if (frame.frameNumber == 0x9B) {
+                                                                    if (frame.frameNumber == 155) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaShatteringModel2BTask);
                                                                         frame.slot->velocityX = 0;
                                                                         frame.slot->velocityY = 0;
-                                                                        frame.slot->velocityZ = 0x672;
+                                                                        frame.slot->velocityZ = 1650;
                                                                         frame.vec.vx = 0;
                                                                         frame.vec.vy = 0;
                                                                         frame.vec.vz = 0x8300;
@@ -2511,21 +2511,21 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                         TransformVectorToInt16(&frame.matrix, &frame.vec, &frame.vec);
                                                                         BattleFx_SuperNovaBeginTriangleRanking((int)&g_SuperNova_TriangleMeshResource2B, &frame.vec);
                                                                     }
-                                                                    if (frame.frameNumber == 0xF5) {
+                                                                    if (frame.frameNumber == 245) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaStaticModelTask);
                                                                         frame.slot->velocityX = 0;
                                                                         frame.slot->velocityY = 0;
-                                                                        frame.slot->velocityZ = 0xDAC;
+                                                                        frame.slot->velocityZ = 3500;
                                                                     }
-                                                                    if (frame.frameNumber == 0x159) {
+                                                                    if (frame.frameNumber == 345) {
                                                                         frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaWhiteFlashPulseTask);
-                                                                        frame.slot->timer = 0x3C;
+                                                                        frame.slot->timer = 60;
                                                                     }
                                                                 } else {
-                                                                    frame.frameNumber -= 0x16D;
-                                                                    if (frame.frameNumber < 0x14) {
+                                                                    frame.frameNumber -= 365;
+                                                                    if (frame.frameNumber < 20) {
                                                                         if (frame.frameNumber == 0) {
-                                                                            for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+                                                                            for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
                                                                                 g_BattleActorRecords[frame.actorIndex].drawFlags = *(char *)&g_SuperNova_CameraScriptState[frame.actorIndex];
                                                                                 g_BattleActorRecords[frame.actorIndex].stateFlags = g_BattleActorRecords[frame.actorIndex].stateFlags | 4;
                                                                             }
@@ -2536,8 +2536,8 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                         }
                                                                         if (REG_ALLOC_HINT) {
                                                                         }
-                                                                        frame.frameNumber -= 0x14;
-                                                                        if (frame.frameNumber < 0xF0) {
+                                                                        frame.frameNumber -= 20;
+                                                                        if (frame.frameNumber < 240) {
                                                                             if (REG_ALLOC_HINT) {
                                                                             }
                                                                             if (frame.frameNumber == 0) {
@@ -2545,11 +2545,11 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                                 frame.slot->velocityX = 0;
                                                                                 frame.slot->velocityY = 0xF060;
                                                                                 frame.slot->velocityZ = 0xE0C0;
-                                                                                frame.slot->scale = 0x2000;
+                                                                                frame.slot->scale = 0x2000 /* 2.0 */;
                                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaDampedParticleModelEmitterTask);
                                                                             }
-                                                                            if (frame.frameNumber >= 0x8C) {
-                                                                                frame.waitFrames = frame.frameNumber - 0x8C;
+                                                                            if (frame.frameNumber >= 140) {
+                                                                                frame.waitFrames = frame.frameNumber - 140;
                                                                                 if (frame.waitFrames == 0) {
                                                                                     for (frame.actorIndex = 0; frame.actorIndex < 3; frame.actorIndex++) {
                                                                                         g_SuperNova_CameraEasingCoeffs[frame.actorIndex] = g_BattleActorRecords[frame.actorIndex].posZ;
@@ -2557,34 +2557,34 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                                 }
                                                                                 for (frame.actorIndex = 0; frame.actorIndex < 3; frame.actorIndex++) {
                                                                                     if ((frame.frameNumber + frame.actorIndex & 1) != 0) {
-                                                                                        g_BattleActorRecords[frame.actorIndex].posZ = g_SuperNova_CameraEasingCoeffs[frame.actorIndex] + frame.waitFrames * 0x1F4 / 0x64 + 0xA;
+                                                                                        g_BattleActorRecords[frame.actorIndex].posZ = g_SuperNova_CameraEasingCoeffs[frame.actorIndex] + frame.waitFrames * 500 / 100 + 10;
                                                                                     } else {
-                                                                                        g_BattleActorRecords[frame.actorIndex].posZ = g_SuperNova_CameraEasingCoeffs[frame.actorIndex] + frame.waitFrames * 0x1F4 / 0x64 + -0xA;
+                                                                                        g_BattleActorRecords[frame.actorIndex].posZ = g_SuperNova_CameraEasingCoeffs[frame.actorIndex] + frame.waitFrames * 500 / 100 + -10;
                                                                                     }
                                                                                 }
-                                                                                if (frame.frameNumber == 0xEF) {
+                                                                                if (frame.frameNumber == 239) {
                                                                                     for (frame.actorIndex = 0; frame.actorIndex < 3; frame.actorIndex++) {
                                                                                         g_BattleActorRecords[frame.actorIndex].posZ = g_SuperNova_CameraEasingCoeffs[frame.actorIndex];
                                                                                     }
                                                                                 }
                                                                             }
-                                                                            if (frame.frameNumber == 0xDC) {
+                                                                            if (frame.frameNumber == 220) {
                                                                                 frame.slot = (BattleFxSuperNovaState *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaWhiteFlashPulseTask);
-                                                                                frame.slot->timer = 0x32;
+                                                                                frame.slot->timer = 50;
                                                                             }
                                                                         } else {
-                                                                            frame.frameNumber -= 0xF0;
-                                                                            if (frame.frameNumber < 0xA) {
+                                                                            frame.frameNumber -= 240;
+                                                                            if (frame.frameNumber < 10) {
                                                                                 if (REG_ALLOC_HINT) {
                                                                                 }
                                                                                 if (frame.frameNumber == 9) {
-                                                                                    for (frame.actorIndex = 0; frame.actorIndex < 0x100; frame.actorIndex++) {
+                                                                                    for (frame.actorIndex = 0; frame.actorIndex < 256; frame.actorIndex++) {
                                                                                         ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[frame.actorIndex].state = 0;
                                                                                     }
                                                                                 }
                                                                             } else {
-                                                                                frame.frameNumber -= 0xA;
-                                                                                if (frame.frameNumber < 0x46) {
+                                                                                frame.frameNumber -= 10;
+                                                                                if (frame.frameNumber < 70) {
                                                                                     if (frame.frameNumber == 0) {
                                                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, 0x40, 0);
                                                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x2E6);
@@ -2600,8 +2600,8 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                                         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
                                                                                         Battle_StartFixedPointRamp(0x1000, 1);
                                                                                     }
-                                                                                    if (frame.frameNumber == 0x1E) {
-                                                                                        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+                                                                                    if (frame.frameNumber == 30) {
+                                                                                        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
                                                                                             if ((g_SuperNova_StateParam1 & 1 << frame.actorIndex) != 0) {
                                                                                                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
                                                                                             }
@@ -2609,7 +2609,7 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
                                                                                     }
                                                                                     if (REG_ALLOC_HINT) {
                                                                                     }
-                                                                                    if (frame.frameNumber == 0x45) {
+                                                                                    if (frame.frameNumber == 69) {
                                                                                         g_SuperNova_AngleSpreadCounter = 1;
                                                                                     }
                                                                                 }
@@ -2634,12 +2634,12 @@ void __cdecl BattleFx_SuperNovaMainTask(void)
     }
     (frame.task->counter)++;
     if (g_SuperNova_AngleSpreadCounter != 0) {
-        Battle_StartFixedPointRamp(0, 0x1E);
+        Battle_StartFixedPointRamp(0, 30);
         g_BattleStageHideFlags &= 0xF8;
         g_BattleScriptEffectFlag = 0;
         frame.task->ownerSlot = BATTLE_TASK_FREE;
         // STRING: FF7 0x007d7e00
-        GameHeapFree((void *)g_SuperNova_AllocatedHeapBuffer, "C:\\FF7\\src\\battle\\myoshiok\\lasboss3.cpp", 0x1324);
+        GameHeapFree((void *)g_SuperNova_AllocatedHeapBuffer, "C:\\FF7\\src\\battle\\myoshiok\\lasboss3.cpp", 4900);
         Sfx_ReleaseCachedBuffer(0x132, 0xF);
         Sfx_ReleaseCachedBuffer(0x130, 0xF);
         Battle_EffectFreeGroupTag0();
@@ -2661,7 +2661,7 @@ void __cdecl BattleFx_SuperNovaWhiteFlashFadeOutTask(void)
     BattleFxWhiteFlashRecord *pFlash;
 
     pFlash = (BattleFxWhiteFlashRecord *)BATTLE_CURRENT_TASK_SLOT;
-    greyLevel = SinFixed(g_SuperNova_WhiteFlashPhase * 0x33) * 0xFF >> 0xC;
+    greyLevel = SinFixed(g_SuperNova_WhiteFlashPhase * 51) * 0xFF >> 12;
     g_BattleOverlayDrawListHead = BattleFx_FlashScreenWhite((char)greyLevel, (char)greyLevel, (char)greyLevel);
     if (g_BattleIsPaused != 0) {
         return;
@@ -2689,12 +2689,12 @@ void __cdecl BattleFx_SuperNovaWhiteFlashPulseTask(void)
     BattleFxSuperNovaFlashPulse *pFlash;
 
     pFlash = (BattleFxSuperNovaFlashPulse *)BATTLE_CURRENT_TASK_SLOT;
-    greyLevel = SinFixed(g_SuperNova_WhiteFlashAlpha * 0x33) * 0xFF >> 0xC;
+    greyLevel = SinFixed(g_SuperNova_WhiteFlashAlpha * 51) * 0xFF >> 12;
     g_BattleOverlayDrawListHead = BattleFx_FlashScreenWhite((char)greyLevel, (char)greyLevel, (char)greyLevel);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pFlash->frame < 0x14) {
+    if (pFlash->frame < 20) {
         g_SuperNova_WhiteFlashAlpha++;
     }
     if (pFlash->frame >= pFlash->frameCount - 0x14) {
@@ -2732,14 +2732,14 @@ void __cdecl BattleFx_SuperNovaApproachingPointFieldTask(void)
     if (intensity < 0) {
         intensity = 0x80;
     } else {
-        intensity = CosFixed(intensity * 0x66) << 7 >> 0xC;
+        intensity = CosFixed(intensity * 102) << 7 >> 12;
     }
     GetGeomOffset(&savedOffsetX, &keepY);
     SetGeomOffset(0xA0, 0x5A);
     SetRotMatrix(g_SuperNova_DotScatterProjectionMatrix);
     SetTransMatrix(g_SuperNova_DotScatterProjectionMatrix);
     RefreshGlobalTransformState();
-    for (pointIdx = 0; pointIdx < 0x100; pointIdx++) {
+    for (pointIdx = 0; pointIdx < 256; pointIdx++) {
         if (((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].state == 1) {
             pDrawPrim = g_SuperNova_RenderStateBlock;
             projDepth = RotTransPers((SVECTOR *)&((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].posX, &pDrawPrim->screenX, &projX, &projY);
@@ -2760,17 +2760,17 @@ void __cdecl BattleFx_SuperNovaApproachingPointFieldTask(void)
     for (pointIdx = 0; pointIdx < 8; pointIdx++) {
         BattleFx_SuperNovaClaimApproachingPointRecord();
     }
-    for (pointIdx = 0; pointIdx < 0x100; pointIdx++) {
+    for (pointIdx = 0; pointIdx < 256; pointIdx++) {
         if (((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].state != 0) {
-            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].posZ -= 0x258;
+            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].posZ -= 600;
             (((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].counter)++;
-            if (((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].counter == 0x14) {
+            if (((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].counter == 20) {
                 ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[pointIdx].state = 0;
             }
         }
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x46) {
+    if (taskPtr->frameCounter == 70) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2784,14 +2784,14 @@ void __cdecl BattleFx_SuperNovaClaimApproachingPointRecord(void)
     short discard;
     short index;
 
-    for (index = 0; index < 0x100; index++) {
+    for (index = 0; index < 256; index++) {
         if (((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].state == 0) {
             discard = (rand() % 4096);
             ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].state = 1;
             ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].counter = 0;
-            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].posX = rand() % 0xBB8 - 0x5DC;
-            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].posY = rand() % 0xBB8 - 0x5DC;
-            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].posZ = 0x2EE0;
+            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].posX = rand() % 3000 - 1500;
+            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].posY = rand() % 3000 - 1500;
+            ((SuperNova_ApproachingPointField *)(g_SuperNova_ApproachingPointFieldBuffer))[index].posZ = 12000;
             return;
         }
     }
@@ -2931,7 +2931,7 @@ void __cdecl BattleFx_SuperNovaTimedSpriteFadeTask(void)
     SetTransMatrix(&frame.matrix);
     g_SuperNova_SpriteDrawRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_SuperNova_SpriteResourceRowByEmitter[frame.spriteFade->resourceRowIndex], g_SuperNova_ResourceHandle);
     g_SuperNova_SpriteDrawRequest.drawObj = Gfx_ModelTableGetSpriteObject(g_SuperNova_SpriteResourceRowByEmitter[frame.spriteFade->resourceRowIndex], g_SuperNova_ResourceHandle);
-    frame.alpha = SinFixed(0x800 / frame.spriteFade->frameCount * frame.spriteFade->frameIndex) << 7 >> 0xC;
+    frame.alpha = SinFixed(0x800 / frame.spriteFade->frameCount * frame.spriteFade->frameIndex) << 7 >> 12;
     if (frame.alpha > 0x80) {
         frame.alpha = 0x80;
     }
@@ -2963,9 +2963,9 @@ void __cdecl BattleFx_SuperNovaPulsingSpriteEmitterTask(void)
     }
     if (slot->frameCount % 5 == 0) {
         sprite = (BattleFxNovaPulsingEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaPulsingSpriteTask);
-        sprite->posX = 0xC8;
-        sprite->posY = slot->spriteIndex * 0x8C + (slot->spriteIndex - 3 != 0 ? 0 : 0x8C) + -0x12C;
-        sprite->posZ = 0xFA0;
+        sprite->posX = 200;
+        sprite->posY = slot->spriteIndex * 140 + (slot->spriteIndex - 3 != 0 ? 0 : 140) + -300;
+        sprite->posZ = 4000;
         sprite->spriteIndex = slot->spriteIndex;
         (slot->spriteIndex)++;
         if (slot->spriteIndex == 4) {
@@ -3001,10 +3001,10 @@ void __cdecl BattleFx_SuperNovaPulsingSpriteTask(void)
     frame.matrix.t[2] = frame.pulsingSprite->posZ;
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNova_SpriteDrawArgs.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x34, g_SuperNova_ResourceHandle);
-    g_SuperNova_SpriteDrawArgs.drawObj = Gfx_ModelTableGetSpriteObject(0x34, g_SuperNova_ResourceHandle);
+    g_SuperNova_SpriteDrawArgs.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(52, g_SuperNova_ResourceHandle);
+    g_SuperNova_SpriteDrawArgs.drawObj = Gfx_ModelTableGetSpriteObject(52, g_SuperNova_ResourceHandle);
     g_SuperNova_SpriteDrawArgs.frame = frame.pulsingSprite->spriteIndex;
-    frame.alpha = SinFixed(frame.pulsingSprite->frameCount * 0x44) << 7 >> 0xC;
+    frame.alpha = SinFixed(frame.pulsingSprite->frameCount * 68) << 7 >> 12;
     if (frame.alpha > 0x80) {
         frame.alpha = 0x80;
     }
@@ -3016,7 +3016,7 @@ void __cdecl BattleFx_SuperNovaPulsingSpriteTask(void)
         return;
     }
     (frame.pulsingSprite->frameCount)++;
-    if (frame.pulsingSprite->frameCount == 0x1E) {
+    if (frame.pulsingSprite->frameCount == 30) {
         frame.pulsingSprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3035,13 +3035,13 @@ void __cdecl BattleFx_SuperNovaDeceleratingSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (slot->timer % 0xA == 0) {
+    if (slot->timer % 10 == 0) {
         sprite = (BattleFxSuperNovaDecelSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaDeceleratingSpriteTask);
         sprite->posX = 0xF448;
-        sprite->posY = slot->index * 0x64 - 0x320;
-        sprite->posZ = 0xFA0;
-        sprite->velocityX = 0x15E;
-        sprite->frameCounter = slot->index * 0xA;
+        sprite->posY = slot->index * 100 - 800;
+        sprite->posZ = 4000;
+        sprite->velocityX = 350;
+        sprite->frameCounter = slot->index * 10;
         sprite->frameCount = slot->index;
         sprite->moveCount = 0;
         (slot->index)++;
@@ -3080,10 +3080,10 @@ void __cdecl BattleFx_SuperNovaDeceleratingSpriteTask(void)
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
     RefreshGlobalTransformState();
-    g_SuperNova_MainSlotSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x32, g_SuperNova_ResourceHandle);
-    g_SuperNova_MainSlotSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(0x32, g_SuperNova_ResourceHandle);
+    g_SuperNova_MainSlotSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(50, g_SuperNova_ResourceHandle);
+    g_SuperNova_MainSlotSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(50, g_SuperNova_ResourceHandle);
     g_SuperNova_MainSlotSpriteRequest.frame = frame.decelSprite->spriteValue;
-    frame.alpha = CosFixed(frame.decelSprite->frameCount * 0x14) << 8 >> 0xC;
+    frame.alpha = CosFixed(frame.decelSprite->frameCount * 20) << 8 >> 12;
     if (frame.alpha > 0x80) {
         frame.alpha = 0x80;
     }
@@ -3099,7 +3099,7 @@ void __cdecl BattleFx_SuperNovaDeceleratingSpriteTask(void)
         frame.decelSprite->velA -= (short)(frame.decelSprite->velA / 8);
     }
     (frame.decelSprite->frameCount)++;
-    if (frame.decelSprite->frameCount == 0x32) {
+    if (frame.decelSprite->frameCount == 50) {
         frame.decelSprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3129,7 +3129,7 @@ void __cdecl BattleFx_SuperNovaFadingSpinningModelTask(void)
     if (frame.colour < 0) {
         frame.colour = 0x80;
     } else {
-        frame.colour = CosFixed(frame.colour * 0x66) << 7 >> 0xC;
+        frame.colour = CosFixed(frame.colour * 102) << 7 >> 12;
     }
     GetGeomOffset(&frame.geomOffsetX, &frame.geomOffsetY);
     SetGeomOffset(0xA0, 0x5A);
@@ -3141,7 +3141,7 @@ void __cdecl BattleFx_SuperNovaFadingSpinningModelTask(void)
     frame.matrix.t[2] = 0xFA0;
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNova_Resource24ModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x24, g_SuperNova_ResourceHandle);
+    g_SuperNova_Resource24ModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(36, g_SuperNova_ResourceHandle);
     g_SuperNova_Resource24ModelDrawRequest.fadeLevel = frame.colour;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Resource24ModelDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     SetGeomOffset(frame.geomOffsetX, frame.geomOffsetY);
@@ -3149,7 +3149,7 @@ void __cdecl BattleFx_SuperNovaFadingSpinningModelTask(void)
         return;
     }
     (frame.fadingSpin->frameCounter)++;
-    if (frame.fadingSpin->frameCounter == 0x46) {
+    if (frame.fadingSpin->frameCounter == 70) {
         frame.fadingSpin->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3181,7 +3181,7 @@ void __cdecl BattleFx_SuperNovaCounterRotatingSpritePairTask(void)
     if (frame.alpha < 0) {
         frame.alpha = 0x80;
     } else {
-        frame.alpha = CosFixed(frame.alpha * 0x66) << 7 >> 0xC;
+        frame.alpha = CosFixed(frame.alpha * 102) << 7 >> 12;
     }
     GetGeomOffset(&frame.geomOffsetX, &frame.geomOffsetY);
     SetGeomOffset(0xA0, 0x5A);
@@ -3195,8 +3195,8 @@ void __cdecl BattleFx_SuperNovaCounterRotatingSpritePairTask(void)
     frame.matrix.t[2] = 0x1770;
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNovaCounterRotatingSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x23, g_SuperNova_ResourceHandle);
-    g_SuperNovaCounterRotatingSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(0x23, g_SuperNova_ResourceHandle);
+    g_SuperNovaCounterRotatingSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(35, g_SuperNova_ResourceHandle);
+    g_SuperNovaCounterRotatingSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(35, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_SuperNovaCounterRotatingSpriteRequest.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_0, 1, g_BattleOverlayDrawListHead);
     frame.rotX.vx = 0;
     frame.rotX.vy = 0;
@@ -3247,7 +3247,7 @@ void __cdecl BattleFx_SuperNovaFadingSpriteTask(void)
     if (frame.alpha < 0) {
         frame.alpha = 0x80;
     } else {
-        frame.alpha = CosFixed(frame.alpha * 0x66) << 7 >> 0xC;
+        frame.alpha = CosFixed(frame.alpha * 102) << 7 >> 12;
     }
     GetGeomOffset(&frame.geomOffsetX, &frame.geomOffsetY);
     SetGeomOffset(0xA0, 0x5A);
@@ -3258,8 +3258,8 @@ void __cdecl BattleFx_SuperNovaFadingSpriteTask(void)
     frame.matrix.t[2] = 0x1770;
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNovaFadingSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x22, g_SuperNova_ResourceHandle);
-    g_SuperNovaFadingSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(0x22, g_SuperNova_ResourceHandle);
+    g_SuperNovaFadingSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(34, g_SuperNova_ResourceHandle);
+    g_SuperNovaFadingSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(34, g_SuperNova_ResourceHandle);
     g_SuperNovaFadingSpriteRequest.colorB = *(char *)&frame.alpha;
     g_SuperNovaFadingSpriteRequest.colorG = g_SuperNovaFadingSpriteRequest.colorB;
     g_SuperNovaFadingSpriteRequest.colorR = g_SuperNovaFadingSpriteRequest.colorG;
@@ -3269,7 +3269,7 @@ void __cdecl BattleFx_SuperNovaFadingSpriteTask(void)
         return;
     }
     (frame.fadingSprite->frameCounter)++;
-    if (frame.fadingSprite->frameCounter == 0x46) {
+    if (frame.fadingSprite->frameCounter == 70) {
         frame.fadingSprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3295,49 +3295,49 @@ void __cdecl BattleFx_SuperNovaDampedParticleModelEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter < 0x8C) {
+    if (taskPtr->frameCounter < 140) {
         if ((taskPtr->frameCounter % 2) == 0) {
             particle = (BattleFxSuperNovaDampedParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaDampedParticleModelTask);
             zRoll = rand() % 0xFA0;
-            particle->posX = rand() % 0x1770 - 0xBB8;
+            particle->posX = rand() % 6000 - 3000;
             particle->posY = 0;
-            particle->posZ = zRoll - 0x3E8;
+            particle->posZ = zRoll - 1000;
             particle->velocityX = 0;
-            particle->velocityY = 0xFFFFFE0C - rand() % 0x5DC;
+            particle->velocityY = 0xFFFFFE0C - rand() % 1500;
             particle->velocityZ = 0;
             if (DEAD_IN_RETAIL != 0) {
-                scaleValue = 0x4000;
+                scaleValue = 0x4000 /* 4.0 */;
             } else {
                 scaleValue = rand() % 0x3800 + 0x800;
             }
             particle->scale = scaleValue;
             particle->gravity = 0;
             particle->resourceIndex = rand() % 3;
-            particle->duration = 0x14;
+            particle->duration = 20;
         }
     } else {
         g_SuperNova_ParticleVelocityDampingQ12 = 0xF00;
         if ((taskPtr->frameCounter % 2) == 0) {
             particle = (BattleFxSuperNovaDampedParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SuperNovaDampedParticleModelTask);
-            particle->posX = rand() % 0x2710 - 0x1388;
+            particle->posX = rand() % 10000 - 5000;
             if (DEAD_IN_RETAIL != 0) {
                 height = 0;
             } else {
-                height = rand() % 0x1F4 - 0x1F4;
+                height = rand() % 500 - 500;
             }
             particle->posY = height;
-            particle->posZ = rand() % 0x7D0 - 0x7D0;
+            particle->posZ = rand() % 2000 - 2000;
             particle->velocityX = 0;
-            particle->velocityY = 0xFFFFFFCE - rand() % 0xC8;
-            particle->velocityZ = 0x30C - rand() % 0x190;
+            particle->velocityY = 0xFFFFFFCE - rand() % 200;
+            particle->velocityZ = 780 - rand() % 400;
             particle->scale = rand() % 0x2C00 + 0x400;
             particle->gravity = 0;
             particle->resourceIndex = rand() % 3;
-            particle->duration = 0x14;
+            particle->duration = 20;
         }
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0xDC) {
+    if (taskPtr->frameCounter == 220) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3382,19 +3382,19 @@ void __cdecl BattleFx_SuperNovaDampedParticleModelTask(void)
     g_SuperNova_MainModelParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(g_SuperNova_MainModelParticleResourceFieldOffsets[frame.particle->resourceIndex], g_SuperNova_ResourceHandle);
     if (frame.particle->timer < frame.particle->duration - 8) {
         g_SuperNova_MainModelParticleDrawRequest.flags = 0;
-        g_SuperNova_MainModelParticleDrawRequest.fadeLevel = 0x80;
+        g_SuperNova_MainModelParticleDrawRequest.fadeLevel = 128;
     } else {
         frame.remaining = frame.particle->duration - frame.particle->timer;
         g_SuperNova_MainModelParticleDrawRequest.flags = 8;
-        g_SuperNova_MainModelParticleDrawRequest.fadeLevel = SinFixed(frame.remaining << 7) << 7 >> 0xC;
+        g_SuperNova_MainModelParticleDrawRequest.fadeLevel = SinFixed(frame.remaining << 7) << 7 >> 12;
     }
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_MainModelParticleDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.particle->velocityX = frame.particle->velocityX * g_SuperNova_ParticleVelocityDampingQ12 >> 0xC;
-    frame.particle->velocityY = frame.particle->velocityY * g_SuperNova_ParticleVelocityDampingQ12 >> 0xC;
-    frame.particle->velocityZ = frame.particle->velocityZ * g_SuperNova_ParticleVelocityDampingQ12 >> 0xC;
+    frame.particle->velocityX = frame.particle->velocityX * g_SuperNova_ParticleVelocityDampingQ12 >> 12;
+    frame.particle->velocityY = frame.particle->velocityY * g_SuperNova_ParticleVelocityDampingQ12 >> 12;
+    frame.particle->velocityZ = frame.particle->velocityZ * g_SuperNova_ParticleVelocityDampingQ12 >> 12;
     frame.particle->velocityY += frame.particle->gravity;
     frame.particle->posX += frame.particle->velocityX;
     frame.particle->posY += frame.particle->velocityY;
@@ -3444,9 +3444,9 @@ void __cdecl BattleFx_SuperNovaExpandingModelEmitterTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    g_SuperNova_Model26ParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x26, g_SuperNova_ResourceHandle);
+    g_SuperNova_Model26ParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(38, g_SuperNova_ResourceHandle);
     g_SuperNova_Model26ParticleDrawRequest.flags = 0;
-    g_SuperNova_Model26ParticleDrawRequest.fadeLevel = 0x80;
+    g_SuperNova_Model26ParticleDrawRequest.fadeLevel = 128;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Model26ParticleDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST, 0, g_BattleOverlayDrawListHead);
     frame.rotX.vx = frame.emitter->frameCounter << 5;
     frame.rotX.vy = frame.emitter->frameCounter * -0x20;
@@ -3462,9 +3462,9 @@ void __cdecl BattleFx_SuperNovaExpandingModelEmitterTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    g_SuperNova_Model26ParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x26, g_SuperNova_ResourceHandle);
+    g_SuperNova_Model26ParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(38, g_SuperNova_ResourceHandle);
     g_SuperNova_Model26ParticleDrawRequest.flags = 8;
-    g_SuperNova_Model26ParticleDrawRequest.fadeLevel = 0x80;
+    g_SuperNova_Model26ParticleDrawRequest.fadeLevel = 128;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Model26ParticleDrawRequest, g_BattleCurrentOrderingTable + 0x50, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -3477,19 +3477,19 @@ void __cdecl BattleFx_SuperNovaExpandingModelEmitterTask(void)
         RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
         frame.vecX.vx = 0;
         frame.vecX.vy = 0;
-        frame.vecX.vz = (frame.emitter->radius) / 2 + 0x1F4;
+        frame.vecX.vz = (frame.emitter->radius) / 2 + 500;
         TransformVectorToInt16(&frame.rotMatrix, &frame.vecX, &frame.vecX);
         frame.child->posX = frame.emitter->posX + frame.vecX.vx;
         frame.child->posY = 0;
         frame.child->posZ = frame.emitter->posZ + frame.vecX.vz;
         frame.vecX.vx = 0;
         frame.vecX.vy = 0;
-        frame.vecX.vz = 0xC8;
+        frame.vecX.vz = 200;
         TransformVectorToInt16(&frame.rotMatrix, &frame.vecX, (void *)((int)frame.child + 0xC));
     }
-    frame.emitter->radius += 0x40;
+    frame.emitter->radius += 64;
     (frame.emitter->frameCounter)++;
-    if (frame.emitter->frameCounter == 0xF0) {
+    if (frame.emitter->frameCounter == 240) {
         frame.emitter->endFlag = 0xFFFF;
     }
 }
@@ -3507,9 +3507,9 @@ void __cdecl BattleFx_SuperNovaGravitySpriteParticleTask(void)
     BattleLimitCosmoMemoryProjectile *task;
 
     task = (BattleLimitCosmoMemoryProjectile *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000, 0);
-    g_SuperNova_AnimatedSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x25, g_SuperNova_ResourceHandle);
-    g_SuperNova_AnimatedSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(0x25, g_SuperNova_ResourceHandle);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000 /* 1.0 */, 0);
+    g_SuperNova_AnimatedSpriteRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(37, g_SuperNova_ResourceHandle);
+    g_SuperNova_AnimatedSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(37, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_SuperNova_AnimatedSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -3517,9 +3517,9 @@ void __cdecl BattleFx_SuperNovaGravitySpriteParticleTask(void)
     task->posX += task->velX;
     task->posY += task->velY;
     task->posZ += task->velZ;
-    task->velY += -0x32;
+    task->velY += -50;
     (task->frame)++;
-    if (task->frame == 0x14) {
+    if (task->frame == 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3549,13 +3549,13 @@ void __cdecl BattleFx_SuperNovaStaticModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    g_SuperNova_Model1EParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x1E, g_SuperNova_ResourceHandle);
+    g_SuperNova_Model1EParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(30, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Model1EParticleDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.record->frameCount)++;
-    if (frame.record->frameCount == 0x77) {
+    if (frame.record->frameCount == 119) {
         frame.record->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3582,38 +3582,38 @@ void __cdecl BattleFx_SuperNovaShatteringModel2BTask(void)
 
     frame.record = (BattleFxCosmoMemoryRingSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_SuperNova_Model1DGeometryDrawRequest.modelGroup = (int)&g_SuperNova_TriangleMeshResource2B;
-    g_SuperNova_Model1DParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x1D, g_SuperNova_ResourceHandle);
+    g_SuperNova_Model1DParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(29, g_SuperNova_ResourceHandle);
     RotMatrix(&g_SuperNova_Model1DParticleRotationVector, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, g_SuperNova_Model1DParticleScaleVector);
     frame.rotMatrix.t[0] = frame.record->posX;
     frame.rotMatrix.t[1] = frame.record->posY;
     frame.rotMatrix.t[2] = frame.record->posZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
-    if (frame.record->timer <= 0x1E) {
+    if (frame.record->timer <= 30) {
         SetRotMatrix(&frame.rotMatrix);
         SetTransMatrix(&frame.rotMatrix);
         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Model1DParticleDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     } else {
-        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x2B, g_SuperNova_ResourceHandle)));
+        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(43, g_SuperNova_ResourceHandle)));
         g_BattleOverlayDrawListHead = BattleFx_SuperNovaDrawRankedTriangleMesh((struct BattleFxSuperNovaGeometry *)&g_SuperNova_Model1DGeometryDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead, (struct Vec3sPacked *)g_SuperNova_ActiveMeshIndicesPtr, g_SuperNova_ActiveTriangleBufferPtr, &frame.rotMatrix);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.record->timer == 0x1E) {
+    if (frame.record->timer == 30) {
         BattleFx_SuperNovaSeedTriangleDeltas((int)&g_SuperNova_TriangleMeshResource2B, 2);
     }
-    if (frame.record->timer >= 0x1E && frame.record->timer < 0x2E) {
+    if (frame.record->timer >= 30 && frame.record->timer < 46) {
         frame.groupIndex = frame.record->timer - 0x1E;
-        for (frame.entryIndex = 0; frame.entryIndex < 0x14; frame.entryIndex++) {
+        for (frame.entryIndex = 0; frame.entryIndex < 20; frame.entryIndex++) {
             g_SuperNova_ActiveTriangleBufferPtr[g_SuperNova_ActiveTriangleSubBufferPtr[frame.groupIndex * 0x14 + frame.entryIndex]] = 1;
         }
     }
-    if (frame.record->timer >= 0x1E) {
+    if (frame.record->timer >= 30) {
         BattleFx_SuperNovaStepScatteringTriangles();
     }
     (frame.record->timer)++;
-    if (frame.record->timer == 0x5A) {
+    if (frame.record->timer == 90) {
         frame.record->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3755,9 +3755,9 @@ void __cdecl BattleFx_SuperNovaStepScatteringTriangles(void)
             g_SuperNova_ActiveMeshIndicesPtr[i].dispX += g_SuperNova_TriangleRecordsBuffer[i].deltaX;
             g_SuperNova_ActiveMeshIndicesPtr[i].dispY += g_SuperNova_TriangleRecordsBuffer[i].deltaY;
             g_SuperNova_ActiveMeshIndicesPtr[i].dispZ += g_SuperNova_TriangleRecordsBuffer[i].deltaZ;
-            g_SuperNova_TriangleRecordsBuffer[i].deltaX -= (short)(g_SuperNova_TriangleRecordsBuffer[i].deltaX / 0xA);
-            g_SuperNova_TriangleRecordsBuffer[i].deltaY -= (short)(g_SuperNova_TriangleRecordsBuffer[i].deltaY / 0xA);
-            g_SuperNova_TriangleRecordsBuffer[i].deltaZ -= (short)(g_SuperNova_TriangleRecordsBuffer[i].deltaZ / 0xA);
+            g_SuperNova_TriangleRecordsBuffer[i].deltaX -= (short)(g_SuperNova_TriangleRecordsBuffer[i].deltaX / 10);
+            g_SuperNova_TriangleRecordsBuffer[i].deltaY -= (short)(g_SuperNova_TriangleRecordsBuffer[i].deltaY / 10);
+            g_SuperNova_TriangleRecordsBuffer[i].deltaZ -= (short)(g_SuperNova_TriangleRecordsBuffer[i].deltaZ / 10);
             (g_SuperNova_ActiveTriangleBufferPtr[i])++;
         }
     }
@@ -3786,38 +3786,38 @@ void __cdecl BattleFx_SuperNovaShatteringModel29Task(void)
 
     frame.record = (BattleFxCosmoMemoryRingSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_SuperNova_Model1CGeometryDrawRequest.modelGroup = (int)&g_SuperNova_TriangleMeshResource29;
-    g_SuperNova_Model1CParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x1C, g_SuperNova_ResourceHandle);
+    g_SuperNova_Model1CParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(28, g_SuperNova_ResourceHandle);
     RotMatrix(&g_SuperNova_Model1CParticleRotationVector, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, g_SuperNova_Model1CParticleScaleVector);
     frame.rotMatrix.t[0] = frame.record->posX;
     frame.rotMatrix.t[1] = frame.record->posY;
     frame.rotMatrix.t[2] = frame.record->posZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
-    if (frame.record->timer <= 0x1E) {
+    if (frame.record->timer <= 30) {
         SetRotMatrix(&frame.rotMatrix);
         SetTransMatrix(&frame.rotMatrix);
         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Model1CParticleDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     } else {
-        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x29, g_SuperNova_ResourceHandle)));
+        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(41, g_SuperNova_ResourceHandle)));
         g_BattleOverlayDrawListHead = BattleFx_SuperNovaDrawRankedTriangleMesh((struct BattleFxSuperNovaGeometry *)&g_SuperNova_Model1CGeometryDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead, (struct Vec3sPacked *)g_SuperNova_ActiveMeshIndicesPtr, g_SuperNova_ActiveTriangleBufferPtr, &frame.rotMatrix);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.record->timer == 0x1E) {
+    if (frame.record->timer == 30) {
         BattleFx_SuperNovaSeedTriangleDeltas((int)&g_SuperNova_TriangleMeshResource29, 2);
     }
-    if (frame.record->timer >= 0x1E && frame.record->timer < 0x2E) {
+    if (frame.record->timer >= 30 && frame.record->timer < 46) {
         frame.groupIndex = frame.record->timer - 0x1E;
-        for (frame.entryIndex = 0; frame.entryIndex < 0x14; frame.entryIndex++) {
+        for (frame.entryIndex = 0; frame.entryIndex < 20; frame.entryIndex++) {
             g_SuperNova_ActiveTriangleBufferPtr[g_SuperNova_ActiveTriangleSubBufferPtr[frame.groupIndex * 0x14 + frame.entryIndex]] = 1;
         }
     }
-    if (frame.record->timer >= 0x1E) {
+    if (frame.record->timer >= 30) {
         BattleFx_SuperNovaStepScatteringTriangles();
     }
     (frame.record->timer)++;
-    if (frame.record->timer == 0x5A) {
+    if (frame.record->timer == 90) {
         frame.record->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3838,9 +3838,9 @@ void __cdecl BattleFx_SuperNovaFlashModelSequenceTask(void)
     if (task->frameCounter == 1) {
         g_BattleOverlayDrawListHead = BattleFx_FlashScreenWhite(0xFF, 0xFF, 0xFF);
     } else {
-        BattleFx_InstallBillboardMatrix((short *)task->data, 0x7F00, 0);
+        BattleFx_InstallBillboardMatrix((short *)task->data, 0x7F00 /* 7.9375 */, 0);
         g_SuperNova_FrameChoiceModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(g_SuperNova_FrameChoiceModelFieldByFrame[task->frameCounter], g_SuperNova_ResourceHandle);
-        g_SuperNova_FrameChoiceModelDrawRequest.fadeLevel = (task->frameCounter - 4 != 0 ? 0xFFFFF000 : 0) + 0x1000;
+        g_SuperNova_FrameChoiceModelDrawRequest.fadeLevel = (task->frameCounter - 4 != 0 ? 0xFFFFF000 : 0) + 4096;
         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_FrameChoiceModelDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 3, g_BattleOverlayDrawListHead);
     }
     if (g_BattleIsPaused != 0) {
@@ -3861,9 +3861,9 @@ void __cdecl BattleFx_SuperNovaSineScaledBillboardModelTask(void)
     BattleFxSuperNovaSineBillboardTask *task;
 
     task = (BattleFxSuperNovaSineBillboardTask *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->billboardMatrix, SinFixed(task->frame << 7) * 0x3000 >> 0xC, 0xFFFFFC18);
+    BattleFx_InstallBillboardMatrix(&task->billboardMatrix, SinFixed(task->frame << 7) * 0x3000 /* 3.0 */ >> 12, 0xFFFFFC18);
     g_SuperNova_SineBillboardDrawRequest.fadeLevel = 0;
-    g_SuperNova_SineBillboardDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x1B, g_SuperNova_ResourceHandle);
+    g_SuperNova_SineBillboardDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(27, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_SineBillboardDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -3884,12 +3884,12 @@ void __cdecl BattleFx_SuperNovaSineOrientedModelTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    sinComp.vx = SinFixed(task->frameCounter << 7) << 0xC >> 0xC;
-    sinComp.vy = CosFixed(task->frameCounter << 7) << 5 >> 0xC;
+    sinComp.vx = SinFixed(task->frameCounter << 7) << 12 >> 12;
+    sinComp.vy = CosFixed(task->frameCounter << 7) << 5 >> 12;
     sinComp.vz = 0;
     BattleFx_InstallOrientedMatrixScaled(task->data, &g_SuperNova_SineOrientedTaskParams, &sinComp, 0xFFFFFC18);
     g_SuperNova_OrientedBillboardDrawRequest.fadeLevel = 0;
-    g_SuperNova_OrientedBillboardDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_SuperNova_ResourceHandle);
+    g_SuperNova_OrientedBillboardDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(11, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_OrientedBillboardDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -3936,9 +3936,9 @@ void __cdecl BattleFx_SuperNovaFourPassModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x26, g_SuperNova_ResourceHandle);
+    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(38, g_SuperNova_ResourceHandle);
     g_SuperNova_FourPassDrawRequest.flags = 0;
-    g_SuperNova_FourPassDrawRequest.fadeLevel = 0x80;
+    g_SuperNova_FourPassDrawRequest.fadeLevel = 128;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_FourPassDrawRequest, g_BattleCurrentOrderingTable + 0xF0, 0xC, g_BattleOverlayDrawListHead);
     frame.rotX = frame.passSlot->frameCounter << 5;
     frame.rotY = frame.passSlot->frameCounter * -0x20;
@@ -3954,32 +3954,32 @@ void __cdecl BattleFx_SuperNovaFourPassModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x26, g_SuperNova_ResourceHandle);
+    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(38, g_SuperNova_ResourceHandle);
     g_SuperNova_FourPassDrawRequest.flags = 8;
-    g_SuperNova_FourPassDrawRequest.fadeLevel = 0x80;
+    g_SuperNova_FourPassDrawRequest.fadeLevel = 128;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_FourPassDrawRequest, g_BattleCurrentOrderingTable + 0x50, 0xC, g_BattleOverlayDrawListHead);
     frame.rotX = 0;
     frame.rotY = 0;
     frame.rotZ = frame.passSlot->frameCounter << 4;
-    BattleFx_InstallOrientedMatrixUniform(&frame.passSlot->posX, &frame.rotX, frame.passSlot->scale * 0xF80 >> 0xC, 0);
-    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x15, g_SuperNova_ResourceHandle);
-    g_SuperNova_FourPassDrawRequest.fadeLevel = 0x40;
+    BattleFx_InstallOrientedMatrixUniform(&frame.passSlot->posX, &frame.rotX, frame.passSlot->scale * 0xF80 >> 12, 0);
+    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(21, g_SuperNova_ResourceHandle);
+    g_SuperNova_FourPassDrawRequest.fadeLevel = 64;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_FourPassDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     frame.rotX = 0;
     frame.rotY = 0;
     frame.rotZ = frame.passSlot->frameCounter * -0x10;
-    BattleFx_InstallOrientedMatrixUniform(&frame.passSlot->posX, &frame.rotX, frame.passSlot->scale * 0xF80 >> 0xC, 0);
-    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x16, g_SuperNova_ResourceHandle);
-    g_SuperNova_FourPassDrawRequest.fadeLevel = 0x40;
+    BattleFx_InstallOrientedMatrixUniform(&frame.passSlot->posX, &frame.rotX, frame.passSlot->scale * 0xF80 >> 12, 0);
+    g_SuperNova_FourPassDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(22, g_SuperNova_ResourceHandle);
+    g_SuperNova_FourPassDrawRequest.fadeLevel = 64;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_FourPassDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.passSlot->frameCounter >= 0x18) {
+    if (frame.passSlot->frameCounter >= 24) {
         frame.passSlot->scale += 0x12;
     }
     (frame.passSlot->frameCounter)++;
-    if (frame.passSlot->frameCounter == 0x16C) {
+    if (frame.passSlot->frameCounter == 364) {
         frame.passSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4033,7 +4033,7 @@ void __cdecl BattleFx_SuperNovaTwoModelPolygonPartTask(void)
 
     frame.polygonRecord = (BattleFxSuperNovaTwoModelPolygonRecord *)BATTLE_CURRENT_TASK_SLOT;
     RotMatrix(&g_SuperNova_RotationAnglesA, &frame.matrix);
-    frame.scaleX.vz = 0x4000;
+    frame.scaleX.vz = 0x4000 /* 4.0 */;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     RotMatrix(&g_SuperNova_RotationAnglesA, &frame.matrix);
@@ -4045,11 +4045,11 @@ void __cdecl BattleFx_SuperNovaTwoModelPolygonPartTask(void)
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
     g_SuperNova_ModelDrawRequestA.flags = 0;
-    g_SuperNova_ModelDrawRequestA.modelGroup = Gfx_ModelTableGetRenderObject(0x12, g_SuperNova_ResourceHandle);
-    g_SuperNova_ModelDrawRequestA.fadeLevel = (SinFixed(frame.polygonRecord->frameCount * 0x2E) << 7 >> 0xC) + 0x7F;
+    g_SuperNova_ModelDrawRequestA.modelGroup = Gfx_ModelTableGetRenderObject(18, g_SuperNova_ResourceHandle);
+    g_SuperNova_ModelDrawRequestA.fadeLevel = (SinFixed(frame.polygonRecord->frameCount * 46) << 7 >> 12) + 127;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_ModelDrawRequestA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     RotMatrix(&g_SuperNova_RotationAnglesB, &frame.matrix);
-    frame.scaleX.vz = 0x3C00;
+    frame.scaleX.vz = 0x3C00 /* 3.75 */;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.matrix, &frame.scaleX);
@@ -4061,20 +4061,20 @@ void __cdecl BattleFx_SuperNovaTwoModelPolygonPartTask(void)
     SetTransMatrix(&frame.matrix);
     SetDrawColorRGB(0, 0, 0);
     g_SuperNova_ModelDrawRequestB.flags = 0x88;
-    g_SuperNova_ModelDrawRequestB.modelGroup = Gfx_ModelTableGetRenderObject(0x13, g_SuperNova_ResourceHandle);
+    g_SuperNova_ModelDrawRequestB.modelGroup = Gfx_ModelTableGetRenderObject(19, g_SuperNova_ResourceHandle);
     g_SuperNova_ModelDrawRequestB.fadeLevel = 0;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_ModelDrawRequestB, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.polygonRecord->frameCount)++;
-    if (frame.polygonRecord->frameCount == 0x14) {
+    if (frame.polygonRecord->frameCount == 20) {
         frame.polygonRecord->ownerSlot = BATTLE_TASK_FREE;
     } else {
-        if (frame.polygonRecord->frameCount == 0x15) {
+        if (frame.polygonRecord->frameCount == 21) {
             return;
         }
-        g_SuperNova_ModelDrawRequestA.modelGroup = Gfx_ModelTableGetRenderObject(0x12, g_SuperNova_ResourceHandle);
+        g_SuperNova_ModelDrawRequestA.modelGroup = Gfx_ModelTableGetRenderObject(18, g_SuperNova_ResourceHandle);
         g_SuperNova_BlendThirdsCounter = frame.polygonRecord->frameCount / 3;
         g_SuperNova_CameraEasingState.thirdIndex = frame.polygonRecord->frameCount % 3;
         if (g_SuperNova_ModelDrawRequestA.modelGroup != 0) {
@@ -4119,11 +4119,11 @@ void __cdecl BattleFx_SuperNovaTrailingSpritesTask(void)
         frame.spriteMatrix.t[2] = frame.viewZ + frame.trailSprite->posC * frame.step / 6;
         SetRotMatrix(&frame.spriteMatrix);
         SetTransMatrix(&frame.spriteMatrix);
-        g_SuperNova_TrailSpriteDrawRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x11, g_SuperNova_ResourceHandle);
-        g_SuperNova_TrailSpriteDrawRequest.drawObj = Gfx_ModelTableGetSpriteObject(0x11, g_SuperNova_ResourceHandle);
+        g_SuperNova_TrailSpriteDrawRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(17, g_SuperNova_ResourceHandle);
+        g_SuperNova_TrailSpriteDrawRequest.drawObj = Gfx_ModelTableGetSpriteObject(17, g_SuperNova_ResourceHandle);
         g_SuperNova_TrailSpriteDrawRequest.frame = (g_SuperNova_FrameToSpriteSelector[frame.step] - 1) | 0x8000;
         g_SuperNova_TrailSpriteDrawRequest.uvPacked = g_SuperNova_FrameToSpriteSelector[frame.step] - 1 << 6;
-        g_SuperNova_TrailSpriteDrawRequest.colorB = CosFixed(frame.trailSprite->frame * 0x22) << 7 >> 0xC;
+        g_SuperNova_TrailSpriteDrawRequest.colorB = CosFixed(frame.trailSprite->frame * 34) << 7 >> 12;
         g_SuperNova_TrailSpriteDrawRequest.colorG = g_SuperNova_TrailSpriteDrawRequest.colorB;
         g_SuperNova_TrailSpriteDrawRequest.colorR = g_SuperNova_TrailSpriteDrawRequest.colorG;
         g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_SuperNova_TrailSpriteDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 3, g_BattleOverlayDrawListHead);
@@ -4138,7 +4138,7 @@ void __cdecl BattleFx_SuperNovaTrailingSpritesTask(void)
     frame.trailSprite->posB += frame.trailSprite->velB;
     frame.trailSprite->posC += frame.trailSprite->velC;
     (frame.trailSprite->frame)++;
-    if (frame.trailSprite->frame == 0x1E) {
+    if (frame.trailSprite->frame == 30) {
         frame.trailSprite->endFlag = 0xFFFF;
     }
 }
@@ -4169,18 +4169,18 @@ void __cdecl BattleFx_SuperNovaRelocatingModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.matrix, &frame.matrix);
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNova_Resource0CModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0xC, g_SuperNova_ResourceHandle);
+    g_SuperNova_Resource0CModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(12, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Resource0CModelDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.relocatingModel->frame == 0x5A) {
+    if (frame.relocatingModel->frame == 90) {
         frame.relocatingModel->posX = 0xFF38;
-        frame.relocatingModel->posY = 0x384;
-        frame.relocatingModel->posZ = 0x3E80;
+        frame.relocatingModel->posY = 900;
+        frame.relocatingModel->posZ = 16000;
     }
     (frame.relocatingModel->frame)++;
-    if (frame.relocatingModel->frame == 0x76) {
+    if (frame.relocatingModel->frame == 118) {
         frame.relocatingModel->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4219,7 +4219,7 @@ void __cdecl BattleFx_SuperNovaIndexedModelTask(void)
         return;
     }
     (frame.modelSlot->timer)++;
-    if (frame.modelSlot->timer == 0x76) {
+    if (frame.modelSlot->timer == 118) {
         frame.modelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4251,7 +4251,7 @@ void __cdecl BattleFx_SuperNovaBillboardSpriteTask(void)
         return;
     }
     (sprite->frame)++;
-    if (sprite->frame == 0x76) {
+    if (sprite->frame == 118) {
         sprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4281,20 +4281,20 @@ void __cdecl BattleFx_SuperNovaSineScaledModelTask(void)
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(&frame.sineTask->posX, frame.matrix.t, &frame.viewDepth);
     RotMatrix(&g_SuperNova_BillboardSpriteTaskParams, &frame.matrix);
-    frame.scaleX.vz = SinFixed(frame.sineTask->frame * 0x33) * frame.sineTask->amplitude >> 0xC;
+    frame.scaleX.vz = SinFixed(frame.sineTask->frame * 0x33) * frame.sineTask->amplitude >> 12;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.matrix, &frame.scaleX);
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNova_ModelResource0B_DrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_SuperNova_ResourceHandle);
+    g_SuperNova_ModelResource0B_DrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(11, g_SuperNova_ResourceHandle);
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_ModelResource0B_DrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 3, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.sineTask->frame)++;
-    if (frame.sineTask->frame == 0x14) {
+    if (frame.sineTask->frame == 20) {
         frame.sineTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4324,14 +4324,14 @@ void __cdecl BattleFx_SuperNovaSineScaledModelWithShortTask(void)
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(&frame.sineRecord->posX, frame.matrix.t, &frame.viewDepth);
     RotMatrix(&g_SuperNova_SineScaledModelTaskParams, &frame.matrix);
-    frame.scaleX.vz = SinFixed(frame.sineRecord->phase * 0x22) * frame.sineRecord->amplitude >> 0xC;
+    frame.scaleX.vz = SinFixed(frame.sineRecord->phase * 0x22) * frame.sineRecord->amplitude >> 12;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.matrix, &frame.scaleX);
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNova_ModelDrawRequestResource0B.fadeLevel = SinFixed(frame.sineRecord->phase * 0x22) << 0xC >> 0xC;
-    g_SuperNova_ModelDrawRequestResource0B.modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_SuperNova_ResourceHandle);
+    g_SuperNova_ModelDrawRequestResource0B.fadeLevel = SinFixed(frame.sineRecord->phase * 34) << 12 >> 12;
+    g_SuperNova_ModelDrawRequestResource0B.modelGroup = Gfx_ModelTableGetRenderObject(11, g_SuperNova_ResourceHandle);
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_ModelDrawRequestResource0B, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 3, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
@@ -4367,12 +4367,12 @@ void __cdecl BattleFx_SuperNovaSineScaledRotatedModelTask(void)
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(&frame.sineRotated->posX, frame.matrix.t, &frame.viewDepth);
     RotMatrixZYX((SVECTOR *)&frame.sineRotated->rotX, &frame.matrix);
-    g_SuperNova_ModelScaleXYZResource0A[0] = SinFixed(frame.sineRotated->phase * 0x2D) * frame.sineRotated->amplitude >> 0xC;
+    g_SuperNova_ModelScaleXYZResource0A[0] = SinFixed(frame.sineRotated->phase * 45) * frame.sineRotated->amplitude >> 12;
     ScaleMatrix(&frame.matrix, g_SuperNova_ModelScaleXYZResource0A);
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
-    g_SuperNova_ModelDrawRequestResource0A.fadeLevel = SinFixed(frame.sineRotated->phase * 0x16) << 0xC >> 0xC;
-    g_SuperNova_ModelDrawRequestResource0A.modelGroup = Gfx_ModelTableGetRenderObject(0xA, g_SuperNova_ResourceHandle);
+    g_SuperNova_ModelDrawRequestResource0A.fadeLevel = SinFixed(frame.sineRotated->phase * 22) << 12 >> 12;
+    g_SuperNova_ModelDrawRequestResource0A.modelGroup = Gfx_ModelTableGetRenderObject(10, g_SuperNova_ResourceHandle);
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_ModelDrawRequestResource0A, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
@@ -4433,15 +4433,15 @@ void __cdecl BattleFx_SuperNovaGrowingMorphingModelTask(void)
 #pragma pack(pop)
 
     frame.growRecord = (BattleFxCosmoMemoryRingSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.growRecord->timer < 0x46) {
+    if (frame.growRecord->timer < 70) {
         frame.growTime = frame.growRecord->timer;
     } else {
-        frame.growTime = 0x46;
+        frame.growTime = 70;
     }
     frame.tmpDelta = *(short *)&frame.growTime;
-    frame.scaleX.vx = (frame.tmpDelta << 0xE) / 0x46;
-    frame.scaleX.vy = (frame.tmpDelta << 0xE) / 0x46;
-    frame.scaleX.vz = (frame.tmpDelta << 0xE) / 0x46;
+    frame.scaleX.vx = (frame.tmpDelta << 14) / 70;
+    frame.scaleX.vy = (frame.tmpDelta << 14) / 70;
+    frame.scaleX.vz = (frame.tmpDelta << 14) / 70;
     frame.tmpDelta = frame.growRecord->timer - 0x46;
     if (frame.tmpDelta > 0) {
         frame.scaleX.vx += frame.tmpDelta << 7;
@@ -4456,15 +4456,15 @@ void __cdecl BattleFx_SuperNovaGrowingMorphingModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.poseMatrix, &frame.poseMatrix);
     SetRotMatrix(&frame.poseMatrix);
     SetTransMatrix(&frame.poseMatrix);
-    if (frame.growRecord->timer >= 0x55) {
-        g_SuperNova_ModelDrawRequestResource09.fadeLevel = (frame.growRecord->timer - 0x55) * 0x7F / 0x36 + 0x80;
+    if (frame.growRecord->timer >= 85) {
+        g_SuperNova_ModelDrawRequestResource09.fadeLevel = (frame.growRecord->timer - 85) * 127 / 54 + 128;
     }
     g_SuperNova_ModelDrawRequestResource09.modelGroup = Gfx_ModelTableGetRenderObject(9, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_ModelDrawRequestResource09.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.growRecord->timer >= 0x46) {
+    if (frame.growRecord->timer >= 70) {
         frame.tmpDelta = (0x100 - g_SuperNova_MorphBlendOffset) / 2;
         if (frame.tmpDelta > 0) {
             g_SuperNova_MorphBlendOffset += frame.tmpDelta;
@@ -4474,7 +4474,7 @@ void __cdecl BattleFx_SuperNovaGrowingMorphingModelTask(void)
         }
     }
     (frame.growRecord->timer)++;
-    if (frame.growRecord->timer == 0x8B) {
+    if (frame.growRecord->timer == 139) {
         frame.growRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4580,7 +4580,7 @@ void __cdecl BattleFx_SuperNovaFixedPoseModel4Task(void)
         return;
     }
     (frame.modelRecord->frameCount)++;
-    if (frame.modelRecord->frameCount == 0x5F) {
+    if (frame.modelRecord->frameCount == 95) {
         frame.modelRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4616,7 +4616,7 @@ void __cdecl BattleFx_SuperNovaFixedPosePreloadedModelTask(void)
         return;
     }
     (frame.preloadedRecord->frameCount)++;
-    if (frame.preloadedRecord->frameCount == 0x5F) {
+    if (frame.preloadedRecord->frameCount == 95) {
         frame.preloadedRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4654,7 +4654,7 @@ void __cdecl BattleFx_SuperNovaFixedPoseModelPairTask(void)
         return;
     }
     (frame.pairRecord->frameCount)++;
-    if (frame.pairRecord->frameCount == 0x30) {
+    if (frame.pairRecord->frameCount == 48) {
         frame.pairRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4679,8 +4679,8 @@ void __cdecl BattleFx_SuperNovaFadingSpriteBlendTask(void)
 #pragma pack(pop)
 
     frame.fadeRecord = (BattleFxSuperNovaFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_SuperNova_Resource2E_SpriteDrawRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x2E, g_SuperNova_ResourceHandle);
-    g_SuperNova_Resource2E_SpriteDrawRequest.drawObj = Gfx_ModelTableGetSpriteObject(0x2E, g_SuperNova_ResourceHandle);
+    g_SuperNova_Resource2E_SpriteDrawRequest.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(46, g_SuperNova_ResourceHandle);
+    g_SuperNova_Resource2E_SpriteDrawRequest.drawObj = Gfx_ModelTableGetSpriteObject(46, g_SuperNova_ResourceHandle);
     RotMatrixXYZ(&g_SuperNova_FixedPoseModelPairTaskParams, &frame.poseMatrix);
     ScaleMatrix(&frame.poseMatrix, g_SuperNova_Resource2E_ScaleFixed12);
     frame.poseMatrix.t[0] = frame.fadeRecord->posX;
@@ -4688,9 +4688,9 @@ void __cdecl BattleFx_SuperNovaFadingSpriteBlendTask(void)
     frame.poseMatrix.t[2] = frame.fadeRecord->posZ;
     SetRotMatrix(&frame.poseMatrix);
     SetTransMatrix(&frame.poseMatrix);
-    frame.fadeLevel = SinFixed(frame.fadeRecord->timer * 0x44) << 9 >> 0xC;
-    if (frame.fadeLevel > 0x80) {
-        frame.fadeLevel = 0x80;
+    frame.fadeLevel = SinFixed(frame.fadeRecord->timer * 68) << 9 >> 12;
+    if (frame.fadeLevel > 128) {
+        frame.fadeLevel = 128;
     }
     Gfx_SetBlendFactorPair(FLOAT_0_999_BITS, FLOAT_ONE_BITS);
     g_SuperNova_Resource2E_SpriteDrawRequest.colorB = *(char *)&frame.fadeLevel;
@@ -4702,7 +4702,7 @@ void __cdecl BattleFx_SuperNovaFadingSpriteBlendTask(void)
         return;
     }
     (frame.fadeRecord->timer)++;
-    if (frame.fadeRecord->timer == 0x1E) {
+    if (frame.fadeRecord->timer == 30) {
         frame.fadeRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4737,33 +4737,33 @@ void __cdecl BattleFx_SuperNovaShatteringModel27Task(void)
     frame.poseMatrix.t[1] = frame.shatterRecord->posY;
     frame.poseMatrix.t[2] = frame.shatterRecord->posZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.poseMatrix, &frame.poseMatrix);
-    if (frame.shatterRecord->timer <= 0x32) {
+    if (frame.shatterRecord->timer <= 50) {
         g_SuperNova_MeshDrawCommandRecordA.modelGroup = Gfx_ModelTableGetRenderObject(1, g_SuperNova_ResourceHandle);
         SetRotMatrix(&frame.poseMatrix);
         SetTransMatrix(&frame.poseMatrix);
         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_MeshDrawCommandRecordA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     } else {
         g_SuperNova_MeshDrawCommandRecordB[0] = (int)&g_SuperNova_TriangleMeshResource27;
-        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x27, g_SuperNova_ResourceHandle)));
+        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(39, g_SuperNova_ResourceHandle)));
         g_BattleOverlayDrawListHead = BattleFx_SuperNovaDrawRankedTriangleMesh((struct BattleFxSuperNovaGeometry *)&g_SuperNova_MeshDrawCommandRecordB, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead, (struct Vec3sPacked *)g_SuperNova_ActiveMeshIndicesPtr, g_SuperNova_ActiveTriangleBufferPtr, &frame.poseMatrix);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.shatterRecord->timer == 0x32) {
+    if (frame.shatterRecord->timer == 50) {
         BattleFx_SuperNovaSeedTriangleDeltas((int)&g_SuperNova_TriangleMeshResource27, 2);
     }
-    if (frame.shatterRecord->timer >= 0x32 && frame.shatterRecord->timer < 0x33) {
-        frame.rowIndex = frame.shatterRecord->timer - 0x32;
-        for (frame.entryIndex = 0; frame.entryIndex < 0x200; frame.entryIndex++) {
+    if (frame.shatterRecord->timer >= 50 && frame.shatterRecord->timer < 51) {
+        frame.rowIndex = frame.shatterRecord->timer - 50;
+        for (frame.entryIndex = 0; frame.entryIndex < 512; frame.entryIndex++) {
             g_SuperNova_ActiveTriangleBufferPtr[g_SuperNova_ActiveTriangleSubBufferPtr[(frame.rowIndex << 9) + frame.entryIndex]] = 1;
         }
     }
-    if (frame.shatterRecord->timer >= 0x32) {
+    if (frame.shatterRecord->timer >= 50) {
         BattleFx_SuperNovaStepScatteringTriangles();
     }
     (frame.shatterRecord->timer)++;
-    if (frame.shatterRecord->timer == 0x53) {
+    if (frame.shatterRecord->timer == 83) {
         frame.shatterRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4804,7 +4804,7 @@ void __cdecl BattleFx_SuperNovaSpinningModelPairTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.drawMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    g_SuperNova_MeshDrawCommandRecordC.modelGroup = Gfx_ModelTableGetRenderObject(0x30, g_SuperNova_ResourceHandle);
+    g_SuperNova_MeshDrawCommandRecordC.modelGroup = Gfx_ModelTableGetRenderObject(48, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_MeshDrawCommandRecordC, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     g_SuperNova_MeshDrawOffsetVector[2] = -frame.slot->step << 5;
     RotMatrix(&g_SuperNova_MeshDrawOffsetVector, &frame.drawMatrix);
@@ -4819,7 +4819,7 @@ void __cdecl BattleFx_SuperNovaSpinningModelPairTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.drawMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    g_SuperNova_MeshDrawCommandRecordC.modelGroup = Gfx_ModelTableGetRenderObject(0x30, g_SuperNova_ResourceHandle);
+    g_SuperNova_MeshDrawCommandRecordC.modelGroup = Gfx_ModelTableGetRenderObject(48, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_MeshDrawCommandRecordC, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -4856,15 +4856,15 @@ void __cdecl BattleFx_SuperNovaGrowingTumblingModelTask(void)
 #pragma pack(pop)
 
     frame.record = (BattleFxSuperNovaTumblingModelRecord *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.record->frameCount < 0x5A) {
+    if (frame.record->frameCount < 90) {
         frame.clampedCount = frame.record->frameCount;
     } else {
-        frame.clampedCount = 0x5A;
+        frame.clampedCount = 90;
     }
     frame.countShort = *(short *)&frame.clampedCount;
-    frame.scaleX.vx = frame.countShort * 0x6000 / 0x5A;
-    frame.scaleX.vy = frame.countShort * 0x6000 / 0x5A;
-    frame.scaleX.vz = frame.countShort * 0x6000 / 0x5A;
+    frame.scaleX.vx = frame.countShort * 0x6000 / 90;
+    frame.scaleX.vy = frame.countShort * 0x6000 / 90;
+    frame.scaleX.vz = frame.countShort * 0x6000 / 90;
     RotMatrix(&frame.record->rotX, &frame.taskMatrix);
     RotMatrix(&g_SuperNova_BaseRotationAngles.angleX, &frame.baseMatrix);
     ConcatMatrixInPlace(&frame.baseMatrix, &frame.taskMatrix);
@@ -4875,7 +4875,7 @@ void __cdecl BattleFx_SuperNovaGrowingTumblingModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.taskMatrix, &frame.baseMatrix);
     SetRotMatrix(&frame.baseMatrix);
     SetTransMatrix(&frame.baseMatrix);
-    g_SuperNova_Model2F_DrawDescriptor.modelGroup = Gfx_ModelTableGetRenderObject(0x2F, g_SuperNova_ResourceHandle);
+    g_SuperNova_Model2F_DrawDescriptor.modelGroup = Gfx_ModelTableGetRenderObject(47, g_SuperNova_ResourceHandle);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_SuperNova_Model2F_DrawDescriptor, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -4887,7 +4887,7 @@ void __cdecl BattleFx_SuperNovaGrowingTumblingModelTask(void)
     g_SuperNova_BaseRotationAngles.angleY = g_SuperNova_BaseRotationAngles.angleY;
     g_SuperNova_BaseRotationAngles.angleZ += 2;
     (frame.record->frameCount)++;
-    if (frame.record->frameCount == 0x87) {
+    if (frame.record->frameCount == 135) {
         frame.record->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4918,12 +4918,12 @@ void __cdecl BattleFx_SuperNovaRisingFadingSpriteTask(void)
     frame.drawMatrix.t[2] = frame.sprite->posZ;
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    frame.alpha = SinFixed(frame.sprite->timer * 0x22) << 7 >> 0xC;
+    frame.alpha = SinFixed(frame.sprite->timer * 34) << 7 >> 12;
     if (frame.alpha > 0x80) {
         frame.alpha = 0x80;
     }
-    g_SuperNova_Sprite31_DrawDescriptor.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x31, g_SuperNova_ResourceHandle);
-    g_SuperNova_Sprite31_DrawDescriptor.drawObj = Gfx_ModelTableGetSpriteObject(0x31, g_SuperNova_ResourceHandle);
+    g_SuperNova_Sprite31_DrawDescriptor.spriteGroup = (struct BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(49, g_SuperNova_ResourceHandle);
+    g_SuperNova_Sprite31_DrawDescriptor.drawObj = Gfx_ModelTableGetSpriteObject(49, g_SuperNova_ResourceHandle);
     g_SuperNova_Sprite31_DrawDescriptor.colorB = *(char *)&frame.alpha;
     g_SuperNova_Sprite31_DrawDescriptor.colorG = g_SuperNova_Sprite31_DrawDescriptor.colorB;
     g_SuperNova_Sprite31_DrawDescriptor.colorR = g_SuperNova_Sprite31_DrawDescriptor.colorG;
@@ -4931,9 +4931,9 @@ void __cdecl BattleFx_SuperNovaRisingFadingSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.sprite->posY -= 0x14;
+    frame.sprite->posY -= 20;
     (frame.sprite->timer)++;
-    if (frame.sprite->timer == 0x3C) {
+    if (frame.sprite->timer == 60) {
         frame.sprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -5041,10 +5041,10 @@ void __cdecl BattleFx_SuperNovaInitPointField(void)
     } frame;
 #pragma pack(pop)
 
-    for (frame.pointIndex = 0; frame.pointIndex < 0xC8; frame.pointIndex++) {
+    for (frame.pointIndex = 0; frame.pointIndex < 200; frame.pointIndex++) {
         frame.vecX.vx = 0;
         frame.vecX.vy = 0;
-        frame.vecX.vz = rand() % 0x4E20 + 0x2710;
+        frame.vecX.vz = rand() % 20000 + 10000;
         frame.angleX.vx = (rand() % 4096);
         frame.angleX.vy = (rand() % 4096);
         frame.angleX.vz = 0;
@@ -5095,7 +5095,7 @@ void __cdecl BattleFx_SuperNovaDrawPointFieldTask(void)
     frame.clutBase = 0x7848;
     for (frame.viewIndex = 0; frame.viewIndex < 4; frame.viewIndex++) {
         frame.angleX.vx = 0;
-        frame.angleX.vy = frame.viewIndex << 0xA;
+        frame.angleX.vy = frame.viewIndex << 10;
         frame.angleX.vz = 0;
         RotMatrixXYZ(&frame.angleX, &frame.drawMatrix);
         ConcatMatrixPreservingTranslation(&g_BattleCameraTransform, &frame.drawMatrix, &frame.drawMatrix);
@@ -5105,7 +5105,7 @@ void __cdecl BattleFx_SuperNovaDrawPointFieldTask(void)
         SetRotMatrix(&frame.drawMatrix);
         SetTransMatrix(&frame.drawMatrix);
         RefreshGlobalTransformState();
-        for (frame.pointIndex = 0; frame.pointIndex < 0xC8; frame.pointIndex++) {
+        for (frame.pointIndex = 0; frame.pointIndex < 200; frame.pointIndex++) {
             frame.quad = (BattleFxSuperNovaPointField *)Gfx_GetPsxPacketScratchPtr();
             frame.projResult = ProjectPointHardware((void *)(frame.pointIndex * 8 + (char *)&g_SuperNova_PointFieldVertexArray), &frame.quad->x0, &frame.projAux, &frame.projFlags);
             frame.ndcZ = GetLastProjectedNdcZ();
@@ -5132,11 +5132,11 @@ void __cdecl BattleFx_SuperNovaDrawPointFieldTask(void)
                 frame.quad->v2 = 0x10;
                 frame.quad->x2 = frame.quad->x0 - 8;
                 frame.quad->x0 = frame.quad->x2;
-                frame.quad->x3 = frame.quad->x0 + 0x10;
+                frame.quad->x3 = frame.quad->x0 + 16;
                 frame.quad->x1 = frame.quad->x3;
                 frame.quad->y1 = frame.quad->y0 - 8;
                 frame.quad->y0 = frame.quad->y1;
-                frame.quad->y3 = frame.quad->y0 + 0x10;
+                frame.quad->y3 = frame.quad->y0 + 16;
                 frame.quad->y2 = frame.quad->y3;
                 Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_SuperNova_ResourceHandle)));
                 Gfx_SetBlendFactorQuad(frame.cornerZ3, frame.cornerW3, frame.cornerZ1, frame.cornerW1, frame.cornerZ2, frame.cornerW2, frame.ndcZ, frame.ndcW);
@@ -5171,7 +5171,7 @@ void __cdecl BattleFx_SuperNovaPointFieldBackdropModelTask(void)
 #pragma pack(pop)
 
     frame.taskSlot = BATTLE_CURRENT_TASK_SLOT;
-    g_SuperNova_Model2DResourceDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0x2D, g_SuperNova_ResourceHandle);
+    g_SuperNova_Model2DResourceDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(45, g_SuperNova_ResourceHandle);
     RotMatrix(&g_SuperNova_PointFieldBackdropTaskParams, &frame.modelMatrix);
     ScaleMatrix(&frame.modelMatrix, &g_SuperNova_BaseScaleVector);
     ConcatMatrixPreservingTranslation(&g_BattleCameraTransform, &frame.modelMatrix, &frame.modelMatrix);
@@ -5209,15 +5209,15 @@ void __cdecl Battle3d_EffectSpinStageNode3Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (x->frameCounter < 0x28) {
-        g_SuperNova_TriangleRecordsBuffer[g_SuperNova_ActiveTriangleSubBufferPtr[x->frameCounter << 1]].deltaZ = -(x->frameCounter + 1) * 0x1E;
+    if (x->frameCounter < 40) {
+        g_SuperNova_TriangleRecordsBuffer[g_SuperNova_ActiveTriangleSubBufferPtr[x->frameCounter << 1]].deltaZ = -(x->frameCounter + 1) * 30;
         g_SuperNova_ActiveTriangleBufferPtr[g_SuperNova_ActiveTriangleSubBufferPtr[x->frameCounter << 1]] = 1;
-        g_SuperNova_TriangleRecordsBuffer[g_SuperNova_ActiveTriangleSubBufferPtr[(x->frameCounter << 1) + 1]].deltaZ = -(x->frameCounter + 1) * 0x1E;
+        g_SuperNova_TriangleRecordsBuffer[g_SuperNova_ActiveTriangleSubBufferPtr[(x->frameCounter << 1) + 1]].deltaZ = -(x->frameCounter + 1) * 30;
         g_SuperNova_ActiveTriangleBufferPtr[g_SuperNova_ActiveTriangleSubBufferPtr[(x->frameCounter << 1) + 1]] = 1;
     }
     BattleFx_SuperNovaStepScatteringTrianglesZOnly();
     (x->frameCounter)++;
-    if (x->frameCounter == 0x3C) {
+    if (x->frameCounter == 60) {
         x->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -5280,8 +5280,8 @@ void __cdecl Battle3d_SubmitEffectPrimitiveAtNode(int primitiveIndex, int unused
     request->clearedWordA = 0;
     request->startValue = g_BattleFxTimelineState.startValue;
     request->stateFlags = 0x20;
-    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x36, g_SuperNova_ResourceHandle)));
-    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x37, g_SuperNova_ResourceHandle)));
+    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(54, g_SuperNova_ResourceHandle)));
+    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(55, g_SuperNova_ResourceHandle)));
     g_BattleOverlayDrawListHead = Battle3d_DrawShrinkingSpinningTriangles((struct BattleFxShrinkGeometry *)request, unusedArg2, unusedArg3, g_BattleOverlayDrawListHead, (struct Vec3sPacked *)g_SuperNova_ActiveMeshIndicesPtr, g_SuperNova_ActiveTriangleBufferPtr, node);
 }
 

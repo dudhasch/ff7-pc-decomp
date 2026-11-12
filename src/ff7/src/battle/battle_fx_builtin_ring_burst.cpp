@@ -96,15 +96,15 @@ void __cdecl BattleFx_BuiltinRingBurstEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step < 0xA) {
+    if (taskPtr->step < 10) {
         *(short *)(((unsigned char *)&g_BattleFxRingBurstAngleVector) + 2) = rand() & 0xFFF;
         for (i = 0; i < g_BattleFxRingBurstSpeed; i++) {
             newParticle = (BattleRingBurstEmitterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BuiltinRingBurstParticleTask);
             *(Int64Pair *)((char *)newParticle + 8) = *(Int64Pair *)((char *)taskPtr + 8);
-            newParticle->speed = rand() % 0x2000 + 0x1000;
+            newParticle->speed = rand() % 8192 + 4096;
             *(Int64Pair *)((char *)newParticle + 0x10) = *(Int64Pair *)(&g_BattleFxRingBurstAngleVector);
-            newParticle->radius = rand() % 0x190 + 0x64 << 4;
-            newParticle->offset = rand() % 0x64 - 0x32;
+            newParticle->radius = rand() % 400 + 100 << 4;
+            newParticle->offset = rand() % 100 - 50;
             *(short *)(((unsigned char *)&g_BattleFxRingBurstAngleVector) + 2) += (short)(0x1000 / g_BattleFxRingBurstSpeed);
         }
     } else {
@@ -149,7 +149,7 @@ void __cdecl BattleFx_BuiltinRingBurstParticleTask(void)
             taskPtr->posY += (short)(state->velocityY >> 4);
             taskPtr->posZ += (short)(state->velocityZ >> 4);
             taskPtr->velocityX -= (short)(taskPtr->velocityX >> 3);
-            taskPtr->velocityY += (short)(-0x400 - taskPtr->velocityY >> 2);
+            taskPtr->velocityY += (short)(-1024 - taskPtr->velocityY >> 2);
             taskPtr->spinAngle += taskPtr->angularStep;
         }
     }

@@ -306,14 +306,14 @@ void __cdecl BattleFx_SpecialBeginSuperOrb(int targetMask, int actorIdx)
     frame.dirX.vz = frame.deltaX.vz;
     Gte_BuildLookBasisFromDirection(&frame.deltaX.vx, g_BattleSpecialSuperOrbBasisMatrix.matrix.m[0]);
     NormalizeVectorFixed(&frame.dirX, &frame.dirX);
-    frame.particle->velocityX = frame.dirX.vx * 0x258 >> 0xC;
-    frame.particle->velocityY = frame.dirX.vy * 0x258 >> 0xC;
-    frame.particle->velocityZ = frame.dirX.vz * 0x258 >> 0xC;
+    frame.particle->velocityX = frame.dirX.vx * 0x258 >> 12;
+    frame.particle->velocityY = frame.dirX.vy * 0x258 >> 12;
+    frame.particle->velocityZ = frame.dirX.vz * 0x258 >> 12;
     frame.particle->actorIdx = actorIdx;
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0x10);
+    Battle_StartFixedPointRamp(0x1000, 16);
 }
 
 /*
@@ -359,19 +359,19 @@ void __cdecl BattleFx_SpecialSuperOrbTimelineTask(void)
         frame.spawnRecord->posZ = frame.taskRecord->posZ;
         Battle_PlaySfxPannedToActor(0x18B, (short)frame.taskRecord->modelIndex, 0x40);
     }
-    if (frame.taskRecord->step < 0x10) {
+    if (frame.taskRecord->step < 16) {
         for (frame.targetSlot = 0; frame.targetSlot < 4; frame.targetSlot++) {
             frame.spawnRecord = (BattleFxSuperOrbOrbitRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSuperOrbDecelSpriteTask);
             frame.spawnRecord->posX = frame.taskRecord->posX;
             frame.spawnRecord->posY = frame.taskRecord->posY;
             frame.spawnRecord->posZ = frame.taskRecord->posZ;
             frame.angle = (rand() % 4096);
-            frame.spawnRecord->offsetX = CosFixed(frame.angle) * 0x7D0 >> 0xC;
-            frame.spawnRecord->offsetY = SinFixed(frame.angle) * 0x7D0 >> 0xC;
-            frame.spawnRecord->radius = 0x7D0;
+            frame.spawnRecord->offsetX = CosFixed(frame.angle) * 0x7D0 >> 12;
+            frame.spawnRecord->offsetY = SinFixed(frame.angle) * 0x7D0 >> 12;
+            frame.spawnRecord->radius = 2000;
         }
     }
-    if (frame.taskRecord->step == 0x14) {
+    if (frame.taskRecord->step == 20) {
         frame.spawnRecord = (BattleFxSuperOrbOrbitRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSuperOrbStretchingModelsTask);
         frame.spawnRecord->posX = frame.taskRecord->posX;
         frame.spawnRecord->posY = frame.taskRecord->posY;
@@ -385,18 +385,18 @@ void __cdecl BattleFx_SpecialSuperOrbTimelineTask(void)
         frame.spawnRecord->radius = frame.taskRecord->velocityZ;
         Battle_PlaySfxPannedToActor(0x176, (short)frame.taskRecord->modelIndex, 0x40);
     }
-    if (frame.taskRecord->step == 0x14) {
+    if (frame.taskRecord->step == 20) {
         Battle_AllocateResourceSlot(BattleFx_SpecialSuperOrbScreenFlashTask);
     }
-    if (frame.taskRecord->step == 0x36) {
-        Battle_StartFixedPointRamp(0, 0x10);
+    if (frame.taskRecord->step == 54) {
+        Battle_StartFixedPointRamp(0, 16);
     }
-    if (frame.taskRecord->step > 0x24 && frame.taskRecord->step < 0x2C) {
+    if (frame.taskRecord->step > 36 && frame.taskRecord->step < 44) {
         for (frame.targetSlot = 0; frame.targetSlot < 0xA; frame.targetSlot++) {
             if ((g_BattleSpecialSuperOrbTargetMask & 1 << frame.targetSlot) != 0) {
                 frame.spawnRecord = (BattleFxSuperOrbOrbitRecord *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSuperOrbDriftingAnimatedSpriteTask)];
                 Battle_GetBoneWorldPos(frame.targetSlot, g_BattleActorRecords[frame.targetSlot].targetBone, &frame.spawnRecord->posX);
-                frame.pointX.vy = 0x64;
+                frame.pointX.vy = 100;
                 frame.pointX.vz = 0;
                 frame.pointX.vx = frame.pointX.vz;
                 frame.angleX.vx = (rand() % 4096);
@@ -412,7 +412,7 @@ void __cdecl BattleFx_SpecialSuperOrbTimelineTask(void)
             }
         }
     }
-    if (frame.taskRecord->step == 0x28) {
+    if (frame.taskRecord->step == 40) {
         for (frame.targetSlot = 0; frame.targetSlot < 0xA; frame.targetSlot++) {
             if ((g_BattleSpecialSuperOrbTargetMask & 1 << frame.targetSlot) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.targetSlot);
@@ -420,11 +420,11 @@ void __cdecl BattleFx_SpecialSuperOrbTimelineTask(void)
         }
         Battle_PlaySfxPannedToActor(0xFA, -1, 0x40);
     }
-    if (frame.taskRecord->step > 0x14) {
-        g_BattleCameraFocalPoint.focalPointY += (short)(0x10 - ((frame.taskRecord->step % 2) << 5));
+    if (frame.taskRecord->step > 20) {
+        g_BattleCameraFocalPoint.focalPointY += (short)(16 - ((frame.taskRecord->step % 2) << 5));
     }
     (frame.taskRecord->step)++;
-    if (frame.taskRecord->step == 0x46) {
+    if (frame.taskRecord->step == 70) {
         frame.taskRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -443,14 +443,14 @@ void __cdecl BattleFx_SpecialSuperOrbScreenFlashTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x10) {
+    if (task->frameCounter < 16) {
         g_BattleSpecialSuperOrbFlashIntensity += 0xF;
     }
-    if (task->frameCounter > 0x22) {
+    if (task->frameCounter > 34) {
         g_BattleSpecialSuperOrbFlashIntensity -= 0xF;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x32) {
+    if (task->frameCounter == 50) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -498,7 +498,7 @@ void __cdecl BattleFx_SpecialSuperOrbExpandingModelTask(void)
         return;
     }
     (frame.expandModel->frameCounter)++;
-    if (frame.expandModel->frameCounter == 0x14) {
+    if (frame.expandModel->frameCounter == 20) {
         frame.expandModel->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -542,7 +542,7 @@ void __cdecl BattleFx_SpecialSuperOrbGrowingModelTask(void)
         return;
     }
     (frame.growTask->step)++;
-    if (frame.growTask->step == 0x14) {
+    if (frame.growTask->step == 20) {
         frame.growTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -557,9 +557,9 @@ void __cdecl BattleFx_SpecialSuperOrbDriftingAnimatedSpriteTask(void)
     BattleFxPulseOfLifeSprite *task;
 
     task = (BattleFxPulseOfLifeSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    g_BattleSpecialSuperOrbModelReqMoto.driftSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSpecialSuperOrbLoadedResTable);
-    g_BattleSpecialSuperOrbModelReqMoto.driftSprite.drawObj = Gfx_ModelTableGetSpriteObject(0x11, g_BattleSpecialSuperOrbLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x6000, 0);
+    g_BattleSpecialSuperOrbModelReqMoto.driftSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(17, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbModelReqMoto.driftSprite.drawObj = Gfx_ModelTableGetSpriteObject(17, g_BattleSpecialSuperOrbLoadedResTable);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x6000 /* 6.0 */, 0);
     g_BattleSpecialSuperOrbModelReqMoto.driftSprite.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSuperOrbModelReqMoto.driftSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
@@ -595,9 +595,9 @@ void __cdecl BattleFx_SpecialSuperOrbCounterRotatingModelsTask(void)
 #pragma pack(pop)
 
     frame.counterSlot = (BattleFxCosmoMemoryTriSpin *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialSuperOrbModelReqMoto.glowSprite.spriteGroup = Gfx_ModelTableGetLoadedRecord(0xE, g_BattleSpecialSuperOrbLoadedResTable);
-    g_BattleSpecialSuperOrbModelReqMoto.glowSprite.drawObj = Gfx_ModelTableGetSpriteObject(0xE, g_BattleSpecialSuperOrbLoadedResTable);
-    frame.sineScale = SinFixed(frame.counterSlot->step * 0x33) << 7 >> 0xC;
+    g_BattleSpecialSuperOrbModelReqMoto.glowSprite.spriteGroup = Gfx_ModelTableGetLoadedRecord(14, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbModelReqMoto.glowSprite.drawObj = Gfx_ModelTableGetSpriteObject(14, g_BattleSpecialSuperOrbLoadedResTable);
+    frame.sineScale = SinFixed(frame.counterSlot->step * 0x33) << 7 >> 12;
     BattleFx_InstallBillboardMatrix(&frame.counterSlot->posX, (frame.sineScale << 7) + 0x1000, 0);
     g_BattleSpecialSuperOrbGlowSpriteFrame = (frame.counterSlot->step % 2);
     g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSuperOrbModelReqMoto.glowSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
@@ -614,7 +614,7 @@ void __cdecl BattleFx_SpecialSuperOrbCounterRotatingModelsTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.modelMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    g_BattleSpecialSuperOrbModelReqIwa.modelGroup = Gfx_ModelTableGetRenderObject(0xC, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbModelReqIwa.modelGroup = Gfx_ModelTableGetRenderObject(12, g_BattleSpecialSuperOrbLoadedResTable);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSuperOrbModelReqIwa, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
     g_BattleSpecialSuperOrbRotationRoll = -frame.counterSlot->step << 8;
@@ -627,11 +627,11 @@ void __cdecl BattleFx_SpecialSuperOrbCounterRotatingModelsTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.modelMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    g_BattleSpecialSuperOrbModelReqIwa.modelGroup = Gfx_ModelTableGetRenderObject(0xD, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbModelReqIwa.modelGroup = Gfx_ModelTableGetRenderObject(13, g_BattleSpecialSuperOrbLoadedResTable);
     g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSuperOrbModelReqIwa, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
     if (g_BattleIsPaused == 0) {
         (frame.counterSlot->step)++;
-        if (frame.counterSlot->step == 0x28) {
+        if (frame.counterSlot->step == 40) {
             frame.counterSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -669,7 +669,7 @@ void __cdecl BattleFx_SpecialSuperOrbStretchingModelsTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecialSuperOrbModelReqUchi.fadeLevel = 0x1000 - (g_BattleSpecialSuperOrbStretchFadeCounter << 8);
+    g_BattleSpecialSuperOrbModelReqUchi.fadeLevel = 4096 - (g_BattleSpecialSuperOrbStretchFadeCounter << 8);
     g_BattleSpecialSuperOrbModelReqUchi.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialSuperOrbLoadedResTable);
     g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSuperOrbModelReqUchi, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
     g_BattleSpecialSuperOrbModelReqUchi.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialSuperOrbLoadedResTable);
@@ -677,11 +677,11 @@ void __cdecl BattleFx_SpecialSuperOrbStretchingModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.stretchTask->frameCount > 0xC) {
+    if (frame.stretchTask->frameCount > 12) {
         g_BattleSpecialSuperOrbStretchFadeCounter--;
     }
     (frame.stretchTask->frameCount)++;
-    if (frame.stretchTask->frameCount == 0x14) {
+    if (frame.stretchTask->frameCount == 20) {
         frame.stretchTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -710,8 +710,8 @@ void __cdecl BattleFx_SpecialSuperOrbProjectileTask(void)
 #pragma pack(pop)
 
     frame.projTask = (BattleFxEnergyOrbProjectile *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialSuperOrbScaleTrajectory.sprite.spriteGroup = Gfx_ModelTableGetLoadedRecord(0xE, g_BattleSpecialSuperOrbLoadedResTable);
-    g_BattleSpecialSuperOrbScaleTrajectory.sprite.drawObj = Gfx_ModelTableGetSpriteObject(0xE, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbScaleTrajectory.sprite.spriteGroup = Gfx_ModelTableGetLoadedRecord(14, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbScaleTrajectory.sprite.drawObj = Gfx_ModelTableGetSpriteObject(14, g_BattleSpecialSuperOrbLoadedResTable);
     RotMatrix(&g_BattleSpecialSuperOrbRotationTrajectory.rotation, &frame.modelMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialSuperOrbBasisMatrix.matrix, &frame.modelMatrix, &frame.modelMatrix);
     ScaleMatrix(&frame.modelMatrix, &g_BattleSpecialSuperOrbScaleTrajectory.scale);
@@ -728,8 +728,8 @@ void __cdecl BattleFx_SpecialSuperOrbProjectileTask(void)
     g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSuperOrbScaleTrajectory.draw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
     g_BattleSpecialSuperOrbScaleTrajectory.draw.modelGroup = Gfx_ModelTableGetRenderObject(4, g_BattleSpecialSuperOrbLoadedResTable);
     g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSuperOrbScaleTrajectory.draw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
-    BattleFx_InstallBillboardMatrix(&frame.projTask->posX, 0x4000, 0);
-    g_BattleSpecialSuperOrbColor2.colorB = g_BattleSpecialSuperOrbLifetimeCounter * 0x14;
+    BattleFx_InstallBillboardMatrix(&frame.projTask->posX, 0x4000 /* 4.0 */, 0);
+    g_BattleSpecialSuperOrbColor2.colorB = g_BattleSpecialSuperOrbLifetimeCounter * 20;
     g_BattleSpecialSuperOrbColor2.colorG = g_BattleSpecialSuperOrbColor2.colorB;
     g_BattleSpecialSuperOrbColor2.colorR = g_BattleSpecialSuperOrbColor2.colorG;
     g_BattleSpecialSuperOrbColor2.frame = (frame.projTask->frameCount % 2);
@@ -746,8 +746,8 @@ void __cdecl BattleFx_SpecialSuperOrbProjectileTask(void)
     SetRotMatrix(&g_BattleSpecialSuperOrbBasisMatrix.matrix);
     SetTransMatrix(&g_BattleSpecialSuperOrbBasisMatrix.matrix);
     g_BattleSpecialSuperOrbRandomAngle = (rand() % 4096);
-    frame.spawnX = CosFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x4B0 >> 0xC;
-    frame.spawnZ = SinFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x4B0 >> 0xC;
+    frame.spawnX = CosFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x4B0 >> 12;
+    frame.spawnZ = SinFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x4B0 >> 12;
     frame.spawnY = 0;
     RotTransPointToInt16(&frame.spawnX, &frame.spawnX, &frame.transDepth);
     BattleFx_HitMarkSpawnAtPoint(&frame.spawnX, 0x44, 0);
@@ -763,23 +763,23 @@ void __cdecl BattleFx_SpecialSuperOrbProjectileTask(void)
         frame.spawnedSlot->posZ = frame.projTask->posZ;
         frame.spawnedSlot->posY = 0;
         g_BattleSpecialSuperOrbRandomAngle = (rand() % 4096);
-        frame.spawnedSlot->velocityX = CosFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x78 >> 0xC;
-        frame.spawnedSlot->velocityZ = SinFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x78 >> 0xC;
-        frame.spawnedSlot->velocityY = -rand() % 0x12C - 0x32;
+        frame.spawnedSlot->velocityX = CosFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x78 >> 12;
+        frame.spawnedSlot->velocityZ = SinFixed(g_BattleSpecialSuperOrbRandomAngle) * 0x78 >> 12;
+        frame.spawnedSlot->velocityY = -rand() % 300 - 50;
         frame.spawnedSlot->variant = rand() % 7;
         if (frame.projTask->frameCount % 3 == 0) {
             frame.spawnedSlot = (BattleFxEnergyOrbProjectile *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSuperOrbFallingFadeModelTask);
-            frame.spawnedSlot->posX = frame.projTask->posX + rand() % 0xFA0 + -0x7D0;
-            frame.spawnedSlot->posZ = frame.projTask->posZ + rand() % 0xFA0 + -0x7D0;
+            frame.spawnedSlot->posX = frame.projTask->posX + rand() % 4000 + -2000;
+            frame.spawnedSlot->posZ = frame.projTask->posZ + rand() % 4000 + -2000;
             frame.spawnedSlot->posY = 0;
             frame.spawnedSlot->variant = (rand() % 4);
         }
     }
-    if (frame.projTask->frameCount > 0xC) {
+    if (frame.projTask->frameCount > 12) {
         g_BattleSpecialSuperOrbLifetimeCounter--;
     }
     (frame.projTask->frameCount)++;
-    if (frame.projTask->frameCount == 0x14) {
+    if (frame.projTask->frameCount == 20) {
         frame.projTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -807,14 +807,14 @@ void __cdecl BattleFx_SpecialSuperOrbBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.bounceTask = (BattleFxScorchBounceSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialSuperOrbRotationTama.sprite.spriteGroup = Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecialSuperOrbLoadedResTable);
-    g_BattleSpecialSuperOrbRotationTama.sprite.drawObj = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbRotationTama.sprite.spriteGroup = Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbRotationTama.sprite.drawObj = Gfx_ModelTableGetSpriteObject(16, g_BattleSpecialSuperOrbLoadedResTable);
     for (frame.componentIndex = 0; frame.componentIndex < 3; frame.componentIndex++) {
         frame.spriteMatrix.m[2][frame.componentIndex] = 0;
         frame.spriteMatrix.m[1][frame.componentIndex] = 0;
         frame.spriteMatrix.m[0][frame.componentIndex] = 0;
     }
-    if (frame.bounceTask->frameCount < 0xC) {
+    if (frame.bounceTask->frameCount < 12) {
         frame.grayLevel = 8;
     } else {
         frame.grayLevel = 0x14 - frame.bounceTask->frameCount;
@@ -849,10 +849,10 @@ void __cdecl BattleFx_SpecialSuperOrbBouncingSpriteTask(void)
         frame.bounceTask->posY = 0;
         frame.bounceTask->velocityY *= -1;
     }
-    frame.bounceTask->velocityY += 0x14;
-    frame.bounceTask->angle += 0x200;
+    frame.bounceTask->velocityY += 20;
+    frame.bounceTask->angle += 0x200 /* 45 deg */;
     (frame.bounceTask->frameCount)++;
-    if (frame.bounceTask->frameCount == 0x14) {
+    if (frame.bounceTask->frameCount == 20) {
         frame.bounceTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -898,10 +898,10 @@ void __cdecl BattleFx_SpecialSuperOrbFallingFadeModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.fallingSlot->posY -= 0xC8;
-    frame.fallingSlot->angleZ += 0x100;
+    frame.fallingSlot->posY -= 200;
+    frame.fallingSlot->angleZ += 0x100 /* 22.5 deg */;
     (frame.fallingSlot->frame)++;
-    if (frame.fallingSlot->frame == 0x14) {
+    if (frame.fallingSlot->frame == 20) {
         frame.fallingSlot->slotTag = BATTLE_TASK_FREE;
     }
 }
@@ -939,7 +939,7 @@ void __cdecl BattleFx_SpecialSuperOrbTrailModelTask(void)
         MultiplyMatrix(&g_BattleCameraTransform, &frame.modelMatrix, &frame.drawMatrix);
         SetRotMatrix(&frame.drawMatrix);
         SetTransMatrix(&frame.drawMatrix);
-        g_BattleSpecialSuperOrbModelReqMoto.trailDraw.fadeLevel = frame.trailTask->frameCount * 0xC8;
+        g_BattleSpecialSuperOrbModelReqMoto.trailDraw.fadeLevel = frame.trailTask->frameCount * 200;
         SetDrawColorRGB(0, 0, 0);
         g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSuperOrbModelReqMoto.trailDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
     }
@@ -947,7 +947,7 @@ void __cdecl BattleFx_SpecialSuperOrbTrailModelTask(void)
         return;
     }
     (frame.trailTask->frameCount)++;
-    if (frame.trailTask->frameCount == 0x14) {
+    if (frame.trailTask->frameCount == 20) {
         frame.trailTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -964,15 +964,15 @@ void __cdecl BattleFx_SpecialSuperOrbDecelSpriteTask(void)
     int projY;
 
     decel = (BattleFxLivewireDotSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialSuperOrbRotationTrajectory.sprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x12, g_BattleSpecialSuperOrbLoadedResTable);
-    g_BattleSpecialSuperOrbRotationTrajectory.sprite.drawObj = Gfx_ModelTableGetSpriteObject(0x12, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbRotationTrajectory.sprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(18, g_BattleSpecialSuperOrbLoadedResTable);
+    g_BattleSpecialSuperOrbRotationTrajectory.sprite.drawObj = Gfx_ModelTableGetSpriteObject(18, g_BattleSpecialSuperOrbLoadedResTable);
     g_BattleSpecialSuperOrbBasisMatrix.matrix.t[0] = decel->posX;
     g_BattleSpecialSuperOrbBasisMatrix.matrix.t[1] = decel->posY;
     g_BattleSpecialSuperOrbBasisMatrix.matrix.t[2] = decel->posZ;
     SetRotMatrix(&g_BattleSpecialSuperOrbBasisMatrix.matrix);
     SetTransMatrix(&g_BattleSpecialSuperOrbBasisMatrix.matrix);
     RotTransPointToInt16(&decel->velocityX, (short *)projX, &projY);
-    BattleFx_InstallBillboardMatrix(projX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(projX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialSuperOrbRotationTrajectory.sprite.frame = decel->step % 2;
     g_BattleSpecialSuperOrbDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSuperOrbRotationTrajectory.sprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSuperOrbDrawListHandle);
     if (g_BattleIsPaused != 0) {
@@ -980,9 +980,9 @@ void __cdecl BattleFx_SpecialSuperOrbDecelSpriteTask(void)
     }
     decel->velocityX += (short)((0 - decel->velocityX) / 4);
     decel->velocityY += (short)((0 - decel->velocityY) / 4);
-    decel->velocityZ -= 0xC8;
+    decel->velocityZ -= 200;
     (decel->step)++;
-    if (decel->step == 0xA) {
+    if (decel->step == 10) {
         decel->ownerSlot = BATTLE_TASK_FREE;
     }
 }

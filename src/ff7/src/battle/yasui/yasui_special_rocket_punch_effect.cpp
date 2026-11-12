@@ -179,12 +179,12 @@ void __cdecl BattleFx_SpecialRocketPunchTimelineTask(void)
     }
     if (taskPtr->timer == g_YasuiSpecRocketPunchFlightDuration) {
         Battle_AllocateResourceSlot(BattleFx_SpecialRocketPunchImpactFlashShakeTask);
-        BattleFx_HitMarkSpawnScriptAtActorBone(taskPtr->hitActor, 0x3A, 0x1000);
+        BattleFx_HitMarkSpawnScriptAtActorBone(taskPtr->hitActor, 0x3A, 0x1000 /* 1.0 */);
         Battle_PostActorHitOrHurtMessage(taskPtr->hitActor);
         Battle_PlaySfxPannedToActor(0x14, (short)taskPtr->hitActor, 0);
     }
     (taskPtr->timer)++;
-    if (taskPtr->timer == 0x1E) {
+    if (taskPtr->timer == 30) {
         taskPtr->step = BATTLE_TASK_FREE;
     }
 }
@@ -200,7 +200,7 @@ void __cdecl BattleFx_SpecialRocketPunchImpactFlashShakeTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)((4 - task->frameCounter) * 0x14 * (1 - (task->frameCounter % 2 << 1)));
+    g_BattleCameraFocalPoint.focalPointY += (short)((4 - task->frameCounter) * 20 * (1 - (task->frameCounter % 2 << 1)));
     g_YasuiSpecRocketPunchFlashIntensity -= 2;
     (task->frameCounter)++;
     if (task->frameCounter == 4) {
@@ -253,9 +253,9 @@ void __cdecl BattleFx_SpecialRocketPunchTrailModelTask(void)
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     frame.slot = (BattleFxRocketPunchTrailRecord *)BATTLE_CURRENT_TASK_SLOT;
-    scale.vx = 0x1000;
-    scale.vy = 0x1000;
-    scale.vz = 0x1000;
+    scale.vx = 0x1000 /* 1.0 */;
+    scale.vy = 0x1000 /* 1.0 */;
+    scale.vz = 0x1000 /* 1.0 */;
     memset(&scale.pad, 0, sizeof(scale.pad));
     frame.table[0] = 0;
     frame.table[1] = 1;
@@ -274,7 +274,7 @@ void __cdecl BattleFx_SpecialRocketPunchTrailModelTask(void)
     SetDrawColorRGB(0, 0, 0);
     g_YasuiSpecRocketPunchTrailModelDrawReq.punchTrailModelFlags = 0x80;
     g_YasuiSpecRocketPunchTrailModelDrawReq.punchTrailModelFlags |= (frame.slot->frameCount ? -1 : 0) & 8;
-    g_YasuiSpecRocketPunchTrailModelDrawReq.punchTrailModelScale = frame.slot->frameCount * 0x300;
+    g_YasuiSpecRocketPunchTrailModelDrawReq.punchTrailModelScale = frame.slot->frameCount * 768;
     g_YasuiSpecRocketPunchTrailModelDrawReq.punchTrailModelResource = Gfx_ModelTableGetRenderObject(
         frame.table[frame.slot->slotIndex + (frame.slot->frameCount ? 0 : 2)], g_YasuiSpecRocketPunchResourceHandle);
     g_YasuiSpecRocketPunchRenderPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiSpecRocketPunchTrailModelDrawReq.punchTrailModelResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiSpecRocketPunchRenderPacketCursor);

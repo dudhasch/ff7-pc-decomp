@@ -26,7 +26,7 @@ struct EnglishWindowFrame;
 // Six 38-byte encoded FORMMENU texts (REFORM, SPLIT INTO TWO/THREE GROUPS, MAKE A PARTY OF TWO/THREE,
 // SELECT WITH ...), indexed by (g_PhsMenuGroupType + 1) or read directly as rows 0, 1, 2, 4 and 5.
 // GLOBAL: FF7 0x0091f140
-unsigned char g_PhsMenuFormTexts[6][0x26] = {
+unsigned char g_PhsMenuFormTexts[6][38] = {
     {0x32, 0x45, 0x46, 0x4f, 0x52, 0x4d, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     {0x33, 0x50, 0x4c, 0x49, 0x54, 0x00, 0x59, 0x4f, 0x55, 0x52, 0x00, 0x41, 0x4c, 0x4c, 0x49, 0x45, 0x53, 0x00, 0x49, 0x4e, 0x54, 0x4f, 0x00, 0x54, 0x57, 0x4f, 0x00, 0x47, 0x52, 0x4f, 0x55, 0x50, 0x53, 0x0e, 0xff, 0x00, 0x00, 0x00},
     {0x33, 0x50, 0x4c, 0x49, 0x54, 0x00, 0x59, 0x4f, 0x55, 0x52, 0x00, 0x41, 0x4c, 0x4c, 0x49, 0x45, 0x53, 0x00, 0x49, 0x4e, 0x54, 0x4f, 0x00, 0x54, 0x48, 0x52, 0x45, 0x45, 0x00, 0x47, 0x52, 0x4f, 0x55, 0x50, 0x53, 0x0e, 0xff, 0x00},
@@ -109,7 +109,7 @@ int g_PhsMenuSavedColumn = 0;
 int g_PhsMenuSavedCursor = 0;
 unsigned char g_bssPad_00dca144[4] = {0};
 // GLOBAL: FF7 0x00dca148
-unsigned char g_PhsMenuPartyMap[0xc] = {0};
+unsigned char g_PhsMenuPartyMap[12] = {0};
 // GLOBAL: FF7 0x00dca154
 unsigned char g_PhsMenuHeldMember = 0;
 // GLOBAL: FF7 0x00dca158
@@ -180,15 +180,15 @@ void Menu_DrawEquipMateriaSlots2x(int x, int y, unsigned char *socketBytes, int 
         if (socketBytes[i] != 0) {
             if ((materiaIds[i] & 0xff) != 0xff) {
                 colorBand = Menu_GetMateriaTypeColorIndex(materiaIds[i] & 0xff);
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x80,
-                                     0x20, 0x10, 0x10, colorBand, 1, 0, 0.1f);
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x80,
+                                     0x20, 16, 16, colorBand, 1, 0, 0.1f);
             }
             if (socketBytes[i] > 4) {
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x80,
-                                     0x30, 0x10, 0x10, 1, 0, 0, 0.101f);
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x80,
+                                     0x30, 16, 16, 1, 0, 0, 0.101f);
             } else {
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x70,
-                                     0x20, 0x10, 0x10, 1, 0, 0, 0.101f);
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x70,
+                                     0x20, 16, 16, 1, 0, 0, 0.101f);
             }
         }
     }
@@ -196,8 +196,8 @@ void Menu_DrawEquipMateriaSlots2x(int x, int y, unsigned char *socketBytes, int 
         if (socketBytes[i] != 0 &&
             (socketBytes[i] == 3 ||
              socketBytes[i] == 7)) {
-            Menu_DrawAtlasQuad2x(x + i * 0x1c - 0xc, y, 0x70,
-                                 0x30, 0x10, 0x10, 1, 0, 0, 0.1001f);
+            Menu_DrawAtlasQuad2x(x + i * 28 - 0xc, y, 0x70,
+                                 0x30, 16, 16, 1, 0, 0, 0.1001f);
         }
     }
     rect[0] = x - 3;
@@ -249,15 +249,15 @@ void Menu_DrawEquipMateriaSlots1x(int x, int y, unsigned char *socketBytes, int 
         if (socketBytes[i] != 0) {
             if ((materiaIds[i] & 0xff) != 0xff) {
                 colorKey = Menu_GetMateriaTypeColorIndex(materiaIds[i] & 0xff);
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x80,
-                                     0x20, 0x10, 0x10, colorKey, 1, 0, 0.1f);
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 128,
+                                     32, 16, 16, colorKey, 1, 0, 0.1f);
             }
             if (socketBytes[i] > 4) {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x80,
-                                     0x30, 0x10, 0x10, 1, 0, 0, 0.101f);
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 128,
+                                     48, 16, 16, 1, 0, 0, 0.101f);
             } else {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x70,
-                                     0x20, 0x10, 0x10, 1, 0, 0, 0.101f);
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 112,
+                                     32, 16, 16, 1, 0, 0, 0.101f);
             }
         }
     }
@@ -265,8 +265,8 @@ void Menu_DrawEquipMateriaSlots1x(int x, int y, unsigned char *socketBytes, int 
         if (socketBytes[i] != 0 &&
             (socketBytes[i] == 3 ||
              socketBytes[i] == 7)) {
-            Menu_DrawAtlasQuad1x(x + i * 0xe - 7, y, 0x70,
-                                 0x30, 0x10, 0x10, 1, 0, 0, 0.1001f);
+            Menu_DrawAtlasQuad1x(x + i * 14 - 7, y, 112,
+                                 48, 16, 16, 1, 0, 0, 0.1001f);
         }
     }
     rect[0] = x - 2;
@@ -617,7 +617,7 @@ void __cdecl Menu_PhsScreenFrame(unsigned int frameCounter)
     }
     if (g_MenuIsSmallViewport320x240 != 1) {
         if (g_PhsPartyChangeMode != 0) {
-            Menu_DrawEncodedString2x(0x1fc, 14, g_PhsMenuFormTexts[0], 7, 0.0f);
+            Menu_DrawEncodedString2x(508, 14, g_PhsMenuFormTexts[0], 7, 0.0f);
             Menu_DrawWindowFrame2x(&g_PhsMenuRect2x, 0.1f);
             if (frameCounter & 0x80) {
                 Menu_DrawEncodedString2x(26, 13, g_PhsMenuFormTexts[g_PhsMenuGroupType + 1], 7, 0.1f);
@@ -698,7 +698,7 @@ void __cdecl Menu_PhsScreenFrame(unsigned int frameCounter)
         Menu_DrawWindowFrame2x(&g_PhsMenuFrames[3], 0.4f);
     } else {
         if (g_PhsPartyChangeMode != 0) {
-            Menu_DrawEncodedString1x(0x106, 7, g_PhsMenuFormTexts[0], 7, 0.0f);
+            Menu_DrawEncodedString1x(262, 7, g_PhsMenuFormTexts[0], 7, 0.0f);
             Menu_DrawWindowFrame1x(&g_PhsMenuRect1x, 0.1f);
             if (frameCounter & 0x80) {
                 Menu_DrawEncodedString1x(13, 7, g_PhsMenuFormTexts[g_PhsMenuGroupType + 1], 7, 0.1f);
@@ -793,16 +793,16 @@ void __cdecl Menu_DrawPhsExpPanel2x(int frameCounter)
     int panelX;
     int characterIndex;
 
-    topY = 0xAE;
-    panelX = 0x33;
+    topY = 174;
+    panelX = 51;
     characterIndex = g_PhsMenuCharIndex;
     member = characterIndex;
-    Menu_DrawGaugeBar2x(0x1A9, topY + 0x2C, *(unsigned char *)&gSavemap.chars[characterIndex].levelProgress << 1, 0xD, 0x80802020, 0.1001f);
-    Menu_DrawAtlasQuad2x(0x1A5, topY + 0x2D, 0x88, 8, 0x40, 8, 7, 0, 0, 0.101f);
-    Menu_DrawAtlasQuad2x(0x248, topY + 0x11, 0xF8, 8, 8, 8, 7, 0, 0, 0.101f);
-    Menu_DrawAtlasQuad2x(0x248, topY + 0x47, 0xF8, 8, 8, 8, 7, 0, 0, 0.101f);
-    Menu_DrawDecimalNumber2x(panelX + 0x19D, topY + 0x11, gSavemap.chars[characterIndex].exp, 0xA, 7, 0.101f);
-    Menu_DrawDecimalNumber2x(panelX + 0x19D, topY + 0x47, gSavemap.chars[characterIndex].expToNext, 0xA, 7, 0.101f);
+    Menu_DrawGaugeBar2x(425, topY + 0x2C, *(unsigned char *)&gSavemap.chars[characterIndex].levelProgress << 1, 13, 0x80802020, 0.1001f);
+    Menu_DrawAtlasQuad2x(421, topY + 0x2D, 0x88, 8, 64, 8, 7, 0, 0, 0.101f);
+    Menu_DrawAtlasQuad2x(584, topY + 0x11, 0xF8, 8, 8, 8, 7, 0, 0, 0.101f);
+    Menu_DrawAtlasQuad2x(584, topY + 0x47, 0xF8, 8, 8, 8, 7, 0, 0, 0.101f);
+    Menu_DrawDecimalNumber2x(panelX + 0x19D, topY + 0x11, gSavemap.chars[characterIndex].exp, 10, 7, 0.101f);
+    Menu_DrawDecimalNumber2x(panelX + 0x19D, topY + 0x47, gSavemap.chars[characterIndex].expToNext, 10, 7, 0.101f);
     Menu_DrawEncodedString2x(panelX + 0x16F - Menu_MeasureEncodedString2x((unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8)), topY + 0xC, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8), 7, 0.101f);
     Menu_DrawEncodedString2x(panelX + 0x16F - Menu_MeasureEncodedString2x((unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2C, 8)), topY + 0x42, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2C, 8), 7, 0.101f);
 }
@@ -820,14 +820,14 @@ void __cdecl Menu_DrawPhsExpPanel1x(int frameCounter)
     int panelX;
     int characterIndex;
 
-    topY = 0x57;
-    panelX = 0x1A;
+    topY = 87;
+    panelX = 26;
     characterIndex = g_PhsMenuCharIndex;
     member = characterIndex;
-    Menu_DrawGaugeBar1x(0xD5, topY + 0x17, *(unsigned char *)&gSavemap.chars[characterIndex].levelProgress, 6, 0x80802020, 0.1001f);
-    Menu_DrawAtlasQuad1x(0xD3, topY + 0x17, 0x88, 8, 0x40, 8, 7, 0, 0, 0.101f);
-    Menu_DrawAtlasQuad1x(0x124, topY + 9, 0xF8, 8, 8, 8, 7, 0, 0, 0.101f);
-    Menu_DrawAtlasQuad1x(0x124, topY + 0x24, 0xF8, 8, 8, 8, 7, 0, 0, 0.101f);
+    Menu_DrawGaugeBar1x(213, topY + 0x17, *(unsigned char *)&gSavemap.chars[characterIndex].levelProgress, 6, 0x80802020, 0.1001f);
+    Menu_DrawAtlasQuad1x(211, topY + 0x17, 136, 8, 64, 8, 7, 0, 0, 0.101f);
+    Menu_DrawAtlasQuad1x(292, topY + 9, 248, 8, 8, 8, 7, 0, 0, 0.101f);
+    Menu_DrawAtlasQuad1x(292, topY + 0x24, 248, 8, 8, 8, 7, 0, 0, 0.101f);
     Menu_DrawDecimalNumber1x(panelX + 0xCF, topY + 9, gSavemap.chars[characterIndex].exp, 0xA, 7, 0.101f);
     Menu_DrawDecimalNumber1x(panelX + 0xCF, topY + 0x24, gSavemap.chars[characterIndex].expToNext, 0xA, 7, 0.101f);
     Menu_DrawEncodedString1x(panelX + 0xB8 - Menu_MeasureEncodedString1x((unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8)), topY + 6, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8), 7, 0.101f);
@@ -871,7 +871,7 @@ void __cdecl Menu_PhsModuleUpdate(int mode)
         g_PhsMenuFrameCount = g_PhsMenuSelection;
         Menu_PartyChangeInit(1);
         g_PhsMenuFrameParity = 0;
-        Input_SetRepeatRates(0xc8, 0x32);
+        Input_SetRepeatRates(0xc8, 50);
         g_MenuOverlayActive = 1;
         g_PhsMenuActive = g_MenuOverlayActive;
     }

@@ -23,7 +23,7 @@ extern "C" {
 int g_FieldFxFadeColor = 0x80FFFFFF;
 // A byte table indexed by g_FieldActorState.state.fadeAdjust (0, 1, 2, ... with gaps).
 // GLOBAL: FF7 0x00906a78
-unsigned char g_FieldFxOffsetIndexTable[0x110] = {
+unsigned char g_FieldFxOffsetIndexTable[272] = {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
     0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
     0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f, 0x40, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51,
@@ -40,11 +40,11 @@ unsigned char g_FieldFxOffsetIndexTable[0x110] = {
 // GLOBAL: FF7 0x00cffab0
 FieldPackedBgra g_FieldFxLastPackedColor = {0};
 // GLOBAL: FF7 0x00cffab4
-unsigned char g_FieldFxFadeRed[0x4] = {0};
+unsigned char g_FieldFxFadeRed[4] = {0};
 // GLOBAL: FF7 0x00cffab8
-unsigned char g_FieldFxFadeBlue[0x4] = {0};
+unsigned char g_FieldFxFadeBlue[4] = {0};
 // GLOBAL: FF7 0x00cffabc
-unsigned char g_FieldFxFadeGreen[0x4] = {0};
+unsigned char g_FieldFxFadeGreen[4] = {0};
 // GLOBAL: FF7 0x00cffac0
 void * g_pFieldFxRenderObjects[3] = {0};
 // The three per-slot "draw requested" words (g_FieldFxSlotDrawRequested, g_FieldFxSlotD0, g_FieldFxSlotD4), indexed
@@ -241,7 +241,7 @@ void __cdecl Field_FxApplyScaledFadeColor(short red, short green, short blue)
             frame.blueByte = blue;
             frame.greenByte = green;
             frame.redByte = red;
-            if (g_FieldActorState.state.fadeAdjust > 0xFF) {
+            if (g_FieldActorState.state.fadeAdjust > 255) {
                 frame.alphaValue = 0xFF;
             } else {
                 frame.alphaValue = g_FieldActorState.state.fadeAdjust;
@@ -375,7 +375,7 @@ void __cdecl Field_FxFadeStepIn(void)
 {
     g_FieldActorState.state.fieldHidden = 0;
     g_FieldActorState.state.fadeAdjust += g_FieldActorState.state.fadeSpeed;
-    if (g_FieldActorState.state.fadeAdjust >= 0x100) {
+    if (g_FieldActorState.state.fadeAdjust >= 256) {
         g_FieldActorState.state.fadeAdjust = 0xFF;
     }
 }
@@ -543,23 +543,23 @@ void __cdecl Field_UpdateFieldFx(void)
     case FIELD_FADE_BLACK_RAMP_LONG:
         g_FieldTransitionPendingFlag = 0;
         g_FieldActorState.state.fadeAdjust++;
-        if (g_FieldActorState.state.fadeAdjust == 0x22) {
+        if (g_FieldActorState.state.fadeAdjust == 34) {
             g_FieldActorState.state.fadeType = FIELD_FADE_NONE;
             g_MenuEntryState = 0;
         } else {
             Field_SelectFxRenderObject(2);
-            Field_FxDrawBlackOverlayAlpha(g_FieldActorState.state.fadeAdjust * 0xFF / 0x22);
+            Field_FxDrawBlackOverlayAlpha(g_FieldActorState.state.fadeAdjust * 255 / 34);
         }
         break;
     case FIELD_FADE_BLACK_RAMP_SHORT:
         g_FieldTransitionPendingFlag = 0;
         g_FieldActorState.state.fadeAdjust++;
-        if (g_FieldActorState.state.fadeAdjust == 0x12) {
+        if (g_FieldActorState.state.fadeAdjust == 18) {
             g_FieldActorState.state.fadeType = FIELD_FADE_NONE;
             g_MenuEntryState = 0;
         } else {
             Field_SelectFxRenderObject(2);
-            Field_FxDrawBlackOverlayAlpha(g_FieldActorState.state.fadeAdjust * 0xFF / 0x12);
+            Field_FxDrawBlackOverlayAlpha(g_FieldActorState.state.fadeAdjust * 255 / 18);
         }
         break;
     case FIELD_FADE_HIDE_FIELD:

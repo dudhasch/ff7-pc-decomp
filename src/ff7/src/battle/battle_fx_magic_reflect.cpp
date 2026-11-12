@@ -81,7 +81,7 @@ void __cdecl BattleFx_MagicEnterReflect(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x005b3a1a
 void __cdecl BattleFx_MagicBeginReflect(int targetMask, int actorIdx)
 {
-    g_BattleMagicReflect_Scale = 0x2000;
+    g_BattleMagicReflect_Scale = 0x2000 /* 2.0 */;
     g_BattleMagicReflect_BlendFactor = 0;
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 0, BattleFx_MagicSpawnReflectPerTarget);
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x48);
@@ -97,8 +97,8 @@ void __cdecl BattleFx_MagicSpawnReflectPerTarget(int actor)
     effectSlot = (BattleFxReflectSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicReflectTimelineTask);
     modelStatus = (BattleActorWallState *)&g_BattleActorRecords[actor].modelId;
     Battle_GetBoneWorldPos(actor, modelStatus->boneIndex, &effectSlot->posX);
-    effectSlot->posX -= (short)(SinFixed(modelStatus->angle) * modelStatus->radius >> 0xC);
-    effectSlot->posZ -= (short)(CosFixed(modelStatus->angle) * modelStatus->radius >> 0xC);
+    effectSlot->posX -= (short)(SinFixed(modelStatus->angle) * modelStatus->radius >> 12);
+    effectSlot->posZ -= (short)(CosFixed(modelStatus->angle) * modelStatus->radius >> 12);
     effectSlot->rotation = *(Int64Pair *)((char *)modelStatus + 0x15E);
     effectSlot->actorIndex = actor;
 }
@@ -119,24 +119,24 @@ void __cdecl BattleFx_MagicReflectTimelineTask(void)
         child = (BattleFxReflectTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicReflectScaledModelTask);
         child->position = task->position;
         child->rotation = task->rotation;
-        child->scale = 0x200;
-        child->distance = 0x160;
+        child->scale = 0x200 /* 0.125 */;
+        child->distance = 352;
     }
     if (task->step == 8) {
         child = (BattleFxReflectTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicReflectScaledModelTask);
         child->position = task->position;
         child->rotation = task->rotation;
-        child->scale = 0x200;
-        child->distance = 0x180;
+        child->scale = 0x200 /* 0.125 */;
+        child->distance = 384;
     }
-    if (task->step == 0x10) {
+    if (task->step == 16) {
         child = (BattleFxReflectTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicReflectScaledModelTask);
         child->position = task->position;
         child->rotation = task->rotation;
-        child->scale = 0x200;
-        child->distance = 0x1A0;
+        child->scale = 0x200 /* 0.125 */;
+        child->distance = 416;
     }
-    if (task->step == 0x18) {
+    if (task->step == 24) {
         Battle_PostActorHitOrHurtMessage(task->recordType);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -160,15 +160,15 @@ void __cdecl BattleFx_MagicReflectScaledModelTask(void)
 
     frame.slot = (BattleFxReflectScaledSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleMagicReflect_ModelReq.tableField) = Gfx_ModelTableGetRenderObject(0, g_BattleMagicReflect_ResourceHandle);
-    frame.scaleX.vz = frame.slot->scale * g_BattleMagicReflect_Scale >> 0xC;
+    frame.scaleX.vz = frame.slot->scale * g_BattleMagicReflect_Scale >> 12;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     if (frame.slot->frame < 8) {
         frame.blend = 0;
     } else {
-        frame.blend = (frame.slot->frame - 8 << 0xC) / 8;
+        frame.blend = (frame.slot->frame - 8 << 12) / 8;
     }
-    frame.blend += (0x1000 - frame.blend) * g_BattleMagicReflect_BlendFactor >> 0xC;
+    frame.blend += (0x1000 - frame.blend) * g_BattleMagicReflect_BlendFactor >> 12;
     RotMatrix(&frame.slot->rotation, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.slot->posX;
     frame.rotMatrix.t[1] = frame.slot->posY;
@@ -182,7 +182,7 @@ void __cdecl BattleFx_MagicReflectScaledModelTask(void)
     g_BattleMagicReflect_ChainTail = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleMagicReflect_ModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicReflect_ChainTail);
     if (g_BattleIsPaused == 0) {
         (frame.slot->frame)++;
-        if (frame.slot->frame >= 0x10) {
+        if (frame.slot->frame >= 16) {
             frame.slot->slotTag = 0xFFFF;
         } else {
             frame.slot->scale += frame.slot->scaleStep;

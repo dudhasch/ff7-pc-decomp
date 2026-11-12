@@ -107,14 +107,14 @@ void __cdecl BattleFx_MagicSpawnMiniPerTarget(int actor)
     minimamTarget = (BattleFxMiniTarget *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicMiniTimelineTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)((int)minimamTarget + 4));
     depth = g_BattleActorRecords[actor].radius + 0xE0;
-    if (depth > 0x4F2) {
+    if (depth > 1266) {
         depth = 0x4F2;
     }
     minimamTarget->depth = depth;
     minimamTarget->depthX2 = minimamTarget->depth << 1;
     minimamTarget->offset = -(minimamTarget->extent >> 1);
     minimamTarget->offsetX4 = minimamTarget->offset << 2;
-    minimamTarget->scale = (depth << 0xC) / 0x21C;
+    minimamTarget->scale = (depth << 12) / 540;
     minimamTarget->targetIndex = actor;
 }
 
@@ -133,7 +133,7 @@ void __cdecl BattleFx_MagicMiniTimelineTask(void)
         return;
     }
     task = (BattleFxMiniRecord *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->frame > 1 && task->frame < 0x1C) {
+    if (task->frame > 1 && task->frame < 28) {
         poolIndex = MINI_PARTICLE_POOL->cursor;
         pNewTask = BATTLE_NEW_TASK_SLOT(BattleFx_MagicMiniAnimatedSpritesTask);
         ((BattleFxBerserkFadeSprite *)pNewTask)->ringIndex = poolIndex;
@@ -142,19 +142,19 @@ void __cdecl BattleFx_MagicMiniTimelineTask(void)
             MINI_PARTICLE_POOL->particles[poolIndex].posX = task->baseX + rand() % task->jitterRange - task->jitterOffset;
             MINI_PARTICLE_POOL->particles[poolIndex].posY = task->baseY - rand() % task->jitterRangeY + task->jitterOffsetY;
             MINI_PARTICLE_POOL->particles[poolIndex].posZ = task->baseZ + rand() % task->jitterRange - task->jitterOffset;
-            MINI_PARTICLE_POOL->particles[poolIndex].scale = task->scale * scaleJitter >> 0xC;
+            MINI_PARTICLE_POOL->particles[poolIndex].scale = task->scale * scaleJitter >> 12;
             poolIndex++;
-            if (poolIndex >= 0x1BC) {
+            if (poolIndex >= 444) {
                 poolIndex = 0;
             }
         }
         MINI_PARTICLE_POOL->cursor = poolIndex;
     }
-    if (task->frame == 0x1C) {
+    if (task->frame == 28) {
         Battle_PostActorHitOrHurtMessage(task->recordType);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)task + 4), 0xB1);
     }
-    if (task->frame >= 0x23) {
+    if (task->frame >= 35) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frame)++;
@@ -176,7 +176,7 @@ void __cdecl BattleFx_MagicMiniAnimatedSpritesTask(void)
         BattleFx_InstallBillboardMatrix(&MINI_PARTICLE_POOL->particles[readIdx].posX, MINI_PARTICLE_POOL->particles[readIdx].scale, -(MINI_PARTICLE_POOL->particles[readIdx].scale >> 2));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&MINI_SPRITE_REQ->spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         readIdx++;
-        if (readIdx >= 0x1BC) {
+        if (readIdx >= 444) {
             readIdx = 0;
         }
     }

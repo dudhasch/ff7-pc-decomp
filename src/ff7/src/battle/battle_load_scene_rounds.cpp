@@ -54,7 +54,7 @@ void __cdecl Battle_LoadSceneFirstRound(int formationId)
     Battle_ResetSequence();
     Battle_BuildAttackProgramTable();
     Battle_BuildDamageProgramTable();
-    for (slot = 0; slot < 0x40; slot++) {
+    for (slot = 0; slot < 64; slot++) {
         g_BattleState.queuedActions[slot].level = 0xFF;
     }
     for (slot = 0; slot < 10; slot++) {
@@ -68,7 +68,7 @@ void __cdecl Battle_LoadSceneFirstRound(int formationId)
     Battle_SetMessageWindowRequest(*(short *)&g_BattleMessageWindowTextId);
     for (slot = 0; slot < 10; slot++) {
         g_aCombatants[slot].unitId = 0xFF;
-        g_aCombatants[slot].animStep = 0x10;
+        g_aCombatants[slot].animStep = 16;
     }
     Battle_ResetPendingDrops();
     Battle_LoadPartyActorsFromEquipment();
@@ -100,7 +100,7 @@ void __cdecl Battle_LoadSceneFirstRound(int formationId)
         Battle_RollReactionTriggers(slot, 1);
     }
     if (gBattleAiGlobals.arenaFlags & BATTLE_ARENA_FIXED_ATB) {
-        Battle_SetSpeedFromConfig(0x80);
+        Battle_SetSpeedFromConfig(128);
         g_BattleState.atbMode = BATTLE_ATB_ACTIVE;
         for (slot = 0; slot < 3; slot++) {
             Battle_ResetLimitBreakSlots(slot);
@@ -160,7 +160,7 @@ void __cdecl Battle_LoadSceneNextRound(int formationId)
             Battle_PostEvent(BATTLE_EVENT_QUEUE_ATB, 0, BATTLE_ATB_EVENT_REOPEN_PENDING_MENUS, 0);
             Battle_PostEvent(BATTLE_EVENT_QUEUE_ATB, 0, BATTLE_ATB_EVENT_CLEAR_ENEMY_MENU_MASKS, 0);
         }
-        for (i = 0; i < 0x40; i++) {
+        for (i = 0; i < 64; i++) {
             if (g_BattleState.queuedActions[i].actorIndex >= minActor) {
                 g_BattleState.queuedActions[i].actorIndex = 0xFF;
             }
@@ -183,7 +183,7 @@ void __cdecl Battle_LoadSceneNextRound(int formationId)
     case BATTLE_NEXT_ROUND_LOAD_INIT_ENEMIES:
         Battle_InitEnemyCombatants();
         gBattleAiGlobals.actorMask = 0;
-        for (i = 0; i < 0xA; i++) {
+        for (i = 0; i < 10; i++) {
             combatantPointer = &g_aCombatants[i];
             Battle_RefreshActorTickRates(i);
             if (combatantPointer->unitId != -1) {
@@ -196,8 +196,8 @@ void __cdecl Battle_LoadSceneNextRound(int formationId)
         Battle_RecomputeActorMasks();
         Battle_RunEnemyAiInitEvents();
         Battle_RecomputeActorMasks();
-        for (i = 4; i < 0xA; i++) {
-            g_BattleState.actors[i].atbGauge = (Battle_RandBelow(0x40) & 0xFF) + 0x80 << 8;
+        for (i = 4; i < 10; i++) {
+            g_BattleState.actors[i].atbGauge = (Battle_RandBelow(64) & 0xFF) + 0x80 << 8;
             Battle_StopActorStatusEffect(i);
         }
         g_BattleNextRoundLoadState = BATTLE_NEXT_ROUND_LOAD_PREPARE;
@@ -235,7 +235,7 @@ void __cdecl Battle_SeedInitialAtbGauges(void)
 
     frame.maxRoll = 0;
     frame.targetMask = g_BattleScene.targetMask;
-    for (frame.actorIdx = 0; frame.actorIdx < 0xA; frame.actorIdx++) {
+    for (frame.actorIdx = 0; frame.actorIdx < 10; frame.actorIdx++) {
         frame.roll = 0;
         g_BattleState.actors[frame.actorIdx].atbGauge = 0;
         if ((frame.targetMask & 1 << frame.actorIdx) != 0) {
@@ -246,7 +246,7 @@ void __cdecl Battle_SeedInitialAtbGauges(void)
         }
         frame.gaugeVals[frame.actorIdx] = frame.roll;
     }
-    for (frame.actorIdx = 0; frame.actorIdx < 0xA; frame.actorIdx++) {
+    for (frame.actorIdx = 0; frame.actorIdx < 10; frame.actorIdx++) {
         if ((frame.targetMask & 1 << frame.actorIdx) != 0) {
             switch (g_BattleState.layoutType) {
             case BATTLE_LAYOUT_NORMAL:
@@ -295,8 +295,8 @@ void __cdecl Battle_SetSpeedFromConfig(int speedConfig)
 {
     int speedModifier;
 
-    speedModifier = 0x78;
-    speedModifier += ((speedConfig << 3) * 0x3C) / 256;
+    speedModifier = 120;
+    speedModifier += ((speedConfig << 3) * 60) / 256;
     g_BattleState.atbSpeedValue = 0x10000 / (speedModifier << 1);
 }
 } /* extern "C" */

@@ -142,8 +142,8 @@ void HighwayRenderOwner::initField()
 {
     HighwayHudSlot *record = this->slots;
 
-    record[4].posX = 0xD9;
-    record[4].posY = 0x28;
+    record[4].posX = 217;
+    record[4].posY = 40;
     record[4].drawX = record[4].posX + 2;
     record[4].drawY = record[4].posY + 9;
     record[4].texU[0] = 0;
@@ -154,13 +154,13 @@ void HighwayRenderOwner::initField()
     record[4].texV[2] = 0x54;
     record[4].texU[3] = 0x38;
     record[4].texV[3] = 0x54;
-    record[4].width = 0x54;
-    record[4].height = 0x10;
-    record[4].size = 0x0E;
+    record[4].width = 84;
+    record[4].height = 16;
+    record[4].size = 14;
     record[4].offsetX = 0x45;
 
-    record[2].posX = 0xD9;
-    record[2].posY = 0x14;
+    record[2].posX = 217;
+    record[2].posY = 20;
     record[2].drawX = record[2].posX + 2;
     record[2].drawY = record[2].posY + 9;
     record[2].texU[0] = 0;
@@ -171,13 +171,13 @@ void HighwayRenderOwner::initField()
     record[2].texV[2] = 0x1C;
     record[2].texU[3] = 0x38;
     record[2].texV[3] = 0x1C;
-    record[2].width = 0x54;
-    record[2].height = 0x10;
-    record[2].size = 0x0E;
+    record[2].width = 84;
+    record[2].height = 16;
+    record[2].size = 14;
     record[2].offsetX = 0x45;
-    record[3].posX = 0x14;
-    record[3].posY = 0x14;
-    record[3].drawX = record[3].posX + 0x11;
+    record[3].posX = 20;
+    record[3].posY = 20;
+    record[3].drawX = record[3].posX + 17;
     record[3].drawY = record[3].posY + 9;
     record[3].texU[0] = 0;
     record[3].texV[0] = 0x22;
@@ -187,14 +187,14 @@ void HighwayRenderOwner::initField()
     record[3].texV[2] = 0x38;
     record[3].texU[3] = 0x38;
     record[3].texV[3] = 0x38;
-    record[3].width = 0x54;
-    record[3].height = 0x10;
-    record[3].size = 0x0E;
+    record[3].width = 84;
+    record[3].height = 16;
+    record[3].size = 14;
     record[3].offsetX = 1;
 
-    record[1].posX = 0x14;
-    record[1].posY = 0x28;
-    record[1].drawX = record[1].posX + 0x11;
+    record[1].posX = 20;
+    record[1].posY = 40;
+    record[1].drawX = record[1].posX + 17;
     record[1].drawY = record[1].posY + 9;
     record[1].texU[0] = 0;
     record[1].texV[0] = 0x22;
@@ -204,15 +204,15 @@ void HighwayRenderOwner::initField()
     record[1].texV[2] = 0;
     record[1].texU[3] = 0x38;
     record[1].texV[3] = 0;
-    record[1].width = 0x54;
-    record[1].height = 0x10;
-    record[1].size = 0x0E;
+    record[1].width = 84;
+    record[1].height = 16;
+    record[1].size = 14;
     record[1].offsetX = 1;
 
-    record[0].posX = 0x74;
-    record[0].posY = 0xC8;
-    record[0].drawX = record[0].posX + 0x19;
-    record[0].drawY = record[0].posY + 0x11;
+    record[0].posX = 116;
+    record[0].posY = 200;
+    record[0].drawX = record[0].posX + 25;
+    record[0].drawY = record[0].posY + 17;
     record[0].texU[0] = 0;
     record[0].texV[0] = 0x44;
     record[0].texU[1] = 0;
@@ -221,9 +221,9 @@ void HighwayRenderOwner::initField()
     record[0].texV[2] = 0x70;
     record[0].texU[3] = 0x58;
     record[0].texV[3] = 0x70;
-    record[0].width = 0x5C;
-    record[0].height = 0x18;
-    record[0].size = 0x16;
+    record[0].width = 92;
+    record[0].height = 24;
+    record[0].size = 22;
     record[0].offsetX = 1;
 }
 
@@ -407,12 +407,12 @@ void HighwayRenderOwner::drawHud()
     ptr->drawQuad(3, ptr->globalScale * 18.0f, ptr->globalScale * 20.0f,
                   ptr->globalScale * 108.0f, ptr->globalScale * 20.0f, 0.0f, 64.0f,
                   216.0f, 40.0f, -1, 2.0f * val);
-    drawDigits(g_HighwayHighScore, 0x55, 0x18, 1, val);
+    drawDigits(g_HighwayHighScore, 85, 24, 1, val);
     blk = this->spriteGroup;
     blk->drawQuad(3, blk->globalScale * 200.0f, blk->globalScale * 20.0f,
                   blk->globalScale * 109.0f, blk->globalScale * 27.0f, 0.0f, 0.0f,
                   218.0f, 54.0f, -1, 2.0f * val);
-    drawNumber(g_HighwayCurrentScore, 0xFD, 0x1A, 1, val);
+    drawNumber(g_HighwayCurrentScore, 253, 26, 1, val);
     if (this->banner == 1) {
         (this->spriteGroup)->drawCentered(0, val, 0.0f, 0.0f);
     }
@@ -455,7 +455,7 @@ void HighwayRenderOwner::drawFade()
         colour[1] = 0;
         colour[2] = 0;
         colour[3] = this->fadeAlpha;
-        Gfx_EmitFlatRect(0, 0, 0x280, 0x1E0, *(unsigned int *)colour, 0, 0,
+        Gfx_EmitFlatRect(0, 0, 640, 480, *(unsigned int *)colour, 0, 0,
                          (int)this->renderObject);
         Gfx_SetScenePassCall(1, (struct GfxEngineContext *)GetEngineContext());
         Gfx_DrawRenderObjectCall(this->renderObject, GetEngineContext());

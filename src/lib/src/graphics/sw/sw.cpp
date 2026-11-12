@@ -87,7 +87,7 @@ void __cdecl Blit_InsertTextureFormatRecords(GfxEngineContext *context)
 void __cdecl Blit_FillRenderDescriptor(SwBlitDescriptor *descriptor, GfxEngineContext *context)
 {
     if (descriptor != 0) {
-        ZeroFillMemory32(0x24, descriptor);
+        ZeroFillMemory32(36, descriptor);
         descriptor->displayWidth = context->displayWidth;
         descriptor->displayHeight = context->displayHeight;
         descriptor->hasOwnBuffer = 1;
@@ -96,7 +96,7 @@ void __cdecl Blit_FillRenderDescriptor(SwBlitDescriptor *descriptor, GfxEngineCo
         descriptor->zDepth = 4;
         descriptor->zClearValue = 0xFFFFFFFF;
         descriptor->zScale = FLOAT_16777216_BITS;
-        descriptor->vertexCount = 0x800;
+        descriptor->vertexCount = 2048;
     }
 }
 
@@ -116,7 +116,7 @@ void __cdecl Blit_InitTargetTables(SwBlitTargetTable *target, GfxEngineContext *
         float scale;
         int index;
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
-    ZeroFillMemory32(0x548c4, target);
+    ZeroFillMemory32(346308, target);
     target->defaultMode00 = 2;
     target->defaultMode04 = 0;
     target->defaultMode08 = 1;
@@ -170,27 +170,27 @@ void __cdecl Blit_FreeRenderState(SwRasterizerState *state)
     if (state != 0) {
         Gfx_RasterFreeVertexBuffer((GfxRasterVertexBuffer *)(state->rasterVertexBuffer));
         // STRING: FF7 0x0090f510
-        GameHeapFree((void *)state->halfScaleLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xC2);
+        GameHeapFree((void *)state->halfScaleLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 194);
         // STRING: FF7 0x0090f530
-        GameHeapFree((void *)state->doubleBrightLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xC3);
+        GameHeapFree((void *)state->doubleBrightLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 195);
         // STRING: FF7 0x0090f550
-        GameHeapFree((void *)state->quarterScaleLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xC4);
+        GameHeapFree((void *)state->quarterScaleLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 196);
         // STRING: FF7 0x0090f570
-        GameHeapFree((void *)state->threeQuarterScaleLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xC5);
+        GameHeapFree((void *)state->threeQuarterScaleLut, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 197);
         if (state->usesAlignedHeap != 0) {
             // STRING: FF7 0x0090f590
-            GameHeapFree((void *)state->heapBlock, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xC9);
+            GameHeapFree((void *)state->heapBlock, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 201);
             state->heapBlock = 0;
             state->alignedBase = 0;
         } else {
             // STRING: FF7 0x0090f5b0
-            GameHeapFree((void *)state->block, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xCF);
+            GameHeapFree((void *)state->block, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 207);
             state->block = 0;
         }
         Gfx_RasterFreeZBuffer((GfxRasterZBuffer *)(state->zBuffer));
         state->zBuffer = 0;
         // STRING: FF7 0x0090f5d0
-        GameHeapFree(state, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xD7);
+        GameHeapFree(state, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 215);
     }
 }
 
@@ -207,14 +207,14 @@ int __cdecl Blit_CreateRenderState(GfxRasterRenderDesc *desc, GfxEngineContext *
 
     valid = 0;
     // STRING: FF7 0x0090f5f0
-    state = (SwRasterizerState *)GameHeapAlloc(1, 0x54A74, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xE3);
+    state = (SwRasterizerState *)GameHeapAlloc(1, 346740, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 227);
     if (state != 0) {
         *(GfxRasterRenderDesc *)state = *desc;
         valid = 1;
         if (desc->fixedPitch != 0) {
-            blockSize = 0x1000;
+            blockSize = 4096;
             // STRING: FF7 0x0090f610
-            state->heapBlock = (int)GameHeapAlloc(blockSize << 9, 1, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0xF2);
+            state->heapBlock = (int)GameHeapAlloc(blockSize << 9, 1, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 242);
             state->alignedBase = state->heapBlock + blockSize & ~(blockSize - 1);
             state->rowBytes = blockSize;
             state->block = state->alignedBase + 0x1000;
@@ -234,7 +234,7 @@ int __cdecl Blit_CreateRenderState(GfxRasterRenderDesc *desc, GfxEngineContext *
             if (desc->allocatePixelBlock != 0) {
                 state->rowBytes = desc->width * desc->bytesPerPixel;
                 // STRING: FF7 0x0090f630
-                state->block = (int)GameHeapAlloc(desc->width * desc->height, desc->bytesPerPixel, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0x11A);
+                state->block = (int)GameHeapAlloc(desc->width * desc->height, desc->bytesPerPixel, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 282);
             }
             state->renderSetup = (int)state + 0x54900;
             if (valid != 0) {
@@ -377,13 +377,13 @@ void __cdecl Blit_OpsClearTargetRect(int clearColor, int clearDepth, int useView
                     bltFrame.rect.top = bltFrame.clipTop;
                     bltFrame.rect.right = bltFrame.a + bltFrame.q;
                     bltFrame.rect.bottom = bltFrame.clipTop + bltFrame.b;
-                    ZeroFillMemory32(0x64, &bltFrame.fx);
-                    bltFrame.fx.dwSize = 0x64;
+                    ZeroFillMemory32(100, &bltFrame.fx);
+                    bltFrame.fx.dwSize = 100;
                     bltFrame.fx.dwFillColor = bltFrame.p->backgroundPixel;
                     bltFrame.backSurface = GfxGetSurfaceByIndex(1);
                     if (bltFrame.backSurface != 0) {
                         // STRING: FF7 0x0090f650
-                        if (CheckDirectDrawResult(((IDirectDrawSurface *)(bltFrame.backSurface))->Blt(&bltFrame.rect, 0, 0, 0x600, &bltFrame.fx), "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0x205) != 0) {
+                        if (CheckDirectDrawResult(((IDirectDrawSurface *)(bltFrame.backSurface))->Blt(&bltFrame.rect, 0, 0, 0x600, &bltFrame.fx), "C:\\lib\\src\\graphics\\sw\\sw.cpp", 517) != 0) {
                             bltFrame.d = 0;
                         } else {
                             bltFrame.d = 1;
@@ -576,7 +576,7 @@ GfxTextureSurface *__cdecl Gfx_RasterPrepareGroupRecord(GfxTextureSurface *recor
             }
             if (state == 0 && changed != 0) {
                 // STRING: FF7 0x0090f670
-                pixelBuf = (int)GameHeapAlloc(groupRec->width * groupRec->height * pTexDesc->bytesPerPixel, 1, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 0x326);
+                pixelBuf = (int)GameHeapAlloc(groupRec->width * groupRec->height * pTexDesc->bytesPerPixel, 1, "C:\\lib\\src\\graphics\\sw\\sw.cpp", 806);
                 if (pixelBuf != 0) {
                     pTexDesc->pitch = groupRec->width * pTexDesc->bytesPerPixel;
                     Gfx_ConvertTexturePixelsToSurface(groupDesc, pTexDesc, pixelBuf);
@@ -1365,7 +1365,7 @@ void __cdecl Gfx_BlitContextRectsAndPresent(GfxEngineContext *context)
     if (pState != 0 && pState->dirty != 0) {
         if (DEAD_IN_RETAIL != 0) {
             surfacePointer = pState->surfaceB;
-            Gfx_CopySurfaceRectDwords(0x64, 0x64, 0, 0, pState->surfaceA, surfacePointer, 0x64, 0x64, pState->surfaceA, surfacePointer);
+            Gfx_CopySurfaceRectDwords(100, 100, 0, 0, pState->surfaceA, surfacePointer, 100, 100, pState->surfaceA, surfacePointer);
         }
         if (GfxLockSurfaceCall(1) != 0) {
             rectCtx = &context->targetFormat;

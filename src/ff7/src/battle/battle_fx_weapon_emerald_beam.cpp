@@ -141,7 +141,7 @@ void __cdecl BattleFx_WeaponBeginEmeraldBeam(int targetMask, int casterIdx)
     Battle_AllocateResourceSlot(BattleFx_WeaponEmeraldBeamSpawnTimeline);
     g_WeaponFxEmeraldBeamTargetMask = targetMask;
     actorIdx = 0;
-    for (targetCount = 0; actorIdx < 0xA; actorIdx++) {
+    for (targetCount = 0; actorIdx < 10; actorIdx++) {
         if ((targetMask & 1 << actorIdx) != 0) {
             targetCount++;
             if (targetCount == 1) {
@@ -165,7 +165,7 @@ void __cdecl BattleFx_WeaponEmeraldBeamSpawnTimeline(void)
     task = (BattleFxWeaponEmeraldBeamTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponEmeraldBeamTimelineTask);
     task->beamState = 0;
     Battle_GetBoneWorldPos(g_WeaponFxEmeraldBeamSourceActor, g_BattleActorRecords[g_WeaponFxEmeraldBeamSourceActor].targetBone, &g_WeaponFxEmeraldBeamBonePos.posX);
-    g_WeaponFxEmeraldBeamBonePos.radius = g_BattleActorRecords[g_WeaponFxEmeraldBeamSourceActor].radius + 0x100;
+    g_WeaponFxEmeraldBeamBonePos.radius = g_BattleActorRecords[g_WeaponFxEmeraldBeamSourceActor].radius + 256;
 }
 
 /*
@@ -185,7 +185,7 @@ void __cdecl BattleFx_WeaponEmeraldBeamTimelineTask(void)
     int panVal;
 
     Battle_GetBoneWorldPos(g_WeaponFxEmeraldBeamTargetActor, g_BattleActorRecords[g_WeaponFxEmeraldBeamTargetActor].targetBone, &g_WeaponFxEmeraldBeamCentroidPos.posX);
-    g_WeaponFxEmeraldBeamCentroidPos.radius = g_BattleActorRecords[g_WeaponFxEmeraldBeamTargetActor].radius + 0x100;
+    g_WeaponFxEmeraldBeamCentroidPos.radius = g_BattleActorRecords[g_WeaponFxEmeraldBeamTargetActor].radius + 256;
     g_WeaponFxEmeraldBeamDirectionVector[0] = g_WeaponFxEmeraldBeamBonePos.posX - g_WeaponFxEmeraldBeamCentroidPos.posX;
     g_WeaponFxEmeraldBeamDirectionVector[1] = g_WeaponFxEmeraldBeamBonePos.posY - g_WeaponFxEmeraldBeamCentroidPos.posY;
     g_WeaponFxEmeraldBeamDirectionVector[2] = g_WeaponFxEmeraldBeamBonePos.posZ - g_WeaponFxEmeraldBeamCentroidPos.posZ;
@@ -196,55 +196,55 @@ void __cdecl BattleFx_WeaponEmeraldBeamTimelineTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     if (task->frameCounter == 1) {
         pRecord = (BattleFxEmeraldBeamTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponEmeraldBeamShrinkingModelTask);
-        pRecord->scale = 0x6000;
+        pRecord->scale = 0x6000 /* 6.0 */;
         pRecord->shrinkSpeed = pRecord->scale / 5;
     }
     if (task->frameCounter == 6) {
         pRecord = (BattleFxEmeraldBeamTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponEmeraldBeamBeamModelTask);
         pRecord->scale = 0x666;
     }
-    if (task->frameCounter == 0x10) {
+    if (task->frameCounter == 16) {
         sizeBase = 0x2440;
         for (idx = 0; idx < 3; idx++) {
             pRecord = (BattleFxEmeraldBeamTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponEmeraldBeamDelayedSpriteTask);
             *(Int64Pair *)&pRecord->posX = *(Int64Pair *)&g_WeaponFxEmeraldBeamBonePos;
-            pRecord->posX += (short)(0x190 - rand() % 0x320);
-            pRecord->posY += (short)(0x190 - rand() % 0x320);
-            pRecord->posZ += (short)(0x190 - rand() % 0x320);
+            pRecord->posX += (short)(400 - rand() % 800);
+            pRecord->posY += (short)(400 - rand() % 800);
+            pRecord->posZ += (short)(400 - rand() % 800);
             angle = rand() % 0xA00 + 0xC00;
-            pRecord->scale = sizeBase * angle >> 0xC;
+            pRecord->scale = sizeBase * angle >> 12;
             pRecord->variant = rand() % 6;
         }
     }
-    if (task->frameCounter >= 0x12 && task->frameCounter <= 0x15) {
+    if (task->frameCounter >= 18 && task->frameCounter <= 21) {
         sizeBase = 0x666;
-        for (idx = 0; idx < 0xA; idx++) {
+        for (idx = 0; idx < 10; idx++) {
             pSprite = (BattleFxWeaponEmeraldBeamSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_WeaponEmeraldBeamFadingSpriteTask);
             angle = (rand() % 4096);
-            magnitude = (g_WeaponFxEmeraldBeamBonePos.radius >> 1) + rand() % 0x64;
-            pSprite->posX = g_WeaponFxEmeraldBeamBonePos.posX + (CosFixed(angle) * magnitude >> 0xC);
-            pSprite->posY = g_WeaponFxEmeraldBeamBonePos.posY + rand() % 0xB4 + 0x1E;
-            pSprite->posZ = g_WeaponFxEmeraldBeamBonePos.posZ + (SinFixed(angle) * magnitude >> 0xC);
-            magnitude = rand() % 0xB4 + 0x32;
-            pSprite->velocityX = CosFixed(angle) * magnitude >> 0xC;
-            pSprite->velocityY = -(rand() % 0x3C + 0x14);
-            pSprite->velocityZ = SinFixed(angle) * magnitude >> 0xC;
+            magnitude = (g_WeaponFxEmeraldBeamBonePos.radius >> 1) + rand() % 100;
+            pSprite->posX = g_WeaponFxEmeraldBeamBonePos.posX + (CosFixed(angle) * magnitude >> 12);
+            pSprite->posY = g_WeaponFxEmeraldBeamBonePos.posY + rand() % 180 + 30;
+            pSprite->posZ = g_WeaponFxEmeraldBeamBonePos.posZ + (SinFixed(angle) * magnitude >> 12);
+            magnitude = rand() % 180 + 50;
+            pSprite->velocityX = CosFixed(angle) * magnitude >> 12;
+            pSprite->velocityY = -(rand() % 60 + 20);
+            pSprite->velocityZ = SinFixed(angle) * magnitude >> 12;
             angle = rand() % 0xA00 + 0x800;
-            pSprite->scale = sizeBase * angle >> 0xC;
+            pSprite->scale = sizeBase * angle >> 12;
         }
     }
     if (task->frameCounter == 7) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&g_WeaponFxEmeraldBeamCentroidPos), 0x241);
     }
-    if (task->frameCounter == 0x10) {
+    if (task->frameCounter == 16) {
         panVal = Battle_ComputeScreenPanFromPosition(&g_WeaponFxEmeraldBeamBonePos);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, panVal, 0x1D2);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH3, panVal, 0x1D2);
     }
-    if (task->frameCounter == 0x1A) {
+    if (task->frameCounter == 26) {
         Battle_PostActorHitOrHurtMessage(g_WeaponFxEmeraldBeamSourceActor);
     }
-    if (task->frameCounter >= 0x28) {
+    if (task->frameCounter >= 40) {
         task->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x241, 0xF);
         Sfx_ReleaseCachedBuffer(0x1D2, 0xF);
@@ -262,8 +262,8 @@ void __cdecl BattleFx_WeaponEmeraldBeamFadingSpriteTask(void)
     BattleFxBeamFadeSprite *pSprite;
 
     pSprite = (BattleFxBeamFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    if (pSprite->frame >= 0xA) {
-        brightness = 0x80 - (pSprite->frame - 0xA) * 0x15;
+    if (pSprite->frame >= 10) {
+        brightness = 0x80 - (pSprite->frame - 0xA) * 21;
     } else {
         brightness = 0x80;
     }
@@ -274,7 +274,7 @@ void __cdecl BattleFx_WeaponEmeraldBeamFadingSpriteTask(void)
     (g_WeaponFxEmeraldBeamBurstSpriteReq.sprite) = Gfx_ModelTableGetLoadedRecord(0, g_WeaponFxEmeraldBeamResourceContext);
     g_WeaponFxEmeraldBeamBurstSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0, g_WeaponFxEmeraldBeamResourceContext);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_WeaponFxEmeraldBeamBurstSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (pSprite->frame >= 0x10) {
+    if (pSprite->frame >= 16) {
         pSprite->endFlag = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -317,7 +317,7 @@ void __cdecl BattleFx_WeaponEmeraldBeamDelayedSpriteTask(void)
         (g_WeaponFxEmeraldBeamSecondarySpriteReq.sprite) = Gfx_ModelTableGetLoadedRecord(1, g_WeaponFxEmeraldBeamResourceContext);
         g_WeaponFxEmeraldBeamSecondarySpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(1, g_WeaponFxEmeraldBeamResourceContext);
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_WeaponFxEmeraldBeamSecondarySpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-        if (task->frameCount >= 0xF) {
+        if (task->frameCount >= 15) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
@@ -369,12 +369,12 @@ void __cdecl BattleFx_WeaponEmeraldBeamBeamModelTask(void)
     baseCamVec.vx = g_BattleCameraPosition.cameraPosX - g_WeaponFxEmeraldBeamCentroidPos.posX;
     baseCamVec.vy = g_BattleCameraPosition.cameraPosY - g_WeaponFxEmeraldBeamCentroidPos.posY;
     baseCamVec.vz = g_BattleCameraPosZ - g_WeaponFxEmeraldBeamCentroidPos.posZ;
-    i = (rayVector.vx * baseCamVec.vx + rayVector.vy * baseCamVec.vy + rayVector.vz * baseCamVec.vz) >> 0xC;
+    i = (rayVector.vx * baseCamVec.vx + rayVector.vy * baseCamVec.vy + rayVector.vz * baseCamVec.vz) >> 12;
     *(int *)&foot = ((int *)&g_WeaponFxEmeraldBeamCentroidPos)[0];
     *(int *)((char *)&foot + 4) = ((int *)&g_WeaponFxEmeraldBeamCentroidPos)[1];
-    foot.vx += (short)(i * c.vx >> 0xC);
-    foot.vy += (short)(i * c.vy >> 0xC);
-    foot.vz += (short)(i * c.vz >> 0xC);
+    foot.vx += (short)(i * c.vx >> 12);
+    foot.vy += (short)(i * c.vy >> 12);
+    foot.vz += (short)(i * c.vz >> 12);
     baseCamVec.vx = g_BattleCameraPosition.cameraPosX - foot.vx;
     baseCamVec.vy = g_BattleCameraPosition.cameraPosY - foot.vy;
     baseCamVec.vz = g_BattleCameraPosZ - foot.vz;
@@ -392,7 +392,7 @@ void __cdecl BattleFx_WeaponEmeraldBeamBeamModelTask(void)
     outMat.t[1] = g_WeaponFxEmeraldBeamCentroidPos.posY;
     outMat.t[2] = g_WeaponFxEmeraldBeamCentroidPos.posZ;
     ConcatMatrixInPlace(&currMatA, &outMat);
-    i = (SqrtToInt(totalLength) << 0xC) / 0x5F5;
+    i = (SqrtToInt(totalLength) << 12) / 1525;
     if (task8->stage < 3) {
         i = i / 3 * task8->stage;
     }
@@ -411,11 +411,11 @@ void __cdecl BattleFx_WeaponEmeraldBeamBeamModelTask(void)
     requestPtr->stateFlags = 0;
     requestPtr->texturePageBits = 0;
     if (task8->stage >= 4) {
-        requestPtr->fadeLevel = (task8->stage - 4) * 0x2AA;
+        requestPtr->fadeLevel = (task8->stage - 4) * 682;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(requestPtr, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task8->stage >= 0xA) {
+    if (task8->stage >= 10) {
         task8->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -446,13 +446,13 @@ void __cdecl BattleFx_WeaponEmeraldBeamShrinkingModelTask(void)
     draw->stateFlags = 0;
     draw->texturePageBits = 0;
     if (task->frame < 6) {
-        draw->fadeLevel = 0x1000 - task->frame * 0x2AA;
-    } else if (task->frame >= 0xA) {
-        draw->fadeLevel = (task->frame - 0xA) * 0x2AA;
+        draw->fadeLevel = 4096 - task->frame * 682;
+    } else if (task->frame >= 10) {
+        draw->fadeLevel = (task->frame - 10) * 682;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(draw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frame >= 0x10) {
+    if (task->frame >= 16) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

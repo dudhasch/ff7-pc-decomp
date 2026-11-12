@@ -122,7 +122,7 @@ void __cdecl BattleFx_SpecialHeatBlastSpawnTimeline(void)
     task = (BattleFxSirenSongTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeatBlastTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleSpecHeatBlastTargetMask, &task->baseX);
     task->baseY = 0xFA00;
-    task->jitterCenterXZ = 0x800;
+    task->jitterCenterXZ = 2048;
     task->jitterRangeXZ = task->jitterCenterXZ << 1;
     task->jitterOffsetY = -(task->baseY >> 1);
     task->jitterRangeY = task->jitterOffsetY * 2 + task->jitterOffsetY;
@@ -150,7 +150,7 @@ void __cdecl BattleFx_SpecialHeatBlastTimelineTask(void)
         return;
     }
     selfPtr = (BattleFxSirenSongTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (selfPtr->timer > 1 && selfPtr->timer < 0x21) {
+    if (selfPtr->timer > 1 && selfPtr->timer < 33) {
         for (i = 0; i < 1; i++) {
             pSpawned = (BattleFxHeatBlastSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeatBlastAnimatedSpriteTask);
             pSpawned->pos.pair = *(Int64Pair *)(&g_BattleSpecHeatBlastActorBonePos);
@@ -165,30 +165,30 @@ void __cdecl BattleFx_SpecialHeatBlastTimelineTask(void)
             }
             pSpawned->angle = 0;
             scaleRoll = rand() % 0x1000 + 0x800;
-            pSpawned->angleStep = (selfPtr->scale * scaleRoll >> 0xC) / 0xB;
+            pSpawned->angleStep = (selfPtr->scale * scaleRoll >> 12) / 11;
         }
     }
     if (selfPtr->timer < 8) {
         g_BattleFxTimelineState.red = 0x20;
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
-        level = selfPtr->timer * 0x140;
-    } else if (selfPtr->timer >= 0x2F) {
-        level = 0xA00 - (selfPtr->timer - 0x2F) * 0x140;
+        level = selfPtr->timer * 320;
+    } else if (selfPtr->timer >= 47) {
+        level = 0xA00 - (selfPtr->timer - 0x2F) * 320;
         if (level < 0) {
             level = 0;
         }
     } else {
         level = 0xA00;
     }
-    if (selfPtr->timer == 0x2D) {
-        for (i = 0; i < 0xA; i++) {
+    if (selfPtr->timer == 45) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleSpecHeatBlastTargetMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (selfPtr->timer >= 0x37) {
+    if (selfPtr->timer >= 55) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleSpecHeatBlastTargetMask), 0);
         level = 0;
         g_BattleFxTimelineState.red = level;
@@ -213,7 +213,7 @@ void __cdecl BattleFx_SpecialHeatBlastAnimatedSpriteTask(void)
     BattleFxHeatBlastSpriteRecord *task;
 
     task = (BattleFxHeatBlastSpriteRecord *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->timer >= 0xA) {
+    if (task->timer >= 10) {
         color = 0x80 - (task->timer - 0xA << 4);
     } else {
         color = 0x80;
@@ -225,23 +225,23 @@ void __cdecl BattleFx_SpecialHeatBlastAnimatedSpriteTask(void)
     g_BattleSpecHeatBlastAnimData[4] = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecHeatBlastLoadedResTable);
     g_BattleSpecHeatBlastAnimData[5] = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecHeatBlastLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecHeatBlastAnimData[4], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->timer >= 0x12) {
+    if (task->timer >= 18) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->timer < 0x11) {
+    if (task->timer < 17) {
         task->pos.xyz.x += task->velX;
         task->pos.xyz.z += task->velZ;
     }
     if (task->timer >= 7) {
         task->pos.xyz.y += task->velY;
-        if (task->timer >= 0x10) {
+        if (task->timer >= 16) {
             task->velY >>= 1;
         }
     }
-    if (task->timer < 0xB) {
+    if (task->timer < 11) {
         task->angle += task->angleStep;
     }
     (task->timer)++;

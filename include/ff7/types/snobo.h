@@ -653,7 +653,7 @@ typedef struct SnowboardCompactEffectDesc {
 } SnowboardCompactEffectDesc;
 
 /* Descriptor of a snowboard effect spawn with offsets applied to the node position and fields:
-   the effect's yaw and offset from the object, then the height (in 0x1000 units) subtracted from
+   the effect's yaw and offset from the object, then the height (in 4096 units) subtracted from
    the node's y, the spin rate and the node's +0x88 word (Mini_SnowboardSpawnVerticalBobEffect).
    The paired triggers keep two of them back to back (14-byte stride). */
 typedef struct SnowboardEffectOffsetDesc {

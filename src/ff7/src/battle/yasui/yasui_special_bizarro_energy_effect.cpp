@@ -369,7 +369,7 @@ void __cdecl BattleFx_BizarroEnergyRunCameraScript(void)
                 g_YasuiSpecBizarroEnergyCurrentCameraTrack[1].mode = *taskSlot->scriptCursor;
                 taskSlot->scriptCursor++;
                 g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress = 0;
-                g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepSize = 0x1000 / g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepCount;
+                g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepSize = 4096 / g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepCount;
                 g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaX = g_YasuiSpecBizarroEnergyCurrentCameraTrack->posX;
                 g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaY = g_YasuiSpecBizarroEnergyCurrentCameraTrack->posY;
                 g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaZ = g_YasuiSpecBizarroEnergyCurrentCameraTrack->posZ;
@@ -426,17 +426,17 @@ void __cdecl BattleFx_BizarroEnergyRunCameraScript(void)
                 camDelta->deltaY = g_YasuiSpecBizarroEnergyOtherCameraTrack->posY - g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaY;
                 camDelta->deltaZ = g_YasuiSpecBizarroEnergyOtherCameraTrack->posZ - g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaZ;
                 VectorNormalToSVector((int *)camDelta, (short *)vecA);
-                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posX = g_YasuiSpecBizarroEnergyOtherCameraTrack->posX - (vecA->vx * g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress >> 0xC);
-                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posY = g_YasuiSpecBizarroEnergyOtherCameraTrack->posY - (vecA->vy * g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress >> 0xC);
-                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posZ = g_YasuiSpecBizarroEnergyOtherCameraTrack->posZ - (vecA->vz * g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress >> 0xC);
+                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posX = g_YasuiSpecBizarroEnergyOtherCameraTrack->posX - (vecA->vx * g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress >> 12);
+                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posY = g_YasuiSpecBizarroEnergyOtherCameraTrack->posY - (vecA->vy * g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress >> 12);
+                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posZ = g_YasuiSpecBizarroEnergyOtherCameraTrack->posZ - (vecA->vz * g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress += g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepSize;
                 easedVal = g_YasuiSpecBizarroEnergyCurrentCameraTrack->progress;
                 easedVal = BattleFx_BizarroEnergyApplyCameraEasing(easedVal, g_YasuiSpecBizarroEnergyCurrentCameraTrack[1].mode);
-                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posX = g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaX + (g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepX * easedVal >> 0xC);
-                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posY = g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaY + (g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepY * easedVal >> 0xC);
-                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posZ = g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaZ + (g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepZ * easedVal >> 0xC);
+                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posX = g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaX + (g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepX * easedVal >> 12);
+                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posY = g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaY + (g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepY * easedVal >> 12);
+                g_YasuiSpecBizarroEnergyCurrentCameraTrack->posZ = g_YasuiSpecBizarroEnergyCurrentCameraTrack->deltaZ + (g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepZ * easedVal >> 12);
             }
             (g_YasuiSpecBizarroEnergyCurrentCameraTrack->stepCount)--;
             g_YasuiSpecBizarroEnergyCurrentCameraTrack = (BattleFxCameraOrbitState *)&g_YasuiSpecBizarroEnergyCameraEyeTrack;
@@ -559,13 +559,13 @@ void __cdecl BattleFx_SpecialBizarroEnergyCameraShakeTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x46) {
+    if (task->frameCounter < 70) {
         g_YasuiSpecBizarroEnergyCameraShakeAmplitude++;
     }
     g_BattleCameraFocalPoint.focalPointY += -g_YasuiSpecBizarroEnergyCameraShakeAmplitude / 2 + (task->frameCounter % 2) * g_YasuiSpecBizarroEnergyCameraShakeAmplitude;
     g_BattleCameraPosition.cameraPosY += -g_YasuiSpecBizarroEnergyCameraShakeAmplitude / 2 + (task->frameCounter % 2) * g_YasuiSpecBizarroEnergyCameraShakeAmplitude;
     (task->frameCounter)++;
-    if (task->frameCounter == 0x46) {
+    if (task->frameCounter == 70) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -593,16 +593,16 @@ void __cdecl BattleFx_SpecialBizarroEnergyTimelineTask(void)
         spawned->lifetime = 0;
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, 0x40, 0x13D, 0, 0, 0, 0, 0, 0);
     }
-    if (timeline->frame < 0x46) {
-        if (timeline->frame < 0x28) {
+    if (timeline->frame < 70) {
+        if (timeline->frame < 40) {
             spawned = (BattleFxBizarroEnergyTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergySpiralingSpriteTask);
             spawned->radius = timeline->radius;
             spawned->heightOffset = 0xFE70;
             spawned->angle = timeline->angle;
             spawned->accelY = 0xFFCE;
-            spawned->velocityX = rand() % 0x800 - 0x400;
-            spawned->lifetime = rand() % 0x3E8 + 0x1F4;
-            spawned->scale = 0x3000;
+            spawned->velocityX = rand() % 2048 - 1024;
+            spawned->lifetime = rand() % 1000 + 500;
+            spawned->scale = 0x3000 /* 3.0 */;
         } else {
             for (loopIndex = 0; loopIndex < 2; loopIndex++) {
                 spawned = (BattleFxBizarroEnergyTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergySpiralingSpriteTask);
@@ -610,13 +610,13 @@ void __cdecl BattleFx_SpecialBizarroEnergyTimelineTask(void)
                 spawned->heightOffset = 0xFE70;
                 spawned->angle = timeline->angle;
                 spawned->accelY = 0xFFCE;
-                spawned->velocityX = rand() % 0x800 - 0x400;
-                spawned->lifetime = rand() % 0xBB8 + 0x3E8;
-                spawned->scale = 0x4000;
+                spawned->velocityX = rand() % 2048 - 1024;
+                spawned->lifetime = rand() % 3000 + 1000;
+                spawned->scale = 0x4000 /* 4.0 */;
             }
         }
     }
-    if (timeline->frame == 0x46) {
+    if (timeline->frame == 70) {
         Battle_AllocateResourceSlot(BattleFx_SpecialBizarroEnergyScreenFlashTask);
         spawned = (BattleFxBizarroEnergyTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergySpinningModelTask);
         spawned->radius = timeline->radius;
@@ -625,17 +625,17 @@ void __cdecl BattleFx_SpecialBizarroEnergyTimelineTask(void)
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, 0x40, 0x182, 0, 0, 0, 0, 0, 0);
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, 0x40, 0x241, 0, 0, 0, 0, 0, 0);
     }
-    if (timeline->frame == 0x6E) {
+    if (timeline->frame == 110) {
         spawned = (BattleFxBizarroEnergyTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergyGrowingModelTask);
         spawned->radius = timeline->radius;
         spawned->heightOffset = timeline->heightOffset;
         spawned->angle = timeline->angle;
     }
-    if (timeline->frame == 0x82) {
+    if (timeline->frame == 130) {
         SoundDispatchCommand(SOUND_SFX_PLAY_CH3, 0x40, 0x13E, 0, 0, 0, 0, 0, 0);
     }
-    if (timeline->frame >= 0x82 && timeline->frame < 0xBE) {
-        if (timeline->frame % 0xA == 0) {
+    if (timeline->frame >= 130 && timeline->frame < 190) {
+        if (timeline->frame % 10 == 0) {
             spawned = (BattleFxBizarroEnergyTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergySlidingModelTask);
             spawned->radius = timeline->radius;
             spawned->heightOffset = timeline->heightOffset;
@@ -648,35 +648,35 @@ void __cdecl BattleFx_SpecialBizarroEnergyTimelineTask(void)
         }
         if (rand() % 2 == 0) {
             spawned = (BattleFxBizarroEnergyTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergyScaledSpriteTask);
-            spawned->radius = 0x3E8;
-            spawned->heightOffset = timeline->heightOffset + rand() % 0x3E8 + -0x1F4;
+            spawned->radius = 1000;
+            spawned->heightOffset = timeline->heightOffset + rand() % 1000 + -500;
             spawned->angle = rand() % 0xFA0 - 0x7D0;
             spawned->rotOrVelX = 0;
             spawned->accelY = 0;
-            spawned->velocityY = rand() % 0x400 - 0x600;
+            spawned->velocityY = rand() % 1024 - 1536;
         }
         for (loopIndex = 0; loopIndex < 3; loopIndex++) {
             spawned = (BattleFxBizarroEnergyTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergyRisingSpriteTask);
-            spawned->radius = rand() % 0x258 + 0x640;
+            spawned->radius = rand() % 600 + 1600;
             spawned->angle = rand() % 0xFA0 - 0x3E8;
-            spawned->heightOffset = -rand() % 0x190;
+            spawned->heightOffset = -rand() % 400;
             spawned->rotOrVelX = 0;
             spawned->accelY = 0xFF38;
-            spawned->velocityY = rand() % 0x64 + 0x190;
+            spawned->velocityY = rand() % 100 + 400;
         }
-        if (timeline->frame >= 0xAA) {
+        if (timeline->frame >= 170) {
             g_YasuiSpecBizarroEnergySlidingModelScale[0] -= 0x258;
         }
     }
-    if (timeline->frame == 0xB4) {
-        for (loopIndex = 0; loopIndex < 0xA; loopIndex++) {
+    if (timeline->frame == 180) {
+        for (loopIndex = 0; loopIndex < 10; loopIndex++) {
             if ((g_YasuiSpecBizarroEnergyCameraShakeOffset & 1 << loopIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(loopIndex);
             }
         }
     }
     (timeline->frame)++;
-    if (timeline->frame == 0xC8) {
+    if (timeline->frame == 200) {
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, 0x40, 0, 0, 0, 0, 0, 0, 0);
         g_BattleScriptEffectFlag = 0;
         timeline->ownerSlot = BATTLE_TASK_FREE;
@@ -704,7 +704,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyScreenFlashTask(void)
         return;
     }
     (taskPtr->frame)++;
-    if (taskPtr->frame == 0x3C) {
+    if (taskPtr->frame == 60) {
         taskPtr->step = 0xFFFF;
     }
 }
@@ -738,7 +738,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyScaledSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(&frame.slot->posX, frame.scale.t, &frame.projFlags);
-    frame.scale.m[2][2] = 0x3000;
+    frame.scale.m[2][2] = 0x3000 /* 3.0 */;
     frame.scale.m[1][1] = frame.scale.m[2][2];
     frame.scale.m[0][0] = frame.scale.m[1][1];
     RotMatrix(&frame.slot->rotation, &frame.rotation);
@@ -790,7 +790,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyScalingModelEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.emitter->timer < 0x3C) {
+    if (frame.emitter->timer < 60) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.particle = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergyDriftingSpriteTask);
             frame.particle->posX = frame.emitter->posX;
@@ -806,15 +806,15 @@ void __cdecl BattleFx_SpecialBizarroEnergyScalingModelEmitterTask(void)
             SetRotMatrix(&frame.matrix);
             SetTransMatrix(&frame.matrix);
             RotTransPointToInt16(&g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1ScalingModelPoint, &frame.particle->velocityX, &frame.projFlags);
-            frame.particle->posX += (short)(-frame.particle->velocityX * 0xA);
-            frame.particle->posY += (short)(-frame.particle->velocityY * 0xA);
-            frame.particle->posZ += (short)(-frame.particle->velocityZ * 0xA);
+            frame.particle->posX += (short)(-frame.particle->velocityX * 10);
+            frame.particle->posY += (short)(-frame.particle->velocityY * 10);
+            frame.particle->posZ += (short)(-frame.particle->velocityZ * 10);
         }
         if (rand() % 4 == 0) {
             frame.spawnAngle = rand() % 0x1000;
-            frame.spawnRadius = frame.emitter->scale / 5 + 0xC8;
-            frame.spawnX = frame.emitter->posX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
-            frame.spawnY = frame.emitter->posY + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
+            frame.spawnRadius = frame.emitter->scale / 5 + 200;
+            frame.spawnX = frame.emitter->posX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
+            frame.spawnY = frame.emitter->posY + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
             frame.spawnZ = frame.emitter->posZ;
             frame.particle = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergyScaledSpriteTask);
             frame.particle->posX = frame.spawnX;
@@ -822,20 +822,20 @@ void __cdecl BattleFx_SpecialBizarroEnergyScalingModelEmitterTask(void)
             frame.particle->posZ = frame.spawnZ;
             frame.particle->velocityX = 0;
             frame.particle->velocityY = 0;
-            frame.particle->velocityZ = rand() % 0x320 + 0x670;
+            frame.particle->velocityZ = rand() % 800 + 1648;
             frame.particle = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergyAnimatedSpriteTask);
             frame.particle->posX = frame.spawnX;
             frame.particle->posY = frame.spawnY;
             frame.particle->posZ = frame.spawnZ;
         }
     }
-    if (frame.emitter->timer < 0x46) {
+    if (frame.emitter->timer < 70) {
         frame.emitter->scale += 0x50;
     } else {
         frame.emitter->scale -= 0x28;
     }
     frame.emitter->timer++;
-    if (frame.emitter->timer == 0x6E) {
+    if (frame.emitter->timer == 110) {
         frame.emitter->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -851,7 +851,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyDriftingSpriteTask(void)
     task = (BattleFxMeteorModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1DriftingSpriteAnimBlock) = Gfx_ModelTableGetLoadedRecord(4, g_YasuiSpecBizarroEnergyResourceContext);
     g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1DriftingSpriteResource = Gfx_ModelTableGetSpriteObject(4, g_YasuiSpecBizarroEnergyResourceContext);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000 /* 1.0 */, 0);
     g_YasuiSpecBizarroEnergyTargetMask = BattleFx_SubmitSpriteDraw(&g_YasuiSpecBizarroEnergyDrawReqPool, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiSpecBizarroEnergyTargetMask);
     if (g_BattleIsPaused != 0) {
         return;
@@ -860,7 +860,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyDriftingSpriteTask(void)
     task->posY += task->velocityY;
     task->posZ += task->velocityZ;
     (task->frameCount)++;
-    if (task->frameCount == 0xA) {
+    if (task->frameCount == 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -876,7 +876,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1AnimSpriteResourceA = Gfx_ModelTableGetLoadedRecord(6, g_YasuiSpecBizarroEnergyResourceContext);
     g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1AnimSpriteResourceB = Gfx_ModelTableGetSpriteObject(6, g_YasuiSpecBizarroEnergyResourceContext);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1AnimSpriteFieldWord = task->frameCounter;
     g_YasuiSpecBizarroEnergyTargetMask = BattleFx_SubmitSpriteDraw(&g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1AnimSpriteResourceA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiSpecBizarroEnergyTargetMask);
     if (g_BattleIsPaused != 0) {
@@ -908,8 +908,8 @@ void __cdecl BattleFx_SpecialBizarroEnergySpiralingSpriteTask(void)
     frame.sprite = (BattleFxSpiralSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1SpiralSpriteResourceA = Gfx_ModelTableGetLoadedRecord(7, g_YasuiSpecBizarroEnergyResourceContext);
     g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1SpiralSpriteResourceB = Gfx_ModelTableGetSpriteObject(7, g_YasuiSpecBizarroEnergyResourceContext);
-    frame.pos.vx = frame.sprite->centerX + (SinFixed(frame.sprite->angle) * frame.sprite->phase >> 0xC);
-    frame.pos.vz = frame.sprite->centerY + (CosFixed(frame.sprite->angle) * frame.sprite->phase >> 0xC);
+    frame.pos.vx = frame.sprite->centerX + (SinFixed(frame.sprite->angle) * frame.sprite->phase >> 12);
+    frame.pos.vz = frame.sprite->centerY + (CosFixed(frame.sprite->angle) * frame.sprite->phase >> 12);
     frame.pos.vy = frame.sprite->radius;
     BattleFx_InstallBillboardMatrix(&frame.pos.vx, frame.sprite->scale, 0);
     g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1SpiralSpriteFieldWord = frame.sprite->frameIndex;
@@ -920,7 +920,7 @@ void __cdecl BattleFx_SpecialBizarroEnergySpiralingSpriteTask(void)
     frame.sprite->radius += frame.sprite->radiusVelocity;
     frame.sprite->angle -= 0x40;
     frame.sprite->phase += 0x28;
-    frame.sprite->radiusVelocity -= 0x28;
+    frame.sprite->radiusVelocity -= 40;
     if (g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1SpiralSpriteResourceA != 0) {
         frame.sprite->frameIndex++;
         if (frame.sprite->frameIndex == *(int *)((char *)*(int *)g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1SpiralSpriteResourceA + 4)) {
@@ -947,7 +947,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyRisingSpriteTask(void)
         g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1RisingSpriteResourceA = Gfx_ModelTableGetLoadedRecord(9, g_YasuiSpecBizarroEnergyResourceContext);
         g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1RisingSpriteResourceB = Gfx_ModelTableGetSpriteObject(9, g_YasuiSpecBizarroEnergyResourceContext);
     }
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_YasuiSpecBizarroEnergyTargetMask = BattleFx_SubmitSpriteDraw(&g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1RisingSpriteResourceA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiSpecBizarroEnergyTargetMask);
     if (g_BattleIsPaused != 0) {
         return;
@@ -955,7 +955,7 @@ void __cdecl BattleFx_SpecialBizarroEnergyRisingSpriteTask(void)
     task->posA += task->velA;
     task->posB += task->velB;
     task->posC += task->velC;
-    task->velB -= 0x32;
+    task->velB -= 50;
     if (g_YasuiSpecBizarroEnergyDrawReqPool.lasboss1RisingSpriteResourceA != 0) {
         (task->phase)++;
         if (task->phase == 6) {
@@ -1000,7 +1000,7 @@ void __cdecl BattleFx_SpecialBizarroEnergySpinningModelTask(void)
         return;
     }
     frame.slot->step++;
-    if (frame.slot->step == 0x3C) {
+    if (frame.slot->step == 60) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1038,14 +1038,14 @@ void __cdecl BattleFx_SpecialBizarroEnergyGrowingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->growStep < 0xF) {
+    if (frame.slot->growStep < 15) {
         frame.spawner = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergySpawnRisingSpritesTask);
-        frame.spawner->posX = 0x7D0;
-        frame.spawner->posZ = frame.slot->growAmount + frame.slot->growStep * 0x320;
+        frame.spawner->posX = 2000;
+        frame.spawner->posZ = frame.slot->growAmount + frame.slot->growStep * 800;
         frame.spawner->posY = 0;
     }
     frame.slot->growStep++;
-    if (frame.slot->growStep == 0x14) {
+    if (frame.slot->growStep == 20) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1066,14 +1066,14 @@ void __cdecl BattleFx_SpecialBizarroEnergySpawnRisingSpritesTask(void)
     if (spawnerPtr->timer % 2 == 0) {
         sprite = (BattleFxRisingSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBizarroEnergyRisingSpriteTask);
         sprite->posX = spawnerPtr->posX;
-        sprite->posZ = spawnerPtr->posZ + rand() % 0x320 - 0x190;
-        sprite->posY = -rand() % 0x190;
-        sprite->velocityX = 0x64;
+        sprite->posZ = spawnerPtr->posZ + rand() % 800 - 400;
+        sprite->posY = -rand() % 400;
+        sprite->velocityX = 100;
         sprite->velocityY = 0xFE70;
-        sprite->velocityZ = -0x190 - rand() % 0xC8;
+        sprite->velocityZ = -400 - rand() % 200;
     }
     (spawnerPtr->timer)++;
-    if (spawnerPtr->timer == 0xA) {
+    if (spawnerPtr->timer == 10) {
         spawnerPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1098,7 +1098,7 @@ void __cdecl BattleFx_SpecialBizarroEnergySlidingModelTask(void)
     frame.slot = (YasuiBizarroEnergySlideState *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiSpecBizarroEnergyModel1DrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(1, g_YasuiSpecBizarroEnergyResourceContext);
     RotMatrix(&g_YasuiSpecBizarroEnergyModel1RotationAngles, &frame.rotation);
-    frame.scale[1] = 0x5000;
+    frame.scale[1] = 0x5000 /* 5.0 */;
     frame.scale[2] = g_YasuiSpecBizarroEnergySlidingModelScale[0];
     frame.scale[0] = frame.scale[2];
     ScaleMatrix(&frame.rotation, frame.scale);
@@ -1113,9 +1113,9 @@ void __cdecl BattleFx_SpecialBizarroEnergySlidingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.slot->posZ += 0x2BA;
+    frame.slot->posZ += 698;
     frame.slot->frameCounter++;
-    if (frame.slot->frameCounter == 0xA) {
+    if (frame.slot->frameCounter == 10) {
         frame.slot->endMarker = 0xFFFF;
     }
 }

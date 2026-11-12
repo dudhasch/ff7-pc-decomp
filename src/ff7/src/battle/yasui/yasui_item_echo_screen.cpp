@@ -102,9 +102,9 @@ void __cdecl Battle_ItemFxEchoScreenSpawnPerTarget(int actor)
     slot = (BattleFxEchoScreenTask *)BATTLE_NEW_TASK_SLOT(Battle_ItemFxEchoScreenSpriteEmitterTask);
     slot->ownerSlot = actor;
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, slot->pos);
-    slot->offsetY = g_BattleActorRecords[actor].radius * 0x1800 >> 0xC;
+    slot->offsetY = g_BattleActorRecords[actor].radius * 0x1800 /* 1.5 */ >> 12;
     slot->offsetX = slot->offsetY;
-    slot->pushLength = -g_BattleActorRecords[actor].radius << 0xC >> 0xC;
+    slot->pushLength = -g_BattleActorRecords[actor].radius << 12 >> 12;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(slot->pos), 0x134);
 }
 
@@ -125,26 +125,26 @@ void __cdecl Battle_ItemFxEchoScreenSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pEmitter->frame < 0xF) {
+    if (pEmitter->frame < 15) {
         for (i = 0; i < 7; i++) {
             pSprite = (BattleFxEchoScreenTask *)BATTLE_NEW_TASK_SLOT(Battle_ItemFxEchoScreenAnimatedSpriteTask);
             *(Int64Pair *)pSprite->pos = *(Int64Pair *)pEmitter->pos;
             angle = rand() & 0x7FF;
             if (angle < 0x400) {
-                scatterX = SinFixed(angle) - 0x1000;
+                scatterX = SinFixed(angle) - 4096;
             } else {
-                scatterX = 0x1000 - SinFixed(angle);
+                scatterX = 4096 - SinFixed(angle);
             }
             angle = scatterX;
-            pSprite->offsetX = pEmitter->offsetX * angle >> 0xC;
+            pSprite->offsetX = pEmitter->offsetX * angle >> 12;
             angle = rand() & 0x7FF;
             if (angle < 0x400) {
-                ySpread = SinFixed(angle) - 0x1000;
+                ySpread = SinFixed(angle) - 4096;
             } else {
-                ySpread = 0x1000 - SinFixed(angle);
+                ySpread = 4096 - SinFixed(angle);
             }
             angle = ySpread;
-            pSprite->offsetY = pEmitter->offsetY * angle >> 0xC;
+            pSprite->offsetY = pEmitter->offsetY * angle >> 12;
             pSprite->scale = rand() % 0x1000 + 0x2000;
             pSprite->pushLength = pEmitter->pushLength;
         }

@@ -105,7 +105,7 @@ void __cdecl BattleFx_MagicFire3MultiSetupTask(void)
     BattleFxMagicFire3MultiSetupState *task;
 
     actorIdx = 0;
-    for (count = 0; actorIdx < 0xA; actorIdx++) {
+    for (count = 0; actorIdx < 10; actorIdx++) {
         if ((g_BattleMagicFire3MultiTargetMask & 1 << actorIdx) != 0) {
             count++;
             if (count == 1) {
@@ -119,16 +119,16 @@ void __cdecl BattleFx_MagicFire3MultiSetupTask(void)
     count = 2;
     if (count == 1) {
         Battle_GetBoneWorldPos(solo, g_BattleActorRecords[solo].targetBone, (short *)&task->pos);
-        activeSize = g_BattleActorRecords[solo].radius + 0x100;
-        if (activeSize > 0x76C) {
-            activeSize = 0x76C;
+        activeSize = g_BattleActorRecords[solo].radius + 256;
+        if (activeSize > 1900) {
+            activeSize = 1900;
         }
     } else {
         Battle_GetActorMaskCentroid(g_BattleMagicFire3MultiTargetMask, (short *)&task->pos);
         task->pos.y = 0xF900;
-        activeSize = 0x600;
+        activeSize = 1536;
     }
-    radiusQ12 = activeSize << 0xC;
+    radiusQ12 = activeSize << 12;
     task->scale = 0x2ABD;
     task->scaleStep = task->scale / 8;
     task->startScale = task->scale;
@@ -158,38 +158,38 @@ void __cdecl BattleFx_MagicFire3MultiTimelineTask(void)
         return;
     }
     selfPtr = (BattleFxFire3TaskSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (selfPtr->step == 0x20) {
-        extent = selfPtr->radius << 0xC;
+    if (selfPtr->step == 32) {
+        extent = selfPtr->radius << 12;
         child = (BattleFxFire3MultiTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFire3MultiGrowingFadePsxModelTask);
         child->pos = selfPtr->pos;
         child->scale = 0;
-        child->speed = (extent / 0x514) / 2;
+        child->speed = (extent / 1300) / 2;
         child = (BattleFxFire3MultiTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFire3MultiGrowingFadeModelTask);
         child->pos = selfPtr->pos;
         child->scale = 0;
-        child->speed = (extent / 0x5AA) / 2;
+        child->speed = (extent / 1450) / 2;
     }
     if (selfPtr->step < 8) {
         g_BattleFxTimelineState.red = 0x20;
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
-        ramp = selfPtr->step * 0x1C0;
-    } else if (selfPtr->step >= 0x3A) {
-        ramp = 0xE00 - (selfPtr->step - 0x3A) * 0x255;
+        ramp = selfPtr->step * 448;
+    } else if (selfPtr->step >= 58) {
+        ramp = 0xE00 - (selfPtr->step - 0x3A) * 597;
         if (ramp < 0) {
             ramp = 0;
         }
     } else {
         ramp = 0xE00;
     }
-    if (selfPtr->step == 0x39) {
-        for (i = 0; i < 0xA; i++) {
+    if (selfPtr->step == 57) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicFire3MultiTargetMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (selfPtr->step >= 0x42) {
+    if (selfPtr->step >= 66) {
         ramp = 0;
         g_BattleFxTimelineState.red = ramp;
         selfPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -211,8 +211,8 @@ void __cdecl BattleFx_MagicFire3MultiGrowingFadePsxModelTask(void)
 
     slotPtr = (BattleFxFire3MultiFadeSlot *)BATTLE_CURRENT_TASK_SLOT;
     BattleFx_InstallBillboardMatrix((short *)&slotPtr->pos, (short)slotPtr->value, 0);
-    if (slotPtr->step >= 0xC) {
-        level = (slotPtr->step - 0xC) * 0x155;
+    if (slotPtr->step >= 12) {
+        level = (slotPtr->step - 0xC) * 341;
     } else {
         level = 0;
     }
@@ -226,7 +226,7 @@ void __cdecl BattleFx_MagicFire3MultiGrowingFadePsxModelTask(void)
     Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_BattleMagicFire3MultiLoadedRes)));
     Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(1, g_BattleMagicFire3MultiLoadedRes)));
     g_BattleFxActiveDrawListPtr = BattleFx_MagicFire3MultiDrawPsxMesh((BattleFxFaigaMeshRecord *)recPtr, level);
-    if (slotPtr->step >= 0x18) {
+    if (slotPtr->step >= 24) {
         slotPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -436,7 +436,7 @@ void __cdecl BattleFx_MagicFire3MultiGrowingFadeModelTask(void)
 #pragma pack(pop)
 
     frame.slot = (BattleFxFire3MultiGrowingFadeModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0xFC00;
+    frame.rotX.vx = 0xFC00 /* 5670 deg */;
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
@@ -457,15 +457,15 @@ void __cdecl BattleFx_MagicFire3MultiGrowingFadeModelTask(void)
     frame.drawModel->stateFlags = 0;
     frame.drawModel->texturePageBits = 0;
     if (frame.slot->frameCounter < 6) {
-        frame.drawModel->fadeLevel = 0x1000 - frame.slot->frameCounter * 0x255;
-    } else if (frame.slot->frameCounter >= 0xC) {
-        frame.drawModel->fadeLevel = (frame.slot->frameCounter - 0xC) * 0x12A;
+        frame.drawModel->fadeLevel = 4096 - frame.slot->frameCounter * 597;
+    } else if (frame.slot->frameCounter >= 12) {
+        frame.drawModel->fadeLevel = (frame.slot->frameCounter - 12) * 298;
     } else {
-        frame.drawModel->fadeLevel = 0x200;
+        frame.drawModel->fadeLevel = 512;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0x18) {
+    if (frame.slot->frameCounter >= 24) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -497,7 +497,7 @@ void __cdecl BattleFx_MagicFire3MultiFlashModelTask(void)
     modelPtr->stateFlags = 0;
     modelPtr->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)modelPtr, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (slotPtr->phase >= 0xC) {
+    if (slotPtr->phase >= 12) {
         slotPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -552,9 +552,9 @@ void __cdecl BattleFx_MagicFire3MultiSpawnShrinkingSpinModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (selfPtr->frameCount >= 3 && selfPtr->frameCount <= 0x22) {
+    if (selfPtr->frameCount >= 3 && selfPtr->frameCount <= 34) {
         offsetMax = selfPtr->radius;
-        scaleFrac = (offsetMax << 0xC) / 0x7D0;
+        scaleFrac = (offsetMax << 12) / 2000;
         offsetMax += offsetMax >> 1;
         w = offsetMax << 1;
         for (i6 = 0; i6 < 3; i6++) {
@@ -564,12 +564,12 @@ void __cdecl BattleFx_MagicFire3MultiSpawnShrinkingSpinModelsTask(void)
             child->pos.y += (short)(rand() % w - offsetMax);
             child->pos.z += (short)(rand() % w - offsetMax);
             angleRoll = selfPtr->angle + rand() % 0x1000 + 0x800;
-            child->scale = angleRoll * scaleFrac >> 0xC;
+            child->scale = angleRoll * scaleFrac >> 12;
             child->scaleStep = child->scale / 6;
         }
         selfPtr->angle += selfPtr->angleStep;
     }
-    if (selfPtr->frameCount >= 0x2E) {
+    if (selfPtr->frameCount >= 46) {
         selfPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (selfPtr->frameCount)++;
@@ -596,7 +596,7 @@ void __cdecl BattleFx_MagicFire3MultiShrinkingSpinModelTask(void)
     modelPtr->fadeLevel = 0;
     modelPtr->stateFlags = 0;
     modelPtr->texturePageBits = 0;
-    modelPtr->fadeLevel = slotPtr->frameIndex * 0x2AA;
+    modelPtr->fadeLevel = slotPtr->frameIndex * 682;
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)modelPtr, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     if (slotPtr->frameIndex >= 5) {

@@ -26,7 +26,7 @@ struct GfxEngineContext;
 // FUNCTION: FF7 0x00682d80
 void __cdecl Gfx_InitOffscreenRequest(GfxOffscreenRequest *request)
 {
-    ZeroFillMemory32(0x118, request);
+    ZeroFillMemory32(280, request);
     AnimPlacement_Init((PolygonAnimPlacement *)request->placement);
     request->pageFillMode = 1;
 }
@@ -158,7 +158,7 @@ GfxOffscreenSlot *__cdecl Gfx_AllocOffscreenSlot(int count, GfxOffscreenSlot *sl
     for (index = 0; index < count; index++) {
         if (slot->inUse == GFX_OFFSCREEN_SLOT_FREE) {
             pFound = slot;
-            ZeroFillMemory32(0x124, pFound);
+            ZeroFillMemory32(292, pFound);
             pFound->inUse = GFX_OFFSCREEN_SLOT_PENDING;
             pFound->requestId = index;
             break;

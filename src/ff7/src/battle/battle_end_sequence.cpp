@@ -63,7 +63,7 @@ int g_BattleEndDropPhaseCounter = 0;
  * BATTLE_ARENA_KEEP_ROUND_HP is set, averages the HP and MP of the party members present when g_BattleState.participatingPartyMask is set, keeps
  * only status bits 0x1831 of the party actors, and picks the closing: a defeat posts battle message
  * 8 and waits 30 sequence passes, an escape plays idle pose 0xE for 8 passes, a victory in a scene
- * with flag 8 (and without battle flag 0x100) plays the victory pose 0xC for 0x31 passes.
+ * with flag 8 (and without battle flag 0x100) plays the victory pose 0xC for 49 passes.
  * PLAY_CLOSING to RELEASE_DROPS play those sequences (Battle_PlaySequence), set
  * FIELD_BATTLE_FLAG_LOST for a defeat and FIELD_BATTLE_FLAG_ESCAPED for an escape or when no enemy
  * is left in the battle, and release pending item drops for 16 passes.
@@ -107,7 +107,7 @@ void __cdecl Battle_RunEndSequence(void)
         g_BattleEndReserveCharMask = gSavemap.phsVisibilityMask;
         g_BattleEndAvgHp = 0;
         g_BattleEndAvgMp = 0;
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if (gBattleAiGlobals.combatants[actorIdx].unitId != -1) {
                 Battle_RunAiScriptEvent(actorIdx, 6, 6);
             }
@@ -154,7 +154,7 @@ void __cdecl Battle_RunEndSequence(void)
             }
         }
         Battle_ResetResultRewardTotals();
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             Battle_PostEvent(BATTLE_EVENT_QUEUE_ATB, actorIdx, BATTLE_ATB_EVENT_RELEASE_COMMAND_MENU, 0);
         }
         for (actorIdx = 0; actorIdx < 3; actorIdx++) {
@@ -164,7 +164,7 @@ void __cdecl Battle_RunEndSequence(void)
         if ((g_BattleEndOutcomeFlags & BATTLE_OUTCOME_ESCAPED) == 0) {
             if ((g_BattleEndOutcomeFlags & BATTLE_OUTCOME_DEFEAT) != 0) {
                 if ((g_BattleEndOutcomeFlags & 0x40) == 0) {
-                    g_BattleEndSequenceDelay = 0x1E;
+                    g_BattleEndSequenceDelay = 30;
                     Battle_PostBattleMessage(8);
                     g_BattleDefeatMusicPending = 1;
                 }
@@ -179,7 +179,7 @@ void __cdecl Battle_RunEndSequence(void)
                 for (actorIdx = 0; actorIdx < 3; actorIdx++) {
                     gBattleAiGlobals.combatants[actorIdx].idleOverride = 0xC;
                 }
-                g_BattleEndSequenceDelay = 0x31;
+                g_BattleEndSequenceDelay = 49;
                 g_BattleMenuGraphicsPathBuffer.victoryMusicPending = 1;
             }
         }
@@ -244,7 +244,7 @@ void __cdecl Battle_RunEndSequence(void)
                 Battle_ReleasePendingDrops((short)memberIdx);
             }
             g_BattleEndDropPhaseCounter++;
-            if (g_BattleEndDropPhaseCounter >= 0x10) {
+            if (g_BattleEndDropPhaseCounter >= 16) {
                 g_BattleEndDropPhaseCounter = 0;
                 g_BattleEndSequenceState = BATTLE_END_STATE_REWARDS;
             }
@@ -253,7 +253,7 @@ void __cdecl Battle_RunEndSequence(void)
         break;
     case BATTLE_END_STATE_REWARDS:
         Battle_SetMessageWindowRequest(-1);
-        for (actorIdx = 0; actorIdx < 0x140; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 320; actorIdx++) {
             pItemRecord = (BattleEndItemRecord *)(actorIdx * 6 + (char *)g_BattleItemListBlock.slots);
             gSavemap.items[actorIdx] = 0xFFFF;
             if (pItemRecord->itemId != 0xFFFF) {
@@ -271,7 +271,7 @@ void __cdecl Battle_RunEndSequence(void)
                         g_BattleRewardTotals.gil += gBattleAiGlobals.combatants[actorIdx + 4].gilReward;
                         g_BattleRewardAp += ((BattleEnemyRecord *)enemyPtr)->ap;
                         if ((g_BattleState.actors[actorIdx + 4].timingFlags & 0x11) == 0) {
-                            dropId = Battle_RollEnemyDropOrSteal((void *)enemyPtr, 0, 0, 0x100);
+                            dropId = Battle_RollEnemyDropOrSteal((void *)enemyPtr, 0, 0, 0x100 /* 0.0625 */);
                             if (dropId != 0xFFFF) {
                                 for (subIdx = 0; subIdx < g_BattleEndDroppedItemCount; subIdx++) {
                                     if (g_BattleRewardItems[subIdx].itemId == dropId) {

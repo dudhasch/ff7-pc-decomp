@@ -24,7 +24,7 @@ void __cdecl FileRegistryDestroy(int registry)
     if (registry != 0) {
         DestroyList(((FileRegistry *)registry)->list);
         // STRING: FF7 0x009177ec
-        GameHeapFree((void *)registry, "C:\\lib\\src\\file\\registry.cpp", 0xE);
+        GameHeapFree((void *)registry, "C:\\lib\\src\\file\\registry.cpp", 14);
     }
 }
 
@@ -40,7 +40,7 @@ int __cdecl FileRegistryCreate(int freeValue)
 
     isError = 1;
     // STRING: FF7 0x0091780c
-    registry = (int)GameHeapAlloc(1, 4, "C:\\lib\\src\\file\\registry.cpp", 0x18);
+    registry = (int)GameHeapAlloc(1, 4, "C:\\lib\\src\\file\\registry.cpp", 24);
     if (registry != 0) {
         ((FileRegistry *)registry)->list = CreateList((ListFreeValueFn)freeValue);
         if (((FileRegistry *)registry)->list != 0) {

@@ -1590,10 +1590,10 @@ void __cdecl BattleFx_SummonBeginLeviathan(int targetMask, int actorIdx)
     g_BattleSummonLeviathan_TargetMask.transY = 0;
     Battle_GetActorMaskCentroid((g_BattleSummonLeviathan_TargetMask.targetMask) = targetMask, &centroidBuffer.vx);
     if (centroidBuffer.vz > g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonLeviathan_TargetMask.transZ = centroidBuffer.vz - 0x1388;
+        g_BattleSummonLeviathan_TargetMask.transZ = centroidBuffer.vz - 5000;
     } else {
-        g_BattleSummonLeviathan_RotVector1.angleY = 0x800;
-        g_BattleSummonLeviathan_TargetMask.transZ = centroidBuffer.vz + 0x1388;
+        g_BattleSummonLeviathan_RotVector1.angleY = 0x800 /* 180 deg */;
+        g_BattleSummonLeviathan_TargetMask.transZ = centroidBuffer.vz + 5000;
     }
     RotMatrix((SVECTOR *)&g_BattleSummonLeviathan_RotVector1, &g_BattleSummonLeviathan_TargetMask.rotationMatrix);
     (g_BattleSummonLeviathan_TargetMask.targetMask) = targetMask;
@@ -1927,40 +1927,40 @@ void __cdecl BattleFx_SummonLeviathanTimelineTask(void)
         return;
     }
     frame.timelineFrame = frame.timeline->frame;
-    if (frame.timelineFrame < 0x3C) {
+    if (frame.timelineFrame < 60) {
         if (frame.timelineFrame == 0) {
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH3, 0x40, 0x13);
         }
-        if (frame.timeline->frame == 0xF) {
+        if (frame.timeline->frame == 15) {
             frame.partRec = (BattleFxLeviathanPart *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonLeviathanBurstModelTask);
             *(Int64Pair *)((char *)frame.partRec + 4) = *(Int64Pair *)((char *)frame.timeline + 4);
         }
-        if (frame.timeline->frame < 0x2D) {
+        if (frame.timeline->frame < 45) {
             for (frame.particleIndex = 0; frame.particleIndex < 2; frame.particleIndex++) {
                 frame.partRec = (BattleFxLeviathanPart *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonLeviathanInwardSpriteTask);
-                g_BattleSummonLeviathan_RotStepVector[0] += 0x456;
-                g_BattleSummonLeviathan_RotStepVector[1] += 0x567;
-                g_BattleSummonLeviathan_RotStepVector[2] += 0x678;
+                g_BattleSummonLeviathan_RotStepVector[0] += 1110;
+                g_BattleSummonLeviathan_RotStepVector[1] += 1383;
+                g_BattleSummonLeviathan_RotStepVector[2] += 1656;
                 RotMatrix((SVECTOR *)(&g_BattleSummonLeviathan_RotStepVector[0]), &frame.rotMatrix);
-                g_BattleSummonLeviathan_TransVector[0] = ((frame.timelineFrame * 0x1800 / 0x2D + 0x600) * 0x3E8 >> 0xC) + 0xBB8;
+                g_BattleSummonLeviathan_TransVector[0] = ((frame.timelineFrame * 6144 / 45 + 0x600) * 0x3E8 >> 12) + 0xBB8;
                 TransformVectorToInt16(&frame.rotMatrix, &g_BattleSummonLeviathan_TransVector[0], &frame.offsetX.vx);
                 frame.partRec->posX = frame.timeline->posX + frame.offsetX.vx;
                 frame.partRec->posY = frame.timeline->posY + frame.offsetX.vy;
                 frame.partRec->posZ = frame.timeline->posZ + frame.offsetX.vz;
-                frame.partRec->velocityX = -frame.offsetX.vx / 0xF;
-                frame.partRec->velocityY = -frame.offsetX.vy / 0xF;
-                frame.partRec->velocityZ = -frame.offsetX.vz / 0xF;
+                frame.partRec->velocityX = -frame.offsetX.vx / 15;
+                frame.partRec->velocityY = -frame.offsetX.vy / 15;
+                frame.partRec->velocityZ = -frame.offsetX.vz / 15;
             }
         }
     } else {
-        frame.timelineFrame -= 0x3C;
-        if (frame.timelineFrame < 0xF) {
+        frame.timelineFrame -= 60;
+        if (frame.timelineFrame < 15) {
             if (frame.timelineFrame == 0) {
-                for (frame.particleIndex = 0; frame.particleIndex < 0x12C; frame.particleIndex++) {
+                for (frame.particleIndex = 0; frame.particleIndex < 300; frame.particleIndex++) {
                     g_BattleSummonLeviathan_ParticleStates[frame.particleIndex].state = 0;
-                    g_BattleSummonLeviathan_RotStepVector[0] += 0x456;
-                    g_BattleSummonLeviathan_RotStepVector[1] += 0x567;
-                    g_BattleSummonLeviathan_RotStepVector[2] += 0x678;
+                    g_BattleSummonLeviathan_RotStepVector[0] += 1110;
+                    g_BattleSummonLeviathan_RotStepVector[1] += 1383;
+                    g_BattleSummonLeviathan_RotStepVector[2] += 1656;
                     RotMatrix((SVECTOR *)(&g_BattleSummonLeviathan_RotStepVector[0]), &frame.rotMatrix);
                     g_BattleSummonLeviathan_TransVector[0] = 0x5DC;
                     TransformVectorToInt16(&frame.rotMatrix, &g_BattleSummonLeviathan_TransVector[0], &frame.offsetX.vx);
@@ -1980,24 +1980,24 @@ void __cdecl BattleFx_SummonLeviathanTimelineTask(void)
                 frame.ringRec->angleY = g_BattleSummonLeviathan_RotVector1.angleY + 0x800;
             }
         } else {
-            frame.timelineFrame -= 0xF;
-            if (frame.timelineFrame < 0x14) { /* empty first arm: lib/codegen.h */
+            frame.timelineFrame -= 15;
+            if (frame.timelineFrame < 20) { /* empty first arm: lib/codegen.h */
             } else {
-                frame.timelineFrame -= 0x14;
-                if (frame.timelineFrame < 0xA) { /* empty first arm: lib/codegen.h */
+                frame.timelineFrame -= 20;
+                if (frame.timelineFrame < 10) { /* empty first arm: lib/codegen.h */
                 } else {
-                    frame.timelineFrame -= 0xA;
-                    if (frame.timelineFrame < 0x1E) {
+                    frame.timelineFrame -= 10;
+                    if (frame.timelineFrame < 30) {
                         if (frame.timelineFrame == 0) {
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, 0x40, 0xE);
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, 0x40, 0x11);
                         }
                     } else {
-                        frame.timelineFrame -= 0x1E;
-                        if (frame.timelineFrame < 0xF) { /* empty first arm: lib/codegen.h */
+                        frame.timelineFrame -= 30;
+                        if (frame.timelineFrame < 15) { /* empty first arm: lib/codegen.h */
                         } else {
-                            frame.timelineFrame -= 0xF;
-                            if (frame.timelineFrame < 0x1E) {
+                            frame.timelineFrame -= 15;
+                            if (frame.timelineFrame < 30) {
                                 if (frame.timelineFrame == 0) {
                                     frame.partRec = (BattleFxLeviathanPart *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonLeviathanModelPairTask);
                                     g_BattleSummonLeviathan_ModelPairSlot = frame.partRec;
@@ -2006,19 +2006,19 @@ void __cdecl BattleFx_SummonLeviathanTimelineTask(void)
                                     frame.partRec->posY = 0;
                                     frame.partRec->posZ = 0xEC78;
                                     frame.partRec->velocityX = 0;
-                                    frame.partRec->velocityZ = 0x50;
+                                    frame.partRec->velocityZ = 80;
                                     frame.partRec->specialActorId = frame.timeline->specialActorId;
                                     frame.partRec->targetIndex = frame.timeline->actorIndex;
                                 }
                             } else {
-                                frame.timelineFrame -= 0x1E;
-                                if (frame.timelineFrame < 0xF) {
-                                    if (frame.timelineFrame == 0xD) {
+                                frame.timelineFrame -= 30;
+                                if (frame.timelineFrame < 15) {
+                                    if (frame.timelineFrame == 13) {
                                         frame.ringRec = (BattleFxRingWaveSlot *)Battle_AllocSceneMessage(2);
                                     }
                                 } else {
-                                    frame.timelineFrame -= 0xF;
-                                    if (frame.timelineFrame < 0xD) {
+                                    frame.timelineFrame -= 15;
+                                    if (frame.timelineFrame < 13) {
                                         if (frame.timelineFrame == 0) {
                                             frame.partRec = (BattleFxLeviathanPart *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonLeviathanPartModelTask);
                                             frame.partRec->posX = 0;
@@ -2026,27 +2026,27 @@ void __cdecl BattleFx_SummonLeviathanTimelineTask(void)
                                             frame.partRec->posZ = 0xC568;
                                             frame.partRec->velocityX = 0;
                                             frame.partRec->velocityY = 0;
-                                            frame.partRec->velocityZ = 0x1F4;
+                                            frame.partRec->velocityZ = 500;
                                         }
                                     } else {
-                                        frame.timelineFrame -= 0xD;
-                                        if (frame.timelineFrame < 0x23) {
+                                        frame.timelineFrame -= 13;
+                                        if (frame.timelineFrame < 35) {
                                             if (frame.timelineFrame == 0) {
-                                                for (frame.particleIndex = 0; frame.particleIndex < 0xA; frame.particleIndex++) {
+                                                for (frame.particleIndex = 0; frame.particleIndex < 10; frame.particleIndex++) {
                                                     if (((g_BattleSummonLeviathan_TargetMask.targetMask) & 1 << frame.particleIndex) != 0) {
                                                         Battle_PostActorHitOrHurtMessage(frame.particleIndex);
                                                     }
                                                 }
                                             }
-                                            if (frame.timelineFrame < 0x14) {
-                                                for (frame.particleIndex = 0; frame.particleIndex < 0xA; frame.particleIndex++) {
+                                            if (frame.timelineFrame < 20) {
+                                                for (frame.particleIndex = 0; frame.particleIndex < 10; frame.particleIndex++) {
                                                     if (((g_BattleSummonLeviathan_TargetMask.targetMask) & 1 << frame.particleIndex) != 0) {
                                                         frame.partRec = (BattleFxLeviathanPart *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonLeviathanAnimatedSpriteTask);
                                                         Battle_GetBoneWorldPos(frame.particleIndex, g_BattleActorRecords[frame.particleIndex].targetBone, &frame.partRec->posX);
                                                         frame.angle = g_BattleSummonLeviathan_TargetCombatant2->yaw + (rand() & 0x3FF) + 0x600 & 0xFFF;
-                                                        frame.partRec->posX += (short)(SinFixed(frame.angle) * g_BattleActorRecords[frame.particleIndex].radius >> 0xC);
+                                                        frame.partRec->posX += (short)(SinFixed(frame.angle) * g_BattleActorRecords[frame.particleIndex].radius >> 12);
                                                         frame.partRec->posY = 0xFCE0;
-                                                        frame.partRec->posZ -= (short)(CosFixed(frame.angle) * g_BattleActorRecords[frame.particleIndex].radius >> 0xC);
+                                                        frame.partRec->posZ -= (short)(CosFixed(frame.angle) * g_BattleActorRecords[frame.particleIndex].radius >> 12);
                                                     }
                                                 }
                                             }
@@ -2089,11 +2089,11 @@ void __cdecl BattleFx_SummonLeviathanBurstModelTask(void)
 
     frame.burstState = (BattleFxCosmoMemoryTriSpin *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSummonLeviathan_TimelineData.model = Gfx_ModelTableGetRenderObject(0, g_BattleSummonLeviathan_LoadedRes);
-    if (frame.burstState->step < 0x2D) {
-        frame.timelineValue = frame.burstState->step * 0xF0 / 0x2D;
+    if (frame.burstState->step < 45) {
+        frame.timelineValue = frame.burstState->step * 240 / 45;
         if (frame.timelineValue < 0) {
             frame.timelineValue = 0;
-        } else if (frame.timelineValue > 0xFF) {
+        } else if (frame.timelineValue > 255) {
             frame.timelineValue = 0xFF;
         }
         g_BattleSummonLeviathan_TimelineData.value = frame.timelineValue;
@@ -2127,7 +2127,7 @@ void __cdecl BattleFx_SummonLeviathanBurstModelTask(void)
         }
         ((BattleFxPsxPolygonBlock *)&g_BattleSummonLeviathan_PolyBlockReq)->shade = 0xFF - (frame.burstState->step - 0x2D) * 0xFF / 0x13;
         RotMatrix((SVECTOR *)&g_BattleSummonLeviathan_RotVector2, &frame.transform);
-        frame.scaleX.vz = 0x1800;
+        frame.scaleX.vz = 0x1800 /* 1.5 */;
         frame.scaleX.vy = frame.scaleX.vz;
         frame.scaleX.vx = frame.scaleX.vy;
         ScaleMatrix(&frame.transform, &frame.scaleX);
@@ -2139,7 +2139,7 @@ void __cdecl BattleFx_SummonLeviathanBurstModelTask(void)
         SetTransMatrix(&frame.transform);
         g_BattleOverlayDrawListHead = (int)BattleFx_DrawPsxPolygonBlock((BattleFxPsxPolygonBlock *)&g_BattleSummonLeviathan_PolyBlockReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, (BattleFxPsxPolygonPrim *)g_BattleOverlayDrawListHead, 0, 0, 0, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(8, g_BattleSummonLeviathan_LoadedRes)));
         RotMatrix((SVECTOR *)&g_BattleSummonLeviathan_RotVector3, &frame.transform);
-        frame.scaleX.vz = 0x2000;
+        frame.scaleX.vz = 0x2000 /* 2.0 */;
         frame.scaleX.vy = frame.scaleX.vz;
         frame.scaleX.vx = frame.scaleX.vy;
         ScaleMatrix(&frame.transform, &frame.scaleX);
@@ -2149,7 +2149,7 @@ void __cdecl BattleFx_SummonLeviathanBurstModelTask(void)
     }
     if (g_BattleIsPaused == 0) {
         (frame.burstState->step)++;
-        if (frame.burstState->step < 0x41) {
+        if (frame.burstState->step < 65) {
             g_BattleSummonLeviathan_RotVector2.angleX += 0x10;
             g_BattleSummonLeviathan_RotVector2.angleY += 0x20;
             g_BattleSummonLeviathan_AngleYaw1 += 0x40;
@@ -2157,10 +2157,10 @@ void __cdecl BattleFx_SummonLeviathanBurstModelTask(void)
             g_BattleSummonLeviathan_RotVector3.angleY -= 0x20;
             g_BattleSummonLeviathan_AngleRoll1 -= 0x40;
         }
-        if (frame.burstState->step == 0x2D) {
+        if (frame.burstState->step == 45) {
             BattleFx_SummonLeviathanInitPrimitiveFragmentVelocities(&g_BattleSummonLeviathan_FragmentVelocities);
         }
-        if (frame.burstState->step >= 0x41) {
+        if (frame.burstState->step >= 65) {
             frame.burstState->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2245,7 +2245,7 @@ void __cdecl BattleFx_SummonLeviathanInwardSpriteTask(void)
     frame.sprite = (BattleFxMeteorModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     if (g_BattleIsPaused == 0) {
         (frame.sprite->frameCount)++;
-        if (frame.sprite->frameCount >= 0xF) {
+        if (frame.sprite->frameCount >= 15) {
             frame.sprite->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
@@ -2258,27 +2258,27 @@ void __cdecl BattleFx_SummonLeviathanInwardSpriteTask(void)
     frame.velocityX.vz = frame.sprite->velocityZ;
     frame.refX.vx = 0;
     frame.refX.vy = 0;
-    frame.refX.vz = 0x1000;
+    frame.refX.vz = 4096;
     CrossProductInt(&frame.velocityX, &frame.refX, &frame.crossX);
-    while ((abs(frame.crossX.vx) > 0x4000 | abs(frame.crossX.vy) > 0x4000 | abs(frame.crossX.vz) > 0x4000) != 0) {
+    while ((abs(frame.crossX.vx) > 0x4000 | abs(frame.crossX.vy) > 0x4000 | abs(frame.crossX.vz) > 16384) != 0) {
         frame.crossX.vx = (frame.crossX.vx) / 2;
         frame.crossX.vy = (frame.crossX.vy) / 2;
         frame.crossX.vz = (frame.crossX.vz) / 2;
     }
     NormalizeVectorFixed(&frame.crossX, &frame.crossX);
-    frame.spriteX = frame.sprite->posX + (frame.crossX.vx * SinFixed(frame.sprite->frameCount * 0x88) >> 0xE);
-    frame.spriteY = frame.sprite->posY + (frame.crossX.vy * SinFixed(frame.sprite->frameCount * 0x88) >> 0xE);
-    frame.spriteZ = frame.sprite->posZ + (frame.crossX.vz * SinFixed(frame.sprite->frameCount * 0x88) >> 0xE);
+    frame.spriteX = frame.sprite->posX + (frame.crossX.vx * SinFixed(frame.sprite->frameCount * 136) >> 14);
+    frame.spriteY = frame.sprite->posY + (frame.crossX.vy * SinFixed(frame.sprite->frameCount * 136) >> 14);
+    frame.spriteZ = frame.sprite->posZ + (frame.crossX.vz * SinFixed(frame.sprite->frameCount * 136) >> 14);
     if (frame.sprite->frameCount < 7) {
-        frame.colorValue = frame.sprite->frameCount * 0x12;
+        frame.colorValue = frame.sprite->frameCount * 18;
     } else {
         frame.colorValue = 0x80;
     }
     g_BattleSummonLeviathan_SpriteColorData.colorNewest = *(char *)&frame.colorValue;
     g_BattleSummonLeviathan_SpriteColorData.colorMiddle = g_BattleSummonLeviathan_SpriteColorData.colorNewest;
     g_BattleSummonLeviathan_SpriteColorData.colorOldest = g_BattleSummonLeviathan_SpriteColorData.colorMiddle;
-    g_BattleSummonLeviathan_ScaleVector1 = (SinFixed(frame.sprite->frameCount * 0x1F4 & 0xFFF) / 0x10) + 0x800;
-    g_BattleSummonLeviathan_ScaleVector2 = (CosFixed(frame.sprite->frameCount * 0x1F4 & 0xFFF) / 0x10) + 0x800;
+    g_BattleSummonLeviathan_ScaleVector1 = (SinFixed(frame.sprite->frameCount * 0x1F4 & 0xFFF) / 16) + 0x800;
+    g_BattleSummonLeviathan_ScaleVector2 = (CosFixed(frame.sprite->frameCount * 0x1F4 & 0xFFF) / 16) + 0x800;
     BattleFx_SummonLeviathanTransformPointWithPush(&frame.spriteX, 0, (struct BattleFxSummonLeviathanModelPairTaskR *)&g_BattleSummonLeviathan_ScaleVector1);
     SetRotMatrix((short *)&g_BattleSummonLeviathan_ScaleVector1);
     SetTransMatrix((short *)&g_BattleSummonLeviathan_ScaleVector1);
@@ -2300,9 +2300,9 @@ int __cdecl BattleFx_SummonLeviathanTransformPointWithPush(void *srcPoint, int p
     RotTransPoint(srcPoint, &transform->transX, &depth);
     if (push != 0) {
         NormalizeVectorFixed(&transform->transX, &dir);
-        transform->transX += dir.vx * push >> 0xC;
-        transform->transY += dir.vy * push >> 0xC;
-        transform->transZ += dir.vz * push >> 0xC;
+        transform->transX += dir.vx * push >> 12;
+        transform->transY += dir.vy * push >> 12;
+        transform->transZ += dir.vz * push >> 12;
     }
     return (int)transform;
 }
@@ -2319,7 +2319,7 @@ void __cdecl BattleFx_SummonLeviathanSpriteParticlePoolTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     liveCount = 0;
-    for (particleIndex = 0; particleIndex < 0x12C; particleIndex++) {
+    for (particleIndex = 0; particleIndex < 300; particleIndex++) {
         if (g_BattleSummonLeviathan_ParticleStates[particleIndex].state != -1) {
             BattleFx_SummonLeviathanDrawAndStepSpriteParticle((BattleSummonLeviathanSpriteParticle *)&g_BattleSummonLeviathan_ParticleStates[particleIndex]);
             liveCount++;
@@ -2345,7 +2345,7 @@ void __cdecl BattleFx_SummonLeviathanDrawAndStepSpriteParticle(BattleSummonLevia
             return;
         }
     }
-    particle->velocityY += 0xC;
+    particle->velocityY += 12;
     particle->velocityX -= (short)(particle->velocityX >> 3);
     particle->velocityZ -= (short)(particle->velocityZ >> 3);
     g_BattleSummonLeviathan_ScaleVector3 = SinFixed(particle->angle * 0x1F4 & 0xFFF) / 16 + 0x600;
@@ -2369,19 +2369,19 @@ void __cdecl BattleFx_SummonLeviathanPulsingModelTask(void)
 
     task = (BattleFxPhaseControllerTask *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSummonLeviathan_SpriteConfig.pulsingModelPtr = Gfx_ModelTableGetRenderObject(3, g_BattleSummonLeviathan_LoadedRes);
-    g_BattleSummonLeviathan_ScaleVectorZ = (SinFixed(task->frameCount << 6 & 0xFFF) >> 5) + 0x1000;
+    g_BattleSummonLeviathan_ScaleVectorZ = (SinFixed(task->frameCount << 6 & 0xFFF) >> 5) + 4096;
     (*(short *)&g_BattleSummonLeviathan_ScaleVectorY) = g_BattleSummonLeviathan_ScaleVectorZ;
     g_BattleSummonLeviathan_ScaleVectorX = (*(short *)&g_BattleSummonLeviathan_ScaleVectorY);
     MultiplyMatrix(&g_BattleSummonLeviathan_TransformMatrix, &g_BattleSummonLeviathan_ScaleVectorX, mtx);
     SetRotMatrix(mtx);
     SetTransMatrix(mtx);
-    elapsed = task->frameCount - 0x87;
+    elapsed = task->frameCount - 135;
     if (elapsed < 0) {
         g_BattleSummonLeviathan_SpriteConfig.pulsingWord1 = 0;
         g_BattleSummonLeviathan_SpriteConfig.pulsingLevelWord = 0x80;
         g_BattleOverlayDrawListHead = (int)BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonLeviathan_SpriteConfig.pulsingModelPtr, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     } else {
-        elapsed -= 0x21;
+        elapsed -= 33;
         if (elapsed < 0) {
             g_BattleSummonLeviathan_SpriteConfig.pulsingWord1 = 0;
             g_BattleSummonLeviathan_SpriteConfig.pulsingLevelWord = 0x80;
@@ -2425,7 +2425,7 @@ void __cdecl BattleFx_SummonLeviathanModelPairTask(void)
     depthVal = RotTransPers((SVECTOR *)&g_BattleSummonLeviathan_RotVector4, (short *)&projected, &projected, &projected);
     g_BattleOverlayDrawListHead = (int)BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonLeviathan_SpriteColorConfig.modelGroup, g_BattleCurrentOrderingTable + (depthVal >> 2) * 4 + 0x74, 0, g_BattleOverlayDrawListHead);
     RotMatrix((SVECTOR *)&g_BattleSummonLeviathan_RotAngle2, rotation);
-    rotation->transY -= taskPtr->frameCount * 0x64 / 0x2D;
+    rotation->transY -= taskPtr->frameCount * 0x64 / 45;
     MultiplyMatrix(&g_BattleSummonLeviathan_TransformMatrix, rotation, (void *)worldMatrix);
     SetRotMatrix((void *)worldMatrix);
     SetTransMatrix((void *)worldMatrix);
@@ -2434,7 +2434,7 @@ void __cdecl BattleFx_SummonLeviathanModelPairTask(void)
         g_BattleSummonLeviathan_RotAngle1 -= 0x40;
         taskPtr->accumulator += taskPtr->step;
         (taskPtr->frameCount)++;
-        if (taskPtr->frameCount >= 0x2D) {
+        if (taskPtr->frameCount >= 45) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2460,7 +2460,7 @@ void __cdecl BattleFx_SummonLeviathanPartModelTask(void)
     frame.partRecord = (BattleFxLeviathanPartRecord *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSummonLeviathan_ModelReq2.halfModelPtr = Gfx_ModelTableGetRenderObject(4, g_BattleSummonLeviathan_LoadedRes);
     g_BattleSummonLeviathan_ModelReq2.offsetModelPtr = Gfx_ModelTableGetRenderObject(5, g_BattleSummonLeviathan_LoadedRes);
-    if (g_BattleIsPaused == 0 && frame.partRecord->step < 0xD) {
+    if (g_BattleIsPaused == 0 && frame.partRecord->step < 13) {
         if ((frame.partRecord->step % 2) == 0) {
             g_BattleSummonLeviathan_MeshPartIndex = ((frame.partRecord->step) / 2) + 1;
             Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_SummonLeviathanHalfDeltaVertexPart, *(int *)((char *)g_BattleSummonLeviathan_ModelReq2.halfModelPtr + 4));
@@ -2473,10 +2473,10 @@ void __cdecl BattleFx_SummonLeviathanPartModelTask(void)
     frame.rotMatrix.t[1] = frame.partRecord->posB;
     frame.rotMatrix.t[2] = frame.partRecord->angle;
     MultiplyMatrix(&g_BattleSummonLeviathan_TransformMatrix, &frame.rotMatrix, &frame.combinedMatrix);
-    if (frame.partRecord->step >= 0x21) {
+    if (frame.partRecord->step >= 33) {
         SetDrawColorRGB(0, 0, 0);
         g_BattleSummonLeviathan_ModelReq2.req2Threshold = 0xC8;
-        g_BattleSummonLeviathan_ModelReq2.req2Fraction = (frame.partRecord->step - 0x21 << 0xC) / 0xF;
+        g_BattleSummonLeviathan_ModelReq2.req2Fraction = (frame.partRecord->step - 0x21 << 12) / 15;
         frame.modelDraw = (BattleFxModelDraw *)&g_BattleSummonLeviathan_ModelReq2.offsetModelPtr;
     } else {
         g_BattleSummonLeviathan_ModelReq2.req2Threshold = 0xC0;
@@ -2489,7 +2489,7 @@ void __cdecl BattleFx_SummonLeviathanPartModelTask(void)
     if (g_BattleIsPaused == 0) {
         frame.partRecord->angle += frame.partRecord->angleStep;
         (frame.partRecord->step)++;
-        if (frame.partRecord->step >= 0x30) {
+        if (frame.partRecord->step >= 48) {
             frame.partRecord->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2507,7 +2507,7 @@ void __cdecl BattleFx_SummonLeviathanAnimatedSpriteTask(void)
     g_BattleSummonLeviathan_ModelReq3.spriteResource = Gfx_ModelTableGetLoadedRecord(6, g_BattleSummonLeviathan_LoadedRes);
     g_BattleSummonLeviathan_ModelReq3.drawObject = Gfx_ModelTableGetSpriteObject(6, g_BattleSummonLeviathan_LoadedRes);
     g_BattleSummonLeviathan_QuadColor.spriteFrame = task->frameCount;
-    BattleFx_InstallBillboardMatrix(&((BattleFxLeviathanPart *)task)->posX, 0x2000, 0xFFFFFE0C);
+    BattleFx_InstallBillboardMatrix(&((BattleFxLeviathanPart *)task)->posX, 0x2000 /* 2.0 */, 0xFFFFFE0C);
     g_BattleOverlayDrawListHead = (int)BattleFx_SubmitSpriteDraw(&g_BattleSummonLeviathan_ModelReq3.spriteResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleSummonLeviathan_ModelReq3.spriteResource != 0) {
         (task->frameCount)++;

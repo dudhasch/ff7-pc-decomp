@@ -135,7 +135,7 @@ unsigned char g_rawData_0089fe90[1632] = {
 0x38, 0x01, 0x48, 0x01, 0x40, 0x01, 0x80, 0x00, 0x5e, 0x19, 0x08, 0x79, 0x8f, 0x24, 0x8b, 0x37,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 // GLOBAL: FF7 0x008a04f0
-int g_BattleSpecFreezeBreathInitialTemplate[0x199] = {336, (-30408704), 0, (-7274496), 65349, (-12713812), 65467, (-14024601), 149, (-11534467), 125, (-7209110), 65499, 7274627, 65356, 7274668, 69, 7274496, 223, 7339820, 69, 7339901, 65356, 27721769, 0, 17694625, 40, 19791872, 73, 18088037, 40, 20119620, 65456, 17563571, 65430, 8650550, 65471, 65365, 65435, 65345, 0, 8650628, 172, 65360, 146, 65459, 202, 8585340, 172, (-3473331), 209, (-5373778), 110, 8585381, 65471, (-4521761), 0, (-3735378), 65406, 65459, 65359, 8585216, 65324, (-3276695), 65337, (-8519770), 65383, (-9306314), 65, (-19464317), 65496, (-12976128), 161, (-20512845), 53, (-13041544), 65, (-22872041), 59, (-22609920), 65446, (-13369259), 65404, (-19070887), 65496, 2883664, 524608, 8388920, 2030581643, 425610334, 1048904, 8388928, 2030576783, 931871420, 312, 8388936, 2030573918, 613351518, 1048872, 8388936, 2030581621, 608647472, 1573168, 8388904, 2030573694, 930428320, 328, 8388912, 2030576711, 410910820, 1573144, 8388912, 2030582845, 424491023, 2097440, 8388888, 2030576251, 1010647682, 304, 8388896, 2030573901, 578486374, 2097416, 8388896, 2030584632, 524434713, 2621712, 8388872, 2030576497, 1127762798, 288, 8388880, 2030575426, 594608222, 2621696, 8388880, 2030585773, 594627438, 524600, 8388864, 2030573918, 1193954398, 272, 8388920, 2030576406, 425590878, 5243120, 8388840, 2030600286, 1680898835, 3145976, 8388848, 2030590357, (-2141291611), 524520, 8388856, 2030593072, 1502956638, 3145952, 8388856, 2030589884, 1502968741, 1048896, 8388832, 2030581643, 1471953596, 524536, 8388928, 2030590357, 931875934, 3145936, 8388832, 2030599987, 1444182784, 3670232, 8388816, 2030588749, 2134080370, 1048800, 8388824, 2030589460, 1397569840, 3670216, 8388824, 2030588294, 1397586802, 1573160, 8388808, 2030581621, 1367750048, 1048792, 8388904, 2030588749, 930429232, 3670200, 8388808, 2030600105, 1367767922, 4194496, 8388792, 2030590988, (-2113896405), 1573064, 8388800, 2030588294, 1472017824, 4194480, 8388800, 2030594131, 1544323115, 2097432, 8388784, 2030582845, 1750286978, 1573056, 8388888, 2030590988, 1010645007, 4194464, 8388784, 2030601586, 1750302763, 4718760, 8388768, 2030592780, 2130737717, 2097328, 8388776, 2030594131, 1754350210, 4718744, 8388776, 2030592859, 1661762101, 2621704, 8388760, 2030584632, 1666927470, 2097320, 8388872, 2030592780, 1127759129, 4718728, 8388760, 2030600061, 1666939445, 5243024, 8388744, 2030592912, 2138930108, 2621592, 8388752, 2030592859, 1670400878, 5243112, 8388752, 2030592953, 1670413244, 524544, 8388840, 2030585642, 1680886878, 2621584, 8388864, 2030592912, 1202539374, 3145968, 8388728, 2030600286, (-1518175323), 5243008, 8388848, 2030607664, (-2141291757), 5767288, 8388736, 2030609794, (-1657749899), 3670224, 8388720, 2030599987, (-1637057678), 3145848, 8388816, 2030609718, 2134080256, 5767280, 8388728, 2030607980, (-1523138978), 4194488, 8388712, 2030600704, (-1504477141), 3670128, 8388792, 2030607980, 2141813618, 5767272, 8388720, 2030609542, (-1637040546), 4718752, 8388704, 2030599936, (-1656194507), 4194408, 8388768, 2030610003, (-2056093653), 5767264, 8388712, 2030607688, (-1523007906), 5243016, 8388736, 2030600061, (-1667793988), 4718688, 8388744, 2030607688, 2138929717, 5767296, 8388704, 2030607511, (-1656177058), 6291584, 8388744, 2030607511, 2138938696, 6815840, 8388768, 2030607688, 2130748728, 7340136, 8388792, 2030609542, 2141822572, 7864432, 8388816, 2030607980, 2134091062, 8388728, 8388848, 2030609794, (-2141283024), 16777360, 8388840, 2030592912, 1673086893, 9437336, 8388744, 2030592859, 2138923920, 17301672, 8388760, 2030592780, 1666925368, 11010224, 8388768, 2030594131, (-2056099695), 18350272, 8388784, 2030590988, 1750285373, 12583112, 8388792, 2030588294, 2141804477, 19398872, 8388808, 2030588749, 1367750517, 14156000, 8388816, 2030589460, 2134070093, 20971768, 8388832, 2030590357, 1471952779, 16253160, 8388848, 2030593072, (-2141300331), 20447504, 8388864, 2030576406, 1193941342, 17826080, 8388872, 2030575426, 1127752561, 18874672, 8388888, 2030573901, 1010639483, 19923272, 8388904, 2030576711, 930420862, 21496120, 8388928, 2030573918, 931865743, 0, 0, 0};
+int g_BattleSpecFreezeBreathInitialTemplate[409] = {336, (-30408704), 0, (-7274496), 65349, (-12713812), 65467, (-14024601), 149, (-11534467), 125, (-7209110), 65499, 7274627, 65356, 7274668, 69, 7274496, 223, 7339820, 69, 7339901, 65356, 27721769, 0, 17694625, 40, 19791872, 73, 18088037, 40, 20119620, 65456, 17563571, 65430, 8650550, 65471, 65365, 65435, 65345, 0, 8650628, 172, 65360, 146, 65459, 202, 8585340, 172, (-3473331), 209, (-5373778), 110, 8585381, 65471, (-4521761), 0, (-3735378), 65406, 65459, 65359, 8585216, 65324, (-3276695), 65337, (-8519770), 65383, (-9306314), 65, (-19464317), 65496, (-12976128), 161, (-20512845), 53, (-13041544), 65, (-22872041), 59, (-22609920), 65446, (-13369259), 65404, (-19070887), 65496, 2883664, 524608, 8388920, 2030581643, 425610334, 1048904, 8388928, 2030576783, 931871420, 312, 8388936, 2030573918, 613351518, 1048872, 8388936, 2030581621, 608647472, 1573168, 8388904, 2030573694, 930428320, 328, 8388912, 2030576711, 410910820, 1573144, 8388912, 2030582845, 424491023, 2097440, 8388888, 2030576251, 1010647682, 304, 8388896, 2030573901, 578486374, 2097416, 8388896, 2030584632, 524434713, 2621712, 8388872, 2030576497, 1127762798, 288, 8388880, 2030575426, 594608222, 2621696, 8388880, 2030585773, 594627438, 524600, 8388864, 2030573918, 1193954398, 272, 8388920, 2030576406, 425590878, 5243120, 8388840, 2030600286, 1680898835, 3145976, 8388848, 2030590357, (-2141291611), 524520, 8388856, 2030593072, 1502956638, 3145952, 8388856, 2030589884, 1502968741, 1048896, 8388832, 2030581643, 1471953596, 524536, 8388928, 2030590357, 931875934, 3145936, 8388832, 2030599987, 1444182784, 3670232, 8388816, 2030588749, 2134080370, 1048800, 8388824, 2030589460, 1397569840, 3670216, 8388824, 2030588294, 1397586802, 1573160, 8388808, 2030581621, 1367750048, 1048792, 8388904, 2030588749, 930429232, 3670200, 8388808, 2030600105, 1367767922, 4194496, 8388792, 2030590988, (-2113896405), 1573064, 8388800, 2030588294, 1472017824, 4194480, 8388800, 2030594131, 1544323115, 2097432, 8388784, 2030582845, 1750286978, 1573056, 8388888, 2030590988, 1010645007, 4194464, 8388784, 2030601586, 1750302763, 4718760, 8388768, 2030592780, 2130737717, 2097328, 8388776, 2030594131, 1754350210, 4718744, 8388776, 2030592859, 1661762101, 2621704, 8388760, 2030584632, 1666927470, 2097320, 8388872, 2030592780, 1127759129, 4718728, 8388760, 2030600061, 1666939445, 5243024, 8388744, 2030592912, 2138930108, 2621592, 8388752, 2030592859, 1670400878, 5243112, 8388752, 2030592953, 1670413244, 524544, 8388840, 2030585642, 1680886878, 2621584, 8388864, 2030592912, 1202539374, 3145968, 8388728, 2030600286, (-1518175323), 5243008, 8388848, 2030607664, (-2141291757), 5767288, 8388736, 2030609794, (-1657749899), 3670224, 8388720, 2030599987, (-1637057678), 3145848, 8388816, 2030609718, 2134080256, 5767280, 8388728, 2030607980, (-1523138978), 4194488, 8388712, 2030600704, (-1504477141), 3670128, 8388792, 2030607980, 2141813618, 5767272, 8388720, 2030609542, (-1637040546), 4718752, 8388704, 2030599936, (-1656194507), 4194408, 8388768, 2030610003, (-2056093653), 5767264, 8388712, 2030607688, (-1523007906), 5243016, 8388736, 2030600061, (-1667793988), 4718688, 8388744, 2030607688, 2138929717, 5767296, 8388704, 2030607511, (-1656177058), 6291584, 8388744, 2030607511, 2138938696, 6815840, 8388768, 2030607688, 2130748728, 7340136, 8388792, 2030609542, 2141822572, 7864432, 8388816, 2030607980, 2134091062, 8388728, 8388848, 2030609794, (-2141283024), 16777360, 8388840, 2030592912, 1673086893, 9437336, 8388744, 2030592859, 2138923920, 17301672, 8388760, 2030592780, 1666925368, 11010224, 8388768, 2030594131, (-2056099695), 18350272, 8388784, 2030590988, 1750285373, 12583112, 8388792, 2030588294, 2141804477, 19398872, 8388808, 2030588749, 1367750517, 14156000, 8388816, 2030589460, 2134070093, 20971768, 8388832, 2030590357, 1471952779, 16253160, 8388848, 2030593072, (-2141300331), 20447504, 8388864, 2030576406, 1193941342, 17826080, 8388872, 2030575426, 1127752561, 18874672, 8388888, 2030573901, 1010639483, 19923272, 8388904, 2030576711, 930420862, 21496120, 8388928, 2030573918, 931865743, 0, 0, 0};
 // GLOBAL: FF7 0x008a0b58
 struct BattleSpecFreezeBreathSpriteReq g_BattleSpecFreezeBreathSpriteReq = {0, 0, {0x80, 0x80, 0x80, 0x2c}, 0, {0}};
 // GLOBAL: FF7 0x008a0b68
@@ -162,7 +162,7 @@ int g_BattleSpecFreezeBreathRotAngles2[2] = {64512, 0};
 struct BattleSpecialHarrierLookMatrix g_BattleSpecFreezeBreathBasisMatrix = {0};
 // Per-face flags: set while ordering a face, then once the face is released.
 // GLOBAL: FF7 0x00b5e488
-short g_BattleSpecFreezeBreathFaceActiveFlags[0x80] = {0};
+short g_BattleSpecFreezeBreathFaceActiveFlags[128] = {0};
 // GLOBAL: FF7 0x00b5e588
 BattleSpecFreezeBreathFaceIndex g_BattleSpecFreezeBreathFaceIndex = {0};
 unsigned char g_bssPad_00b5e598[1020] = {0};
@@ -170,7 +170,7 @@ unsigned char g_bssPad_00b5e598[1020] = {0};
 int g_BattleSpecFreezeBreathDrawListHead = 0;
 // The faces in descending depth, the order in which they are released.
 // GLOBAL: FF7 0x00b5e998
-short g_BattleSpecFreezeBreathFaceOrder[0x80] = {0};
+short g_BattleSpecFreezeBreathFaceOrder[128] = {0};
 // GLOBAL: FF7 0x00b5ea98
 struct GfxTableCursor *g_BattleSpecFreezeBreathLoadedResTable = 0;
 unsigned char g_bssPad_00b5ea9c[4] = {0};
@@ -238,7 +238,7 @@ void __cdecl BattleFx_SpecialBeginFreezeBreath(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel1 = 0;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
     g_BattleFxTimelineState.channel2 = 0x40;
-    Battle_StartFixedPointRamp(0xC00, 0xA);
+    Battle_StartFixedPointRamp(0xC00, 10);
 }
 
 /*
@@ -255,7 +255,7 @@ void __cdecl BattleFx_SpecialFreezeBreathBuildDescendingOrder(void)
     int table;
     short pass, faceIndex;
 
-    for (pass = 0; pass < 0x50; pass++) {
+    for (pass = 0; pass < 80; pass++) {
         g_BattleSpecFreezeBreathFaceActiveFlags[pass] = 0;
         g_BattleSpecFreezeBreathFaceIndex.offsets[pass].z = 0;
         g_BattleSpecFreezeBreathFaceIndex.offsets[pass].y = 0;
@@ -264,9 +264,9 @@ void __cdecl BattleFx_SpecialFreezeBreathBuildDescendingOrder(void)
     meshAddress = (int)&g_BattleSpecFreezeBreathTemplateField;
     table = meshAddress + g_BattleSpecFreezeBreathWorkingTemplate;
     table += 4;
-    for (pass = 0; pass < 0x50; pass++) {
+    for (pass = 0; pass < 80; pass++) {
         maxDepth = 0x8000;
-        for (faceIndex = 0; faceIndex < 0x50; faceIndex++) {
+        for (faceIndex = 0; faceIndex < 80; faceIndex++) {
             if (g_BattleSpecFreezeBreathFaceActiveFlags[faceIndex] == 0) {
                 facePointer = meshAddress + *(short *)((char *)table + (faceIndex << 3) * 2);
                 if (*(short *)((char *)facePointer + 2) > maxDepth) {
@@ -278,7 +278,7 @@ void __cdecl BattleFx_SpecialFreezeBreathBuildDescendingOrder(void)
         g_BattleSpecFreezeBreathFaceOrder[pass] = chosen;
         g_BattleSpecFreezeBreathFaceActiveFlags[chosen] = 1;
     }
-    for (pass = 0; pass < 0x50; pass++) {
+    for (pass = 0; pass < 80; pass++) {
         g_BattleSpecFreezeBreathFaceActiveFlags[pass] = 0;
     }
 }
@@ -336,7 +336,7 @@ void __cdecl BattleFx_SpecialFreezeBreathTimelineTask(void)
     if (frame.timelineSlot->frameCounter == 0) {
         frame.offsetX.vx = 0;
         frame.offsetX.vy = 0;
-        frame.offsetX.vz = 0xC8;
+        frame.offsetX.vz = 200;
         g_BattleSpecFreezeBreathBasisMatrix.transX = frame.timelineSlot->startX;
         g_BattleSpecFreezeBreathBasisMatrix.transY = frame.timelineSlot->startY;
         g_BattleSpecFreezeBreathBasisMatrix.transZ = frame.timelineSlot->startZ;
@@ -348,7 +348,7 @@ void __cdecl BattleFx_SpecialFreezeBreathTimelineTask(void)
         frame.spawnSlot->posY = frame.timelineSlot->startY;
         frame.spawnSlot->posZ = frame.timelineSlot->startZ;
     }
-    if (frame.timelineSlot->frameCounter < 0xF) {
+    if (frame.timelineSlot->frameCounter < 15) {
         g_BattleSpecFreezeBreathBasisMatrix.transX = frame.timelineSlot->startX;
         g_BattleSpecFreezeBreathBasisMatrix.transY = frame.timelineSlot->startY;
         g_BattleSpecFreezeBreathBasisMatrix.transZ = frame.timelineSlot->startZ;
@@ -359,38 +359,38 @@ void __cdecl BattleFx_SpecialFreezeBreathTimelineTask(void)
         frame.stepZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 8;
         for (frame.burstIndex = 0; frame.burstIndex < 3; frame.burstIndex++) {
             frame.spawnSlot = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFreezeBreathMovingModelTask);
-            frame.orbitX.vx = CosFixed((frame.timelineSlot->frameCounter << 9) + frame.burstIndex * 0x555) * 0x50 >> 0xC;
-            frame.orbitX.vy = SinFixed((frame.timelineSlot->frameCounter << 9) + frame.burstIndex * 0x555) * 0x50 >> 0xC;
-            frame.orbitX.vz = rand() % 0x64 - 0x32;
+            frame.orbitX.vx = CosFixed((frame.timelineSlot->frameCounter << 9) + frame.burstIndex * 1365) * 0x50 >> 12;
+            frame.orbitX.vy = SinFixed((frame.timelineSlot->frameCounter << 9) + frame.burstIndex * 1365) * 0x50 >> 12;
+            frame.orbitX.vz = rand() % 100 - 50;
             RotTransPointToInt16(&frame.orbitX, (short *)((int)frame.spawnSlot + 4), &frame.depth);
             frame.spawnSlot->velocityX = frame.stepX;
             frame.spawnSlot->velocityY = frame.stepY;
             frame.spawnSlot->velocityZ = frame.stepZ;
         }
     }
-    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 0x12) {
+    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 18) {
         frame.spawnSlot = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFreezeBreathScatteredAnimatedSpriteTask);
-        frame.spawnSlot->posX = frame.timelineSlot->endX + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posY = frame.timelineSlot->endY + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posZ = frame.timelineSlot->endZ + rand() % 0x320 + -0x190;
+        frame.spawnSlot->posX = frame.timelineSlot->endX + rand() % 800 + -400;
+        frame.spawnSlot->posY = frame.timelineSlot->endY + rand() % 800 + -400;
+        frame.spawnSlot->posZ = frame.timelineSlot->endZ + rand() % 800 + -400;
     }
-    if (frame.timelineSlot->frameCounter == 0xD) {
+    if (frame.timelineSlot->frameCounter == 13) {
         frame.spawnSlot = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFreezeBreathStagedFaceOffsetModelTask);
         frame.spawnSlot->posX = frame.timelineSlot->endX;
         frame.spawnSlot->posY = frame.timelineSlot->endY;
         frame.spawnSlot->posZ = frame.timelineSlot->endZ;
         frame.spawnSlot = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFreezeBreathSpinModelsEmitTask);
         frame.spawnSlot->posX = frame.timelineSlot->endX;
-        frame.spawnSlot->posY = frame.timelineSlot->endY - 0x578;
+        frame.spawnSlot->posY = frame.timelineSlot->endY - 1400;
         frame.spawnSlot->posZ = frame.timelineSlot->endZ;
         Battle_PlaySfxPannedToActor(0x187, (short)frame.timelineSlot->actorIndex, 0);
     }
-    if (frame.timelineSlot->frameCounter == 0x41) {
+    if (frame.timelineSlot->frameCounter == 65) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x46) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (frame.timelineSlot->frameCounter == 70) {
+        Battle_StartFixedPointRamp(0, 10);
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -412,8 +412,8 @@ void __cdecl BattleFx_SpecialFreezeBreathDrawScaledSpriteTask(void)
 #pragma pack(pop)
 
     frame.sprite = (BattleFxCosmoMemoryExpandingModel *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecFreezeBreathSpriteReq.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecFreezeBreathLoadedResTable);
-    g_BattleSpecFreezeBreathSpriteReq.resourceHandle = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecFreezeBreathLoadedResTable);
+    (g_BattleSpecFreezeBreathSpriteReq.spriteResource) = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecFreezeBreathLoadedResTable);
+    g_BattleSpecFreezeBreathSpriteReq.resourceHandle = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecFreezeBreathLoadedResTable);
     RotMatrix((SVECTOR *)&g_BattleSpecFreezeBreathRotAngles1, &frame.matrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecFreezeBreathBasisMatrix, &frame.matrix, &frame.matrix);
     ScaleMatrix(&frame.matrix, &g_BattleSpecFreezeBreathScaleVector1.scale);
@@ -427,7 +427,7 @@ void __cdecl BattleFx_SpecialFreezeBreathDrawScaledSpriteTask(void)
     g_BattleSpecFreezeBreathDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecFreezeBreathSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecFreezeBreathDrawListHead);
     if (g_BattleIsPaused == 0) {
         (frame.sprite->frame)++;
-        if (frame.sprite->frame == 0x14) {
+        if (frame.sprite->frame == 20) {
             frame.sprite->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -447,9 +447,9 @@ void __cdecl BattleFx_SpecialFreezeBreathScatteredAnimatedSpriteTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecFreezeBreathScaleVector1.scatterSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecFreezeBreathLoadedResTable);
-    g_BattleSpecFreezeBreathScaleVector1.scatterSprite.drawObj = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSpecFreezeBreathLoadedResTable);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000, 0);
+    g_BattleSpecFreezeBreathScaleVector1.scatterSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecFreezeBreathLoadedResTable);
+    g_BattleSpecFreezeBreathScaleVector1.scatterSprite.drawObj = Gfx_ModelTableGetSpriteObject(10, g_BattleSpecFreezeBreathLoadedResTable);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000 /* 1.0 */, 0);
     g_BattleSpecFreezeBreathScaleVector1.scatterSprite.frame = task->frameCounter;
     g_BattleSpecFreezeBreathDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecFreezeBreathScaleVector1.scatterSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecFreezeBreathDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleSpecFreezeBreathScaleVector1.scatterSprite.spriteGroup != 0) {
@@ -493,10 +493,10 @@ void __cdecl BattleFx_SpecialFreezeBreathStagedFaceOffsetModelTask(void)
     frame.slotField08 = frame.slot->posZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.matrix, &frame.matrix);
     SetDrawColorRGB(0, 0, 0);
-    if (frame.slot->frameCounter < 0x1E) {
+    if (frame.slot->frameCounter < 30) {
         SetRotMatrix(&frame.matrix);
         SetTransMatrix(&frame.matrix);
-        if (frame.slot->frameCounter < 0x10) {
+        if (frame.slot->frameCounter < 16) {
             frame.modelIndex = frame.slot->frameCounter >> 1;
         } else {
             frame.modelIndex = 7;
@@ -506,15 +506,15 @@ void __cdecl BattleFx_SpecialFreezeBreathStagedFaceOffsetModelTask(void)
     } else {
         RotMatrix((SVECTOR *)&g_BattleSpecFreezeBreathRotationVector, &frame.meshPosition);
         g_BattleSpecFreezeBreathScaleVector2.meshTemplate = (int)&g_BattleSpecFreezeBreathWorkingTemplate;
-        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xD, g_BattleSpecFreezeBreathLoadedResTable)));
-        Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xE, g_BattleSpecFreezeBreathLoadedResTable)));
+        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(13, g_BattleSpecFreezeBreathLoadedResTable)));
+        Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(14, g_BattleSpecFreezeBreathLoadedResTable)));
         g_BattleSpecFreezeBreathDrawListHead = BattleFx_SpecialFreezeBreathDrawPerFaceOffsetMesh((BattleFxFreezeBreathDrawRecord *)&g_BattleSpecFreezeBreathScaleVector2.meshTemplate, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, (BattleFxFreezeBreathDrawPrim *)g_BattleSpecFreezeBreathDrawListHead, (Vec3sPacked *)g_BattleSpecFreezeBreathFaceIndex.offsets, &frame.matrix, (struct BattleFxShardTransformBatch *)&frame.meshPosition);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter >= 0x1E) {
-        if (g_BattleSpecFreezeBreathFaceIndex.faceIndex != 0x50) {
+    if (frame.slot->frameCounter >= 30) {
+        if (g_BattleSpecFreezeBreathFaceIndex.faceIndex != 80) {
             for (frame.faceLoop = 0; frame.faceLoop < 4; frame.faceLoop++, g_BattleSpecFreezeBreathFaceIndex.faceIndex++) {
                 g_BattleSpecFreezeBreathFaceActiveFlags[g_BattleSpecFreezeBreathFaceOrder[g_BattleSpecFreezeBreathFaceIndex.faceIndex]] = 1;
             }
@@ -522,17 +522,17 @@ void __cdecl BattleFx_SpecialFreezeBreathStagedFaceOffsetModelTask(void)
         frame.templateAddr = (int)&g_BattleSpecFreezeBreathTemplateField;
         frame.templateBase = frame.templateAddr + g_BattleSpecFreezeBreathWorkingTemplate;
         frame.templateBase += 4;
-        for (frame.faceLoop = 0; frame.faceLoop < 0x50; frame.faceLoop++) {
+        for (frame.faceLoop = 0; frame.faceLoop < 80; frame.faceLoop++) {
             if (g_BattleSpecFreezeBreathFaceActiveFlags[frame.faceLoop] == 1) {
-                g_BattleSpecFreezeBreathFaceIndex.offsets[frame.faceLoop].y += 0x14;
+                g_BattleSpecFreezeBreathFaceIndex.offsets[frame.faceLoop].y += 20;
                 if (*(short *)((char *)frame.templateBase + (frame.faceLoop << 3) * 2 + 6) != 0) {
-                    *(short *)((char *)frame.templateBase + (frame.faceLoop << 3) * 2 + 6) -= 0x10;
+                    *(short *)((char *)frame.templateBase + (frame.faceLoop << 3) * 2 + 6) -= 16;
                 }
             }
         }
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x3C) {
+    if (frame.slot->frameCounter == 60) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -692,8 +692,8 @@ void __cdecl BattleFx_SpecialFreezeBreathSpinModelsEmitTask(void)
     frame.rotX.vx = frame.rotX.vz;
     frame.rotX.vy = frame.emitSlot->frameCounter << 8;
     RotMatrix(&frame.rotX, &frame.matrix);
-    frame.scaleX.vy = 0x3000;
-    frame.scaleX.vz = (SinFixed(frame.emitSlot->frameCounter << 7) << 0xE) + 0x2000 >> 0xC;
+    frame.scaleX.vy = 0x3000 /* 3.0 */;
+    frame.scaleX.vz = (SinFixed(frame.emitSlot->frameCounter << 7) << 14) + 0x2000 >> 12;
     frame.scaleX.vx = frame.scaleX.vz;
     ScaleMatrix(&frame.matrix, &frame.scaleX);
     frame.matrix.t[0] = frame.emitSlot->posX;
@@ -707,7 +707,7 @@ void __cdecl BattleFx_SpecialFreezeBreathSpinModelsEmitTask(void)
     frame.rotX.vx = frame.rotX.vz;
     frame.rotX.vy = -frame.emitSlot->frameCounter << 8;
     RotMatrix(&frame.rotX, &frame.matrix);
-    frame.scaleX.vz = SinFixed(frame.emitSlot->frameCounter << 7) * 0x3000 + 0x2000 >> 0xC;
+    frame.scaleX.vz = SinFixed(frame.emitSlot->frameCounter << 7) * 0x3000 + 0x2000 >> 12;
     frame.scaleX.vx = frame.scaleX.vz;
     ScaleMatrix(&frame.matrix, &frame.scaleX);
     frame.matrix.t[0] = frame.emitSlot->posX;
@@ -720,17 +720,17 @@ void __cdecl BattleFx_SpecialFreezeBreathSpinModelsEmitTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.emitSlot->posY += 0xBE;
+    frame.emitSlot->posY += 190;
     for (frame.spawnIndex = 0; frame.spawnIndex < 3; frame.spawnIndex++) {
         frame.spinModel = (BattleFreezeBreathSpinModel *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFreezeBreathOrbitingSpriteTask);
         frame.spinModel->posX = frame.emitSlot->posX;
         frame.spinModel->posZ = frame.emitSlot->posZ;
         frame.spinModel->posY = frame.emitSlot->posY;
         frame.spinModel->phase = (rand() % 4096);
-        frame.spinModel->radius = SinFixed(frame.emitSlot->frameCounter << 7) * 0x320 + 0x190 >> 0xC;
+        frame.spinModel->radius = SinFixed(frame.emitSlot->frameCounter << 7) * 800 + 400 >> 12;
     }
     (frame.emitSlot->frameCounter)++;
-    if (frame.emitSlot->frameCounter == 0xF) {
+    if (frame.emitSlot->frameCounter == 15) {
         frame.emitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -752,17 +752,17 @@ void __cdecl BattleFx_SpecialFreezeBreathOrbitingSpriteTask(void)
 #pragma pack(pop)
 
     frame.orbitSprite = (BattleFxFreezeBreathOrbitSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecFreezeBreathScaleVector1.orbitSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecFreezeBreathLoadedResTable);
+    g_BattleSpecFreezeBreathScaleVector1.orbitSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecFreezeBreathLoadedResTable);
     g_BattleSpecFreezeBreathScaleVector1.orbitSprite.drawObj = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    frame.posX.vx = frame.orbitSprite->centerX + (CosFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 0xC);
-    frame.posX.vz = frame.orbitSprite->centerZ + (SinFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 0xC);
+    frame.posX.vx = frame.orbitSprite->centerX + (CosFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 12);
+    frame.posX.vz = frame.orbitSprite->centerZ + (SinFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 12);
     frame.posX.vy = frame.orbitSprite->posY;
-    BattleFx_InstallBillboardMatrix(&frame.posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecFreezeBreathScaleVector1.orbitSprite.frame = frame.orbitSprite->step;
     g_BattleSpecFreezeBreathDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecFreezeBreathScaleVector1.orbitSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecFreezeBreathDrawListHead);
     if (g_BattleIsPaused == 0) {
-        frame.orbitSprite->posY -= 0x32;
-        frame.orbitSprite->angle += 0x100;
+        frame.orbitSprite->posY -= 50;
+        frame.orbitSprite->angle += 0x100 /* 22.5 deg */;
         if (g_BattleSpecFreezeBreathScaleVector1.orbitSprite.spriteGroup != 0) {
             (frame.orbitSprite->step)++;
             if (frame.orbitSprite->step == g_BattleSpecFreezeBreathScaleVector1.orbitSprite.spriteGroup->header->frameCount) {

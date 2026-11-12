@@ -115,7 +115,7 @@ void __cdecl BattleFx_SpecialBoulderThrowInitDisplacementVectors(void)
 {
     EffectVectorInitLocals l;
 
-    for (l.index = 0; l.index < 0x14; l.index++) {
+    for (l.index = 0; l.index < 20; l.index++) {
         g_BoulderThrow_DisplacementPosArray[l.index].offsetZ = 0;
         g_BoulderThrow_DisplacementPosArray[l.index].offsetY = 0;
         g_BoulderThrow_DisplacementPosArray[l.index].offset = 0;
@@ -170,9 +170,9 @@ void __cdecl BattleFx_SpecialBoulderThrowTimelineTask(void)
         frame.segment->posX = frame.timeline->startX;
         frame.segment->posY = frame.timeline->startY;
         frame.segment->posZ = frame.timeline->startZ;
-        frame.segment->stepX = (frame.timeline->endX - frame.timeline->startX) / 0x14;
-        frame.segment->stepY = (frame.timeline->endY - frame.timeline->startY) / 0x14;
-        frame.segment->stepZ = (frame.timeline->endZ - frame.timeline->startZ) / 0x14;
+        frame.segment->stepX = (frame.timeline->endX - frame.timeline->startX) / 20;
+        frame.segment->stepY = (frame.timeline->endY - frame.timeline->startY) / 20;
+        frame.segment->stepZ = (frame.timeline->endZ - frame.timeline->startZ) / 20;
         frame.segment = (BattleFxBoulderThrowSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBoulderThrowDampedSpriteParticleTask);
         frame.segment->posX = frame.timeline->startX;
         frame.segment->posY = frame.timeline->startY;
@@ -181,8 +181,8 @@ void __cdecl BattleFx_SpecialBoulderThrowTimelineTask(void)
         frame.segment->stepY = 0xFFB0;
         frame.segment->stepZ = 0;
     }
-    if (frame.timeline->timer == 0x14) {
-        for (frame.particleIndex = 0; frame.particleIndex < 0xA; frame.particleIndex++) {
+    if (frame.timeline->timer == 20) {
+        for (frame.particleIndex = 0; frame.particleIndex < 10; frame.particleIndex++) {
             frame.segment = (BattleFxBoulderThrowSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBoulderThrowDampedSpriteParticleTask);
             frame.segment->posX = frame.timeline->endX;
             frame.segment->posY = frame.timeline->endY;
@@ -200,7 +200,7 @@ void __cdecl BattleFx_SpecialBoulderThrowTimelineTask(void)
         Battle_PlaySfxPannedToActor(0x14, (short)frame.timeline->recordType, 0);
     }
     (frame.timeline->timer)++;
-    if (frame.timeline->timer == 0x1E) {
+    if (frame.timeline->timer == 30) {
         frame.timeline->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -216,15 +216,15 @@ void __cdecl BattleFx_SpecialBoulderThrowDampedSpriteParticleTask(void)
     taskSlot = (BattleFxEnergyOrbDriftSprite *)BATTLE_CURRENT_TASK_SLOT;
     (g_BoulderThrowSpriteResourcePointer.resource) = Gfx_ModelTableGetLoadedRecord(4, g_BoulderThrow_LoadedResTable);
     g_BoulderThrowSpriteResourcePointer.objectPointer = Gfx_ModelTableGetSpriteObject(4, g_BoulderThrow_LoadedResTable);
-    BattleFx_InstallBillboardMatrix(&taskSlot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&taskSlot->posX, 0x2000 /* 2.0 */, 0);
     g_BoulderThrowSpriteResourcePointer.frameIndex = taskSlot->frameIndex;
     g_BoulderThrow_MeshDrawHandle = BattleFx_SubmitSpriteDraw(&g_BoulderThrowSpriteResourcePointer, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BoulderThrow_MeshDrawHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    taskSlot->velocityX = taskSlot->velocityX * 0xC0 / 0x100;
-    taskSlot->velocityY = taskSlot->velocityY * 0xC0 / 0x100;
-    taskSlot->velocityZ = taskSlot->velocityZ * 0xC0 / 0x100;
+    taskSlot->velocityX = taskSlot->velocityX * 192 / 256;
+    taskSlot->velocityY = taskSlot->velocityY * 192 / 256;
+    taskSlot->velocityZ = taskSlot->velocityZ * 192 / 256;
     taskSlot->posX += taskSlot->velocityX;
     taskSlot->posY += taskSlot->velocityY;
     taskSlot->posZ += taskSlot->velocityZ;
@@ -253,12 +253,12 @@ void __cdecl BattleFx_SpecialBoulderThrowShatteringMeshTask(void)
     } frame;
 
     frame.shard = (BattleFxBoulderThrowShardState *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.shard->timer < 0x14) {
+    if (frame.shard->timer < 20) {
         g_BoulderThrow_PitchAngle = -frame.shard->timer << 7;
         RotMatrix((SVECTOR *)&g_BoulderThrow_PitchAngle, &frame.rotMatrix);
         ScaleMatrix(&frame.rotMatrix, (int *)&g_BoulderThrowMeshScaleFixed12);
         frame.rotMatrix.t[0] = frame.shard->posX;
-        frame.rotMatrix.t[1] = frame.shard->posY - (SinFixed(frame.shard->timer * 0x66) * 0x7D0 >> 0xC);
+        frame.rotMatrix.t[1] = frame.shard->posY - (SinFixed(frame.shard->timer * 0x66) * 0x7D0 >> 12);
         frame.rotMatrix.t[2] = frame.shard->posZ;
         MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.viewMatrix);
         SetRotMatrix(&frame.viewMatrix);
@@ -270,7 +270,7 @@ void __cdecl BattleFx_SpecialBoulderThrowShatteringMeshTask(void)
         Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(3, g_BoulderThrow_LoadedResTable)));
         g_BoulderThrow_MeshDrawHandle = BattleFx_SpecialBoulderThrowDrawPsxMesh((BattleFxPsxMeshDescriptor *)&g_BoulderThrowMeshDrawDescriptor, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BoulderThrow_MeshDrawHandle);
     } else {
-        frame.fragmentTimer = frame.shard->timer - 0x14;
+        frame.fragmentTimer = frame.shard->timer - 20;
         g_BoulderThrowMeshDrawDescriptor.flags = 8;
         g_BoulderThrowMeshDrawDescriptor.shade = 0x80 - (frame.fragmentTimer << 4);
         RotMatrix((SVECTOR *)&g_BoulderThrow_PitchAngle, &frame.rotMatrix);
@@ -290,7 +290,7 @@ void __cdecl BattleFx_SpecialBoulderThrowShatteringMeshTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.shard->timer < 0x14) {
+    if (frame.shard->timer < 20) {
         frame.shard->posX += frame.shard->velocityX;
         frame.shard->posY += frame.shard->velocityY;
         frame.shard->posZ += frame.shard->velocityZ;
@@ -298,7 +298,7 @@ void __cdecl BattleFx_SpecialBoulderThrowShatteringMeshTask(void)
         BattleFx_SpecialBoulderThrowAdvanceMeshDisplacements();
     }
     (frame.shard->timer)++;
-    if (frame.shard->timer == 0x1C) {
+    if (frame.shard->timer == 28) {
         frame.shard->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -597,7 +597,7 @@ void __cdecl BattleFx_SpecialBoulderThrowAdvanceMeshDisplacements(void)
 {
     short i;
 
-    for (i = 0; i < 0x14; i++) {
+    for (i = 0; i < 20; i++) {
         g_BoulderThrow_DisplacementPosArray[i].offset += g_BoulderThrow_DisplacementVelArray[i].velocityX;
         g_BoulderThrow_DisplacementPosArray[i].offsetY += g_BoulderThrow_DisplacementVelArray[i].velocityY;
         g_BoulderThrow_DisplacementPosArray[i].offsetZ += g_BoulderThrow_DisplacementVelArray[i].velocityZ;

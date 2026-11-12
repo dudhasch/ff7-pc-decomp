@@ -320,7 +320,7 @@ void __cdecl World_UpdateVehicleTransition(int action)
                         WorldEntity_SetCurrentFacingClearTurn(frame.heading);
                         World_PopVehicleModel();
                         WorldEntity_DetachRiderAsCurrent();
-                        if (frame.entity < 0x29)
+                        if (frame.entity < 41)
                             WorldEntity_SetPlayerControlled();
                         WorldEntity_SetCurrentAnimId(2);
                         WorldEntity_SetCurrentFacingClearTurn(frame.heading);
@@ -328,7 +328,7 @@ void __cdecl World_UpdateVehicleTransition(int action)
                         WorldMap_SetPlayerControl(0, 6);
                         if (frame.entity == WORLD_MODEL_CHOCOBO_4) {
                             World_RequestTerrainFloodFill();
-                        } else if (frame.entity >= 0x29) {
+                        } else if (frame.entity >= 41) {
                             WorldEntity_SetCurrentById(WorldMap_GetLeaderModelIndex());
                             WorldEntity_SetPlayerControlled();
                         }

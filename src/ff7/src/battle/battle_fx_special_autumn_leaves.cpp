@@ -158,39 +158,39 @@ void __cdecl BattleFx_SpecialAutumnLeavesTimelineTask(void)
         return;
     }
     if (frame.timelineSlot->frameCounter == 0) {
-        frame.velocityX = (frame.timelineSlot->endX - frame.timelineSlot->startX) / 0xF;
+        frame.velocityX = (frame.timelineSlot->endX - frame.timelineSlot->startX) / 15;
         frame.velocityY = 0;
-        frame.velocityZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 0xF;
-        for (frame.i = 0; frame.i < 0x3C; frame.i++) {
+        frame.velocityZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 15;
+        for (frame.i = 0; frame.i < 60; frame.i++) {
             frame.leafSlot = (BattleFxAutumnLeavesLeafModelSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAutumnLeavesLeafModelTask);
             frame.leafSlot->angle = (rand() % 4096);
             frame.leafSlot->modelIndex = rand() % 3;
             frame.leafSlot->spinAngle = (rand() % 4096);
-            frame.leafSlot->radius = rand() % (0xBB8 - (SinFixed(frame.i * 0x19 + 0x1F4) * 0x9C4 >> 0xC));
+            frame.leafSlot->radius = rand() % (3000 - (SinFixed(frame.i * 25 + 500) * 2500 >> 12));
             frame.leafSlot->posX = frame.timelineSlot->startX;
-            frame.leafSlot->posY = -frame.i * 0x28;
+            frame.leafSlot->posY = -frame.i * 40;
             frame.leafSlot->posZ = frame.timelineSlot->startZ;
             frame.leafSlot->velocityX = frame.velocityX;
             frame.leafSlot->velocityY = frame.velocityY;
             frame.leafSlot->velocityZ = frame.velocityZ;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x28) {
-        for (frame.i = 0; frame.i < 0xA; frame.i++) {
+    if (frame.timelineSlot->frameCounter == 40) {
+        for (frame.i = 0; frame.i < 10; frame.i++) {
             if ((g_BattleSpecialAutumnLeavesTargetMask & 1 << frame.i) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.i);
-                BattleFx_HitMarkSpawnScriptAtActorBone(frame.i, 0x27, 0x1800);
+                BattleFx_HitMarkSpawnScriptAtActorBone(frame.i, 0x27, 0x1800 /* 1.5 */);
             }
         }
     }
     if (frame.timelineSlot->frameCounter < 8) {
         g_BattleSpecialAutumnLeavesStep++;
     }
-    if (frame.timelineSlot->frameCounter > 0x2A) {
+    if (frame.timelineSlot->frameCounter > 42) {
         g_BattleSpecialAutumnLeavesStep--;
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x32) {
+    if (frame.timelineSlot->frameCounter == 50) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -223,8 +223,8 @@ void __cdecl BattleFx_SpecialAutumnLeavesLeafModelTask(void)
     frame.modelIdThree[0] = 3;
     frame.modelIdThree[1] = 4;
     frame.modelIdThree[2] = 5;
-    frame.offsetX.vx = SinFixed(frame.leafSlot->angle) * frame.leafSlot->radius >> 0xC;
-    frame.offsetX.vz = CosFixed(frame.leafSlot->angle) * frame.leafSlot->radius >> 0xC;
+    frame.offsetX.vx = SinFixed(frame.leafSlot->angle) * frame.leafSlot->radius >> 12;
+    frame.offsetX.vz = CosFixed(frame.leafSlot->angle) * frame.leafSlot->radius >> 12;
     frame.rotX.vx = frame.leafSlot->spinAngle;
     frame.rotX.vy = frame.leafSlot->spinAngle << 1;
     frame.rotX.vz = 0;
@@ -246,18 +246,18 @@ void __cdecl BattleFx_SpecialAutumnLeavesLeafModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.leafSlot->frameCounter >= 0xA && frame.leafSlot->frameCounter < 0x19) {
+    if (frame.leafSlot->frameCounter >= 10 && frame.leafSlot->frameCounter < 25) {
         frame.leafSlot->posX += frame.leafSlot->velocityX;
         frame.leafSlot->posZ += frame.leafSlot->velocityZ;
     }
-    if (frame.leafSlot->frameCounter >= 0x19 && frame.leafSlot->frameCounter < 0x23) {
+    if (frame.leafSlot->frameCounter >= 25 && frame.leafSlot->frameCounter < 35) {
         frame.leafSlot->posY += (short)((-1600 - frame.leafSlot->posY) / 8);
         frame.leafSlot->radius -= (short)(frame.leafSlot->radius / 6);
     }
-    if (frame.leafSlot->frameCounter == 0x23) {
+    if (frame.leafSlot->frameCounter == 35) {
         frame.offsetX.vx = 0;
         frame.offsetX.vy = 0;
-        frame.offsetX.vz = 0x190;
+        frame.offsetX.vz = 400;
         frame.rotX.vx = ((rand()) % 4096);
         frame.rotX.vy = ((rand()) % 4096);
         frame.rotX.vz = 0;
@@ -269,16 +269,16 @@ void __cdecl BattleFx_SpecialAutumnLeavesLeafModelTask(void)
         SetTransMatrix(&frame.rotMatrix);
         RotTransPointToInt16(&frame.offsetX, &frame.leafSlot->velocityX, &frame.projDepth);
     }
-    if (frame.leafSlot->frameCounter >= 0x23) {
-        frame.leafSlot->radius += 0xC8;
+    if (frame.leafSlot->frameCounter >= 35) {
+        frame.leafSlot->radius += 200;
         frame.leafSlot->posX += frame.leafSlot->velocityX;
         frame.leafSlot->posZ += frame.leafSlot->velocityZ;
         frame.leafSlot->posY += frame.leafSlot->velocityY;
     }
-    frame.leafSlot->angle += 0x100;
+    frame.leafSlot->angle += 0x100 /* 22.5 deg */;
     frame.leafSlot->spinAngle += 0x80;
     (frame.leafSlot->frameCounter)++;
-    if (frame.leafSlot->frameCounter == 0x2D) {
+    if (frame.leafSlot->frameCounter == 45) {
         frame.leafSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

@@ -118,7 +118,7 @@ int __cdecl BattleFx_LimitEnterDynamite(int targetMask, int actorIdx)
     g_BattleLimitDynamiteFuseOffsetZ = 0;
     g_BattleLimitDynamiteState28[0] = 0;
     g_BattleLimitDynamiteState28[1] = 0;
-    g_BattleLimitDynamiteLivewireLength = 0x50;
+    g_BattleLimitDynamiteLivewireLength = 80;
     g_BattleLimitDynamiteDrawListHead = (int)&g_GfxPsxPacketScratch;
     BattleFx_LimitBeginDynamite(targetMask, actorIdx);
     return 0;
@@ -201,45 +201,45 @@ void __cdecl BattleFx_LimitDynamiteTimelineTask(void)
         SfxLoadIntoBuffer(0x116, 0);
         SfxLoadIntoBuffer(0xFA, 0);
     }
-    if (taskPtr->stage == 0x11) {
+    if (taskPtr->stage == 17) {
         particle = (BattleFxDynamiteParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDynamiteActorBoneModelTask);
         particle->level = taskPtr->actorIndex;
     }
-    if (taskPtr->stage == 0x2A) {
+    if (taskPtr->stage == 42) {
         Battle_PlaySfxPannedToActor(0x116, (short)taskPtr->actorIndex, 0x40);
     }
-    if (taskPtr->stage == 0x46) {
+    if (taskPtr->stage == 70) {
         particle = (BattleFxDynamiteParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDynamiteBallisticModelTask);
         Battle_GetBoneWorldPos(taskPtr->actorIndex, g_BattleActorRecords[taskPtr->actorIndex].bone34, &particle->posX);
         particle->angle = ArcTangentFixed(taskPtr->targetX - particle->posX, taskPtr->targetZ - particle->posZ);
-        particle->velocityX = (taskPtr->targetX - particle->posX) / 0x14;
+        particle->velocityX = (taskPtr->targetX - particle->posX) / 20;
         particle->velocityY = 0xFF38;
-        particle->velocityZ = (taskPtr->targetZ - particle->posZ) / 0x14;
+        particle->velocityZ = (taskPtr->targetZ - particle->posZ) / 20;
     }
-    if (taskPtr->stage == 0x6E) {
-        for (i8 = 0; i8 < 0xA; i8++) {
+    if (taskPtr->stage == 110) {
+        for (i8 = 0; i8 < 10; i8++) {
             if ((g_BattleLimitDynamiteTargetActorMask & 1 << i8) != 0) {
                 Battle_PostActorHitOrHurtMessage(i8);
             }
         }
     }
-    if (taskPtr->stage == 0x5A) {
+    if (taskPtr->stage == 90) {
         particle = (BattleFxDynamiteParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDynamiteGrowingModelTask);
         particle->posX = taskPtr->targetX;
         particle->posY = 0;
         particle->posZ = taskPtr->targetZ;
-        for (i8 = 0; i8 < 0x14; i8++) {
+        for (i8 = 0; i8 < 20; i8++) {
             particle = (BattleFxDynamiteParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDynamiteBouncingSpriteTask);
             particle->posX = taskPtr->targetX;
             particle->posZ = taskPtr->targetZ;
             particle->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFED4, 0x32, &particle->velocityX);
+            BattleFx_MakeRandomConeVector(0xFFFFFED4, 50, &particle->velocityX);
             particle->variant = rand() % 3;
         }
         Battle_PlaySfxPannedToActor(0xFA, -1, 0x40);
     }
     (taskPtr->stage)++;
-    if (taskPtr->stage == 0x78) {
+    if (taskPtr->stage == 120) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x116, 0xF);
         Sfx_ReleaseCachedBuffer(0xFA, 0xF);
@@ -285,9 +285,9 @@ void __cdecl BattleFx_LimitDynamiteBallisticModelTask(void)
     frame.ballistic->posX += frame.ballistic->velX;
     frame.ballistic->posY += frame.ballistic->velY;
     frame.ballistic->posZ += frame.ballistic->velZ;
-    frame.ballistic->velY += 0x14;
+    frame.ballistic->velY += 20;
     (frame.ballistic->frame)++;
-    if (frame.ballistic->frame == 0x14) {
+    if (frame.ballistic->frame == 20) {
         frame.ballistic->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -330,7 +330,7 @@ void __cdecl BattleFx_LimitDynamiteDrawLivewireLines(Vec3sPacked *position, void
     SetTransMatrix(&frame.rotMatrix);
     RefreshGlobalTransformState();
     RotTransPointToInt16(g_BattleLimitDynamiteState18, &frame.pointX, &frame.projDepth);
-    for (frame.sparkIndex = 0; frame.sparkIndex < 0xA; frame.sparkIndex++) {
+    for (frame.sparkIndex = 0; frame.sparkIndex < 10; frame.sparkIndex++) {
         frame.angleX.vx = (rand() % 4096);
         frame.angleX.vy = (rand() % 4096);
         frame.angleX.vz = 0;
@@ -341,7 +341,7 @@ void __cdecl BattleFx_LimitDynamiteDrawLivewireLines(Vec3sPacked *position, void
         SetRotMatrix(&frame.rotMatrix);
         SetTransMatrix(&frame.rotMatrix);
         RefreshGlobalTransformState();
-        g_BattleLimitDynamiteLivewireLength = rand() % 0x64 + 0x64;
+        g_BattleLimitDynamiteLivewireLength = rand() % 100 + 100;
         RotTransPointToInt16(g_BattleLimitDynamiteState28, (short *)&frame.shortVertex, &frame.projDepth);
         SetRotMatrix(&g_BattleCameraTransform);
         SetTransMatrix(&g_BattleCameraTransform);
@@ -374,7 +374,7 @@ void __cdecl BattleFx_LimitDynamiteDrawLivewireLines(Vec3sPacked *position, void
         SetRotMatrix(&frame.rotMatrix);
         SetTransMatrix(&frame.rotMatrix);
         RefreshGlobalTransformState();
-        g_BattleLimitDynamiteLivewireLength = rand() % 0x64 + 0x64;
+        g_BattleLimitDynamiteLivewireLength = rand() % 100 + 100;
         RotTransPointToInt16(g_BattleLimitDynamiteState28, (short *)&frame.shortVertex, &frame.projDepth);
         SetRotMatrix(&g_BattleCameraTransform);
         SetTransMatrix(&g_BattleCameraTransform);
@@ -437,7 +437,7 @@ void __cdecl BattleFx_LimitDynamiteActorBoneModelTask(void)
     BattleFx_LimitDynamiteGetActorBoneRotation(frame.actorBone->actorIndex, g_BattleActorRecords[frame.actorBone->actorIndex].primaryBone, &frame.boneAngleX);
     RotMatrixXYZ(&frame.boneAngleX, &frame.boneMatrix);
     RotateMatrixY(frame.yaw, &frame.boneMatrix);
-    frame.offsetX.vx = 0x14;
+    frame.offsetX.vx = 20;
     frame.offsetX.vy = 0xFFCE;
     frame.offsetX.vz = 0xFFE2;
     frame.boneMatrix.t[0] = frame.bonePosX;
@@ -459,14 +459,14 @@ void __cdecl BattleFx_LimitDynamiteActorBoneModelTask(void)
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
     g_BattleLimitDynamiteDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitDynamiteModelReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitDynamiteDrawListHead);
-    if (frame.actorBone->frame >= 0x19) {
+    if (frame.actorBone->frame >= 25) {
         BattleFx_LimitDynamiteDrawLivewireLines((Vec3sPacked *)&frame.bonePosX, &frame.boneAngleX, (short)frame.yaw);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.actorBone->frame)++;
-    if (frame.actorBone->frame == 0x35) {
+    if (frame.actorBone->frame == 53) {
         frame.actorBone->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -502,10 +502,10 @@ void __cdecl BattleFx_LimitDynamiteBouncingSpriteTask(void)
         frame.spriteMatrix.m[1][frame.axisIndex] = 0;
         frame.spriteMatrix.m[0][frame.axisIndex] = 0;
     }
-    if (frame.bounceSprite->frameCount < 0x16) {
+    if (frame.bounceSprite->frameCount < 22) {
         frame.frameValue = 8;
     } else {
-        frame.frameValue = 0x1E - frame.bounceSprite->frameCount;
+        frame.frameValue = 30 - frame.bounceSprite->frameCount;
     }
     frame.frameIndex = *(short *)&frame.frameValue;
     frame.angleX.vy = 0;
@@ -537,10 +537,10 @@ void __cdecl BattleFx_LimitDynamiteBouncingSpriteTask(void)
         frame.bounceSprite->posY = 0;
         frame.bounceSprite->velocityY *= -1;
     }
-    frame.bounceSprite->velocityY += 0x14;
-    frame.bounceSprite->angle += 0x200;
+    frame.bounceSprite->velocityY += 20;
+    frame.bounceSprite->angle += 0x200 /* 45 deg */;
     (frame.bounceSprite->frameCount)++;
-    if (frame.bounceSprite->frameCount == 0x1E) {
+    if (frame.bounceSprite->frameCount == 30) {
         frame.bounceSprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -580,13 +580,13 @@ void __cdecl BattleFx_LimitDynamiteGrowingModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    g_BattleLimitDynamiteParamTable.explosionDraw.fadeLevel = frame.growSlot->timer * 0x78;
+    g_BattleLimitDynamiteParamTable.explosionDraw.fadeLevel = frame.growSlot->timer * 120;
     g_BattleLimitDynamiteDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitDynamiteParamTable.explosionDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitDynamiteDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.growSlot->timer)++;
-    if (frame.growSlot->timer == 0x1E) {
+    if (frame.growSlot->timer == 30) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

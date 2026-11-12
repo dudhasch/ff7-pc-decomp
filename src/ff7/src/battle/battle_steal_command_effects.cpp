@@ -52,10 +52,10 @@ void __cdecl Battle_TryStealOnHit(void)
         enemyRecord = &g_BattleState.enemyRecords[g_pBattleCommandCtx->enemyIndex];
         if ((unsigned short)Battle_RollEnemyDropOrSteal(enemyRecord, 0x80, 1, 0) != 0xFFFF && (g_BattleState.actors[targetIndex].timingFlags & 1) == 0) {
             odds = g_pBattleCommandCtx->attackerLevel + 0x28 - g_pBattleCommandCtx->targetLevel;
-            if ((unsigned char)g_BattleState.actors[g_pBattleCommandCtx->attackerSlot].accessoryKind == 4 && odds < 0x64) {
+            if ((unsigned char)g_BattleState.actors[g_pBattleCommandCtx->attackerSlot].accessoryKind == 4 && odds < 100) {
                 odds = 0x64;
             }
-            odds = (odds << 9) / 0x64;
+            odds = (odds << 9) / 100;
             stolenItem = Battle_RollEnemyDropOrSteal(enemyRecord, 0x80, 0, odds);
             if (stolenItem == 0xFFFF) {
                 msgId = 0x30;
@@ -89,7 +89,7 @@ void __cdecl Battle_ApplySupportMateriaFlags(int supportBits)
         g_pBattleCommandCtx->attackFlags |= 0x800;
     }
     if ((supportBits & 0xE0) != 0) {
-        g_pBattleCommandCtx->bonusPercent = (supportBits >> 5) * 0xA;
+        g_pBattleCommandCtx->bonusPercent = (supportBits >> 5) * 10;
     }
 }
 
@@ -112,16 +112,16 @@ void __cdecl Battle_FindAbilitySlotForCommand(int partyIndex)
     switch (g_pBattleCommandCtx->commandIndex) {
     case BATTLE_COMMAND_MAGIC:
     case BATTLE_COMMAND_W_MAGIC:
-        cnt = 0x38;
+        cnt = 56;
         break;
     case BATTLE_COMMAND_SUMMON:
     case BATTLE_COMMAND_W_SUMMON:
         offset = 0x38;
-        cnt = 0x10;
+        cnt = 16;
         break;
     case BATTLE_COMMAND_ENEMY_SKILL:
         offset = 0x48;
-        cnt = 0x18;
+        cnt = 24;
         break;
     }
     if (cnt != 0) {

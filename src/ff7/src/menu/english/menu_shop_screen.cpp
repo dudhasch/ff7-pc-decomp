@@ -25,10 +25,10 @@ struct EnglishWindowFrame;
 // clang-format off
 // Text: "Wpn." "Arm."
 // GLOBAL: FF7 0x009229b0
-unsigned char g_MenuShopEquipmentLabels[0x28] = {0x37, 0x50, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x52, 0x4d, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char g_MenuShopEquipmentLabels[40] = {0x37, 0x50, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x52, 0x4d, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 // Text: "Ability list" "Equip effect"
 // GLOBAL: FF7 0x009229d8
-unsigned char g_MenuShopAbilityLabels[0x28] = {0x21, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x00, 0x4c, 0x49, 0x53, 0x54, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x51, 0x55, 0x49, 0x50, 0x00, 0x45, 0x46, 0x46, 0x45, 0x43, 0x54, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char g_MenuShopAbilityLabels[40] = {0x21, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x00, 0x4c, 0x49, 0x53, 0x54, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x51, 0x55, 0x49, 0x50, 0x00, 0x45, 0x46, 0x46, 0x45, 0x43, 0x54, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 #define g_MenuShopEquipEffectLabel (g_MenuShopAbilityLabels + 0x14)
 // The shop and menu texts (encoded, mostly 20-byte records; the growth names start at byte 0x3c8 and are 22 bytes
 // apart).
@@ -43,7 +43,7 @@ unsigned char g_MenuShopAbilityLabels[0x28] = {0x21, 0x42, 0x49, 0x4c, 0x49, 0x5
 //       "defense %" "Magic attack" "Magic defense" "magic defense %" "Slot" "Growth" "Nothing"
 //       "Normal" "Double" "Triple"
 // GLOBAL: FF7 0x00922a00
-unsigned char g_MenuShopTextTable[0x5c8] = {
+unsigned char g_MenuShopTextTable[1480] = {
     0x23, 0x48, 0x45, 0x43, 0x4b, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x52, 0x52, 0x41,
     0x4e, 0x47, 0x45, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x30, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -119,7 +119,7 @@ unsigned char g_MenuShopTextTable[0x5c8] = {
 //   [41..42] "        How many ya want?", [43..44] "              Much Obliged!",
 //   [46..47] "Y'all come back now, y'hear?", [48..50] "      This some sorta joke? You ain't got enough!"
 // GLOBAL: FF7 0x00922fc8
-unsigned char g_MenuCaptions[0x37][0x14] = {
+unsigned char g_MenuCaptions[55][20] = {
     {0x29, 0x54, 0x45, 0x4d, 0x00, 0x33, 0x48, 0x4f, 0x50, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     {0x37, 0x45, 0x41, 0x50, 0x4f, 0x4e, 0x00, 0x33, 0x48, 0x4f, 0x50, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     {0x29, 0x54, 0x45, 0x4d, 0x00, 0x33, 0x48, 0x4f, 0x50, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -328,7 +328,7 @@ int __cdecl Savemap_CountMateriaInStock(int materiaId)
         return 0;
     } else {
         i = 0;
-        for (count = i; i < 0xC8; i++) {
+        for (count = i; i < 200; i++) {
             if ((gSavemap.materia[i] & 0xFF) == materiaId) {
                 count++;
             }
@@ -362,7 +362,7 @@ void __cdecl Menu_DrawShopTitle2x(void)
     Menu_DrawEncodedString2x(
         g_ShopWindowRectangle2x.x + 0x76 -
             Menu_MeasureEncodedString2x(g_MenuCaptions[g_MenuShopTitleIndex]) / 2,
-        0xd, g_MenuCaptions[g_MenuShopTitleIndex], 7, 0.0f);
+        13, g_MenuCaptions[g_MenuShopTitleIndex], 7, 0.0f);
     Menu_DrawWindowFrame2x(&g_ShopWindowRectangle2x, 0.0f);
 }
 
@@ -402,13 +402,13 @@ void __cdecl Menu_DrawShopEquipComparisonPanel2x(unsigned int frameCounter)
             continue;
         }
         entId = gSavemap.party[slot];
-        posX = entId % 3 * 0xBD + 0x17;
-        posY = entId / 3 * 0x36 + 0x137;
+        posX = entId % 3 * 189 + 23;
+        posY = entId / 3 * 54 + 311;
         colorCode = frameCounter & 0x7F;
         if (colorCode > 0x3F) {
             colorCode = 0x3F - (colorCode - 0x40);
         }
-        Menu_DrawShopPartyTileHighlight2x(posX, posY, 0x28, 0x33, colorCode << 2);
+        Menu_DrawShopPartyTileHighlight2x(posX, posY, 40, 51, colorCode << 2);
     }
     for (slot = 0; slot < 9; slot++) {
         if ((gSavemap.phsVisibilityMask & (1 << slot)) == 0) {
@@ -416,9 +416,9 @@ void __cdecl Menu_DrawShopEquipComparisonPanel2x(unsigned int frameCounter)
         }
         colorCode = slot % 3;
         isLowerRow = slot > 2;
-        posX = slot % 3 * 0xBD + 0x17;
-        posY = slot / 3 * 0x36 + 0x137;
-        Menu_DrawCharPortraitById2x(posX, posY, 0x28, 0x33, slot, 0.2f);
+        posX = slot % 3 * 189 + 23;
+        posY = slot / 3 * 54 + 311;
+        Menu_DrawCharPortraitById2x(posX, posY, 40, 51, slot, 0.2f);
         curAtk = g_KernelWeaponDataArray[gSavemap.chars[slot].weapon].attackBonusByte;
         newAttack = curAtk;
         armorDef = g_KernelArmorDataArray[gSavemap.chars[slot].armor].physicalDefense;
@@ -497,13 +497,13 @@ void __cdecl Menu_DrawShopEquipComparisonPanel1x(unsigned int frameCounter)
             continue;
         }
         entId = gSavemap.party[slot];
-        posX = entId % 3 * 0x60 + 0xC;
-        posY = entId / 3 * 0x1B + 0x9C;
+        posX = entId % 3 * 96 + 12;
+        posY = entId / 3 * 27 + 156;
         colorCode = frameCounter & 0x7F;
         if (colorCode > 0x3F) {
             colorCode = 0x3F - (colorCode - 0x40);
         }
-        Menu_DrawShopPartyTileHighlight1x(posX, posY, 0x14, 0x1A, colorCode << 2);
+        Menu_DrawShopPartyTileHighlight1x(posX, posY, 20, 26, colorCode << 2);
     }
     for (slot = 0; slot < 9; slot++) {
         if ((gSavemap.phsVisibilityMask & (1 << slot)) == 0) {
@@ -511,9 +511,9 @@ void __cdecl Menu_DrawShopEquipComparisonPanel1x(unsigned int frameCounter)
         }
         colorCode = slot % 3;
         isLowerRow = slot > 2;
-        posX = slot % 3 * 0x60 + 0xC;
-        posY = slot / 3 * 0x1B + 0x9C;
-        Menu_DrawCharPortraitById1x(posX, posY, 0x14, 0x1A, slot, 0.2f);
+        posX = slot % 3 * 96 + 12;
+        posY = slot / 3 * 27 + 156;
+        Menu_DrawCharPortraitById1x(posX, posY, 20, 26, slot, 0.2f);
         curAtk = g_KernelWeaponDataArray[gSavemap.chars[slot].weapon].attackBonusByte;
         newAttack = curAtk;
         armorDef = g_KernelArmorDataArray[gSavemap.chars[slot].armor].physicalDefense;
@@ -579,9 +579,9 @@ void __cdecl Menu_ShopScreenInit(void)
     g_MenuShopPrices = (int *)g_MenuShopPriceTable;
     MenuCursor_Init(g_MenuShopCursorBlock, 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0,
                     0);
-    MenuCursor_Init(&g_MenuShopCursorBlock[2], 0, 0, 2, 0xa, 0, 0, 2, 0xa0, 0, 0, 2,
+    MenuCursor_Init(&g_MenuShopCursorBlock[2], 0, 0, 2, 10, 0, 0, 2, 160, 0, 0, 2,
                     0, 0, 1);
-    MenuCursor_Init(&g_MenuShopCursorBlock[3], 0, 0, 1, 0xa, 0, 0, 1, 0xc8, 0, 0, 0,
+    MenuCursor_Init(&g_MenuShopCursorBlock[3], 0, 0, 1, 10, 0, 0, 1, 200, 0, 0, 0,
                     0, 0, 0);
     if (g_MenuIsSmallViewport320x240 != 1) {
         g_MenuShopWindows = g_MenuShopWindowRects2x;
@@ -699,7 +699,7 @@ int __cdecl Menu_ShopHasFreeMateriaStockSlot(void)
     int i;
 
     any = 0;
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (gSavemap.materia[i] == -1) {
             any = 1;
         }
@@ -1442,21 +1442,21 @@ void __cdecl Menu_DrawShopItemTypeIcon2x(int x, int y, int itemId, int unused, f
         kind = 0;
     } else if (itemId < 0x100) {
         item = itemId - 0x80;
-        if (item < 0x10) {
+        if (item < 16) {
             kind = 1;
-        } else if (item < 0x20) {
+        } else if (item < 32) {
             kind = 3;
-        } else if (item < 0x30) {
+        } else if (item < 48) {
             kind = 2;
-        } else if (item < 0x3e) {
+        } else if (item < 62) {
             kind = 5;
-        } else if (item < 0x49) {
+        } else if (item < 73) {
             kind = 4;
-        } else if (item < 0x57) {
+        } else if (item < 87) {
             kind = 9;
-        } else if (item < 0x65) {
+        } else if (item < 101) {
             kind = 6;
-        } else if (item < 0x72) {
+        } else if (item < 114) {
             kind = 7;
         } else {
             kind = 8;
@@ -1466,9 +1466,9 @@ void __cdecl Menu_DrawShopItemTypeIcon2x(int x, int y, int itemId, int unused, f
     } else {
         kind = 0xb;
     }
-    su = (kind & 1) * 0x10 + 0x60;
-    sv = kind / 2 * 0x10 + 0x70;
-    Menu_DrawAtlasQuad2x(x, y, su, sv, 0x10, 0x10, 1, 0, 0, z);
+    su = (kind & 1) * 16 + 0x60;
+    sv = kind / 2 * 16 + 0x70;
+    Menu_DrawAtlasQuad2x(x, y, su, sv, 16, 16, 1, 0, 0, z);
 }
 
 /*
@@ -1486,21 +1486,21 @@ void __cdecl Menu_DrawShopItemTypeIcon1x(int x, int y, int itemId, int unused, f
         kind = 0;
     } else if (itemId < 0x100) {
         item = itemId - 0x80;
-        if (item < 0x10) {
+        if (item < 16) {
             kind = 1;
-        } else if (item < 0x20) {
+        } else if (item < 32) {
             kind = 3;
-        } else if (item < 0x30) {
+        } else if (item < 48) {
             kind = 2;
-        } else if (item < 0x3e) {
+        } else if (item < 62) {
             kind = 5;
-        } else if (item < 0x49) {
+        } else if (item < 73) {
             kind = 4;
-        } else if (item < 0x57) {
+        } else if (item < 87) {
             kind = 9;
-        } else if (item < 0x65) {
+        } else if (item < 101) {
             kind = 6;
-        } else if (item < 0x72) {
+        } else if (item < 114) {
             kind = 7;
         } else {
             kind = 8;
@@ -1510,9 +1510,9 @@ void __cdecl Menu_DrawShopItemTypeIcon1x(int x, int y, int itemId, int unused, f
     } else {
         kind = 0xb;
     }
-    su = (kind & 1) * 0x10 + 0x60;
-    sv = kind / 2 * 0x10 + 0x70;
-    Menu_DrawAtlasQuad1x(x, y, su, sv, 0x10, 0x10, 1, 0, 0, z);
+    su = (kind & 1) * 16 + 0x60;
+    sv = kind / 2 * 16 + 0x70;
+    Menu_DrawAtlasQuad1x(x, y, su, sv, 16, 16, 1, 0, 0, z);
 }
 
 /*
@@ -1690,20 +1690,20 @@ void __cdecl Menu_DrawShopMateriaStatModifierRows2x(void)
     for (drawn = n = 0; n < 8; n++) {
         if (g_pMenuShopMateriaRecord->statModifier[n] != 0) {
             if (Menu_ShopValueIsNegative(g_pMenuShopMateriaRecord->statModifier[n]) != 0) {
-                DrawIconGlyph16_2x(0x12c, drawn * 0x18 + 0x14a, 0xe1, 7, 0.1f);
+                DrawIconGlyph16_2x(300, drawn * 24 + 0x14a, 0xe1, 7, 0.1f);
                 colour = 2;
             } else {
-                DrawIconGlyph16_2x(0x12c, drawn * 0x18 + 0x14a, 0xb3, 7, 0.1f);
+                DrawIconGlyph16_2x(300, drawn * 24 + 0x14a, 0xb3, 7, 0.1f);
                 colour = 6;
             }
             Menu_DrawDecimalNumberZeroPad2x(
-                0x139, drawn * 0x18 + 0x14a,
+                313, drawn * 24 + 0x14a,
                 Menu_ShopAbsValue(g_pMenuShopMateriaRecord->statModifier[n]), 2, colour,
                 0.1f);
-            Menu_DrawEncodedString2x(0xc8, drawn * 0x18 + 0x146,
+            Menu_DrawEncodedString2x(200, drawn * 0x18 + 0x146,
                               &g_MenuShopEquipmentLabels[(n + 0x14) * 0x14], 7, 0.1f);
             if (n > 5) {
-                DrawIconGlyph16_2x(0x151, drawn * 0x18 + 0x148, 0xd3, 7, 0.1f);
+                DrawIconGlyph16_2x(337, drawn * 24 + 0x148, 0xd3, 7, 0.1f);
             }
             drawn++;
         }
@@ -1910,20 +1910,20 @@ void __cdecl Menu_DrawShopMateriaStatModifierRows1x(void)
     for (drawn = n = 0; n < 8; n++) {
         if (g_pMenuShopMateriaRecord->statModifier[n] != 0) {
             if (Menu_ShopValueIsNegative(g_pMenuShopMateriaRecord->statModifier[n]) != 0) {
-                DrawIconGlyph16_1x(0x96, drawn * 0xc + 0xa5, 0xe1, 7, 0.1f);
+                DrawIconGlyph16_1x(150, drawn * 12 + 0xa5, 0xe1, 7, 0.1f);
                 colour = 2;
             } else {
-                DrawIconGlyph16_1x(0x96, drawn * 0xc + 0xa5, 0xb3, 7, 0.1f);
+                DrawIconGlyph16_1x(150, drawn * 12 + 0xa5, 0xb3, 7, 0.1f);
                 colour = 6;
             }
             Menu_DrawDecimalNumberZeroPad1x(
-                0x9d, drawn * 0xc + 0xa5,
+                157, drawn * 12 + 0xa5,
                 Menu_ShopAbsValue(g_pMenuShopMateriaRecord->statModifier[n]), 2, colour,
                 0.1f);
-            Menu_DrawEncodedString1x(0x64, drawn * 0xc + 0xa3,
+            Menu_DrawEncodedString1x(100, drawn * 0xc + 0xa3,
                                  &g_MenuShopEquipmentLabels[(n + 0x14) * 0x14], 7, 0.1f);
             if (n > 5) {
-                DrawIconGlyph16_1x(0xa9, drawn * 0xc + 0xa4, 0xd3, 7, 0.1f);
+                DrawIconGlyph16_1x(169, drawn * 12 + 0xa4, 0xd3, 7, 0.1f);
             }
             drawn++;
         }
@@ -1942,24 +1942,24 @@ void __cdecl Menu_DrawShopMateriaSlotLayout2x(int x, int y, unsigned char *slots
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0) {
             if (slots[i] > 4) {
-                Menu_DrawAtlasQuad2x(x + i * 0x1b, y, 0x80, 0x30, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad2x(x + i * 27, y, 0x80, 0x30, 16, 16, 1, 0, 0,
                                      0.01f);
             } else {
-                Menu_DrawAtlasQuad2x(x + i * 0x1b, y, 0x70, 0x20, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad2x(x + i * 27, y, 0x70, 0x20, 16, 16, 1, 0, 0,
                                      0.01f);
             }
         }
     }
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0 && (slots[i] == 3 || slots[i] == 7)) {
-            Menu_DrawAtlasQuad2x(x + i * 0x1b - 0xd, y, 0x70, 0x30, 0x10, 0x10, 1,
+            Menu_DrawAtlasQuad2x(x + i * 27 - 0xd, y, 0x70, 0x30, 16, 16, 1,
                                  0, 0, 0.0f);
         }
     }
     rect.x = (short)(x - 3);
     rect.y = (short)y;
-    rect.width = 0xd5;
-    rect.height = 0x18;
+    rect.width = 213;
+    rect.height = 24;
     Menu_DrawEtchedBox2x(&rect, 0.01f);
 }
 
@@ -1975,24 +1975,24 @@ void __cdecl Menu_DrawShopMateriaSlotLayout1x(int x, int y, unsigned char *slots
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0) {
             if (slots[i] > 4) {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x80, 0x30, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 128, 48, 16, 16, 1, 0, 0,
                                      0.01f);
             } else {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x70, 0x20, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 112, 32, 16, 16, 1, 0, 0,
                                      0.01f);
             }
         }
     }
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0 && (slots[i] == 3 || slots[i] == 7)) {
-            Menu_DrawAtlasQuad1x(x + i * 0xe - 7, y, 0x70, 0x30, 0x10, 0x10, 1,
+            Menu_DrawAtlasQuad1x(x + i * 14 - 7, y, 112, 48, 16, 16, 1,
                                  0, 0, 0.0f);
         }
     }
     rect.x = (short)(x - 2);
     rect.y = (short)y;
-    rect.width = 0x6b;
-    rect.height = 0xc;
+    rect.width = 107;
+    rect.height = 12;
     Menu_DrawEtchedBox1x(&rect, 0.01f);
 }
 
@@ -2011,7 +2011,7 @@ int __cdecl Menu_ShopGetMateriaSellValue(unsigned int packed)
     } else {
         price = packed >> 8;
         if (price == 0xFFFFFF) {
-            price = g_MenuShopPrices[(packed & 0xFF) + 0x180] * 0x46;
+            price = g_MenuShopPrices[(packed & 0xFF) + 0x180] * 70;
         }
         return price;
     }
@@ -2030,7 +2030,7 @@ int __cdecl Menu_ShopGetMateriaBasePrice(int packed)
     } else if (g_MenuShopPrices[(packed & 0xFF) + 0x180] == 1) {
         return 1;
     } else {
-        price = g_MenuShopPrices[(packed & 0xFF) + 0x180] * 0x46;
+        price = g_MenuShopPrices[(packed & 0xFF) + 0x180] * 70;
         return price;
     }
 }
@@ -2130,7 +2130,7 @@ void __cdecl Menu_ShopModuleUpdate(int shopId)
         Menu_ShopScreenInit();
         g_MenuShopFrameParity = 0;
         g_MenuModuleId = 0xf;
-        Input_SetRepeatRates(0xc8, 0x32);
+        Input_SetRepeatRates(0xc8, 50);
         g_MenuOverlayActive = 1;
         g_MenuShopStarted = g_MenuOverlayActive;
     }

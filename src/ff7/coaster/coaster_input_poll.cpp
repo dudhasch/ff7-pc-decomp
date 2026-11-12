@@ -65,16 +65,16 @@ void __cdecl Mini_CoasterPollInput(void)
         }
         if (g_CoasterRideMode == 1) {
             if (Input_GetHeld(INPUT_DOWN) != 0) {
-                g_CoasterReticleY += 0xA;
+                g_CoasterReticleY += 10;
             }
             if (Input_GetHeld(INPUT_UP) != 0) {
-                g_CoasterReticleY -= 0xA;
+                g_CoasterReticleY -= 10;
             }
             if (Input_GetHeld(INPUT_LEFT) != 0) {
-                g_CoasterReticleX -= 0xA;
+                g_CoasterReticleX -= 10;
             }
             if (Input_GetHeld(INPUT_RIGHT) != 0) {
-                g_CoasterReticleX += 0xA;
+                g_CoasterReticleX += 10;
             }
             g_CoasterShotFlag = 0;
             if (Input_GetHeld(INPUT_CIRCLE) != 0) {
@@ -96,18 +96,18 @@ void __cdecl Mini_CoasterPollInput(void)
                     Mini_CoasterUpdateBeamLoopSound(0);
                     g_CoasterBeamFiringActive = 0;
                 }
-                if (g_CoasterBeamCharge < 0x80) {
+                if (g_CoasterBeamCharge < 128) {
                     g_CoasterBeamCharge++;
                 }
             }
-            if (g_CoasterReticleX > 0x140) {
-                g_CoasterReticleX = 0x140;
+            if (g_CoasterReticleX > 320) {
+                g_CoasterReticleX = 320;
             }
             if (g_CoasterReticleX < 0) {
                 g_CoasterReticleX = 0;
             }
-            if (g_CoasterReticleY > 0xF0) {
-                g_CoasterReticleY = 0xF0;
+            if (g_CoasterReticleY > 240) {
+                g_CoasterReticleY = 240;
             }
             if (g_CoasterReticleY < 0) {
                 g_CoasterReticleY = 0;
@@ -145,10 +145,10 @@ void __cdecl Mini_CoasterPollInput(void)
                 g_CoasterDebugTuneR1R2 += 0x64;
             }
             if (Input_GetHeld(INPUT_L1) != 0) {
-                g_CoasterRideSpeed += 0x400;
+                g_CoasterRideSpeed += 1024;
             }
-            if (Input_GetHeld(INPUT_L2) != 0 && g_CoasterRideSpeed > 0x3FF) {
-                g_CoasterRideSpeed -= 0x400;
+            if (Input_GetHeld(INPUT_L2) != 0 && g_CoasterRideSpeed > 1023) {
+                g_CoasterRideSpeed -= 1024;
             }
             if (Input_GetHeld(INPUT_START) != 0) {
                 g_CoasterRideSpeed = 0;

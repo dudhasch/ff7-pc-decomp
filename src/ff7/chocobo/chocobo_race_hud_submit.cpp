@@ -144,35 +144,35 @@ void __cdecl Mini_ChocoboSubmitRaceHud(void)
         }
         for (frame.sortedSlot = 0; (unsigned int)frame.sortedSlot < (unsigned int)6; frame.sortedSlot++) {
             frame.sortedRacer = &g_ChocoboRacers[frame.sortEntries[frame.sortedSlot].racerIndex];
-            g_ChocoboHudRacerRecords0[frame.sortedSlot].renderObjectIndex = 0x11;
+            g_ChocoboHudRacerRecords0[frame.sortedSlot].renderObjectIndex = 17;
             g_ChocoboHudRacerRecords0[frame.sortedSlot].colorB = 0x80;
             g_ChocoboHudRacerRecords0[frame.sortedSlot].colorG = 0x80;
             g_ChocoboHudRacerRecords0[frame.sortedSlot].colorR = 0x80;
-            g_ChocoboHudRacerRecords1[frame.sortedSlot].renderObjectIndex = 0x10;
+            g_ChocoboHudRacerRecords1[frame.sortedSlot].renderObjectIndex = 16;
             if (g_ChocoboPlayerRides != 0) {
-                g_ChocoboHudRacerRecords0[frame.sortedSlot].left = frame.sortedSlot * 0x28 + 8;
+                g_ChocoboHudRacerRecords0[frame.sortedSlot].left = frame.sortedSlot * 40 + 8;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].left = *(unsigned short *)&g_ChocoboHudRacerRecords0[frame.sortedSlot].left + 8;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].vertexAY = (short)g_ChocoboOffsets[frame.sortedSlot];
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].vertexAY = *(unsigned short *)&g_ChocoboHudRacerRecords1[frame.sortedSlot].vertexAY + 0x16;
             } else {
-                g_ChocoboHudRacerRecords0[frame.sortedSlot].left = frame.sortedSlot * 0x32 + 0x10;
+                g_ChocoboHudRacerRecords0[frame.sortedSlot].left = frame.sortedSlot * 50 + 16;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].left = *(unsigned short *)&g_ChocoboHudRacerRecords0[frame.sortedSlot].left + 8;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].vertexAY = g_ChocoboOffsets[frame.sortedSlot] + 0x8C;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].vertexAY = *(unsigned short *)&g_ChocoboHudRacerRecords1[frame.sortedSlot].vertexAY + 0x16;
             }
             if (g_ChocoboUiScalingMode == 2) {
                 if (frame.sortedRacer->lane < 3) {
-                    g_ChocoboHudRacerRecords1[frame.sortedSlot].texX = frame.sortedRacer->lane * 0x30;
+                    g_ChocoboHudRacerRecords1[frame.sortedSlot].texX = frame.sortedRacer->lane * 48;
                     g_ChocoboHudRacerRecords1[frame.sortedSlot].texY = 0;
                     g_ChocoboHudRacerRecords1[frame.sortedSlot].texV = 0;
                 } else {
-                    g_ChocoboHudRacerRecords1[frame.sortedSlot].texX = (frame.sortedRacer->lane - 3) * 0x30;
+                    g_ChocoboHudRacerRecords1[frame.sortedSlot].texX = (frame.sortedRacer->lane - 3) * 48;
                     g_ChocoboHudRacerRecords1[frame.sortedSlot].texY = 0x30;
                     g_ChocoboHudRacerRecords1[frame.sortedSlot].texV = FLOAT_0_375_BITS;
                 }
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texU = g_ChocoboFloatTable0[frame.sortedRacer->lane];
-                g_ChocoboHudRacerRecords1[frame.sortedSlot].height = 0x18;
-                g_ChocoboHudRacerRecords1[frame.sortedSlot].width = 0x18;
+                g_ChocoboHudRacerRecords1[frame.sortedSlot].height = 24;
+                g_ChocoboHudRacerRecords1[frame.sortedSlot].width = 24;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texelHeight = CHOCOBO_FLOAT_48_BITS;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texelWidth = CHOCOBO_FLOAT_48_BITS;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texUSize = g_ChocoboHudLaneIconTexUSize2x;
@@ -202,19 +202,19 @@ void __cdecl Mini_ChocoboSubmitRaceHud(void)
                 }
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].palette = 0;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].palette = g_ChocoboLaneHudPaletteTable[frame.sortedRacer->lane];
-                g_ChocoboHudRacerRecords0[frame.sortedSlot].width = 0x1F;
-                g_ChocoboHudRacerRecords0[frame.sortedSlot].height = 0x20;
+                g_ChocoboHudRacerRecords0[frame.sortedSlot].width = 31;
+                g_ChocoboHudRacerRecords0[frame.sortedSlot].height = 32;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texelWidth = CHOCOBO_FLOAT_63_BITS;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texelHeight = CHOCOBO_FLOAT_64_BITS;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texUSize = g_ChocoboHudAtlasCellTexUSize2x;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texVSize = g_ChocoboHudAtlasCellTexVSize2x;
             } else {
-                g_ChocoboHudRacerRecords1[frame.sortedSlot].texX = frame.sortedRacer->lane * 0x18;
+                g_ChocoboHudRacerRecords1[frame.sortedSlot].texX = frame.sortedRacer->lane * 24;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texY = 0;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texU = g_ChocoboFloatTable2[frame.sortedRacer->lane];
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texV = 0;
-                g_ChocoboHudRacerRecords1[frame.sortedSlot].height = 0x18;
-                g_ChocoboHudRacerRecords1[frame.sortedSlot].width = 0x18;
+                g_ChocoboHudRacerRecords1[frame.sortedSlot].height = 24;
+                g_ChocoboHudRacerRecords1[frame.sortedSlot].width = 24;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texelHeight = CHOCOBO_FLOAT_24_BITS;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texelWidth = CHOCOBO_FLOAT_24_BITS;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].texUSize = g_ChocoboHudLaneIconTexUSize1x;
@@ -230,8 +230,8 @@ void __cdecl Mini_ChocoboSubmitRaceHud(void)
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texV = 0;
                 g_ChocoboHudRacerRecords1[frame.sortedSlot].palette = 0;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].palette = g_ChocoboLaneHudPaletteTable[frame.sortedRacer->lane];
-                g_ChocoboHudRacerRecords0[frame.sortedSlot].width = 0x1F;
-                g_ChocoboHudRacerRecords0[frame.sortedSlot].height = 0x20;
+                g_ChocoboHudRacerRecords0[frame.sortedSlot].width = 31;
+                g_ChocoboHudRacerRecords0[frame.sortedSlot].height = 32;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texelWidth = CHOCOBO_FLOAT_31_BITS;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texelHeight = CHOCOBO_FLOAT_32_BITS;
                 g_ChocoboHudRacerRecords0[frame.sortedSlot].texUSize = g_ChocoboHudAtlasCellTexUSize1x;
@@ -256,8 +256,8 @@ void __cdecl Mini_ChocoboSubmitRaceHud(void)
                 g_ChocoboHudSpriteA->palette = 1;
             }
             if (g_ChocoboPlayerRides == 0) {
-                g_ChocoboHudSpriteA->uiY = 0xA6;
-                g_ChocoboHudSpriteA->uiX = 0x17;
+                g_ChocoboHudSpriteA->uiY = 166;
+                g_ChocoboHudSpriteA->uiX = 23;
             }
             Mini_ChocoboEmitSpriteBatchQuad(g_ChocoboHudSpriteA);
             g_ChocoboSubmittedRecordCount++;
@@ -268,7 +268,7 @@ void __cdecl Mini_ChocoboSubmitRaceHud(void)
             }
             if (g_ChocoboPlayerRides == 0) {
                 g_ChocoboHudSpriteA[1].vertexAY = 0xAE;
-                g_ChocoboHudSpriteA[1].left = 0x47;
+                g_ChocoboHudSpriteA[1].left = 71;
             }
             Mini_ChocoboEmitSpriteBatchQuad(&g_ChocoboHudSpriteA[1]);
             g_ChocoboSubmittedRecordCount++;
@@ -283,14 +283,14 @@ void __cdecl Mini_ChocoboSubmitRaceHud(void)
         if (frame.racer->finished != 0) {
             continue;
         }
-        g_ChocoboRacerTable[frame.racerIndex].vertexBX = frame.racer->posX / 0x28A + 0x11A;
+        g_ChocoboRacerTable[frame.racerIndex].vertexBX = frame.racer->posX / 650 + 0x11A;
         g_ChocoboRacerTable[frame.racerIndex].left = g_ChocoboRacerTable[frame.racerIndex].vertexBX;
         // BUG: nothing in ff7.exe sets g_ChocoboMarkerYTable, so each racer's minimap marker y is
         // read from near address 0x186B8; where that page is unmapped the race faults on its
         // first frame, elsewhere the marker sits wherever those bytes put it.
         g_ChocoboRacerTable[frame.racerIndex].vertexDX = *(short *)(g_ChocoboMarkerYTable + frame.racerIndex * 0x18 + 0x186B8) + 3;
         g_ChocoboRacerTable[frame.racerIndex].right = g_ChocoboRacerTable[frame.racerIndex].vertexDX;
-        g_ChocoboRacerTable[frame.racerIndex].vertexCY = frame.racer->posZ / 0x262 + 0x28;
+        g_ChocoboRacerTable[frame.racerIndex].vertexCY = frame.racer->posZ / 610 + 0x28;
         g_ChocoboRacerTable[frame.racerIndex].vertexAY = g_ChocoboRacerTable[frame.racerIndex].vertexCY;
         g_ChocoboRacerTable[frame.racerIndex].vertexDY = *(unsigned short *)&g_ChocoboRacerTable[frame.racerIndex].vertexAY + 3;
         g_ChocoboRacerTable[frame.racerIndex].vertexBY = g_ChocoboRacerTable[frame.racerIndex].vertexDY;
@@ -316,14 +316,14 @@ void __cdecl Mini_ChocoboSubmitRaceHud(void)
     frame.racer = &g_ChocoboRacers[0];
     if (g_ChocoboPlayerRides != 0) {
         if (frame.racer->dashTimer != 0 && (g_ChocoboFrameCounter & 4) != 0) {
-            g_ChocoboStaminaGaugeRecord.renderObjectIndex = 0x17;
+            g_ChocoboStaminaGaugeRecord.renderObjectIndex = 23;
         } else {
-            g_ChocoboStaminaGaugeRecord.renderObjectIndex = 0x16;
+            g_ChocoboStaminaGaugeRecord.renderObjectIndex = 22;
         }
         Mini_ChocoboEmitSpriteBatchQuad(&g_ChocoboStaminaGaugeRecord);
-        frame.racerIndex = 0xD0 - frame.racer->stamina * 0x44 / frame.racer->staminaMax;
-        if (frame.racerIndex > 0xD1) {
-            frame.racerIndex = 0xD1;
+        frame.racerIndex = 208 - frame.racer->stamina * 68 / frame.racer->staminaMax;
+        if (frame.racerIndex > 209) {
+            frame.racerIndex = 209;
         }
         g_ChocoboCourseRecord1.vertexCY = *(short *)&frame.racerIndex;
         g_ChocoboCourseRecord1.vertexAY = g_ChocoboCourseRecord1.vertexCY;
@@ -344,9 +344,9 @@ void __cdecl Mini_ChocoboRaceInitLaneHudStatesFromSavedColor(void)
     int width;
     int positionY;
 
-    width = 0x270;
-    positionY = 0xFA;
-    hudStep = 0x10;
+    width = 624;
+    positionY = 250;
+    hudStep = 16;
     laneCnt = 6;
     g_ChocoboLaneHudStates = 0;
     g_ChocoboLaneHudPalette1 = 3;

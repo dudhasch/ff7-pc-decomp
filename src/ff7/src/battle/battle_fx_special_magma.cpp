@@ -41,7 +41,7 @@ short g_BattleSpecMagmaOriginZ = 0;
 // The pool of 300 BattleFxMagmaParticle records (0x1c20 bytes) starts here and runs through the
 // two pads below, up to g_BattleSpecMagmaSpriteDrawList; the code reaches it through this object.
 // GLOBAL: FF7 0x00b65108
-unsigned char g_BattleSpecMagmaParticlePool[0x8] = {0};
+unsigned char g_BattleSpecMagmaParticlePool[8] = {0};
 // The x and y of the first particle's position (pool + 8); the sprite task adds the record stride.
 // GLOBAL: FF7 0x00b65110
 int g_BattleSpecMagmaParticle0Pos = 0;
@@ -142,7 +142,7 @@ void __cdecl BattleFx_SpecialSpawnMagmaPerTarget(int actor, int sourceIndex)
 
 /*
  * Per-frame task of the effect: flashes the screen with g_BattleSpecMagmaFlash, which rises by 4
- * per frame for the first 0x10 frames and falls by 4 after frame 0x40. Starts the particle sprite
+ * per frame for the first 16 frames and falls by 4 after frame 0x40. Starts the particle sprite
  * task on frame 0 and allocates a typed record for the target on frame 0x3C. Every frame it moves
  * the camera focal point's Y by 0x20 and back, alternating, and the task ends at frame 0x50.
  */
@@ -161,26 +161,26 @@ void __cdecl BattleFx_SpecialMagmaTimelineTask(void)
     if (mainSelf->timer == 0) {
         spawned = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMagmaParticleSpritesTask);
     }
-    if (mainSelf->timer < 0x10) {
+    if (mainSelf->timer < 16) {
         g_BattleSpecMagmaFlash.level += 4;
     }
-    if (mainSelf->timer > 0x40) {
+    if (mainSelf->timer > 64) {
         g_BattleSpecMagmaFlash.level -= 4;
     }
-    if (mainSelf->timer == 0x3C) {
+    if (mainSelf->timer == 60) {
         Battle_PostActorHitOrHurtMessage(mainSelf->actorIndex);
     }
-    g_BattleCameraFocalPoint.focalPointY += 0x20 - ((mainSelf->timer % 2) << 6);
+    g_BattleCameraFocalPoint.focalPointY += 32 - ((mainSelf->timer % 2) << 6);
     (mainSelf->timer)++;
-    if (mainSelf->timer == 0x50) {
+    if (mainSelf->timer == 80) {
         mainSelf->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Task that draws, spawns and moves the lava particles. For the first 0x3C frames it claims new
+ * Task that draws, spawns and moves the lava particles. For the first 60 frames it claims new
  * particles around the source bone position; each live particle then moves by its velocity, which
- * gains gravity, and fades out 0x10 frames after the top of its arc. Ends when none is left.
+ * gains gravity, and fades out 16 frames after the top of its arc. Ends when none is left.
  */
 // FUNCTION: FF7 0x0053cf69
 void __cdecl BattleFx_SpecialMagmaParticleSpritesTask(void)
@@ -206,20 +206,20 @@ void __cdecl BattleFx_SpecialMagmaParticleSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x3C) {
+    if (task->frameCounter < 60) {
         for (index = 0; index < (0x3C - task->frameCounter) / 5 + 1; index++) {
             emitter = (BattleFxMagmaParticle *)BattleFx_SpecialMagmaClaimParticleRecord();
             if ((unsigned int)(int)emitter > (unsigned int)0) {
                 angle = (rand() % 4096);
-                rad = rand() % 0xC8;
-                emitter->pos.vx = g_BattleSpecMagmaOriginXY[0] + (CosFixed(angle) * rad >> 0xC);
-                emitter->pos.vz = g_BattleSpecMagmaOriginZ + (SinFixed(angle) * rad >> 0xC);
+                rad = rand() % 200;
+                emitter->pos.vx = g_BattleSpecMagmaOriginXY[0] + (CosFixed(angle) * rad >> 12);
+                emitter->pos.vz = g_BattleSpecMagmaOriginZ + (SinFixed(angle) * rad >> 12);
                 emitter->pos.vy = g_BattleSpecMagmaOriginXY[1];
                 angle = (rand() % 4096);
-                rad = rand() % 0x64;
-                emitter->vel.vx = CosFixed(angle) * rad >> 0xC;
-                emitter->vel.vz = SinFixed(angle) * rad >> 0xC;
-                emitter->vel.vy = (SinFixed(task->frameCounter << 0xA) * 0x14 >> 0xC) + task->frameCounter * 2 + -0x15E;
+                rad = rand() % 100;
+                emitter->vel.vx = CosFixed(angle) * rad >> 12;
+                emitter->vel.vz = SinFixed(angle) * rad >> 12;
+                emitter->vel.vy = (SinFixed(task->frameCounter << 10) * 0x14 >> 12) + task->frameCounter * 2 + -350;
                 emitter->scale = 0xC00 - task->frameCounter * 0x1E + ((rand() % 4) << 9);
             }
         }
@@ -232,14 +232,14 @@ void __cdecl BattleFx_SpecialMagmaParticleSpritesTask(void)
             emitter->pos.vy += emitter->vel.vy;
             emitter->pos.vz += emitter->vel.vz;
             oldVy = emitter->vel.vy;
-            emitter->vel.vy += 0x14;
+            emitter->vel.vy += 20;
             if (emitter->fade == 0) {
                 if (oldVy < 0 && emitter->vel.vy >= 0) {
                     emitter->fade = 1;
                 }
             } else {
                 (emitter->fade)++;
-                if (emitter->fade == 0x10) {
+                if (emitter->fade == 16) {
                     emitter->state = 0;
                 }
             }
@@ -248,7 +248,7 @@ void __cdecl BattleFx_SpecialMagmaParticleSpritesTask(void)
         emitter++;
     }
     (task->frameCounter)++;
-    if (task->frameCounter > 0x3C && liveCount == 0) {
+    if (task->frameCounter > 60 && liveCount == 0) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

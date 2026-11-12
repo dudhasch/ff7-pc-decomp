@@ -173,41 +173,41 @@ void __cdecl BattleFx_SpecialSwampShootTimelineTask(void)
         pParticle->posY = 0;
         pParticle->posZ = g_BattleSpecSwampShootSourceBonePosZ;
         pParticle->velocityX = (mainSelf->posX - *(short *)&g_BattleSpecSwampShootSourceBonePos) / 0xA;
-        pParticle->velocityZ = (mainSelf->posZ - g_BattleSpecSwampShootSourceBonePosZ) / 0xA;
+        pParticle->velocityZ = (mainSelf->posZ - g_BattleSpecSwampShootSourceBonePosZ) / 10;
         pParticle->velocityY = 0;
     }
-    if (mainSelf->timer == 0xA) {
+    if (mainSelf->timer == 10) {
         for (idx = 0; idx < 8; idx++) {
             pParticle = (BattleFxSwampShootParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSwampShootBouncingSpriteTask);
-            pParticle->posX = mainSelf->posX + rand() % 0x190 + -0xC8;
-            pParticle->posZ = mainSelf->posZ + rand() % 0x190 + -0xC8;
+            pParticle->posX = mainSelf->posX + rand() % 400 + -200;
+            pParticle->posZ = mainSelf->posZ + rand() % 400 + -200;
             pParticle->posY = 0;
             heading = rand() % 0x1000;
-            pParticle->velocityX = CosFixed(heading) * 0x64 >> 0xC;
-            pParticle->velocityZ = SinFixed(heading) * 0x64 >> 0xC;
-            pParticle->velocityY = -rand() % 0xC8 - 0x64;
-            pParticle->mode = rand() % 0x14;
+            pParticle->velocityX = CosFixed(heading) * 0x64 >> 12;
+            pParticle->velocityZ = SinFixed(heading) * 0x64 >> 12;
+            pParticle->velocityY = -rand() % 200 - 100;
+            pParticle->mode = rand() % 20;
         }
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, 0x40, 0x14, 0, 0, 0, 0, 0, 0);
     }
-    if (mainSelf->timer > 6 && mainSelf->timer < 0xE) {
+    if (mainSelf->timer > 6 && mainSelf->timer < 14) {
         pParticle = (BattleFxSwampShootParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSwampShootAnimatedSpriteTask)];
-        pParticle->posX = mainSelf->posX + rand() % 0x4B0 + -0x258;
-        pParticle->posY = mainSelf->posY + rand() % 0x4B0 + -0x258;
-        pParticle->posZ = mainSelf->posZ + rand() % 0x4B0 + -0x258;
+        pParticle->posX = mainSelf->posX + rand() % 1200 + -600;
+        pParticle->posY = mainSelf->posY + rand() % 1200 + -600;
+        pParticle->posZ = mainSelf->posZ + rand() % 1200 + -600;
         pParticle->mode = 0;
         pParticle = (BattleFxSwampShootParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSwampShootAnimatedSpriteTask)];
-        pParticle->posX = mainSelf->posX + rand() % 0x640 + -0x320;
-        pParticle->posY = mainSelf->posY + rand() % 0x640 + -0x320;
-        pParticle->posZ = mainSelf->posZ + rand() % 0x640 + -0x320;
+        pParticle->posX = mainSelf->posX + rand() % 1600 + -800;
+        pParticle->posY = mainSelf->posY + rand() % 1600 + -800;
+        pParticle->posZ = mainSelf->posZ + rand() % 1600 + -800;
         pParticle->mode = 1;
-        g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - (mainSelf->timer % 2 << 6));
+        g_BattleCameraFocalPoint.focalPointY += (short)(32 - (mainSelf->timer % 2 << 6));
     }
-    if (mainSelf->timer == 0xC) {
+    if (mainSelf->timer == 12) {
         Battle_PostActorHitOrHurtMessage(mainSelf->actorIndex);
     }
     (mainSelf->timer)++;
-    if (mainSelf->timer == 0x23) {
+    if (mainSelf->timer == 35) {
         mainSelf->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -228,7 +228,7 @@ void __cdecl BattleFx_SpecialSwampShootAnimatedSpriteTask(void)
     task = (BattleFxTailLaserAnimSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
     entryIds[0] = 1;
     entryIds[1] = 2;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecSwampShootResourceModelRows[24] = Gfx_ModelTableGetLoadedRecord(entryIds[task->variant], g_BattleSpecSwampShootLoadedResTable);
     if (task->variant != 1) {
         g_BattleSpecSwampShootResourceModelRows[25] = Gfx_ModelTableGetSpriteObject(entryIds[task->variant], g_BattleSpecSwampShootLoadedResTable);
@@ -280,7 +280,7 @@ void __cdecl BattleFx_SpecialSwampShootBouncingSpriteTask(void)
     if (frame.bounceSlot->frameCounter < 7) {
         frame.stepValue = 8;
     } else {
-        frame.stepValue = 0xF - frame.bounceSlot->frameCounter;
+        frame.stepValue = 15 - frame.bounceSlot->frameCounter;
     }
     frame.stepShort = *(short *)&frame.stepValue;
     frame.rotX.vy = 0;
@@ -312,10 +312,10 @@ void __cdecl BattleFx_SpecialSwampShootBouncingSpriteTask(void)
         frame.bounceSlot->posY = 0;
         frame.bounceSlot->velocityY *= -1;
     }
-    frame.bounceSlot->velocityY += 0x14;
+    frame.bounceSlot->velocityY += 20;
     frame.bounceSlot->phase += 0x200;
     (frame.bounceSlot->frameCounter)++;
-    if (frame.bounceSlot->frameCounter == 0xF) {
+    if (frame.bounceSlot->frameCounter == 15) {
         frame.bounceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -349,16 +349,16 @@ void __cdecl BattleFx_SpecialSwampShootTrailEmitterTask(void)
     child->posZ = taskPtr->posZ;
     child->posY = 0;
     angle = rand() % 0x1000;
-    child->velocityX = CosFixed(angle) * 0x64 >> 0xC;
-    child->velocityZ = SinFixed(angle) * 0x64 >> 0xC;
-    child->velocityY = -rand() % 0xC8 - 0x64;
-    child->frameIndex = rand() % 0x10 + 4;
+    child->velocityX = CosFixed(angle) * 0x64 >> 12;
+    child->velocityZ = SinFixed(angle) * 0x64 >> 12;
+    child->velocityY = -rand() % 200 - 100;
+    child->frameIndex = rand() % 16 + 4;
     child = (BattleFxSwampShootTrailEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSwampShootAnimatedSpriteEntry4Task);
-    child->posX = taskPtr->posX + rand() % 0x258 + -0x12C;
-    child->posZ = taskPtr->posZ + rand() % 0x258 + -0x12C;
+    child->posX = taskPtr->posX + rand() % 600 + -300;
+    child->posZ = taskPtr->posZ + rand() % 600 + -300;
     child->posY = 0;
     (taskPtr->frameIndex)++;
-    if (taskPtr->frameIndex == 0xC) {
+    if (taskPtr->frameIndex == 12) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -378,7 +378,7 @@ void __cdecl BattleFx_SpecialSwampShootAnimatedSpriteEntry4Task(void)
     p = BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecSwampShootSpriteReq2.spriteEntry) = Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecSwampShootLoadedResTable);
     g_BattleSpecSwampShootSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecSwampShootLoadedResTable);
-    BattleFx_InstallBillboardMatrix((short *)p->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)p->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecSwampShootSpriteReq2.frame = p->frameCounter;
     g_BattleSpecSwampShootDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecSwampShootSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSwampShootDrawListHead);
     if (g_BattleIsPaused == 0 && (g_BattleSpecSwampShootSpriteReq2.spriteEntry) != 0) {
@@ -428,7 +428,7 @@ void __cdecl BattleFx_SpecialSwampShootFadingOrientedModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    g_BattleSpecSwampShootModelParam.alpha = 0x60 - frame.fadingSlot->frameCounter * 0x18;
+    g_BattleSpecSwampShootModelParam.alpha = 0x60 - frame.fadingSlot->frameCounter * 24;
     g_BattleSpecSwampShootDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecSwampShootModelParam.modelResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSwampShootDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;

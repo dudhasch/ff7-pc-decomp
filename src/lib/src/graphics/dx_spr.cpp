@@ -255,7 +255,7 @@ void __cdecl Gfx_EmitDraw2DUntextured(GfxPolygonSet *emitter, GfxDraw2DRecord *r
             D3D5CountWasStillDrawing(1, driver);
         } else {
             // STRING: FF7 0x0090ca84
-            CheckDirectDrawResult(status, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0xFF);
+            CheckDirectDrawResult(status, "C:\\lib\\src\\graphics\\dx_spr.cpp", 255);
             status = 0;
         }
     } while (status != 0);
@@ -329,7 +329,7 @@ void __cdecl Gfx_EmitDraw2DTextured(GfxPolygonSet *emitter, GfxDraw2DTexturedRec
                     D3D5CountWasStillDrawing(1, driver);
                 else {
                     // STRING: FF7 0x0090caa4
-                    CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x181);
+                    CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_spr.cpp", 385);
                     code = 0;
                 }
             } while (code != 0);
@@ -367,7 +367,7 @@ void __cdecl Gfx_EmitDrawLine(GfxPolygonSet *emitter, GfxDraw3DRecord *record, s
             D3D5CountWasStillDrawing(1, driver);
         } else {
             // STRING: FF7 0x0090cac4
-            CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x1BE);
+            CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_spr.cpp", 446);
             res = 0;
         }
     } while (res != 0);
@@ -403,7 +403,7 @@ void __cdecl Gfx_EmitDraw3DUntextured(GfxPolygonSet *emitter, GfxDraw3DRecord *r
             D3D5CountWasStillDrawing(1, driver);
         } else {
             // STRING: FF7 0x0090cae4
-            CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x1FC);
+            CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_spr.cpp", 508);
             res = 0;
         }
     } while (res != 0);
@@ -469,7 +469,7 @@ void __cdecl Gfx_EmitDraw3DTextured(GfxPolygonSet *emitter, GfxDraw3DTexturedRec
                     D3D5CountWasStillDrawing(1, driver);
                 else {
                     // STRING: FF7 0x0090cb04
-                    CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x270);
+                    CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_spr.cpp", 624);
                     code = 0;
                 }
             } while (code != 0);
@@ -726,26 +726,26 @@ void __cdecl Gfx_AllocSpriteIndexBuffers(int count, GfxPrimitiveMeshBank *meshBa
     if (meshBank != 0) {
         entrySize = 3;
         // STRING: FF7 0x0090cb24
-        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x3C4);
+        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 964);
         meshBank->triIndicesReversed = (int)buffer;
         Gfx_FillPrimitiveIndexRun(1, 3, entrySize, count, 0, buffer);
         entrySize = 6;
         // STRING: FF7 0x0090cb44
-        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x3C9);
+        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 969);
         meshBank->quadIndicesReversed = (int)buffer;
         Gfx_FillPrimitiveIndexRun(1, 4, entrySize, count, 0, buffer);
         entrySize = 3;
         // STRING: FF7 0x0090cb64
-        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x3CE);
+        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 974);
         meshBank->triIndices = (int)buffer;
         Gfx_FillPrimitiveIndexRun(0, 3, entrySize, count, 0, buffer);
         entrySize = 6;
         // STRING: FF7 0x0090cb84
-        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x3D3);
+        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count * entrySize, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 979);
         meshBank->quadIndices = (int)buffer;
         Gfx_FillPrimitiveIndexRun(0, 4, entrySize, count, 0, buffer);
         // STRING: FF7 0x0090cba4
-        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count << 1, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 0x3D7);
+        buffer = (GfxSpriteIndexBuffer *)GameHeapAlloc(count << 1, 2, "C:\\lib\\src\\graphics\\dx_spr.cpp", 983);
         meshBank->lineIndices = (int)buffer;
         Gfx_FillSequentialIndexPairs(count, buffer);
     }
@@ -802,7 +802,7 @@ int __cdecl AcquireBatchNode(int count, void *batchContext)
             node->commandCount = 0;
             node->vertexCount = 0;
             node->dataBytes = 0;
-            if (count > 0x20) {
+            if (count > 32) {
                 allocCount = count;
                 pBufferArray = (GfxSortedPrimitive *)AllocBlockArrayFromHeap(allocCount, ((GfxRenderObject *)batchContext)->meshBank->arrayHeap);
                 buffer = pBufferArray;
@@ -810,14 +810,14 @@ int __cdecl AcquireBatchNode(int count, void *batchContext)
                 node->regionStart = (int)buffer + (allocCount << 7);
                 node->regionEnd = node->regionStart + (allocCount << 4);
             } else {
-                allocCount = 0x20;
+                allocCount = 32;
                 fallbackArrayPtr = (GfxSortedPrimitive *)AllocBlockArrayFromHeap(allocCount, ((GfxRenderObject *)batchContext)->meshBank->arrayHeap);
                 buffer = fallbackArrayPtr;
                 node->buffer = (int)buffer;
                 node->regionStart = (int)buffer + 0x1000;
                 node->regionEnd = node->regionStart + 0x200;
             }
-            if (count > 0x200) {
+            if (count > 512) {
                 spriteIndicesPtr = (GfxSpriteIndexBuffer *)(node->regionStart);
                 Gfx_FillContextIndexRun(allocCount, spriteIndicesPtr, (GfxRenderObject *)batchContext);
             } else {
@@ -982,20 +982,20 @@ int __cdecl AcquireBatchNodeNoCommandArea(int count, GfxRenderObject *batchConte
             node->commandCount = 0;
             node->vertexCount = 0;
             node->dataBytes = 0;
-            if (count > 0x20) {
+            if (count > 32) {
                 allocCount = count;
                 pBufferArray = (GfxSortedPrimitive *)AllocBlockArrayFromHeap(allocCount, batchContext->meshBank->arrayHeap);
                 buffer = pBufferArray;
                 node->buffer = (int)buffer;
                 node->regionStart = (int)buffer + (allocCount << 7);
             } else {
-                allocCount = 0x20;
+                allocCount = 32;
                 fallbackArrayPtr = (GfxSortedPrimitive *)AllocBlockArrayFromHeap(allocCount, batchContext->meshBank->arrayHeap);
                 buffer = fallbackArrayPtr;
                 node->buffer = (int)buffer;
                 node->regionStart = (int)buffer + 0x1000;
             }
-            if (count > 0x200) {
+            if (count > 512) {
                 spriteIndicesPtr = (GfxSpriteIndexBuffer *)(node->regionStart);
                 Gfx_FillSequentialIndexPairs(allocCount, spriteIndicesPtr);
             } else {
@@ -1475,7 +1475,7 @@ void __cdecl Gfx_SubmitFixedQuadGridBatches(GfxRenderObject *batch)
 
     if (batch->kind != GFX_DRAW_SPRITE_BATCH) {
         if (DEAD_IN_RETAIL != 0) {
-            nBytes = 0x118;
+            nBytes = 280;
             depth = FLOAT_0_9_BITS;
             rhwOne = FLOAT_ONE_BITS;
             cellWidth = 32.0f;
@@ -1485,9 +1485,9 @@ void __cdecl Gfx_SubmitFixedQuadGridBatches(GfxRenderObject *batch)
             uSpan = 0.25f;
             inVSpan = 0.5f;
             positionY = 0.0f;
-            for (rowCounter = 0; rowCounter < 0xE; rowCounter++) {
+            for (rowCounter = 0; rowCounter < 14; rowCounter++) {
                 gridX = 0.0f;
-                for (column = 0; column < 0x14; column++) {
+                for (column = 0; column < 20; column++) {
                     if (AcquireBatchNode(1, batch) != 0) {
                         argb = 0xFF0000FF;
                         vertex0 = (GfxTlVertex *)(batch->vertexCursor);
@@ -1536,11 +1536,11 @@ void __cdecl Gfx_SubmitFixedQuadGridBatches(GfxRenderObject *batch)
             }
             Gfx_EmitPrimitiveBatchList(batch, GetEngineContext());
             InvalidateBatchGeneration(batch);
-            nBytes = 0x118;
+            nBytes = 280;
             positionY = 0.0f;
-            for (rowCounter = 0; rowCounter < 0xE; rowCounter++) {
+            for (rowCounter = 0; rowCounter < 14; rowCounter++) {
                 gridX = 0.0f;
-                for (column = 0; column < 0x14; column++) {
+                for (column = 0; column < 20; column++) {
                     if (AcquireBatchNode(1, batch) != 0) {
                         argb = 0xFF0000FF;
                         pVtxStart = (GfxTlVertex *)(batch->vertexCursor);
@@ -1590,7 +1590,7 @@ void __cdecl Gfx_SubmitFixedQuadGridBatches(GfxRenderObject *batch)
             Gfx_EmitPrimitiveBatchList(batch, GetEngineContext());
             InvalidateBatchGeneration(batch);
         } else {
-            nBytes = 0x118;
+            nBytes = 280;
             if (AcquireBatchNode(nBytes, batch) != 0) {
                 *batch->colorBytePtr = 0;
                 batch->paletteIndex = 0;
@@ -1603,9 +1603,9 @@ void __cdecl Gfx_SubmitFixedQuadGridBatches(GfxRenderObject *batch)
                 uSpan = 0.25f;
                 inVSpan = 0.5f;
                 positionY = 0.0f;
-                for (rowCounter = 0; rowCounter < 0xE; rowCounter++) {
+                for (rowCounter = 0; rowCounter < 14; rowCounter++) {
                     gridX = 0.0f;
-                    for (column = 0; column < 0x14; column++) {
+                    for (column = 0; column < 20; column++) {
                         argb = 0xFFFF0000;
                         argb = 0xFF00FF00;
                         argb = 0xFF0000FF;
@@ -1654,12 +1654,12 @@ void __cdecl Gfx_SubmitFixedQuadGridBatches(GfxRenderObject *batch)
                 Gfx_EmitPrimitiveBatchList(batch, GetEngineContext());
                 InvalidateBatchGeneration(batch);
             }
-            nBytes = 0x118;
+            nBytes = 280;
             if (AcquireBatchNode(nBytes, batch) != 0) {
                 positionY = 0.0f;
-                for (rowCounter = 0; rowCounter < 0xE; rowCounter++) {
+                for (rowCounter = 0; rowCounter < 14; rowCounter++) {
                     gridX = 0.0f;
-                    for (column = 0; column < 0x14; column++) {
+                    for (column = 0; column < 20; column++) {
                         argb = 0xFFFF0000;
                         argb = 0xFF00FF00;
                         argb = 0xFF0000FF;
@@ -1711,25 +1711,25 @@ void __cdecl Gfx_SubmitFixedQuadGridBatches(GfxRenderObject *batch)
         }
     } else {
         screenPositionY = 0;
-        for (rowIndex = 0; rowIndex < 0xE; rowIndex++) {
+        for (rowIndex = 0; rowIndex < 14; rowIndex++) {
             screenX = 0;
-            for (spriteCol = 0; spriteCol < 0x14; spriteCol++) {
+            for (spriteCol = 0; spriteCol < 20; spriteCol++) {
                 Gfx_EmitScreenSprite(screenX, screenPositionY, 0, 0, batch);
-                screenX += 0x20;
+                screenX += 32;
             }
-            screenPositionY += 0x20;
+            screenPositionY += 32;
         }
         Gfx_DrawRenderObjectCall(batch, GetEngineContext());
         Gfx_ResetRenderObjectBatchChain((int)batch);
         Gfx_EmptyRenderObjectBatch((int)batch);
         screenPositionY = 0;
-        for (rowIndex = 0; rowIndex < 0xE; rowIndex++) {
+        for (rowIndex = 0; rowIndex < 14; rowIndex++) {
             screenX = 0;
-            for (spriteCol = 0; spriteCol < 0x14; spriteCol++) {
+            for (spriteCol = 0; spriteCol < 20; spriteCol++) {
                 Gfx_EmitScreenSprite(screenX, screenPositionY, 0, 0, batch);
-                screenX += 0x20;
+                screenX += 32;
             }
-            screenPositionY += 0x20;
+            screenPositionY += 32;
         }
         Gfx_DrawRenderObjectCall(batch, GetEngineContext());
         Gfx_ResetRenderObjectBatchChain((int)batch);

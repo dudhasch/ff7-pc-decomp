@@ -140,7 +140,7 @@ void __cdecl BattleFx_BlueBeginShadowFlare(int targetMask, int sourceActorIdx)
 
     *(int *)&g_BattleFxDrawListBufferTaskSlotPtr = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SelectDrawListBuffer);
     actorIdx = 0;
-    for (targetCount = 0; actorIdx < 0xA; actorIdx++) {
+    for (targetCount = 0; actorIdx < 10; actorIdx++) {
         if ((targetMask & 1 << actorIdx) != 0) {
             targetCount++;
             if (targetCount == 1) {
@@ -191,7 +191,7 @@ void __cdecl BattleFx_BlueShadowFlareActorFadeTask(void)
     }
     frame.sfleaSlot = BATTLE_CURRENT_TASK_SLOT;
     if (frame.sfleaSlot->frameCounter == 0) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             ((BattleBlueShadowFlareSavedActorCoordEntry *)(g_BattleBlueShadowFlareSavedActorCoord))[frame.actorIndex].tintPhase = g_BattleActorRecords[frame.actorIndex].tintPhase;
             ((BattleBlueShadowFlareSavedActorCoordEntry *)(g_BattleBlueShadowFlareSavedActorCoord))[frame.actorIndex].savedTintPulse = g_BattleActorRecords[frame.actorIndex].tintPulse;
             *(char *)(((char *)&g_BattleBlueShadowFlareSavedActorAlpha) + frame.actorIndex * 8) = g_BattleActorRecords[frame.actorIndex].tintR;
@@ -206,15 +206,15 @@ void __cdecl BattleFx_BlueShadowFlareActorFadeTask(void)
     }
     if (frame.sfleaSlot->frameCounter < 8) {
         frame.tintPhase = frame.sfleaSlot->frameCounter << 9;
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             g_BattleActorRecords[frame.actorIndex].tintPhase = *(short *)&frame.tintPhase;
         }
-    } else if (frame.sfleaSlot->frameCounter >= 0x55) {
+    } else if (frame.sfleaSlot->frameCounter >= 85) {
         frame.tintPhase = 0x1000 - (frame.sfleaSlot->frameCounter - 0x55 << 9);
         if (frame.tintPhase < 0) {
             frame.tintPhase = 0;
         }
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             g_BattleActorRecords[frame.actorIndex].tintPhase = *(short *)&frame.tintPhase;
         }
     }
@@ -223,7 +223,7 @@ void __cdecl BattleFx_BlueShadowFlareActorFadeTask(void)
         if (frame.shadeIntensity > 0x1000) {
             frame.shadeIntensity = 0x1000;
         }
-    } else if (frame.sfleaSlot->frameCounter >= 0x55) {
+    } else if (frame.sfleaSlot->frameCounter >= 85) {
         frame.shadeIntensity = 0x1000 - (frame.sfleaSlot->frameCounter - 0x55 << 9);
         if (frame.shadeIntensity < 0) {
             frame.shadeIntensity = 0;
@@ -234,8 +234,8 @@ void __cdecl BattleFx_BlueShadowFlareActorFadeTask(void)
     if (frame.sfleaSlot->frameCounter == 8) {
         Battle_AllocateResourceSlot(BattleFx_BlueShadowFlareSetupTask);
     }
-    if (frame.sfleaSlot->frameCounter >= 0x5D) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    if (frame.sfleaSlot->frameCounter >= 93) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             g_BattleActorRecords[frame.actorIndex].drawFlags &= 0xFE;
             g_BattleActorRecords[frame.actorIndex].tintPhase = ((BattleBlueShadowFlareSavedActorCoordEntry *)(g_BattleBlueShadowFlareSavedActorCoord))[frame.actorIndex].tintPhase;
             g_BattleActorRecords[frame.actorIndex].tintPulse = *(char *)&((BattleBlueShadowFlareSavedActorCoordEntry *)(g_BattleBlueShadowFlareSavedActorCoord))[frame.actorIndex].savedTintPulse;
@@ -259,11 +259,11 @@ void __cdecl BattleFx_BlueShadowFlareDrawPsxFlatColorStrips(int red, int green, 
     int x1, i, stripCount, step;
 
     renderState = (BattleFxFlatColorStripState *)Gfx_GetPsxPacketScratchPtr();
-    stripCount = 0x1E;
+    stripCount = 30;
     xLeft = 0;
-    x1 = 0x13F;
+    x1 = 319;
     step = 0x60000;
-    rgbWord = red & 0xFF | (green & 0xFF) << 8 | (blue & 0xFF) << 0x10;
+    rgbWord = red & 0xFF | (green & 0xFF) << 8 | (blue & 0xFF) << 16;
     for (i = 0; i < stripCount; i++) {
         renderState->xy0 = xLeft;
         renderState->xy1 = x1;
@@ -300,9 +300,9 @@ void __cdecl BattleFx_BlueShadowFlareSetupTask(void)
     task = (BattleFxBlueShadowFlareState *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueShadowFlareTimelineTask);
     Battle_GetBoneWorldPos(g_BattleBlueShadowFlareTargetActor, g_BattleActorRecords[g_BattleBlueShadowFlareTargetActor].targetBone, (short *)((int)task + 4));
     task->offsetIndex = 0;
-    task->range = g_BattleActorRecords[g_BattleBlueShadowFlareTargetActor].radius + 0x200;
-    if (task->range > 0x76C) {
-        task->range = 0x76C;
+    task->range = g_BattleActorRecords[g_BattleBlueShadowFlareTargetActor].radius + 512;
+    if (task->range > 1900) {
+        task->range = 1900;
     }
     task->targetY = -task->range;
     spawnSlot = (int)BATTLE_NEW_TASK_SLOT(BattleFx_BlueShadowFlareDelayedSpawnTask);
@@ -323,19 +323,19 @@ void __cdecl BattleFx_BlueShadowFlareDelayedSpawnTask(void)
         return;
     }
     task = (BattleFxShadowFlareDelayedSpawnSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->timer == 0x2C) {
+    if (task->timer == 44) {
         pFadeQuad = (BattleShadowFlareDelayedSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueShadowFlareGrowFadeQuadTask);
         *(Int64Pair *)((char *)pFadeQuad + 4) = task->pos;
         pFadeQuad->posY = 0;
         pFadeQuad->scale = 0;
-        pFadeQuad->progressFrac = (task->progress << 0xC) / 0x120 / 0x18;
+        pFadeQuad->progressFrac = (task->progress << 12) / 288 / 24;
         spriteRecord = (BattleShadowFlareDelayedSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueShadowFlareGrowFadeAnimatedSpriteTask);
         *(Int64Pair *)((char *)spriteRecord + 4) = *(Int64Pair *)((char *)pFadeQuad + 4);
         spriteRecord->posY = -(task->progress >> 1);
         spriteRecord->frameIndex = 0;
         spriteRecord->depth = task->progress >> 3;
         spriteRecord->angle = 0;
-        spriteRecord->spinRate = (task->progress << 0xC) / 0x180 / 0x18;
+        spriteRecord->spinRate = (task->progress << 12) / 384 / 24;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->timer)++;
@@ -366,7 +366,7 @@ void __cdecl BattleFx_BlueShadowFlareGrowFadeAnimatedSpriteTask(void)
     taskSlot = (BattleFxShadowFlareSpriteRecord *)BATTLE_CURRENT_TASK_SLOT;
     BattleFx_InstallBillboardMatrix((void *)((int)taskSlot + 4), (short)taskSlot->angle, -taskSlot->depth);
     level = 0x80;
-    if (taskSlot->frame >= 0x16) {
+    if (taskSlot->frame >= 22) {
         level -= (char)(taskSlot->frame - 0x16 << 4);
     }
     g_BattleBlueShadowFlareSpriteReq1.sfleaGrowFadeByte10 = level;
@@ -376,7 +376,7 @@ void __cdecl BattleFx_BlueShadowFlareGrowFadeAnimatedSpriteTask(void)
     (g_BattleBlueShadowFlareSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleBlueShadowFlareLoadedResTable);
     g_BattleBlueShadowFlareSpriteReq1.sfleaGrowSpriteHandle = Gfx_ModelTableGetSpriteObject(2, g_BattleBlueShadowFlareLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueShadowFlareSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (taskSlot->frame >= 0x1E) {
+    if (taskSlot->frame >= 30) {
         taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -384,13 +384,13 @@ void __cdecl BattleFx_BlueShadowFlareGrowFadeAnimatedSpriteTask(void)
     }
     taskSlot->angle += taskSlot->spinRate;
     if (taskSlot->angle < 0) {
-        taskSlot->angle = 0x7000;
+        taskSlot->angle = 0x7000 /* 2520 deg */;
     }
     if (taskSlot->frame > 4) {
         (taskSlot->frameIndex)++;
     }
-    if (taskSlot->frameIndex > 0xF) {
-        taskSlot->frameIndex = 0xF;
+    if (taskSlot->frameIndex > 15) {
+        taskSlot->frameIndex = 15;
     }
     (taskSlot->frame)++;
 }
@@ -420,7 +420,7 @@ void __cdecl BattleFx_BlueShadowFlareGrowFadeQuadTask(void)
 #pragma pack(pop)
 
     frame.quadSlot = (BattleFxShadowFlareGrowFadeQuadSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.matrix);
@@ -439,20 +439,20 @@ void __cdecl BattleFx_BlueShadowFlareGrowFadeQuadTask(void)
     frame.corner0X.vx = 0xFEE0;
     frame.corner0X.vy = 0xFEE0;
     frame.corner0X.vz = 0;
-    frame.corner1X.vx = 0x120;
+    frame.corner1X.vx = 288;
     frame.corner1X.vy = 0xFEE0;
     frame.corner1X.vz = 0;
     frame.corner2X.vx = 0xFEE0;
-    frame.corner2X.vy = 0x120;
+    frame.corner2X.vy = 288;
     frame.corner2X.vz = 0;
-    frame.corner3X.vx = 0x120;
-    frame.corner3X.vy = 0x120;
+    frame.corner3X.vx = 288;
+    frame.corner3X.vy = 288;
     frame.corner3X.vz = 0;
     frame.fadeColor = 0x80;
-    if (frame.quadSlot->frameCounter >= 0x16) {
+    if (frame.quadSlot->frameCounter >= 22) {
         frame.fadeColor -= frame.quadSlot->frameCounter - 0x16 << 4;
     }
-    frame.fadeColor = frame.fadeColor | frame.fadeColor << 8 | frame.fadeColor << 0x10;
+    frame.fadeColor = frame.fadeColor | frame.fadeColor << 8 | frame.fadeColor << 16;
     frame.depth = Gfx_TransformQuadReturnDepth(&frame.corner0X, &frame.corner1X, &frame.corner2X, &frame.corner3X, &frame.tmpPrimOut, &frame.tmpQuadOut);
     frame.renderBlock->tag = frame.renderBlock->tag & 0xFFFFFF | 0x9000000;
     *(char *)((char *)frame.renderBlock + 7) = 0x2C;
@@ -465,7 +465,7 @@ void __cdecl BattleFx_BlueShadowFlareGrowFadeQuadTask(void)
     frame.renderBlock->uvWord3 = 0xFF80;
     Gfx_DrawPsxPrimitive(frame.renderBlock);
     g_BattleFxActiveDrawListPtr = (int)frame.renderBlock;
-    if (frame.quadSlot->frameCounter >= 0x1E) {
+    if (frame.quadSlot->frameCounter >= 30) {
         frame.quadSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -473,7 +473,7 @@ void __cdecl BattleFx_BlueShadowFlareGrowFadeQuadTask(void)
     }
     frame.quadSlot->scale += frame.quadSlot->scaleStep;
     if (frame.quadSlot->scale < 0) {
-        frame.quadSlot->scale = 0x7000;
+        frame.quadSlot->scale = 0x7000 /* 7.0 */;
     }
     (frame.quadSlot->frameCounter)++;
 }
@@ -512,7 +512,7 @@ void __cdecl BattleFx_BlueShadowFlareTimelineTask(void)
         frame.rotX.vy = ((short *)&g_BattleBlueShadowFlareOffsetTableY)[frame.sfleaRecord->offsetIndex];
         frame.rotX.vz = 0;
         RotMatrixXYZ(&frame.rotX, &frame.matrix);
-        *(short *)&frame.posX = 0x1450;
+        *(short *)&frame.posX = 5200;
         frame.posY = 0;
         *(short *)&frame.posZ = 0;
         TransformVectorToInt16(&frame.matrix, &frame.posX, &frame.posX);
@@ -527,8 +527,8 @@ void __cdecl BattleFx_BlueShadowFlareTimelineTask(void)
         frame.sparkSeed->flag = 0;
         (frame.sfleaRecord->offsetIndex)++;
     }
-    if (frame.sfleaRecord->frame > 0x18 && frame.sfleaRecord->frame < 0x25) {
-        frame.tmpSpread = 0xA28;
+    if (frame.sfleaRecord->frame > 24 && frame.sfleaRecord->frame < 37) {
+        frame.tmpSpread = 2600;
         frame.tmpRange = frame.tmpSpread >> 1;
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spriteSlot = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueShadowFlareFrameTableSpriteTask);
@@ -537,15 +537,15 @@ void __cdecl BattleFx_BlueShadowFlareTimelineTask(void)
             frame.spriteSlot->posZ = frame.sfleaRecord->targetZ + rand() % frame.tmpSpread - frame.tmpRange;
         }
     }
-    if (frame.sfleaRecord->offsetIndex < 0x3E && frame.sfleaRecord->frame > 0x2D) {
+    if (frame.sfleaRecord->offsetIndex < 0x3E && frame.sfleaRecord->frame > 45) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 4; frame.spawnIndex++) {
-            frame.tmpRange = frame.sfleaRecord->offsetIndex - 0x12;
+            frame.tmpRange = frame.sfleaRecord->offsetIndex - 18;
             frame.sparkSeed = (BattleFxShadowFlareLivewireSeed *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueShadowFlareMovingLivewireSpriteTask);
             frame.rotX.vx = ((short *)&g_BattleBlueShadowFlareOffsetTableX)[frame.tmpRange];
             frame.rotX.vy = ((short *)&g_BattleBlueShadowFlareOffsetTableY)[frame.tmpRange];
             frame.rotX.vz = 0;
             RotMatrixXYZ(&frame.rotX, &frame.matrix);
-            *(short *)&frame.posX = 0x1450;
+            *(short *)&frame.posX = 5200;
             frame.posY = 0;
             *(short *)&frame.posZ = 0;
             TransformVectorToInt16(&frame.matrix, &frame.posX, &frame.posX);
@@ -554,7 +554,7 @@ void __cdecl BattleFx_BlueShadowFlareTimelineTask(void)
             *(short *)&frame.posZ += frame.sfleaRecord->targetZ;
             *(Int64Pair *)((char *)frame.sparkSeed + 4) = *(Int64Pair *)((char *)frame.sfleaRecord + 4);
             frame.sparkSeed->velocityX = (*(short *)&frame.posX - frame.sfleaRecord->targetX) / 0x15;
-            frame.sparkSeed->velocityY = (frame.posY - frame.sfleaRecord->targetY) / 0x15;
+            frame.sparkSeed->velocityY = (frame.posY - frame.sfleaRecord->targetY) / 21;
             frame.sparkSeed->velocityZ = (*(short *)&frame.posZ - frame.sfleaRecord->targetZ) / 0x15;
             frame.sparkSeed->pushLength = 0;
             frame.sparkSeed->scale = rand() % 0x1C00 + 0x400;
@@ -563,13 +563,13 @@ void __cdecl BattleFx_BlueShadowFlareTimelineTask(void)
         }
         for (frame.spawnIndex = 0; frame.spawnIndex < 4; frame.spawnIndex++) {
             frame.sparkSeed = (BattleFxShadowFlareLivewireSeed *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueShadowFlareMovingLivewireSpriteTask);
-            frame.tmpSpread = rand() % 0x1000;
-            frame.tmpRange = rand() % 0x1000;
+            frame.tmpSpread = rand() % 4096;
+            frame.tmpRange = rand() % 4096;
             frame.rotX.vx = *(short *)&frame.tmpSpread;
             frame.rotX.vy = *(short *)&frame.tmpRange;
             frame.rotX.vz = 0;
             RotMatrixXYZ(&frame.rotX, &frame.matrix);
-            *(short *)&frame.posX = 0x1450;
+            *(short *)&frame.posX = 5200;
             frame.posY = 0;
             *(short *)&frame.posZ = 0;
             TransformVectorToInt16(&frame.matrix, &frame.posX, &frame.posX);
@@ -578,33 +578,33 @@ void __cdecl BattleFx_BlueShadowFlareTimelineTask(void)
             *(short *)&frame.posZ += frame.sfleaRecord->targetZ;
             *(Int64Pair *)((char *)frame.sparkSeed + 4) = *(Int64Pair *)((char *)frame.sfleaRecord + 4);
             frame.sparkSeed->velocityX = (*(short *)&frame.posX - frame.sfleaRecord->targetX) / 0x15;
-            frame.sparkSeed->velocityY = (frame.posY - frame.sfleaRecord->targetY) / 0x15;
+            frame.sparkSeed->velocityY = (frame.posY - frame.sfleaRecord->targetY) / 21;
             frame.sparkSeed->velocityZ = (*(short *)&frame.posZ - frame.sfleaRecord->targetZ) / 0x15;
             frame.sparkSeed->pushLength = 0;
             frame.sparkSeed->scale = rand() % 0x1C00 + 0x400;
             frame.sparkSeed->flag = 1;
         }
     }
-    if (frame.sfleaRecord->frame == 0x18) {
+    if (frame.sfleaRecord->frame == 24) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)frame.sfleaRecord + 4), 0x175);
-    } else if (frame.sfleaRecord->frame == 0x2D) {
+    } else if (frame.sfleaRecord->frame == 45) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)frame.sfleaRecord + 4), 0x176);
     }
-    if (frame.sfleaRecord->frame < 0xA) {
+    if (frame.sfleaRecord->frame < 10) {
         g_BattleBlueShadowFlareDrawColor.blue = 0xFF;
         g_BattleBlueShadowFlareDrawColor.green = g_BattleBlueShadowFlareDrawColor.blue;
         (g_BattleBlueShadowFlareDrawColor.colorR) = g_BattleBlueShadowFlareDrawColor.green;
         g_BattleBlueShadowFlareDrawColor.isActive = 1;
-        frame.shadeIntensity = frame.sfleaRecord->frame * 0x199;
-    } else if (frame.sfleaRecord->frame >= 0x47) {
-        frame.shadeIntensity = 0x1000 - (frame.sfleaRecord->frame - 0x47) * 0x2AA;
+        frame.shadeIntensity = frame.sfleaRecord->frame * 409;
+    } else if (frame.sfleaRecord->frame >= 71) {
+        frame.shadeIntensity = 0x1000 - (frame.sfleaRecord->frame - 0x47) * 682;
         if (frame.shadeIntensity < 0) {
             frame.shadeIntensity = 0;
         }
     } else {
         frame.shadeIntensity = 0x1000;
     }
-    if (frame.sfleaRecord->frame == 0x41) {
+    if (frame.sfleaRecord->frame == 65) {
         if ((g_BattleHurtMessageActorMask & 1 << g_BattleBlueShadowFlareTargetActor) != 0) {
             frame.ringRecord = Battle_AllocSceneMessage(6);
         } else {
@@ -612,7 +612,7 @@ void __cdecl BattleFx_BlueShadowFlareTimelineTask(void)
         }
         *(short *)frame.ringRecord = *(short *)&g_BattleBlueShadowFlareTargetActor;
     }
-    if (frame.sfleaRecord->frame >= 0x4D) {
+    if (frame.sfleaRecord->frame >= 77) {
         g_BattleBlueShadowFlareDrawColor.isActive = 0;
         frame.sfleaRecord->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -627,12 +627,12 @@ void __cdecl BattleFx_BlueShadowFlareFrameTableSpriteTask(void)
     BattleFxShadowFlareSpriteSlot *task;
 
     task = (BattleFxShadowFlareSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1800 /* 1.5 */, 0);
     g_BattleBlueShadowFlareSpriteReq2.sfleaFrameTableIndex = g_BattleBlueShadowFlareFrameIndexTable[task->frameIndex];
     g_BattleBlueShadowFlareSpriteReq2.sfleaSpriteGroup = Gfx_ModelTableGetLoadedRecord(1, g_BattleBlueShadowFlareLoadedResTable);
     g_BattleBlueShadowFlareSpriteReq2.sfleaFrameTableHandle = Gfx_ModelTableGetSpriteObject(1, g_BattleBlueShadowFlareLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueShadowFlareSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frameIndex >= 0xB) {
+    if (task->frameIndex >= 11) {
         task->status = 0xFFFF;
     }
     if (g_BattleIsPaused != 0) {
@@ -652,10 +652,10 @@ void __cdecl BattleFx_BlueShadowFlareMovingLivewireSpriteTask(void)
     if (sparkSlot->flag != 0) {
         angle = sparkSlot->scale;
         g_BattleBlueShadowFlareSpriteReq3.sfleaSparkFrameWord = 7 - (sparkSlot->step >> 1);
-        stepLimit = 0xE;
+        stepLimit = 14;
         alpha = 0x80;
         if (sparkSlot->step >= 8) {
-            alpha -= (short)((sparkSlot->step - 8) * 0x15);
+            alpha -= (short)((sparkSlot->step - 8) * 21);
         }
         g_BattleBlueShadowFlareSpriteReq3.sfleaSparkByte10 = alpha;
         g_BattleBlueShadowFlareSpriteReq3.sfleaSparkByte9 = g_BattleBlueShadowFlareSpriteReq3.sfleaSparkByte10;

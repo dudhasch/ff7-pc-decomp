@@ -111,7 +111,7 @@ void __cdecl BattleFx_BlueSpawnBigGuardPerTarget(int actor)
     taskRecord = (BattleBigGuardTargetSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueBigGuardTimelineTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)taskRecord->position);
     value = g_BattleActorRecords[actor].radius + 0xE0;
-    if (value > 0x76C) {
+    if (value > 1900) {
         value = 0x76C;
     }
     taskRecord->growRate = value;
@@ -133,10 +133,10 @@ void __cdecl BattleFx_BlueBigGuardTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (mainTaskSlot->frame >= 1 && mainTaskSlot->frame <= 0x2C && (mainTaskSlot->frame & 1) != 0) {
+    if (mainTaskSlot->frame >= 1 && mainTaskSlot->frame <= 44 && (mainTaskSlot->frame & 1) != 0) {
         halfRange = mainTaskSlot->growRate;
         doubleSpread = halfRange << 1;
-        ratio = (halfRange << 0xC) / 0x15E;
+        ratio = (halfRange << 12) / 350;
         for (spriteIndex = 0; spriteIndex < 3; spriteIndex++) {
             newParticlePtr = (BattleFxBigGuardParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueBigGuardAscendingQuadSpriteTask);
             *(Int64Pair *)&newParticlePtr->posX = *(Int64Pair *)mainTaskSlot->position;
@@ -144,35 +144,35 @@ void __cdecl BattleFx_BlueBigGuardTimelineTask(void)
             newParticlePtr->posY = -(rand() % halfRange);
             newParticlePtr->posZ += (short)(rand() % doubleSpread - halfRange);
             randVal = rand();
-            newParticlePtr->lifetime = randVal % 0x5A + 0x32;
+            newParticlePtr->lifetime = randVal % 90 + 50;
             newParticlePtr->scale = randVal % 0x1000 + 0x800;
-            newParticlePtr->scale = newParticlePtr->scale * ratio >> 0xC;
+            newParticlePtr->scale = newParticlePtr->scale * ratio >> 12;
         }
     }
-    if (mainTaskSlot->frame >= 2 && mainTaskSlot->frame <= 0x12 && mainTaskSlot->frame % 6 == 0) {
+    if (mainTaskSlot->frame >= 2 && mainTaskSlot->frame <= 18 && mainTaskSlot->frame % 6 == 0) {
         newParticlePtr = (BattleFxBigGuardParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueBigGuardSpinGrowModelTask);
         *(Int64Pair *)&newParticlePtr->posX = *(Int64Pair *)mainTaskSlot->position;
         newParticlePtr->delay = 0;
-        newParticlePtr->lifetime = rand() % 0x30 + 0x64;
+        newParticlePtr->lifetime = rand() % 48 + 100;
         newParticlePtr->speed = newParticlePtr->lifetime * mainTaskSlot->frame;
-        newParticlePtr->rotYStep = rand() % 0x30 + 0x14;
+        newParticlePtr->rotYStep = rand() % 48 + 20;
         newParticlePtr->rotZ = 0;
-        newParticlePtr->rotZStep = -(rand() % 0x20 + 0x46);
+        newParticlePtr->rotZStep = -(rand() % 32 + 70);
         newParticlePtr->scale = 0;
-        newParticlePtr->growStep = (mainTaskSlot->growRate << 0xC) / 0x2EE / 3;
+        newParticlePtr->growStep = (mainTaskSlot->growRate << 12) / 750 / 3;
     }
-    if (mainTaskSlot->frame == 0x1A) {
+    if (mainTaskSlot->frame == 26) {
         newParticlePtr = (BattleFxBigGuardParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueBigGuardGrowingFadeModelTask);
         *(Int64Pair *)&newParticlePtr->posX = *(Int64Pair *)mainTaskSlot->position;
         newParticlePtr->delay = mainTaskSlot->delay;
         newParticlePtr->speed = mainTaskSlot->growRate;
         newParticlePtr->scale = 0;
-        newParticlePtr->growStep = (mainTaskSlot->growRate << 0xC) / 0x2BC / 0xA;
+        newParticlePtr->growStep = (mainTaskSlot->growRate << 12) / 700 / 10;
     }
-    if (mainTaskSlot->frame == 0x30) {
+    if (mainTaskSlot->frame == 48) {
         Battle_PostActorHitOrHurtMessage(mainTaskSlot->recordType);
     }
-    if (mainTaskSlot->frame >= 0x37) {
+    if (mainTaskSlot->frame >= 55) {
         mainTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (mainTaskSlot->frame)++;
@@ -221,7 +221,7 @@ void __cdecl BattleFx_BlueBigGuardGrowingFadeModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleBlueBigGuardLoadedRes);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.fadeSlot->frameCounter >= 8) {
@@ -229,7 +229,7 @@ void __cdecl BattleFx_BlueBigGuardGrowingFadeModelTask(void)
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.fadeSlot->frameCounter >= 0x10) {
+    if (frame.fadeSlot->frameCounter >= 16) {
         frame.fadeSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -284,7 +284,7 @@ void __cdecl BattleFx_BlueBigGuardSpinGrowModelTask(void)
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinSlot->frameCounter >= 0xA) {
+    if (frame.spinSlot->frameCounter >= 10) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

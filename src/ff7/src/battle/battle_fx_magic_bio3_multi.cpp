@@ -3920,16 +3920,16 @@ void __cdecl BattleFx_MagicBio3MultiTimelineTask(void)
         particle = (BattleBio3MultiParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio3MultiPulsingGrowingModelTask);
         *(Int64Pair *)((char *)particle + 8) = *(Int64Pair *)&g_BattleMagicBio3Multi_TargetCentroid;
     }
-    if (t >= 0 && t < 0xF && t % 2 == 0) {
+    if (t >= 0 && t < 15 && t % 2 == 0) {
         particle = (BattleBio3MultiParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio3MultiRisingFadeSpriteTask);
-        particle->posX = *(short *)&g_BattleMagicBio3Multi_TargetCentroid + rand() % 0xFA0 + -0x7D0;
+        particle->posX = *(short *)&g_BattleMagicBio3Multi_TargetCentroid + rand() % 4000 + -2000;
         particle->height = 0;
-        particle->posY = ((short *)&g_BattleMagicBio3Multi_TargetCentroid)[2] + rand() % 0xFA0 + -0x7D0;
-        particle->size = rand() % 0x1B00 + 0x1500;
-        particle->riseSpeed = rand() % 0x32 + 0x32;
+        particle->posY = ((short *)&g_BattleMagicBio3Multi_TargetCentroid)[2] + rand() % 4000 + -2000;
+        particle->size = rand() % 6912 + 5376;
+        particle->riseSpeed = rand() % 50 + 50;
     }
     if (t == 0) {
-        for (i = 0; i < 0xA; i++) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicBio3Multi_EffectState & 1 << i) != 0) {
                 particle = (BattleBio3MultiParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio3MultiSixFrameSpriteEmitterTask);
                 particle->actorIndex = i;
@@ -3937,7 +3937,7 @@ void __cdecl BattleFx_MagicBio3MultiTimelineTask(void)
         }
     }
     if (t == 0x14) {
-        for (i = 0; i < 0xA; i++) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicBio3Multi_EffectState & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
@@ -3964,23 +3964,23 @@ void __cdecl BattleFx_MagicBio3MultiPulsingGrowingModelTask(void)
 
     task = (BattleFxBio3MultiPulseSlot *)BATTLE_CURRENT_TASK_SLOT;
     block = Gfx_GetPsxScratchpadPtr(0);
-    g_BattleMagicBio3Multi_ModelData1.scale = ((SinFixed((task->frame % 5 << 0xC) / 5) + 0x1000) * 0x9F >> 0xD) + 0x60;
-    g_BattleMagicBio3Multi_InitialAngles[0] = task->frame * 0x2500 / 0x1E + 0xB00;
-    g_BattleMagicBio3Multi_InitialScale = task->frame * 0x1A00 / 0x1E + 0xB00;
-    g_BattleMagicBio3Multi_SpriteDrawReq1.scaleZ = task->frame * 0x2500 / 0x1E + 0xB00;
+    g_BattleMagicBio3Multi_ModelData1.scale = ((SinFixed((task->frame % 5 << 12) / 5) + 0x1000) * 0x9F >> 13) + 0x60;
+    g_BattleMagicBio3Multi_InitialAngles[0] = task->frame * 0x2500 / 30 + 0xB00;
+    g_BattleMagicBio3Multi_InitialScale = task->frame * 0x1A00 / 30 + 0xB00;
+    g_BattleMagicBio3Multi_SpriteDrawReq1.scaleZ = task->frame * 0x2500 / 30 + 0xB00;
     localFrame = task->frame;
-    if (localFrame < 0x14) { /* empty first arm: lib/codegen.h */
+    if (localFrame < 20) { /* empty first arm: lib/codegen.h */
     } else {
-        localFrame -= 0x14;
-        if (localFrame < 0xA) {
-            g_BattleMagicBio3Multi_ModelData1.scale = g_BattleMagicBio3Multi_ModelData1.scale * (0xA - localFrame) / 0xA;
+        localFrame -= 20;
+        if (localFrame < 10) {
+            g_BattleMagicBio3Multi_ModelData1.scale = g_BattleMagicBio3Multi_ModelData1.scale * (0xA - localFrame) / 10;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
     g_BattleMagicBio3Multi_ModelData1.modelGroup = Gfx_ModelTableGetRenderObject(0, g_pBattleMagicBio3MultiTableCursor);
-    g_BattleMagicBio3Multi_TargetMask = (Vec3sPacked *)g_BattleMagicBio3Multi_ResourceDefs[task->frame % 0xF];
+    g_BattleMagicBio3Multi_TargetMask = (Vec3sPacked *)g_BattleMagicBio3Multi_ResourceDefs[task->frame % 15];
     Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_MagicBio3MultiReadPolygonSetVertexFloat, *(int *)((char *)g_BattleMagicBio3Multi_ModelData1.modelGroup + 4));
     g_BattleMagicBio3Multi_SpriteDrawReq1.value1 = task->drawReqValue1;
     g_BattleMagicBio3Multi_SpriteDrawReq1.value2 = task->drawReqValue2;
@@ -4006,13 +4006,13 @@ void __cdecl BattleFx_MagicBio3MultiRisingFadeSpriteTask(void)
     g_BattleMagicBio3Multi_SpriteDrawReq1.table = Gfx_ModelTableGetLoadedRecord(1, g_pBattleMagicBio3MultiTableCursor);
     g_BattleMagicBio3Multi_SpriteDrawReq1.tableAlt = Gfx_ModelTableGetSpriteObject(1, g_pBattleMagicBio3MultiTableCursor);
     localFrame = task->frame;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         *(int *)&g_BattleMagicBio3Multi_SpriteDrawReq2 = 0x2C808080;
     } else {
-        localFrame -= 0xA;
-        if (localFrame < 0xF) {
+        localFrame -= 10;
+        if (localFrame < 15) {
             g_BattleMagicBio3Multi_SpriteDrawReq2.code = 0x2E;
-            g_BattleMagicBio3Multi_SpriteDrawReq2.colorB = localFrame * -0x80 / 0xF + 0x80;
+            g_BattleMagicBio3Multi_SpriteDrawReq2.colorB = localFrame * -0x80 / 15 + 0x80;
             g_BattleMagicBio3Multi_SpriteDrawReq2.colorG = g_BattleMagicBio3Multi_SpriteDrawReq2.colorB;
             ((unsigned char *)&g_BattleMagicBio3Multi_SpriteDrawReq2)[0] = g_BattleMagicBio3Multi_SpriteDrawReq2.colorG;
         } else {
@@ -4044,13 +4044,13 @@ void __cdecl BattleFx_MagicBio3MultiSixFrameSpriteEmitterTask(void)
         return;
     }
     frame = task->frame;
-    if (frame < 0x19) {
+    if (frame < 25) {
         if (frame % 2 == 0) {
             pSprite = (BattleFxBio3MultiSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio3MultiSixFrameSpriteTask);
             Battle_GetBoneWorldPos(task->actorIndex, g_BattleActorRecords[task->actorIndex].targetBone, (short *)((int)pSprite + 8));
-            pSprite->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            pSprite->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            pSprite->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            pSprite->posX += (short)(rand() % 1000 - 500);
+            pSprite->posY += (short)(rand() % 1000 - 500);
+            pSprite->posZ += (short)(rand() % 1000 - 500);
             pSprite->scale = rand() % 0x1000 + 0x1000;
         }
     } else {

@@ -154,36 +154,36 @@ void __cdecl BattleFx_SpecialOilTimelineTask(void)
         frame.spawnSlot->deltaZ = frame.timelineSlot->endZ - frame.timelineSlot->startZ;
         frame.deltaZ = frame.spawnSlot->deltaZ;
         frame.distance = SqrtToInt(frame.deltaX * frame.deltaX + frame.deltaY * frame.deltaY + frame.deltaZ * frame.deltaZ);
-        frame.spawnSlot->scaleRate = (frame.distance << 0xC) / 0xAF0;
+        frame.spawnSlot->scaleRate = (frame.distance << 12) / 2800;
     }
-    if (frame.timelineSlot->frameCounter == 0xF) {
+    if (frame.timelineSlot->frameCounter == 15) {
         frame.spawnSlot = (BattleFxOilTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialOilTargetModelTask);
         frame.spawnSlot->posX = frame.timelineSlot->endX;
         frame.spawnSlot->posY = 0;
         frame.spawnSlot->posZ = frame.timelineSlot->endZ;
         Battle_PlaySfxPannedToActor(0xA, (short)frame.timelineSlot->actorIndex, 0);
     }
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     if (frame.timelineSlot->frameCounter > 4 && frame.timelineSlot->frameCounter < 9) {
         for (frame.i = 0; frame.i < 2; frame.i++) {
             frame.spawnSlot = (BattleFxOilTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialOilVariantSpriteTask)];
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-            frame.spawnSlot->posX += (short)(rand() % 0x4B0 - 0x258);
-            frame.spawnSlot->posY += (short)(rand() % 0x4B0 - 0x258);
-            frame.spawnSlot->posZ += (short)(rand() % 0x4B0 - 0x258);
+            frame.spawnSlot->posX += (short)(rand() % 1200 - 600);
+            frame.spawnSlot->posY += (short)(rand() % 1200 - 600);
+            frame.spawnSlot->posZ += (short)(rand() % 1200 - 600);
             frame.spawnSlot->isActive = 0;
         }
         frame.spawnSlot = (BattleFxOilTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialOilVariantSpriteTask)];
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x258 - 0x12C);
-        frame.spawnSlot->posY += (short)(rand() % 0x258 - 0x12C);
-        frame.spawnSlot->posZ += (short)(rand() % 0x258 - 0x12C);
+        frame.spawnSlot->posX += (short)(rand() % 600 - 300);
+        frame.spawnSlot->posY += (short)(rand() % 600 - 300);
+        frame.spawnSlot->posZ += (short)(rand() % 600 - 300);
         frame.spawnSlot->isActive = 1;
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x32) {
+    if (frame.timelineSlot->frameCounter == 50) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -257,8 +257,8 @@ void __cdecl BattleFx_SpecialOilAimedModelTask(void)
     if (frame.oilSlot->frameCounter < 4) {
         g_BattleSpecialOilCounter++;
     } else {
-        (g_BattleSpecialOilScale.scaleX) -= 0x800;
-        g_BattleSpecialOilScale.component8 -= 0x800;
+        (g_BattleSpecialOilScale.scaleX) -= 0x800 /* 0.5 */;
+        g_BattleSpecialOilScale.component8 -= 0x800 /* 0.5 */;
     }
     (frame.oilSlot->frameCounter)++;
     if (frame.oilSlot->frameCounter == 8) {
@@ -285,11 +285,11 @@ void __cdecl BattleFx_SpecialOilTargetModelTask(void)
 #pragma pack(pop)
 
     frame.targetSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     frame.rotX.vz = 0;
     frame.rotX.vy = frame.rotX.vz;
     RotMatrix(&frame.rotX, &frame.localMatrix);
-    frame.scaleX.vz = 0x2800;
+    frame.scaleX.vz = 0x2800 /* 2.5 */;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.localMatrix, &frame.scaleX);
@@ -298,7 +298,7 @@ void __cdecl BattleFx_SpecialOilTargetModelTask(void)
     frame.localMatrix.t[2] = frame.targetSlot->posZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.localMatrix, &frame.drawMatrix);
     (g_BattleSpecialOilModelReq.modelResField) = Gfx_ModelTableGetRenderObject(g_BattleSpecialOilModelIndices[frame.targetSlot->frameCounter % 8], g_BattleSpecialOilLoadedRes);
-    g_BattleSpecialOilModelReq.stride = g_BattleSpecialOilTargetMask * 0xC;
+    g_BattleSpecialOilModelReq.stride = g_BattleSpecialOilTargetMask * 12;
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     g_BattleSpecialOilDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialOilModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialOilDrawListHandle);
@@ -308,11 +308,11 @@ void __cdecl BattleFx_SpecialOilTargetModelTask(void)
     if (frame.targetSlot->frameCounter < 8) {
         g_BattleSpecialOilTargetMask++;
     }
-    if (frame.targetSlot->frameCounter > 0xC) {
+    if (frame.targetSlot->frameCounter > 12) {
         g_BattleSpecialOilTargetMask--;
     }
     (frame.targetSlot->frameCounter)++;
-    if (frame.targetSlot->frameCounter == 0x14) {
+    if (frame.targetSlot->frameCounter == 20) {
         frame.targetSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

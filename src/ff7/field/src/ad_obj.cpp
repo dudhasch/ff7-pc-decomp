@@ -553,7 +553,7 @@ void __cdecl Field_WriteRenameScriptFromNameLists(void)
     pShortNames = Field_FileOpen(AdObj_ShortTxtName(), AdObj_ShortTxtMode());
     pFpLong = Field_FileOpen(AdObj_LongTxtName(), AdObj_LongTxtMode());
     renameFile = Field_FileOpen(AdObj_RenameTxtName(), AdObj_RenameTxtMode());
-    for (lineNo = 0; lineNo < 0x494b; lineNo++) {
+    for (lineNo = 0; lineNo < 18763; lineNo++) {
         // The comma expression preserves VC5's runtime intrinsic scan;
         // a bare literal is folded into fixed moves absent from the original.
         strcpy(cmdBuf, AdObj_RenCommand());
@@ -614,8 +614,8 @@ int __cdecl Field_ParseModelListFile(char *source)
     g_FieldModelListCount = 0;
     g_FieldModelExtraCount = 0;
     Field_DebugReadU16(stream, (unsigned short *)&g_FieldModelListCount);
-    if (g_FieldModelListCount > 0x14) {
-        g_FieldModelListCount = 0x14;
+    if (g_FieldModelListCount > 20) {
+        g_FieldModelListCount = 20;
     }
     Field_DebugReadU16(stream, (unsigned short *)&g_FieldModelExtraCount);
     /* Retail caller prototype (unsigned short) -> int preserved for /Od argument promotion on `Field_AllocModelDefs`. */
@@ -805,24 +805,24 @@ void __cdecl Field_ResolveModelFilePath(char *name)
         prefixLength = strlen(pathBuf);
         if (name[1] == '1' && name[2] == 'd') {
             if (name[0x11] == 't' && name[0x12] == 'o' && name[0x13] == 'r' && name[0x20] == '\\' && name[0x21] == '\\') {
-                for (pos = 0x21; pos < nameLen - 1; pos++) {
+                for (pos = 33; pos < nameLen - 1; pos++) {
                     name[pos] = name[pos + 1];
                 }
                 name[nameLen - 1] = 0;
             }
             if (name[0x10] == '\\') {
-                for (pos = 0x10; pos < nameLen; pos++) {
+                for (pos = 16; pos < nameLen; pos++) {
                     pathBuf[prefixLength + pos - 0x10] = name[pos];
                 }
                 pathBuf[prefixLength + pos - 0x10] = 0;
             } else {
-                for (pos = 0xd; pos < nameLen; pos++) {
+                for (pos = 13; pos < nameLen; pos++) {
                     pathBuf[prefixLength + pos - 0xd] = name[pos];
                 }
                 pathBuf[prefixLength + pos - 0xd] = 0;
             }
         } else {
-            for (pos = 0xb; pos < nameLen; pos++) {
+            for (pos = 11; pos < nameLen; pos++) {
                 pathBuf[prefixLength + pos - 0xb] = name[pos];
             }
             pathBuf[prefixLength + pos - 0xb] = 0;
@@ -937,7 +937,7 @@ int __cdecl Field_InstantiateModels(PfileLoadOptions *opts, struct GfxEngineCont
     g_FieldHumanAnimFlag = 0;
     g_pFieldModelSlots = (FieldModelSlot *)GameHeapAllocRaw(g_FieldHumanAnimState.modelListCountCopy * 0x190,
                                                       // STRING: FF7 0x00907bcc
-                                                      "C:\\FF7\\field\\src\\ad_obj.cpp", 0x5b0);
+                                                      "C:\\FF7\\field\\src\\ad_obj.cpp", 1456);
     if (g_pFieldModelSlots == 0)
         return 0;
     Field_BuildQuarterTurnAboutXMatrix((FieldRotationMatrix *)f.matrix);
@@ -1005,7 +1005,7 @@ int __cdecl Field_InstantiateModels(PfileLoadOptions *opts, struct GfxEngineCont
         f.record->animId = 0;
         f.record->animations = (int)GameHeapAllocRaw(f.record->animationCount * 4,
                                                         // STRING: FF7 0x00907be8
-                                                        "C:\\FF7\\field\\src\\ad_obj.cpp", 0x60f);
+                                                        "C:\\FF7\\field\\src\\ad_obj.cpp", 1551);
         for (f.animIndex = 0; f.animIndex < f.record->animationCount; f.animIndex++) {
             ((void **)f.record->animations)[f.animIndex] = (void *)Field_LoadAnimation((int)opts, (int)g_FieldModelsData[f.modelIndex].anims[f.animIndex].name);
             if (((void **)f.record->animations)[f.animIndex] == 0) {

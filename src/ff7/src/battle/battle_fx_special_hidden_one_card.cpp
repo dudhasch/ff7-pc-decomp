@@ -4907,11 +4907,11 @@ int g_BattleSpecialHiddenOneCardCasterActor = 0;
 int g_BattleSpecialHiddenOneCardRadiusScaleFixed12 = 0;
 unsigned char g_bssPad_00b4994c[4] = {0};
 // GLOBAL: FF7 0x00b49950
-unsigned char g_BattleSpecialHiddenOneCardPaletteRows[0x4] = {0};
+unsigned char g_BattleSpecialHiddenOneCardPaletteRows[4] = {0};
 // GLOBAL: FF7 0x00b49954
-unsigned char g_BattleSpecialHiddenOneCardPaletteTint[0x4] = {0};
+unsigned char g_BattleSpecialHiddenOneCardPaletteTint[4] = {0};
 // GLOBAL: FF7 0x00b49958
-unsigned char g_BattleSpecialHiddenOneCardPaletteCycle[0x4] = {0};
+unsigned char g_BattleSpecialHiddenOneCardPaletteCycle[4] = {0};
 unsigned char g_bssPad_00b4995c[4] = {0};
 unsigned char g_bssPad_00b49960[824] = {0};
 unsigned char g_bssPad_00b49c98[120] = {0};
@@ -5043,23 +5043,23 @@ void __cdecl BattleFx_SpecialHiddenOneCardTimelineTask(void)
         }
         frame.slot->distance = frame.distance;
         frame.slot->velocityY = 0xFED4;
-        frame.slot->scale = 0x2000;
+        frame.slot->scale = 0x2000 /* 2.0 */;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleSpecialHiddenOneCardActorBoneWorldPos), 0x1D5);
     }
-    if (frame.current->step == 0x18) {
+    if (frame.current->step == 24) {
         frame.slot = (BattleFxSunCardSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHiddenOneCardOscillatingModelTask);
         frame.slot->posY = 0xFEF6;
-        frame.slot->velocityY = 0x21;
+        frame.slot->velocityY = 33;
         frame.slot->angle = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x1D6);
     }
-    if (frame.current->step == 0x48) {
+    if (frame.current->step == 72) {
         Battle_GetBoneWorldPos(g_BattleSpecialHiddenOneCardTargetActorIdx, g_BattleActorRecords[g_BattleSpecialHiddenOneCardTargetActorIdx].targetBone, &frame.current->posX);
         frame.vector[0] = frame.current->posX - g_BattleCameraPosition.cameraPosX;
         frame.vector[1] = 0;
         frame.vector[2] = frame.current->posZ - g_BattleCameraPosZ;
         frame.distance = NormalizeVectorFixed(&frame.vector[0], &frame.vector[0]);
-        frame.distance = SqrtToInt(frame.distance) / 0xC;
+        frame.distance = SqrtToInt(frame.distance) / 12;
         frame.angle = ComputeAngleBetweenVectors(&g_BattleSpecialHiddenOneCardForwardAxisFixed12, (VECTOR *)(&frame.vector[0]), (VECTOR *)(&frame.axis[0]));
         Gte_BuildAxisAngleMatrix(frame.angle, (PsxMatrix *)(&frame.matrix[0]), (VECTOR *)(&frame.axis[0]));
         TransformVectorToInt32((PsxMatrix *)(&frame.matrix[0]), &g_BattleSpecialHiddenOneCardForwardAxisFixed12, &frame.vector[0]);
@@ -5070,14 +5070,14 @@ void __cdecl BattleFx_SpecialHiddenOneCardTimelineTask(void)
         frame.slot->posX = g_BattleCameraPosition.cameraPosX;
         frame.slot->posY = frame.current->posY;
         frame.slot->posZ = g_BattleCameraPosZ;
-        frame.slot->offsetX = frame.distance * frame.vector[0] >> 0xC;
+        frame.slot->offsetX = frame.distance * frame.vector[0] >> 12;
         frame.slot->velocityY = 0;
-        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 0xC;
+        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 12;
         frame.slot->angle = frame.angle;
         frame.slot->scale = 0x2666;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.current->posX), 0x1D7);
     }
-    if (frame.current->step >= 0x5A) {
+    if (frame.current->step >= 90) {
         frame.current->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.current->step)++;
@@ -5111,7 +5111,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardSpinningModelTask(void)
     if (frame.spinRecord->step <= 8) {
         frame.axisAngle = frame.spinRecord->step << 7;
     } else {
-        frame.axisAngle = 0x400;
+        frame.axisAngle = 0x400 /* 90 deg */;
     }
     frame.actorRotX.vx = 0;
     frame.actorRotX.vy = g_BattleSpecialHiddenOneCardActorBoneWorldPos.heading;
@@ -5125,7 +5125,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardSpinningModelTask(void)
     TransformVectorToInt16(&frame.axisMatrix, &frame.offsetX, &frame.offsetX.vx);
     frame.rotX.vx = 0;
     frame.rotX.vy = 0;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.modelMatrix);
     frame.modelMatrix.t[0] = frame.spinRecord->posX + frame.offsetX.vx;
@@ -5142,11 +5142,11 @@ void __cdecl BattleFx_SpecialHiddenOneCardSpinningModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialHiddenOneCardLoadedRes);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinRecord->step >= 0x12) {
+    if (frame.spinRecord->step >= 18) {
         frame.spinRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -5182,7 +5182,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardOscillatingModelTask(void)
 #pragma pack(pop)
 
     frame.oscRecord = (BattleFxOscillatingModel *)BATTLE_CURRENT_TASK_SLOT;
-    frame.tiltX.vx = 0x400;
+    frame.tiltX.vx = 1024;
     frame.tiltX.vy = 0;
     frame.tiltX.vz = 0;
     RotMatrixXYZ(&frame.tiltX, &frame.modelMatrix);
@@ -5200,11 +5200,11 @@ void __cdecl BattleFx_SpecialHiddenOneCardOscillatingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialHiddenOneCardLoadedRes);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.oscRecord->phase >= 0x30) {
+    if (frame.oscRecord->phase >= 48) {
         frame.oscRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -5216,10 +5216,10 @@ void __cdecl BattleFx_SpecialHiddenOneCardOscillatingModelTask(void)
         if (frame.oscRecord->velocity < 2) {
             frame.oscRecord->velocity = 1;
         }
-    } else if (frame.oscRecord->phase < 0x28) {
+    } else if (frame.oscRecord->phase < 40) {
         frame.oscAngle = frame.oscRecord->phase - 8 << 7;
-        frame.oscRecord->offset = SinFixed(frame.oscAngle) * 0x18 >> 0xC;
-        if (frame.oscRecord->phase >= 0x16 && frame.oscRecord->phase < 0x22) {
+        frame.oscRecord->offset = SinFixed(frame.oscAngle) * 0x18 >> 12;
+        if (frame.oscRecord->phase >= 22 && frame.oscRecord->phase < 34) {
             frame.oscRecord->angle -= 0xAA;
         }
     } else {
@@ -5253,7 +5253,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardAcceleratingModelTask(void)
     frame.accelRecord = (BattleFxSpecialAcceleratingSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.accelRecord->angleY;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     frame.modelMatrix.t[0] = frame.accelRecord->posA;
     frame.modelMatrix.t[1] = frame.accelRecord->posY;
@@ -5269,23 +5269,23 @@ void __cdecl BattleFx_SpecialHiddenOneCardAcceleratingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialHiddenOneCardLoadedRes);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.accelRecord->timer >= 0xC) {
+    if (frame.accelRecord->timer >= 12) {
         frame.modelDraw->flags = 8;
-        frame.modelDraw->fadeLevel = 0x80 - (frame.accelRecord->timer - 0xC << 4);
+        frame.modelDraw->fadeLevel = 128 - (frame.accelRecord->timer - 12 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.accelRecord->timer >= 0x14) {
+    if (frame.accelRecord->timer >= 20) {
         frame.accelRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.accelRecord->timer == 0xA) {
+    if (frame.accelRecord->timer == 10) {
         frame.screenPan = Battle_ComputeScreenPanFromPosition(&frame.accelRecord->posA);
-        if (frame.screenPan > 0x40) {
+        if (frame.screenPan > 64) {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialHiddenOneCardTargetActorIdx, 0x118);
         } else {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialHiddenOneCardTargetActorIdx, 0x18);
@@ -5314,7 +5314,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardBuildFacingVectors(void)
     Battle_GetBoneWorldPos(g_BattleSpecialHiddenOneCardCasterActor,
                            g_BattleActorRecords[g_BattleSpecialHiddenOneCardCasterActor].altBone,
                            &g_BattleSpecialHiddenOneCardActorBoneWorldPos.posX);
-    g_BattleSpecialHiddenOneCardActorBoneWorldPos.posY -= 0xe0;
+    g_BattleSpecialHiddenOneCardActorBoneWorldPos.posY -= 224;
     g_BattleSpecialHiddenOneCardActorBoneWorldPos.heading = g_BattleActorRecords[g_BattleSpecialHiddenOneCardCasterActor].yaw;
     frame.rot[0] = 0;
     frame.rot[1] = g_BattleSpecialHiddenOneCardActorBoneWorldPos.heading;
@@ -5341,16 +5341,16 @@ void __cdecl BattleFx_SpecialHiddenOneCardDelayedImpactTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x5A) {
-        scaledRadius = g_BattleActorRecords[g_BattleSpecialHiddenOneCardTargetActorIdx].radius + 0xE0;
-        if (scaledRadius > 0x76C) {
-            scaledRadius = 0x76C;
+    if (task->frameCounter == 90) {
+        scaledRadius = g_BattleActorRecords[g_BattleSpecialHiddenOneCardTargetActorIdx].radius + 224;
+        if (scaledRadius > 1900) {
+            scaledRadius = 1900;
         }
-        g_BattleSpecialHiddenOneCardRadiusScaleFixed12 = (scaledRadius << 0xC) / 0x230;
-        g_BattleSpecialHiddenOneCardSpreadRadius = scaledRadius * 0x1388 / 0x50F;
-        g_BattleSpecialHiddenOneCardScale = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * 0x3000 / 0x2500;
-        g_BattleSpecialHiddenOneCardParticleSizeMin = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * 0x500 / 0x2500;
-        g_BattleSpecialHiddenOneCardParticleSizeMax = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * 0x1200 / 0x2500;
+        g_BattleSpecialHiddenOneCardRadiusScaleFixed12 = (scaledRadius << 12) / 560;
+        g_BattleSpecialHiddenOneCardSpreadRadius = scaledRadius * 5000 / 1295;
+        g_BattleSpecialHiddenOneCardScale = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * 0x3000 / 9472;
+        g_BattleSpecialHiddenOneCardParticleSizeMin = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * 1280 / 9472;
+        g_BattleSpecialHiddenOneCardParticleSizeMax = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * 4608 / 9472;
         BattleFx_SpecialHiddenOneCardBeginGatherToCenter(g_BattleSpecialHiddenOneCardTargetActorIdx, g_BattleSpecialHiddenOneCardCasterActor);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -5378,13 +5378,13 @@ void __cdecl BattleFx_SpecialHiddenOneCardBeginGatherToCenter(int targetActorIdx
     list = (int *)((GfxPaletteRecord *)((GfxTextureSurface *)((GfxTexturedHundredRecord *)resultEntry->hundredIndex)->uploaded)->palette)->srcEntries;
     shared = list[1];
     list += 2;
-    for (rowIdx = 0; rowIdx < 0xE; rowIdx++) {
+    for (rowIdx = 0; rowIdx < 14; rowIdx++) {
         current = *list;
         list++;
         *(int *)((rowIdx << 6) + (char *)&g_BattleSpecialHiddenOneCardPaletteRows) = 0;
         *(int *)((rowIdx << 6) + (char *)&g_BattleSpecialHiddenOneCardPaletteTint) = shared;
-        for (column = 0; column < 0xE; column++) {
-            ((int *)((column << 6) + (char *)&g_BattleSpecialHiddenOneCardPaletteCycle))[(column + rowIdx) % 0xE] = current;
+        for (column = 0; column < 14; column++) {
+            ((int *)((column << 6) + (char *)&g_BattleSpecialHiddenOneCardPaletteCycle))[(column + rowIdx) % 14] = current;
         }
     }
     Battle_AllocateResourceSlot(BattleFx_SpecialHiddenOneCardGatherToCenterTask);
@@ -5412,15 +5412,15 @@ void __cdecl BattleFx_SpecialHiddenOneCardGatherToCenterTask(void)
         pSpawn = (BattleFxHiddenOneCardGatherParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHiddenOneCardScalingSpritePairTask);
         pSpawn->pos = *(Int64Pair *)&g_BattleSpecialHiddenOneCardPosition;
     }
-    if (task->frameCounter >= 0 && task->frameCounter < 0x1E) {
+    if (task->frameCounter >= 0 && task->frameCounter < 30) {
         for (particleIdx = 0; particleIdx < 3; particleIdx++) {
             pSpawn = (BattleFxHiddenOneCardGatherParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHiddenOneCardParticleBillboardTask);
             pSpawn->posX = g_BattleSpecialHiddenOneCardPosition[0] + rand() % (g_BattleSpecialHiddenOneCardSpreadRadius << 1) - g_BattleSpecialHiddenOneCardSpreadRadius;
             pSpawn->posY = -rand() % g_BattleSpecialHiddenOneCardSpreadRadius;
             pSpawn->posZ = g_BattleSpecialHiddenOneCardPosition[2] + rand() % (g_BattleSpecialHiddenOneCardSpreadRadius << 1) - g_BattleSpecialHiddenOneCardSpreadRadius;
-            pSpawn->velocityX = (g_BattleSpecialHiddenOneCardPosition[0] - pSpawn->posX) / 0x20;
-            pSpawn->velocityY = -pSpawn->posY / 0x20;
-            pSpawn->velocityZ = (g_BattleSpecialHiddenOneCardPosition[2] - pSpawn->posZ) / 0x20;
+            pSpawn->velocityX = (g_BattleSpecialHiddenOneCardPosition[0] - pSpawn->posX) / 32;
+            pSpawn->velocityY = -pSpawn->posY / 32;
+            pSpawn->velocityZ = (g_BattleSpecialHiddenOneCardPosition[2] - pSpawn->posZ) / 32;
             pSpawn->scale = g_BattleSpecialHiddenOneCardParticleSizeMin + rand() % (g_BattleSpecialHiddenOneCardParticleSizeMax - g_BattleSpecialHiddenOneCardParticleSizeMin);
         }
     }
@@ -5429,24 +5429,24 @@ void __cdecl BattleFx_SpecialHiddenOneCardGatherToCenterTask(void)
         pSpawn->pos = *(Int64Pair *)&g_BattleSpecialHiddenOneCardPosition;
         pSpawn->posY = 0;
     }
-    if (task->frameCounter == 0x14) {
-        for (particleIdx = 0; particleIdx < 0xA; particleIdx++) {
+    if (task->frameCounter == 20) {
+        for (particleIdx = 0; particleIdx < 10; particleIdx++) {
             if ((g_BattleSpecialHiddenOneCardActorMask & 1 << particleIdx) != 0) {
                 if ((g_BattleTimelineTargetMask & 1 << particleIdx) != 0) {
                     pSpawn = (BattleFxHiddenOneCardGatherParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHiddenOneCardPullActorToCenterTask);
                     pSpawn->pos = *(Int64Pair *)&g_BattleActorRecords[particleIdx].posX;
                     pSpawn->scale = g_BattleActorRecords[particleIdx].scale;
                     pSpawn->actorIndex = particleIdx;
-                    pSpawn->velocityX = (g_BattleSpecialHiddenOneCardPosition[0] - pSpawn->posX) / 0x1E;
-                    pSpawn->velocityY = (g_BattleSpecialHiddenOneCardPosition[1] - pSpawn->posY) / 0x1E;
-                    pSpawn->velocityZ = (g_BattleSpecialHiddenOneCardPosition[2] - pSpawn->posZ) / 0x1E;
+                    pSpawn->velocityX = (g_BattleSpecialHiddenOneCardPosition[0] - pSpawn->posX) / 30;
+                    pSpawn->velocityY = (g_BattleSpecialHiddenOneCardPosition[1] - pSpawn->posY) / 30;
+                    pSpawn->velocityZ = (g_BattleSpecialHiddenOneCardPosition[2] - pSpawn->posZ) / 30;
                 } else {
                     Battle_PostActorHitOrHurtMessage(particleIdx);
                 }
             }
         }
     }
-    if (task->frameCounter == 0x1E) {
+    if (task->frameCounter == 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -5467,16 +5467,16 @@ void __cdecl BattleFx_SpecialHiddenOneCardScalingSpritePairTask(void)
 
     task = (BattleFxRemoveLayerSprite *)BATTLE_CURRENT_TASK_SLOT;
     age = task->layerIndex;
-    if (age < 0x14) {
-        scale = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * age / 0x14;
+    if (age < 20) {
+        scale = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 * age / 20;
     } else {
-        age -= 0x14;
-        if (age < 0x28) {
+        age -= 20;
+        if (age < 40) {
             scale = g_BattleSpecialHiddenOneCardRadiusScaleFixed12;
         } else {
-            age -= 0x28;
-            if (age < 0xA) {
-                scale = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 + (0 - g_BattleSpecialHiddenOneCardRadiusScaleFixed12) * age / 0xA;
+            age -= 40;
+            if (age < 10) {
+                scale = g_BattleSpecialHiddenOneCardRadiusScaleFixed12 + (0 - g_BattleSpecialHiddenOneCardRadiusScaleFixed12) * age / 10;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -5498,7 +5498,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardScalingSpritePairTask(void)
     g_BattleSpecialHiddenOneCardSpriteConfig1.layer2DrawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialHiddenOneCardLoadedRes);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecialHiddenOneCardSpriteConfig1.layer2SpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecialHiddenOneCardSpriteConfig1.layer1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    Gfx_UploadRenderObjectPalette(0, 0x10, (task->layerIndex % 0xE << 6) + (int)&g_BattleSpecialHiddenOneCardPaletteRows, 0, g_BattleSpecialHiddenOneCardSpriteConfig1.layer2DrawObj);
+    Gfx_UploadRenderObjectPalette(0, 16, (task->layerIndex % 14 << 6) + (int)&g_BattleSpecialHiddenOneCardPaletteRows, 0, g_BattleSpecialHiddenOneCardSpriteConfig1.layer2DrawObj);
     if (g_BattleIsPaused == 0) {
         (task->layerIndex)++;
     }
@@ -5529,7 +5529,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardParticleBillboardTask(void)
         g_BattleSpecialHiddenOneCardSpriteRequest.colorR = g_BattleSpecialHiddenOneCardSpriteRequest.colorG;
     } else {
         frame.age -= 2;
-        if (frame.age < 0x1E) {
+        if (frame.age < 30) {
             g_BattleSpecialHiddenOneCardSpriteRequest.colorB = 0x80;
             g_BattleSpecialHiddenOneCardSpriteRequest.colorG = g_BattleSpecialHiddenOneCardSpriteRequest.colorB;
             g_BattleSpecialHiddenOneCardSpriteRequest.colorR = g_BattleSpecialHiddenOneCardSpriteRequest.colorG;
@@ -5539,7 +5539,7 @@ void __cdecl BattleFx_SpecialHiddenOneCardParticleBillboardTask(void)
         }
     }
     frame.posX.vx = frame.particleRecord->posX;
-    frame.posX.vy = frame.particleRecord->posY - (SinFixed((frame.particleRecord->step << 0xB) / 32) * 0x3E8 >> 0xC);
+    frame.posX.vy = frame.particleRecord->posY - (SinFixed((frame.particleRecord->step << 11) / 32) * 0x3E8 >> 12);
     frame.posX.vz = frame.particleRecord->posZ;
     g_BattleSpecialHiddenOneCardSpriteRequest.quadState = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecialHiddenOneCardLoadedRes);
     BattleFx_InstallBillboardMatrix(&frame.posX, (short)frame.particleRecord->angle, 0);
@@ -5572,22 +5572,22 @@ void __cdecl BattleFx_SpecialHiddenOneCardGrowingModelTask(void)
 
     frame.growRecord = (BattleFreezeGrowthRecord *)BATTLE_CURRENT_TASK_SLOT;
     frame.age = frame.growRecord->frameIndex;
-    if (frame.age < 0x14) {
-        g_BattleSpecialHiddenOneCardDrawDescriptor.scaleZ = g_BattleSpecialHiddenOneCardScale * frame.age / 0x14;
+    if (frame.age < 20) {
+        g_BattleSpecialHiddenOneCardDrawDescriptor.scaleZ = g_BattleSpecialHiddenOneCardScale * frame.age / 20;
         g_BattleSpecialHiddenOneCardScaleFixed12 = g_BattleSpecialHiddenOneCardDrawDescriptor.scaleZ;
-        g_BattleSpecialHiddenOneCardDrawDescriptor.fadeLevel = 0x80;
+        g_BattleSpecialHiddenOneCardDrawDescriptor.fadeLevel = 128;
     } else {
-        frame.age -= 0x14;
-        if (frame.age < 0x1E) {
+        frame.age -= 20;
+        if (frame.age < 30) {
             g_BattleSpecialHiddenOneCardDrawDescriptor.scaleZ = g_BattleSpecialHiddenOneCardScale;
             g_BattleSpecialHiddenOneCardScaleFixed12 = g_BattleSpecialHiddenOneCardDrawDescriptor.scaleZ;
-            g_BattleSpecialHiddenOneCardDrawDescriptor.fadeLevel = 0x80;
+            g_BattleSpecialHiddenOneCardDrawDescriptor.fadeLevel = 128;
         } else {
-            frame.age -= 0x1E;
-            if (frame.age < 0xA) {
+            frame.age -= 30;
+            if (frame.age < 10) {
                 g_BattleSpecialHiddenOneCardDrawDescriptor.scaleZ = g_BattleSpecialHiddenOneCardScale;
                 g_BattleSpecialHiddenOneCardScaleFixed12 = g_BattleSpecialHiddenOneCardDrawDescriptor.scaleZ;
-                g_BattleSpecialHiddenOneCardDrawDescriptor.fadeLevel = frame.age * -0x80 / 0xA + 0x80;
+                g_BattleSpecialHiddenOneCardDrawDescriptor.fadeLevel = frame.age * -128 / 10 + 128;
             } else {
                 frame.growRecord->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -5626,8 +5626,8 @@ void __cdecl BattleFx_SpecialHiddenOneCardPullActorToCenterTask(void)
         return;
     }
     stepIdx = task->step;
-    if (stepIdx < 0x1E) {
-        g_BattleActorRecords[task->slotIndex].scale = task->startValue + (0 - task->startValue) * stepIdx / 0x1E;
+    if (stepIdx < 30) {
+        g_BattleActorRecords[task->slotIndex].scale = task->startValue + (0 - task->startValue) * stepIdx / 30;
     } else {
         *(Int64Pair *)&g_BattleActorRecords[task->slotIndex].posX = task->position;
         g_BattleActorRecords[task->slotIndex].scale = task->startValue;

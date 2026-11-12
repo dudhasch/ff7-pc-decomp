@@ -136,22 +136,22 @@ void __cdecl BattleFx_BlueAqualungTimelineTask(void)
         return;
     }
     task = (BattleFxAqualungTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->frame > 1 && task->frame < 0x21) {
+    if (task->frame > 1 && task->frame < 33) {
         ringIndex = g_BattleBlueAqualungParticleCount.nextIndex;
         pNewTask = (BattleFxAqualungSpriteTask *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAqualungGrowShrinkSpritesTask);
         pNewTask->firstParticle = ringIndex;
         for (idx = 0; idx < 2; idx++) {
-            bytesRand = rand() % 0x1000 + 0x800;
+            bytesRand = rand() % 4096 + 2048;
             g_BattleBlueAqualungParticleCount.particles[ringIndex].posX = task->posX + rand() % task->spreadX - task->offsetX;
             g_BattleBlueAqualungParticleCount.particles[ringIndex].posY = task->posY - rand() % task->spreadY + task->offsetY;
             g_BattleBlueAqualungParticleCount.particles[ringIndex].posZ = task->posZ + rand() % task->spreadX - task->offsetX;
-            baseSize = task->particleScale * bytesRand >> 0xC;
+            baseSize = task->particleScale * bytesRand >> 12;
             g_BattleBlueAqualungParticleCount.particles[ringIndex].baseSize = baseSize;
             g_BattleBlueAqualungParticleCount.particles[ringIndex].size = 0;
             g_BattleBlueAqualungParticleCount.particles[ringIndex].growRate = baseSize / 6;
             g_BattleBlueAqualungParticleCount.particles[ringIndex].shrinkRate = baseSize / 6;
             ringIndex++;
-            if (ringIndex >= 0xDE) {
+            if (ringIndex >= 222) {
                 ringIndex = 0;
             }
         }
@@ -161,23 +161,23 @@ void __cdecl BattleFx_BlueAqualungTimelineTask(void)
         g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         g_BattleFxTimelineState.channel2 = 0x30;
-        level = task->frame * 0x180;
-    } else if (task->frame >= 0x28) {
-        level = 0xC00 - (task->frame - 0x28) * 0x180;
+        level = task->frame * 384;
+    } else if (task->frame >= 40) {
+        level = 0xC00 - (task->frame - 0x28) * 384;
         if (level < 0) {
             level = 0;
         }
     } else {
         level = 0xC00;
     }
-    if (task->frame == 0x28) {
-        for (idx = 0; idx < 0xA; idx++) {
+    if (task->frame == 40) {
+        for (idx = 0; idx < 10; idx++) {
             if ((g_BattleBlueAqualungTargetMask & 1 << idx) != 0) {
                 Battle_PostActorHitOrHurtMessage(idx);
             }
         }
     }
-    if (task->frame >= 0x30) {
+    if (task->frame >= 48) {
         level = 0;
         g_BattleFxTimelineState.channel2 = level;
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -207,8 +207,8 @@ void __cdecl BattleFx_BlueAqualungGrowShrinkSpritesTask(void)
         if (g_BattleIsPaused == 0) {
             if (pSprite->frame < 6) {
                 g_BattleBlueAqualungParticleCount.particles[slotIdx].size += g_BattleBlueAqualungParticleCount.particles[slotIdx].growRate;
-                if (g_BattleBlueAqualungParticleCount.particles[slotIdx].size > 0x7000) {
-                    g_BattleBlueAqualungParticleCount.particles[slotIdx].size = 0x7000;
+                if (g_BattleBlueAqualungParticleCount.particles[slotIdx].size > 28672) {
+                    g_BattleBlueAqualungParticleCount.particles[slotIdx].size = 28672;
                 }
             } else if (pSprite->frame >= 7) {
                 g_BattleBlueAqualungParticleCount.particles[slotIdx].size -= g_BattleBlueAqualungParticleCount.particles[slotIdx].shrinkRate;
@@ -220,11 +220,11 @@ void __cdecl BattleFx_BlueAqualungGrowShrinkSpritesTask(void)
             }
         }
         slotIdx++;
-        if (slotIdx >= 0xDE) {
+        if (slotIdx >= 222) {
             slotIdx = 0;
         }
     }
-    if (pSprite->frame >= 0xD) {
+    if (pSprite->frame >= 13) {
         pSprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

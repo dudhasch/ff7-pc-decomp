@@ -50,13 +50,13 @@ void *__cdecl BattleModel_LoadEnemyDatLegacy(Battle3dPartyLoadDesc *battleLoadDe
     int jr;
     int jb;
     int j2;
-    char iv[0xC8];
+    char iv[200];
     int i6;
     int hz;
     int hj;
     unsigned int *gn;
-    char fr[0xC8];
-    char fb[0xC8];
+    char fr[200];
+    char fb[200];
     int f2;
     int ev;
     int ef;
@@ -70,7 +70,7 @@ void *__cdecl BattleModel_LoadEnemyDatLegacy(Battle3dPartyLoadDesc *battleLoadDe
     void *av;
     int af;
     void *a6;
-    char p[0xCC];
+    char p[204];
 
     ef = 0;
     av = 0;
@@ -260,7 +260,7 @@ void *__cdecl BattleModel_LoadEnemyDatLegacy(Battle3dPartyLoadDesc *battleLoadDe
             Pfile_DestroyTim((struct PolygonTim *)av);
         }
         // STRING: FF7 0x008ffc50
-        GameHeapFree(bb, "C:\\FF7\\src\\battle\\battle3d\\enemy.cpp", 0x1A2);
+        GameHeapFree(bb, "C:\\FF7\\src\\battle\\battle3d\\enemy.cpp", 418);
     }
     Battle_PopDataDirectory((int *)p);
     return (void *)b2;

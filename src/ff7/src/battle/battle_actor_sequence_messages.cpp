@@ -70,7 +70,7 @@ short __cdecl Battle_RollEnemyDropOrSteal(void *enemy, int kind, int forceFlag, 
             if (forceFlag != 0) {
                 frame.chance = 0x100;
             } else {
-                frame.chance = frame.chance * scale / 0x100;
+                frame.chance = frame.chance * scale / 256;
             }
             if ((Battle_NextRandomByte() & 0x3f) <= frame.chance) {
                 frame.result = frame.data->dropStealItems[frame.entryIndex];
@@ -95,13 +95,13 @@ void __cdecl Battle_PostBattleMessageFormatted(int actor, int messageId, int mod
 }
 
 /*
- * One-line wrapper: calls Battle_PushSequenceStep(0xA, 2, 1, payload), queueing sequence step kind
+ * One-line wrapper: calls Battle_PushSequenceStep(10, 2, 1, payload), queueing sequence step kind
  * 0xA with payload as its payload.
  */
 // FUNCTION: FF7 0x005c7d99
 void __cdecl Battle_PostBattleMessage(int payload)
 {
-    Battle_PushSequenceStep(0xA, 2, 1, payload);
+    Battle_PushSequenceStep(10, 2, 1, payload);
 }
 
 /*
@@ -160,7 +160,7 @@ int __cdecl Battle_FindSceneAttackIndex(int attackId)
 {
     int index;
 
-    for (index = 0; index < 0x20; index++) {
+    for (index = 0; index < 32; index++) {
         if (g_BattleState.attackIds[index] == attackId) {
             break;
         }
@@ -177,7 +177,7 @@ int __cdecl Battle_ApplyStatPercentModifier(int actorIndex, int baseValue, int f
 {
     int result;
 
-    result = baseValue + baseValue * g_BattleState.actors[actorIndex].statPercent[field] / 0x64;
+    result = baseValue + baseValue * g_BattleState.actors[actorIndex].statPercent[field] / 100;
     return result;
 }
 
@@ -194,10 +194,10 @@ void __cdecl Battle_AddStatPercentModifiers(int actorIndex, int delta, int mask)
     for (idx = 0; idx < 8; idx++) {
         if ((mask & 1 << idx) != 0) {
             value = g_BattleState.actors[actorIndex].statPercent[idx] + delta;
-            if (value > 0x64) {
+            if (value > 100) {
                 value = 0x64;
             }
-            if (value < -0x64) {
+            if (value < -100) {
                 value = 0xFFFFFF9C;
             }
             g_BattleState.actors[actorIndex].statPercent[idx] = value;
@@ -235,7 +235,7 @@ void __cdecl Battle_InvalidateQueuedActionsForActor(int actorIndex, int threshol
 {
     int index;
 
-    for (index = 0; index < 0x40; index++) {
+    for (index = 0; index < 64; index++) {
         if (g_BattleState.queuedActions[index].actorIndex == actorIndex &&
             g_BattleState.queuedActions[index].level != 0xFF &&
             g_BattleState.queuedActions[index].level >= threshold) {

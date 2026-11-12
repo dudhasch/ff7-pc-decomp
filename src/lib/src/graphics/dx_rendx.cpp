@@ -53,7 +53,7 @@ void __cdecl DxRendx_SetStateAndDrawIndexedRetry(GfxIndexedDrawRequest *drawArgs
             break;
         default:
             // STRING: FF7 0x009132f0
-            CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_rendx.cpp", 0xEC);
+            CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_rendx.cpp", 236);
             code = 0;
         }
     } while (code != 0);

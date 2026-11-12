@@ -63,14 +63,14 @@ void __cdecl Battle_RunAiScriptEvent(int actor, int event, int eventParam)
         frame.aiScript = Battle_FindAiScript(g_BattleKernelData.aiScripts, frame.scriptIndex, event);
     }
     if (frame.aiScript != 0) {
-        for (frame.combatantIndex = 0; frame.combatantIndex < 0xA; frame.combatantIndex++) {
+        for (frame.combatantIndex = 0; frame.combatantIndex < 10; frame.combatantIndex++) {
             frame.savedAnim[frame.combatantIndex].animStep = g_aCombatants[frame.combatantIndex].animStep;
             frame.savedAnim[frame.combatantIndex].scriptId = g_aCombatants[frame.combatantIndex].scriptId;
             frame.savedAnim[frame.combatantIndex].animId = g_aCombatants[frame.combatantIndex].animId;
         }
         Battle_AiVm_PrepareGlobals(actor, eventParam, 0);
         Battle_AiVm_Run(actor, (unsigned char *)frame.aiScript, frame.scriptIndex);
-        for (frame.combatantIndex = 0; frame.combatantIndex < 0xA; frame.combatantIndex++) {
+        for (frame.combatantIndex = 0; frame.combatantIndex < 10; frame.combatantIndex++) {
             if (frame.savedAnim[frame.combatantIndex].animStep != g_aCombatants[frame.combatantIndex].animStep) {
                 Battle_PushSequenceStep(frame.combatantIndex, 4, g_aCombatants[frame.combatantIndex].animStep, 0x10);
             }

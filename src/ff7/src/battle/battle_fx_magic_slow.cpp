@@ -156,12 +156,12 @@ void __cdecl BattleFx_MagicBeginSlow(int targetMask, int actorIdx)
     frame.particle = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicSlowTimelineTask);
     RotTransPoint((short *)&g_BattleMagicSlow_Centroid, &frame.screenX.vx, &frame.screenDepth);
     if (frame.screenX.vx < 0) {
-        frame.offsetX.vx = 0x7D0;
+        frame.offsetX.vx = 2000;
     } else {
         frame.offsetX.vx = 0xF830;
     }
     if (frame.screenX.vy < 0) {
-        frame.offsetX.vy = 0x3E8;
+        frame.offsetX.vy = 1000;
     } else {
         frame.offsetX.vy = 0xFC18;
     }
@@ -170,11 +170,11 @@ void __cdecl BattleFx_MagicBeginSlow(int targetMask, int actorIdx)
     frame.offsetX.vz = -(g_BattleCameraTransform.translation[2]);
     TransposeMatrix((void *)g_BattleCameraTransform.matrix, &frame.transposedMatrix);
     TransformVectorToInt16(&frame.transposedMatrix, &frame.offsetX, &frame.particle->posX);
-    frame.particle->velocityX = (g_BattleMagicSlow_Centroid.targetX - frame.particle->posX) / 0x1E;
+    frame.particle->velocityX = (g_BattleMagicSlow_Centroid.targetX - frame.particle->posX) / 30;
     frame.dirX.vx = frame.particle->velocityX;
-    frame.particle->velocityY = (g_BattleMagicSlow_Centroid.y2 - 0x3E8 - frame.particle->posY) / 0x1E;
+    frame.particle->velocityY = (g_BattleMagicSlow_Centroid.y2 - 1000 - frame.particle->posY) / 30;
     frame.dirX.vy = frame.particle->velocityY;
-    frame.particle->velocityZ = (g_BattleMagicSlow_CentroidZ - frame.particle->posZ) / 0x1E;
+    frame.particle->velocityZ = (g_BattleMagicSlow_CentroidZ - frame.particle->posZ) / 30;
     frame.dirX.vz = frame.particle->velocityZ;
     Gte_BuildLookBasisFromDirection(&frame.dirX.vx, (short *)&g_BattleMagicSlow_LookBasis);
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(targetMask), 0x41);
@@ -211,7 +211,7 @@ void __cdecl BattleFx_MagicSlowTimelineTask(void)
 
     frame.particle = (BattleFxSlowParticle *)BATTLE_CURRENT_TASK_SLOT;
     frame.timer = frame.particle->timer;
-    if (frame.timer < 0x1E) {
+    if (frame.timer < 30) {
         if (g_BattleIsPaused == 0) {
             g_BattleMagicSlow_BlendPhase1 = frame.timer + 1;
             frame.particle->posX += frame.particle->velocityX;
@@ -220,23 +220,23 @@ void __cdecl BattleFx_MagicSlowTimelineTask(void)
         }
         frame.blend = 0;
         frame.drawFlags = 0;
-        frame.scaleX.vz = 0x1000;
+        frame.scaleX.vz = 0x1000 /* 1.0 */;
         frame.scaleX.vy = frame.scaleX.vz;
         frame.scaleX.vx = frame.scaleX.vy;
     } else {
-        frame.timer -= 0x1E;
-        if (frame.timer < 0xF) {
+        frame.timer -= 30;
+        if (frame.timer < 15) {
             frame.blend = 0;
             frame.drawFlags = 0;
-            frame.scaleX.vz = 0x1000;
+            frame.scaleX.vz = 0x1000 /* 1.0 */;
             frame.scaleX.vy = frame.scaleX.vz;
             frame.scaleX.vx = frame.scaleX.vy;
         } else {
-            frame.timer -= 0xF;
-            if (frame.timer < 0xF) {
+            frame.timer -= 15;
+            if (frame.timer < 15) {
                 if (g_BattleIsPaused == 0) {
                     if (frame.timer == 0) {
-                        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+                        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
                             if ((g_BattleMagicSlow_TargetMask & 1 << frame.actorIndex) != 0) {
                                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
                             }
@@ -249,9 +249,9 @@ void __cdecl BattleFx_MagicSlowTimelineTask(void)
                     g_BattleMagicSlow_Angles[0] += 0x104;
                     g_BattleMagicSlow_Angles[1] += 0x87;
                 }
-                frame.blend = (frame.timer << 0xC) / 0xF;
+                frame.blend = (frame.timer << 12) / 15;
                 frame.drawFlags = 8;
-                frame.scaleX.vz = frame.timer * 0x3000 / 0xF + 0x1000;
+                frame.scaleX.vz = frame.timer * 0x3000 / 15 + 0x1000;
                 frame.scaleX.vy = frame.scaleX.vz;
                 frame.scaleX.vx = frame.scaleX.vy;
             } else {
@@ -265,18 +265,18 @@ void __cdecl BattleFx_MagicSlowTimelineTask(void)
     g_BattleMagicSlow_LookBasis.posZ26 = frame.particle->posZ;
     MultiplyMatrix((void *)g_BattleCameraTransform.matrix, (int *)&g_BattleMagicSlow_LookBasis, &frame.basisAX);
     frame.timer = frame.particle->timer;
-    if (frame.timer < 0x1E) { /* empty first arm: lib/codegen.h */
+    if (frame.timer < 30) { /* empty first arm: lib/codegen.h */
     } else {
-        frame.timer -= 0x1E;
-        if (frame.timer < 0xF) {
-            frame.vecAX = ((frame.timer << 0xC) + frame.basisAX.m[0][0] * (0xF - frame.timer)) / 0xF;
-            frame.vecAY = frame.basisAX.m[1][0] * (0xF - frame.timer) / 0xF;
-            frame.vecAZ = frame.basisAX.m[2][0] * (0xF - frame.timer) / 0xF;
+        frame.timer -= 30;
+        if (frame.timer < 15) {
+            frame.vecAX = ((frame.timer << 12) + frame.basisAX.m[0][0] * (0xF - frame.timer)) / 15;
+            frame.vecAY = frame.basisAX.m[1][0] * (0xF - frame.timer) / 15;
+            frame.vecAZ = frame.basisAX.m[2][0] * (0xF - frame.timer) / 15;
             NormalizeVectorFixed(&frame.vecAX, &frame.vecAX);
             frame.basisAX.m[0][0] = *(short *)&frame.vecAX;
             frame.basisAX.m[1][0] = *(short *)&frame.vecAY;
             frame.basisAX.m[2][0] = *(short *)&frame.vecAZ;
-            frame.vecBX = frame.basisAX.m[0][1] * (0xF - frame.timer) / 0xF;
+            frame.vecBX = frame.basisAX.m[0][1] * (0xF - frame.timer) / 15;
             frame.vecBY = frame.basisAX.m[1][1];
             frame.vecBZ = frame.basisAX.m[2][1];
             NormalizeVectorFixed(&frame.vecBX, &frame.vecBX);

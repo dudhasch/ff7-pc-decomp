@@ -271,7 +271,7 @@ struct BattleLimitHyperJumpParticleState1 g_BattleLimitHyperJumpPrevPosXY = {0};
 // GLOBAL: FF7 0x00aefdbc
 short g_BattleLimitHyperJumpPrevPosZ = 0;
 // GLOBAL: FF7 0x00aefdc0
-unsigned char g_BattleLimitHyperJumpBoneDeltaXY[0x4] = {0};
+unsigned char g_BattleLimitHyperJumpBoneDeltaXY[4] = {0};
 // GLOBAL: FF7 0x00aefdc4
 short g_BattleLimitHyperJumpBoneDeltaZ = 0;
 // The position of each of the 176 particles.
@@ -406,8 +406,8 @@ void __cdecl BattleFx_LimitBeginHyperJump(int targetMask, int actorIdx)
 }
 
 // Initialises the 176 particles: each starts at the origin with a velocity of a random radius
-// (rand() % 0xC8) in a random direction (rand() % 0x1000) in the X/Z plane and an upward speed of
-// -rand() % 0x64 - 0x64.
+// (rand() % 200) in a random direction (rand() % 4096) in the X/Z plane and an upward speed of
+// -rand() % 100 - 100.
 // FUNCTION: FF7 0x004aff67
 void __cdecl BattleFx_LimitHyperJumpInitParticleVelocities(void)
 {
@@ -415,15 +415,15 @@ void __cdecl BattleFx_LimitHyperJumpInitParticleVelocities(void)
     short index;
     short radius;
 
-    for (index = 0; index < 0xB0; index++) {
-        radius = rand() % 0xC8;
+    for (index = 0; index < 176; index++) {
+        radius = rand() % 200;
         angle = rand() % 0x1000;
         g_BattleLimitHyperJumpParticlePositions[index].z = 0;
         g_BattleLimitHyperJumpParticlePositions[index].y = 0;
         g_BattleLimitHyperJumpParticlePositions[index].x = 0;
-        g_BattleLimitHyperJumpParticleVelocities[index].x = CosFixed(angle) * radius >> 0xC;
-        g_BattleLimitHyperJumpParticleVelocities[index].z = SinFixed(angle) * radius >> 0xC;
-        g_BattleLimitHyperJumpParticleVelocities[index].y = -rand() % 0x64 - 0x64;
+        g_BattleLimitHyperJumpParticleVelocities[index].x = CosFixed(angle) * radius >> 12;
+        g_BattleLimitHyperJumpParticleVelocities[index].z = SinFixed(angle) * radius >> 12;
+        g_BattleLimitHyperJumpParticleVelocities[index].y = -rand() % 100 - 100;
     }
 }
 
@@ -463,15 +463,15 @@ void __cdecl BattleFx_LimitHyperJumpTimelineTask(void)
         SfxLoadIntoBuffer(0x98, 0);
         SfxLoadIntoBuffer(0xFA, 0);
     }
-    if (taskPtr->frame == 0x1C) {
+    if (taskPtr->frame == 28) {
         Battle_PlaySfxPannedToActor(0x30, taskPtr->actorIndex, 0);
     }
-    if (taskPtr->frame == 0x36) {
+    if (taskPtr->frame == 54) {
         pChild = (BattleFxLimitHyperJumpTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHyperJumpBoneOrientedModelTask);
         pChild->actorIndex = taskPtr->actorIndex;
         Battle_PlaySfxPannedToActor(0xD4, taskPtr->actorIndex, 0);
     }
-    if (taskPtr->frame == 0x3C) {
+    if (taskPtr->frame == 60) {
         Battle_GetBoneWorldPos(taskPtr->actorIndex,
                                g_BattleActorRecords[taskPtr->actorIndex].targetBone,
                                &taskPtr->posX);
@@ -490,9 +490,9 @@ void __cdecl BattleFx_LimitHyperJumpTimelineTask(void)
             pChild->posX = taskPtr->posX;
             pChild->posY = taskPtr->posY;
             pChild->posZ = taskPtr->posZ;
-            pChild->velocityX = (i8 / 4 << 8) + 0x200;
-            pChild->velocityY = i8 << 0xA;
-            pChild->angleStep = 0x100;
+            pChild->velocityX = (i8 / 4 << 8) + 512;
+            pChild->velocityY = i8 << 10;
+            pChild->angleStep = 0x100 /* 22.5 deg */;
             pChild->spinAngle = 0x3E8;
             pChild->direction = i8 / 4 * 2 - 1;
         }
@@ -502,7 +502,7 @@ void __cdecl BattleFx_LimitHyperJumpTimelineTask(void)
         pChild->posZ = taskPtr->posZ;
         Battle_PlaySfxPannedToActor(0x98, taskPtr->actorIndex, 0);
     }
-    if (taskPtr->frame >= 0x3C && taskPtr->frame < 0x42 && taskPtr->frame % 2 == 0) {
+    if (taskPtr->frame >= 60 && taskPtr->frame < 66 && taskPtr->frame % 2 == 0) {
         pChild = (BattleFxLimitHyperJumpTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHyperJumpScalingModelTask);
         pChild->posX = taskPtr->posX;
         pChild->posY = taskPtr->posY;
@@ -510,20 +510,20 @@ void __cdecl BattleFx_LimitHyperJumpTimelineTask(void)
         pChild->posY += ((short *)&((BattleFxModelDrawRequest *)&g_BattleLimitHyperJumpModelReqC)->resourceHandle)[(taskPtr->frame - 0x3C) / 2];
         pChild->direction = 1;
     }
-    if (taskPtr->frame >= 0x3C && taskPtr->frame < 0x50) {
+    if (taskPtr->frame >= 60 && taskPtr->frame < 80) {
         for (i8 = 0; i8 < 3; i8++) {
             theta = rand() % 0x1000;
             pChild = (BattleFxLimitHyperJumpTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHyperJumpMovingSpriteTask);
             pChild->posX = taskPtr->posX;
             pChild->posY = taskPtr->posY;
             pChild->posZ = taskPtr->posZ;
-            pChild->velocityX = SinFixed(theta) * 0x12C >> 0xC;
-            pChild->velocityZ = CosFixed(theta) * 0x12C >> 0xC;
-            pChild->velocityY = -rand() % 0x64;
+            pChild->velocityX = SinFixed(theta) * 0x12C >> 12;
+            pChild->velocityZ = CosFixed(theta) * 0x12C >> 12;
+            pChild->velocityY = -rand() % 100;
         }
     }
-    if (taskPtr->frame == 0x50) {
-        for (i8 = 0; i8 < 0xA; i8++) {
+    if (taskPtr->frame == 80) {
+        for (i8 = 0; i8 < 10; i8++) {
             if ((g_BattleLimitHyperJumpTargets & 1 << i8) != 0) {
                 Battle_PostActorHitOrHurtMessage(i8);
             }
@@ -531,7 +531,7 @@ void __cdecl BattleFx_LimitHyperJumpTimelineTask(void)
         Battle_PlaySfxPannedToActor(0xFA, taskPtr->actorIndex, 0);
     }
     (taskPtr->frame)++;
-    if (taskPtr->frame == 0x64) {
+    if (taskPtr->frame == 100) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x30, 0xF);
         Sfx_ReleaseCachedBuffer(0xD4, 0xF);
@@ -550,7 +550,7 @@ void __cdecl BattleFx_LimitHyperJumpSpriteAnimationTask(void)
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleLimitHyperJumpSpriteRequest1.spriteHandle) = Gfx_ModelTableGetLoadedRecord(9, g_BattleLimitHyperJumpResTable);
     g_BattleLimitHyperJumpSpriteRequest1.res = Gfx_ModelTableGetSpriteObject(9, g_BattleLimitHyperJumpResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleLimitHyperJumpSpriteRequest1.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitHyperJumpSpriteRequest1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && (g_BattleLimitHyperJumpSpriteRequest1.spriteHandle) != 0) {
@@ -572,7 +572,7 @@ void __cdecl BattleFx_LimitHyperJumpMovingSpriteTask(void)
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleLimitHyperJumpSpriteRequest2.spriteHandle) = Gfx_ModelTableGetLoadedRecord(8, g_BattleLimitHyperJumpResTable);
     g_BattleLimitHyperJumpSpriteRequest2.res = Gfx_ModelTableGetSpriteObject(8, g_BattleLimitHyperJumpResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleLimitHyperJumpSpriteRequest2.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitHyperJumpSpriteRequest2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
@@ -618,14 +618,14 @@ void __cdecl BattleFx_LimitHyperJumpScalingModelTask(void)
     SetRotMatrix(&frame.composedMatrix);
     SetTransMatrix(&frame.composedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleLimitHyperJumpModelReqA.timerStep = frame.taskSlot->timer * 0xC8;
+    g_BattleLimitHyperJumpModelReqA.timerStep = frame.taskSlot->timer * 200;
     (g_BattleLimitHyperJumpModelReqA.selectedRes) = Gfx_ModelTableGetRenderObject((&g_BattleLimitHyperJumpModelReqA.resArray)[frame.taskSlot->modelIndex], g_BattleLimitHyperJumpResTable);
     g_BattleLimitHyperJumpDrawList = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitHyperJumpModelReqA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitHyperJumpDrawList);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.taskSlot->timer)++;
-    if (frame.taskSlot->timer == 0x14) {
+    if (frame.taskSlot->timer == 20) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -651,13 +651,13 @@ void __cdecl BattleFx_LimitHyperJumpOscillatingModelTask(void)
 
     frame.taskSlot = (BattleFxLimitHyperJumpModel *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitHyperJumpModelReqB.modelRes = Gfx_ModelTableGetRenderObject(1, g_BattleLimitHyperJumpResTable);
-    if (frame.taskSlot->step < 0x14) {
+    if (frame.taskSlot->step < 20) {
         frame.descriptorAngle = 0;
     } else {
         frame.descriptorAngle = (frame.taskSlot->step - 0x14) * 0xC8;
     }
     g_BattleLimitHyperJumpModelReqB.fadeLevel = *(short *)&frame.descriptorAngle;
-    frame.angleX.vx = frame.taskSlot->jumpBase + (SinFixed(frame.taskSlot->step << 9) << 6 >> 0xC) * frame.taskSlot->jumpAmplitude;
+    frame.angleX.vx = frame.taskSlot->jumpBase + (SinFixed(frame.taskSlot->step << 9) << 6 >> 12) * frame.taskSlot->jumpAmplitude;
     frame.angleX.vy = frame.taskSlot->angle;
     frame.angleX.vz = 0;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
@@ -674,12 +674,12 @@ void __cdecl BattleFx_LimitHyperJumpOscillatingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.taskSlot->step < 0x14) {
+    if (frame.taskSlot->step < 20) {
         frame.taskSlot->spinAngle += 0x78;
     }
     frame.taskSlot->angle += frame.taskSlot->angleStep;
     (frame.taskSlot->step)++;
-    if (frame.taskSlot->step == 0x28) {
+    if (frame.taskSlot->step == 40) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -737,7 +737,7 @@ void __cdecl BattleFx_LimitHyperJumpGrowingModelsTask(void)
         Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_LimitHyperJumpBlendPolygonSetVertices, *(int *)((char *)(g_BattleLimitHyperJumpCompositeModelDrawReq.modelHandle) + 4));
     }
     (frame.taskSlot->frame)++;
-    if (frame.taskSlot->frame == 0x14) {
+    if (frame.taskSlot->frame == 20) {
         frame.spawnedSlot = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHyperJumpDisplacedMeshTask);
         frame.spawnedSlot->posX = frame.taskSlot->posX;
         frame.spawnedSlot->posY = frame.taskSlot->posY;
@@ -782,7 +782,7 @@ void __cdecl BattleFx_LimitHyperJumpDisplacedMeshTask(void)
     }
     BattleFx_LimitHyperJumpStepBouncingParticles();
     (frame.taskSlot->frameIndex)++;
-    if (frame.taskSlot->frameIndex == 0x14) {
+    if (frame.taskSlot->frameIndex == 20) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -925,11 +925,11 @@ void __cdecl BattleFx_LimitHyperJumpStepBouncingParticles(void)
 {
     short i;
 
-    for (i = 0; i < 0xB0; i++) {
+    for (i = 0; i < 176; i++) {
         g_BattleLimitHyperJumpParticlePositions[i].x += g_BattleLimitHyperJumpParticleVelocities[i].x;
         g_BattleLimitHyperJumpParticlePositions[i].y += g_BattleLimitHyperJumpParticleVelocities[i].y;
         g_BattleLimitHyperJumpParticlePositions[i].z += g_BattleLimitHyperJumpParticleVelocities[i].z;
-        g_BattleLimitHyperJumpParticleVelocities[i].y += 0x14;
+        g_BattleLimitHyperJumpParticleVelocities[i].y += 20;
         if (g_BattleLimitHyperJumpParticlePositions[i].y > 0) {
             g_BattleLimitHyperJumpParticlePositions[i].y = 0;
             g_BattleLimitHyperJumpParticleVelocities[i].y = -g_BattleLimitHyperJumpParticleVelocities[i].y;

@@ -168,35 +168,35 @@ void __cdecl BattleFx_MagicBolt3TimelineTask(void)
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->battlerIndex);
     }
     if (frame.phase >= 2 && frame.phase < 3) {
-        for (frame.i = 0; frame.i < 0xA; frame.i++) {
+        for (frame.i = 0; frame.i < 10; frame.i++) {
             frame.particle = (BattleFxBolt3Particle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt3BouncingModelTask);
             frame.particle->posX = frame.timelineSlot->baseX;
             frame.particle->posY = 0;
             frame.particle->posZ = frame.timelineSlot->baseZ;
-            frame.particle->velocityX = rand() % 0xC8 - 0x64;
-            frame.particle->velocityY = -(rand() % 0xC8 + 0xC8);
-            frame.particle->velocityZ = rand() % 0xC8 - 0x64;
-            frame.particle->angleStepX = rand() % 0x28 - 0x14;
-            frame.particle->angleStepY = rand() % 0x14 - 0xA;
-            frame.particle->angleStepZ = rand() % 0xA - 5;
+            frame.particle->velocityX = rand() % 200 - 100;
+            frame.particle->velocityY = -(rand() % 200 + 200);
+            frame.particle->velocityZ = rand() % 200 - 100;
+            frame.particle->angleStepX = rand() % 40 - 20;
+            frame.particle->angleStepY = rand() % 20 - 10;
+            frame.particle->angleStepZ = rand() % 10 - 5;
             frame.particle->scale = rand() % 0x1E00 + 0x200;
             frame.particle->ownerSlot = 0;
         }
     }
-    if (frame.phase >= 0 && frame.phase < 0x10) {
+    if (frame.phase >= 0 && frame.phase < 16) {
         for (frame.i = 0; frame.i < 3; frame.i++) {
-            frame.spritePosX.vx = frame.timelineSlot->baseX + rand() % 0x640 + -0x320;
+            frame.spritePosX.vx = frame.timelineSlot->baseX + rand() % 1600 + -800;
             frame.spritePosX.vy = 0;
-            frame.spritePosX.vz = frame.timelineSlot->baseZ + rand() % 0x640 + -0x320;
-            Battle_SpawnWorldSpriteTask((Vec3sPacked *)&frame.spritePosX, 0x3000, 0x3000);
+            frame.spritePosX.vz = frame.timelineSlot->baseZ + rand() % 1600 + -800;
+            Battle_SpawnWorldSpriteTask((Vec3sPacked *)&frame.spritePosX, 12288, 12288);
         }
     }
-    if (frame.phase >= 1 && frame.phase < 0x10) {
+    if (frame.phase >= 1 && frame.phase < 16) {
         for (frame.i = 0; frame.i < 1; frame.i++) {
             frame.spawnSlot = (BattleFxBolt3Slot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBolt3BillboardSpriteTask);
-            frame.spawnSlot->baseX = frame.timelineSlot->baseX + rand() % 0x7D0 + -0x3E8;
-            frame.spawnSlot->baseY = frame.timelineSlot->baseY + rand() % 0x7D0 + -0x3E8;
-            frame.spawnSlot->baseZ = frame.timelineSlot->baseZ + rand() % 0x7D0 + -0x3E8;
+            frame.spawnSlot->baseX = frame.timelineSlot->baseX + rand() % 2000 + -1000;
+            frame.spawnSlot->baseY = frame.timelineSlot->baseY + rand() % 2000 + -1000;
+            frame.spawnSlot->baseZ = frame.timelineSlot->baseZ + rand() % 2000 + -1000;
         }
     }
     if (frame.phase == 2) {
@@ -253,7 +253,7 @@ void __cdecl BattleFx_MagicBolt3FlashSpriteTask(void)
     frame.spriteObject = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicBolt3_ResourceHandle);
     frame.frameNumber = frame.flashSlot->frameIndex;
     if (frame.frameNumber < 0) {
-        g_BattleMagicBolt3_InitialRotation = 0x100;
+        g_BattleMagicBolt3_InitialRotation = 0x100 /* 22.5 deg */;
     } else {
         frame.frameNumber = frame.frameNumber;
         if (frame.frameNumber < 0) {
@@ -261,7 +261,7 @@ void __cdecl BattleFx_MagicBolt3FlashSpriteTask(void)
         } else {
             frame.frameNumber = frame.frameNumber;
             if (frame.frameNumber < 1) {
-                g_BattleMagicBolt3_InitialRotation = 0x2500;
+                g_BattleMagicBolt3_InitialRotation = 0x2500 /* 832.5 deg */;
             } else {
                 frame.frameNumber--;
                 if (frame.frameNumber < 8) {
@@ -307,7 +307,7 @@ void __cdecl BattleFx_MagicBolt3BouncingModelTask(void)
         g_BattleMagicBolt3_ModelReq1.modelHandle = Gfx_ModelTableGetRenderObject(1, g_BattleMagicBolt3_ResourceHandle);
     } else {
         g_BattleMagicBolt3_ModelReq1.flags = 0x88;
-        g_BattleMagicBolt3_ModelReq1.scaleFraction = ((frame.bounceTask->frameCount << 0xC) / 8);
+        g_BattleMagicBolt3_ModelReq1.scaleFraction = ((frame.bounceTask->frameCount << 12) / 8);
         g_BattleMagicBolt3_ModelReq1.modelHandle = Gfx_ModelTableGetRenderObject(2, g_BattleMagicBolt3_ResourceHandle);
     }
     if (g_pBattle3dScene != 0) {
@@ -350,7 +350,7 @@ void __cdecl BattleFx_MagicBolt3BouncingModelTask(void)
         frame.bounceTask->posX += frame.bounceTask->velocityX;
         frame.bounceTask->posY += frame.bounceTask->velocityY;
         frame.bounceTask->posZ += frame.bounceTask->velocityZ;
-        frame.bounceTask->velocityY += 0x1E;
+        frame.bounceTask->velocityY += 30;
         if (frame.bounceTask->posY > 0) {
             frame.bounceTask->posY = -frame.bounceTask->posY;
             frame.bounceTask->velocityY = (-frame.bounceTask->velocityY) / 4;
@@ -377,10 +377,10 @@ void __cdecl BattleFx_MagicBolt3BillboardSpriteTask(void)
     g_BattleMagicBolt3_ModelReq3.spriteRecord = Gfx_ModelTableGetLoadedRecord(3, g_BattleMagicBolt3_ResourceHandle);
     g_BattleMagicBolt3_ModelReq3.spriteObject = Gfx_ModelTableGetSpriteObject(3, g_BattleMagicBolt3_ResourceHandle);
     g_BattleMagicBolt3_ModelReq3.spriteFrame = task->frameCounter >> 8;
-    BattleFx_InstallBillboardMatrix((char *)task + 8, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 8, 0x2000 /* 2.0 */, 0);
     g_BattleMagicBolt3_ChainTail = BattleFx_SubmitSpriteDraw(&g_BattleMagicBolt3_ModelReq3.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicBolt3_ChainTail);
     if (g_BattleIsPaused == 0) {
-        task->frameCounter += 0x100;
+        task->frameCounter += 256;
         if (g_BattleMagicBolt3_ModelReq3.spriteRecord != 0 && task->frameCounter >> 8 >= *(int *)((char *)*(int *)g_BattleMagicBolt3_ModelReq3.spriteRecord + 4)) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -408,14 +408,14 @@ void __cdecl BattleFx_MagicBolt3GrowFadeModelTask(void)
     frame.phase = frame.growModel->timer & 0xF;
     g_BattleMagicBolt3_ModelReq3.shellUvOffset = (frame.phase & 1) << 7 | (frame.phase >> 1 & 3) << 6 << 8;
     g_BattleMagicBolt3_ModelReq3.shellBlendMode = (frame.phase >> 3) | 0x20;
-    frame.scaleVec.vz = frame.growModel->timer * 0x2800 / 0x17;
+    frame.scaleVec.vz = frame.growModel->timer * 0x2800 / 23;
     frame.scaleVec.vy = frame.scaleVec.vz;
     frame.scaleVec.vx = frame.scaleVec.vy;
     frame.fadeTimer = frame.growModel->timer;
-    if (frame.fadeTimer < 0xF) {
+    if (frame.fadeTimer < 15) {
         g_BattleMagicBolt3_ModelReq3.shellAlpha = 0x80;
     } else {
-        frame.fadeTimer -= 0xF;
+        frame.fadeTimer -= 15;
         if (frame.fadeTimer < 8) {
             g_BattleMagicBolt3_ModelReq3.shellAlpha = ((frame.fadeTimer * -0x80) / 8) + 0x80;
         } else {

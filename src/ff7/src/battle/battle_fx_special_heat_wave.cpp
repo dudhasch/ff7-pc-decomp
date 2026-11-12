@@ -208,7 +208,7 @@ void __cdecl BattleFx_SpecialLoadResHeatWave(void)
     int resourceDefsWord;
 
     g_BattleSpecHeatWaveFlashTimer = 0;
-    g_BattleSpecHeatWaveFlashStep = 0x10;
+    g_BattleSpecHeatWaveFlashStep = 16;
     if (g_pBattle3dScene != 0 && g_BattleSpecHeatWaveLoadedResTable == 0) {
         kind = 0x14;
         resourceDefsWord = (int)&g_BattleSpecHeatWaveResourceDefs;
@@ -287,21 +287,21 @@ void __cdecl BattleFx_SpecialHeatWaveTimelineTask(void)
         pParticle->posY = 0xFB50;
         pParticle->posZ = 0;
     }
-    if (mainSelf->frameCounter == 0xC) {
+    if (mainSelf->frameCounter == 12) {
         Battle_AllocateResourceSlot(BattleFx_SpecialHeatWaveWhiteFlashPulseTask);
     }
-    if (mainSelf->frameCounter == 0x1C) {
-        Battle_StartFixedPointRamp(0, 0x10);
+    if (mainSelf->frameCounter == 28) {
+        Battle_StartFixedPointRamp(0, 16);
     }
-    if (mainSelf->frameCounter == 0x23) {
-        for (i7 = 0; i7 < 0xA; i7++) {
+    if (mainSelf->frameCounter == 35) {
+        for (i7 = 0; i7 < 10; i7++) {
             if ((g_BattleSpecHeatWaveTargetMask & 1 << i7) != 0) {
                 Battle_PostActorHitOrHurtMessage(i7);
             }
         }
     }
     (mainSelf->frameCounter)++;
-    if (mainSelf->frameCounter == 0x32) {
+    if (mainSelf->frameCounter == 50) {
         mainSelf->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -320,14 +320,14 @@ void __cdecl BattleFx_SpecialHeatWaveWhiteFlashPulseTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x10) {
-        g_BattleSpecHeatWaveFlashTimer += 0xF;
+    if (task->frameCounter < 16) {
+        g_BattleSpecHeatWaveFlashTimer += 15;
     }
-    if (task->frameCounter > 0x10) {
-        g_BattleSpecHeatWaveFlashTimer -= 0xF;
+    if (task->frameCounter > 16) {
+        g_BattleSpecHeatWaveFlashTimer -= 15;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x20) {
+    if (task->frameCounter == 32) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -351,13 +351,13 @@ void __cdecl BattleFx_SpecialHeatWaveDrawExpandingModelsTask(void)
 #pragma pack(pop)
 
     frame.expandingSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecHeatWaveSpriteReq1.spriteResource) = Gfx_ModelTableGetLoadedRecord(0x12, g_BattleSpecHeatWaveLoadedResTable);
-    g_BattleSpecHeatWaveSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(0x12, g_BattleSpecHeatWaveLoadedResTable);
+    (g_BattleSpecHeatWaveSpriteReq1.spriteResource) = Gfx_ModelTableGetLoadedRecord(18, g_BattleSpecHeatWaveLoadedResTable);
+    g_BattleSpecHeatWaveSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(18, g_BattleSpecHeatWaveLoadedResTable);
     frame.rotX.vz = 0;
     frame.rotX.vx = frame.rotX.vz;
     frame.rotX.vy = 0;
     RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
-    g_BattleSpecHeatWaveScaleZ = frame.expandingSlot->frameCounter << 0xA;
+    g_BattleSpecHeatWaveScaleZ = frame.expandingSlot->frameCounter << 10;
     g_BattleSpecHeatWaveScaleY = g_BattleSpecHeatWaveScaleZ;
     g_BattleSpecHeatWaveScaleX = g_BattleSpecHeatWaveScaleY;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecHeatWaveScaleX);
@@ -371,11 +371,11 @@ void __cdecl BattleFx_SpecialHeatWaveDrawExpandingModelsTask(void)
     g_BattleSpecHeatWaveModelReq1.flags = 0xA8;
     g_BattleSpecHeatWaveModelReq1.flashWord10 = 0x1000 - (g_BattleSpecHeatWaveFlashStep << 7);
     g_BattleSpecHeatWaveDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecHeatWaveModelReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHeatWaveDrawHandle);
-    (g_BattleSpecHeatWaveModelReq1.modelResource) = Gfx_ModelTableGetRenderObject(((int *)&g_BattleSpecHeatWaveModelIndices1)[frame.expandingSlot->frameCounter % 0xA], g_BattleSpecHeatWaveLoadedResTable);
+    (g_BattleSpecHeatWaveModelReq1.modelResource) = Gfx_ModelTableGetRenderObject(((int *)&g_BattleSpecHeatWaveModelIndices1)[frame.expandingSlot->frameCounter % 10], g_BattleSpecHeatWaveLoadedResTable);
     g_BattleSpecHeatWaveModelReq1.flags = 0x28;
     g_BattleSpecHeatWaveModelReq1.flashWord10 = g_BattleSpecHeatWaveFlashStep << 3;
     g_BattleSpecHeatWaveDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecHeatWaveModelReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHeatWaveDrawHandle);
-    BattleFx_InstallBillboardMatrix(&frame.expandingSlot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.expandingSlot->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecHeatWaveSpriteReq1.colorB = g_BattleSpecHeatWaveFlashStep << 3;
     g_BattleSpecHeatWaveSpriteReq1.colorG = g_BattleSpecHeatWaveSpriteReq1.colorB;
     g_BattleSpecHeatWaveSpriteReq1.colorR = g_BattleSpecHeatWaveSpriteReq1.colorG;
@@ -383,12 +383,12 @@ void __cdecl BattleFx_SpecialHeatWaveDrawExpandingModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - ((frame.expandingSlot->frameCounter % 2) << 6));
-    if (frame.expandingSlot->frameCounter > 0xE) {
+    g_BattleCameraFocalPoint.focalPointY += (short)(32 - ((frame.expandingSlot->frameCounter % 2) << 6));
+    if (frame.expandingSlot->frameCounter > 14) {
         g_BattleSpecHeatWaveFlashStep--;
     }
     (frame.expandingSlot->frameCounter)++;
-    if (frame.expandingSlot->frameCounter == 0x1E) {
+    if (frame.expandingSlot->frameCounter == 30) {
         frame.expandingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -418,8 +418,8 @@ void __cdecl BattleFx_SpecialHeatWaveDrawSpinModelsEmitTask(void)
 
     frame.emitSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecHeatWaveModelReq3.modelResource) = Gfx_ModelTableGetRenderObject(0, g_BattleSpecHeatWaveLoadedResTable);
-    (g_BattleSpecHeatWaveSpriteReq4.spriteResource) = Gfx_ModelTableGetLoadedRecord(0x13, g_BattleSpecHeatWaveLoadedResTable);
-    g_BattleSpecHeatWaveSpriteReq4.drawObj = Gfx_ModelTableGetSpriteObject(0x13, g_BattleSpecHeatWaveLoadedResTable);
+    (g_BattleSpecHeatWaveSpriteReq4.spriteResource) = Gfx_ModelTableGetLoadedRecord(19, g_BattleSpecHeatWaveLoadedResTable);
+    g_BattleSpecHeatWaveSpriteReq4.drawObj = Gfx_ModelTableGetSpriteObject(19, g_BattleSpecHeatWaveLoadedResTable);
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.emitSlot->frameCounter << 6;
     frame.rotX.vz = 0;
@@ -438,7 +438,7 @@ void __cdecl BattleFx_SpecialHeatWaveDrawSpinModelsEmitTask(void)
     g_BattleSpecHeatWaveDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecHeatWaveModelReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHeatWaveDrawHandle);
     frame.rotX.vy = 0;
     frame.rotX.vz = frame.rotX.vy;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
     frame.scaleX.vz = frame.emitSlot->frameCounter * 0x320;
     frame.scaleX.vy = frame.scaleX.vz;
@@ -457,31 +457,31 @@ void __cdecl BattleFx_SpecialHeatWaveDrawSpinModelsEmitTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.spawnSpeed = frame.emitSlot->frameCounter * 0xF0;
+    frame.spawnSpeed = frame.emitSlot->frameCounter * 240;
     for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
         frame.spawnSlot = (BattleFxHeatWaveEmitterTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeatWaveRisingFadeSpriteTask);
         frame.spawnAngle = (rand() % 4096);
-        frame.spawnSlot->velocityX = CosFixed(frame.spawnAngle) * frame.spawnSpeed >> 0xC;
-        frame.spawnSlot->velocityZ = SinFixed(frame.spawnAngle) * frame.spawnSpeed >> 0xC;
+        frame.spawnSlot->velocityX = CosFixed(frame.spawnAngle) * frame.spawnSpeed >> 12;
+        frame.spawnSlot->velocityZ = SinFixed(frame.spawnAngle) * frame.spawnSpeed >> 12;
         frame.spawnSlot->velocityY = 0;
         frame.spawnSlot->variant = (rand() % 16);
     }
     frame.spawnSlot = (BattleFxHeatWaveEmitterTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeatWaveRisingSpinningModelTask);
     frame.spawnAngle = (rand() % 4096);
-    frame.spawnSlot->velocityX = CosFixed(frame.spawnAngle) * frame.spawnSpeed >> 0xC;
-    frame.spawnSlot->velocityZ = SinFixed(frame.spawnAngle) * frame.spawnSpeed >> 0xC;
+    frame.spawnSlot->velocityX = CosFixed(frame.spawnAngle) * frame.spawnSpeed >> 12;
+    frame.spawnSlot->velocityZ = SinFixed(frame.spawnAngle) * frame.spawnSpeed >> 12;
     frame.spawnSlot->velocityY = 0;
     frame.spawnSlot->variant = (rand() % 4);
     frame.spawnSlot->rotation = (rand() % 4096);
     for (frame.spawnIndex = 0; frame.spawnIndex < 4; frame.spawnIndex++) {
         frame.spawnSlot = (BattleFxHeatWaveEmitterTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeatWaveAnimatedSpriteTask);
         frame.spawnAngle = (rand() % 4096);
-        frame.spawnSlot->velocityX = CosFixed(frame.spawnAngle) * frame.spawnSpeed >> 0xC;
-        frame.spawnSlot->velocityZ = SinFixed(frame.spawnAngle) * frame.spawnSpeed >> 0xC;
+        frame.spawnSlot->velocityX = CosFixed(frame.spawnAngle) * frame.spawnSpeed >> 12;
+        frame.spawnSlot->velocityZ = SinFixed(frame.spawnAngle) * frame.spawnSpeed >> 12;
         frame.spawnSlot->velocityY = 0;
     }
     (frame.emitSlot->frameCounter)++;
-    if (frame.emitSlot->frameCounter == 0x14) {
+    if (frame.emitSlot->frameCounter == 20) {
         frame.emitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -496,9 +496,9 @@ void __cdecl BattleFx_SpecialHeatWaveAnimatedSpriteTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecHeatWaveSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSpecHeatWaveLoadedResTable);
+    (g_BattleSpecHeatWaveSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(17, g_BattleSpecHeatWaveLoadedResTable);
     g_BattleSpecHeatWaveSpriteReq2.drawObj = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecHeatWaveSpriteReq2.frame = task->frameCounter;
     g_BattleSpecHeatWaveDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecHeatWaveSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHeatWaveDrawHandle);
     if (g_BattleIsPaused == 0 && (g_BattleSpecHeatWaveSpriteReq2.spriteResource) != 0) {
@@ -544,10 +544,10 @@ void __cdecl BattleFx_SpecialHeatWaveRisingSpinningModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.risingSlot->posY -= 0x64;
-    frame.risingSlot->spinAngle += 0x100;
+    frame.risingSlot->posY -= 100;
+    frame.risingSlot->spinAngle += 0x100 /* 22.5 deg */;
     (frame.risingSlot->frameCounter)++;
-    if (frame.risingSlot->frameCounter == 0xF) {
+    if (frame.risingSlot->frameCounter == 15) {
         frame.risingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -562,9 +562,9 @@ void __cdecl BattleFx_SpecialHeatWaveRisingFadeSpriteTask(void)
     BattleFxHeatWaveRisingFadeSprite *task;
 
     task = (BattleFxHeatWaveRisingFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecHeatWaveSpriteReq3.spriteResource) = Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecHeatWaveLoadedResTable);
-    g_BattleSpecHeatWaveSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSpecHeatWaveLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    (g_BattleSpecHeatWaveSpriteReq3.spriteResource) = Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecHeatWaveLoadedResTable);
+    g_BattleSpecHeatWaveSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(16, g_BattleSpecHeatWaveLoadedResTable);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecHeatWaveSpriteReq3.frame = task->variant;
     g_BattleSpecHeatWaveSpriteReq3.fadeByte10 = 0x80 - (task->fadeStep << 3);
     g_BattleSpecHeatWaveSpriteReq3.colorG = g_BattleSpecHeatWaveSpriteReq3.fadeByte10;
@@ -573,9 +573,9 @@ void __cdecl BattleFx_SpecialHeatWaveRisingFadeSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY -= 0x12C;
+    task->posY -= 300;
     (task->fadeStep)++;
-    if (task->fadeStep == 0xF) {
+    if (task->fadeStep == 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

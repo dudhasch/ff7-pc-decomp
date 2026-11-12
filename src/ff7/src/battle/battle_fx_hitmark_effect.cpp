@@ -380,18 +380,18 @@ void __cdecl BattleFx_HitMarkSpawnSprite(char *pScriptPayload, void *pPosition, 
     sprite->flags = *pScriptPayload - 1 | pParentTask->flags;
     pScriptPayload++;
     if ((pParentTask->flags & 0x100) != 0) {
-        sprite->offsetX = -(*pScriptPayload << 3) * pParentTask->scale >> 0xC;
+        sprite->offsetX = -(*pScriptPayload << 3) * pParentTask->scale >> 12;
         pScriptPayload++;
     } else {
-        sprite->offsetX = (*pScriptPayload << 3) * pParentTask->scale >> 0xC;
+        sprite->offsetX = (*pScriptPayload << 3) * pParentTask->scale >> 12;
         pScriptPayload++;
     }
-    sprite->offsetY = (*pScriptPayload << 3) * pParentTask->scale >> 0xC;
+    sprite->offsetY = (*pScriptPayload << 3) * pParentTask->scale >> 12;
     pScriptPayload++;
     sprite->pushLength = pParentTask->pushLength;
-    scaledBytes = (*pScriptPayload << 8) * pParentTask->scale >> 0xC;
+    scaledBytes = (*pScriptPayload << 8) * pParentTask->scale >> 12;
     pScriptPayload++;
-    if (scaledBytes <= 0x7FFF) {
+    if (scaledBytes <= 32767) {
         clamped = scaledBytes;
     } else {
         clamped = 0x7FFF;
@@ -471,7 +471,7 @@ void __cdecl BattleFx_HitMarkSpawnScriptAtActorBone(int actorIdx, int scriptSele
 void __cdecl BattleFx_HitMarkSpawnAtActorBone(int actorIdx, int scriptSelector)
 {
     BattleFx_EffectLoadResHitMark();
-    BattleFx_HitMarkSpawnScriptAtActorBone(actorIdx, scriptSelector, 0x1000);
+    BattleFx_HitMarkSpawnScriptAtActorBone(actorIdx, scriptSelector, 0x1000 /* 1.0 */);
 }
 
 /*

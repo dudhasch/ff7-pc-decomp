@@ -145,28 +145,28 @@ int __cdecl Field_AllocTileBuffers(void)
 {
     if (g_pFieldTileGroupBuffer == 0) {
         // STRING: FF7 0x00905e7c
-        g_pFieldTileGroupBuffer = (struct FieldTileGroup *)GameHeapAllocRaw(0xbb80, "C:\\FF7\\field\\src\\ad_data.cpp", 0x60);
+        g_pFieldTileGroupBuffer = (struct FieldTileGroup *)GameHeapAllocRaw(0xbb80, "C:\\FF7\\field\\src\\ad_data.cpp", 96);
     }
     if (g_pFieldTileGroupBuffer == 0) {
         return 0;
     }
     if (g_pFieldTilePaletteBuffer == 0) {
         // STRING: FF7 0x00905e9c
-        g_pFieldTilePaletteBuffer = (struct FieldTilePaletteEntry *)GameHeapAllocRaw(0xea60, "C:\\FF7\\field\\src\\ad_data.cpp", 0x64);
+        g_pFieldTilePaletteBuffer = (struct FieldTilePaletteEntry *)GameHeapAllocRaw(0xea60, "C:\\FF7\\field\\src\\ad_data.cpp", 100);
     }
     if (g_pFieldTilePaletteBuffer == 0) {
         return 0;
     }
     if (g_pFieldTileZBuffer == 0) {
         // STRING: FF7 0x00905ebc
-        g_pFieldTileZBuffer = (struct FieldTileZEntry *)GameHeapAllocRaw(0x1770, "C:\\FF7\\field\\src\\ad_data.cpp", 0x68);
+        g_pFieldTileZBuffer = (struct FieldTileZEntry *)GameHeapAllocRaw(6000, "C:\\FF7\\field\\src\\ad_data.cpp", 104);
     }
     if (g_pFieldTileZBuffer == 0) {
         return 0;
     }
     if (g_pFieldTileAlphaBuffer == 0) {
         // STRING: FF7 0x00905edc
-        g_pFieldTileAlphaBuffer = (struct FieldTileAlphaRecord *)GameHeapAllocRaw(0xea60, "C:\\FF7\\field\\src\\ad_data.cpp", 0x6c);
+        g_pFieldTileAlphaBuffer = (struct FieldTileAlphaRecord *)GameHeapAllocRaw(0xea60, "C:\\FF7\\field\\src\\ad_data.cpp", 108);
     }
     if (g_pFieldTileAlphaBuffer == 0) {
         return 0;
@@ -184,22 +184,22 @@ void __cdecl Field_FreeTileBuffers(void)
 {
     if (g_pFieldTileGroupBuffer != 0) {
         // STRING: FF7 0x00905efc
-        GameHeapFree(g_pFieldTileGroupBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 0x7b);
+        GameHeapFree(g_pFieldTileGroupBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 123);
         g_pFieldTileGroupBuffer = 0;
     }
     if (g_pFieldTilePaletteBuffer != 0) {
         // STRING: FF7 0x00905f1c
-        GameHeapFree(g_pFieldTilePaletteBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 0x80);
+        GameHeapFree(g_pFieldTilePaletteBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 128);
         g_pFieldTilePaletteBuffer = 0;
     }
     if (g_pFieldTileZBuffer != 0) {
         // STRING: FF7 0x00905f3c
-        GameHeapFree(g_pFieldTileZBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 0x85);
+        GameHeapFree(g_pFieldTileZBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 133);
         g_pFieldTileZBuffer = 0;
     }
     if (g_pFieldTileAlphaBuffer != 0) {
         // STRING: FF7 0x00905f5c
-        GameHeapFree(g_pFieldTileAlphaBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 0x8b);
+        GameHeapFree(g_pFieldTileAlphaBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 139);
         g_pFieldTileAlphaBuffer = 0;
     }
 }
@@ -291,22 +291,22 @@ void __cdecl Field_FreeBackgroundIndexArrays(void)
 {
     if (g_pFieldLayer1DrawOrder != 0) {
         // STRING: FF7 0x00905f7c
-        GameHeapFree(g_pFieldLayer1DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 0xc2);
+        GameHeapFree(g_pFieldLayer1DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 194);
         g_pFieldLayer1DrawOrder = 0;
     }
     if (g_pFieldLayer2DrawOrder != 0) {
         // STRING: FF7 0x00905f9c
-        GameHeapFree(g_pFieldLayer2DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 0xc7);
+        GameHeapFree(g_pFieldLayer2DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 199);
         g_pFieldLayer2DrawOrder = 0;
     }
     if (g_pFieldLayer4DrawOrder != 0) {
         // STRING: FF7 0x00905fbc
-        GameHeapFree(g_pFieldLayer4DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 0xcc);
+        GameHeapFree(g_pFieldLayer4DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 204);
         g_pFieldLayer4DrawOrder = 0;
     }
     if (g_pFieldLayer3DrawOrder != 0) {
         // STRING: FF7 0x00905fdc
-        GameHeapFree(g_pFieldLayer3DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 0xd1);
+        GameHeapFree(g_pFieldLayer3DrawOrder, "C:\\FF7\\field\\src\\ad_data.cpp", 209);
         g_pFieldLayer3DrawOrder = 0;
     }
 }
@@ -339,14 +339,14 @@ void __cdecl Field_SetDataDir(char *dir)
 // FUNCTION: FF7 0x00620c0b
 int __cdecl Field_LoadMapListFromFile(void)
 {
-    char path[0x80];
+    char path[128];
     FILE *file;
 
     if (g_pFieldMapNameBuffer != 0) {
         GameHeapFree(
             g_pFieldMapNameBuffer,
             // STRING: FF7 0x00905ffc
-            "C:\\FF7\\field\\src\\ad_data.cpp", 0xea);
+            "C:\\FF7\\field\\src\\ad_data.cpp", 234);
         g_pFieldMapNameBuffer = 0;
     }
 
@@ -365,7 +365,7 @@ int __cdecl Field_LoadMapListFromFile(void)
     g_pFieldMapNameBuffer = (char (*)[32])GameHeapAllocRaw(
         0x9600,
         // STRING: FF7 0x0090602c
-        "C:\\FF7\\field\\src\\ad_data.cpp", 0xf5);
+        "C:\\FF7\\field\\src\\ad_data.cpp", 245);
     if (g_pFieldMapNameBuffer == 0) {
         return 0;
     }
@@ -408,7 +408,7 @@ int __cdecl Field_LoadMapListFromLgp(void)
         GameHeapFree(
             g_pFieldMapNameBuffer,
             // STRING: FF7 0x0090604c
-            "C:\\FF7\\field\\src\\ad_data.cpp", 0x12c);
+            "C:\\FF7\\field\\src\\ad_data.cpp", 300);
         g_pFieldMapNameBuffer = 0;
     }
 
@@ -421,7 +421,7 @@ int __cdecl Field_LoadMapListFromLgp(void)
         data = (char *)GameHeapAllocRaw(
             size,
             // STRING: FF7 0x00906074
-            "C:\\FF7\\field\\src\\ad_data.cpp", 0x134);
+            "C:\\FF7\\field\\src\\ad_data.cpp", 308);
         base = data;
         if (data == 0) {
             return 0;
@@ -434,7 +434,7 @@ int __cdecl Field_LoadMapListFromLgp(void)
     g_pFieldMapNameBuffer = (char (*)[32])GameHeapAllocRaw(
         0x9600,
         // STRING: FF7 0x00906094
-        "C:\\FF7\\field\\src\\ad_data.cpp", 0x14e);
+        "C:\\FF7\\field\\src\\ad_data.cpp", 334);
     if (g_pFieldMapNameBuffer == 0) {
         return 0;
     }
@@ -444,7 +444,7 @@ int __cdecl Field_LoadMapListFromLgp(void)
         GameHeapFree(
             data,
             // STRING: FF7 0x009060b4
-            "C:\\FF7\\field\\src\\ad_data.cpp", 0x155);
+            "C:\\FF7\\field\\src\\ad_data.cpp", 341);
         return 0;
     }
 
@@ -456,7 +456,7 @@ int __cdecl Field_LoadMapListFromLgp(void)
     GameHeapFree(
         base,
         // STRING: FF7 0x009060d4
-        "C:\\FF7\\field\\src\\ad_data.cpp", 0x163);
+        "C:\\FF7\\field\\src\\ad_data.cpp", 355);
     return 1;
 }
 
@@ -468,7 +468,7 @@ void __cdecl Field_FreeAdDataBuffer(void)
 {
     if (g_pFieldMapNameBuffer != 0) {
         // STRING: FF7 0x009060f4
-        GameHeapFree(g_pFieldMapNameBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 0x16d);
+        GameHeapFree(g_pFieldMapNameBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 365);
         g_pFieldMapNameBuffer = 0;
     }
 }
@@ -518,12 +518,12 @@ int __cdecl Field_LoadTextFile(char *name)
     }
     if (g_pFieldTextBuffer != 0) {
         // STRING: FF7 0x00906118
-        GameHeapFree(g_pFieldTextBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 0x1b1);
+        GameHeapFree(g_pFieldTextBuffer, "C:\\FF7\\field\\src\\ad_data.cpp", 433);
         g_pFieldTextBuffer = 0;
     }
     size = Field_FileSize(file);
     // STRING: FF7 0x00906138
-    g_pFieldTextBuffer = (char *)GameHeapAllocRaw(size + 2, "C:\\FF7\\field\\src\\ad_data.cpp", 0x1b7);
+    g_pFieldTextBuffer = (char *)GameHeapAllocRaw(size + 2, "C:\\FF7\\field\\src\\ad_data.cpp", 439);
     if (g_pFieldTextBuffer == 0) {
         return 0;
     }
@@ -557,7 +557,7 @@ int __cdecl Field_ParseCameraSection(void)
                 g_pFieldCameraData->matrix[rowIndex][colIndex];
         }
     }
-    memcpy(g_FieldCameraMatrixWork, g_FieldCameraTransform, 0x1e);
+    memcpy(g_FieldCameraMatrixWork, g_FieldCameraTransform, 30);
     SetGeomScreen(g_pFieldCameraData->geomScreen);
     return 1;
 }
@@ -645,15 +645,15 @@ int __cdecl Field_ParseAllSections(void)
     char *fcr = ".fcr";
     // STRING: FF7 0x009061a0
     char *fda = ".fda";
-    char entry[0x80];
+    char entry[128];
     // STRING: FF7 0x009061a8
     char *sep = "\\";
     // STRING: FF7 0x009061ac
     char *fpl = ".fpl";
     // STRING: FF7 0x009061b4
     char *fcc = ".fcc";
-    char temp[0x100];
-    char file[0x100];
+    char temp[256];
+    char file[256];
 
     if (Field_GetMapNameById(g_FieldCurrentMapId, entry) == 0) {
         return 0;
@@ -751,15 +751,15 @@ int __cdecl Field_ParseAllSectionsByMapIndex(void)
     char *fcr = ".fcr";
     // STRING: FF7 0x00906204
     char *fda = ".fda";
-    char entry[0x80];
+    char entry[128];
     // STRING: FF7 0x0090620c
     char *sep = "\\";
     // STRING: FF7 0x00906210
     char *fpl = ".fpl";
     // STRING: FF7 0x00906218
     char *fcc = ".fcc";
-    char temp[0x100];
-    char file[0x100];
+    char temp[256];
+    char file[256];
 
     if (Field_GetMapNameById(g_FieldCurrentMapId, entry) == 0) {
         return 0;
@@ -898,8 +898,8 @@ void __cdecl Field_BuildTileSprites(FieldSmallTileSprite *small, char *attribute
                 rem += span0;
             }
             while (span0 != 0) {
-                small[idx].indexLow = 0x80;
-                small[idx].indexHigh = 0x80;
+                small[idx].indexLow = 128;
+                small[idx].indexHigh = 128;
                 small[idx].depth = 0x80;
                 small[idx].posX = currRec->posX;
                 small[idx].posY = currRec->posY;
@@ -1050,15 +1050,15 @@ int __cdecl Field_DebugDumpTileSprites(void)
     Field_FileWrite(
         pOut,
         // STRING: FF7 0x00906230
-        "BG Sprites\n", 0xb);
+        "BG Sprites\n", 11);
     for (index = 0; index < g_FieldTileGroupIndex; index++) {
-        if ((g_pFieldTileGroupBuffer[index].indexLow != 0x80 ||
-             g_pFieldTileGroupBuffer[index].indexHigh != 0x80) &&
+        if ((g_pFieldTileGroupBuffer[index].indexLow != 128 ||
+             g_pFieldTileGroupBuffer[index].indexHigh != 128) &&
             flag != 0) {
             Field_FileWrite(
                 pOut,
                 // STRING: FF7 0x0090623c
-                "Cover data\n", 0xb);
+                "Cover data\n", 11);
             flag = 0;
         }
         sprintf(buf,
@@ -1113,7 +1113,7 @@ int __cdecl Field_DebugDumpBgLayer1(void)
     Field_FileWrite(
         pOut,
         // STRING: FF7 0x009062ac
-        "Background Data\n", 0xb);
+        "Background Data\n", 11);
     for (index = 0; index < g_FieldLayer1TilesNum; index++) {
         sprintf(buf,
                 // STRING: FF7 0x009062c0
@@ -1158,7 +1158,7 @@ int __cdecl Field_DebugDumpBgLayer2(void)
     Field_FileWrite(
         pStream,
         // STRING: FF7 0x00906314
-        "Cover Data\n", 0xb);
+        "Cover Data\n", 11);
     for (entryIndex = 0; entryIndex < g_FieldLayer2TilesNum; entryIndex++) {
         if (g_FieldLayer2Tiles[entryIndex].inUse != 0) {
             tex = g_FieldLayer2Tiles[entryIndex].texPage;
@@ -1211,7 +1211,7 @@ int __cdecl Field_DebugDumpBgLayer3(void)
     Field_FileWrite(
         pStream,
         // STRING: FF7 0x0090637c
-        "Lower Plain Data\n", 0xb);
+        "Lower Plain Data\n", 11);
     for (entryIndex = 0; entryIndex < g_FieldLayer3TilesNum; entryIndex++) {
         if (g_FieldLayer3Tiles[entryIndex].ownerTag != 0) {
             tex = g_FieldLayer3Tiles[entryIndex].mapId;
@@ -1264,7 +1264,7 @@ int __cdecl Field_DebugDumpBgLayer4(void)
     Field_FileWrite(
         pStream,
         // STRING: FF7 0x009063ec
-        "Upper Plain Data\n", 0xb);
+        "Upper Plain Data\n", 11);
     for (entryIndex = 0; entryIndex < g_FieldLayer4TilesNum; entryIndex++) {
         if (g_FieldLayer4Tiles[entryIndex].active != 0) {
             tex = g_FieldLayer4Tiles[entryIndex].texSlot;
@@ -1299,7 +1299,7 @@ int __cdecl Field_AddTileDrawGroup(FieldTileDrawGroup *groups, unsigned short in
                                    short at02, short at04, int at08,
                                    int at0c, short at00, int at10)
 {
-    if (index >= 0x9c4) {
+    if (index >= 2500) {
         return 0;
     }
     if (groups == 0) {
@@ -1458,7 +1458,7 @@ unsigned char __cdecl Field_RemapTransparentIndex(unsigned char value,
             return 0;
         }
     }
-    if (value == 0 && g_FieldPalettePoolBuffer[pal].capacity != 0x100) {
+    if (value == 0 && g_FieldPalettePoolBuffer[pal].capacity != 256) {
         return *(unsigned char *)&g_FieldPalettePoolBuffer[pal].capacity;
     }
     return value;
@@ -1484,7 +1484,7 @@ float __cdecl Field_ComputeTileDepthZ(void *camera, int depth, int x, int y)
     if ((float)depth <= *(float *)&g_FieldTileDepthThreshold[0x0] / 4.0f) {
         return (float)depth / 1000.0f;
     }
-    if (depth >= 0xfff) {
+    if (depth >= 4095) {
         return 0.9999f;
     }
 
@@ -1616,9 +1616,9 @@ int __cdecl Field_ComposeBackgroundFromTileMap(void)
     g_FieldCameraScrollE70.first = g_AdPalWords.first;
     g_FieldLayer1TilesNum = g_FieldTileGroupCount;
     // STRING: FF7 0x00906444
-    g_FieldLayer1Tiles = (struct FieldLayer1Tile *)GameHeapAllocRaw(g_FieldLayer1TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 0x646);
+    g_FieldLayer1Tiles = (struct FieldLayer1Tile *)GameHeapAllocRaw(g_FieldLayer1TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 1606);
     // STRING: FF7 0x00906464
-    g_pFieldLayer1DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer1TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 0x648);
+    g_pFieldLayer1DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer1TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 1608);
     t089 = 0;
     for (t488 = 0; t488 < g_FieldTileGroupCount; t488++) {
         g_FieldLayer1Tiles[t488].posX = g_pFieldTileGroupBuffer[t488].posX;
@@ -1774,11 +1774,11 @@ int __cdecl Field_ComposeBackgroundFromTileMap(void)
     (g_FieldLayer2StateE0c.pageStart) = 15;
     g_FieldLayer2StateE14.firstIndex = 33;
     // STRING: FF7 0x00906484
-    g_FieldLayer2Tiles = (struct FieldLayer2Tile *)GameHeapAllocRaw(g_FieldLayer2TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 0x708);
+    g_FieldLayer2Tiles = (struct FieldLayer2Tile *)GameHeapAllocRaw(g_FieldLayer2TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 1800);
     // STRING: FF7 0x009064a4
-    g_pFieldLayer2DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer2TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 0x709);
+    g_pFieldLayer2DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer2TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 1801);
     // STRING: FF7 0x009064c4
-    g_pFieldTileDrawOrder = (struct FieldTileDrawOrder *)GameHeapAllocRaw(g_FieldLayer2TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 0x70b);
+    g_pFieldTileDrawOrder = (struct FieldTileDrawOrder *)GameHeapAllocRaw(g_FieldLayer2TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 1803);
     if (g_FieldLayer2Tiles == 0) {
         return 0;
     }
@@ -2039,7 +2039,7 @@ int __cdecl Field_ComposeBackgroundFromTileMap(void)
 
     // Fixed-record overrides, ordering and atlas ranges.
     if (g_FieldCurrentMapId == 0x1a9) {
-        for (t454 = 0x124; t454 <= 0x12e; t454++) {
+        for (t454 = 0x124; t454 <= 302; t454++) {
             g_FieldLayer2Tiles[t454].depthZ -= 0.01f;
         }
     }
@@ -2075,9 +2075,9 @@ int __cdecl Field_ComposeBackgroundFromTileMap(void)
     // Lower 32x32 layer allocation and loop entry.
     g_FieldLayer3TilesNum = g_FieldTileLayerOffset;
     // STRING: FF7 0x009064e4
-    g_FieldLayer3Tiles = (struct FieldBgLayer3Tile *)GameHeapAllocRaw(g_FieldLayer3TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 0x877);
+    g_FieldLayer3Tiles = (struct FieldBgLayer3Tile *)GameHeapAllocRaw(g_FieldLayer3TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 2167);
     // STRING: FF7 0x00906504
-    g_pFieldLayer3DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer3TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 0x878);
+    g_pFieldLayer3DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer3TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 2168);
     (g_FieldLayer3StateE24.width) = 640;
     g_FieldLayer3StateE24.height = 480;
     g_FieldLayer3StateE20.originX = g_FieldLayer1StateE50[0];
@@ -2092,7 +2092,7 @@ int __cdecl Field_ComposeBackgroundFromTileMap(void)
         g_FieldLayer3Tiles[t488].xPos = g_pFieldTilePaletteBuffer[t488].xPos;
         g_FieldLayer3Tiles[t488].tileY = g_pFieldTilePaletteBuffer[t488].tileY;
         Field_DecodeClutToPaletteRow(g_pFieldTilePaletteBuffer[t488].clut, &g_FieldLayer3Tiles[t488].paletteRow);
-        g_FieldLayer3Tiles[t488].fixedScale = 0x1000;
+        g_FieldLayer3Tiles[t488].fixedScale = 0x1000 /* 1.0 */;
         if (t488 >= g_pFieldTileAlphaBuffer[t089].frameStart + g_pFieldTileAlphaBuffer[t089].frameCount) {
             t089++;
         }
@@ -2267,9 +2267,9 @@ int __cdecl Field_ComposeBackgroundFromTileMap(void)
     }
     g_FieldLayer4TilesNum = g_FieldTileLayerIndex - g_FieldTileLayerOffset;
     // STRING: FF7 0x00906524
-    g_FieldLayer4Tiles = (struct FieldBgLayer4Tile *)GameHeapAllocRaw(g_FieldLayer4TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 0x974);
+    g_FieldLayer4Tiles = (struct FieldBgLayer4Tile *)GameHeapAllocRaw(g_FieldLayer4TilesNum * 0x105c, "C:\\FF7\\field\\src\\ad_data.cpp", 2420);
     // STRING: FF7 0x00906544
-    g_pFieldLayer4DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer4TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 0x975);
+    g_pFieldLayer4DrawOrder = (struct FieldLayerDrawOrder *)GameHeapAllocRaw(g_FieldLayer4TilesNum * 4, "C:\\FF7\\field\\src\\ad_data.cpp", 2421);
     if (g_FieldTileLayerOffset != 0) {
         t189 += t161 + 1;
         t249 += t109 + 1;
@@ -2505,9 +2505,9 @@ void __cdecl Field_DebugDumpTexturePage(void)
         "tst.tst",
         // STRING: FF7 0x00906564
         "wb");
-    for (i = 0xb0; i < 0xc0; i++) {
+    for (i = 176; i < 192; i++) {
         Field_FileWrite(
-            out, g_FieldLayers[15]->pixels + (i << 8), 0x10);
+            out, g_FieldLayers[15]->pixels + (i << 8), 16);
     }
     Field_FileClose(out);
 }
@@ -2519,12 +2519,12 @@ void __cdecl Field_DebugDumpTexturePage(void)
 // FUNCTION: FF7 0x0062a0e7
 int __cdecl Field_DebugDumpFieldState(void)
 {
-    char fileName[0x80];
+    char fileName[128];
     int val;
     int flags;
     int frameIndex;
     FILE *fileCtx;
-    char leafName[0x20];
+    char leafName[32];
     int rem;
     unsigned short idx;
 
@@ -2787,9 +2787,9 @@ int __cdecl Field_DebugDumpFieldState(void)
             Field_DebugWriteU16(fileCtx, g_FieldLayers[frameIndex]->hasDoubleSizeTiles);
             Field_DebugWriteU16(fileCtx, g_FieldLayers[frameIndex]->bytesPerPixel);
             if (g_FieldLayers[frameIndex]->bytesPerPixel == 1) {
-                Field_FileWrite(fileCtx, g_FieldLayers[frameIndex]->pixels, 0x10000);
+                Field_FileWrite(fileCtx, g_FieldLayers[frameIndex]->pixels, 65536);
             } else {
-                Field_FileWrite(fileCtx, g_FieldLayers[frameIndex]->pixels, 0x20000);
+                Field_FileWrite(fileCtx, g_FieldLayers[frameIndex]->pixels, 131072);
             }
         }
     }
@@ -3169,12 +3169,12 @@ int __cdecl Field_ParseBackgroundSection(void)
             Field_BgReadU16(fileCtx, &g_FieldLayers[frameIndex]->bytesPerPixel);
             if (g_FieldLayers[frameIndex]->bytesPerPixel == 1) {
                 // STRING: FF7 0x0090669c
-                g_FieldLayers[frameIndex]->pixels = (unsigned char *)GameHeapAlloc(0x10000, 1, "C:\\FF7\\field\\src\\ad_data.cpp", 0xdf2);
-                Field_BgReadBytes(fileCtx, g_FieldLayers[frameIndex]->pixels, 0x10000);
+                g_FieldLayers[frameIndex]->pixels = (unsigned char *)GameHeapAlloc(65536, 1, "C:\\FF7\\field\\src\\ad_data.cpp", 3570);
+                Field_BgReadBytes(fileCtx, g_FieldLayers[frameIndex]->pixels, 65536);
             } else {
                 // STRING: FF7 0x009066bc
-                g_FieldLayers[frameIndex]->pixels = (unsigned char *)GameHeapAlloc(0x10000, 2, "C:\\FF7\\field\\src\\ad_data.cpp", 0xdff);
-                Field_BgReadBytes(fileCtx, g_FieldLayers[frameIndex]->pixels, 0x20000);
+                g_FieldLayers[frameIndex]->pixels = (unsigned char *)GameHeapAlloc(65536, 2, "C:\\FF7\\field\\src\\ad_data.cpp", 3583);
+                Field_BgReadBytes(fileCtx, g_FieldLayers[frameIndex]->pixels, 131072);
             }
             g_FieldLayers[frameIndex]->built = 0;
             g_FieldLayers[frameIndex]->clearedState = 0;

@@ -141,7 +141,7 @@ short g_MateriaEncounterModifiers[4] = {0};
 // Kernel_ApplySummonMateria addresses the parallel table g_MateriaSummonLevelCounts as [8 + summon id] past the end of this
 // array (summon ids are 0x38..0x47): the TU's .bss keeps the retail layout of these objects.
 // GLOBAL: FF7 0x00c06960
-char g_MateriaSummonUseCounts[0x10] = {0};
+char g_MateriaSummonUseCounts[16] = {0};
 // GLOBAL: FF7 0x00c06970
 int g_MateriaTriggerEntryCode = 0;
 // GLOBAL: FF7 0x00c06974
@@ -162,12 +162,12 @@ unsigned char g_MateriaSummonCount = 0;
 // Kernel_AddQuadraMagicToAllSummonEntries, Kernel_CopySummonEntryBytesToStatBlock,
 // Kernel_InitActorMateriaScratchState). The span runs to the next named definition of the TU.
 // GLOBAL: FF7 0x00c06990
-char g_MateriaQuadraMagicCounts[0x10] = {0};
+char g_MateriaQuadraMagicCounts[16] = {0};
 // g_MateriaSummonLevelCounts is indexed by the code as an array (read by
 // Kernel_ApplyMasterSummonMateria, Kernel_CopySummonEntryBytesToStatBlock,
 // Kernel_InitActorMateriaScratchState). The span runs to the next named definition of the TU.
 // GLOBAL: FF7 0x00c069a0
-char g_MateriaSummonLevelCounts[0x10] = {0};
+char g_MateriaSummonLevelCounts[16] = {0};
 // GLOBAL: FF7 0x00c069b0
 short g_MateriaLevelUpSlotMask[3] = {0};
 // clang-format on
@@ -309,7 +309,7 @@ void __cdecl Party_RecomputeBattleModifiers(void)
             gSavemap.tutSub = gSavemap.tutSub | 0x80;
         }
     }
-    if (upSum + 0x10 < downSum) {
+    if (upSum + 16 < downSum) {
         g_PartyBattleModifiers.encounterRate = 2;
     } else {
         g_PartyBattleModifiers.encounterRate = upSum + 0x10 - downSum;
@@ -317,13 +317,13 @@ void __cdecl Party_RecomputeBattleModifiers(void)
     if (g_PartyBattleModifiers.gilScale > 0x20) {
         g_PartyBattleModifiers.gilScale = 0x20;
     }
-    if (g_PartyBattleModifiers.encounterRate > 0x20) {
+    if (g_PartyBattleModifiers.encounterRate > 32) {
         g_PartyBattleModifiers.encounterRate = 0x20;
     }
-    if (g_PartyBattleModifiers.chocoboLure > 0x20) {
+    if (g_PartyBattleModifiers.chocoboLure > 32) {
         g_PartyBattleModifiers.chocoboLure = 0x20;
     }
-    if (g_PartyBattleModifiers.preemptiveOdds > 0x55) {
+    if (g_PartyBattleModifiers.preemptiveOdds > 85) {
         g_PartyBattleModifiers.preemptiveOdds = 0x55;
     }
     if (g_MateriaPreEmptiveRateSum != 0) {
@@ -369,11 +369,11 @@ void __cdecl Battle_LoadCombatantFromSavemap(char partySlot)
         dwordCursor++;
     }
     dwordCursor = gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[partySlot]]].armorMateria;
-    for (pos = 8; pos < 0x10; pos++) {
+    for (pos = 8; pos < 16; pos++) {
         g_MateriaEquippedSlotIds[pos] = *dwordCursor;
         dwordCursor++;
     }
-    for (pos = 0; pos < 0x10; pos++) {
+    for (pos = 0; pos < 16; pos++) {
         Kernel_ApplyMateriaToActor(g_MateriaEquippedSlotIds[pos]);
     }
     armourCursor = (char *)armourRecord;
@@ -406,16 +406,16 @@ void __cdecl Battle_LoadCombatantFromSavemap(char partySlot)
     g_MateriaStatScratchAttack.second = g_pCurrentCombatantStatBlock->vitality + g_MateriaStatScratchAttack.second;
     g_MateriaStatScratchMagicAttack.value = g_pCurrentCombatantStatBlock->magic + g_MateriaStatScratchMagicAttack.value;
     g_MateriaStatScratchMagicAttack.second = g_pCurrentCombatantStatBlock->spirit + g_MateriaStatScratchMagicAttack.second;
-    if (g_MateriaStatScratchAttack.value > 0xFF) {
+    if (g_MateriaStatScratchAttack.value > 255) {
         g_MateriaStatScratchAttack.value = 0xFF;
     }
-    if (g_MateriaStatScratchAttack.second > 0xFF) {
+    if (g_MateriaStatScratchAttack.second > 255) {
         g_MateriaStatScratchAttack.second = 0xFF;
     }
-    if (g_MateriaStatScratchMagicAttack.value > 0xFF) {
+    if (g_MateriaStatScratchMagicAttack.value > 255) {
         g_MateriaStatScratchMagicAttack.value = 0xFF;
     }
-    if (g_MateriaStatScratchMagicAttack.second > 0xFF) {
+    if (g_MateriaStatScratchMagicAttack.second > 255) {
         g_MateriaStatScratchMagicAttack.second = 0xFF;
     }
     if (g_MateriaStatScratchAttack.value < 0) {
@@ -435,14 +435,14 @@ void __cdecl Battle_LoadCombatantFromSavemap(char partySlot)
     g_pCurrentCombatantStatBlock->magicAttack = g_MateriaStatScratchMagicAttack.value;
     g_pCurrentCombatantStatBlock->magicDefense = g_MateriaStatScratchMagicAttack.second;
     Kernel_StoreEncounterModifiersToStatBlock();
-    for (pos = 0; pos < 0x10; pos++) {
+    for (pos = 0; pos < 16; pos++) {
         Kernel_AddMegaAllLevelToMagicAndCommandCounts(g_MateriaEquippedSlotIds[pos]);
     }
     Kernel_SortMagicMenuOrder(partySlot);
-    for (pos = 0; pos < 0x48; pos++) {
+    for (pos = 0; pos < 72; pos++) {
         if ((g_pCurrentCombatantStatBlock->abilities[pos].support & 0xE0) != 0) {
-            newValue = g_pCurrentCombatantStatBlock->abilities[pos].mpCost + g_pCurrentCombatantStatBlock->abilities[pos].mpCost * ((g_pCurrentCombatantStatBlock->abilities[pos].support & 0xE0) >> 5) / 0xA + 1;
-            if (newValue > 0xFF) {
+            newValue = g_pCurrentCombatantStatBlock->abilities[pos].mpCost + g_pCurrentCombatantStatBlock->abilities[pos].mpCost * ((g_pCurrentCombatantStatBlock->abilities[pos].support & 0xE0) >> 5) / 10 + 1;
+            if (newValue > 255) {
                 newValue = 0xFF;
             }
             g_pCurrentCombatantStatBlock->abilities[pos].mpCost = newValue;
@@ -453,10 +453,10 @@ void __cdecl Battle_LoadCombatantFromSavemap(char partySlot)
         g_pCurrentCombatantStatBlock->maxHp = g_pCurrentCombatantStatBlock->maxMp;
         g_pCurrentCombatantStatBlock->maxMp = pos;
     }
-    if (g_pCurrentCombatantStatBlock->maxHp < 0xA) {
+    if (g_pCurrentCombatantStatBlock->maxHp < 10) {
         g_pCurrentCombatantStatBlock->maxHp = 0xA;
     }
-    if (g_pCurrentCombatantStatBlock->maxMp < 0xA) {
+    if (g_pCurrentCombatantStatBlock->maxMp < 10) {
         g_pCurrentCombatantStatBlock->maxMp = 0xA;
     }
     if (g_pCurrentCombatantStatBlock->maxHp < g_pCurrentCombatantStatBlock->hp) {
@@ -645,7 +645,7 @@ void __cdecl Kernel_ApplyMateriaStatusMask(char unused, int materiaId, char mode
     unsigned char index;
 
     index = materiaId & 0xFF;
-    mask = g_KernelMateriaDataArray[index].statusMaskLowByte + (g_KernelMateriaDataArray[index].statusMaskMidByte << 8) + (g_KernelMateriaDataArray[index].statusMaskHighByte << 0x10);
+    mask = g_KernelMateriaDataArray[index].statusMaskLowByte + (g_KernelMateriaDataArray[index].statusMaskMidByte << 8) + (g_KernelMateriaDataArray[index].statusMaskHighByte << 16);
     if (mode == 0) {
         g_pCurrentCombatantStatBlock->attackStatuses |= mask;
     } else {
@@ -919,7 +919,7 @@ void __cdecl Kernel_AddMpTurboToAllSummonEntries(char amount)
     int idx;
     int sum;
 
-    for (idx = 0; idx < 0x10; idx++) {
+    for (idx = 0; idx < 16; idx++) {
         sum = ((g_pCurrentCombatantStatBlock->summons[idx].support & 0xE0) >> 5) + (*(int *)&amount & 0xFF);
         if (sum > 5) {
             sum = 5;
@@ -1049,7 +1049,7 @@ void __cdecl Kernel_OrSupportFlagIntoAllSummonEntries(void)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         (*(char *)&g_pCurrentCombatantStatBlock->summons[i].support) |= g_MateriaSupportEffectFlags;
     }
 }
@@ -1099,7 +1099,7 @@ void __cdecl Kernel_OrSupportFlagIntoAllCommandEntries(void)
     int index;
     int cmd;
 
-    for (index = 0; index < 0x10; index++) {
+    for (index = 0; index < 16; index++) {
         cmd = g_MateriaCommandListEntries[index].commandCode;
         /* Retail caller prototype (char) -> int preserved for /Od argument promotion on `Kernel_FindCommandListSlot`. */
         slot = ((int(__cdecl *)(char))Kernel_FindCommandListSlot)(
@@ -1214,7 +1214,7 @@ void __cdecl Kernel_AddQuadraMagicToAllMagicEntries(char amount)
     int padSlot[2]; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
     int i;
 
-    for (i = 0; i < 0x38; i++) {
+    for (i = 0; i < 56; i++) {
         (g_MateriaMagicListRecords[i].quadraLinks)++;
         g_MateriaMagicListRecords[i].quadraCount += amount;
     }
@@ -1231,7 +1231,7 @@ void __cdecl Kernel_AddQuadraMagicToSummonEntry(int amount, int materiaId)
 {
     int summonIndex;
 
-    summonIndex = g_KernelMateriaDataArray[(materiaId & 0xFF)].primaryCommandByte - 0x38;
+    summonIndex = g_KernelMateriaDataArray[(materiaId & 0xFF)].primaryCommandByte - 56;
     g_MateriaSummonUseCounts[summonIndex]++;
     g_MateriaQuadraMagicCounts[summonIndex] += amount;
 }
@@ -1246,7 +1246,7 @@ void __cdecl Kernel_AddQuadraMagicToAllSummonEntries(char amount)
     int padSlot[2]; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_MateriaSummonUseCounts[i]++;
         g_MateriaQuadraMagicCounts[i] += amount;
     }
@@ -1334,7 +1334,7 @@ int __cdecl Kernel_FindCommandListSlot(int commandCode)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         if (g_MateriaCommandListEntries[i].commandCode == (commandCode & 0xff)) {
             return i;
         }
@@ -1351,7 +1351,7 @@ int __cdecl Kernel_FindMagicListSlot(int magicId)
 {
     int i;
 
-    for (i = 0; i < 0x38; i++) {
+    for (i = 0; i < 56; i++) {
         if (*(unsigned char *)&g_MateriaMagicListRecords[i].magicId == (magicId & 0xFF)) {
             return i;
         }
@@ -1379,12 +1379,12 @@ void __cdecl Kernel_AddMegaAllLevelToMagicAndCommandCounts(int packed)
     typeCode = g_KernelMateriaDataArray[materiaId].typeNibbleByte & 0xF;
     if (typeCode == BATTLE_MATERIA_TYPE_MEGA_ALL) {
         level = Kernel_GetMateriaLevel((char)packed, packedVal);
-        for (i = 0; i < 0x38; i++) {
+        for (i = 0; i < 56; i++) {
             if (g_pCurrentCombatantStatBlock->abilities[i].attackId != 0xFF) {
                 (*(char *)&g_pCurrentCombatantStatBlock->abilities[i].allCount) += level;
             }
         }
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             if (g_pCurrentCombatantStatBlock->commands[i].commandId != 0xFF) {
                 switch (g_pCurrentCombatantStatBlock->commands[i].commandId) {
                 case BATTLE_COMMAND_STEAL:
@@ -1678,7 +1678,7 @@ void __cdecl Kernel_DescribeSupportMateriaPercent(int materiaId, int packedValue
     }
     record = g_MateriaCurrentAbilityMask;
     record->primaryCommandByte = *(char *)&g_KernelMateriaDataArray[(materiaId & 0xFF)].primaryCommandByte;
-    record->value = level * 0xA;
+    record->value = level * 10;
     switch (g_KernelMateriaDataArray[(materiaId & 0xFF)].primaryCommandByte) {
     case BATTLE_SUPPORT_EFFECT_MEGA_ALL:
         g_MateriaDetailPanelKind = MATERIA_DETAIL_PANEL_SUPPORT;
@@ -1741,7 +1741,7 @@ void __cdecl Kernel_ApplyEnemySkillMateria(char unused, char unusedSecond, int s
 
     if (g_MateriaDescribeModeFlag == 0) {
         mask = skillMask & 0xFFFFFF;
-        for (i = 0; i < 0x18; i++) {
+        for (i = 0; i < 24; i++) {
             if ((mask & 1) != 0) {
                 /* Retail caller prototype (char, char, char) -> void preserved for /Od argument promotion on `Kernel_SetAbilityEntryFromAttackTable`. */
                 ((void(__cdecl *)(char, char, char))Kernel_SetAbilityEntryFromAttackTable)((char)i, i + 0x48, i + 0x48);
@@ -1786,7 +1786,7 @@ void __cdecl Kernel_ApplyMasterMagicMateria(void)
     int i;
 
     if (g_MateriaDescribeModeFlag == 0) {
-        for (i = 0; i < 0x38; i++) {
+        for (i = 0; i < 56; i++) {
             Kernel_AddMagicListEntryIfAbsent((char)i);
         }
         Kernel_FindOrAddCommandListSlot(BATTLE_COMMAND_MAGIC);
@@ -1808,10 +1808,10 @@ void __cdecl Kernel_ApplyMasterSummonMateria(void)
     int i;
 
     if (g_MateriaDescribeModeFlag == 0) {
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             g_MateriaSummonLevelCounts[i] = 0xFF;
         }
-        for (i = 0x38; i < 0x48; i++) {
+        for (i = 56; i < 72; i++) {
             /* Retail caller prototype (int, char, char) -> void preserved for /Od argument promotion on `Kernel_SetAbilityEntryFromAttackTable`. */
             ((void(__cdecl *)(int, char, char))Kernel_SetAbilityEntryFromAttackTable)(i - 0x38, (char)i, (char)i);
         }
@@ -2017,7 +2017,7 @@ void __cdecl Kernel_ApplyMateriaEncounterModifier(unsigned char materiaId, int a
     if (g_MateriaDescribeModeFlag == 0) {
         g_MateriaEncounterModifiers[g_KernelMateriaDataArray[materiaId].primaryCommandByte] += val;
         if (materiaId == MATERIA_PRE_EMPTIVE) {
-            if (g_MateriaEncounterModifiers[3] > 0x55) {
+            if (g_MateriaEncounterModifiers[3] > 85) {
                 g_MateriaEncounterModifiers[3] = 0x55;
             }
             if (level == 5) {
@@ -2094,7 +2094,7 @@ int __cdecl Kernel_GetMateriaLevel(unsigned char materiaId, int ap)
         if (g_KernelMateriaDataArray[materiaId].apLevels[idx] == 0xFFFF) {
             continue;
         }
-        if (ap >= g_KernelMateriaDataArray[materiaId].apLevels[idx] * 0x64) {
+        if (ap >= g_KernelMateriaDataArray[materiaId].apLevels[idx] * 100) {
             level = idx + 2;
             break;
         }
@@ -2131,16 +2131,16 @@ void __cdecl Kernel_StoreEncounterModifiersToStatBlock(void)
 {
     int unused; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
-    if (g_MateriaEncounterModifiers[0] > 0x20) {
+    if (g_MateriaEncounterModifiers[0] > 32) {
         g_MateriaEncounterModifiers[0] = 0x20;
     }
-    if (g_MateriaEncounterModifiers[2] > 0x20) {
+    if (g_MateriaEncounterModifiers[2] > 32) {
         g_MateriaEncounterModifiers[2] = 0x20;
     }
-    if (g_MateriaEncounterModifiers[1] > 0xFF) {
+    if (g_MateriaEncounterModifiers[1] > 255) {
         g_MateriaEncounterModifiers[1] = 0xFF;
     }
-    if (g_MateriaEncounterRateSum > 0xFF) {
+    if (g_MateriaEncounterRateSum > 255) {
         g_MateriaEncounterRateSum = 0xFF;
     }
     g_pCurrentCombatantStatBlock->gilScaleBonus += *(char *)&g_MateriaEncounterModifiers[0];
@@ -2164,51 +2164,51 @@ void __cdecl Kernel_ApplyMateriaStatModifiersToStatBlock(void)
 {
     int i;
 
-    for (i = 0; i < 0xB; i++) {
-        if (g_MateriaStatPercentModifiers.byIndex[i] > 0x64) {
-            g_MateriaStatPercentModifiers.byIndex[i] = 0x64;
+    for (i = 0; i < 11; i++) {
+        if (g_MateriaStatPercentModifiers.byIndex[i] > 100) {
+            g_MateriaStatPercentModifiers.byIndex[i] = 100;
         }
     }
-    if (g_MateriaStatPercentModifiers.expPercent > 0x20) {
-        g_MateriaStatPercentModifiers.expPercent = 0x20;
+    if (g_MateriaStatPercentModifiers.expPercent > 32) {
+        g_MateriaStatPercentModifiers.expPercent = 32;
     }
     for (i = 0; i < 6; i++) {
         if ((g_MateriaAdditiveStatBonuses[i] & 0x8000) == 0) {
             g_MateriaAdditiveStatBonuses[i] &= 0xFF;
         }
     }
-    g_MateriaStatScratchStrength.value = g_MateriaStatScratchStrength.value + g_MateriaStatScratchStrength.value * (g_MateriaStatPercentModifiers.scratchStrength) / 0x64 + g_MateriaAdditiveStatBonuses[0];
-    g_MateriaStatScratchStrength.second = g_MateriaStatScratchStrength.second + g_MateriaStatScratchStrength.second * g_MateriaStatPercentModifiers.vitalityPercent / 0x64 + g_MateriaAdditiveStatBonuses[1];
-    g_MateriaStatScratchMagic.value = g_MateriaStatScratchMagic.value + g_MateriaStatScratchMagic.value * g_MateriaStatPercentModifiers.magicPercent / 0x64 + g_MateriaAdditiveStatBonuses[2];
-    g_MateriaStatScratchMagic.second = g_MateriaStatScratchMagic.second + g_MateriaStatScratchMagic.second * g_MateriaStatPercentModifiers.spiritPercent / 0x64 + g_MateriaAdditiveStatBonuses[3];
-    g_MateriaStatScratchDexterity.value = g_MateriaStatScratchDexterity.value + g_MateriaStatScratchDexterity.value * g_MateriaStatPercentModifiers.dexterityPercent / 0x64 + g_MateriaAdditiveStatBonuses[4];
-    g_MateriaStatScratchDexterity.second = g_MateriaStatScratchDexterity.second + g_MateriaStatScratchDexterity.second * g_MateriaStatPercentModifiers.luckPercent / 0x64 + g_MateriaAdditiveStatBonuses[5];
-    g_MateriaStatScratchMaxHp.value = g_MateriaStatScratchMaxHp.value + g_MateriaStatScratchMaxHp.value * g_MateriaStatPercentModifiers.maxHpPercent / 0x64;
-    g_MateriaStatScratchAttack.value = g_MateriaStatScratchAttack.value + g_MateriaStatScratchAttack.value * g_MateriaStatPercentModifiers.attackPercent / 0x64;
-    g_MateriaStatScratchAttack.second = g_MateriaStatScratchAttack.second + g_MateriaStatScratchAttack.second * g_MateriaStatPercentModifiers.defensePercent / 0x64;
-    g_MateriaStatScratchMaxHp.second = g_MateriaStatScratchMaxHp.second + g_MateriaStatScratchMaxHp.second * g_MateriaStatPercentModifiers.maxMpPercent / 0x64;
-    if (g_MateriaStatScratchStrength.value > 0xFF) {
+    g_MateriaStatScratchStrength.value = g_MateriaStatScratchStrength.value + g_MateriaStatScratchStrength.value * (g_MateriaStatPercentModifiers.scratchStrength) / 100 + g_MateriaAdditiveStatBonuses[0];
+    g_MateriaStatScratchStrength.second = g_MateriaStatScratchStrength.second + g_MateriaStatScratchStrength.second * g_MateriaStatPercentModifiers.vitalityPercent / 100 + g_MateriaAdditiveStatBonuses[1];
+    g_MateriaStatScratchMagic.value = g_MateriaStatScratchMagic.value + g_MateriaStatScratchMagic.value * g_MateriaStatPercentModifiers.magicPercent / 100 + g_MateriaAdditiveStatBonuses[2];
+    g_MateriaStatScratchMagic.second = g_MateriaStatScratchMagic.second + g_MateriaStatScratchMagic.second * g_MateriaStatPercentModifiers.spiritPercent / 100 + g_MateriaAdditiveStatBonuses[3];
+    g_MateriaStatScratchDexterity.value = g_MateriaStatScratchDexterity.value + g_MateriaStatScratchDexterity.value * g_MateriaStatPercentModifiers.dexterityPercent / 100 + g_MateriaAdditiveStatBonuses[4];
+    g_MateriaStatScratchDexterity.second = g_MateriaStatScratchDexterity.second + g_MateriaStatScratchDexterity.second * g_MateriaStatPercentModifiers.luckPercent / 100 + g_MateriaAdditiveStatBonuses[5];
+    g_MateriaStatScratchMaxHp.value = g_MateriaStatScratchMaxHp.value + g_MateriaStatScratchMaxHp.value * g_MateriaStatPercentModifiers.maxHpPercent / 100;
+    g_MateriaStatScratchAttack.value = g_MateriaStatScratchAttack.value + g_MateriaStatScratchAttack.value * g_MateriaStatPercentModifiers.attackPercent / 100;
+    g_MateriaStatScratchAttack.second = g_MateriaStatScratchAttack.second + g_MateriaStatScratchAttack.second * g_MateriaStatPercentModifiers.defensePercent / 100;
+    g_MateriaStatScratchMaxHp.second = g_MateriaStatScratchMaxHp.second + g_MateriaStatScratchMaxHp.second * g_MateriaStatPercentModifiers.maxMpPercent / 100;
+    if (g_MateriaStatScratchStrength.value > 255) {
         g_MateriaStatScratchStrength.value = 0xFF;
     }
-    if (g_MateriaStatScratchStrength.second > 0xFF) {
+    if (g_MateriaStatScratchStrength.second > 255) {
         g_MateriaStatScratchStrength.second = 0xFF;
     }
-    if (g_MateriaStatScratchMagic.value > 0xFF) {
+    if (g_MateriaStatScratchMagic.value > 255) {
         g_MateriaStatScratchMagic.value = 0xFF;
     }
-    if (g_MateriaStatScratchMagic.second > 0xFF) {
+    if (g_MateriaStatScratchMagic.second > 255) {
         g_MateriaStatScratchMagic.second = 0xFF;
     }
-    if (g_MateriaStatScratchDexterity.value > 0xFF) {
+    if (g_MateriaStatScratchDexterity.value > 255) {
         g_MateriaStatScratchDexterity.value = 0xFF;
     }
-    if (g_MateriaStatScratchDexterity.second > 0xFF) {
+    if (g_MateriaStatScratchDexterity.second > 255) {
         g_MateriaStatScratchDexterity.second = 0xFF;
     }
-    if (g_MateriaStatScratchMaxHp.value > 0x270F) {
+    if (g_MateriaStatScratchMaxHp.value > 9999) {
         g_MateriaStatScratchMaxHp.value = 0x270F;
     }
-    if (g_MateriaStatScratchMaxHp.second > 0x3E7) {
+    if (g_MateriaStatScratchMaxHp.second > 999) {
         g_MateriaStatScratchMaxHp.second = 0x3E7;
     }
     if (g_MateriaStatScratchStrength.value < 0) {
@@ -2294,7 +2294,7 @@ void __cdecl Kernel_CopySummonEntryBytesToStatBlock(void)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_pCurrentCombatantStatBlock->summons[i].allCount = g_MateriaSummonLevelCounts[i];
         g_pCurrentCombatantStatBlock->summons[i].quadraLinks = g_MateriaSummonUseCounts[i];
         g_pCurrentCombatantStatBlock->summons[i].quadraCount = g_MateriaQuadraMagicCounts[i];
@@ -2382,7 +2382,7 @@ int __cdecl Kernel_FindOrAddCommandListSlot(unsigned char commandId)
 {
     int index;
 
-    for (index = 0; index < 0x10; index++) {
+    for (index = 0; index < 16; index++) {
         if (g_MateriaCommandListEntries[index].commandCode == commandId) {
             return index;
         }
@@ -2411,7 +2411,7 @@ void __cdecl Kernel_BuildBattleCommandMenu(void)
     g_MateriaBattleCommandPlacedCount = 0;
     g_MateriaTriggerCount = 0;
     Kernel_RemoveCommand5IfCommand17Present();
-    for (index = 0; index < 0x10; index++) {
+    for (index = 0; index < 16; index++) {
         if (g_MateriaCommandListEntries[index].commandCode != 0xFF) {
             if (g_MateriaCommandListEntries[index].commandCode == BATTLE_COMMAND_MAGIC && g_MateriaMagicListCount == 2) {
                 g_MateriaCommandListEntries[index].commandCode = BATTLE_COMMAND_W_MAGIC;
@@ -2439,13 +2439,13 @@ void __cdecl Kernel_RemoveCommand5IfCommand17Present(void)
     } local; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     local.found = 0;
-    for (local.i = 0; local.i < 0x10; local.i++) {
+    for (local.i = 0; local.i < 16; local.i++) {
         if (g_MateriaCommandListEntries[local.i].commandCode == 0x11) {
             local.found = 1;
             break;
         }
     }
-    for (local.i = 0; local.i < 0x10; local.i++) {
+    for (local.i = 0; local.i < 16; local.i++) {
         if (local.found == 1 && g_MateriaCommandListEntries[local.i].commandCode == 5) {
             g_MateriaCommandListEntries[local.i].commandCode = 0xFF;
         }
@@ -2505,7 +2505,7 @@ int __cdecl Kernel_GetBattleMenuSlotForCommand(int commandId)
         g_MateriaSummonCount = 1;
         return 2;
     }
-    for (i = 4; i < 0x10; i++) {
+    for (i = 4; i < 16; i++) {
         if (g_pCurrentCombatantStatBlock->commands[i].commandId == 0xFF) {
             return i;
         }
@@ -2527,7 +2527,7 @@ void __cdecl Kernel_SetBattleMenuCommand(unsigned char commandId, unsigned char 
     g_pCurrentCombatantStatBlock->commands[slot].menuFlags = 0;
     g_pCurrentCombatantStatBlock->commands[slot].cursorAction = g_KernelCommandTable[commandId].cursorAction;
     g_pCurrentCombatantStatBlock->commands[slot].targetFlags = *(char *)&g_KernelCommandTable[commandId].targetFlags;
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         if (commandId == g_MateriaCommandListEntries[i].commandCode) {
             g_pCurrentCombatantStatBlock->commands[slot].allCount = g_MateriaCommandListEntries[i].level;
             g_pCurrentCombatantStatBlock->commands[slot].supportFlags = g_MateriaCommandListEntries[i].supportFlags;
@@ -2545,7 +2545,7 @@ void __cdecl Kernel_CopyMagicListToAbilityEntries(void)
 {
     int i;
 
-    for (i = 0; i < 0x38; i++) {
+    for (i = 0; i < 56; i++) {
         /* Retail caller prototype (char, char, char) -> void preserved for /Od argument promotion on `Kernel_SetAbilityEntryFromAttackTable`. */
         ((void(__cdecl *)(char, char, char))Kernel_SetAbilityEntryFromAttackTable)((char)g_MateriaMagicListRecords[i].magicId, (char)i,
                                                                                    (char)g_MateriaMagicListRecords[i].magicId);
@@ -2565,7 +2565,7 @@ void __cdecl Kernel_AddMagicListEntryIfAbsent(char magicId)
 {
     int i;
 
-    for (i = 0; i < 0x38; i++) {
+    for (i = 0; i < 56; i++) {
         if (*(unsigned char *)&g_MateriaMagicListRecords[i].magicId == (*(int *)&magicId & 0xFF)) {
             return;
         }
@@ -2604,37 +2604,37 @@ void __cdecl Kernel_InitActorMateriaScratchState(char actorIndex, struct MenuPar
     g_MateriaCommandListRecordCount = 0;
     g_MateriaSummonCount = 0;
     g_MateriaMagicListCount = g_MateriaSummonCount;
-    for (i = 0; i < 0x38; i++) {
+    for (i = 0; i < 56; i++) {
         g_MateriaMagicListRecords[i].magicId = 0xFF;
         g_MateriaMagicListRecords[i].quadraCount = 0;
         g_MateriaMagicListRecords[i].quadraLinks = 0;
         g_MateriaMagicListRecords[i].allCount = 0;
         g_MateriaMagicListRecords[i].support = 0;
     }
-    for (i = 0; i < 0x60; i++) {
+    for (i = 0; i < 96; i++) {
         actorState->abilities[i].attackId = 0xFF;
         actorState->abilities[i].quadraCount = 0;
         actorState->abilities[i].quadraLinks = 0;
         actorState->abilities[i].allCount = 0;
         actorState->abilities[i].support = 0;
     }
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_MateriaQuadraMagicCounts[i] = 0;
         g_MateriaSummonUseCounts[i] = 0;
         g_MateriaSummonLevelCounts[i] = 0;
     }
-    for (i = 0; i < 0xC; i++) {
+    for (i = 0; i < 12; i++) {
         g_MateriaStatPercentModifiers.byIndex[i] = 0;
     }
     for (i = 0; i < 6; i++) {
         g_MateriaAdditiveStatBonuses[i] = 0;
     }
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_MateriaCommandListEntries[i].commandCode = 0xFF;
         g_MateriaCommandListEntries[i].level = 0;
         g_MateriaCommandListEntries[i].supportFlags = 0;
     }
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         actorState->commands[i].commandId = 0xFF;
         actorState->commands[i].menuFlags = 1;
         actorState->commands[i].supportFlags = 0;

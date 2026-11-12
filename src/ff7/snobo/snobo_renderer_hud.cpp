@@ -204,7 +204,7 @@ void __cdecl Mini_SnowboardUpdateInputMasks(void)
 
     g_SnoboStatePtr->modeFlags = 0;
     g_SnoboStatePtr->inputFlags = 0;
-    for (i = 0; i < 0xE; i++) {
+    for (i = 0; i < 14; i++) {
         if (Input_GetPressed(g_SnoboInputBindings[i].key) != 0) {
             g_SnoboStatePtr->modeFlags |= g_SnoboInputBindings[i].bit;
         }
@@ -412,15 +412,15 @@ void SnowboardHud::updateHud()
             if (g_SnoboStatePtr->prevNowMs == 0)
                 g_SnoboStatePtr->prevNowMs = g_SnoboStatePtr->nowMs;
             g_SnoboStatePtr->courseTime += g_SnoboStatePtr->nowMs - g_SnoboStatePtr->prevNowMs;
-            if ((unsigned int)g_SnoboStatePtr->courseTime > 0x5b8d7f)
+            if ((unsigned int)g_SnoboStatePtr->courseTime > 5999999)
                 g_SnoboStatePtr->courseTime = 0x5b8d7f;
             g_SnoboStatePtr->prevNowMs = g_SnoboStatePtr->nowMs;
         }
         if (g_SnoboStatePtr->tick & 1)
             g_SnoboStatePtr->displayedSpeed = g_SnoboStatePtr->followAngle * 150 / 2048;
     }
-    renderTime(g_SnoboStatePtr->courseTime, 0x10, 0x30);
-    renderSpeed(g_SnoboStatePtr->displayedSpeed, 0x207, 0x30);
+    renderTime(g_SnoboStatePtr->courseTime, 16, 48);
+    renderSpeed(g_SnoboStatePtr->displayedSpeed, 519, 48);
     ((SnowboardRenderer *)this)->emitHud();
     if (g_SnoboStatePtr->paused) {
         g_SnoboStatePtr->prevNowMs = timeGetTime();
@@ -576,7 +576,7 @@ void __fastcall Mini_SnowboardDrawPauseOverlay(SnowboardRenderer *self)
     glyph = g_SnoboPauseGlyph;
     if (g_SnoboStatePtr->renderFrame == 1) {
         color = Mini_SnowboardGetPulseGrayColor(self);
-        self->drawText((char *)&glyph, 0x10C, 0xE5, color, self->menuFontModel);
+        self->drawText((char *)&glyph, 268, 229, color, self->menuFontModel);
         self->fadeBlack(0x80);
         self->emitOverlay();
     }
@@ -815,7 +815,7 @@ void SnowboardRenderer::fadeWhite(unsigned char alpha)
     color[1] = 0xFF;
     color[2] = 0xFF;
     color[3] = alpha;
-    panel(color, 0, 0, 0x280, 0x1E0, fadeModel);
+    panel(color, 0, 0, 640, 480, fadeModel);
 }
 
 /*
@@ -831,7 +831,7 @@ void SnowboardRenderer::fadeBlack(unsigned char alpha)
     color[1] = 0;
     color[2] = 0;
     color[3] = alpha;
-    panel(color, 0, 0, 0x280, 0x1E0, fadeModel);
+    panel(color, 0, 0, 640, 480, fadeModel);
 }
 
 /*
@@ -845,7 +845,7 @@ void SnowboardRenderer::fillColor(int rgb)
 
     *(int *)color = rgb;
     color[3] = 0xFF;
-    panel(color, 0, 0, 0x280, 0x1E0, fadeModel);
+    panel(color, 0, 0, 640, 480, fadeModel);
 }
 } // extern "C"
 
@@ -931,8 +931,8 @@ void SnowboardRenderer::prim(SnowboardScreenQuadSrc *quad, int page)
         uvSource = &g_SnoboHudFloats[8];
     }
     AcquireBatchNode(1, (void *)this->backgroundModels[nodeIndex]);
-    leftEdge = quad->x * 2 + 0x140;
-    topEdge = quad->y * 2 + 0xF0;
+    leftEdge = quad->x * 2 + 320;
+    topEdge = quad->y * 2 + 240;
     width = quad->w * 2;
     quadH = quad->h * 2;
     topLeftVtxPtr = (GfxTlVertex *)this->backgroundModels[nodeIndex]->vertexCursor;
@@ -990,7 +990,7 @@ void SnowboardRenderer::strip(SnowboardStripVertexSrc *band)
     AcquireBatchNode(1, (void *)this->stripModel);
     pLeftTop = (GfxTlVertex *)this->stripModel->vertexCursor;
     pLeftTop->x = (float)g_SnoboClipLeft + 0.0f;
-    pLeftTop->y = (float)((band->y0 * 2 + 0xF0) / g_SnoboViewportScaleY) + g_SnoboClipTop;
+    pLeftTop->y = (float)((band->y0 * 2 + 240) / g_SnoboViewportScaleY) + g_SnoboClipTop;
     pLeftTop->z = 0.99999f;
     pLeftTop->rhw = 1.0f;
     pLeftTop->color = (band->r0 << 16 | 0xFF000000) | band->g0 << 8 | band->b0;
@@ -999,7 +999,7 @@ void SnowboardRenderer::strip(SnowboardStripVertexSrc *band)
     pLeftTop->v = 0;
     leftBottom = (GfxTlVertex *)this->stripModel->vertexCursor + 1;
     leftBottom->x = (float)g_SnoboClipLeft + 0.0f;
-    leftBottom->y = (float)((band->y2 * 2 + 0xF0) / g_SnoboViewportScaleY) + g_SnoboClipTop;
+    leftBottom->y = (float)((band->y2 * 2 + 240) / g_SnoboViewportScaleY) + g_SnoboClipTop;
     leftBottom->z = 0.99999f;
     leftBottom->rhw = 1.0f;
     leftBottom->color = (band->r2 << 16 | 0xFF000000) | band->g2 << 8 | band->b2;
@@ -1007,8 +1007,8 @@ void SnowboardRenderer::strip(SnowboardStripVertexSrc *band)
     leftBottom->u = 0;
     leftBottom->v = 0;
     rightTop = (GfxTlVertex *)this->stripModel->vertexCursor + 2;
-    rightTop->x = (float)(0x280 / g_SnoboViewportScaleX) + g_SnoboClipLeft;
-    rightTop->y = (float)((band->y1 * 2 + 0xF0) / g_SnoboViewportScaleY) + g_SnoboClipTop;
+    rightTop->x = (float)(640 / g_SnoboViewportScaleX) + g_SnoboClipLeft;
+    rightTop->y = (float)((band->y1 * 2 + 240) / g_SnoboViewportScaleY) + g_SnoboClipTop;
     rightTop->z = 0.99999f;
     rightTop->rhw = 1.0f;
     rightTop->color = (band->r1 << 16 | 0xFF000000) | band->g1 << 8 | band->b1;
@@ -1016,8 +1016,8 @@ void SnowboardRenderer::strip(SnowboardStripVertexSrc *band)
     rightTop->u = 0;
     rightTop->v = 0;
     rightBottomPtr = (GfxTlVertex *)this->stripModel->vertexCursor + 3;
-    rightBottomPtr->x = (float)(0x280 / g_SnoboViewportScaleX) + g_SnoboClipLeft;
-    rightBottomPtr->y = (float)((band->y3 * 2 + 0xF0) / g_SnoboViewportScaleY) + g_SnoboClipTop;
+    rightBottomPtr->x = (float)(640 / g_SnoboViewportScaleX) + g_SnoboClipLeft;
+    rightBottomPtr->y = (float)((band->y3 * 2 + 240) / g_SnoboViewportScaleY) + g_SnoboClipTop;
     rightBottomPtr->z = 0.99999f;
     rightBottomPtr->rhw = 1.0f;
     rightBottomPtr->color = (band->r3 << 16 | 0xFF000000) | band->g3 << 8 | band->b3;
@@ -1363,13 +1363,13 @@ void SnowboardRenderer::showMenu(int data, int frame)
 
     if (g_SnoboStatePtr->renderFrame == 1) {
         rectGrowth = frame << 4;
-        if (rectGrowth > 0x100)
+        if (rectGrowth > 256)
             rectGrowth = 0x100;
         if (rectGrowth != 0) {
             drawRect(0x140 - (rectGrowth >> 4) * 11, 0xC8 - (rectGrowth >> 4) * 6,
                      (rectGrowth >> 4) * 22, (rectGrowth >> 4) * 12);
         }
-        if (frame >= 0x10) {
+        if (frame >= 16) {
             ((int *)data)[0] = ((frame - 0x10) >> 4) + 1;
             if (((int *)data)[0] > 5)
                 ((int *)data)[0] = 5;
@@ -1378,30 +1378,30 @@ void SnowboardRenderer::showMenu(int data, int frame)
                  ((int *)data)[1]++) {
                 switch (((int *)data)[1]) {
                 case SNOWBOARD_RESULT_ROW_TECHNIQUE:
-                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 0xAA, 0x7C, -1, menuFontModel);
-                    drawNumber((unsigned short)g_SnoboStatePtr->resultPartA, 0x158, 0x7C, -1);
-                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 0x168, 0x7C, -1, menuFontModel);
+                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 170, 124, -1, menuFontModel);
+                    drawNumber((unsigned short)g_SnoboStatePtr->resultPartA, 344, 124, -1);
+                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 360, 124, -1, menuFontModel);
                     break;
                 case SNOWBOARD_RESULT_ROW_TIME:
-                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 0xAA, 0x9A, -1, menuFontModel);
-                    drawNumber((unsigned short)g_SnoboStatePtr->resultPartB, 0x158, 0x9A, -1);
-                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 0x168, 0x9A, -1, menuFontModel);
+                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 170, 154, -1, menuFontModel);
+                    drawNumber((unsigned short)g_SnoboStatePtr->resultPartB, 344, 154, -1);
+                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 360, 154, -1, menuFontModel);
                     break;
                 case SNOWBOARD_RESULT_ROW_BALLOON:
-                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 0xAA, 0xB8, -1, menuFontModel);
-                    drawNumber((unsigned short)g_SnoboStatePtr->resultPartC, 0x158, 0xB8, -1);
-                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 0x168, 0xB8, -1, menuFontModel);
+                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 170, 184, -1, menuFontModel);
+                    drawNumber((unsigned short)g_SnoboStatePtr->resultPartC, 344, 184, -1);
+                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 360, 184, -1, menuFontModel);
                     break;
                 case SNOWBOARD_RESULT_ROW_TOTAL:
                     pulseColor = Mini_SnowboardGetPulseGrayColor(this);
-                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 0xAA, 0xE0, pulseColor, menuFontModel);
-                    drawNumber((unsigned short)g_SnoboStatePtr->resultTotal, 0x158, 0xE0, pulseColor);
-                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 0x168, 0xE0, pulseColor, menuFontModel);
+                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 170, 224, pulseColor, menuFontModel);
+                    drawNumber((unsigned short)g_SnoboStatePtr->resultTotal, 344, 224, pulseColor);
+                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 360, 224, pulseColor, menuFontModel);
                     break;
                 case SNOWBOARD_RESULT_ROW_BEST:
-                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 0xAA, 0xFE, -1, menuFontModel);
-                    drawNumber((unsigned short)g_SnoboStatePtr->bestScores[g_SnoboStatePtr->triggerStage - 1], 0x158, 0xFE, -1);
-                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 0x168, 0xFE, -1, menuFontModel);
+                    drawText(g_SnoboMenuTexts1[((int *)data)[1]], 170, 254, -1, menuFontModel);
+                    drawNumber((unsigned short)g_SnoboStatePtr->bestScores[g_SnoboStatePtr->triggerStage - 1], 344, 254, -1);
+                    drawText(g_SnoboMenuTexts2[((int *)data)[1]], 360, 254, -1, menuFontModel);
                     break;
                 }
             }
@@ -1460,7 +1460,7 @@ void SnowboardRenderer::renderRaceState(int state, int phase, int frame)
     local.colors[4] = -1;
     if (g_SnoboStatePtr->renderFrame == 1) {
         local.box = frame << 4;
-        if (local.box > 0x100)
+        if (local.box > 256)
             local.box = 0x100;
         if (local.box != 0)
             drawRect(0x140 - (local.box >> 4) * 8, 0xC8 - (local.box >> 4) * 6, (local.box >> 4) * 16, (local.box >> 4) * 12);
@@ -1469,31 +1469,31 @@ void SnowboardRenderer::renderRaceState(int state, int phase, int frame)
             local.count = 5;
         if (local.count > 0) {
             g_SnoboCourseARecordStr[7] = (char)(state + 0x41);
-            drawText(g_SnoboCourseARecordStr, 0xD8, 0x78, -1, menuFontModel);
+            drawText(g_SnoboCourseARecordStr, 216, 120, -1, menuFontModel);
             if (phase <= 4)
                 local.colors[phase] = Mini_SnowboardGetPulseGrayColor(this);
             for (local.index = 0; local.index < local.count; local.index++) {
                 /* Numeric leaderboard row index (0..4). */
                 switch (local.index) {
                 case 0:
-                    drawText(g_SnoboTextPointers[local.index], 0xDC, 150, local.colors[0], menuFontModel);
-                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 0), 0x11C, 150, local.colors[0]);
+                    drawText(g_SnoboTextPointers[local.index], 220, 150, local.colors[0], menuFontModel);
+                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 0), 284, 150, local.colors[0]);
                     break;
                 case 1:
-                    drawText(g_SnoboTextPointers[local.index], 0xDC, 178, local.colors[1], menuFontModel);
-                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 1), 0x11C, 178, local.colors[1]);
+                    drawText(g_SnoboTextPointers[local.index], 220, 178, local.colors[1], menuFontModel);
+                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 1), 284, 178, local.colors[1]);
                     break;
                 case 2:
-                    drawText(g_SnoboTextPointers[local.index], 0xDC, 206, local.colors[2], menuFontModel);
-                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 2), 0x11C, 206, local.colors[2]);
+                    drawText(g_SnoboTextPointers[local.index], 220, 206, local.colors[2], menuFontModel);
+                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 2), 284, 206, local.colors[2]);
                     break;
                 case 3:
-                    drawText(g_SnoboTextPointers[local.index], 0xDC, 234, local.colors[3], menuFontModel);
-                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 3), 0x11C, 234, local.colors[3]);
+                    drawText(g_SnoboTextPointers[local.index], 220, 234, local.colors[3], menuFontModel);
+                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 3), 284, 234, local.colors[3]);
                     break;
                 case 4:
-                    drawText(g_SnoboTextPointers[local.index], 0xDC, 262, local.colors[4], menuFontModel);
-                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 4), 0x11C, 262, local.colors[4]);
+                    drawText(g_SnoboTextPointers[local.index], 220, 262, local.colors[4], menuFontModel);
+                    drawTime((int)(g_SnoboStatePtr->rankings[state] + 4), 284, 262, local.colors[4]);
                     break;
                 }
             }

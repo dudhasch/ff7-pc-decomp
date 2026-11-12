@@ -40,7 +40,7 @@ int __cdecl Menu_LoadScreenFadeStep(int step)
     if (g_LoadMenuFadeLevel < 0) {
         g_LoadMenuFadeLevel = 0;
     }
-    if (g_LoadMenuFadeLevel > 0xFF) {
+    if (g_LoadMenuFadeLevel > 255) {
         g_LoadMenuFadeLevel = 0xFF;
     }
     return prevLevel;

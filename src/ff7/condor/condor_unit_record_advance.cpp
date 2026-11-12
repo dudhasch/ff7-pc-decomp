@@ -103,8 +103,8 @@ void __cdecl Mini_CondorAdvanceRecordPathSegment(CondorRecord *record)
     record->velX = 0;
     record->velY = 0;
     record->moveStep = 0;
-    if (record->unitIndex <= 0xF) {
-        record->velY = 0x100;
+    if (record->unitIndex <= 15) {
+        record->velY = 256;
         record->targetX = 0;
         record->targetY = 0;
         record->candidate = 0;
@@ -128,7 +128,7 @@ void __cdecl Mini_CondorAdvanceRecordPathSegment(CondorRecord *record)
             record->angle = Mini_CondorVectorToAngle((CondorCursor *)&record->velX);
         } else {
             record->flags = record->flags & 0xFE;
-            record->angle = 0x800;
+            record->angle = 0x800 /* 180 deg */;
         }
     }
     record->turnRate = 0;
@@ -218,10 +218,10 @@ short __cdecl Mini_CondorTestRecordPlacementWithPeers(short typeIndex, CondorCur
     typeRecord = (CondorTypeRecord *)((int)typeRecord + (typeIndex << 5));
     pProbe = (CondorRecord *)recordBuf;
     pProbe->posX = position->x;
-    pProbe->posY = 0x400 - position->y;
+    pProbe->posY = 1024 - position->y;
     pProbe->posZ = (*(short *)&g_CondorScreenDistanceBuf);
-    pProbe->worldX = position->x - 0x100;
-    pProbe->worldY = 0x400 - position->y - 0x200;
+    pProbe->worldX = position->x - 256;
+    pProbe->worldY = 1024 - position->y - 512;
     pProbe->worldZ = (*(short *)&g_CondorScreenDistanceBuf);
     pProbe->extentX = typeRecord->extentX;
     pProbe->extentY = typeRecord->extentY;
@@ -255,10 +255,10 @@ short __cdecl Mini_CondorTestRecordPlacement(short typeIndex, CondorCursor *posi
     typeRecord = (CondorTypeRecord *)((int)typeRecord + (typeIndex << 5));
     pProbe = (CondorRecord *)recordBuf;
     pProbe->posX = position->x;
-    pProbe->posY = 0x400 - position->y;
+    pProbe->posY = 1024 - position->y;
     pProbe->posZ = (*(short *)&g_CondorScreenDistanceBuf);
-    pProbe->worldX = position->x - 0x100;
-    pProbe->worldY = 0x400 - position->y - 0x200;
+    pProbe->worldX = position->x - 256;
+    pProbe->worldY = 1024 - position->y - 512;
     pProbe->worldZ = (*(short *)&g_CondorScreenDistanceBuf);
     pProbe->extentX = typeRecord->extentX;
     pProbe->extentY = typeRecord->extentY;
@@ -286,17 +286,17 @@ short __cdecl Mini_CondorInitRecordFromConfig(CondorRecord *record, CondorConfig
     curSubEntry = (CondorUnitTypeEntry *)((int)curSubEntry + (*(unsigned char *)&configEntry->unitIndex << 5));
     level = flags & 0x7F;
     record->posX = ((CondorCursor *)pos)->x;
-    record->posY = 0x400 - ((CondorCursor *)pos)->y;
+    record->posY = 1024 - ((CondorCursor *)pos)->y;
     record->posZ = (*(short *)&g_CondorScreenDistanceBuf);
     record->worldX = ((CondorCursor *)pos)->x - 0x100;
-    record->worldY = 0x400 - ((CondorCursor *)pos)->y - 0x200;
+    record->worldY = 1024 - ((CondorCursor *)pos)->y - 0x200;
     record->worldZ = (*(short *)&g_CondorScreenDistanceBuf);
     record->extentX = curSubEntry->extentX;
     record->extentY = curSubEntry->extentY;
     record->rotX = 0;
     record->rotY = 0;
     record->rotZ = 0;
-    if (level < 0x28 || (flags & 0x80) != 0) {
+    if (level < 40 || (flags & 0x80) != 0) {
         Mini_CondorCountNearbyRecordsInRange(record, 0, 0x27);
         if (g_CondorMatchCount != 0) {
             return 1;
@@ -346,7 +346,7 @@ short __cdecl Mini_CondorInitRecordFromConfig(CondorRecord *record, CondorConfig
     if (record->targetX == record->posX && record->targetY == record->posY) {
         Mini_CondorAdvanceRecordPathSegment(record);
     }
-    if (((int)record - (int)&g_CondorRecordTable) / 0x78 >= 0x14) {
+    if (((int)record - (int)&g_CondorRecordTable) / 120 >= 20) {
         record->costOrArcVelY = 0;
     }
     return 0;
@@ -484,16 +484,16 @@ void __cdecl Mini_CondorSpawnScheduledRecord(void)
         offsetAddr = g_pCondorDataBin + g_CondorOutcomeIndex * 2 + 0xA;
         schedule = (CondorScheduledRecord *)(g_pCondorDataBin + (*(unsigned short *)offsetAddr & 0xFFFF));
         schedule = (CondorScheduledRecord *)((int)schedule + (*(int *)&g_CondorScheduledCount) * 8);
-        if (schedule->unitType != 0xFF && g_CondorSpawnCount < 0x14) {
+        if (schedule->unitType != 0xFF && g_CondorSpawnCount < 20) {
             g_CondorScheduleClock += g_CondorTickStep;
             seconds = g_CondorScheduleClock;
             if (seconds != 0) {
-                seconds = seconds / 0x3C;
+                seconds = seconds / 60;
             }
             g_CondorScheduleSeconds = seconds;
             g_CondorNextSpawnTime = schedule->dueTime;
             if (*(unsigned short *)&schedule->dueTime <= seconds) {
-                slot = Mini_CondorFindInactiveRecordInRange(0x14, 0x28);
+                slot = Mini_CondorFindInactiveRecordInRange(20, 40);
                 if (slot != 0xFFFF) {
                     recordPtr = &g_CondorRecordTable.records[slot];
                     if ((short)Mini_CondorInitRecordFromByteEntry(recordPtr, (CondorConfigSourceEntry *)schedule, slot) == 0) {

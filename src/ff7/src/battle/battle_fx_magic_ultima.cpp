@@ -170,35 +170,35 @@ void __cdecl BattleFx_MagicUltimaSpawnDriftingQuadSpritesTask(void)
     driftTaskPtr = (BattleFxUltimaDriftState *)BATTLE_CURRENT_TASK_SLOT;
     if (driftTaskPtr->phase < 1) {
         tableIdx = driftTaskPtr->velocityTableIndex;
-        for (i = 0; i < 0x18; i++, tableIdx++) {
+        for (i = 0; i < 24; i++, tableIdx++) {
             drift = (BattleMagicUltimaDriftSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicUltimaDriftingQuadSpriteTask);
             drift->posX = 0;
             drift->posY = 0xFFE2;
-            drift->scale = 0x1000;
+            drift->scale = 0x1000 /* 1.0 */;
             drift->velocityX = g_BattleMagicUltimaVelocityTableX[tableIdx] << 1;
             drift->velocityY = g_BattleMagicUltimaVelocityTableY[tableIdx] << 1;
             drift->velocityZ = g_BattleMagicUltimaVelocityTableZ[tableIdx] << 2;
-            drift->randomBits = rand() % 0x1000 + 0x800;
+            drift->randomBits = rand() % 4096 + 2048;
             drift->flag = drift->randomBits >> 3 & 1;
         }
         driftTaskPtr->velocityTableIndex = tableIdx;
     } else if (driftTaskPtr->phase < 3) {
-        for (i = 0; i < 0x18; i++, tableIdx++) {
+        for (i = 0; i < 24; i++, tableIdx++) {
             drift = (BattleMagicUltimaDriftSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicUltimaDriftingQuadSpriteTask);
             drift->posX = 0;
             drift->posY = 0xFFE2;
-            drift->scale = 0x1000;
-            drift->velocityX = (rand() % 0x80) * 2 - 0x80;
-            drift->velocityY = (rand() % 0x80) * 2 - 0x80;
-            drift->velocityZ = (drift->velocityX & 0xF) * 4 + 0x28;
-            drift->randomBits = rand() % 0x1000 + 0x800;
+            drift->scale = 0x1000 /* 1.0 */;
+            drift->velocityX = (rand() % 128) * 2 - 128;
+            drift->velocityY = (rand() % 128) * 2 - 128;
+            drift->velocityZ = (drift->velocityX & 0xF) * 4 + 40;
+            drift->randomBits = rand() % 4096 + 2048;
             drift->flag = drift->randomBits >> 3 & 1;
         }
     }
     if (driftTaskPtr->phase >= 2) {
         drift = (BattleMagicUltimaDriftSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicUltimaGrowingModelTask);
         drift->velocityX = 0;
-        drift->velocityY = 0x12;
+        drift->velocityY = 18;
         drift->flag = 0;
         timeline = (BattleFxUltimaDriftingQuad *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicUltimaTimelineTask);
         timeline->colorRampUp = 0;
@@ -218,7 +218,7 @@ void __cdecl BattleFx_MagicUltimaDriftingQuadSpriteTask(void)
     q = (BattleFxDriftingQuadSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicUltimaQuadReq.sceneObject = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
     if (q->isFadingOut != 0) {
-        g_BattleMagicUltimaQuadReq.fadeLevel = 0xF - q->frameCount >> 2 << 5;
+        g_BattleMagicUltimaQuadReq.fadeLevel = 15 - q->frameCount >> 2 << 5;
     } else {
         g_BattleMagicUltimaQuadReq.fadeLevel = q->frameCount >> 2 << 5;
     }
@@ -232,7 +232,7 @@ void __cdecl BattleFx_MagicUltimaDriftingQuadSpriteTask(void)
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleMagicUltimaQuadReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     if (g_BattleIsPaused == 0) {
         (q->frameCount)++;
-        if (q->frameCount >= 0xF) {
+        if (q->frameCount >= 15) {
             q->ownerSlot = BATTLE_TASK_FREE;
         }
         q->posX += q->velocityX;
@@ -265,7 +265,7 @@ void __cdecl BattleFx_MagicUltimaGrowingModelTask(void)
     RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
     frame.rotMatrix.t[0] = 0;
     frame.rotMatrix.t[1] = 0xFFFFFFE2;
-    frame.rotMatrix.t[2] = 0x200;
+    frame.rotMatrix.t[2] = 0x200 /* 45 deg */;
     frame.scaleArg.vz = frame.slot->value;
     frame.scaleArg.vy = frame.scaleArg.vz;
     frame.scaleArg.vx = frame.scaleArg.vy;
@@ -281,13 +281,13 @@ void __cdecl BattleFx_MagicUltimaGrowingModelTask(void)
     frame.drawModel->stateFlags = 0;
     frame.drawModel->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0x20) {
+    if (frame.slot->frameCounter >= 32) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter < 0x14) {
+    if (frame.slot->frameCounter < 20) {
         frame.slot->value += frame.slot->velocity;
     }
     (frame.slot->frameCounter)++;
@@ -303,12 +303,12 @@ void __cdecl BattleFx_MagicUltimaTimelineTask(void)
     BattleFxUltimaSpinState *spin;
 
     taskPtr = (BattleFxUltimaTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (taskPtr->timer < 0x20) {
+    if (taskPtr->timer < 32) {
         pRecord = (BattleFxUltimaDrawRecord *)Gfx_GetPsxScratchpadPtr(0);
         pRecord->drawList = g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED;
         pRecord->renderState = Gfx_GetPsxPacketScratchPtr();
         pRecord->stepCount = 6;
-        pRecord->duration = 0x1E;
+        pRecord->duration = 30;
         pRecord->colorRamp = taskPtr->colorRampUp;
         /* Retail caller passes 2 arg(s) to 1-parameter `BattleFx_MagicUltimaDrawPsxGouraudQuadRows` (__cdecl stack cleanup matches retail). */
         g_BattleFxActiveDrawListPtr = ((int(__cdecl *)(int, short))BattleFx_MagicUltimaDrawPsxGouraudQuadRows)((int)pRecord, (short)taskPtr->timer);
@@ -317,14 +317,14 @@ void __cdecl BattleFx_MagicUltimaTimelineTask(void)
         pRecord->drawList = g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED;
         pRecord->renderState = Gfx_GetPsxPacketScratchPtr();
         pRecord->stepCount = 3;
-        pRecord->duration = 0x1E;
+        pRecord->duration = 30;
         pRecord->colorRamp = taskPtr->colorRampDown;
         g_BattleFxActiveDrawListPtr = BattleFx_MagicUltimaDrawPsxGouraudQuadGradientRows((BattleFxUltimaGradientDesc *)pRecord, taskPtr->timer - 0x20);
     }
-    if (taskPtr->timer == 0x20) {
+    if (taskPtr->timer == 32) {
         spin = (BattleFxUltimaSpinState *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicUltimaSpinFadeModelTask);
-        spin->scale = 0x1000;
-        spin->spinSpeed = 0x200;
+        spin->scale = 0x1000 /* 1.0 */;
+        spin->spinSpeed = 0x200 /* 45 deg */;
         spin->value = 0;
         spin->velocity = 0xA;
         spin->spinRate = 0xA;
@@ -340,18 +340,18 @@ void __cdecl BattleFx_MagicUltimaTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        g_BattleMagicUltimaScreenFade = 0x1000;
+        g_BattleMagicUltimaScreenFade = 4096;
     }
-    if (taskPtr->timer >= 0x4A) {
-        if (taskPtr->timer == 0x4B) {
+    if (taskPtr->timer >= 74) {
+        if (taskPtr->timer == 75) {
             g_BattleStageHideFlags &= 0xF8;
         }
-        g_BattleMagicUltimaScreenFade = 0x1000 - (taskPtr->timer - 0x4A) * 0x199;
+        g_BattleMagicUltimaScreenFade = 4096 - (taskPtr->timer - 74) * 409;
         if (g_BattleMagicUltimaScreenFade < 0) {
             g_BattleMagicUltimaScreenFade = 0;
         }
     }
-    if (taskPtr->timer >= 0x54) {
+    if (taskPtr->timer >= 84) {
         g_BattleMagicUltimaScreenFade = 0;
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x136, 0xF);
@@ -361,21 +361,21 @@ void __cdecl BattleFx_MagicUltimaTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->timer == 0x4E) {
-        for (i = 0; i < 0xA; i++) {
+    if (taskPtr->timer == 78) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicUltimaTargetMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (taskPtr->timer < 0x20) {
+    if (taskPtr->timer < 32) {
         taskPtr->colorRampUp += 0x80808;
-        if (taskPtr->colorRampUp > 0xFFFFFF) {
+        if (taskPtr->colorRampUp > 16777215) {
             taskPtr->colorRampUp = 0xFFFFFF;
         }
     } else {
         taskPtr->colorRampDown -= 0x20202;
-        if (taskPtr->colorRampDown < 0x10101) {
+        if (taskPtr->colorRampDown < 65793) {
             taskPtr->colorRampDown = 0x10101;
         }
     }
@@ -414,14 +414,14 @@ void __cdecl BattleFx_MagicUltimaSpinFadeModelTask(void)
     fxModelPtr->modelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleMagicUltimaLoadedResTable);
     fxModelPtr->flags = 8;
     fxModelPtr->uvScroll = 0;
-    fxModelPtr->fadeLevel = 0x80;
+    fxModelPtr->fadeLevel = 128;
     fxModelPtr->stateFlags = 0x20;
     fxModelPtr->texturePageBits = 0;
-    if (slotPtr->step == 0x28) {
+    if (slotPtr->step == 40) {
         slotPtr->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (slotPtr->step >= 0x1C) {
-        fxModelPtr->fadeLevel -= (short)((slotPtr->step - 0x1C) * 0xA);
+    if (slotPtr->step >= 28) {
+        fxModelPtr->fadeLevel -= (short)((slotPtr->step - 28) * 10);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(fxModelPtr, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     if (g_BattleIsPaused != 0) {
@@ -452,8 +452,8 @@ int __cdecl BattleFx_MagicUltimaDrawPsxGouraudQuadRows(BattleFxPsxGouraudRowBloc
     prim = (BattleFxPsxGouraudQuad *)(rowBlock->primPtr);
     nRows = rowBlock->rowCount;
     workLeftX = 0;
-    rightX = 0x13F;
-    rowStep = rowBlock->rowStep << 0x10;
+    rightX = 319;
+    rowStep = rowBlock->rowStep << 16;
     packedRgb = rowBlock->packedRgb;
     for (yIndex = 0; yIndex < nRows; yIndex++) {
         prim->leftX1 = workLeftX;
@@ -504,7 +504,7 @@ int __cdecl BattleFx_MagicUltimaDrawPsxGouraudQuadGradientRows(BattleFxUltimaGra
     rowCnt = effectDesc->rowCount;
     vertexLeft = 0x5A0000;
     posRight = 0x5A013F;
-    rowStep = effectDesc->rowStep << 0x10;
+    rowStep = effectDesc->rowStep << 16;
     colAccum = 0;
     colorDelta = effectDesc->colorDelta;
     for (rowIdx = 0; rowIdx < rowCnt; rowIdx++) {
@@ -522,7 +522,7 @@ int __cdecl BattleFx_MagicUltimaDrawPsxGouraudQuadGradientRows(BattleFxUltimaGra
         prim->color3 = colAccum;
         prim->color2 = colAccum;
         colAccum += colorDelta;
-        if (colAccum > 0xFFFFFF) {
+        if (colAccum > 16777215) {
             colAccum = 0xFFFFFF;
         }
         prim->color1 = colAccum;
@@ -559,7 +559,7 @@ int __cdecl BattleFx_MagicUltimaDrawPsxGouraudQuadGradientRows(BattleFxUltimaGra
         prim->color1 = colAccum;
         prim->color0 = colAccum;
         colAccum += colorDelta;
-        if (colAccum > 0xFFFFFF) {
+        if (colAccum > 16777215) {
             colAccum = 0xFFFFFF;
         }
         prim->color3 = colAccum;

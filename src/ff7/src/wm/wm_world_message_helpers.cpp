@@ -27,7 +27,7 @@ extern "C" {
 #pragma intrinsic(strcpy, memcpy)
 // clang-format off
 // GLOBAL: FF7 0x0096e0b0
-unsigned char g_WorldMsgDigitGlyphs[0x10] = {0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9};
+unsigned char g_WorldMsgDigitGlyphs[16] = {0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9};
 // The index of each window's next operand slot in the two operand tables below.
 // GLOBAL: FF7 0x00e3b130
 short g_WorldMsgWindowOperandIndex[4] = {0};
@@ -128,7 +128,7 @@ void __cdecl WorldMsg_ResetWindow(short windowIndex)
         g_FieldWindows[windowIndex].y = 8;
         break;
     default:
-        g_FieldWindows[windowIndex].y = 0x95;
+        g_FieldWindows[windowIndex].y = 149;
     }
     g_FieldWindows[windowIndex].state = MSG_WINDOW_CLOSED;
     g_FieldWindows[windowIndex].style = 0;
@@ -215,14 +215,14 @@ void __cdecl WorldMsg_SetWindowRectClamped(short windowIndex, short x, short y, 
     if (x < 8) {
         x = 8;
     }
-    if (x + width > 0x138) {
-        x = 0x138 - width;
+    if (x + width > 312) {
+        x = 312 - width;
     }
     if (y < 8) {
         y = 8;
     }
-    if (y + height > 0xE0) {
-        y = 0xE0 - height;
+    if (y + height > 224) {
+        y = 224 - height;
     }
     g_FieldWindows[windowIndex].x = x;
     g_FieldWindows[windowIndex].y = y;
@@ -310,7 +310,7 @@ int __cdecl WorldMsg_DispatchWindowState(unsigned char index, unsigned char mode
     case MSG_WINDOW_WAIT_INPUT_SCROLL_PAGE:
         if ((*(int *)&g_pFieldState->newActiveKeys2) & INPUT_CIRCLE) {
             g_FieldWindows[index].state = MSG_WINDOW_PAGE_SCROLL_OUT;
-            g_WorldMsgWindowCursorPos[index] = g_FieldWindows[index].currentRow * 16 + 0x11;
+            g_WorldMsgWindowCursorPos[index] = g_FieldWindows[index].currentRow * 16 + 17;
             g_FieldWindows[index].textScrolling -= 2;
         }
         break;
@@ -411,7 +411,7 @@ int __cdecl WorldMsg_UpdateChoiceWindow(unsigned char index, unsigned char mode,
     case MSG_WINDOW_WAIT_INPUT_SCROLL_PAGE:
         if ((*(int *)&g_pFieldState->newActiveKeys2) & INPUT_CIRCLE) {
             g_FieldWindows[index].state = MSG_WINDOW_PAGE_SCROLL_OUT;
-            g_WorldMsgWindowCursorPos[index] = g_FieldWindows[index].currentRow * 16 + 0x11;
+            g_WorldMsgWindowCursorPos[index] = g_FieldWindows[index].currentRow * 16 + 17;
             g_FieldWindows[index].textScrolling -= 2;
         }
         break;
@@ -808,8 +808,8 @@ void __cdecl WorldMsg_StepWindowPageScroll(short windowIndex)
         g_FieldWindows[windowIndex].textScrolling -= g_WorldMsgWindowScrollX[windowIndex] >> 2;
         if ((*(int *)&g_pFieldState->activeKeys2) & INPUT_CIRCLE) {
             g_WorldMsgWindowScrollX[windowIndex]++;
-            if (g_WorldMsgWindowScrollX[windowIndex] > 0x80) {
-                g_WorldMsgWindowScrollX[windowIndex] = 0x80;
+            if (g_WorldMsgWindowScrollX[windowIndex] > 128) {
+                g_WorldMsgWindowScrollX[windowIndex] = 128;
             }
         } else {
             g_WorldMsgWindowScrollX[windowIndex]--;
@@ -1068,7 +1068,7 @@ int __cdecl WorldMsg_DecodeMessageToTextBuffer(short idx)
     pSrc += g_WorldMsgDialogTable[idx * 2 + 3] << 8;
     pos = 0;
     auxOutIdx = 0;
-    while (auxOutIdx < 0x17) {
+    while (auxOutIdx < 23) {
         switch (*pSrc) {
         case TEXT_END:
             goto done;

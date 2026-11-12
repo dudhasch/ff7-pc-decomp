@@ -850,18 +850,18 @@ void __cdecl CdCheck_ModuleEnter(void)
     if (mode == 0) {
         g_CdCheckViewportX = 0;
         g_CdCheckViewportY = 0;
-        g_CdCheckViewportWidth = 0x140;
-        g_CdCheckViewportHeight = 0xF0;
+        g_CdCheckViewportWidth = 320;
+        g_CdCheckViewportHeight = 240;
     } else if (mode == 1) {
-        g_CdCheckViewportX = 0xA0;
-        g_CdCheckViewportY = 0x78;
-        g_CdCheckViewportWidth = 0x140;
-        g_CdCheckViewportHeight = 0xF0;
+        g_CdCheckViewportX = 160;
+        g_CdCheckViewportY = 120;
+        g_CdCheckViewportWidth = 320;
+        g_CdCheckViewportHeight = 240;
     } else {
         g_CdCheckViewportX = 0;
         g_CdCheckViewportY = 0;
-        g_CdCheckViewportWidth = 0x280;
-        g_CdCheckViewportHeight = 0x1E0;
+        g_CdCheckViewportWidth = 640;
+        g_CdCheckViewportHeight = 480;
     }
     CdCheck_LoadDiscCharXTims();
 }

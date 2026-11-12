@@ -160,7 +160,7 @@ void __cdecl Mini_ChocoboApplyUiScalingModeConfig(int context, int mode)
     g_ChocoboUiContext = context;
     g_ChocoboUiScalingMode = mode;
     if (mode == 2) {
-        Mini_ChocoboSetViewportRect(0, 8, 0x280, 0x1D0);
+        Mini_ChocoboSetViewportRect(0, 8, 640, 464);
         g_ChocoboUiScaleFactor = 2;
         g_ChocoboScreenReference = FLOAT_232_BITS;
         g_ChocoboViewportOffsetX = 0;
@@ -173,10 +173,10 @@ void __cdecl Mini_ChocoboApplyUiScalingModeConfig(int context, int mode)
         g_ChocoboBetRacerSprites = (ChocoboSpriteRecord *)&g_ChocoboBetRacerSprites2x;
         g_ChocoboHudSpriteA = (ChocoboSpriteRecord *)&g_ChocoboHudSpriteRecord0;
         g_ChocoboHudSpriteB = (ChocoboSpriteRecord *)&g_ChocoboHudSpriteRecord1;
-        g_ChocoboBetScreenLabelCount = 0xB;
+        g_ChocoboBetScreenLabelCount = 11;
         g_ChocoboDrawNumberFn = Mini_ChocoboDrawNumber2x;
         g_ChocoboResultLayout = (struct ChocoboResultUiEntry *)&g_ChocoboResultRacerSprites2x;
-        g_ChocoboCourseSpriteSize = 0x20;
+        g_ChocoboCourseSpriteSize = 32;
     } else {
         g_ChocoboBetScreenLabels = (ChocoboSpriteRecord *)&g_ChocoboBetScreenLabels1x;
         g_ChocoboResultScreenLabels = (ChocoboSpriteRecord *)&g_ChocoboResultScreenLabels1x;
@@ -185,19 +185,19 @@ void __cdecl Mini_ChocoboApplyUiScalingModeConfig(int context, int mode)
         g_ChocoboBetRacerSprites = (ChocoboSpriteRecord *)&g_ChocoboBetRacerSprites1x;
         g_ChocoboHudSpriteA = (ChocoboSpriteRecord *)&g_ChocoboHudSpriteRecord2;
         g_ChocoboHudSpriteB = (ChocoboSpriteRecord *)&g_ChocoboHudSpriteRecord3;
-        g_ChocoboBetScreenLabelCount = 0xA;
+        g_ChocoboBetScreenLabelCount = 10;
         g_ChocoboDrawNumberFn = Mini_ChocoboDrawNumber1x;
         g_ChocoboResultLayout = (struct ChocoboResultUiEntry *)&g_ChocoboResultRacerSprites1x;
-        g_ChocoboCourseSpriteSize = 0x10;
+        g_ChocoboCourseSpriteSize = 16;
         g_ChocoboUiScaleFactor = 1;
         g_ChocoboScreenReference = FLOAT_232_BITS;
         g_ChocoboViewportOffsetBase = 4;
         if (mode == 0) {
-            Mini_ChocoboSetViewportRect(0, 4, 0x140, 0xE8);
+            Mini_ChocoboSetViewportRect(0, 4, 320, 232);
             g_ChocoboViewportOffsetX = 0;
             g_ChocoboViewportOffsetY = 0;
         } else {
-            Mini_ChocoboSetViewportRect(0xA0, 0x7C, 0x140, 0xE8);
+            Mini_ChocoboSetViewportRect(160, 124, 320, 232);
             g_ChocoboViewportOffsetX = 0xA0;
             g_ChocoboViewportOffsetY = 0x78;
         }
@@ -225,7 +225,7 @@ void __cdecl Mini_ChocoboFreeModelRecord(ChocoboModelRecord *record, void *conte
     if (record != 0) {
         Pfile_FreeRsdModel(record->rsdModel, context);
         // STRING: FF7 0x0096e34c
-        GameHeapFree(record, "C:\\FF7\\chocobo\\ch_app.cpp", 0xAB);
+        GameHeapFree(record, "C:\\FF7\\chocobo\\ch_app.cpp", 171);
     }
 }
 // Allocates the chocobo model record (0x10 bytes) from the game heap and sets the three fields
@@ -237,7 +237,7 @@ int __cdecl Mini_ChocoboAllocModelRecord(void)
     ChocoboModelRecord *rec;
 
     // STRING: FF7 0x0096e368
-    rec = (ChocoboModelRecord *)GameHeapAlloc(1, 0x10, "C:\\FF7\\chocobo\\ch_app.cpp", 0xB3);
+    rec = (ChocoboModelRecord *)GameHeapAlloc(1, 16, "C:\\FF7\\chocobo\\ch_app.cpp", 179);
     if (rec != 0) {
         rec->count = 1;
         rec->count2 = 1;
@@ -330,11 +330,11 @@ void __cdecl Mini_ChocoboSetupCamera(void)
     SetProjectionOffsetAndRebuild(0, 0);
     rotation[0] = 0;
     rotation[1] = 0;
-    rotation[2] = 0x800;
+    rotation[2] = 0x800 /* 180 deg */;
     RotMatrixXYZ(rotation, &g_ChocoboGteMatrix);
-    translation.vx = 0x140;
-    translation.vy = 0xf0;
-    translation.vz = 0x384;
+    translation.vx = 320;
+    translation.vy = 240;
+    translation.vz = 900;
     SetMatrixTranslation(&g_ChocoboGteMatrix, &translation);
     SetRotMatrix(&g_ChocoboGteMatrix);
     SetTransMatrix(&g_ChocoboGteMatrix);
@@ -354,66 +354,66 @@ void __cdecl Mini_ChocoboFreeTrackData(void)
         if (g_ChocoboRetailFlag == 0) {
             if (g_ChocoboTrackData->routeEventTable != 0) {
                 // STRING: FF7 0x0096e384
-                GameHeapFree((void *)g_ChocoboTrackData->routeEventTable, "C:\\FF7\\chocobo\\ch_app.cpp", 0x179);
+                GameHeapFree((void *)g_ChocoboTrackData->routeEventTable, "C:\\FF7\\chocobo\\ch_app.cpp", 377);
                 g_ChocoboTrackData->routeEventTable = 0;
             }
             if (g_ChocoboTrackData->block != 0) {
                 // STRING: FF7 0x0096e3a0
-                GameHeapFree((void *)g_ChocoboTrackData->block, "C:\\FF7\\chocobo\\ch_app.cpp", 0x17E);
+                GameHeapFree((void *)g_ChocoboTrackData->block, "C:\\FF7\\chocobo\\ch_app.cpp", 382);
                 g_ChocoboTrackData->block = 0;
             }
             if (g_ChocoboTrackData->floatVertexTable != 0) {
                 // STRING: FF7 0x0096e3bc
-                GameHeapFree((void *)g_ChocoboTrackData->floatVertexTable, "C:\\FF7\\chocobo\\ch_app.cpp", 0x183);
+                GameHeapFree((void *)g_ChocoboTrackData->floatVertexTable, "C:\\FF7\\chocobo\\ch_app.cpp", 387);
                 g_ChocoboTrackData->floatVertexTable = 0;
             }
             if (g_ChocoboTrackData->triangleTable != 0) {
                 // STRING: FF7 0x0096e3d8
-                GameHeapFree((void *)g_ChocoboTrackData->triangleTable, "C:\\FF7\\chocobo\\ch_app.cpp", 0x188);
+                GameHeapFree((void *)g_ChocoboTrackData->triangleTable, "C:\\FF7\\chocobo\\ch_app.cpp", 392);
                 g_ChocoboTrackData->triangleTable = 0;
             }
             if (g_ChocoboTrackData->quadTable != 0) {
                 // STRING: FF7 0x0096e3f4
-                GameHeapFree((void *)g_ChocoboTrackData->quadTable, "C:\\FF7\\chocobo\\ch_app.cpp", 0x18D);
+                GameHeapFree((void *)g_ChocoboTrackData->quadTable, "C:\\FF7\\chocobo\\ch_app.cpp", 397);
                 g_ChocoboTrackData->quadTable = 0;
             }
             if (g_ChocoboTrackData->trackVertexTable != 0) {
                 // STRING: FF7 0x0096e410
-                GameHeapFree((void *)g_ChocoboTrackData->trackVertexTable, "C:\\FF7\\chocobo\\ch_app.cpp", 0x192);
+                GameHeapFree((void *)g_ChocoboTrackData->trackVertexTable, "C:\\FF7\\chocobo\\ch_app.cpp", 402);
                 g_ChocoboTrackData->trackVertexTable = 0;
             }
             if (g_ChocoboTrackData->courseSpriteTable != 0) {
                 // STRING: FF7 0x0096e42c
-                GameHeapFree((void *)g_ChocoboTrackData->courseSpriteTable, "C:\\FF7\\chocobo\\ch_app.cpp", 0x197);
+                GameHeapFree((void *)g_ChocoboTrackData->courseSpriteTable, "C:\\FF7\\chocobo\\ch_app.cpp", 407);
                 g_ChocoboTrackData->courseSpriteTable = 0;
             }
             if (g_ChocoboTrackData->racingLineTable != 0) {
                 // STRING: FF7 0x0096e448
-                GameHeapFree((void *)g_ChocoboTrackData->racingLineTable, "C:\\FF7\\chocobo\\ch_app.cpp", 0x19C);
+                GameHeapFree((void *)g_ChocoboTrackData->racingLineTable, "C:\\FF7\\chocobo\\ch_app.cpp", 412);
                 g_ChocoboTrackData->racingLineTable = 0;
             }
         } else if (g_pChocoboWatBuffer != 0) {
             // STRING: FF7 0x0096e464
-            GameHeapFree(g_pChocoboWatBuffer, "C:\\FF7\\chocobo\\ch_app.cpp", 0x1A3);
+            GameHeapFree(g_pChocoboWatBuffer, "C:\\FF7\\chocobo\\ch_app.cpp", 419);
             g_pChocoboWatBuffer = 0;
         }
         if (g_ChocoboTrackData->builtQuads != 0) {
             // STRING: FF7 0x0096e480
-            GameHeapFree((void *)g_ChocoboTrackData->builtQuads, "C:\\FF7\\chocobo\\ch_app.cpp", 0x1A9);
+            GameHeapFree((void *)g_ChocoboTrackData->builtQuads, "C:\\FF7\\chocobo\\ch_app.cpp", 425);
             g_ChocoboTrackData->builtQuads = 0;
         }
         if (g_ChocoboTrackData->builtTriangles != 0) {
             // STRING: FF7 0x0096e49c
-            GameHeapFree((void *)g_ChocoboTrackData->builtTriangles, "C:\\FF7\\chocobo\\ch_app.cpp", 0x1AE);
+            GameHeapFree((void *)g_ChocoboTrackData->builtTriangles, "C:\\FF7\\chocobo\\ch_app.cpp", 430);
             g_ChocoboTrackData->builtTriangles = 0;
         }
         if (g_ChocoboTrackData->builtFloatVertices != 0) {
             // STRING: FF7 0x0096e4b8
-            GameHeapFree((void *)g_ChocoboTrackData->builtFloatVertices, "C:\\FF7\\chocobo\\ch_app.cpp", 0x1B3);
+            GameHeapFree((void *)g_ChocoboTrackData->builtFloatVertices, "C:\\FF7\\chocobo\\ch_app.cpp", 435);
             g_ChocoboTrackData->builtFloatVertices = 0;
         }
         // STRING: FF7 0x0096e4d4
-        GameHeapFree(g_ChocoboTrackData, "C:\\FF7\\chocobo\\ch_app.cpp", 0x1B7);
+        GameHeapFree(g_ChocoboTrackData, "C:\\FF7\\chocobo\\ch_app.cpp", 439);
         g_ChocoboTrackData = 0;
     }
     Mini_ChocoboReleaseCourseSounds();
@@ -431,7 +431,7 @@ void __cdecl Mini_ChocoboExit(void)
     Mini_ChocoboFreeTrackData();
     if (g_ChocoboRaceHeapBlock != 0) {
         // STRING: FF7 0x0096e4f0
-        GameHeapFree((void *)g_ChocoboRaceHeapBlock, "C:\\FF7\\chocobo\\ch_app.cpp", 0x1CA);
+        GameHeapFree((void *)g_ChocoboRaceHeapBlock, "C:\\FF7\\chocobo\\ch_app.cpp", 458);
         g_ChocoboRaceHeapBlock = 0;
     }
     Mini_ChocoboRaceDestroyCourseSpriteObjects();

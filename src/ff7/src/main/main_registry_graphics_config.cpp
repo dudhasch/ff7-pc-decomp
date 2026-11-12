@@ -79,7 +79,7 @@ int __cdecl ReadGraphicsRegistryConfig(MainGraphicsConfig *config)
     HKEY a;
     DWORD r;
     int c;
-    char t[0x104];
+    char t[260];
 #define cbData     p
 #define hKey       a
 #define valType    r
@@ -150,7 +150,7 @@ int __cdecl ApplyConfigToContext(GfxEngineContext *ctx)
     MainGraphicsConfig p;
     int a;
     int r;
-    unsigned char c[0x24];
+    unsigned char c[36];
 #define regConfig      p
 #define configSuccess  a
 #define logFlag        r
@@ -160,18 +160,18 @@ int __cdecl ApplyConfigToContext(GfxEngineContext *ctx)
     if (configSuccess != 0) {
         switch (regConfig.mode) {
         case MAIN_GRAPHICS_MODE_320X240:
-            ctx->displayWidth = 0x140;
-            ctx->displayHeight = 0xF0;
+            ctx->displayWidth = 320;
+            ctx->displayHeight = 240;
             g_CdCheckDisplayMode = MAIN_GRAPHICS_MODE_320X240;
             break;
         case MAIN_GRAPHICS_MODE_320X240_CENTERED:
-            ctx->displayWidth = 0x280;
-            ctx->displayHeight = 0x1E0;
+            ctx->displayWidth = 640;
+            ctx->displayHeight = 480;
             g_CdCheckDisplayMode = MAIN_GRAPHICS_MODE_320X240_CENTERED;
             break;
         case MAIN_GRAPHICS_MODE_640X480:
-            ctx->displayWidth = 0x280;
-            ctx->displayHeight = 0x1E0;
+            ctx->displayWidth = 640;
+            ctx->displayHeight = 480;
             g_CdCheckDisplayMode = MAIN_GRAPHICS_MODE_640X480;
             break;
         }

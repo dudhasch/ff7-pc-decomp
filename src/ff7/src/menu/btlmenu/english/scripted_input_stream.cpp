@@ -65,7 +65,7 @@ void __cdecl Input_ClearScriptedInputActive(void)
 void __cdecl Input_SetScriptedInputStream(int value)
 {
     g_pInputScriptStream = (unsigned char *)value;
-    g_InputScriptWaitFrames = 0x14;
+    g_InputScriptWaitFrames = 20;
 }
 
 /*
@@ -115,7 +115,7 @@ unsigned int __cdecl Input_ReadWithScriptOverride(void)
     } else {
         hi = 0;
     }
-    return ((unsigned int)raw) | (hi << 0x10);
+    return ((unsigned int)raw) | (hi << 16);
 }
 
 /*
@@ -159,55 +159,55 @@ int __cdecl Input_ReadScriptedInputCommand(void)
             break;
         case MENU_INPUT_SCRIPT_PRESS_UP:
             buttonMask = INPUT_UP;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_DOWN:
             buttonMask = INPUT_DOWN;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_LEFT:
             buttonMask = INPUT_LEFT;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_RIGHT:
             buttonMask = INPUT_RIGHT;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_SQUARE:
             buttonMask = INPUT_SQUARE;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_CIRCLE:
             buttonMask = INPUT_CIRCLE;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_TRIANGLE:
             buttonMask = INPUT_TRIANGLE;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_CROSS:
             buttonMask = INPUT_CROSS;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_R1:
             buttonMask = INPUT_R1;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_R2:
             buttonMask = INPUT_R2;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_L1:
             buttonMask = INPUT_L1;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_PRESS_L2:
             buttonMask = INPUT_L2;
-            g_InputScriptWaitFrames = 0x14;
+            g_InputScriptWaitFrames = 20;
             break;
         case MENU_INPUT_SCRIPT_SHOW_TEXT:
             g_pInputScriptStream = Menu_ShowPopupTextAndAdvance(g_pInputScriptStream);
-            g_InputScriptWaitFrames = 0x50;
+            g_InputScriptWaitFrames = 80;
             break;
         case MENU_INPUT_SCRIPT_SET_POPUP_POS:
             g_InputScriptCommand = *g_pInputScriptStream;
@@ -218,7 +218,7 @@ int __cdecl Input_ReadScriptedInputCommand(void)
             g_pInputScriptStream++;
             g_InputScriptDelay += (short)(*g_pInputScriptStream << 8);
             g_pInputScriptStream++;
-            g_InputScriptWaitFrames = 0x3C;
+            g_InputScriptWaitFrames = 60;
             break;
         case MENU_INPUT_SCRIPT_END:
             Menu_SetPopupPlacement(0, 0, 0);
@@ -240,7 +240,7 @@ unsigned char *__cdecl Menu_ShowPopupTextAndAdvance(unsigned char *text)
     g_InputPopupGate = 1;
     Menu_SetPopupPlacement(1, g_InputScriptCommand, g_InputScriptDelay);
     Menu_OpenPopupMessage(text, 7);
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 256; i++) {
         switch (*text) {
         case TEXT_FONT_PAGE_1:
         case TEXT_FONT_PAGE_2:

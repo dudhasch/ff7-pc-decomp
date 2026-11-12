@@ -145,9 +145,9 @@ void __cdecl BattleFx_SpecialShamSealTimelineTask(void)
     if (frame.timelineSlot->frameCounter == 0) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 6; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFlyingSickleTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialShamSealAnimatedSpriteTask);
-            frame.spawnSlot->posX = frame.timelineSlot->fromX + rand() % 0x320 + -0x190;
-            frame.spawnSlot->posY = frame.timelineSlot->fromY + rand() % 0x320 + -0x190;
-            frame.spawnSlot->posZ = frame.timelineSlot->fromZ + rand() % 0x320 + -0x190;
+            frame.spawnSlot->posX = frame.timelineSlot->fromX + rand() % 800 + -400;
+            frame.spawnSlot->posY = frame.timelineSlot->fromY + rand() % 800 + -400;
+            frame.spawnSlot->posZ = frame.timelineSlot->fromZ + rand() % 800 + -400;
             frame.spawnSlot = (BattleFxFlyingSickleTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialShamSealOrbitModelTask);
             frame.spawnSlot->posX = (frame.timelineSlot->fromX + frame.timelineSlot->toX) / 2;
             frame.spawnSlot->posY = (frame.timelineSlot->fromY + frame.timelineSlot->toY) / 2;
@@ -163,22 +163,22 @@ void __cdecl BattleFx_SpecialShamSealTimelineTask(void)
             frame.spawnSlot->spinRate = ((frame.spawnIndex % 2) != 0 ? -2 : 0) + 1;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x11) {
-        BattleFx_HitMarkSpawnScriptAtActorBone(g_BattleSpecialActorId, 9, 0x1800);
+    if (frame.timelineSlot->frameCounter == 17) {
+        BattleFx_HitMarkSpawnScriptAtActorBone(g_BattleSpecialActorId, 9, 0x1800 /* 1.5 */);
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
-    if (frame.timelineSlot->frameCounter > 0xD && frame.timelineSlot->frameCounter < 0x11) {
+    if (frame.timelineSlot->frameCounter > 13 && frame.timelineSlot->frameCounter < 17) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFlyingSickleTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialShamSealVariantSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, (short *)((char *)frame.spawnSlot + 4));
-            frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
             frame.spawnSlot->spinRate = rand() % 5;
         }
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -206,7 +206,7 @@ void __cdecl BattleFx_SpecialShamSealVariantSpriteTask(void)
     tableIds[2] = 4;
     tableIds[3] = 5;
     tableIds[4] = 6;
-    BattleFx_InstallBillboardMatrix((void *)((char *)variant + 4), 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((char *)variant + 4), 0x3000 /* 3.0 */, 0);
     *(short *)((char *)&g_BattleSpecialShamSealColor1 + 0x4) = variant->frame;
     ((BattleSpecShamSealDataBlob *)&g_BattleSpecialShamSealDataBlob)->frameTable = Gfx_ModelTableGetLoadedRecord(tableIds[variant->tableIndex], g_BattleSpecialShamSealLoadedRes);
     ((BattleSpecShamSealDataBlob *)&g_BattleSpecialShamSealDataBlob)->tableField = Gfx_ModelTableGetSpriteObject(tableIds[variant->tableIndex], g_BattleSpecialShamSealLoadedRes);
@@ -232,11 +232,11 @@ void __cdecl BattleFx_SpecialShamSealAnimatedSpriteTask(void)
     task = (BattleFxSatelliteBeamBlackPuff *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecialShamSealSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialShamSealLoadedRes);
     g_BattleSpecialShamSealSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialShamSealLoadedRes);
-    BattleFx_InstallBillboardMatrix((void *)((char *)task + 4), 0x1600, 0);
+    BattleFx_InstallBillboardMatrix((void *)((char *)task + 4), 0x1600 /* 1.375 */, 0);
     g_BattleSpecialShamSealSpriteReq1.frame = task->frame;
     g_BattleSpecialShamSealDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialShamSealSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialShamSealDrawListHandle);
     if (g_BattleIsPaused == 0) {
-        task->posY -= 0x32;
+        task->posY -= 50;
         (task->frame)++;
         if (task->frame >= g_BattleSpecialShamSealSpriteReq1.spriteGroup->header->frameCount) {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -277,8 +277,8 @@ void __cdecl BattleFx_SpecialShamSealOrbitModelTask(void)
     frame.drawParamB = 0x20;
     frame.drawParamC = 0;
     frame.modelRecord = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialShamSealLoadedRes);
-    frame.orbitX.vx = SinFixed((frame.orbitSlot->orbitAngle << 0xC) / 0x23 + 0x800) * frame.orbitSlot->radius >> 0xC;
-    frame.orbitX.vz = CosFixed((frame.orbitSlot->orbitAngle << 0xC) / 0x23 + 0x800) * frame.orbitSlot->radius >> 0xC;
+    frame.orbitX.vx = SinFixed((frame.orbitSlot->orbitAngle << 12) / 35 + 2048) * frame.orbitSlot->radius >> 12;
+    frame.orbitX.vz = CosFixed((frame.orbitSlot->orbitAngle << 12) / 35 + 2048) * frame.orbitSlot->radius >> 12;
     frame.orbitX.vy = 0;
     RotMatrix((SVECTOR *)((int)frame.orbitSlot + 0xC), &frame.matrix);
     frame.matrix.t[0] = frame.orbitSlot->posX;
@@ -288,7 +288,7 @@ void __cdecl BattleFx_SpecialShamSealOrbitModelTask(void)
     SetTransMatrix(&frame.matrix);
     RotTransPointToInt16(&frame.orbitX, (short *)&frame.orbitX, &frame.projDepth);
     frame.rotX.vx = 0;
-    frame.rotX.vy = frame.orbitSlot->frameCounter << 0xA;
+    frame.rotX.vy = frame.orbitSlot->frameCounter << 10;
     frame.rotX.vz = frame.orbitSlot->angleZ;
     RotMatrixZYX(&frame.rotX, &frame.matrix);
     RotateMatrixY(frame.orbitSlot->angleY, &frame.matrix);
@@ -305,7 +305,7 @@ void __cdecl BattleFx_SpecialShamSealOrbitModelTask(void)
     }
     frame.orbitSlot->orbitAngle += frame.orbitSlot->angleStep;
     (frame.orbitSlot->frameCounter)++;
-    if (frame.orbitSlot->frameCounter == 0x23) {
+    if (frame.orbitSlot->frameCounter == 35) {
         frame.orbitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

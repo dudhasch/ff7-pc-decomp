@@ -267,18 +267,18 @@ void __cdecl BattleFx_SpecialMultiJammerTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter < 0x14) {
+    if (frame.slot->frameCounter < 20) {
         for (frame.targetSlot = 0; frame.targetSlot < 2; frame.targetSlot++) {
             frame.spawnSlot = (BattleFxMultiJammerTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMultiJammerSpinFadeSpriteTask);
             frame.spawnSlot->posA = frame.slot->posA;
             frame.spawnSlot->posB = frame.slot->posB;
             frame.spawnSlot->posC = frame.slot->posC;
-            frame.spawnSlot->velA = (frame.slot->velA - frame.slot->posA) / 0xF;
-            frame.spawnSlot->velB = (frame.slot->velB - frame.slot->posB) / 0xF;
-            frame.spawnSlot->velC = (frame.slot->velC - frame.slot->posC) / 0xF;
+            frame.spawnSlot->velA = (frame.slot->velA - frame.slot->posA) / 15;
+            frame.spawnSlot->velB = (frame.slot->velB - frame.slot->posB) / 15;
+            frame.spawnSlot->velC = (frame.slot->velC - frame.slot->posC) / 15;
             frame.randAngle = (rand() % 4096);
-            frame.offsetX.vx = CosFixed(frame.randAngle) * 0x64 >> 0xC;
-            frame.offsetX.vy = SinFixed(frame.randAngle) * 0x64 >> 0xC;
+            frame.offsetX.vx = CosFixed(frame.randAngle) * 0x64 >> 12;
+            frame.offsetX.vy = SinFixed(frame.randAngle) * 0x64 >> 12;
             frame.offsetX.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -294,14 +294,14 @@ void __cdecl BattleFx_SpecialMultiJammerTimelineTask(void)
             frame.spawnSlot->variant = rand() % 7;
         }
     }
-    if (frame.slot->frameCounter == 0x1E) {
+    if (frame.slot->frameCounter == 30) {
         frame.spawnSlot = (BattleFxMultiJammerTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMultiJammerSpinGrowingModelTask);
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
         g_BattleFxTimelineState.red = 0;
         g_BattleFxTimelineState.channel1 = 0x20;
         g_BattleFxTimelineState.channel2 = 0;
     }
-    if (frame.slot->frameCounter == 0x36) {
+    if (frame.slot->frameCounter == 54) {
         for (frame.targetSlot = 0; frame.targetSlot < 0xA; frame.targetSlot++) {
             if ((g_BattleSpecMultiJammerTargetMask & 1 << frame.targetSlot) != 0) {
                 frame.spawnSlot = (BattleFxMultiJammerTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMultiJammerGrowingModelTask);
@@ -310,20 +310,20 @@ void __cdecl BattleFx_SpecialMultiJammerTimelineTask(void)
         }
         Battle_PlaySfxPannedToActor(0x189, -1, 0x40);
     }
-    if (frame.slot->frameCounter > 0x38 && frame.slot->frameCounter < 0x40) {
+    if (frame.slot->frameCounter > 56 && frame.slot->frameCounter < 64) {
         for (frame.targetSlot = 0; frame.targetSlot < 0xA; frame.targetSlot++) {
             if ((g_BattleSpecMultiJammerTargetMask & 1 << frame.targetSlot) != 0) {
                 for (frame.repeatIndex = 0; frame.repeatIndex < 2; frame.repeatIndex++) {
                     frame.spawnSlot = (BattleFxMultiJammerTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMultiJammerVariantSpriteTask);
                     Battle_GetBoneWorldPos(frame.targetSlot, g_BattleActorRecords[frame.targetSlot].targetBone, &frame.spawnSlot->posA);
-                    frame.spawnSlot->posA += (short)(rand() % 0x4B0 - 0x258);
-                    frame.spawnSlot->posB += (short)(rand() % 0x4B0 - 0x258);
-                    frame.spawnSlot->posC += (short)(rand() % 0x4B0 - 0x258);
-                    frame.spawnSlot->variant = rand() % 0xA;
-                    frame.spawnSlot->unusedScale = (rand() % 3 << 0xB) + 0x1000;
+                    frame.spawnSlot->posA += (short)(rand() % 1200 - 600);
+                    frame.spawnSlot->posB += (short)(rand() % 1200 - 600);
+                    frame.spawnSlot->posC += (short)(rand() % 1200 - 600);
+                    frame.spawnSlot->variant = rand() % 10;
+                    frame.spawnSlot->unusedScale = (rand() % 3 << 11) + 0x1000;
                     frame.randAngleB = (rand() % 4096);
-                    frame.offsetX.vx = CosFixed(frame.randAngleB) * 0x3C >> 0xC;
-                    frame.offsetX.vy = SinFixed(frame.randAngleB) * 0x3C >> 0xC;
+                    frame.offsetX.vx = CosFixed(frame.randAngleB) * 0x3C >> 12;
+                    frame.offsetX.vy = SinFixed(frame.randAngleB) * 0x3C >> 12;
                     frame.offsetX.vz = 0;
                     frame.rotX.vz = 0;
                     frame.rotX.vx = frame.rotX.vz;
@@ -339,7 +339,7 @@ void __cdecl BattleFx_SpecialMultiJammerTimelineTask(void)
             }
         }
     }
-    if (frame.slot->frameCounter == 0x3C) {
+    if (frame.slot->frameCounter == 60) {
         for (frame.targetSlot = 0; frame.targetSlot < 0xA; frame.targetSlot++) {
             if ((g_BattleSpecMultiJammerTargetMask & 1 << frame.targetSlot) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.targetSlot);
@@ -347,8 +347,8 @@ void __cdecl BattleFx_SpecialMultiJammerTimelineTask(void)
         }
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x46) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (frame.slot->frameCounter == 70) {
+        Battle_StartFixedPointRamp(0, 10);
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -379,7 +379,7 @@ void __cdecl BattleFx_SpecialMultiJammerVariantSpriteTask(void)
     frame.table[7] = 0x10;
     frame.table[8] = 0x11;
     frame.table[9] = 0x12;
-    BattleFx_InstallBillboardMatrix(&frame.slot->posA, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix(&frame.slot->posA, 0x1800 /* 1.5 */, 0);
     g_BattleSpecMultiJammerSpriteReq1.frameIndex = frame.slot->frameIndex;
     (g_BattleSpecMultiJammerSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(frame.table[frame.slot->variant], g_BattleSpecMultiJammerLoadedResTable);
     g_BattleSpecMultiJammerSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(frame.table[frame.slot->variant], g_BattleSpecMultiJammerLoadedResTable);
@@ -439,7 +439,7 @@ void __cdecl BattleFx_SpecialMultiJammerGrowingModelTask(void)
         return;
     }
     (frame.growingModel->frameCounter)++;
-    if (frame.growingModel->frameCounter == 0xF) {
+    if (frame.growingModel->frameCounter == 15) {
         frame.growingModel->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -482,11 +482,11 @@ void __cdecl BattleFx_SpecialMultiJammerSpinGrowingModelTask(void)
     if (frame.modelSlot->frameCounter < 8) {
         g_BattleSpecMultiJammerSpinStep++;
     }
-    if (frame.modelSlot->frameCounter > 0x16) {
+    if (frame.modelSlot->frameCounter > 22) {
         g_BattleSpecMultiJammerSpinStep--;
     }
     (frame.modelSlot->frameCounter)++;
-    if (frame.modelSlot->frameCounter == 0x1E) {
+    if (frame.modelSlot->frameCounter == 30) {
         frame.modelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -532,17 +532,17 @@ void __cdecl BattleFx_SpecialMultiJammerSpinFadeSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.slot->posA, frame.scaleMatrix.t, &frame.pointDepth);
-    frame.scaleMatrix.m[2][2] = 0x1400;
+    frame.scaleMatrix.m[2][2] = 0x1400 /* 1.25 */;
     frame.scaleMatrix.m[1][1] = frame.scaleMatrix.m[2][2];
     frame.scaleMatrix.m[0][0] = frame.scaleMatrix.m[1][1];
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ConcatMatrixIntoFirst(&frame.scaleMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.scaleMatrix);
     SetTransMatrix(&frame.scaleMatrix);
-    if (frame.slot->frameCounter < 0xC) {
+    if (frame.slot->frameCounter < 12) {
         frame.fadeAmount = 8;
     } else {
-        frame.fadeAmount = 0x14 - frame.slot->frameCounter;
+        frame.fadeAmount = 20 - frame.slot->frameCounter;
     }
     frame.fadeLevel = *(short *)&frame.fadeAmount;
     (g_BattleSpecMultiJammerSpriteReq4.spriteResource) = Gfx_ModelTableGetLoadedRecord(frame.tableFields[frame.slot->tableIndex], g_BattleSpecMultiJammerLoadedResTable);
@@ -556,7 +556,7 @@ void __cdecl BattleFx_SpecialMultiJammerSpinFadeSpriteTask(void)
         frame.slot->posB += frame.slot->velB;
         frame.slot->posC += frame.slot->velC;
         (frame.slot->frameCounter)++;
-        if (frame.slot->frameCounter == 0x14) {
+        if (frame.slot->frameCounter == 20) {
             frame.slot->ownerSlot = BATTLE_TASK_FREE;
         }
     }

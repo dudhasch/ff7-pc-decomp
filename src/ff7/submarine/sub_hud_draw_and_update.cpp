@@ -327,7 +327,7 @@ void __cdecl Submarine_FillFullScreenTint(void)
 {
     int val;
 
-    val = Gfx_EmitFlatRect(0, 0, 0x280, 0x1E0, 0x7F7F0000, 0, 0, g_SubmarineHudScreenTint);
+    val = Gfx_EmitFlatRect(0, 0, 640, 480, 0x7F7F0000, 0, 0, g_SubmarineHudScreenTint);
 }
 /* Draws swap-frame animated quad records from the HUD texture atlas. */
 // FUNCTION: FF7 0x00791727
@@ -362,7 +362,7 @@ void __cdecl Submarine_DrawFifteenAtlasQuadRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0xF; i++) {
+    for (i = 0; i < 15; i++) {
         Submarine_DrawAtlasQuad(g_SubmarineHudFifteenElements.quads[i].x + g_SubmarineViewportCenterX, g_SubmarineHudFifteenElements.quads[i].y + g_SubmarineViewportCenterY, g_SubmarineHudFifteenElements.quads[i].srcX, g_SubmarineHudFifteenElements.quads[i].srcY, g_SubmarineHudFifteenElements.quads[i].width, g_SubmarineHudFifteenElements.quads[i].height, g_SubmarineHudFifteenElements.quads[i].alpha, g_SubmarineHudFifteenElements.quads[i].depth, g_SubmarineHudFifteenElements.quads[i].batches[0], g_SubmarineHudFifteenElements.quads[i].batches[1], g_SubmarineHudFifteenElements.quads[i].batches[2], g_SubmarineHudFifteenElements.quads[i].batches[3], 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF);
     }
 }
@@ -372,7 +372,7 @@ void __cdecl Submarine_DrawSeventeenAtlasQuadRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0x11; i++) {
+    for (i = 0; i < 17; i++) {
         Submarine_DrawAtlasQuad(g_SubmarineHudSeventeenElements[i].x + g_SubmarineViewportCenterX, g_SubmarineHudSeventeenElements[i].y + g_SubmarineViewportCenterY, g_SubmarineHudSeventeenElements[i].srcX, g_SubmarineHudSeventeenElements[i].srcY, g_SubmarineHudSeventeenElements[i].width, g_SubmarineHudSeventeenElements[i].height, g_SubmarineHudSeventeenElements[i].alpha, g_SubmarineHudSeventeenElements[i].depth, g_SubmarineHudSeventeenElements[i].batches[0], g_SubmarineHudSeventeenElements[i].batches[1], g_SubmarineHudSeventeenElements[i].batches[2], g_SubmarineHudSeventeenElements[i].batches[3], 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF);
     }
 }
@@ -392,7 +392,7 @@ void __cdecl Submarine_DrawTargetTallyPanel(void)
 {
     int i;
 
-    for (i = 0; i < 0xB; i++) {
+    for (i = 0; i < 11; i++) {
         Submarine_DrawAtlasQuad(g_SubmarineHudTallyElements.quads[i].x + g_SubmarineViewportCenterX, g_SubmarineHudTallyElements.quads[i].y + g_SubmarineViewportCenterY, g_SubmarineHudTallyElements.quads[i].srcX, g_SubmarineHudTallyElements.quads[i].srcY, g_SubmarineHudTallyElements.quads[i].width, g_SubmarineHudTallyElements.quads[i].height, g_SubmarineHudTallyElements.quads[i].alpha, g_SubmarineHudTallyElements.quads[i].depth, g_SubmarineHudTallyElements.quads[i].batches[0], g_SubmarineHudTallyElements.quads[i].batches[1], g_SubmarineHudTallyElements.quads[i].batches[2], g_SubmarineHudTallyElements.quads[i].batches[3], 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF);
     }
 }
@@ -402,7 +402,7 @@ void __cdecl Submarine_DrawScorePanel(void)
 {
     int i;
 
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         Submarine_DrawAtlasQuad(g_SubmarineHudScoreCounters[i].x + g_SubmarineViewportCenterX, g_SubmarineHudScoreCounters[i].y + g_SubmarineViewportCenterY, g_SubmarineHudScoreCounters[i].srcX, g_SubmarineHudScoreCounters[i].srcY, g_SubmarineHudScoreCounters[i].width, g_SubmarineHudScoreCounters[i].height, g_SubmarineHudScoreCounters[i].alpha, g_SubmarineHudScoreCounters[i].depth, g_SubmarineHudScoreCounters[i].batches[0], g_SubmarineHudScoreCounters[i].batches[1], g_SubmarineHudScoreCounters[i].batches[2], g_SubmarineHudScoreCounters[i].batches[3], 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF, 0x80FFFFFF);
     }
 }
@@ -488,28 +488,28 @@ void __cdecl Submarine_UpdateHudGauges(void)
     } frame;
 #pragma pack(pop)
 
-    frame.depth = g_SubmarineState.player.posY >> 0xC;
-    frame.tmpValue = (frame.depth * 0xB / 0x64) * 2 + -0xD6;
+    frame.depth = g_SubmarineState.player.posY >> 12;
+    frame.tmpValue = (frame.depth * 11 / 100) * 2 + -0xD6;
     (g_SubmarineHudElements.quads2[1].y) = *(short *)&frame.tmpValue;
     frame.tmpValue += 6;
     (g_SubmarineHudElements.quads2[2].y) = *(short *)&frame.tmpValue;
     (g_SubmarineHudElements.quads2[3].y) = *(short *)&frame.tmpValue;
     (g_SubmarineHudElements.quads2[4].y) = *(short *)&frame.tmpValue;
     (g_SubmarineHudElements.quads2[5].y) = *(short *)&frame.tmpValue;
-    frame.tmpValue = frame.depth % 0xA;
-    frame.depth = frame.depth / 0xA;
+    frame.tmpValue = frame.depth % 10;
+    frame.depth = frame.depth / 10;
     frame.tmpValue = frame.tmpValue * 4 + 0xC8;
     (g_SubmarineHudElements.quads2[5].srcX) = *(unsigned char *)&frame.tmpValue;
-    frame.tmpValue = frame.depth % 0xA;
-    frame.depth = frame.depth / 0xA;
+    frame.tmpValue = frame.depth % 10;
+    frame.depth = frame.depth / 10;
     frame.tmpValue = frame.tmpValue * 4 + 0xC8;
     (g_SubmarineHudElements.quads2[4].srcX) = *(unsigned char *)&frame.tmpValue;
-    frame.tmpValue = frame.depth % 0xA;
-    frame.depth = frame.depth / 0xA;
+    frame.tmpValue = frame.depth % 10;
+    frame.depth = frame.depth / 10;
     frame.tmpValue = frame.tmpValue * 4 + 0xC8;
     (g_SubmarineHudElements.quads2[3].srcX) = *(unsigned char *)&frame.tmpValue;
-    frame.tmpValue = frame.depth % 0xA;
-    frame.depth = frame.depth / 0xA;
+    frame.tmpValue = frame.depth % 10;
+    frame.depth = frame.depth / 10;
     frame.tmpValue = frame.tmpValue * 4 + 0xC8;
     (g_SubmarineHudElements.quads2[2].srcX) = *(unsigned char *)&frame.tmpValue;
     frame.tmpValue = (g_SubmarineState.speedScale << 6) / (g_SubmarineWorkingLevelDepth << 1);
@@ -520,41 +520,41 @@ void __cdecl Submarine_UpdateHudGauges(void)
     (g_SubmarineHudGaugeQuads[2].y) = *(short *)&frame.tmpValue;
     (g_SubmarineHudGaugeQuads[3].y) = *(short *)&frame.tmpValue;
     (g_SubmarineHudGaugeQuads[4].y) = *(short *)&frame.tmpValue;
-    frame.speedReading = g_SubmarineState.speedScale * 0xC8 / (g_SubmarineWorkingLevelDepth << 1);
+    frame.speedReading = g_SubmarineState.speedScale * 200 / (g_SubmarineWorkingLevelDepth << 1);
     if (frame.speedReading > 0) {
-        (g_SubmarineHudGaugeQuads[1].srcX) = 0xF0;
+        (g_SubmarineHudGaugeQuads[1].srcX) = 240;
     } else if (frame.speedReading < 0) {
-        (g_SubmarineHudGaugeQuads[1].srcX) = 0xF4;
+        (g_SubmarineHudGaugeQuads[1].srcX) = 244;
         frame.speedReading = -frame.speedReading;
     } else {
-        (g_SubmarineHudGaugeQuads[1].srcX) = 0xF8;
+        (g_SubmarineHudGaugeQuads[1].srcX) = 248;
     }
-    frame.tmpValue = frame.speedReading % 0xA;
-    frame.speedReading = frame.speedReading / 0xA;
+    frame.tmpValue = frame.speedReading % 10;
+    frame.speedReading = frame.speedReading / 10;
     frame.tmpValue = frame.tmpValue * 4 + 0xC8;
     (g_SubmarineHudGaugeQuads[4].srcX) = *(unsigned char *)&frame.tmpValue;
-    frame.tmpValue = frame.speedReading % 0xA;
-    frame.speedReading = frame.speedReading / 0xA;
+    frame.tmpValue = frame.speedReading % 10;
+    frame.speedReading = frame.speedReading / 10;
     frame.tmpValue = frame.tmpValue * 4 + 0xC8;
     (g_SubmarineHudGaugeQuads[3].srcX) = *(unsigned char *)&frame.tmpValue;
-    frame.tmpValue = frame.speedReading % 0xA;
+    frame.tmpValue = frame.speedReading % 10;
     frame.tmpValue = frame.tmpValue * 4 + 0xC8;
     (g_SubmarineHudGaugeQuads[2].srcX) = *(unsigned char *)&frame.tmpValue;
-    frame.heightPos = g_SubmarineState.player.yaw - 0x400;
+    frame.heightPos = g_SubmarineState.player.yaw - 1024;
     frame.heightPos = frame.heightPos + 0x1000 & 0xFFF;
     frame.heightPos = ((frame.heightPos) / 16);
     frame.heightPos = frame.heightPos + 0xCB & 0xFF;
     frame.tmpValue = 0x100 - frame.heightPos;
-    if (frame.tmpValue >= 0x7D) {
+    if (frame.tmpValue >= 125) {
         (g_SubmarineHudYawStripQuads[0].srcX) = *(unsigned char *)&frame.heightPos;
-        (g_SubmarineHudYawStripQuads[0].width) = 0x7D;
+        (g_SubmarineHudYawStripQuads[0].width) = 125;
         (g_SubmarineHudYawStripQuads[1].width) = 0;
     } else {
         (g_SubmarineHudYawStripQuads[0].srcX) = *(unsigned char *)&frame.heightPos;
         (g_SubmarineHudYawStripQuads[0].width) = *(short *)&frame.tmpValue;
-        (g_SubmarineHudYawStripQuads[1].x) = frame.tmpValue * 2 + -0x7C;
+        (g_SubmarineHudYawStripQuads[1].x) = frame.tmpValue * 2 + -124;
         (g_SubmarineHudYawStripQuads[1].srcX) = 0;
-        (g_SubmarineHudYawStripQuads[1].width) = 0x7D - frame.tmpValue;
+        (g_SubmarineHudYawStripQuads[1].width) = 125 - frame.tmpValue;
     }
     frame.heading = g_SubmarineState.player.angle;
     g_SubmarineHudHeadingBits = frame.heading != 0 ? 7 : 0;
@@ -564,12 +564,12 @@ void __cdecl Submarine_UpdateHudGauges(void)
     if (frame.power < 0) {
         frame.power = 0;
     }
-    frame.tmpValue = ((frame.power * 0x7F) / 16384);
+    frame.tmpValue = ((frame.power * 127) / 16384);
     if (frame.tmpValue == 0 && frame.power > 0) {
         frame.tmpValue = 1;
     }
     (g_SubmarineHudGauge.width) = frame.tmpValue;
-    frame.tmpValue = ((frame.power * 0xFF) / 16384);
+    frame.tmpValue = ((frame.power * 255) / 16384);
     frame.gaugeCopy = (g_SubmarineHudGauge.gaugeValue);
     frame.blendAlpha = *(char *)&frame.tmpValue;
     frame.blendInverse = 0xFF - frame.tmpValue;
@@ -580,7 +580,7 @@ void __cdecl Submarine_UpdateHudGauges(void)
     (g_SubmarineHudGauge.frameValue) = frame.gaugeCopy;
     frame.animFrame = g_SubmarineHudBarAnimFrame + 1;
     *(short *)&frame.animIndex = *(short *)&g_SubmarineHudBarAnimIndex;
-    if (frame.animFrame > 0x27) {
+    if (frame.animFrame > 39) {
         frame.animFrame = 0;
         (*(short *)&frame.animIndex)++;
         if ((frame.animIndex & 0xFFFF) > 5) {
@@ -589,29 +589,29 @@ void __cdecl Submarine_UpdateHudGauges(void)
     }
     g_SubmarineHudBarAnimIndex = frame.animIndex & 0xFFFF;
     g_SubmarineHudBarAnimFrame = frame.animFrame;
-    (g_SubmarineHudLayout.bar.x) = frame.animFrame * 2 + 0xA4;
+    (g_SubmarineHudLayout.bar.x) = frame.animFrame * 2 + 164;
     *(short *)&frame.animIndex = ((short *)&g_SubmarineHudAnimTable)[frame.animIndex & 0xFFFF];
     (g_SubmarineHudLayout.bar.srcX) = (frame.animIndex & 0xFFFF & 0xFF) + frame.animFrame;
     (g_SubmarineHudLayout.bar.srcY) = (frame.animIndex & 0xFFFF) >> 8 & 0xFF;
     frame.scrollPos = g_SubmarineHudScrollPos + 1;
-    if (frame.scrollPos > 0x7B) {
-        frame.scrollPos = 0x56;
+    if (frame.scrollPos > 123) {
+        frame.scrollPos = 86;
     }
     g_SubmarineHudScrollPos = frame.scrollPos;
     frame.tmpValue = frame.scrollPos;
-    if (frame.tmpValue >= 0x29) {
+    if (frame.tmpValue >= 41) {
         frame.tmpValue -= 0x29;
     }
-    if (frame.tmpValue >= 0x29) {
+    if (frame.tmpValue >= 41) {
         frame.tmpValue -= 0x29;
     }
-    if (frame.tmpValue >= 0x29) {
+    if (frame.tmpValue >= 41) {
         frame.tmpValue -= 0x29;
     }
-    (g_SubmarineHudElements.bar.x) = frame.tmpValue * 2 + -0xFD;
-    (g_SubmarineHudElements.bar.srcX) = frame.scrollPos + 0x70;
+    (g_SubmarineHudElements.bar.x) = frame.tmpValue * 2 + -253;
+    (g_SubmarineHudElements.bar.srcX) = frame.scrollPos + 112;
     frame.tmpValue = g_SubmarineHudValueQuad5Timer + 1;
-    if (frame.tmpValue > 0x1F) {
+    if (frame.tmpValue > 31) {
         frame.tmpValue = 0;
     }
     g_SubmarineHudValueQuad5Timer = frame.tmpValue;
@@ -619,7 +619,7 @@ void __cdecl Submarine_UpdateHudGauges(void)
     frame.tmpValue = (frame.tmpValue << 4) + 0x50;
     (g_SubmarineHudValueQuads[5].srcX) = *(unsigned char *)&frame.tmpValue;
     frame.tmpValue = g_SubmarineHudValueQuad1Timer + 1;
-    if (frame.tmpValue > 0x1F) {
+    if (frame.tmpValue > 31) {
         frame.tmpValue = 0;
     }
     g_SubmarineHudValueQuad1Timer = frame.tmpValue;
@@ -627,12 +627,12 @@ void __cdecl Submarine_UpdateHudGauges(void)
     frame.tmpValue *= 0x18;
     (g_SubmarineHudValueQuads[1].srcY) = *(unsigned char *)&frame.tmpValue;
     frame.tmpValue = g_SubmarineHudValueQuad3Timer + 1;
-    if (frame.tmpValue > 0xF) {
+    if (frame.tmpValue > 15) {
         frame.tmpValue = 0;
     }
     g_SubmarineHudValueQuad3Timer = frame.tmpValue;
     frame.tmpValue = ((frame.tmpValue) / 4);
-    frame.tmpValue = frame.tmpValue * 0x18 + 0x81;
+    frame.tmpValue = frame.tmpValue * 24 + 0x81;
     (g_SubmarineHudValueQuads[3].srcY) = *(unsigned char *)&frame.tmpValue;
     frame.cooldownIndex = 0;
     do {
@@ -641,7 +641,7 @@ void __cdecl Submarine_UpdateHudGauges(void)
         frame.iconLevel = 0x20;
         frame.iconColor = 0x66000000;
         if ((frame.cooldownWord & 0x10000) != 0) {
-            frame.tmpValue = frame.tmpValue * 0xFF / g_SubmarineHudScale;
+            frame.tmpValue = frame.tmpValue * 255 / g_SubmarineHudScale;
             frame.tmpValue = 0xFF - frame.tmpValue & 0xFF;
             frame.iconColor = frame.tmpValue | frame.tmpValue << 8 | frame.tmpValue << 0x10 | 0x66000000;
             frame.iconLevel = 0x18;
@@ -656,20 +656,20 @@ void __cdecl Submarine_UpdateHudGauges(void)
     if (frame.remainingTime < 0) {
         frame.remainingTime = 0;
     }
-    frame.remainingTime = frame.remainingTime / 0x3C;
-    frame.tmpValue = frame.remainingTime / 0x258;
-    frame.digitPos = frame.tmpValue * 8 + 0x78;
+    frame.remainingTime = frame.remainingTime / 60;
+    frame.tmpValue = frame.remainingTime / 600;
+    frame.digitPos = frame.tmpValue * 8 + 120;
     (g_SubmarineHudDigitQuads[2].srcX) = *(unsigned char *)&frame.digitPos;
-    frame.remainingTime -= frame.tmpValue * 0x258;
-    frame.tmpValue = frame.remainingTime / 0x3C;
-    frame.digitPos = frame.tmpValue * 8 + 0x78;
+    frame.remainingTime -= frame.tmpValue * 600;
+    frame.tmpValue = frame.remainingTime / 60;
+    frame.digitPos = frame.tmpValue * 8 + 120;
     (g_SubmarineHudDigitQuads[3].srcX) = *(unsigned char *)&frame.digitPos;
-    frame.remainingTime -= frame.tmpValue * 0x3C;
-    frame.tmpValue = frame.remainingTime / 0xA;
-    frame.digitPos = frame.tmpValue * 8 + 0x78;
+    frame.remainingTime -= frame.tmpValue * 60;
+    frame.tmpValue = frame.remainingTime / 10;
+    frame.digitPos = frame.tmpValue * 8 + 120;
     (g_SubmarineHudDigitQuads[4].srcX) = *(unsigned char *)&frame.digitPos;
-    frame.remainingTime -= frame.tmpValue * 0xA;
-    frame.digitPos = frame.remainingTime * 8 + 0x78;
+    frame.remainingTime -= frame.tmpValue * 10;
+    frame.digitPos = frame.remainingTime * 8 + 120;
     (g_SubmarineHudDigitQuads[5].srcX) = *(unsigned char *)&frame.digitPos;
 }
 
@@ -715,7 +715,7 @@ void __cdecl Submarine_UpdateAlertHudAndAlarm(void)
         q += 0x3A;
     }
     if (q != 0) {
-        if (q > 0x7F) {
+        if (q > 127) {
             q = 0x7F;
         }
         if (g_SubmarineHudAlertToggle == 0) {
@@ -756,7 +756,7 @@ void __cdecl Submarine_UpdateTorpedoAudio(void)
                 g_SubmarineState.motionFlags |= SUBMARINE_MOTION_HUD_ALERT_800;
             }
             frame.distance = frame.flightRecord->playerDistance;
-            frame.distance = 0x140 - frame.distance;
+            frame.distance = 320 - frame.distance;
             if (frame.distance < 0) { /* empty first arm: lib/codegen.h */
             } else {
                 frame.count++;
@@ -780,7 +780,7 @@ void __cdecl Submarine_UpdateTorpedoAudio(void)
 
         frame.flightRecord = (struct SubmarineTorpedoAudioScratch *)((char *)frame.flightRecord + 0xc8);
         frame.recordIndex++;
-    } while (frame.recordIndex < 0x20);
+    } while (frame.recordIndex < 32);
     if (frame.count != 0) {
         frame.sum /= 0x100;
         frame.square /= 0x100;
@@ -788,11 +788,11 @@ void __cdecl Submarine_UpdateTorpedoAudio(void)
         frame.square /= frame.count;
         frame.sum /= 0x20;
         frame.square /= 4;
-        if (frame.sum < -0x40)
+        if (frame.sum < -64)
             frame.sum = -0x40;
-        if (frame.sum > 0x3f)
+        if (frame.sum > 63)
             frame.sum = 0x3f;
-        if (frame.square > 0x7f)
+        if (frame.square > 127)
             frame.square = 0x7f;
         if (frame.square == 0)
             frame.square = 1;
@@ -828,7 +828,7 @@ void __cdecl Submarine_UpdateEnemyAudio(void)
                 g_SubmarineState.motionFlags |= SUBMARINE_MOTION_HUD_ALERT_400;
             }
             frame.distance = frame.enemyRecord->magnitude;
-            frame.distance = 0x140 - frame.distance;
+            frame.distance = 320 - frame.distance;
             if (frame.distance < 0) { /* empty first arm: lib/codegen.h */
             } else {
                 frame.count++;
@@ -859,14 +859,14 @@ void __cdecl Submarine_UpdateEnemyAudio(void)
         frame.square /= frame.count;
         frame.sum /= 0x20;
         frame.square /= 4;
-        if (frame.sum < -0x40)
+        if (frame.sum < -64)
             frame.sum = -0x40;
-        if (frame.sum > 0x3f)
+        if (frame.sum > 63)
             frame.sum = 0x3f;
     }
     frame.sum += 0x40;
     frame.square += 0x18;
-    if (frame.square > 0x7f)
+    if (frame.square > 127)
         frame.square = 0x7f;
     SoundDispatchCommand(SOUND_SFX_CH2_VOLUME_TRANS, 2, frame.square, 0, 0, 0, 0, 0, 0);
     SoundDispatchCommand(SOUND_SFX_CH2_PAN_TRANS, 2, frame.sum, 0, 0, 0, 0, 0, 0);
@@ -884,15 +884,15 @@ void __cdecl Submarine_InitTargetCountDigits(void)
         workSrcX = 0;
         q = 0x60;
     } else {
-        workSrcX = 0x80;
+        workSrcX = 128;
         q = 0x60;
     }
     g_SubmarineHudTallyElements.single.srcX = workSrcX;
     g_SubmarineHudTallyElements.single.srcY = q;
     count = g_SubmarineEffectCount0;
-    digit = count / 0xA;
+    digit = count / 10;
     g_SubmarineHudTallyElements.quads[9].srcX = (unsigned char)(digit << 4);
-    digit = count - digit * 0xA;
+    digit = count - digit * 10;
     g_SubmarineHudTallyElements.quads[10].srcX = (unsigned char)(digit << 4);
 }
 
@@ -951,15 +951,15 @@ void __cdecl Submarine_UpdateFiveDigitHudCounter(void)
     sum = g_SubmarineSlotTotalWeight - weightTotal;
     sum += g_SubmarineState.player.playerResource;
     sum += g_SubmarineRemainingTime;
-    sum -= g_SubmarineActiveTorpedoCount * 0x64;
+    sum -= g_SubmarineActiveTorpedoCount * 100;
     if (sum < 0) {
         sum = 0;
     }
-    if (sum > 0x1869F) {
+    if (sum > 99999) {
         sum = 0x1869F;
     }
     leading = 1;
-    digit = sum / 0x2710;
+    digit = sum / 10000;
     shown = digit;
     if (shown == 0 && leading == 1) {
         shown = 0xE;
@@ -967,8 +967,8 @@ void __cdecl Submarine_UpdateFiveDigitHudCounter(void)
         leading = 0;
     }
     (g_SubmarineHudScoreCounters[5].srcX) = (unsigned char)(shown << 4);
-    sum -= digit * 0x2710;
-    digit = sum / 0x3E8;
+    sum -= digit * 10000;
+    digit = sum / 1000;
     shown = digit;
     if (shown == 0 && leading == 1) {
         shown = 0xE;
@@ -976,8 +976,8 @@ void __cdecl Submarine_UpdateFiveDigitHudCounter(void)
         leading = 0;
     }
     (g_SubmarineHudScoreCounters[6].srcX) = (unsigned char)(shown << 4);
-    sum -= digit * 0x3E8;
-    digit = sum / 0x64;
+    sum -= digit * 1000;
+    digit = sum / 100;
     shown = digit;
     if (shown == 0 && leading == 1) {
         shown = 0xE;
@@ -985,8 +985,8 @@ void __cdecl Submarine_UpdateFiveDigitHudCounter(void)
         leading = 0;
     }
     (g_SubmarineHudScoreCounters[7].srcX) = (unsigned char)(shown << 4);
-    sum -= digit * 0x64;
-    digit = sum / 0xA;
+    sum -= digit * 100;
+    digit = sum / 10;
     shown = digit;
     if (shown == 0 && leading == 1) {
         shown = 0xE;
@@ -994,7 +994,7 @@ void __cdecl Submarine_UpdateFiveDigitHudCounter(void)
         leading = 0;
     }
     (g_SubmarineHudScoreCounters[8].srcX) = (unsigned char)(shown << 4);
-    digit = sum - digit * 0xA;
+    digit = sum - digit * 10;
     (g_SubmarineHudScoreCounters[9].srcX) = (unsigned char)(digit << 4);
 }
 /* Updates 2-digit decimal counter display digits on submarine instrument panel. */
@@ -1005,9 +1005,9 @@ void __cdecl Submarine_UpdateTwoDigitHudCounter(void)
     int sum;
 
     sum = g_SubmarineEffectCount1 + g_SubmarineActiveSlotCount;
-    q = sum / 0xA;
+    q = sum / 10;
     g_SubmarineHudTallyElements.quads[6].srcX = (unsigned char)(q << 4);
-    q = sum - q * 0xA;
+    q = sum - q * 10;
     g_SubmarineHudTallyElements.quads[7].srcX = (unsigned char)(q << 4);
 }
 /* Updates submarine HUD mode flag from parameter. */
@@ -1060,22 +1060,22 @@ void __cdecl Submarine_BuildHudElementTable(void)
     scaleMode = GetUiScalingMode();
     (g_SubmarineHudQuads[0].x) = 0xFF2C;
     g_SubmarineHudQuads[0].y = 0xFF2A;
-    g_SubmarineHudQuads[0].width = 0x3E;
-    g_SubmarineHudQuads[0].height = 0xD;
+    g_SubmarineHudQuads[0].width = 62;
+    g_SubmarineHudQuads[0].height = 13;
     g_SubmarineHudQuads[0].srcX = 0;
-    g_SubmarineHudQuads[0].srcY = 0xD0;
+    g_SubmarineHudQuads[0].srcY = 208;
     g_SubmarineHudQuads[0].alpha = 0;
     g_SubmarineHudQuads[0].depth = FLOAT_0_01_BITS;
     g_SubmarineHudQuads[0].batches[0] = g_SubmarineHudMainAtlasA;
     g_SubmarineHudQuads[0].batches[1] = g_SubmarineHudBatchTexB;
     g_SubmarineHudQuads[0].batches[2] = g_SubmarineHudBatchTexC;
     g_SubmarineHudQuads[0].batches[3] = g_SubmarineHudBatchTexD;
-    g_SubmarineHudQuads[1].x = 0x90;
+    g_SubmarineHudQuads[1].x = 144;
     g_SubmarineHudQuads[1].y = 0xFF2A;
-    g_SubmarineHudQuads[1].width = 0x22;
-    g_SubmarineHudQuads[1].height = 0xD;
+    g_SubmarineHudQuads[1].width = 34;
+    g_SubmarineHudQuads[1].height = 13;
     g_SubmarineHudQuads[1].srcX = 0;
-    g_SubmarineHudQuads[1].srcY = 0xC0;
+    g_SubmarineHudQuads[1].srcY = 192;
     g_SubmarineHudQuads[1].alpha = 0;
     g_SubmarineHudQuads[1].depth = FLOAT_0_01_BITS;
     g_SubmarineHudQuads[1].batches[0] = g_SubmarineHudMainAtlasA;
@@ -1084,10 +1084,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudQuads[1].batches[3] = g_SubmarineHudBatchTexD;
     g_SubmarineHudQuads[2].x = 0xFFC2;
     g_SubmarineHudQuads[2].y = 0xFF2E;
-    g_SubmarineHudQuads[2].width = 0x3E;
-    g_SubmarineHudQuads[2].height = 0xD;
+    g_SubmarineHudQuads[2].width = 62;
+    g_SubmarineHudQuads[2].height = 13;
     g_SubmarineHudQuads[2].srcX = 0;
-    g_SubmarineHudQuads[2].srcY = 0xE0;
+    g_SubmarineHudQuads[2].srcY = 224;
     g_SubmarineHudQuads[2].alpha = 0;
     g_SubmarineHudQuads[2].depth = FLOAT_0_01_BITS;
     g_SubmarineHudQuads[2].batches[0] = g_SubmarineHudMainAtlasA;
@@ -1096,10 +1096,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudQuads[2].batches[3] = g_SubmarineHudBatchTexD;
     g_SubmarineHudQuads[3].x = 0xFFC8;
     g_SubmarineHudQuads[3].y = 0xFF4A;
-    g_SubmarineHudQuads[3].width = 0x37;
-    g_SubmarineHudQuads[3].height = 0xD;
-    g_SubmarineHudQuads[3].srcX = 0x40;
-    g_SubmarineHudQuads[3].srcY = 0xE0;
+    g_SubmarineHudQuads[3].width = 55;
+    g_SubmarineHudQuads[3].height = 13;
+    g_SubmarineHudQuads[3].srcX = 64;
+    g_SubmarineHudQuads[3].srcY = 224;
     g_SubmarineHudQuads[3].alpha = 0;
     g_SubmarineHudQuads[3].depth = FLOAT_0_01_BITS;
     g_SubmarineHudQuads[3].batches[0] = g_SubmarineHudMainAtlasA;
@@ -1116,9 +1116,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     (g_SubmarineHudQuadTable[0].x) = 0xFF00;
     (g_SubmarineHudQuadTable[0].y) = 0xFF12;
-    (g_SubmarineHudQuadTable[0].width) = 0x1B;
+    (g_SubmarineHudQuadTable[0].width) = 27;
     (g_SubmarineHudQuadTable[0].height) = 9;
-    (g_SubmarineHudQuadTable[0].srcX) = 0xB0;
+    (g_SubmarineHudQuadTable[0].srcX) = 176;
     (g_SubmarineHudQuadTable[0].srcY) = 0;
     (g_SubmarineHudQuadTable[0].alpha) = 0;
     (g_SubmarineHudQuadTable[0].depth) = FLOAT_0_01_BITS;
@@ -1134,10 +1134,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     (g_SubmarineHudQuadTable[1].x) = 0xFF12;
     (g_SubmarineHudQuadTable[1].y) = 0xFF30;
-    (g_SubmarineHudQuadTable[1].width) = 0xA;
+    (g_SubmarineHudQuadTable[1].width) = 10;
     (g_SubmarineHudQuadTable[1].height) = 5;
-    (g_SubmarineHudQuadTable[1].srcX) = 0xB0;
-    (g_SubmarineHudQuadTable[1].srcY) = 0x20;
+    (g_SubmarineHudQuadTable[1].srcX) = 176;
+    (g_SubmarineHudQuadTable[1].srcY) = 32;
     (g_SubmarineHudQuadTable[1].alpha) = 0;
     (g_SubmarineHudQuadTable[1].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudQuadTable[1].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1147,9 +1147,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudQuadTable[2].x) = 0xFF26;
     (g_SubmarineHudQuadTable[2].y) = 0xFF34;
     (g_SubmarineHudQuadTable[2].width) = 2;
-    (g_SubmarineHudQuadTable[2].height) = 0x20;
-    (g_SubmarineHudQuadTable[2].srcX) = 0xB0;
-    (g_SubmarineHudQuadTable[2].srcY) = 0x40;
+    (g_SubmarineHudQuadTable[2].height) = 32;
+    (g_SubmarineHudQuadTable[2].srcX) = 176;
+    (g_SubmarineHudQuadTable[2].srcY) = 64;
     (g_SubmarineHudQuadTable[2].alpha) = 0;
     (g_SubmarineHudQuadTable[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudQuadTable[2].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1159,9 +1159,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudQuadTable[3].x) = 0xFF26;
     (g_SubmarineHudQuadTable[3].y) = 0xFF74;
     (g_SubmarineHudQuadTable[3].width) = 2;
-    (g_SubmarineHudQuadTable[3].height) = 0x20;
-    (g_SubmarineHudQuadTable[3].srcX) = 0xB0;
-    (g_SubmarineHudQuadTable[3].srcY) = 0x40;
+    (g_SubmarineHudQuadTable[3].height) = 32;
+    (g_SubmarineHudQuadTable[3].srcX) = 176;
+    (g_SubmarineHudQuadTable[3].srcY) = 64;
     (g_SubmarineHudQuadTable[3].alpha) = 0;
     (g_SubmarineHudQuadTable[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudQuadTable[3].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1171,9 +1171,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudQuadTable[4].x) = 0xFF26;
     (g_SubmarineHudQuadTable[4].y) = 0xFFB4;
     (g_SubmarineHudQuadTable[4].width) = 2;
-    (g_SubmarineHudQuadTable[4].height) = 0x20;
-    (g_SubmarineHudQuadTable[4].srcX) = 0xC0;
-    (g_SubmarineHudQuadTable[4].srcY) = 0x40;
+    (g_SubmarineHudQuadTable[4].height) = 32;
+    (g_SubmarineHudQuadTable[4].srcX) = 192;
+    (g_SubmarineHudQuadTable[4].srcY) = 64;
     (g_SubmarineHudQuadTable[4].alpha) = 0;
     (g_SubmarineHudQuadTable[4].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudQuadTable[4].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1183,9 +1183,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudQuadTable[5].x) = 0xFF26;
     (g_SubmarineHudQuadTable[5].y) = 0xFFF4;
     (g_SubmarineHudQuadTable[5].width) = 2;
-    (g_SubmarineHudQuadTable[5].height) = 0x18;
-    (g_SubmarineHudQuadTable[5].srcX) = 0xC8;
-    (g_SubmarineHudQuadTable[5].srcY) = 0x40;
+    (g_SubmarineHudQuadTable[5].height) = 24;
+    (g_SubmarineHudQuadTable[5].srcX) = 200;
+    (g_SubmarineHudQuadTable[5].srcY) = 64;
     (g_SubmarineHudQuadTable[5].alpha) = 0;
     (g_SubmarineHudQuadTable[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudQuadTable[5].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1194,10 +1194,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudQuadTable[5].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudQuadTable[6].x) = 0xFF02;
     (g_SubmarineHudQuadTable[6].y) = 0xFFB4;
-    (g_SubmarineHudQuadTable[6].width) = 0x12;
+    (g_SubmarineHudQuadTable[6].width) = 18;
     (g_SubmarineHudQuadTable[6].height) = 5;
-    (g_SubmarineHudQuadTable[6].srcX) = 0xB0;
-    (g_SubmarineHudQuadTable[6].srcY) = 0x28;
+    (g_SubmarineHudQuadTable[6].srcX) = 176;
+    (g_SubmarineHudQuadTable[6].srcY) = 40;
     (g_SubmarineHudQuadTable[6].alpha) = 0;
     (g_SubmarineHudQuadTable[6].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudQuadTable[6].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1205,11 +1205,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudQuadTable[6].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudQuadTable[6].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudQuadTable[7].x) = 0xFEFC;
-    (g_SubmarineHudQuadTable[7].y) = 0x20;
-    (g_SubmarineHudQuadTable[7].width) = 0x17;
-    (g_SubmarineHudQuadTable[7].height) = 0x10;
-    (g_SubmarineHudQuadTable[7].srcX) = 0xB0;
-    (g_SubmarineHudQuadTable[7].srcY) = 0x30;
+    (g_SubmarineHudQuadTable[7].y) = 32;
+    (g_SubmarineHudQuadTable[7].width) = 23;
+    (g_SubmarineHudQuadTable[7].height) = 16;
+    (g_SubmarineHudQuadTable[7].srcX) = 176;
+    (g_SubmarineHudQuadTable[7].srcY) = 48;
     (g_SubmarineHudQuadTable[7].alpha) = 0;
     (g_SubmarineHudQuadTable[7].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudQuadTable[7].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1224,11 +1224,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
             (&g_SubmarineHudQuadTable[1])[q].batches[3] = 0;
         }
     }
-    (g_SubmarineHudRightFrameQuads[0].x) = 0xC8;
+    (g_SubmarineHudRightFrameQuads[0].x) = 200;
     (g_SubmarineHudRightFrameQuads[0].y) = 0xFF12;
-    (g_SubmarineHudRightFrameQuads[0].width) = 0x1B;
+    (g_SubmarineHudRightFrameQuads[0].width) = 27;
     (g_SubmarineHudRightFrameQuads[0].height) = 9;
-    (g_SubmarineHudRightFrameQuads[0].srcX) = 0xD0;
+    (g_SubmarineHudRightFrameQuads[0].srcX) = 208;
     (g_SubmarineHudRightFrameQuads[0].srcY) = 0;
     (g_SubmarineHudRightFrameQuads[0].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[0].depth) = FLOAT_0_01_BITS;
@@ -1242,84 +1242,84 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudRightFrameQuads[0].batches[2]) = 0;
         (g_SubmarineHudRightFrameQuads[0].batches[3]) = 0;
     }
-    (g_SubmarineHudRightFrameQuads[1].x) = 0xDC;
+    (g_SubmarineHudRightFrameQuads[1].x) = 220;
     (g_SubmarineHudRightFrameQuads[1].y) = 0xFF30;
-    (g_SubmarineHudRightFrameQuads[1].width) = 0x24;
+    (g_SubmarineHudRightFrameQuads[1].width) = 36;
     (g_SubmarineHudRightFrameQuads[1].height) = 5;
-    (g_SubmarineHudRightFrameQuads[1].srcX) = 0xD0;
-    (g_SubmarineHudRightFrameQuads[1].srcY) = 0x20;
+    (g_SubmarineHudRightFrameQuads[1].srcX) = 208;
+    (g_SubmarineHudRightFrameQuads[1].srcY) = 32;
     (g_SubmarineHudRightFrameQuads[1].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[1].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRightFrameQuads[1].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudRightFrameQuads[1].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudRightFrameQuads[1].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudRightFrameQuads[1].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudRightFrameQuads[2].x) = 0xD8;
+    (g_SubmarineHudRightFrameQuads[2].x) = 216;
     (g_SubmarineHudRightFrameQuads[2].y) = 0xFF34;
     (g_SubmarineHudRightFrameQuads[2].width) = 2;
-    (g_SubmarineHudRightFrameQuads[2].height) = 0x20;
-    (g_SubmarineHudRightFrameQuads[2].srcX) = 0xD0;
-    (g_SubmarineHudRightFrameQuads[2].srcY) = 0x40;
+    (g_SubmarineHudRightFrameQuads[2].height) = 32;
+    (g_SubmarineHudRightFrameQuads[2].srcX) = 208;
+    (g_SubmarineHudRightFrameQuads[2].srcY) = 64;
     (g_SubmarineHudRightFrameQuads[2].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRightFrameQuads[2].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudRightFrameQuads[2].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudRightFrameQuads[2].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudRightFrameQuads[2].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudRightFrameQuads[3].x) = 0xD8;
+    (g_SubmarineHudRightFrameQuads[3].x) = 216;
     (g_SubmarineHudRightFrameQuads[3].y) = 0xFF74;
     (g_SubmarineHudRightFrameQuads[3].width) = 2;
-    (g_SubmarineHudRightFrameQuads[3].height) = 0x20;
-    (g_SubmarineHudRightFrameQuads[3].srcX) = 0xD0;
-    (g_SubmarineHudRightFrameQuads[3].srcY) = 0x40;
+    (g_SubmarineHudRightFrameQuads[3].height) = 32;
+    (g_SubmarineHudRightFrameQuads[3].srcX) = 208;
+    (g_SubmarineHudRightFrameQuads[3].srcY) = 64;
     (g_SubmarineHudRightFrameQuads[3].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRightFrameQuads[3].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudRightFrameQuads[3].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudRightFrameQuads[3].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudRightFrameQuads[3].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudRightFrameQuads[4].x) = 0xD8;
+    (g_SubmarineHudRightFrameQuads[4].x) = 216;
     (g_SubmarineHudRightFrameQuads[4].y) = 0xFFB4;
     (g_SubmarineHudRightFrameQuads[4].width) = 2;
-    (g_SubmarineHudRightFrameQuads[4].height) = 0x20;
-    (g_SubmarineHudRightFrameQuads[4].srcX) = 0xD0;
-    (g_SubmarineHudRightFrameQuads[4].srcY) = 0x40;
+    (g_SubmarineHudRightFrameQuads[4].height) = 32;
+    (g_SubmarineHudRightFrameQuads[4].srcX) = 208;
+    (g_SubmarineHudRightFrameQuads[4].srcY) = 64;
     (g_SubmarineHudRightFrameQuads[4].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[4].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRightFrameQuads[4].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudRightFrameQuads[4].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudRightFrameQuads[4].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudRightFrameQuads[4].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudRightFrameQuads[5].x) = 0xD8;
+    (g_SubmarineHudRightFrameQuads[5].x) = 216;
     (g_SubmarineHudRightFrameQuads[5].y) = 0xFFF4;
     (g_SubmarineHudRightFrameQuads[5].width) = 2;
-    (g_SubmarineHudRightFrameQuads[5].height) = 0x20;
-    (g_SubmarineHudRightFrameQuads[5].srcX) = 0xD0;
-    (g_SubmarineHudRightFrameQuads[5].srcY) = 0x40;
+    (g_SubmarineHudRightFrameQuads[5].height) = 32;
+    (g_SubmarineHudRightFrameQuads[5].srcX) = 208;
+    (g_SubmarineHudRightFrameQuads[5].srcY) = 64;
     (g_SubmarineHudRightFrameQuads[5].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRightFrameQuads[5].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudRightFrameQuads[5].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudRightFrameQuads[5].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudRightFrameQuads[5].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudRightFrameQuads[6].x) = 0xDC;
+    (g_SubmarineHudRightFrameQuads[6].x) = 220;
     (g_SubmarineHudRightFrameQuads[6].y) = 0xFFB0;
-    (g_SubmarineHudRightFrameQuads[6].width) = 0x16;
+    (g_SubmarineHudRightFrameQuads[6].width) = 22;
     (g_SubmarineHudRightFrameQuads[6].height) = 5;
-    (g_SubmarineHudRightFrameQuads[6].srcX) = 0xD0;
-    (g_SubmarineHudRightFrameQuads[6].srcY) = 0x28;
+    (g_SubmarineHudRightFrameQuads[6].srcX) = 208;
+    (g_SubmarineHudRightFrameQuads[6].srcY) = 40;
     (g_SubmarineHudRightFrameQuads[6].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[6].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRightFrameQuads[6].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudRightFrameQuads[6].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudRightFrameQuads[6].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudRightFrameQuads[6].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudRightFrameQuads[7].x) = 0xD8;
-    (g_SubmarineHudRightFrameQuads[7].y) = 0x30;
-    (g_SubmarineHudRightFrameQuads[7].width) = 0x2A;
+    (g_SubmarineHudRightFrameQuads[7].x) = 216;
+    (g_SubmarineHudRightFrameQuads[7].y) = 48;
+    (g_SubmarineHudRightFrameQuads[7].width) = 42;
     (g_SubmarineHudRightFrameQuads[7].height) = 5;
-    (g_SubmarineHudRightFrameQuads[7].srcX) = 0xD0;
-    (g_SubmarineHudRightFrameQuads[7].srcY) = 0x30;
+    (g_SubmarineHudRightFrameQuads[7].srcX) = 208;
+    (g_SubmarineHudRightFrameQuads[7].srcY) = 48;
     (g_SubmarineHudRightFrameQuads[7].alpha) = 0;
     (g_SubmarineHudRightFrameQuads[7].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRightFrameQuads[7].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1336,10 +1336,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     (g_SubmarineHudPitchQuads[0].x) = 0xFF30;
     (g_SubmarineHudPitchQuads[0].y) = 0xFFB4;
-    (g_SubmarineHudPitchQuads[0].width) = 0x16;
+    (g_SubmarineHudPitchQuads[0].width) = 22;
     (g_SubmarineHudPitchQuads[0].height) = 5;
-    (g_SubmarineHudPitchQuads[0].srcX) = 0xD8;
-    (g_SubmarineHudPitchQuads[0].srcY) = 0x10;
+    (g_SubmarineHudPitchQuads[0].srcX) = 216;
+    (g_SubmarineHudPitchQuads[0].srcY) = 16;
     (g_SubmarineHudPitchQuads[0].alpha) = *(short *)&g_SubmarineHudHeadingBits;
     (g_SubmarineHudPitchQuads[0].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudPitchQuads[0].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1349,9 +1349,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudPitchQuads[1].x) = 0xFF2C;
     (g_SubmarineHudPitchQuads[1].y) = 0xFF78;
     (g_SubmarineHudPitchQuads[1].width) = 2;
-    (g_SubmarineHudPitchQuads[1].height) = 0x20;
-    (g_SubmarineHudPitchQuads[1].srcX) = 0xD0;
-    (g_SubmarineHudPitchQuads[1].srcY) = 0x40;
+    (g_SubmarineHudPitchQuads[1].height) = 32;
+    (g_SubmarineHudPitchQuads[1].srcX) = 208;
+    (g_SubmarineHudPitchQuads[1].srcY) = 64;
     (g_SubmarineHudPitchQuads[1].alpha) = 0;
     (g_SubmarineHudPitchQuads[1].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudPitchQuads[1].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1361,9 +1361,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudPitchQuads[2].x) = 0xFF2C;
     (g_SubmarineHudPitchQuads[2].y) = 0xFFB8;
     (g_SubmarineHudPitchQuads[2].width) = 2;
-    (g_SubmarineHudPitchQuads[2].height) = 0x21;
-    (g_SubmarineHudPitchQuads[2].srcX) = 0xD0;
-    (g_SubmarineHudPitchQuads[2].srcY) = 0x40;
+    (g_SubmarineHudPitchQuads[2].height) = 33;
+    (g_SubmarineHudPitchQuads[2].srcX) = 208;
+    (g_SubmarineHudPitchQuads[2].srcY) = 64;
     (g_SubmarineHudPitchQuads[2].alpha) = 0;
     (g_SubmarineHudPitchQuads[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudPitchQuads[2].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1374,8 +1374,8 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudPitchQuads[3].y) = 0xFFB0;
     (g_SubmarineHudPitchQuads[3].width) = 5;
     (g_SubmarineHudPitchQuads[3].height) = 9;
-    (g_SubmarineHudPitchQuads[3].srcX) = 0xB0;
-    (g_SubmarineHudPitchQuads[3].srcY) = 0x11;
+    (g_SubmarineHudPitchQuads[3].srcX) = 176;
+    (g_SubmarineHudPitchQuads[3].srcY) = 17;
     (g_SubmarineHudPitchQuads[3].alpha) = 0;
     (g_SubmarineHudPitchQuads[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudPitchQuads[3].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1392,10 +1392,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     (g_SubmarineHudElements.quads2[1].x) = 0xFEEA;
     (g_SubmarineHudElements.quads2[1].y) = 0xFF2A;
-    (g_SubmarineHudElements.quads2[1].width) = 0x1E;
-    (g_SubmarineHudElements.quads2[1].height) = 0xB;
-    (g_SubmarineHudElements.quads2[1].srcX) = 0xB6;
-    (g_SubmarineHudElements.quads2[1].srcY) = 0x10;
+    (g_SubmarineHudElements.quads2[1].width) = 30;
+    (g_SubmarineHudElements.quads2[1].height) = 11;
+    (g_SubmarineHudElements.quads2[1].srcX) = 182;
+    (g_SubmarineHudElements.quads2[1].srcY) = 16;
     (g_SubmarineHudElements.quads2[1].alpha) = 0;
     (g_SubmarineHudElements.quads2[1].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudElements.quads2[1].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1412,8 +1412,8 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudElements.quads2[2].y) = 0xFF30;
     (g_SubmarineHudElements.quads2[2].width) = 4;
     (g_SubmarineHudElements.quads2[2].height) = 5;
-    (g_SubmarineHudElements.quads2[2].srcX) = 0xC8;
-    (g_SubmarineHudElements.quads2[2].srcY) = 0x38;
+    (g_SubmarineHudElements.quads2[2].srcX) = 200;
+    (g_SubmarineHudElements.quads2[2].srcY) = 56;
     (g_SubmarineHudElements.quads2[2].alpha) = 0;
     (g_SubmarineHudElements.quads2[2].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudElements.quads2[2].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1424,8 +1424,8 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudElements.quads2[3].y) = 0xFF30;
     (g_SubmarineHudElements.quads2[3].width) = 4;
     (g_SubmarineHudElements.quads2[3].height) = 5;
-    (g_SubmarineHudElements.quads2[3].srcX) = 0xC8;
-    (g_SubmarineHudElements.quads2[3].srcY) = 0x38;
+    (g_SubmarineHudElements.quads2[3].srcX) = 200;
+    (g_SubmarineHudElements.quads2[3].srcY) = 56;
     (g_SubmarineHudElements.quads2[3].alpha) = 0;
     (g_SubmarineHudElements.quads2[3].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudElements.quads2[3].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1436,8 +1436,8 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudElements.quads2[4].y) = 0xFF30;
     (g_SubmarineHudElements.quads2[4].width) = 4;
     (g_SubmarineHudElements.quads2[4].height) = 5;
-    (g_SubmarineHudElements.quads2[4].srcX) = 0xC8;
-    (g_SubmarineHudElements.quads2[4].srcY) = 0x38;
+    (g_SubmarineHudElements.quads2[4].srcX) = 200;
+    (g_SubmarineHudElements.quads2[4].srcY) = 56;
     (g_SubmarineHudElements.quads2[4].alpha) = 0;
     (g_SubmarineHudElements.quads2[4].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudElements.quads2[4].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1448,8 +1448,8 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudElements.quads2[5].y) = 0xFF30;
     (g_SubmarineHudElements.quads2[5].width) = 4;
     (g_SubmarineHudElements.quads2[5].height) = 5;
-    (g_SubmarineHudElements.quads2[5].srcX) = 0xC8;
-    (g_SubmarineHudElements.quads2[5].srcY) = 0x38;
+    (g_SubmarineHudElements.quads2[5].srcX) = 200;
+    (g_SubmarineHudElements.quads2[5].srcY) = 56;
     (g_SubmarineHudElements.quads2[5].alpha) = 0;
     (g_SubmarineHudElements.quads2[5].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudElements.quads2[5].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1464,12 +1464,12 @@ void __cdecl Submarine_BuildHudElementTable(void)
             (&g_SubmarineHudElements.quads2[2])[readoutSlot].batches[3] = 0;
         }
     }
-    (g_SubmarineHudGaugeQuads[0].x) = 0xDC;
+    (g_SubmarineHudGaugeQuads[0].x) = 220;
     (g_SubmarineHudGaugeQuads[0].y) = 0xFFAA;
-    (g_SubmarineHudGaugeQuads[0].width) = 0x1D;
-    (g_SubmarineHudGaugeQuads[0].height) = 0xB;
-    (g_SubmarineHudGaugeQuads[0].srcX) = 0xB0;
-    (g_SubmarineHudGaugeQuads[0].srcY) = 0x10;
+    (g_SubmarineHudGaugeQuads[0].width) = 29;
+    (g_SubmarineHudGaugeQuads[0].height) = 11;
+    (g_SubmarineHudGaugeQuads[0].srcX) = 176;
+    (g_SubmarineHudGaugeQuads[0].srcY) = 16;
     (g_SubmarineHudGaugeQuads[0].alpha) = 0;
     (g_SubmarineHudGaugeQuads[0].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudGaugeQuads[0].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1482,48 +1482,48 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudGaugeQuads[0].batches[2]) = 0;
         (g_SubmarineHudGaugeQuads[0].batches[3]) = 0;
     }
-    (g_SubmarineHudGaugeQuads[1].x) = 0xF0;
+    (g_SubmarineHudGaugeQuads[1].x) = 240;
     (g_SubmarineHudGaugeQuads[1].y) = 0xFFB0;
     (g_SubmarineHudGaugeQuads[1].width) = 4;
     (g_SubmarineHudGaugeQuads[1].height) = 5;
-    (g_SubmarineHudGaugeQuads[1].srcX) = 0xF8;
-    (g_SubmarineHudGaugeQuads[1].srcY) = 0x38;
+    (g_SubmarineHudGaugeQuads[1].srcX) = 248;
+    (g_SubmarineHudGaugeQuads[1].srcY) = 56;
     (g_SubmarineHudGaugeQuads[1].alpha) = 0;
     (g_SubmarineHudGaugeQuads[1].depth) = 0;
     (g_SubmarineHudGaugeQuads[1].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudGaugeQuads[1].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudGaugeQuads[1].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudGaugeQuads[1].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudGaugeQuads[2].x) = 0xF8;
+    (g_SubmarineHudGaugeQuads[2].x) = 248;
     (g_SubmarineHudGaugeQuads[2].y) = 0xFFB0;
     (g_SubmarineHudGaugeQuads[2].width) = 4;
     (g_SubmarineHudGaugeQuads[2].height) = 5;
-    (g_SubmarineHudGaugeQuads[2].srcX) = 0xC8;
-    (g_SubmarineHudGaugeQuads[2].srcY) = 0x38;
+    (g_SubmarineHudGaugeQuads[2].srcX) = 200;
+    (g_SubmarineHudGaugeQuads[2].srcY) = 56;
     (g_SubmarineHudGaugeQuads[2].alpha) = 0;
     (g_SubmarineHudGaugeQuads[2].depth) = 0;
     (g_SubmarineHudGaugeQuads[2].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudGaugeQuads[2].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudGaugeQuads[2].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudGaugeQuads[2].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudGaugeQuads[3].x) = 0x100;
+    (g_SubmarineHudGaugeQuads[3].x) = 256;
     (g_SubmarineHudGaugeQuads[3].y) = 0xFFB0;
     (g_SubmarineHudGaugeQuads[3].width) = 4;
     (g_SubmarineHudGaugeQuads[3].height) = 5;
-    (g_SubmarineHudGaugeQuads[3].srcX) = 0xC8;
-    (g_SubmarineHudGaugeQuads[3].srcY) = 0x38;
+    (g_SubmarineHudGaugeQuads[3].srcX) = 200;
+    (g_SubmarineHudGaugeQuads[3].srcY) = 56;
     (g_SubmarineHudGaugeQuads[3].alpha) = 0;
     (g_SubmarineHudGaugeQuads[3].depth) = 0;
     (g_SubmarineHudGaugeQuads[3].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudGaugeQuads[3].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudGaugeQuads[3].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudGaugeQuads[3].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudGaugeQuads[4].x) = 0x108;
+    (g_SubmarineHudGaugeQuads[4].x) = 264;
     (g_SubmarineHudGaugeQuads[4].y) = 0xFFB0;
     (g_SubmarineHudGaugeQuads[4].width) = 4;
     (g_SubmarineHudGaugeQuads[4].height) = 5;
-    (g_SubmarineHudGaugeQuads[4].srcX) = 0xC8;
-    (g_SubmarineHudGaugeQuads[4].srcY) = 0x38;
+    (g_SubmarineHudGaugeQuads[4].srcX) = 200;
+    (g_SubmarineHudGaugeQuads[4].srcY) = 56;
     (g_SubmarineHudGaugeQuads[4].alpha) = 0;
     (g_SubmarineHudGaugeQuads[4].depth) = 0;
     (g_SubmarineHudGaugeQuads[4].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1540,10 +1540,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     (g_SubmarineHudYawStripQuads[0].x) = 0xFF83;
     (g_SubmarineHudYawStripQuads[0].y) = 0xFF11;
-    (g_SubmarineHudYawStripQuads[0].width) = 0x7D;
+    (g_SubmarineHudYawStripQuads[0].width) = 125;
     (g_SubmarineHudYawStripQuads[0].height) = 9;
     (g_SubmarineHudYawStripQuads[0].srcX) = 0;
-    (g_SubmarineHudYawStripQuads[0].srcY) = 0xF1;
+    (g_SubmarineHudYawStripQuads[0].srcY) = 241;
     (g_SubmarineHudYawStripQuads[0].alpha) = 0;
     (g_SubmarineHudYawStripQuads[0].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudYawStripQuads[0].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1552,10 +1552,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudYawStripQuads[0].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudYawStripQuads[1].x) = 0xFF83;
     (g_SubmarineHudYawStripQuads[1].y) = 0xFF11;
-    (g_SubmarineHudYawStripQuads[1].width) = 0x7D;
+    (g_SubmarineHudYawStripQuads[1].width) = 125;
     (g_SubmarineHudYawStripQuads[1].height) = 9;
     (g_SubmarineHudYawStripQuads[1].srcX) = 0;
-    (g_SubmarineHudYawStripQuads[1].srcY) = 0xF1;
+    (g_SubmarineHudYawStripQuads[1].srcY) = 241;
     (g_SubmarineHudYawStripQuads[1].alpha) = 0;
     (g_SubmarineHudYawStripQuads[1].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudYawStripQuads[1].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1565,7 +1565,7 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudYawStripQuads[2].x) = 0xFF82;
     (g_SubmarineHudYawStripQuads[2].y) = 0xFF10;
     (g_SubmarineHudYawStripQuads[2].width) = 0x7F;
-    (g_SubmarineHudYawStripQuads[2].height) = 0xD;
+    (g_SubmarineHudYawStripQuads[2].height) = 13;
     (g_SubmarineHudYawStripQuads[2].srcX) = 0;
     (g_SubmarineHudYawStripQuads[2].srcY) = 0;
     (g_SubmarineHudYawStripQuads[2].alpha) = 0;
@@ -1583,9 +1583,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
         }
     }
     g_SubmarineHudGauge.x = 0xFFFFFF82;
-    (g_SubmarineHudGauge.y) = 0x96;
+    (g_SubmarineHudGauge.y) = 150;
     (g_SubmarineHudGauge.width) = 0x7F;
-    (g_SubmarineHudGauge.height) = 0xB;
+    (g_SubmarineHudGauge.height) = 11;
     (g_SubmarineHudGauge.colorTopLeft) = 0xFFFF0000;
     (g_SubmarineHudGauge.colorTopRight) = 0xFFFF0000;
     (g_SubmarineHudGauge.gaugeValue) = 0xFF00FF00;
@@ -1593,11 +1593,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudGauge.colorBottomLeft) = 0;
     (g_SubmarineHudGauge.colorBottomRight) = FLOAT_0_01_BITS;
     (g_SubmarineHudRectQuad.x) = 0xFF7E;
-    (g_SubmarineHudRectQuad.y) = 0x92;
-    (g_SubmarineHudRectQuad.width) = 0x83;
-    (g_SubmarineHudRectQuad.height) = 0xF;
+    (g_SubmarineHudRectQuad.y) = 146;
+    (g_SubmarineHudRectQuad.width) = 131;
+    (g_SubmarineHudRectQuad.height) = 15;
     (g_SubmarineHudRectQuad.srcX) = 0;
-    (g_SubmarineHudRectQuad.srcY) = 0x10;
+    (g_SubmarineHudRectQuad.srcY) = 16;
     (g_SubmarineHudRectQuad.alpha) = 0;
     (g_SubmarineHudRectQuad.depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRectQuad.batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1611,23 +1611,23 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudRectQuad.batches[3]) = 0;
     }
     (g_SubmarineHudAnimTable.anim0SrcX) = 0;
-    (g_SubmarineHudAnimTable.anim0SrcY) = 0x6A;
+    (g_SubmarineHudAnimTable.anim0SrcY) = 106;
     (g_SubmarineHudAnimTable.anim1SrcX) = 0;
-    (g_SubmarineHudAnimTable.anim1SrcY) = 0x84;
+    (g_SubmarineHudAnimTable.anim1SrcY) = 132;
     (g_SubmarineHudAnimTable.anim2SrcX) = 0;
-    (g_SubmarineHudAnimTable.anim2SrcY) = 0x9E;
-    (g_SubmarineHudAnimTable.anim3SrcX) = 0x30;
-    (g_SubmarineHudAnimTable.anim3SrcY) = 0x6A;
-    (g_SubmarineHudAnimTable.anim4SrcX) = 0x30;
-    (g_SubmarineHudAnimTable.anim4SrcY) = 0x84;
-    (g_SubmarineHudAnimTable.anim5SrcX) = 0x30;
-    (g_SubmarineHudAnimTable.anim5SrcY) = 0x9E;
-    (g_SubmarineHudLayout.quads[0].x) = 0xA8;
-    (g_SubmarineHudLayout.quads[0].y) = 0x52;
-    (g_SubmarineHudLayout.quads[0].width) = 0x2B;
-    (g_SubmarineHudLayout.quads[0].height) = 0x2B;
-    (g_SubmarineHudLayout.quads[0].srcX) = 0x60;
-    (g_SubmarineHudLayout.quads[0].srcY) = 0x20;
+    (g_SubmarineHudAnimTable.anim2SrcY) = 158;
+    (g_SubmarineHudAnimTable.anim3SrcX) = 48;
+    (g_SubmarineHudAnimTable.anim3SrcY) = 106;
+    (g_SubmarineHudAnimTable.anim4SrcX) = 48;
+    (g_SubmarineHudAnimTable.anim4SrcY) = 132;
+    (g_SubmarineHudAnimTable.anim5SrcX) = 48;
+    (g_SubmarineHudAnimTable.anim5SrcY) = 158;
+    (g_SubmarineHudLayout.quads[0].x) = 168;
+    (g_SubmarineHudLayout.quads[0].y) = 82;
+    (g_SubmarineHudLayout.quads[0].width) = 43;
+    (g_SubmarineHudLayout.quads[0].height) = 43;
+    (g_SubmarineHudLayout.quads[0].srcX) = 96;
+    (g_SubmarineHudLayout.quads[0].srcY) = 32;
     (g_SubmarineHudLayout.quads[0].alpha) = 0;
     (g_SubmarineHudLayout.quads[0].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudLayout.quads[0].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1640,12 +1640,12 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudLayout.quads[0].batches[2]) = 0;
         (g_SubmarineHudLayout.quads[0].batches[3]) = 0;
     }
-    (g_SubmarineHudLayout.quads[1].x) = 0xA4;
-    (g_SubmarineHudLayout.quads[1].y) = 0x4E;
-    (g_SubmarineHudLayout.quads[1].width) = 0x2F;
-    (g_SubmarineHudLayout.quads[1].height) = 0x31;
-    (g_SubmarineHudLayout.quads[1].srcX) = 0x30;
-    (g_SubmarineHudLayout.quads[1].srcY) = 0x20;
+    (g_SubmarineHudLayout.quads[1].x) = 164;
+    (g_SubmarineHudLayout.quads[1].y) = 78;
+    (g_SubmarineHudLayout.quads[1].width) = 47;
+    (g_SubmarineHudLayout.quads[1].height) = 49;
+    (g_SubmarineHudLayout.quads[1].srcX) = 48;
+    (g_SubmarineHudLayout.quads[1].srcY) = 32;
     (g_SubmarineHudLayout.quads[1].alpha) = 0;
     (g_SubmarineHudLayout.quads[1].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudLayout.quads[1].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1658,12 +1658,12 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudLayout.quads[1].batches[2]) = 0;
         (g_SubmarineHudLayout.quads[1].batches[3]) = 0;
     }
-    (g_SubmarineHudLayout.bar.x) = 0xA4;
-    (g_SubmarineHudLayout.bar.y) = 0x62;
+    (g_SubmarineHudLayout.bar.x) = 164;
+    (g_SubmarineHudLayout.bar.y) = 98;
     (g_SubmarineHudLayout.bar.width) = 8;
-    (g_SubmarineHudLayout.bar.height) = 0x1A;
+    (g_SubmarineHudLayout.bar.height) = 26;
     (g_SubmarineHudLayout.bar.srcX) = 0;
-    (g_SubmarineHudLayout.bar.srcY) = 0x6A;
+    (g_SubmarineHudLayout.bar.srcY) = 106;
     (g_SubmarineHudLayout.bar.alpha) = 0;
     (g_SubmarineHudLayout.bar.colors[0]) = 0x7F004000;
     (g_SubmarineHudLayout.bar.colors[1]) = 0x7F004000;
@@ -1681,11 +1681,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudLayout.bar.batches[3]) = 0;
     }
     (g_SubmarineHudElements.quads[0].x) = 0xFF06;
-    (g_SubmarineHudElements.quads[0].y) = 0x52;
-    (g_SubmarineHudElements.quads[0].width) = 0x2B;
-    (g_SubmarineHudElements.quads[0].height) = 0x2B;
-    (g_SubmarineHudElements.quads[0].srcX) = 0x60;
-    (g_SubmarineHudElements.quads[0].srcY) = 0x20;
+    (g_SubmarineHudElements.quads[0].y) = 82;
+    (g_SubmarineHudElements.quads[0].width) = 43;
+    (g_SubmarineHudElements.quads[0].height) = 43;
+    (g_SubmarineHudElements.quads[0].srcX) = 96;
+    (g_SubmarineHudElements.quads[0].srcY) = 32;
     (g_SubmarineHudElements.quads[0].alpha) = 0;
     (g_SubmarineHudElements.quads[0].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudElements.quads[0].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1699,11 +1699,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudElements.quads[0].batches[3]) = 0;
     }
     (g_SubmarineHudElements.quads[1].x) = 0xFF02;
-    (g_SubmarineHudElements.quads[1].y) = 0x4E;
-    (g_SubmarineHudElements.quads[1].width) = 0x2F;
-    (g_SubmarineHudElements.quads[1].height) = 0x30;
+    (g_SubmarineHudElements.quads[1].y) = 78;
+    (g_SubmarineHudElements.quads[1].width) = 47;
+    (g_SubmarineHudElements.quads[1].height) = 48;
     (g_SubmarineHudElements.quads[1].srcX) = 0;
-    (g_SubmarineHudElements.quads[1].srcY) = 0x20;
+    (g_SubmarineHudElements.quads[1].srcY) = 32;
     (g_SubmarineHudElements.quads[1].alpha) = 0;
     (g_SubmarineHudElements.quads[1].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudElements.quads[1].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1717,11 +1717,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudElements.quads[1].batches[3]) = 0;
     }
     (g_SubmarineHudElements.bar.x) = 0xFF02;
-    (g_SubmarineHudElements.bar.y) = 0x56;
+    (g_SubmarineHudElements.bar.y) = 86;
     (g_SubmarineHudElements.bar.width) = 4;
-    (g_SubmarineHudElements.bar.height) = 0x19;
-    (g_SubmarineHudElements.bar.srcX) = 0x70;
-    (g_SubmarineHudElements.bar.srcY) = 0x64;
+    (g_SubmarineHudElements.bar.height) = 25;
+    (g_SubmarineHudElements.bar.srcX) = 112;
+    (g_SubmarineHudElements.bar.srcY) = 100;
     (g_SubmarineHudElements.bar.alpha) = 0;
     (g_SubmarineHudElements.bar.colors[0]) = 0x7F404000;
     (g_SubmarineHudElements.bar.colors[1]) = 0x7F404000;
@@ -1739,11 +1739,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudElements.bar.batches[3]) = 0;
     }
     (g_SubmarineHudElements.quads2[0].x) = 0xFF02;
-    (g_SubmarineHudElements.quads2[0].y) = 0x92;
-    (g_SubmarineHudElements.quads2[0].width) = 0x1C;
-    (g_SubmarineHudElements.quads2[0].height) = 0xF;
-    (g_SubmarineHudElements.quads2[0].srcX) = 0xD8;
-    (g_SubmarineHudElements.quads2[0].srcY) = 0x40;
+    (g_SubmarineHudElements.quads2[0].y) = 146;
+    (g_SubmarineHudElements.quads2[0].width) = 28;
+    (g_SubmarineHudElements.quads2[0].height) = 15;
+    (g_SubmarineHudElements.quads2[0].srcX) = 216;
+    (g_SubmarineHudElements.quads2[0].srcY) = 64;
     (g_SubmarineHudElements.quads2[0].alpha) = 0;
     (g_SubmarineHudElements.quads2[0].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudElements.quads2[0].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -1757,11 +1757,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
         (g_SubmarineHudElements.quads2[0].batches[3]) = 0;
     }
     (g_SubmarineHudValueQuads[4].x) = 0xFEDC;
-    (g_SubmarineHudValueQuads[4].y) = 0x86;
-    (g_SubmarineHudValueQuads[4].width) = 0xE;
-    (g_SubmarineHudValueQuads[4].height) = 0xD;
-    (g_SubmarineHudValueQuads[4].srcX) = 0x40;
-    (g_SubmarineHudValueQuads[4].srcY) = 0x50;
+    (g_SubmarineHudValueQuads[4].y) = 134;
+    (g_SubmarineHudValueQuads[4].width) = 14;
+    (g_SubmarineHudValueQuads[4].height) = 13;
+    (g_SubmarineHudValueQuads[4].srcX) = 64;
+    (g_SubmarineHudValueQuads[4].srcY) = 80;
     (g_SubmarineHudValueQuads[4].alpha) = 0;
     (g_SubmarineHudValueQuads[4].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudValueQuads[4].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1769,11 +1769,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudValueQuads[4].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudValueQuads[4].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudValueQuads[5].x) = 0xFEDC;
-    (g_SubmarineHudValueQuads[5].y) = 0x86;
-    (g_SubmarineHudValueQuads[5].width) = 0xE;
-    (g_SubmarineHudValueQuads[5].height) = 0xD;
-    (g_SubmarineHudValueQuads[5].srcX) = 0x50;
-    (g_SubmarineHudValueQuads[5].srcY) = 0x50;
+    (g_SubmarineHudValueQuads[5].y) = 134;
+    (g_SubmarineHudValueQuads[5].width) = 14;
+    (g_SubmarineHudValueQuads[5].height) = 13;
+    (g_SubmarineHudValueQuads[5].srcX) = 80;
+    (g_SubmarineHudValueQuads[5].srcY) = 80;
     (g_SubmarineHudValueQuads[5].alpha) = 0;
     (g_SubmarineHudValueQuads[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudValueQuads[5].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1788,23 +1788,23 @@ void __cdecl Submarine_BuildHudElementTable(void)
             (&g_SubmarineHudValueQuads[4])[valueTail].batches[3] = 0;
         }
     }
-    (g_SubmarineHudValueQuads[0].x) = 0x104;
-    (g_SubmarineHudValueQuads[0].y) = 0x50;
-    (g_SubmarineHudValueQuads[0].width) = 0x17;
-    (g_SubmarineHudValueQuads[0].height) = 0x17;
+    (g_SubmarineHudValueQuads[0].x) = 260;
+    (g_SubmarineHudValueQuads[0].y) = 80;
+    (g_SubmarineHudValueQuads[0].width) = 23;
+    (g_SubmarineHudValueQuads[0].height) = 23;
     (g_SubmarineHudValueQuads[0].srcX) = 0;
-    (g_SubmarineHudValueQuads[0].srcY) = 0x50;
+    (g_SubmarineHudValueQuads[0].srcY) = 80;
     (g_SubmarineHudValueQuads[0].alpha) = 0;
     (g_SubmarineHudValueQuads[0].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudValueQuads[0].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudValueQuads[0].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudValueQuads[0].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudValueQuads[0].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudValueQuads[1].x) = 0x104;
-    (g_SubmarineHudValueQuads[1].y) = 0x50;
-    (g_SubmarineHudValueQuads[1].width) = 0x17;
-    (g_SubmarineHudValueQuads[1].height) = 0x17;
-    (g_SubmarineHudValueQuads[1].srcX) = 0x90;
+    (g_SubmarineHudValueQuads[1].x) = 260;
+    (g_SubmarineHudValueQuads[1].y) = 80;
+    (g_SubmarineHudValueQuads[1].width) = 23;
+    (g_SubmarineHudValueQuads[1].height) = 23;
+    (g_SubmarineHudValueQuads[1].srcX) = 144;
     (g_SubmarineHudValueQuads[1].srcY) = 0;
     (g_SubmarineHudValueQuads[1].alpha) = 0;
     (g_SubmarineHudValueQuads[1].depth) = FLOAT_0_01_BITS;
@@ -1821,11 +1821,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
         }
     }
     (g_SubmarineHudValueQuads[2].x) = 0xFECE;
-    (g_SubmarineHudValueQuads[2].y) = 0x50;
-    (g_SubmarineHudValueQuads[2].width) = 0x15;
-    (g_SubmarineHudValueQuads[2].height) = 0x15;
-    (g_SubmarineHudValueQuads[2].srcX) = 0x20;
-    (g_SubmarineHudValueQuads[2].srcY) = 0x50;
+    (g_SubmarineHudValueQuads[2].y) = 80;
+    (g_SubmarineHudValueQuads[2].width) = 21;
+    (g_SubmarineHudValueQuads[2].height) = 21;
+    (g_SubmarineHudValueQuads[2].srcX) = 32;
+    (g_SubmarineHudValueQuads[2].srcY) = 80;
     (g_SubmarineHudValueQuads[2].alpha) = 0;
     (g_SubmarineHudValueQuads[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudValueQuads[2].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1833,11 +1833,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudValueQuads[2].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudValueQuads[2].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudValueQuads[3].x) = 0xFECE;
-    (g_SubmarineHudValueQuads[3].y) = 0x50;
-    (g_SubmarineHudValueQuads[3].width) = 0x14;
-    (g_SubmarineHudValueQuads[3].height) = 0x10;
-    (g_SubmarineHudValueQuads[3].srcX) = 0x60;
-    (g_SubmarineHudValueQuads[3].srcY) = 0x81;
+    (g_SubmarineHudValueQuads[3].y) = 80;
+    (g_SubmarineHudValueQuads[3].width) = 20;
+    (g_SubmarineHudValueQuads[3].height) = 16;
+    (g_SubmarineHudValueQuads[3].srcX) = 96;
+    (g_SubmarineHudValueQuads[3].srcY) = 129;
     (g_SubmarineHudValueQuads[3].alpha) = 0;
     (g_SubmarineHudValueQuads[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudValueQuads[3].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1852,11 +1852,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
             (&g_SubmarineHudValueQuads[2])[valueMid].batches[3] = 0;
         }
     }
-    (g_SubmarineHudCooldownQuads[0].x) = 0x78;
-    (g_SubmarineHudCooldownQuads[0].y) = 0x58;
-    (g_SubmarineHudCooldownQuads[0].width) = 0xC;
-    (g_SubmarineHudCooldownQuads[0].height) = 0xC;
-    (g_SubmarineHudCooldownQuads[0].srcX) = 0x80;
+    (g_SubmarineHudCooldownQuads[0].x) = 120;
+    (g_SubmarineHudCooldownQuads[0].y) = 88;
+    (g_SubmarineHudCooldownQuads[0].width) = 12;
+    (g_SubmarineHudCooldownQuads[0].height) = 12;
+    (g_SubmarineHudCooldownQuads[0].srcX) = 128;
     (g_SubmarineHudCooldownQuads[0].srcY) = 0;
     (g_SubmarineHudCooldownQuads[0].alpha) = 0;
     (g_SubmarineHudCooldownQuads[0].depth) = FLOAT_0_01_BITS;
@@ -1865,10 +1865,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudCooldownQuads[0].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudCooldownQuads[0].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudCooldownQuads[1].x) = 0xFF70;
-    (g_SubmarineHudCooldownQuads[1].y) = 0x58;
-    (g_SubmarineHudCooldownQuads[1].width) = 0xC;
-    (g_SubmarineHudCooldownQuads[1].height) = 0xC;
-    (g_SubmarineHudCooldownQuads[1].srcX) = 0x80;
+    (g_SubmarineHudCooldownQuads[1].y) = 88;
+    (g_SubmarineHudCooldownQuads[1].width) = 12;
+    (g_SubmarineHudCooldownQuads[1].height) = 12;
+    (g_SubmarineHudCooldownQuads[1].srcX) = 128;
     (g_SubmarineHudCooldownQuads[1].srcY) = 0;
     (g_SubmarineHudCooldownQuads[1].alpha) = 0;
     (g_SubmarineHudCooldownQuads[1].depth) = FLOAT_0_01_BITS;
@@ -1876,11 +1876,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudCooldownQuads[1].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudCooldownQuads[1].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudCooldownQuads[1].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudCooldownQuads[2].x) = 0x5E;
-    (g_SubmarineHudCooldownQuads[2].y) = 0x6E;
-    (g_SubmarineHudCooldownQuads[2].width) = 0xC;
-    (g_SubmarineHudCooldownQuads[2].height) = 0xC;
-    (g_SubmarineHudCooldownQuads[2].srcX) = 0x80;
+    (g_SubmarineHudCooldownQuads[2].x) = 94;
+    (g_SubmarineHudCooldownQuads[2].y) = 110;
+    (g_SubmarineHudCooldownQuads[2].width) = 12;
+    (g_SubmarineHudCooldownQuads[2].height) = 12;
+    (g_SubmarineHudCooldownQuads[2].srcX) = 128;
     (g_SubmarineHudCooldownQuads[2].srcY) = 0;
     (g_SubmarineHudCooldownQuads[2].alpha) = 0;
     (g_SubmarineHudCooldownQuads[2].depth) = FLOAT_0_01_BITS;
@@ -1889,10 +1889,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudCooldownQuads[2].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudCooldownQuads[2].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudCooldownQuads[3].x) = 0xFF8A;
-    (g_SubmarineHudCooldownQuads[3].y) = 0x6E;
-    (g_SubmarineHudCooldownQuads[3].width) = 0xC;
-    (g_SubmarineHudCooldownQuads[3].height) = 0xC;
-    (g_SubmarineHudCooldownQuads[3].srcX) = 0x80;
+    (g_SubmarineHudCooldownQuads[3].y) = 110;
+    (g_SubmarineHudCooldownQuads[3].width) = 12;
+    (g_SubmarineHudCooldownQuads[3].height) = 12;
+    (g_SubmarineHudCooldownQuads[3].srcX) = 128;
     (g_SubmarineHudCooldownQuads[3].srcY) = 0;
     (g_SubmarineHudCooldownQuads[3].alpha) = 0;
     (g_SubmarineHudCooldownQuads[3].depth) = FLOAT_0_01_BITS;
@@ -1900,12 +1900,12 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudCooldownQuads[3].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudCooldownQuads[3].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudCooldownQuads[3].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudCooldownQuads[4].x) = 0x7C;
-    (g_SubmarineHudCooldownQuads[4].y) = 0x5C;
+    (g_SubmarineHudCooldownQuads[4].x) = 124;
+    (g_SubmarineHudCooldownQuads[4].y) = 92;
     (g_SubmarineHudCooldownQuads[4].width) = 8;
     (g_SubmarineHudCooldownQuads[4].height) = 8;
-    (g_SubmarineHudCooldownQuads[4].srcX) = 0x88;
-    (g_SubmarineHudCooldownQuads[4].srcY) = 0x10;
+    (g_SubmarineHudCooldownQuads[4].srcX) = 136;
+    (g_SubmarineHudCooldownQuads[4].srcY) = 16;
     (g_SubmarineHudCooldownQuads[4].alpha) = 3;
     (g_SubmarineHudCooldownQuads[4].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudCooldownQuads[4].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1913,23 +1913,23 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudCooldownQuads[4].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudCooldownQuads[4].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudCooldownQuads[5].x) = 0xFF74;
-    (g_SubmarineHudCooldownQuads[5].y) = 0x5C;
+    (g_SubmarineHudCooldownQuads[5].y) = 92;
     (g_SubmarineHudCooldownQuads[5].width) = 8;
     (g_SubmarineHudCooldownQuads[5].height) = 8;
-    (g_SubmarineHudCooldownQuads[5].srcX) = 0x88;
-    (g_SubmarineHudCooldownQuads[5].srcY) = 0x10;
+    (g_SubmarineHudCooldownQuads[5].srcX) = 136;
+    (g_SubmarineHudCooldownQuads[5].srcY) = 16;
     (g_SubmarineHudCooldownQuads[5].alpha) = 3;
     (g_SubmarineHudCooldownQuads[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudCooldownQuads[5].batches[0]) = g_SubmarineHudMainAtlasA;
     (g_SubmarineHudCooldownQuads[5].batches[1]) = g_SubmarineHudBatchTexB;
     (g_SubmarineHudCooldownQuads[5].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudCooldownQuads[5].batches[3]) = g_SubmarineHudBatchTexD;
-    (g_SubmarineHudCooldownQuads[6].x) = 0x62;
-    (g_SubmarineHudCooldownQuads[6].y) = 0x72;
+    (g_SubmarineHudCooldownQuads[6].x) = 98;
+    (g_SubmarineHudCooldownQuads[6].y) = 114;
     (g_SubmarineHudCooldownQuads[6].width) = 8;
     (g_SubmarineHudCooldownQuads[6].height) = 8;
-    (g_SubmarineHudCooldownQuads[6].srcX) = 0x88;
-    (g_SubmarineHudCooldownQuads[6].srcY) = 0x10;
+    (g_SubmarineHudCooldownQuads[6].srcX) = 136;
+    (g_SubmarineHudCooldownQuads[6].srcY) = 16;
     (g_SubmarineHudCooldownQuads[6].alpha) = 3;
     (g_SubmarineHudCooldownQuads[6].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudCooldownQuads[6].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1937,11 +1937,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudCooldownQuads[6].batches[2]) = g_SubmarineHudBatchTexC;
     (g_SubmarineHudCooldownQuads[6].batches[3]) = g_SubmarineHudBatchTexD;
     (g_SubmarineHudCooldownQuads[7].x) = 0xFF8E;
-    (g_SubmarineHudCooldownQuads[7].y) = 0x72;
+    (g_SubmarineHudCooldownQuads[7].y) = 114;
     (g_SubmarineHudCooldownQuads[7].width) = 8;
     (g_SubmarineHudCooldownQuads[7].height) = 8;
-    (g_SubmarineHudCooldownQuads[7].srcX) = 0x88;
-    (g_SubmarineHudCooldownQuads[7].srcY) = 0x10;
+    (g_SubmarineHudCooldownQuads[7].srcX) = 136;
+    (g_SubmarineHudCooldownQuads[7].srcY) = 16;
     (g_SubmarineHudCooldownQuads[7].alpha) = 3;
     (g_SubmarineHudCooldownQuads[7].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudCooldownQuads[7].batches[0]) = g_SubmarineHudMainAtlasA;
@@ -1958,10 +1958,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     g_SubmarineHudTallyElements.single.x = 0xFF80;
     g_SubmarineHudTallyElements.single.y = 0xFF64;
-    g_SubmarineHudTallyElements.single.width = 0x80;
-    g_SubmarineHudTallyElements.single.height = 0x3C;
+    g_SubmarineHudTallyElements.single.width = 128;
+    g_SubmarineHudTallyElements.single.height = 60;
     g_SubmarineHudTallyElements.single.srcX = 0;
-    g_SubmarineHudTallyElements.single.srcY = 0x60;
+    g_SubmarineHudTallyElements.single.srcY = 96;
     g_SubmarineHudTallyElements.single.alpha = 4;
     g_SubmarineHudTallyElements.single.depth = FLOAT_0_01_BITS;
     g_SubmarineHudTallyElements.single.batches[0] = g_SubmarineHudRenderState.renderObjectAlt;
@@ -1974,72 +1974,72 @@ void __cdecl Submarine_BuildHudElementTable(void)
         g_SubmarineHudTallyElements.single.batches[2] = 0;
         g_SubmarineHudTallyElements.single.batches[3] = 0;
     }
-    (g_SubmarineHudDigitQuads[0].x) = 0xD0;
-    (g_SubmarineHudDigitQuads[0].y) = 0x8E;
-    (g_SubmarineHudDigitQuads[0].width) = 0x2F;
-    (g_SubmarineHudDigitQuads[0].height) = 0x10;
-    (g_SubmarineHudDigitQuads[0].srcX) = 0x78;
-    (g_SubmarineHudDigitQuads[0].srcY) = 0xC8;
+    (g_SubmarineHudDigitQuads[0].x) = 208;
+    (g_SubmarineHudDigitQuads[0].y) = 142;
+    (g_SubmarineHudDigitQuads[0].width) = 47;
+    (g_SubmarineHudDigitQuads[0].height) = 16;
+    (g_SubmarineHudDigitQuads[0].srcX) = 120;
+    (g_SubmarineHudDigitQuads[0].srcY) = 200;
     (g_SubmarineHudDigitQuads[0].alpha) = 7;
     (g_SubmarineHudDigitQuads[0].depth) = FLOAT_0_005_BITS;
     (g_SubmarineHudDigitQuads[0].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudDigitQuads[0].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudDigitQuads[0].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudDigitQuads[0].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudDigitQuads[1].x) = 0xF8;
-    (g_SubmarineHudDigitQuads[1].y) = 0x96;
+    (g_SubmarineHudDigitQuads[1].x) = 248;
+    (g_SubmarineHudDigitQuads[1].y) = 150;
     (g_SubmarineHudDigitQuads[1].width) = 8;
     (g_SubmarineHudDigitQuads[1].height) = 8;
-    (g_SubmarineHudDigitQuads[1].srcX) = 0xC8;
-    (g_SubmarineHudDigitQuads[1].srcY) = 0xC0;
+    (g_SubmarineHudDigitQuads[1].srcX) = 200;
+    (g_SubmarineHudDigitQuads[1].srcY) = 192;
     (g_SubmarineHudDigitQuads[1].alpha) = 7;
     (g_SubmarineHudDigitQuads[1].depth) = 0;
     (g_SubmarineHudDigitQuads[1].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudDigitQuads[1].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudDigitQuads[1].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudDigitQuads[1].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudDigitQuads[2].x) = 0xD8;
-    (g_SubmarineHudDigitQuads[2].y) = 0x96;
+    (g_SubmarineHudDigitQuads[2].x) = 216;
+    (g_SubmarineHudDigitQuads[2].y) = 150;
     (g_SubmarineHudDigitQuads[2].width) = 8;
     (g_SubmarineHudDigitQuads[2].height) = 8;
-    (g_SubmarineHudDigitQuads[2].srcX) = 0x78;
-    (g_SubmarineHudDigitQuads[2].srcY) = 0xC0;
+    (g_SubmarineHudDigitQuads[2].srcX) = 120;
+    (g_SubmarineHudDigitQuads[2].srcY) = 192;
     (g_SubmarineHudDigitQuads[2].alpha) = 7;
     (g_SubmarineHudDigitQuads[2].depth) = 0;
     (g_SubmarineHudDigitQuads[2].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudDigitQuads[2].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudDigitQuads[2].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudDigitQuads[2].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudDigitQuads[3].x) = 0xEA;
-    (g_SubmarineHudDigitQuads[3].y) = 0x96;
+    (g_SubmarineHudDigitQuads[3].x) = 234;
+    (g_SubmarineHudDigitQuads[3].y) = 150;
     (g_SubmarineHudDigitQuads[3].width) = 8;
     (g_SubmarineHudDigitQuads[3].height) = 8;
-    (g_SubmarineHudDigitQuads[3].srcX) = 0x78;
-    (g_SubmarineHudDigitQuads[3].srcY) = 0xC0;
+    (g_SubmarineHudDigitQuads[3].srcX) = 120;
+    (g_SubmarineHudDigitQuads[3].srcY) = 192;
     (g_SubmarineHudDigitQuads[3].alpha) = 7;
     (g_SubmarineHudDigitQuads[3].depth) = 0;
     (g_SubmarineHudDigitQuads[3].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudDigitQuads[3].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudDigitQuads[3].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudDigitQuads[3].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudDigitQuads[4].x) = 0x104;
-    (g_SubmarineHudDigitQuads[4].y) = 0x96;
+    (g_SubmarineHudDigitQuads[4].x) = 260;
+    (g_SubmarineHudDigitQuads[4].y) = 150;
     (g_SubmarineHudDigitQuads[4].width) = 8;
     (g_SubmarineHudDigitQuads[4].height) = 8;
-    (g_SubmarineHudDigitQuads[4].srcX) = 0x78;
-    (g_SubmarineHudDigitQuads[4].srcY) = 0xC0;
+    (g_SubmarineHudDigitQuads[4].srcX) = 120;
+    (g_SubmarineHudDigitQuads[4].srcY) = 192;
     (g_SubmarineHudDigitQuads[4].alpha) = 7;
     (g_SubmarineHudDigitQuads[4].depth) = 0;
     (g_SubmarineHudDigitQuads[4].batches[0]) = g_SubmarineHudReadoutAtlasA;
     (g_SubmarineHudDigitQuads[4].batches[1]) = g_SubmarineHudReadoutAtlasB;
     (g_SubmarineHudDigitQuads[4].batches[2]) = g_SubmarineHudRenderObjectA;
     (g_SubmarineHudDigitQuads[4].batches[3]) = g_SubmarineHudReadoutAtlasD;
-    (g_SubmarineHudDigitQuads[5].x) = 0x116;
-    (g_SubmarineHudDigitQuads[5].y) = 0x96;
+    (g_SubmarineHudDigitQuads[5].x) = 278;
+    (g_SubmarineHudDigitQuads[5].y) = 150;
     (g_SubmarineHudDigitQuads[5].width) = 8;
     (g_SubmarineHudDigitQuads[5].height) = 8;
-    (g_SubmarineHudDigitQuads[5].srcX) = 0x78;
-    (g_SubmarineHudDigitQuads[5].srcY) = 0xC0;
+    (g_SubmarineHudDigitQuads[5].srcX) = 120;
+    (g_SubmarineHudDigitQuads[5].srcY) = 192;
     (g_SubmarineHudDigitQuads[5].alpha) = 7;
     (g_SubmarineHudDigitQuads[5].depth) = 0;
     (g_SubmarineHudDigitQuads[5].batches[0]) = g_SubmarineHudReadoutAtlasA;
@@ -2056,9 +2056,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     g_SubmarineHudFifteenElements.quads[0].x = 0xFF90;
     g_SubmarineHudFifteenElements.quads[0].y = 0xFF70;
-    g_SubmarineHudFifteenElements.quads[0].width = 0x19;
-    g_SubmarineHudFifteenElements.quads[0].height = 0x13;
-    g_SubmarineHudFifteenElements.quads[0].srcX = 0xDF;
+    g_SubmarineHudFifteenElements.quads[0].width = 25;
+    g_SubmarineHudFifteenElements.quads[0].height = 19;
+    g_SubmarineHudFifteenElements.quads[0].srcX = 223;
     g_SubmarineHudFifteenElements.quads[0].srcY = 0;
     g_SubmarineHudFifteenElements.quads[0].alpha = 5;
     g_SubmarineHudFifteenElements.quads[0].depth = FLOAT_0_01_BITS;
@@ -2068,9 +2068,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudFifteenElements.quads[0].batches[3] = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFifteenElements.quads[1].x) = 0xFFC2;
     (g_SubmarineHudFifteenElements.quads[1].y) = 0xFF70;
-    (g_SubmarineHudFifteenElements.quads[1].width) = 0xB;
-    (g_SubmarineHudFifteenElements.quads[1].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[1].srcX) = 0x9B;
+    (g_SubmarineHudFifteenElements.quads[1].width) = 11;
+    (g_SubmarineHudFifteenElements.quads[1].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[1].srcX) = 155;
     (g_SubmarineHudFifteenElements.quads[1].srcY) = 0;
     (g_SubmarineHudFifteenElements.quads[1].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[1].depth) = FLOAT_0_01_BITS;
@@ -2080,10 +2080,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[1].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFifteenElements.quads[2].x) = 0xFFDA;
     (g_SubmarineHudFifteenElements.quads[2].y) = 0xFF70;
-    (g_SubmarineHudFifteenElements.quads[2].width) = 0xE;
-    (g_SubmarineHudFifteenElements.quads[2].height) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[2].srcX) = 0x63;
-    (g_SubmarineHudFifteenElements.quads[2].srcY) = 0x16;
+    (g_SubmarineHudFifteenElements.quads[2].width) = 14;
+    (g_SubmarineHudFifteenElements.quads[2].height) = 20;
+    (g_SubmarineHudFifteenElements.quads[2].srcX) = 99;
+    (g_SubmarineHudFifteenElements.quads[2].srcY) = 22;
     (g_SubmarineHudFifteenElements.quads[2].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFifteenElements.quads[2].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2092,21 +2092,21 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[2].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFifteenElements.quads[3].x) = 0xFFFA;
     (g_SubmarineHudFifteenElements.quads[3].y) = 0xFF70;
-    (g_SubmarineHudFifteenElements.quads[3].width) = 0xE;
-    (g_SubmarineHudFifteenElements.quads[3].height) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[3].srcX) = 0x63;
-    (g_SubmarineHudFifteenElements.quads[3].srcY) = 0x16;
+    (g_SubmarineHudFifteenElements.quads[3].width) = 14;
+    (g_SubmarineHudFifteenElements.quads[3].height) = 20;
+    (g_SubmarineHudFifteenElements.quads[3].srcX) = 99;
+    (g_SubmarineHudFifteenElements.quads[3].srcY) = 22;
     (g_SubmarineHudFifteenElements.quads[3].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFifteenElements.quads[3].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudFifteenElements.quads[3].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFifteenElements.quads[3].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[3].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFifteenElements.quads[4].x) = 0x18;
+    (g_SubmarineHudFifteenElements.quads[4].x) = 24;
     (g_SubmarineHudFifteenElements.quads[4].y) = 0xFF70;
-    (g_SubmarineHudFifteenElements.quads[4].width) = 0xB;
-    (g_SubmarineHudFifteenElements.quads[4].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[4].srcX) = 0x9B;
+    (g_SubmarineHudFifteenElements.quads[4].width) = 11;
+    (g_SubmarineHudFifteenElements.quads[4].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[4].srcX) = 155;
     (g_SubmarineHudFifteenElements.quads[4].srcY) = 0;
     (g_SubmarineHudFifteenElements.quads[4].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[4].depth) = FLOAT_0_01_BITS;
@@ -2114,24 +2114,24 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[4].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFifteenElements.quads[4].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[4].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFifteenElements.quads[5].x) = 0x2E;
+    (g_SubmarineHudFifteenElements.quads[5].x) = 46;
     (g_SubmarineHudFifteenElements.quads[5].y) = 0xFF70;
-    (g_SubmarineHudFifteenElements.quads[5].width) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[5].height) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[5].srcX) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[5].srcY) = 0x16;
+    (g_SubmarineHudFifteenElements.quads[5].width) = 20;
+    (g_SubmarineHudFifteenElements.quads[5].height) = 20;
+    (g_SubmarineHudFifteenElements.quads[5].srcX) = 20;
+    (g_SubmarineHudFifteenElements.quads[5].srcY) = 22;
     (g_SubmarineHudFifteenElements.quads[5].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFifteenElements.quads[5].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudFifteenElements.quads[5].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFifteenElements.quads[5].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[5].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFifteenElements.quads[6].x) = 0x56;
+    (g_SubmarineHudFifteenElements.quads[6].x) = 86;
     (g_SubmarineHudFifteenElements.quads[6].y) = 0xFF70;
-    (g_SubmarineHudFifteenElements.quads[6].width) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[6].height) = 0x14;
+    (g_SubmarineHudFifteenElements.quads[6].width) = 19;
+    (g_SubmarineHudFifteenElements.quads[6].height) = 20;
     (g_SubmarineHudFifteenElements.quads[6].srcX) = 0;
-    (g_SubmarineHudFifteenElements.quads[6].srcY) = 0x16;
+    (g_SubmarineHudFifteenElements.quads[6].srcY) = 22;
     (g_SubmarineHudFifteenElements.quads[6].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[6].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFifteenElements.quads[6].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2140,9 +2140,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[6].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFifteenElements.quads[7].x) = 0xFF6C;
     (g_SubmarineHudFifteenElements.quads[7].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[7].width) = 0x12;
-    (g_SubmarineHudFifteenElements.quads[7].height) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[7].srcX) = 0x27;
+    (g_SubmarineHudFifteenElements.quads[7].width) = 18;
+    (g_SubmarineHudFifteenElements.quads[7].height) = 20;
+    (g_SubmarineHudFifteenElements.quads[7].srcX) = 39;
     (g_SubmarineHudFifteenElements.quads[7].srcY) = 0;
     (g_SubmarineHudFifteenElements.quads[7].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[7].depth) = FLOAT_0_01_BITS;
@@ -2152,10 +2152,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[7].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFifteenElements.quads[8].x) = 0xFF92;
     (g_SubmarineHudFifteenElements.quads[8].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[8].width) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[8].height) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[8].srcX) = 0x14;
-    (g_SubmarineHudFifteenElements.quads[8].srcY) = 0x16;
+    (g_SubmarineHudFifteenElements.quads[8].width) = 20;
+    (g_SubmarineHudFifteenElements.quads[8].height) = 20;
+    (g_SubmarineHudFifteenElements.quads[8].srcX) = 20;
+    (g_SubmarineHudFifteenElements.quads[8].srcY) = 22;
     (g_SubmarineHudFifteenElements.quads[8].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[8].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFifteenElements.quads[8].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2164,9 +2164,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[8].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFifteenElements.quads[9].x) = 0xFFBA;
     (g_SubmarineHudFifteenElements.quads[9].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[9].width) = 0x19;
-    (g_SubmarineHudFifteenElements.quads[9].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[9].srcX) = 0xDF;
+    (g_SubmarineHudFifteenElements.quads[9].width) = 25;
+    (g_SubmarineHudFifteenElements.quads[9].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[9].srcX) = 223;
     (g_SubmarineHudFifteenElements.quads[9].srcY) = 0;
     (g_SubmarineHudFifteenElements.quads[9].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[9].depth) = FLOAT_0_01_BITS;
@@ -2176,21 +2176,21 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[9].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFifteenElements.quads[10].x) = 0xFFEA;
     (g_SubmarineHudFifteenElements.quads[10].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[10].width) = 0x11;
-    (g_SubmarineHudFifteenElements.quads[10].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[10].srcX) = 0x28;
-    (g_SubmarineHudFifteenElements.quads[10].srcY) = 0x16;
+    (g_SubmarineHudFifteenElements.quads[10].width) = 17;
+    (g_SubmarineHudFifteenElements.quads[10].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[10].srcX) = 40;
+    (g_SubmarineHudFifteenElements.quads[10].srcY) = 22;
     (g_SubmarineHudFifteenElements.quads[10].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[10].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFifteenElements.quads[10].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudFifteenElements.quads[10].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFifteenElements.quads[10].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[10].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFifteenElements.quads[11].x) = 0xE;
+    (g_SubmarineHudFifteenElements.quads[11].x) = 14;
     (g_SubmarineHudFifteenElements.quads[11].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[11].width) = 0x11;
-    (g_SubmarineHudFifteenElements.quads[11].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[11].srcX) = 0xCD;
+    (g_SubmarineHudFifteenElements.quads[11].width) = 17;
+    (g_SubmarineHudFifteenElements.quads[11].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[11].srcX) = 205;
     (g_SubmarineHudFifteenElements.quads[11].srcY) = 0;
     (g_SubmarineHudFifteenElements.quads[11].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[11].depth) = FLOAT_0_01_BITS;
@@ -2198,11 +2198,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[11].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFifteenElements.quads[11].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[11].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFifteenElements.quads[12].x) = 0x30;
+    (g_SubmarineHudFifteenElements.quads[12].x) = 48;
     (g_SubmarineHudFifteenElements.quads[12].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[12].width) = 0x11;
-    (g_SubmarineHudFifteenElements.quads[12].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[12].srcX) = 0x4D;
+    (g_SubmarineHudFifteenElements.quads[12].width) = 17;
+    (g_SubmarineHudFifteenElements.quads[12].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[12].srcX) = 77;
     (g_SubmarineHudFifteenElements.quads[12].srcY) = 0;
     (g_SubmarineHudFifteenElements.quads[12].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[12].depth) = FLOAT_0_01_BITS;
@@ -2210,23 +2210,23 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[12].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFifteenElements.quads[12].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[12].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFifteenElements.quads[13].x) = 0x52;
+    (g_SubmarineHudFifteenElements.quads[13].x) = 82;
     (g_SubmarineHudFifteenElements.quads[13].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[13].width) = 0x11;
-    (g_SubmarineHudFifteenElements.quads[13].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[13].srcX) = 0x72;
-    (g_SubmarineHudFifteenElements.quads[13].srcY) = 0x16;
+    (g_SubmarineHudFifteenElements.quads[13].width) = 17;
+    (g_SubmarineHudFifteenElements.quads[13].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[13].srcX) = 114;
+    (g_SubmarineHudFifteenElements.quads[13].srcY) = 22;
     (g_SubmarineHudFifteenElements.quads[13].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[13].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFifteenElements.quads[13].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudFifteenElements.quads[13].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFifteenElements.quads[13].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[13].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFifteenElements.quads[14].x) = 0x76;
+    (g_SubmarineHudFifteenElements.quads[14].x) = 118;
     (g_SubmarineHudFifteenElements.quads[14].y) = 0xFF9E;
-    (g_SubmarineHudFifteenElements.quads[14].width) = 0x11;
-    (g_SubmarineHudFifteenElements.quads[14].height) = 0x13;
-    (g_SubmarineHudFifteenElements.quads[14].srcX) = 0x4D;
+    (g_SubmarineHudFifteenElements.quads[14].width) = 17;
+    (g_SubmarineHudFifteenElements.quads[14].height) = 19;
+    (g_SubmarineHudFifteenElements.quads[14].srcX) = 77;
     (g_SubmarineHudFifteenElements.quads[14].srcY) = 0;
     (g_SubmarineHudFifteenElements.quads[14].alpha) = 5;
     (g_SubmarineHudFifteenElements.quads[14].depth) = FLOAT_0_01_BITS;
@@ -2235,7 +2235,7 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFifteenElements.quads[14].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFifteenElements.quads[14].batches[3]) = g_SubmarineHudTextAtlasD;
     if (scaleMode != 2) {
-        for (entry15 = 0; entry15 < 0xF; entry15++) {
+        for (entry15 = 0; entry15 < 15; entry15++) {
             g_SubmarineHudFifteenElements.quads[entry15].batches[0] = g_SubmarineHudTextAtlas;
             g_SubmarineHudFifteenElements.quads[entry15].batches[1] = 0;
             g_SubmarineHudFifteenElements.quads[entry15].batches[2] = 0;
@@ -2244,9 +2244,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     g_SubmarineHudSeventeenElements[0].x = 0xFF90;
     g_SubmarineHudSeventeenElements[0].y = 0xFF70;
-    g_SubmarineHudSeventeenElements[0].width = 0x19;
-    g_SubmarineHudSeventeenElements[0].height = 0x13;
-    g_SubmarineHudSeventeenElements[0].srcX = 0xDF;
+    g_SubmarineHudSeventeenElements[0].width = 25;
+    g_SubmarineHudSeventeenElements[0].height = 19;
+    g_SubmarineHudSeventeenElements[0].srcX = 223;
     g_SubmarineHudSeventeenElements[0].srcY = 0;
     g_SubmarineHudSeventeenElements[0].alpha = 5;
     g_SubmarineHudSeventeenElements[0].depth = FLOAT_0_01_BITS;
@@ -2256,9 +2256,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudSeventeenElements[0].batches[3] = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[1].x) = 0xFFC2;
     (g_SubmarineHudSeventeenElements[1].y) = 0xFF70;
-    (g_SubmarineHudSeventeenElements[1].width) = 0xB;
-    (g_SubmarineHudSeventeenElements[1].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[1].srcX) = 0x9B;
+    (g_SubmarineHudSeventeenElements[1].width) = 11;
+    (g_SubmarineHudSeventeenElements[1].height) = 19;
+    (g_SubmarineHudSeventeenElements[1].srcX) = 155;
     (g_SubmarineHudSeventeenElements[1].srcY) = 0;
     (g_SubmarineHudSeventeenElements[1].alpha) = 5;
     (g_SubmarineHudSeventeenElements[1].depth) = FLOAT_0_01_BITS;
@@ -2268,10 +2268,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[1].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[2].x) = 0xFFDA;
     (g_SubmarineHudSeventeenElements[2].y) = 0xFF70;
-    (g_SubmarineHudSeventeenElements[2].width) = 0xE;
-    (g_SubmarineHudSeventeenElements[2].height) = 0x14;
-    (g_SubmarineHudSeventeenElements[2].srcX) = 0x63;
-    (g_SubmarineHudSeventeenElements[2].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[2].width) = 14;
+    (g_SubmarineHudSeventeenElements[2].height) = 20;
+    (g_SubmarineHudSeventeenElements[2].srcX) = 99;
+    (g_SubmarineHudSeventeenElements[2].srcY) = 22;
     (g_SubmarineHudSeventeenElements[2].alpha) = 5;
     (g_SubmarineHudSeventeenElements[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[2].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2280,21 +2280,21 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[2].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[3].x) = 0xFFFA;
     (g_SubmarineHudSeventeenElements[3].y) = 0xFF70;
-    (g_SubmarineHudSeventeenElements[3].width) = 0xE;
-    (g_SubmarineHudSeventeenElements[3].height) = 0x14;
-    (g_SubmarineHudSeventeenElements[3].srcX) = 0x63;
-    (g_SubmarineHudSeventeenElements[3].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[3].width) = 14;
+    (g_SubmarineHudSeventeenElements[3].height) = 20;
+    (g_SubmarineHudSeventeenElements[3].srcX) = 99;
+    (g_SubmarineHudSeventeenElements[3].srcY) = 22;
     (g_SubmarineHudSeventeenElements[3].alpha) = 5;
     (g_SubmarineHudSeventeenElements[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[3].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudSeventeenElements[3].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[3].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[3].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[4].x) = 0x18;
+    (g_SubmarineHudSeventeenElements[4].x) = 24;
     (g_SubmarineHudSeventeenElements[4].y) = 0xFF70;
-    (g_SubmarineHudSeventeenElements[4].width) = 0xB;
-    (g_SubmarineHudSeventeenElements[4].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[4].srcX) = 0x9B;
+    (g_SubmarineHudSeventeenElements[4].width) = 11;
+    (g_SubmarineHudSeventeenElements[4].height) = 19;
+    (g_SubmarineHudSeventeenElements[4].srcX) = 155;
     (g_SubmarineHudSeventeenElements[4].srcY) = 0;
     (g_SubmarineHudSeventeenElements[4].alpha) = 5;
     (g_SubmarineHudSeventeenElements[4].depth) = FLOAT_0_01_BITS;
@@ -2302,24 +2302,24 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[4].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[4].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[4].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[5].x) = 0x2E;
+    (g_SubmarineHudSeventeenElements[5].x) = 46;
     (g_SubmarineHudSeventeenElements[5].y) = 0xFF70;
-    (g_SubmarineHudSeventeenElements[5].width) = 0x14;
-    (g_SubmarineHudSeventeenElements[5].height) = 0x14;
-    (g_SubmarineHudSeventeenElements[5].srcX) = 0x14;
-    (g_SubmarineHudSeventeenElements[5].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[5].width) = 20;
+    (g_SubmarineHudSeventeenElements[5].height) = 20;
+    (g_SubmarineHudSeventeenElements[5].srcX) = 20;
+    (g_SubmarineHudSeventeenElements[5].srcY) = 22;
     (g_SubmarineHudSeventeenElements[5].alpha) = 5;
     (g_SubmarineHudSeventeenElements[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[5].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudSeventeenElements[5].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[5].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[5].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[6].x) = 0x56;
+    (g_SubmarineHudSeventeenElements[6].x) = 86;
     (g_SubmarineHudSeventeenElements[6].y) = 0xFF70;
-    (g_SubmarineHudSeventeenElements[6].width) = 0x13;
-    (g_SubmarineHudSeventeenElements[6].height) = 0x14;
+    (g_SubmarineHudSeventeenElements[6].width) = 19;
+    (g_SubmarineHudSeventeenElements[6].height) = 20;
     (g_SubmarineHudSeventeenElements[6].srcX) = 0;
-    (g_SubmarineHudSeventeenElements[6].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[6].srcY) = 22;
     (g_SubmarineHudSeventeenElements[6].alpha) = 5;
     (g_SubmarineHudSeventeenElements[6].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[6].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2328,9 +2328,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[6].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[7].x) = 0xFF4E;
     (g_SubmarineHudSeventeenElements[7].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[7].width) = 0xB;
-    (g_SubmarineHudSeventeenElements[7].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[7].srcX) = 0x9B;
+    (g_SubmarineHudSeventeenElements[7].width) = 11;
+    (g_SubmarineHudSeventeenElements[7].height) = 19;
+    (g_SubmarineHudSeventeenElements[7].srcX) = 155;
     (g_SubmarineHudSeventeenElements[7].srcY) = 0;
     (g_SubmarineHudSeventeenElements[7].alpha) = 5;
     (g_SubmarineHudSeventeenElements[7].depth) = FLOAT_0_01_BITS;
@@ -2340,10 +2340,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[7].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[8].x) = 0xFF66;
     (g_SubmarineHudSeventeenElements[8].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[8].width) = 0x13;
-    (g_SubmarineHudSeventeenElements[8].height) = 0x14;
+    (g_SubmarineHudSeventeenElements[8].width) = 19;
+    (g_SubmarineHudSeventeenElements[8].height) = 20;
     (g_SubmarineHudSeventeenElements[8].srcX) = 0;
-    (g_SubmarineHudSeventeenElements[8].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[8].srcY) = 22;
     (g_SubmarineHudSeventeenElements[8].alpha) = 5;
     (g_SubmarineHudSeventeenElements[8].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[8].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2352,9 +2352,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[8].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[9].x) = 0xFF8C;
     (g_SubmarineHudSeventeenElements[9].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[9].width) = 0x12;
-    (g_SubmarineHudSeventeenElements[9].height) = 0x14;
-    (g_SubmarineHudSeventeenElements[9].srcX) = 0x27;
+    (g_SubmarineHudSeventeenElements[9].width) = 18;
+    (g_SubmarineHudSeventeenElements[9].height) = 20;
+    (g_SubmarineHudSeventeenElements[9].srcX) = 39;
     (g_SubmarineHudSeventeenElements[9].srcY) = 0;
     (g_SubmarineHudSeventeenElements[9].alpha) = 5;
     (g_SubmarineHudSeventeenElements[9].depth) = FLOAT_0_01_BITS;
@@ -2364,10 +2364,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[9].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[10].x) = 0xFFB2;
     (g_SubmarineHudSeventeenElements[10].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[10].width) = 0x14;
-    (g_SubmarineHudSeventeenElements[10].height) = 0x14;
-    (g_SubmarineHudSeventeenElements[10].srcX) = 0x14;
-    (g_SubmarineHudSeventeenElements[10].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[10].width) = 20;
+    (g_SubmarineHudSeventeenElements[10].height) = 20;
+    (g_SubmarineHudSeventeenElements[10].srcX) = 20;
+    (g_SubmarineHudSeventeenElements[10].srcY) = 22;
     (g_SubmarineHudSeventeenElements[10].alpha) = 5;
     (g_SubmarineHudSeventeenElements[10].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[10].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2376,9 +2376,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[10].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudSeventeenElements[11].x) = 0xFFDA;
     (g_SubmarineHudSeventeenElements[11].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[11].width) = 0x19;
-    (g_SubmarineHudSeventeenElements[11].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[11].srcX) = 0xDF;
+    (g_SubmarineHudSeventeenElements[11].width) = 25;
+    (g_SubmarineHudSeventeenElements[11].height) = 19;
+    (g_SubmarineHudSeventeenElements[11].srcX) = 223;
     (g_SubmarineHudSeventeenElements[11].srcY) = 0;
     (g_SubmarineHudSeventeenElements[11].alpha) = 5;
     (g_SubmarineHudSeventeenElements[11].depth) = FLOAT_0_01_BITS;
@@ -2386,23 +2386,23 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[11].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[11].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[11].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[12].x) = 0xA;
+    (g_SubmarineHudSeventeenElements[12].x) = 10;
     (g_SubmarineHudSeventeenElements[12].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[12].width) = 0x11;
-    (g_SubmarineHudSeventeenElements[12].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[12].srcX) = 0x28;
-    (g_SubmarineHudSeventeenElements[12].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[12].width) = 17;
+    (g_SubmarineHudSeventeenElements[12].height) = 19;
+    (g_SubmarineHudSeventeenElements[12].srcX) = 40;
+    (g_SubmarineHudSeventeenElements[12].srcY) = 22;
     (g_SubmarineHudSeventeenElements[12].alpha) = 5;
     (g_SubmarineHudSeventeenElements[12].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[12].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudSeventeenElements[12].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[12].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[12].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[13].x) = 0x2E;
+    (g_SubmarineHudSeventeenElements[13].x) = 46;
     (g_SubmarineHudSeventeenElements[13].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[13].width) = 0x11;
-    (g_SubmarineHudSeventeenElements[13].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[13].srcX) = 0xCD;
+    (g_SubmarineHudSeventeenElements[13].width) = 17;
+    (g_SubmarineHudSeventeenElements[13].height) = 19;
+    (g_SubmarineHudSeventeenElements[13].srcX) = 205;
     (g_SubmarineHudSeventeenElements[13].srcY) = 0;
     (g_SubmarineHudSeventeenElements[13].alpha) = 5;
     (g_SubmarineHudSeventeenElements[13].depth) = FLOAT_0_01_BITS;
@@ -2410,11 +2410,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[13].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[13].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[13].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[14].x) = 0x50;
+    (g_SubmarineHudSeventeenElements[14].x) = 80;
     (g_SubmarineHudSeventeenElements[14].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[14].width) = 0x11;
-    (g_SubmarineHudSeventeenElements[14].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[14].srcX) = 0x4D;
+    (g_SubmarineHudSeventeenElements[14].width) = 17;
+    (g_SubmarineHudSeventeenElements[14].height) = 19;
+    (g_SubmarineHudSeventeenElements[14].srcX) = 77;
     (g_SubmarineHudSeventeenElements[14].srcY) = 0;
     (g_SubmarineHudSeventeenElements[14].alpha) = 5;
     (g_SubmarineHudSeventeenElements[14].depth) = FLOAT_0_01_BITS;
@@ -2422,23 +2422,23 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[14].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[14].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[14].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[15].x) = 0x72;
+    (g_SubmarineHudSeventeenElements[15].x) = 114;
     (g_SubmarineHudSeventeenElements[15].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[15].width) = 0x11;
-    (g_SubmarineHudSeventeenElements[15].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[15].srcX) = 0x72;
-    (g_SubmarineHudSeventeenElements[15].srcY) = 0x16;
+    (g_SubmarineHudSeventeenElements[15].width) = 17;
+    (g_SubmarineHudSeventeenElements[15].height) = 19;
+    (g_SubmarineHudSeventeenElements[15].srcX) = 114;
+    (g_SubmarineHudSeventeenElements[15].srcY) = 22;
     (g_SubmarineHudSeventeenElements[15].alpha) = 5;
     (g_SubmarineHudSeventeenElements[15].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudSeventeenElements[15].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudSeventeenElements[15].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudSeventeenElements[15].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[15].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudSeventeenElements[16].x) = 0x96;
+    (g_SubmarineHudSeventeenElements[16].x) = 150;
     (g_SubmarineHudSeventeenElements[16].y) = 0xFF9E;
-    (g_SubmarineHudSeventeenElements[16].width) = 0x11;
-    (g_SubmarineHudSeventeenElements[16].height) = 0x13;
-    (g_SubmarineHudSeventeenElements[16].srcX) = 0x4D;
+    (g_SubmarineHudSeventeenElements[16].width) = 17;
+    (g_SubmarineHudSeventeenElements[16].height) = 19;
+    (g_SubmarineHudSeventeenElements[16].srcX) = 77;
     (g_SubmarineHudSeventeenElements[16].srcY) = 0;
     (g_SubmarineHudSeventeenElements[16].alpha) = 5;
     (g_SubmarineHudSeventeenElements[16].depth) = FLOAT_0_01_BITS;
@@ -2447,7 +2447,7 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudSeventeenElements[16].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudSeventeenElements[16].batches[3]) = g_SubmarineHudTextAtlasD;
     if (scaleMode != 2) {
-        for (workSeventeenIdx = 0; workSeventeenIdx < 0x11; workSeventeenIdx++) {
+        for (workSeventeenIdx = 0; workSeventeenIdx < 17; workSeventeenIdx++) {
             g_SubmarineHudSeventeenElements[workSeventeenIdx].batches[0] = g_SubmarineHudTextAtlas;
             g_SubmarineHudSeventeenElements[workSeventeenIdx].batches[1] = 0;
             g_SubmarineHudSeventeenElements[workSeventeenIdx].batches[2] = 0;
@@ -2456,10 +2456,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     g_SubmarineHudNineElements[0].x = 0xFF5E;
     g_SubmarineHudNineElements[0].y = 0xFF87;
-    g_SubmarineHudNineElements[0].width = 0x11;
-    g_SubmarineHudNineElements[0].height = 0x13;
-    g_SubmarineHudNineElements[0].srcX = 0x72;
-    g_SubmarineHudNineElements[0].srcY = 0x16;
+    g_SubmarineHudNineElements[0].width = 17;
+    g_SubmarineHudNineElements[0].height = 19;
+    g_SubmarineHudNineElements[0].srcX = 114;
+    g_SubmarineHudNineElements[0].srcY = 22;
     g_SubmarineHudNineElements[0].alpha = 5;
     g_SubmarineHudNineElements[0].depth = FLOAT_0_01_BITS;
     g_SubmarineHudNineElements[0].batches[0] = g_SubmarineHudTextAtlasA;
@@ -2468,9 +2468,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudNineElements[0].batches[3] = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudNineElements[1].x) = 0xFF82;
     (g_SubmarineHudNineElements[1].y) = 0xFF87;
-    (g_SubmarineHudNineElements[1].width) = 0xB;
-    (g_SubmarineHudNineElements[1].height) = 0x13;
-    (g_SubmarineHudNineElements[1].srcX) = 0x9B;
+    (g_SubmarineHudNineElements[1].width) = 11;
+    (g_SubmarineHudNineElements[1].height) = 19;
+    (g_SubmarineHudNineElements[1].srcX) = 155;
     (g_SubmarineHudNineElements[1].srcY) = 0;
     (g_SubmarineHudNineElements[1].alpha) = 5;
     (g_SubmarineHudNineElements[1].depth) = FLOAT_0_01_BITS;
@@ -2480,9 +2480,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudNineElements[1].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudNineElements[2].x) = 0xFF9A;
     (g_SubmarineHudNineElements[2].y) = 0xFF87;
-    (g_SubmarineHudNineElements[2].width) = 0x19;
-    (g_SubmarineHudNineElements[2].height) = 0x13;
-    (g_SubmarineHudNineElements[2].srcX) = 0xDF;
+    (g_SubmarineHudNineElements[2].width) = 25;
+    (g_SubmarineHudNineElements[2].height) = 19;
+    (g_SubmarineHudNineElements[2].srcX) = 223;
     (g_SubmarineHudNineElements[2].srcY) = 0;
     (g_SubmarineHudNineElements[2].alpha) = 5;
     (g_SubmarineHudNineElements[2].depth) = FLOAT_0_01_BITS;
@@ -2492,9 +2492,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudNineElements[2].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudNineElements[3].x) = 0xFFCE;
     (g_SubmarineHudNineElements[3].y) = 0xFF87;
-    (g_SubmarineHudNineElements[3].width) = 0x11;
-    (g_SubmarineHudNineElements[3].height) = 0x13;
-    (g_SubmarineHudNineElements[3].srcX) = 0x4D;
+    (g_SubmarineHudNineElements[3].width) = 17;
+    (g_SubmarineHudNineElements[3].height) = 19;
+    (g_SubmarineHudNineElements[3].srcX) = 77;
     (g_SubmarineHudNineElements[3].srcY) = 0;
     (g_SubmarineHudNineElements[3].alpha) = 5;
     (g_SubmarineHudNineElements[3].depth) = FLOAT_0_01_BITS;
@@ -2504,9 +2504,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudNineElements[3].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudNineElements[4].x) = 0xFFF2;
     (g_SubmarineHudNineElements[4].y) = 0xFF87;
-    (g_SubmarineHudNineElements[4].width) = 0x11;
-    (g_SubmarineHudNineElements[4].height) = 0x13;
-    (g_SubmarineHudNineElements[4].srcX) = 0xCD;
+    (g_SubmarineHudNineElements[4].width) = 17;
+    (g_SubmarineHudNineElements[4].height) = 19;
+    (g_SubmarineHudNineElements[4].srcX) = 205;
     (g_SubmarineHudNineElements[4].srcY) = 0;
     (g_SubmarineHudNineElements[4].alpha) = 5;
     (g_SubmarineHudNineElements[4].depth) = FLOAT_0_01_BITS;
@@ -2514,11 +2514,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudNineElements[4].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudNineElements[4].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudNineElements[4].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudNineElements[5].x) = 0x14;
+    (g_SubmarineHudNineElements[5].x) = 20;
     (g_SubmarineHudNineElements[5].y) = 0xFF87;
-    (g_SubmarineHudNineElements[5].width) = 0xB;
-    (g_SubmarineHudNineElements[5].height) = 0x13;
-    (g_SubmarineHudNineElements[5].srcX) = 0x9B;
+    (g_SubmarineHudNineElements[5].width) = 11;
+    (g_SubmarineHudNineElements[5].height) = 19;
+    (g_SubmarineHudNineElements[5].srcX) = 155;
     (g_SubmarineHudNineElements[5].srcY) = 0;
     (g_SubmarineHudNineElements[5].alpha) = 5;
     (g_SubmarineHudNineElements[5].depth) = FLOAT_0_01_BITS;
@@ -2526,11 +2526,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudNineElements[5].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudNineElements[5].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudNineElements[5].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudNineElements[6].x) = 0x2C;
+    (g_SubmarineHudNineElements[6].x) = 44;
     (g_SubmarineHudNineElements[6].y) = 0xFF87;
-    (g_SubmarineHudNineElements[6].width) = 0x19;
-    (g_SubmarineHudNineElements[6].height) = 0x13;
-    (g_SubmarineHudNineElements[6].srcX) = 0xDF;
+    (g_SubmarineHudNineElements[6].width) = 25;
+    (g_SubmarineHudNineElements[6].height) = 19;
+    (g_SubmarineHudNineElements[6].srcX) = 223;
     (g_SubmarineHudNineElements[6].srcY) = 0;
     (g_SubmarineHudNineElements[6].alpha) = 5;
     (g_SubmarineHudNineElements[6].depth) = FLOAT_0_01_BITS;
@@ -2538,11 +2538,11 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudNineElements[6].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudNineElements[6].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudNineElements[6].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudNineElements[7].x) = 0x60;
+    (g_SubmarineHudNineElements[7].x) = 96;
     (g_SubmarineHudNineElements[7].y) = 0xFF87;
-    (g_SubmarineHudNineElements[7].width) = 0xB;
-    (g_SubmarineHudNineElements[7].height) = 0x13;
-    (g_SubmarineHudNineElements[7].srcX) = 0x9B;
+    (g_SubmarineHudNineElements[7].width) = 11;
+    (g_SubmarineHudNineElements[7].height) = 19;
+    (g_SubmarineHudNineElements[7].srcX) = 155;
     (g_SubmarineHudNineElements[7].srcY) = 0;
     (g_SubmarineHudNineElements[7].alpha) = 5;
     (g_SubmarineHudNineElements[7].depth) = FLOAT_0_01_BITS;
@@ -2550,12 +2550,12 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudNineElements[7].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudNineElements[7].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudNineElements[7].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudNineElements[8].x) = 0x78;
+    (g_SubmarineHudNineElements[8].x) = 120;
     (g_SubmarineHudNineElements[8].y) = 0xFF87;
-    (g_SubmarineHudNineElements[8].width) = 0x11;
-    (g_SubmarineHudNineElements[8].height) = 0x13;
-    (g_SubmarineHudNineElements[8].srcX) = 0x72;
-    (g_SubmarineHudNineElements[8].srcY) = 0x16;
+    (g_SubmarineHudNineElements[8].width) = 17;
+    (g_SubmarineHudNineElements[8].height) = 19;
+    (g_SubmarineHudNineElements[8].srcX) = 114;
+    (g_SubmarineHudNineElements[8].srcY) = 22;
     (g_SubmarineHudNineElements[8].alpha) = 5;
     (g_SubmarineHudNineElements[8].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudNineElements[8].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2572,10 +2572,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     g_SubmarineHudFiveQuadRecords.quads[0].x = 0xFFB8;
     g_SubmarineHudFiveQuadRecords.quads[0].y = 0xFFE4;
-    g_SubmarineHudFiveQuadRecords.quads[0].width = 0x11;
-    g_SubmarineHudFiveQuadRecords.quads[0].height = 0x13;
-    g_SubmarineHudFiveQuadRecords.quads[0].srcX = 0x28;
-    g_SubmarineHudFiveQuadRecords.quads[0].srcY = 0x16;
+    g_SubmarineHudFiveQuadRecords.quads[0].width = 17;
+    g_SubmarineHudFiveQuadRecords.quads[0].height = 19;
+    g_SubmarineHudFiveQuadRecords.quads[0].srcX = 40;
+    g_SubmarineHudFiveQuadRecords.quads[0].srcY = 22;
     g_SubmarineHudFiveQuadRecords.quads[0].alpha = 1;
     g_SubmarineHudFiveQuadRecords.quads[0].depth = FLOAT_0_01_BITS;
     g_SubmarineHudFiveQuadRecords.quads[0].batches[0] = g_SubmarineHudTextAtlasA;
@@ -2584,8 +2584,8 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudFiveQuadRecords.quads[0].batches[3] = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFiveQuadRecords.quads[1].x) = 0xFFD0;
     (g_SubmarineHudFiveQuadRecords.quads[1].y) = 0xFFE4;
-    (g_SubmarineHudFiveQuadRecords.quads[1].width) = 0x13;
-    (g_SubmarineHudFiveQuadRecords.quads[1].height) = 0x13;
+    (g_SubmarineHudFiveQuadRecords.quads[1].width) = 19;
+    (g_SubmarineHudFiveQuadRecords.quads[1].height) = 19;
     (g_SubmarineHudFiveQuadRecords.quads[1].srcX) = 0;
     (g_SubmarineHudFiveQuadRecords.quads[1].srcY) = 0;
     (g_SubmarineHudFiveQuadRecords.quads[1].alpha) = 1;
@@ -2596,33 +2596,33 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudFiveQuadRecords.quads[1].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudFiveQuadRecords.quads[2].x) = 0xFFEE;
     (g_SubmarineHudFiveQuadRecords.quads[2].y) = 0xFFE4;
-    (g_SubmarineHudFiveQuadRecords.quads[2].width) = 0x13;
-    (g_SubmarineHudFiveQuadRecords.quads[2].height) = 0x14;
-    (g_SubmarineHudFiveQuadRecords.quads[2].srcX) = 0x84;
-    (g_SubmarineHudFiveQuadRecords.quads[2].srcY) = 0x16;
+    (g_SubmarineHudFiveQuadRecords.quads[2].width) = 19;
+    (g_SubmarineHudFiveQuadRecords.quads[2].height) = 20;
+    (g_SubmarineHudFiveQuadRecords.quads[2].srcX) = 132;
+    (g_SubmarineHudFiveQuadRecords.quads[2].srcY) = 22;
     (g_SubmarineHudFiveQuadRecords.quads[2].alpha) = 1;
     (g_SubmarineHudFiveQuadRecords.quads[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFiveQuadRecords.quads[2].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudFiveQuadRecords.quads[2].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFiveQuadRecords.quads[2].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFiveQuadRecords.quads[2].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFiveQuadRecords.quads[3].x) = 0x10;
+    (g_SubmarineHudFiveQuadRecords.quads[3].x) = 16;
     (g_SubmarineHudFiveQuadRecords.quads[3].y) = 0xFFE4;
-    (g_SubmarineHudFiveQuadRecords.quads[3].width) = 0xE;
-    (g_SubmarineHudFiveQuadRecords.quads[3].height) = 0x14;
-    (g_SubmarineHudFiveQuadRecords.quads[3].srcX) = 0x63;
-    (g_SubmarineHudFiveQuadRecords.quads[3].srcY) = 0x16;
+    (g_SubmarineHudFiveQuadRecords.quads[3].width) = 14;
+    (g_SubmarineHudFiveQuadRecords.quads[3].height) = 20;
+    (g_SubmarineHudFiveQuadRecords.quads[3].srcX) = 99;
+    (g_SubmarineHudFiveQuadRecords.quads[3].srcY) = 22;
     (g_SubmarineHudFiveQuadRecords.quads[3].alpha) = 1;
     (g_SubmarineHudFiveQuadRecords.quads[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudFiveQuadRecords.quads[3].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudFiveQuadRecords.quads[3].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudFiveQuadRecords.quads[3].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudFiveQuadRecords.quads[3].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudFiveQuadRecords.quads[4].x) = 0x28;
+    (g_SubmarineHudFiveQuadRecords.quads[4].x) = 40;
     (g_SubmarineHudFiveQuadRecords.quads[4].y) = 0xFFE4;
-    (g_SubmarineHudFiveQuadRecords.quads[4].width) = 0x11;
-    (g_SubmarineHudFiveQuadRecords.quads[4].height) = 0x13;
-    (g_SubmarineHudFiveQuadRecords.quads[4].srcX) = 0x4D;
+    (g_SubmarineHudFiveQuadRecords.quads[4].width) = 17;
+    (g_SubmarineHudFiveQuadRecords.quads[4].height) = 19;
+    (g_SubmarineHudFiveQuadRecords.quads[4].srcX) = 77;
     (g_SubmarineHudFiveQuadRecords.quads[4].srcY) = 0;
     (g_SubmarineHudFiveQuadRecords.quads[4].alpha) = 1;
     (g_SubmarineHudFiveQuadRecords.quads[4].depth) = FLOAT_0_01_BITS;
@@ -2641,10 +2641,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudRenderState.hudRecordPtr) = 0;
     g_SubmarineHudRenderState.swapQuads[0].x = 0xFFB4;
     g_SubmarineHudRenderState.swapQuads[0].y = 0xFF70;
-    g_SubmarineHudRenderState.swapQuads[0].width = 0x14;
-    g_SubmarineHudRenderState.swapQuads[0].height = 0x17;
-    g_SubmarineHudRenderState.swapQuads[0].srcX = 0x3A;
-    g_SubmarineHudRenderState.swapQuads[0].srcY = 0x16;
+    g_SubmarineHudRenderState.swapQuads[0].width = 20;
+    g_SubmarineHudRenderState.swapQuads[0].height = 23;
+    g_SubmarineHudRenderState.swapQuads[0].srcX = 58;
+    g_SubmarineHudRenderState.swapQuads[0].srcY = 22;
     g_SubmarineHudRenderState.swapQuads[0].alpha = 5;
     g_SubmarineHudRenderState.swapQuads[0].depth = FLOAT_0_01_BITS;
     g_SubmarineHudRenderState.swapQuads[0].batches[0] = g_SubmarineHudTextAtlasA;
@@ -2653,10 +2653,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudRenderState.swapQuads[0].batches[3] = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudRenderState.swapQuads[1].x) = 0xFFDC;
     (g_SubmarineHudRenderState.swapQuads[1].y) = 0xFF70;
-    (g_SubmarineHudRenderState.swapQuads[1].width) = 0x13;
-    (g_SubmarineHudRenderState.swapQuads[1].height) = 0x14;
-    (g_SubmarineHudRenderState.swapQuads[1].srcX) = 0x84;
-    (g_SubmarineHudRenderState.swapQuads[1].srcY) = 0x16;
+    (g_SubmarineHudRenderState.swapQuads[1].width) = 19;
+    (g_SubmarineHudRenderState.swapQuads[1].height) = 20;
+    (g_SubmarineHudRenderState.swapQuads[1].srcX) = 132;
+    (g_SubmarineHudRenderState.swapQuads[1].srcY) = 22;
     (g_SubmarineHudRenderState.swapQuads[1].alpha) = 5;
     (g_SubmarineHudRenderState.swapQuads[1].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRenderState.swapQuads[1].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2665,9 +2665,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudRenderState.swapQuads[1].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudRenderState.swapQuads[2].x) = 4;
     (g_SubmarineHudRenderState.swapQuads[2].y) = 0xFF70;
-    (g_SubmarineHudRenderState.swapQuads[2].width) = 0xB;
-    (g_SubmarineHudRenderState.swapQuads[2].height) = 0x13;
-    (g_SubmarineHudRenderState.swapQuads[2].srcX) = 0x9B;
+    (g_SubmarineHudRenderState.swapQuads[2].width) = 11;
+    (g_SubmarineHudRenderState.swapQuads[2].height) = 19;
+    (g_SubmarineHudRenderState.swapQuads[2].srcX) = 155;
     (g_SubmarineHudRenderState.swapQuads[2].srcY) = 0;
     (g_SubmarineHudRenderState.swapQuads[2].alpha) = 5;
     (g_SubmarineHudRenderState.swapQuads[2].depth) = FLOAT_0_01_BITS;
@@ -2675,24 +2675,24 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudRenderState.swapQuads[2].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudRenderState.swapQuads[2].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudRenderState.swapQuads[2].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudRenderState.swapQuads[3].x) = 0x1C;
+    (g_SubmarineHudRenderState.swapQuads[3].x) = 28;
     (g_SubmarineHudRenderState.swapQuads[3].y) = 0xFF70;
-    (g_SubmarineHudRenderState.swapQuads[3].width) = 0x11;
-    (g_SubmarineHudRenderState.swapQuads[3].height) = 0x13;
-    (g_SubmarineHudRenderState.swapQuads[3].srcX) = 0x72;
-    (g_SubmarineHudRenderState.swapQuads[3].srcY) = 0x16;
+    (g_SubmarineHudRenderState.swapQuads[3].width) = 17;
+    (g_SubmarineHudRenderState.swapQuads[3].height) = 19;
+    (g_SubmarineHudRenderState.swapQuads[3].srcX) = 114;
+    (g_SubmarineHudRenderState.swapQuads[3].srcY) = 22;
     (g_SubmarineHudRenderState.swapQuads[3].alpha) = 5;
     (g_SubmarineHudRenderState.swapQuads[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRenderState.swapQuads[3].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudRenderState.swapQuads[3].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudRenderState.swapQuads[3].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudRenderState.swapQuads[3].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudRenderState.swapQuads[4].x) = 0x42;
+    (g_SubmarineHudRenderState.swapQuads[4].x) = 66;
     (g_SubmarineHudRenderState.swapQuads[4].y) = 0xFF70;
-    (g_SubmarineHudRenderState.swapQuads[4].width) = 0xC;
-    (g_SubmarineHudRenderState.swapQuads[4].height) = 0x14;
-    (g_SubmarineHudRenderState.swapQuads[4].srcX) = 0xB0;
-    (g_SubmarineHudRenderState.swapQuads[4].srcY) = 0x30;
+    (g_SubmarineHudRenderState.swapQuads[4].width) = 12;
+    (g_SubmarineHudRenderState.swapQuads[4].height) = 20;
+    (g_SubmarineHudRenderState.swapQuads[4].srcX) = 176;
+    (g_SubmarineHudRenderState.swapQuads[4].srcY) = 48;
     (g_SubmarineHudRenderState.swapQuads[4].alpha) = 5;
     (g_SubmarineHudRenderState.swapQuads[4].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudRenderState.swapQuads[4].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2701,10 +2701,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudRenderState.swapQuads[4].batches[3]) = g_SubmarineHudTextAtlasD;
     g_SubmarineHudRenderState.swapQuads[5].x = 0xFFCC;
     g_SubmarineHudRenderState.swapQuads[5].y = 0xFFA8;
-    g_SubmarineHudRenderState.swapQuads[5].width = 0x13;
-    g_SubmarineHudRenderState.swapQuads[5].height = 0x13;
-    g_SubmarineHudRenderState.swapQuads[5].srcX = 0xDA;
-    g_SubmarineHudRenderState.swapQuads[5].srcY = 0x16;
+    g_SubmarineHudRenderState.swapQuads[5].width = 19;
+    g_SubmarineHudRenderState.swapQuads[5].height = 19;
+    g_SubmarineHudRenderState.swapQuads[5].srcX = 218;
+    g_SubmarineHudRenderState.swapQuads[5].srcY = 22;
     g_SubmarineHudRenderState.swapQuads[5].alpha = 5;
     g_SubmarineHudRenderState.swapQuads[5].depth = FLOAT_0_01_BITS;
     g_SubmarineHudRenderState.swapQuads[5].batches[0] = g_SubmarineHudTextAtlasA;
@@ -2713,22 +2713,22 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudRenderState.swapQuads[5].batches[3] = g_SubmarineHudTextAtlasD;
     g_SubmarineHudRenderState.swapQuads[6].x = 0xFFF2;
     g_SubmarineHudRenderState.swapQuads[6].y = 0xFFA8;
-    g_SubmarineHudRenderState.swapQuads[6].width = 0xA;
-    g_SubmarineHudRenderState.swapQuads[6].height = 0x13;
-    g_SubmarineHudRenderState.swapQuads[6].srcX = 0xA0;
-    g_SubmarineHudRenderState.swapQuads[6].srcY = 0x30;
+    g_SubmarineHudRenderState.swapQuads[6].width = 10;
+    g_SubmarineHudRenderState.swapQuads[6].height = 19;
+    g_SubmarineHudRenderState.swapQuads[6].srcX = 160;
+    g_SubmarineHudRenderState.swapQuads[6].srcY = 48;
     g_SubmarineHudRenderState.swapQuads[6].alpha = 5;
     g_SubmarineHudRenderState.swapQuads[6].depth = FLOAT_0_01_BITS;
     g_SubmarineHudRenderState.swapQuads[6].batches[0] = g_SubmarineHudTextAtlasA;
     g_SubmarineHudRenderState.swapQuads[6].batches[1] = g_SubmarineHudTextAtlasB;
     g_SubmarineHudRenderState.swapQuads[6].batches[2] = g_SubmarineHudTextAtlasC;
     g_SubmarineHudRenderState.swapQuads[6].batches[3] = g_SubmarineHudTextAtlasD;
-    g_SubmarineHudRenderState.swapQuads[7].x = 0xA;
+    g_SubmarineHudRenderState.swapQuads[7].x = 10;
     g_SubmarineHudRenderState.swapQuads[7].y = 0xFFA8;
-    g_SubmarineHudRenderState.swapQuads[7].width = 0x13;
-    g_SubmarineHudRenderState.swapQuads[7].height = 0x14;
+    g_SubmarineHudRenderState.swapQuads[7].width = 19;
+    g_SubmarineHudRenderState.swapQuads[7].height = 20;
     g_SubmarineHudRenderState.swapQuads[7].srcX = 0;
-    g_SubmarineHudRenderState.swapQuads[7].srcY = 0x16;
+    g_SubmarineHudRenderState.swapQuads[7].srcY = 22;
     g_SubmarineHudRenderState.swapQuads[7].alpha = 5;
     g_SubmarineHudRenderState.swapQuads[7].depth = FLOAT_0_01_BITS;
     g_SubmarineHudRenderState.swapQuads[7].batches[0] = g_SubmarineHudTextAtlasA;
@@ -2745,10 +2745,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     g_SubmarineHudTallyElements.quads[0].x = 0xFF4C;
     g_SubmarineHudTallyElements.quads[0].y = 0xFF68;
-    g_SubmarineHudTallyElements.quads[0].width = 0x11;
-    g_SubmarineHudTallyElements.quads[0].height = 0x13;
-    g_SubmarineHudTallyElements.quads[0].srcX = 0x72;
-    g_SubmarineHudTallyElements.quads[0].srcY = 0x16;
+    g_SubmarineHudTallyElements.quads[0].width = 17;
+    g_SubmarineHudTallyElements.quads[0].height = 19;
+    g_SubmarineHudTallyElements.quads[0].srcX = 114;
+    g_SubmarineHudTallyElements.quads[0].srcY = 22;
     g_SubmarineHudTallyElements.quads[0].alpha = 7;
     g_SubmarineHudTallyElements.quads[0].depth = FLOAT_0_01_BITS;
     g_SubmarineHudTallyElements.quads[0].batches[0] = g_SubmarineHudTextAtlasA;
@@ -2757,8 +2757,8 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudTallyElements.quads[0].batches[3] = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudTallyElements.quads[1].x) = 0xFF6A;
     (g_SubmarineHudTallyElements.quads[1].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[1].width) = 0x13;
-    (g_SubmarineHudTallyElements.quads[1].height) = 0x13;
+    (g_SubmarineHudTallyElements.quads[1].width) = 19;
+    (g_SubmarineHudTallyElements.quads[1].height) = 19;
     (g_SubmarineHudTallyElements.quads[1].srcX) = 0;
     (g_SubmarineHudTallyElements.quads[1].srcY) = 0;
     (g_SubmarineHudTallyElements.quads[1].alpha) = 7;
@@ -2769,10 +2769,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudTallyElements.quads[1].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudTallyElements.quads[2].x) = 0xFF8E;
     (g_SubmarineHudTallyElements.quads[2].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[2].width) = 0x13;
-    (g_SubmarineHudTallyElements.quads[2].height) = 0x13;
-    (g_SubmarineHudTallyElements.quads[2].srcX) = 0x4F;
-    (g_SubmarineHudTallyElements.quads[2].srcY) = 0x16;
+    (g_SubmarineHudTallyElements.quads[2].width) = 19;
+    (g_SubmarineHudTallyElements.quads[2].height) = 19;
+    (g_SubmarineHudTallyElements.quads[2].srcX) = 79;
+    (g_SubmarineHudTallyElements.quads[2].srcY) = 22;
     (g_SubmarineHudTallyElements.quads[2].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudTallyElements.quads[2].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2781,9 +2781,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudTallyElements.quads[2].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudTallyElements.quads[3].x) = 0xFFB2;
     (g_SubmarineHudTallyElements.quads[3].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[3].width) = 0x14;
-    (g_SubmarineHudTallyElements.quads[3].height) = 0x14;
-    (g_SubmarineHudTallyElements.quads[3].srcX) = 0x70;
+    (g_SubmarineHudTallyElements.quads[3].width) = 20;
+    (g_SubmarineHudTallyElements.quads[3].height) = 20;
+    (g_SubmarineHudTallyElements.quads[3].srcX) = 112;
     (g_SubmarineHudTallyElements.quads[3].srcY) = 0;
     (g_SubmarineHudTallyElements.quads[3].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[3].depth) = FLOAT_0_01_BITS;
@@ -2793,9 +2793,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudTallyElements.quads[3].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudTallyElements.quads[4].x) = 0xFFD8;
     (g_SubmarineHudTallyElements.quads[4].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[4].width) = 0x11;
-    (g_SubmarineHudTallyElements.quads[4].height) = 0x13;
-    (g_SubmarineHudTallyElements.quads[4].srcX) = 0x4D;
+    (g_SubmarineHudTallyElements.quads[4].width) = 17;
+    (g_SubmarineHudTallyElements.quads[4].height) = 19;
+    (g_SubmarineHudTallyElements.quads[4].srcX) = 77;
     (g_SubmarineHudTallyElements.quads[4].srcY) = 0;
     (g_SubmarineHudTallyElements.quads[4].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[4].depth) = FLOAT_0_01_BITS;
@@ -2805,70 +2805,70 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudTallyElements.quads[4].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudTallyElements.quads[5].x) = 0xFFFA;
     (g_SubmarineHudTallyElements.quads[5].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[5].width) = 0x11;
-    (g_SubmarineHudTallyElements.quads[5].height) = 0x13;
-    (g_SubmarineHudTallyElements.quads[5].srcX) = 0x72;
-    (g_SubmarineHudTallyElements.quads[5].srcY) = 0x16;
+    (g_SubmarineHudTallyElements.quads[5].width) = 17;
+    (g_SubmarineHudTallyElements.quads[5].height) = 19;
+    (g_SubmarineHudTallyElements.quads[5].srcX) = 114;
+    (g_SubmarineHudTallyElements.quads[5].srcY) = 22;
     (g_SubmarineHudTallyElements.quads[5].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudTallyElements.quads[5].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudTallyElements.quads[5].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudTallyElements.quads[5].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudTallyElements.quads[5].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudTallyElements.quads[6].x) = 0x32;
+    (g_SubmarineHudTallyElements.quads[6].x) = 50;
     (g_SubmarineHudTallyElements.quads[6].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[6].width) = 0xD;
-    (g_SubmarineHudTallyElements.quads[6].height) = 0x14;
+    (g_SubmarineHudTallyElements.quads[6].width) = 13;
+    (g_SubmarineHudTallyElements.quads[6].height) = 20;
     g_SubmarineHudTallyElements.quads[6].srcX = 0;
-    (g_SubmarineHudTallyElements.quads[6].srcY) = 0x30;
+    (g_SubmarineHudTallyElements.quads[6].srcY) = 48;
     (g_SubmarineHudTallyElements.quads[6].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[6].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudTallyElements.quads[6].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudTallyElements.quads[6].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudTallyElements.quads[6].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudTallyElements.quads[6].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudTallyElements.quads[7].x) = 0x50;
+    (g_SubmarineHudTallyElements.quads[7].x) = 80;
     (g_SubmarineHudTallyElements.quads[7].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[7].width) = 0xD;
-    (g_SubmarineHudTallyElements.quads[7].height) = 0x14;
+    (g_SubmarineHudTallyElements.quads[7].width) = 13;
+    (g_SubmarineHudTallyElements.quads[7].height) = 20;
     g_SubmarineHudTallyElements.quads[7].srcX = 0;
-    (g_SubmarineHudTallyElements.quads[7].srcY) = 0x30;
+    (g_SubmarineHudTallyElements.quads[7].srcY) = 48;
     (g_SubmarineHudTallyElements.quads[7].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[7].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudTallyElements.quads[7].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudTallyElements.quads[7].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudTallyElements.quads[7].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudTallyElements.quads[7].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudTallyElements.quads[8].x) = 0x6C;
+    (g_SubmarineHudTallyElements.quads[8].x) = 108;
     (g_SubmarineHudTallyElements.quads[8].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[8].width) = 0xA;
-    (g_SubmarineHudTallyElements.quads[8].height) = 0x13;
-    (g_SubmarineHudTallyElements.quads[8].srcX) = 0xA0;
-    (g_SubmarineHudTallyElements.quads[8].srcY) = 0x30;
+    (g_SubmarineHudTallyElements.quads[8].width) = 10;
+    (g_SubmarineHudTallyElements.quads[8].height) = 19;
+    (g_SubmarineHudTallyElements.quads[8].srcX) = 160;
+    (g_SubmarineHudTallyElements.quads[8].srcY) = 48;
     (g_SubmarineHudTallyElements.quads[8].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[8].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudTallyElements.quads[8].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudTallyElements.quads[8].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudTallyElements.quads[8].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudTallyElements.quads[8].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudTallyElements.quads[9].x) = 0x82;
+    (g_SubmarineHudTallyElements.quads[9].x) = 130;
     (g_SubmarineHudTallyElements.quads[9].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[9].width) = 0xD;
-    (g_SubmarineHudTallyElements.quads[9].height) = 0x14;
+    (g_SubmarineHudTallyElements.quads[9].width) = 13;
+    (g_SubmarineHudTallyElements.quads[9].height) = 20;
     g_SubmarineHudTallyElements.quads[9].srcX = 0;
-    (g_SubmarineHudTallyElements.quads[9].srcY) = 0x30;
+    (g_SubmarineHudTallyElements.quads[9].srcY) = 48;
     (g_SubmarineHudTallyElements.quads[9].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[9].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudTallyElements.quads[9].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudTallyElements.quads[9].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudTallyElements.quads[9].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudTallyElements.quads[9].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudTallyElements.quads[10].x) = 0xA0;
+    (g_SubmarineHudTallyElements.quads[10].x) = 160;
     (g_SubmarineHudTallyElements.quads[10].y) = 0xFF68;
-    (g_SubmarineHudTallyElements.quads[10].width) = 0xD;
-    (g_SubmarineHudTallyElements.quads[10].height) = 0x14;
+    (g_SubmarineHudTallyElements.quads[10].width) = 13;
+    (g_SubmarineHudTallyElements.quads[10].height) = 20;
     g_SubmarineHudTallyElements.quads[10].srcX = 0;
-    (g_SubmarineHudTallyElements.quads[10].srcY) = 0x30;
+    (g_SubmarineHudTallyElements.quads[10].srcY) = 48;
     (g_SubmarineHudTallyElements.quads[10].alpha) = 7;
     (g_SubmarineHudTallyElements.quads[10].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudTallyElements.quads[10].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2876,7 +2876,7 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudTallyElements.quads[10].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudTallyElements.quads[10].batches[3]) = g_SubmarineHudTextAtlasD;
     if (scaleMode != 2) {
-        for (tallyIndex = 0; tallyIndex < 0xB; tallyIndex++) {
+        for (tallyIndex = 0; tallyIndex < 11; tallyIndex++) {
             g_SubmarineHudTallyElements.quads[tallyIndex].batches[0] = g_SubmarineHudTextAtlas;
             g_SubmarineHudTallyElements.quads[tallyIndex].batches[1] = 0;
             g_SubmarineHudTallyElements.quads[tallyIndex].batches[2] = 0;
@@ -2885,10 +2885,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     }
     g_SubmarineHudScoreCounters[0].x = 0xFF4C;
     g_SubmarineHudScoreCounters[0].y = 0xFFE0;
-    g_SubmarineHudScoreCounters[0].width = 0xE;
-    g_SubmarineHudScoreCounters[0].height = 0x14;
-    g_SubmarineHudScoreCounters[0].srcX = 0x63;
-    g_SubmarineHudScoreCounters[0].srcY = 0x16;
+    g_SubmarineHudScoreCounters[0].width = 14;
+    g_SubmarineHudScoreCounters[0].height = 20;
+    g_SubmarineHudScoreCounters[0].srcX = 99;
+    g_SubmarineHudScoreCounters[0].srcY = 22;
     g_SubmarineHudScoreCounters[0].alpha = 5;
     g_SubmarineHudScoreCounters[0].depth = FLOAT_0_01_BITS;
     g_SubmarineHudScoreCounters[0].batches[0] = g_SubmarineHudTextAtlasA;
@@ -2897,9 +2897,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     g_SubmarineHudScoreCounters[0].batches[3] = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudScoreCounters[1].x) = 0xFF6C;
     (g_SubmarineHudScoreCounters[1].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[1].width) = 0x12;
-    (g_SubmarineHudScoreCounters[1].height) = 0x14;
-    (g_SubmarineHudScoreCounters[1].srcX) = 0x27;
+    (g_SubmarineHudScoreCounters[1].width) = 18;
+    (g_SubmarineHudScoreCounters[1].height) = 20;
+    (g_SubmarineHudScoreCounters[1].srcX) = 39;
     (g_SubmarineHudScoreCounters[1].srcY) = 0;
     (g_SubmarineHudScoreCounters[1].alpha) = 5;
     (g_SubmarineHudScoreCounters[1].depth) = FLOAT_0_01_BITS;
@@ -2909,10 +2909,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudScoreCounters[1].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudScoreCounters[2].x) = 0xFF92;
     (g_SubmarineHudScoreCounters[2].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[2].width) = 0x14;
-    (g_SubmarineHudScoreCounters[2].height) = 0x14;
-    (g_SubmarineHudScoreCounters[2].srcX) = 0x14;
-    (g_SubmarineHudScoreCounters[2].srcY) = 0x16;
+    (g_SubmarineHudScoreCounters[2].width) = 20;
+    (g_SubmarineHudScoreCounters[2].height) = 20;
+    (g_SubmarineHudScoreCounters[2].srcX) = 20;
+    (g_SubmarineHudScoreCounters[2].srcY) = 22;
     (g_SubmarineHudScoreCounters[2].alpha) = 5;
     (g_SubmarineHudScoreCounters[2].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudScoreCounters[2].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2921,10 +2921,10 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudScoreCounters[2].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudScoreCounters[3].x) = 0xFFB8;
     (g_SubmarineHudScoreCounters[3].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[3].width) = 0x13;
-    (g_SubmarineHudScoreCounters[3].height) = 0x13;
-    (g_SubmarineHudScoreCounters[3].srcX) = 0x4F;
-    (g_SubmarineHudScoreCounters[3].srcY) = 0x16;
+    (g_SubmarineHudScoreCounters[3].width) = 19;
+    (g_SubmarineHudScoreCounters[3].height) = 19;
+    (g_SubmarineHudScoreCounters[3].srcX) = 79;
+    (g_SubmarineHudScoreCounters[3].srcY) = 22;
     (g_SubmarineHudScoreCounters[3].alpha) = 5;
     (g_SubmarineHudScoreCounters[3].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudScoreCounters[3].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -2933,9 +2933,9 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudScoreCounters[3].batches[3]) = g_SubmarineHudTextAtlasD;
     (g_SubmarineHudScoreCounters[4].x) = 0xFFDE;
     (g_SubmarineHudScoreCounters[4].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[4].width) = 0x11;
-    (g_SubmarineHudScoreCounters[4].height) = 0x13;
-    (g_SubmarineHudScoreCounters[4].srcX) = 0x4D;
+    (g_SubmarineHudScoreCounters[4].width) = 17;
+    (g_SubmarineHudScoreCounters[4].height) = 19;
+    (g_SubmarineHudScoreCounters[4].srcX) = 77;
     (g_SubmarineHudScoreCounters[4].srcY) = 0;
     (g_SubmarineHudScoreCounters[4].alpha) = 5;
     (g_SubmarineHudScoreCounters[4].depth) = FLOAT_0_01_BITS;
@@ -2943,60 +2943,60 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudScoreCounters[4].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudScoreCounters[4].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudScoreCounters[4].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudScoreCounters[5].x) = 0x28;
+    (g_SubmarineHudScoreCounters[5].x) = 40;
     (g_SubmarineHudScoreCounters[5].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[5].width) = 0xD;
-    (g_SubmarineHudScoreCounters[5].height) = 0x14;
+    (g_SubmarineHudScoreCounters[5].width) = 13;
+    (g_SubmarineHudScoreCounters[5].height) = 20;
     (g_SubmarineHudScoreCounters[5].srcX) = 0;
-    (g_SubmarineHudScoreCounters[5].srcY) = 0x30;
+    (g_SubmarineHudScoreCounters[5].srcY) = 48;
     (g_SubmarineHudScoreCounters[5].alpha) = 5;
     (g_SubmarineHudScoreCounters[5].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudScoreCounters[5].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudScoreCounters[5].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudScoreCounters[5].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudScoreCounters[5].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudScoreCounters[6].x) = 0x46;
+    (g_SubmarineHudScoreCounters[6].x) = 70;
     (g_SubmarineHudScoreCounters[6].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[6].width) = 0xD;
-    (g_SubmarineHudScoreCounters[6].height) = 0x14;
+    (g_SubmarineHudScoreCounters[6].width) = 13;
+    (g_SubmarineHudScoreCounters[6].height) = 20;
     (g_SubmarineHudScoreCounters[6].srcX) = 0;
-    (g_SubmarineHudScoreCounters[6].srcY) = 0x30;
+    (g_SubmarineHudScoreCounters[6].srcY) = 48;
     (g_SubmarineHudScoreCounters[6].alpha) = 5;
     (g_SubmarineHudScoreCounters[6].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudScoreCounters[6].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudScoreCounters[6].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudScoreCounters[6].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudScoreCounters[6].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudScoreCounters[7].x) = 0x64;
+    (g_SubmarineHudScoreCounters[7].x) = 100;
     (g_SubmarineHudScoreCounters[7].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[7].width) = 0xD;
-    (g_SubmarineHudScoreCounters[7].height) = 0x14;
+    (g_SubmarineHudScoreCounters[7].width) = 13;
+    (g_SubmarineHudScoreCounters[7].height) = 20;
     (g_SubmarineHudScoreCounters[7].srcX) = 0;
-    (g_SubmarineHudScoreCounters[7].srcY) = 0x30;
+    (g_SubmarineHudScoreCounters[7].srcY) = 48;
     (g_SubmarineHudScoreCounters[7].alpha) = 5;
     (g_SubmarineHudScoreCounters[7].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudScoreCounters[7].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudScoreCounters[7].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudScoreCounters[7].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudScoreCounters[7].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudScoreCounters[8].x) = 0x82;
+    (g_SubmarineHudScoreCounters[8].x) = 130;
     (g_SubmarineHudScoreCounters[8].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[8].width) = 0xD;
-    (g_SubmarineHudScoreCounters[8].height) = 0x14;
+    (g_SubmarineHudScoreCounters[8].width) = 13;
+    (g_SubmarineHudScoreCounters[8].height) = 20;
     (g_SubmarineHudScoreCounters[8].srcX) = 0;
-    (g_SubmarineHudScoreCounters[8].srcY) = 0x30;
+    (g_SubmarineHudScoreCounters[8].srcY) = 48;
     (g_SubmarineHudScoreCounters[8].alpha) = 5;
     (g_SubmarineHudScoreCounters[8].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudScoreCounters[8].batches[0]) = g_SubmarineHudTextAtlasA;
     (g_SubmarineHudScoreCounters[8].batches[1]) = g_SubmarineHudTextAtlasB;
     (g_SubmarineHudScoreCounters[8].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudScoreCounters[8].batches[3]) = g_SubmarineHudTextAtlasD;
-    (g_SubmarineHudScoreCounters[9].x) = 0xA0;
+    (g_SubmarineHudScoreCounters[9].x) = 160;
     (g_SubmarineHudScoreCounters[9].y) = 0xFFE0;
-    (g_SubmarineHudScoreCounters[9].width) = 0xD;
-    (g_SubmarineHudScoreCounters[9].height) = 0x14;
+    (g_SubmarineHudScoreCounters[9].width) = 13;
+    (g_SubmarineHudScoreCounters[9].height) = 20;
     (g_SubmarineHudScoreCounters[9].srcX) = 0;
-    (g_SubmarineHudScoreCounters[9].srcY) = 0x30;
+    (g_SubmarineHudScoreCounters[9].srcY) = 48;
     (g_SubmarineHudScoreCounters[9].alpha) = 5;
     (g_SubmarineHudScoreCounters[9].depth) = FLOAT_0_01_BITS;
     (g_SubmarineHudScoreCounters[9].batches[0]) = g_SubmarineHudTextAtlasA;
@@ -3004,7 +3004,7 @@ void __cdecl Submarine_BuildHudElementTable(void)
     (g_SubmarineHudScoreCounters[9].batches[2]) = g_SubmarineHudTextAtlasC;
     (g_SubmarineHudScoreCounters[9].batches[3]) = g_SubmarineHudTextAtlasD;
     if (scaleMode != 2) {
-        for (scoreIndex = 0; scoreIndex < 0xA; scoreIndex++) {
+        for (scoreIndex = 0; scoreIndex < 10; scoreIndex++) {
             g_SubmarineHudScoreCounters[scoreIndex].batches[0] = g_SubmarineHudTextAtlas;
             g_SubmarineHudScoreCounters[scoreIndex].batches[1] = 0;
             g_SubmarineHudScoreCounters[scoreIndex].batches[2] = 0;

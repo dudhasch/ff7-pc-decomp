@@ -504,12 +504,12 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind0TimelineTask(void)
         g_BattleThrowYuffieDeltaVectorY = g_BattleThrowYuffieTargetBonePos.targetY - g_BattleThrowYuffieSourcePos.sourceY;
         g_BattleThrowYuffieDeltaVectorZ = g_BattleThrowYuffieTargetBonePos.targetZ - g_BattleThrowYuffieSourcePos.sourceZ;
         norm = NormalizeVectorFixed(&g_BattleThrowYuffieDeltaVector, &g_BattleThrowYuffieDeltaVector);
-        speed = (SqrtToInt(norm) << 1) / 0xC;
+        speed = (SqrtToInt(norm) << 1) / 12;
         pProjectile = (BattleFxYuffieKind0ThrownModel *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowYuffieWeaponsKind0ThrownModelTask);
         pProjectile->pos = *(Int64Pair *)&g_BattleThrowYuffieSourcePos;
-        pProjectile->velocityX = speed * g_BattleThrowYuffieDeltaVector >> 0xC;
-        pProjectile->velocityY = speed * g_BattleThrowYuffieDeltaVectorY >> 0xC;
-        pProjectile->velocityZ = speed * g_BattleThrowYuffieDeltaVectorZ >> 0xC;
+        pProjectile->velocityX = speed * g_BattleThrowYuffieDeltaVector >> 12;
+        pProjectile->velocityY = speed * g_BattleThrowYuffieDeltaVectorY >> 12;
+        pProjectile->velocityZ = speed * g_BattleThrowYuffieDeltaVectorZ >> 12;
         pProjectile->angle = 0;
         pProjectile->spin = 0x2BC;
     }
@@ -517,7 +517,7 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind0TimelineTask(void)
         Battle_PostActorHitOrHurtMessage(g_BattleThrowYuffieTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowYuffieTargetBonePos), 0x159);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -545,7 +545,7 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind0ThrownModelTask(void)
     frame.thrownRecord = (BattleFxYuffieKind0ThrownRecord *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.thrownRecord->accumA;
-    frame.rotX.vz = 0xFC00;
+    frame.rotX.vz = 0xFC00 /* 5670 deg */;
     RotMatrix(&frame.rotX, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.thrownRecord->posX;
     frame.rotMatrix.t[1] = frame.thrownRecord->posY;
@@ -570,14 +570,14 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind0ThrownModelTask(void)
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.thrownRecord->timer >= 0x16) {
+    if (frame.thrownRecord->timer >= 22) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowYuffieThrowState.weaponModel + 0xF, g_BattleThrowYuffieLoadedResTable);
-        frame.modelDraw->fadeLevel = frame.thrownRecord->timer - 0x16 << 9;
+        frame.modelDraw->fadeLevel = frame.thrownRecord->timer - 22 << 9;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.thrownRecord->timer >= 0x1E) {
+    if (frame.thrownRecord->timer >= 30) {
         frame.thrownRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -612,20 +612,20 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind1TimelineTask(void)
         g_BattleThrowYuffieDeltaVectorY = g_BattleThrowYuffieTargetBonePos.targetY - g_BattleThrowYuffieSourcePos.sourceY;
         g_BattleThrowYuffieDeltaVectorZ = g_BattleThrowYuffieTargetBonePos.targetZ - g_BattleThrowYuffieSourcePos.sourceZ;
         norm = NormalizeVectorFixed(&g_BattleThrowYuffieDeltaVector, &g_BattleThrowYuffieDeltaVector);
-        speed = SqrtToInt(norm) * 3 / 0xC;
+        speed = SqrtToInt(norm) * 3 / 12;
         pProjectile = (BattleFxYuffieKind0ThrownModel *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowYuffieWeaponsKind1ThrownModelTask);
         pProjectile->pos = *(Int64Pair *)&g_BattleThrowYuffieSourcePos;
-        pProjectile->velocityX = speed * g_BattleThrowYuffieDeltaVector >> 0xC;
-        pProjectile->velocityY = speed * g_BattleThrowYuffieDeltaVectorY >> 0xC;
-        pProjectile->velocityZ = speed * g_BattleThrowYuffieDeltaVectorZ >> 0xC;
+        pProjectile->velocityX = speed * g_BattleThrowYuffieDeltaVector >> 12;
+        pProjectile->velocityY = speed * g_BattleThrowYuffieDeltaVectorY >> 12;
+        pProjectile->velocityZ = speed * g_BattleThrowYuffieDeltaVectorZ >> 12;
         pProjectile->angle = 0;
         pProjectile->spin = 0x2BC;
     }
-    if (task->frameCounter == 0x14) {
+    if (task->frameCounter == 20) {
         Battle_PostActorHitOrHurtMessage(g_BattleThrowYuffieTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowYuffieTargetBonePos), 0x159);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -653,7 +653,7 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind1ThrownModelTask(void)
     frame.thrownRecord = (BattleFxYuffieThrownWeapon *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.thrownRecord->angle;
-    frame.rotX.vz = 0xFC00;
+    frame.rotX.vz = 0xFC00 /* 5670 deg */;
     RotMatrix(&frame.rotX, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.thrownRecord->posX;
     frame.rotMatrix.t[1] = frame.thrownRecord->posY;
@@ -680,18 +680,18 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind1ThrownModelTask(void)
     frame.modelDraw->texturePageBits = 0;
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.thrownRecord->timer >= 0x18) {
+    if (frame.thrownRecord->timer >= 24) {
         frame.thrownRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.thrownRecord->timer < 0xC) {
+    if (frame.thrownRecord->timer < 12) {
         frame.thrownRecord->posX += frame.thrownRecord->velX;
         frame.thrownRecord->posY += frame.thrownRecord->velY;
         frame.thrownRecord->posZ += frame.thrownRecord->velZ;
         frame.thrownRecord->angle += frame.thrownRecord->spin;
-    } else if (frame.thrownRecord->timer < 0x18) {
+    } else if (frame.thrownRecord->timer < 24) {
         frame.thrownRecord->posX -= frame.thrownRecord->velX;
         frame.thrownRecord->posY -= frame.thrownRecord->velY;
         frame.thrownRecord->posZ -= frame.thrownRecord->velZ;
@@ -728,38 +728,38 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind2TimelineTask(void)
         NormalizeVectorFixed(&g_BattleThrowYuffieDeltaVector, &g_BattleThrowYuffieDeltaVector);
         pProjectile = (BattleFxYuffieKind2TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowYuffieWeaponsKind2ThrownModelTask);
         pProjectile->pos = *(Int64Pair *)&g_BattleThrowYuffieSourcePos;
-        pProjectile->velX = g_BattleThrowYuffieDeltaVector * 0x12C >> 0xC;
-        pProjectile->velY = g_BattleThrowYuffieDeltaVectorY * 0x12C >> 0xC;
-        pProjectile->velZ = g_BattleThrowYuffieDeltaVectorZ * 0x12C >> 0xC;
+        pProjectile->velX = g_BattleThrowYuffieDeltaVector * 0x12C >> 12;
+        pProjectile->velY = g_BattleThrowYuffieDeltaVectorY * 0x12C >> 12;
+        pProjectile->velZ = g_BattleThrowYuffieDeltaVectorZ * 0x12C >> 12;
         pProjectile->accumA = 0;
-        pProjectile->stepA = 0x2BC;
+        pProjectile->stepA = 700;
     }
-    if (task->frameCounter >= 7 && task->frameCounter <= 0xD) {
+    if (task->frameCounter >= 7 && task->frameCounter <= 13) {
         pProjectile = (BattleFxYuffieKind2TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowYuffieWeaponsKind2TrailModelTask);
         pProjectile->pos = *(Int64Pair *)&g_BattleThrowYuffieTargetBonePos;
         range = g_BattleActorRecords[g_BattleThrowYuffieTargetIndex].radius;
         pProjectile->posX += (short)(rand() % (range << 1) - range);
         pProjectile->posY += (short)(rand() % (range << 1) - range);
         pProjectile->posZ += (short)(rand() % (range << 1) - range);
-        trailSpeed = rand() % 0x96 + 0x12C;
-        range = trailSpeed * g_BattleThrowYuffieDeltaVector >> 0xC;
+        trailSpeed = rand() % 150 + 300;
+        range = trailSpeed * g_BattleThrowYuffieDeltaVector >> 12;
         pProjectile->posX -= (short)(range << 2);
         pProjectile->velX = range;
-        range = trailSpeed * g_BattleThrowYuffieDeltaVectorY >> 0xC;
+        range = trailSpeed * g_BattleThrowYuffieDeltaVectorY >> 12;
         pProjectile->posY -= (short)(range << 2);
         pProjectile->velY = range;
-        range = trailSpeed * g_BattleThrowYuffieDeltaVectorZ >> 0xC;
+        range = trailSpeed * g_BattleThrowYuffieDeltaVectorZ >> 12;
         pProjectile->posZ -= (short)(range << 2);
         pProjectile->velZ = range;
-        pProjectile->accumA = rand() % 0xC8 + 0x12C;
-        pProjectile->stepA = rand() % 0x12C + 0x190;
-        pProjectile->fadeLevel = 0x10 - (task->frameCounter - 0xD);
+        pProjectile->accumA = rand() % 200 + 300;
+        pProjectile->stepA = rand() % 300 + 400;
+        pProjectile->fadeLevel = 16 - (task->frameCounter - 13);
     }
-    if (task->frameCounter == 0x1A) {
+    if (task->frameCounter == 26) {
         Battle_PostActorHitOrHurtMessage(g_BattleThrowYuffieTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowYuffieTargetBonePos), 0x155);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -882,11 +882,11 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind2TrailModelTask(void)
     if (frame.trail->frameCount < 4) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowYuffieThrowState.weaponModel + 0xF, g_BattleThrowYuffieLoadedResTable);
-        frame.modelDraw->fadeLevel = 0x1000 - (frame.trail->frameCount << 0xA);
+        frame.modelDraw->fadeLevel = 4096 - (frame.trail->frameCount << 10);
     } else if (frame.trail->frameCount >= frame.trail->lifetime - 4) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowYuffieThrowState.weaponModel + 0xF, g_BattleThrowYuffieLoadedResTable);
-        frame.modelDraw->fadeLevel = frame.trail->frameCount - (frame.trail->lifetime - 4) << 0xA;
+        frame.modelDraw->fadeLevel = frame.trail->frameCount - (frame.trail->lifetime - 4) << 10;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
@@ -940,13 +940,13 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind3TimelineTask(void)
     }
     if (frame.weaponSlot->frameCounter == 0) {
         frame.actorIndex = 0;
-        for (frame.targetCount = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.targetCount = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_BattleThrowYuffieTargetMask & 1 << frame.actorIndex) != 0) {
                 g_BattleThrowYuffieKind3Targets[frame.targetCount].actorIndex = frame.actorIndex;
                 Battle_GetBoneWorldPos(frame.actorIndex, g_BattleActorRecords[frame.actorIndex].targetBone, &g_BattleThrowYuffieKind3Targets[frame.targetCount].boneX);
                 frame.tmpRadius = g_BattleActorRecords[frame.actorIndex].radius;
-                if (frame.tmpRadius > 0x4B0) {
-                    frame.tmpRadius = 0x4B0;
+                if (frame.tmpRadius > 1200) {
+                    frame.tmpRadius = 1200;
                 }
                 g_BattleThrowYuffieKind3Targets[frame.targetCount].spread = *(short *)&frame.tmpRadius;
                 g_BattleThrowYuffieKind3Targets[frame.targetCount].throwCount = 0;
@@ -955,7 +955,7 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind3TimelineTask(void)
         }
         g_BattleThrowYuffieThrowState.targetCount = frame.targetCount;
         g_BattleThrowYuffieKind3Phase = BATTLE_YUFFIE_MULTI_THROW_SHUFFLE;
-        g_BattleThrowYuffieStepRatio = 0x18 / frame.targetCount;
+        g_BattleThrowYuffieStepRatio = 24 / frame.targetCount;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x2A0);
     }
     if (g_BattleThrowYuffieKind3Phase == BATTLE_YUFFIE_MULTI_THROW_SHUFFLE) {
@@ -1008,10 +1008,10 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind3TimelineTask(void)
             frame.tmpSwap = SqrtToInt(frame.tmpRadius) / 4;
             frame.projectile = (BattleFxYuffieKind3Projectile *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowYuffieWeaponsKind3ThrownModelTask);
             frame.projectile->pos = *(Int64Pair *)&g_BattleThrowYuffieSourcePos;
-            frame.projectile->deltaX = frame.tmpSwap * g_BattleThrowYuffieDeltaVector >> 0xC;
-            frame.projectile->deltaY = frame.tmpSwap * g_BattleThrowYuffieDeltaVectorY >> 0xC;
-            frame.projectile->deltaZ = frame.tmpSwap * g_BattleThrowYuffieDeltaVectorZ >> 0xC;
-            frame.projectile->lifetime = 0x1E - frame.weaponSlot->frameCounter;
+            frame.projectile->deltaX = frame.tmpSwap * g_BattleThrowYuffieDeltaVector >> 12;
+            frame.projectile->deltaY = frame.tmpSwap * g_BattleThrowYuffieDeltaVectorY >> 12;
+            frame.projectile->deltaZ = frame.tmpSwap * g_BattleThrowYuffieDeltaVectorZ >> 12;
+            frame.projectile->lifetime = 30 - frame.weaponSlot->frameCounter;
         }
         g_BattleThrowYuffieKind3Cursor++;
         if (g_BattleThrowYuffieKind3Cursor >= g_BattleThrowYuffieThrowState.targetCount) {
@@ -1028,14 +1028,14 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind3TimelineTask(void)
             }
         }
     }
-    if (frame.weaponSlot->frameCounter == 0x19) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    if (frame.weaponSlot->frameCounter == 25) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_BattleThrowYuffieTargetMask & 1 << frame.actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
             }
         }
     }
-    if (frame.weaponSlot->frameCounter >= 0x1E) {
+    if (frame.weaponSlot->frameCounter >= 30) {
         frame.weaponSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.weaponSlot->frameCounter)++;
@@ -1064,7 +1064,7 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind3ThrownModelTask(void)
     frame.thrownWeapon = (BattleFxYuffieThrownWeapon *)BATTLE_CURRENT_TASK_SLOT;
     frame.angleX.vx = 0;
     frame.angleX.vy = 0;
-    frame.angleX.vz = 0x400;
+    frame.angleX.vz = 0x400 /* 90 deg */;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.thrownWeapon->posX;
     frame.rotMatrix.t[1] = frame.thrownWeapon->posY;
@@ -1100,11 +1100,11 @@ void __cdecl BattleFx_ThrowYuffieWeaponsKind3ThrownModelTask(void)
     if (frame.thrownWeapon->timer >= 6) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowYuffieThrowState.weaponModel + 0xF, g_BattleThrowYuffieLoadedResTable);
-        frame.modelDraw->fadeLevel = frame.thrownWeapon->timer - 6 << 0xA;
+        frame.modelDraw->fadeLevel = frame.thrownWeapon->timer - 6 << 10;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.thrownWeapon->timer >= 0xA) {
+    if (frame.thrownWeapon->timer >= 10) {
         frame.thrownWeapon->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

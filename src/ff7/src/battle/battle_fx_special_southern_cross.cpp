@@ -150,7 +150,7 @@ void __cdecl BattleFx_SpecialBeginSouthernCross(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0x14);
+    Battle_StartFixedPointRamp(0x1000, 20);
 }
 
 /*
@@ -171,67 +171,67 @@ void __cdecl BattleFx_SpecialSouthernCrossTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter >= 0 && taskPtr->frameCounter < 0x1E) {
+    if (taskPtr->frameCounter >= 0 && taskPtr->frameCounter < 30) {
         for (i9 = 0; i9 < 2; i9++) {
             particle = (BattleFxSouthernCrossParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSouthernCrossOrbitSpriteTask);
             particle->posX = *(short *)&g_BattleSpecialSouthernCrossCentroidVec;
             particle->posY = 0xF060;
             particle->posZ = g_BattleSpecialSouthernCrossCentroidZ;
-            particle->phase = rand() % 0x1000;
-            particle->delay = rand() % 0xFA0;
+            particle->phase = rand() % 4096;
+            particle->delay = rand() % 4000;
             particle->variant = i9;
         }
     }
-    if (taskPtr->frameCounter >= 0xF && taskPtr->frameCounter < 0x1E && taskPtr->frameCounter % 2 == 0) {
+    if (taskPtr->frameCounter >= 15 && taskPtr->frameCounter < 30 && taskPtr->frameCounter % 2 == 0) {
         particle = (BattleFxSouthernCrossParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSouthernCrossFallingSpinModelTask);
         particle->posX = *(short *)&g_BattleSpecialSouthernCrossCentroidVec;
         particle->posY = 0xF060;
         particle->posZ = g_BattleSpecialSouthernCrossCentroidZ;
-        particle->phase = rand() % 0x1000;
-        particle->delay = rand() % 0xFA0;
+        particle->phase = rand() % 4096;
+        particle->delay = rand() % 4000;
         particle->variant = rand() & 1;
     }
-    if (taskPtr->frameCounter > 0x14 && taskPtr->frameCounter < 0x3C) {
-        for (i9 = 0; i9 < 0xA; i9++) {
+    if (taskPtr->frameCounter > 20 && taskPtr->frameCounter < 60) {
+        for (i9 = 0; i9 < 10; i9++) {
             if ((g_BattleSpecialSouthernCrossTargetMask & 1 << i9) != 0) {
                 particle = (BattleFxSouthernCrossParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSouthernCrossVariantSpriteTask)];
                 Battle_GetBoneWorldPos(i9, g_BattleActorRecords[i9].targetBone, (short *)((int)particle + 4));
-                particle->posX += (short)(rand() % 0x3E8 - 0x1F4);
-                particle->posY += (short)(rand() % 0x3E8 - 0x1F4);
-                particle->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+                particle->posX += (short)(rand() % 1000 - 500);
+                particle->posY += (short)(rand() % 1000 - 500);
+                particle->posZ += (short)(rand() % 1000 - 500);
                 particle->variant = 0;
             }
         }
     }
-    if (taskPtr->frameCounter == 0x46) {
-        for (i9 = 0; i9 < 0xA; i9++) {
+    if (taskPtr->frameCounter == 70) {
+        for (i9 = 0; i9 < 10; i9++) {
             if ((g_BattleSpecialSouthernCrossTargetMask & 1 << i9) != 0) {
                 Battle_PostActorHitOrHurtMessage(i9);
             }
         }
         Battle_PlaySfxPannedToActor(0xFA, -1, 0x40);
     }
-    if (taskPtr->frameCounter > 0x42 && taskPtr->frameCounter < 0x4A && taskPtr->frameCounter % 3 == 0) {
-        for (i9 = 0; i9 < 0xA; i9++) {
+    if (taskPtr->frameCounter > 66 && taskPtr->frameCounter < 74 && taskPtr->frameCounter % 3 == 0) {
+        for (i9 = 0; i9 < 10; i9++) {
             if ((g_BattleSpecialSouthernCrossTargetMask & 1 << i9) != 0) {
                 particle = (BattleFxSouthernCrossParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSouthernCrossVariantSpriteTask)];
                 Battle_GetBoneWorldPos(i9, g_BattleActorRecords[i9].targetBone, (short *)((int)particle + 4));
-                particle->posX += (short)(rand() % 0x578 - 0x2BC);
-                particle->posY += (short)(rand() % 0x578 - 0x2BC);
-                particle->posZ += (short)(rand() % 0x578 - 0x2BC);
+                particle->posX += (short)(rand() % 1400 - 700);
+                particle->posY += (short)(rand() % 1400 - 700);
+                particle->posZ += (short)(rand() % 1400 - 700);
                 particle->variant = 5;
                 particle = (BattleFxSouthernCrossParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSouthernCrossVariantSpriteTask)];
                 Battle_GetBoneWorldPos(i9, g_BattleActorRecords[i9].targetBone, (short *)((int)particle + 4));
-                particle->posX += (short)(rand() % 0x258 - 0x12C);
-                particle->posY += (short)(rand() % 0x258 - 0x12C);
-                particle->posZ += (short)(rand() % 0x258 - 0x12C);
+                particle->posX += (short)(rand() % 600 - 300);
+                particle->posY += (short)(rand() % 600 - 300);
+                particle->posZ += (short)(rand() % 600 - 300);
                 particle->variant = rand() % 4 + 1;
             }
         }
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x50) {
-        Battle_StartFixedPointRamp(0, 0x14);
+    if (taskPtr->frameCounter == 80) {
+        Battle_StartFixedPointRamp(0, 20);
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -285,27 +285,27 @@ void __cdecl BattleFx_SpecialSouthernCrossOrbitSpriteTask(void)
     frame.orbitSlot = (BattleFxSouthernCrossOrbitSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialSouthernCrossColor2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecialSouthernCrossLoadedRes);
     g_BattleSpecialSouthernCrossColor2.drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecialSouthernCrossLoadedRes);
-    if (frame.orbitSlot->frameCounter < 0x16) {
+    if (frame.orbitSlot->frameCounter < 22) {
         frame.rampValue = 8;
     } else {
         frame.rampValue = 0x1E - frame.orbitSlot->frameCounter;
     }
     frame.alphaLevel = *(short *)&frame.rampValue;
-    frame.posX.vx = SinFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 0xC;
-    frame.posX.vz = CosFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 0xC;
+    frame.posX.vx = SinFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 12;
+    frame.posX.vz = CosFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 12;
     frame.posX.vx += frame.orbitSlot->velocityX;
     frame.posX.vz += frame.orbitSlot->velocityZ;
     frame.posX.vy = frame.orbitSlot->velocityY;
-    BattleFx_InstallBillboardMatrix(&frame.posX, (SinFixed(frame.orbitSlot->frameCounter * 0x300) << 0xB >> 0xC) + 0x1000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.posX, (SinFixed(frame.orbitSlot->frameCounter * 0x300) << 11 >> 12) + 0x1000, 0);
     g_BattleSpecialSouthernCrossColor2.colorB = frame.alphaLevel << 4;
     g_BattleSpecialSouthernCrossColor2.colorG = g_BattleSpecialSouthernCrossColor2.colorB;
     g_BattleSpecialSouthernCrossColor2.colorR = g_BattleSpecialSouthernCrossColor2.colorG;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSouthernCrossColor2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
-        frame.orbitSlot->velocityY += 0x85;
+        frame.orbitSlot->velocityY += 133;
         frame.orbitSlot->angle += (short)(0x40 - (frame.orbitSlot->spinRate << 7));
         (frame.orbitSlot->frameCounter)++;
-        if (frame.orbitSlot->frameCounter == 0x1E) {
+        if (frame.orbitSlot->frameCounter == 30) {
             frame.orbitSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -337,14 +337,14 @@ void __cdecl BattleFx_SpecialSouthernCrossFallingSpinModelTask(void)
 
     frame.fallingSlot = (BattleFxSouthernCrossOrbitSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     ((BattleFxModelDraw *)&g_BattleSpecialSouthernCrossModelReq2)->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialSouthernCrossLoadedRes);
-    if (frame.fallingSlot->frameCounter < 0x16) {
+    if (frame.fallingSlot->frameCounter < 22) {
         frame.rampValue = 8;
     } else {
         frame.rampValue = 0x1E - frame.fallingSlot->frameCounter;
     }
     frame.rampLevel = *(short *)&frame.rampValue;
-    frame.posX = SinFixed(frame.fallingSlot->angle) * frame.fallingSlot->radius >> 0xC;
-    frame.posZ = CosFixed(frame.fallingSlot->angle) * frame.fallingSlot->radius >> 0xC;
+    frame.posX = SinFixed(frame.fallingSlot->angle) * frame.fallingSlot->radius >> 12;
+    frame.posZ = CosFixed(frame.fallingSlot->angle) * frame.fallingSlot->radius >> 12;
     frame.posX += frame.fallingSlot->velocityX;
     frame.posZ += frame.fallingSlot->velocityZ;
     frame.posY = frame.fallingSlot->velocityY;
@@ -352,7 +352,7 @@ void __cdecl BattleFx_SpecialSouthernCrossFallingSpinModelTask(void)
     frame.angleX.vy = frame.fallingSlot->frameCounter << 9;
     frame.angleX.vz = 0;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
-    frame.scaleX.vz = 0x1000;
+    frame.scaleX.vz = 0x1000 /* 1.0 */;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
@@ -367,10 +367,10 @@ void __cdecl BattleFx_SpecialSouthernCrossFallingSpinModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.fallingSlot->velocityY += 0x85;
+    frame.fallingSlot->velocityY += 133;
     frame.fallingSlot->angle += (short)(0x40 - (frame.fallingSlot->spinRate << 7));
     (frame.fallingSlot->frameCounter)++;
-    if (frame.fallingSlot->frameCounter == 0x1E) {
+    if (frame.fallingSlot->frameCounter == 30) {
         frame.spawnSlot = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSouthernCrossExpandingSpinModelsTask);
         frame.spawnSlot->posX = frame.posX;
         frame.spawnSlot->posY = frame.posY;
@@ -411,7 +411,7 @@ void __cdecl BattleFx_SpecialSouthernCrossExpandingSpinModelsTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    ((BattleFxModelDraw *)&g_BattleSpecialSouthernCrossModelReq1)->fadeLevel = 0x80 - frame.expandingSlot->frameCounter * 6;
+    ((BattleFxModelDraw *)&g_BattleSpecialSouthernCrossModelReq1)->fadeLevel = 128 - frame.expandingSlot->frameCounter * 6;
     ((BattleFxModelDraw *)&g_BattleSpecialSouthernCrossModelReq1)->flags = 0x28;
     ((BattleFxModelDraw *)&g_BattleSpecialSouthernCrossModelReq1)->modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleSpecialSouthernCrossLoadedRes);
     g_BattleSpecialSouthernCrossDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSouthernCrossModelReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSouthernCrossDrawListHandle);
@@ -421,7 +421,7 @@ void __cdecl BattleFx_SpecialSouthernCrossExpandingSpinModelsTask(void)
         return;
     }
     (frame.expandingSlot->frameCounter)++;
-    if (frame.expandingSlot->frameCounter == 0x14) {
+    if (frame.expandingSlot->frameCounter == 20) {
         frame.expandingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

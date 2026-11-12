@@ -3893,7 +3893,7 @@ typedef struct BattleMagicMinimamParticle {
     short scale;
 } BattleMagicMinimamParticle;
 
-/* The spawn cursor and the ring of 0x1BC particles; this view starts at g_BattleMagicMiniParticleIndex and runs on over the pads behind it. */
+/* The spawn cursor and the ring of 444 particles; this view starts at g_BattleMagicMiniParticleIndex and runs on over the pads behind it. */
 typedef struct BattleMagicMiniParticlePool {
     int cursor;
     unsigned char pad_04[0x4];

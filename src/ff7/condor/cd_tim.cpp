@@ -23,12 +23,12 @@ void __cdecl Mini_CondorFreeTimSurfaceAndPaletteRecords(void)
 {
     if (g_CondorTimSurface != 0) {
         // STRING: FF7 0x00901ab4
-        GameHeapFree((void *)g_CondorTimSurface, "C:\\FF7\\condor\\cd_tim.cpp", 0x31);
+        GameHeapFree((void *)g_CondorTimSurface, "C:\\FF7\\condor\\cd_tim.cpp", 49);
         g_CondorTimSurface = 0;
     }
     if (g_pCondorTimPixelRecords != 0) {
         // STRING: FF7 0x00901ad0
-        GameHeapFree(g_pCondorTimPixelRecords, "C:\\FF7\\condor\\cd_tim.cpp", 0x36);
+        GameHeapFree(g_pCondorTimPixelRecords, "C:\\FF7\\condor\\cd_tim.cpp", 54);
         g_pCondorTimPixelRecords = 0;
     }
 }
@@ -103,9 +103,9 @@ short __cdecl Mini_CondorSwapPixelChannelsForDisplayFormat(unsigned short pixel)
 
     swapped = pixel;
     if (g_CondorDisplayFormatValid == 1) {
-        swapped = (pixel & 0x1F) << 0xA | pixel & 0x3E0 | (pixel & 0x7C00) >> 0xA;
+        swapped = (pixel & 0x1F) << 0xA | pixel & 0x3E0 | (pixel & 0x7C00) >> 10;
     } else {
-        swapped = (pixel & 0x1F) << 0xB | (pixel & 0x3E0) << 1 | (pixel & 0x7C00) >> 0xA;
+        swapped = (pixel & 0x1F) << 0xB | (pixel & 0x3E0) << 1 | (pixel & 0x7C00) >> 10;
     }
     return (short)swapped;
 }
@@ -117,7 +117,7 @@ void __cdecl Mini_CondorSplitPixel555Channels(unsigned short pixel, int redOut, 
 {
     *(char *)redOut = pixel & 0x1F;
     *(char *)greenOut = (pixel & 0x3E0) >> 5;
-    *(char *)blueOut = (pixel & 0x7C00) >> 0xA;
+    *(char *)blueOut = (pixel & 0x7C00) >> 10;
 }
 /*
  * Converts raw TIM image pixel data into unpacked 6-byte palette record entries.
@@ -136,11 +136,11 @@ int __cdecl Mini_CondorTimBuildPixelRecords(unsigned short width, unsigned short
         g_CondorTimPixelRecordSize[1] = width;
         if (((int)g_pCondorTimPixelRecords) != 0) {
             // STRING: FF7 0x00901aec
-            GameHeapFree((void *)((int)g_pCondorTimPixelRecords), "C:\\FF7\\condor\\cd_tim.cpp", 0x90);
+            GameHeapFree((void *)((int)g_pCondorTimPixelRecords), "C:\\FF7\\condor\\cd_tim.cpp", 144);
             g_pCondorTimPixelRecords = 0;
         }
         // STRING: FF7 0x00901b08
-        g_pCondorTimPixelRecords = (struct CondorTimPixelRecord *)(GameHeapAllocRaw(height * width * 6 + 1, "C:\\FF7\\condor\\cd_tim.cpp", 0x94));
+        g_pCondorTimPixelRecords = (struct CondorTimPixelRecord *)(GameHeapAllocRaw(height * width * 6 + 1, "C:\\FF7\\condor\\cd_tim.cpp", 148));
         if (((int)g_pCondorTimPixelRecords) == 0) {
             return 0;
         } else {
@@ -186,7 +186,7 @@ int __cdecl Mini_CondorRepackPaletteWords(void)
 
     for (rowIndex = 0; rowIndex < g_CondorTimHeight; rowIndex++) {
         for (colIndex = 0; colIndex < g_CondorTimPixelRecordSize[1]; colIndex++) {
-            if (g_pCondorTimPixelRecords[rowIndex * g_CondorTimPixelRecordSize[1] + colIndex].red < 0x80) {
+            if (g_pCondorTimPixelRecords[rowIndex * g_CondorTimPixelRecordSize[1] + colIndex].red < 128) {
                 if (g_CondorDisplayFormat == 1) {
                     g_pCondorTimPixelRecords[rowIndex * g_CondorTimPixelRecordSize[1] + colIndex].pixelWord = g_pCondorTimPixelRecords[rowIndex * g_CondorTimPixelRecordSize[1] + colIndex].red << 0xA | g_pCondorTimPixelRecords[rowIndex * g_CondorTimPixelRecordSize[1] + colIndex].green << 5 | g_pCondorTimPixelRecords[rowIndex * g_CondorTimPixelRecordSize[1] + colIndex].blue;
                 } else {
@@ -251,20 +251,20 @@ int __cdecl Mini_CondorTimParseBlocks(int timData)
     (*(unsigned int *)&g_CondorTimBlockSize) = *(int *)cursor;
     cursor += 4;
     g_CondorTimClutOrigin[0] = *(int *)cursor & 0xFFFF;
-    g_CondorTimClutOrigin[1] = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+    g_CondorTimClutOrigin[1] = (*(int *)cursor & 0xFFFF0000) >> 16;
     cursor += 4;
     g_CondorTimClutSize[0] = *(int *)cursor & 0xFFFF;
-    g_CondorTimClutSize[1] = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+    g_CondorTimClutSize[1] = (*(int *)cursor & 0xFFFF0000) >> 16;
     cursor += 4;
     g_CondorTimPixelData = cursor;
     cursor += ((*(unsigned int *)&g_CondorTimBlockSize) - 0xC >> 2) * 4;
     (*(unsigned int *)&g_CondorTimImageBlockSize) = *(int *)cursor;
     cursor += 4;
     g_CondorTimImageOrigin[0] = *(int *)cursor & 0xFFFF;
-    g_CondorTimImageOrigin[1] = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+    g_CondorTimImageOrigin[1] = (*(int *)cursor & 0xFFFF0000) >> 16;
     cursor += 4;
     g_CondorTimImageSize[0] = (*(int *)cursor & 0xFFFF & 0xFFFF) << 1;
-    g_CondorTimImageSize[1] = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+    g_CondorTimImageSize[1] = (*(int *)cursor & 0xFFFF0000) >> 16;
     cursor += 4;
     g_pCondorTimData = cursor;
     if (Mini_CondorTimBuildPixelRecords((short)*(unsigned short *)&g_CondorTimClutSize[0], (short)*(unsigned short *)&g_CondorTimClutSize[1], g_CondorTimPixelData) == 0) {
@@ -274,10 +274,10 @@ int __cdecl Mini_CondorTimParseBlocks(int timData)
         g_CondorTimImage2BlockSize = *(int *)cursor;
         cursor += 4;
         g_CondorTimImage2Origin[0] = *(int *)cursor & 0xFFFF;
-        g_CondorTimImage2Origin[1] = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+        g_CondorTimImage2Origin[1] = (*(int *)cursor & 0xFFFF0000) >> 16;
         cursor += 4;
         g_CondorTimImage2Size[0] = (*(int *)cursor & 0xFFFF & 0xFFFF) << 1;
-        g_CondorTimImage2Size[1] = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+        g_CondorTimImage2Size[1] = (*(int *)cursor & 0xFFFF0000) >> 16;
         cursor += 4;
         g_pCondorTimImage2Data = cursor;
         return 1;
@@ -297,7 +297,7 @@ void __cdecl Mini_CondorTimExportMapTiles(void)
     unsigned short rowIndex;
     unsigned short tileIdx;
     // STRING: FF7 0x00901b24
-    dstRow = (char *)GameHeapAllocRaw(0x10000, "C:\\FF7\\condor\\cd_tim.cpp", 0x128);
+    dstRow = (char *)GameHeapAllocRaw(65536, "C:\\FF7\\condor\\cd_tim.cpp", 296);
     buf = dstRow;
     for (tileIdx = 0; tileIdx < 8; tileIdx++) {
         dstRow = buf;
@@ -323,12 +323,12 @@ void __cdecl Mini_CondorTimExportMapTiles(void)
                 dstRow += 256;
                 srcRow += 512;
             }
-            Field_FileWrite(handle, buf, 0x10000);
+            Field_FileWrite(handle, buf, 65536);
             Field_FileClose(handle);
         }
     }
     // STRING: FF7 0x00901b54
-    GameHeapFree(dstRow, "C:\\FF7\\condor\\cd_tim.cpp", 0x14b);
+    GameHeapFree(dstRow, "C:\\FF7\\condor\\cd_tim.cpp", 331);
 }
 #pragma intrinsic(strcpy, strcat)
 
@@ -454,17 +454,17 @@ int __cdecl Mini_CondorBlitModulatedFrameDoubled(int surface, unsigned short *sr
             for (colIndex = srcX; colIndex < srcX + 0x140; colIndex++) {
                 color = srcPixels[rowIndex * srcStride * 2 + colIndex * 2];
                 if (g_CondorDisplayFormat == 1) {
-                    redValue = (unsigned char)((unsigned int)(color & g_CondorPixelMaskRed) >> 0xA);
+                    redValue = (unsigned char)((unsigned int)(color & g_CondorPixelMaskRed) >> 10);
                     greenChannel = (unsigned char)((unsigned int)(color & g_CondorPixelMaskGreen) >> 5);
                     blueVal = (unsigned char)(color & g_CondorPixelMaskBlue);
                     color = Mini_CondorPackScaledColor(redValue, greenChannel, blueVal, intensity);
                 } else {
-                    redValue = (unsigned char)((unsigned int)(color & g_CondorPixelMaskRed) >> 0xB);
+                    redValue = (unsigned char)((unsigned int)(color & g_CondorPixelMaskRed) >> 11);
                     greenChannel = (unsigned char)((unsigned int)(color & g_CondorPixelMaskGreen) >> 5);
                     blueVal = (unsigned char)(color & g_CondorPixelMaskBlue);
                     color = Mini_CondorPackScaledColor(redValue, greenChannel, blueVal, intensity);
                 }
-                pair = (color << 0x10) | color;
+                pair = (color << 16) | color;
                 dstWords[(rowIndex - srcY + 0xA) * rowPitch / 4 * 2 + (colIndex - srcX)] = pair;
                 dstWords[(rowIndex - srcY + 0xA) * rowPitch / 4 * 2 + rowPitch / 4 + (colIndex - srcX)] = pair;
             }

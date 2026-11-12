@@ -139,36 +139,36 @@ void __cdecl BattleFx_SpecialRiderBreathTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
     }
     if (frame.timelineSlot->frameCounter < 9 && frame.timelineSlot->frameCounter % 3 == 0) {
         frame.spawnSlot = (BattleFxRiderBreathTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRiderBreathTrailSpritesTask);
         frame.spawnSlot->posX = frame.timelineSlot->posX;
         frame.spawnSlot->posY = frame.timelineSlot->posY;
         frame.spawnSlot->posZ = frame.timelineSlot->posZ;
-        frame.spawnSlot->velocityX = (frame.timelineSlot->velocityX - frame.timelineSlot->posX) / 0xF;
-        frame.spawnSlot->velocityY = (frame.timelineSlot->velocityY - frame.timelineSlot->posY) / 0xF;
-        frame.spawnSlot->velocityZ = (frame.timelineSlot->velocityZ - frame.timelineSlot->posZ) / 0xF;
+        frame.spawnSlot->velocityX = (frame.timelineSlot->velocityX - frame.timelineSlot->posX) / 15;
+        frame.spawnSlot->velocityY = (frame.timelineSlot->velocityY - frame.timelineSlot->posY) / 15;
+        frame.spawnSlot->velocityZ = (frame.timelineSlot->velocityZ - frame.timelineSlot->posZ) / 15;
     }
-    if (frame.timelineSlot->frameCounter == 0x14) {
+    if (frame.timelineSlot->frameCounter == 20) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
-    if (frame.timelineSlot->frameCounter == 0x19) {
+    if (frame.timelineSlot->frameCounter == 25) {
         frame.spawnSlot = (BattleFxRiderBreathTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRiderBreathExpandingModelTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)&frame.spawnSlot->posX);
         Battle_PlaySfxPannedToActor(0x189, (short)frame.timelineSlot->actorIndex, 0x40);
     }
-    if (frame.timelineSlot->frameCounter > 0x12 && frame.timelineSlot->frameCounter < 0x26) {
+    if (frame.timelineSlot->frameCounter > 18 && frame.timelineSlot->frameCounter < 38) {
         for (frame.burstIndex = 0; frame.burstIndex < 3; frame.burstIndex++) {
             frame.spawnSlot = (BattleFxRiderBreathTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRiderBreathVariantSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)&frame.spawnSlot->posX);
-            frame.spawnSlot->posX += (short)(rand() % 0x640 - 0x320);
-            frame.spawnSlot->posY += (short)(rand() % 0x640 - 0x320);
-            frame.spawnSlot->posZ += (short)(rand() % 0x640 - 0x320);
+            frame.spawnSlot->posX += (short)(rand() % 1600 - 800);
+            frame.spawnSlot->posY += (short)(rand() % 1600 - 800);
+            frame.spawnSlot->posZ += (short)(rand() % 1600 - 800);
             frame.spawnSlot->variant = rand() % 3;
             frame.angle = (rand() % 4096);
-            frame.offsetX.vx = CosFixed(frame.angle) * 0x78 >> 0xC;
-            frame.offsetX.vy = SinFixed(frame.angle) * 0x78 >> 0xC;
+            frame.offsetX.vx = CosFixed(frame.angle) * 0x78 >> 12;
+            frame.offsetX.vy = SinFixed(frame.angle) * 0x78 >> 12;
             frame.offsetX.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -182,18 +182,18 @@ void __cdecl BattleFx_SpecialRiderBreathTimelineTask(void)
             RotTransPointToInt16(&frame.offsetX, &frame.spawnSlot->velocityX, &frame.depth);
         }
     }
-    if (frame.timelineSlot->frameCounter > 0x12 && frame.timelineSlot->frameCounter < 0x1C) {
+    if (frame.timelineSlot->frameCounter > 18 && frame.timelineSlot->frameCounter < 28) {
         for (frame.burstIndex = 0; frame.burstIndex < 3; frame.burstIndex++) {
             frame.spawnSlot = (BattleFxRiderBreathTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRiderBreathGrowingSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)&frame.spawnSlot->posX);
-            frame.spawnSlot->posX += (short)(rand() % 0x640 - 0x320);
-            frame.spawnSlot->posY += (short)(rand() % 0x640 - 0x320);
-            frame.spawnSlot->posZ += (short)(rand() % 0x640 - 0x320);
+            frame.spawnSlot->posX += (short)(rand() % 1600 - 800);
+            frame.spawnSlot->posY += (short)(rand() % 1600 - 800);
+            frame.spawnSlot->posZ += (short)(rand() % 1600 - 800);
             frame.spawnSlot->variant = rand() % 7;
-            frame.spawnSlot->scale = (rand() % 3 << 0xB) + 0x1000;
+            frame.spawnSlot->scale = (rand() % 3 << 11) + 0x1000;
             frame.angle = (rand() % 4096);
-            frame.offsetX.vx = CosFixed(frame.angle) * 0x3C >> 0xC;
-            frame.offsetX.vy = SinFixed(frame.angle) * 0x3C >> 0xC;
+            frame.offsetX.vx = CosFixed(frame.angle) * 0x3C >> 12;
+            frame.offsetX.vy = SinFixed(frame.angle) * 0x3C >> 12;
             frame.offsetX.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -207,11 +207,11 @@ void __cdecl BattleFx_SpecialRiderBreathTimelineTask(void)
             RotTransPointToInt16(&frame.offsetX, &frame.spawnSlot->velocityX, &frame.depth);
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x28) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (frame.timelineSlot->frameCounter == 40) {
+        Battle_StartFixedPointRamp(0, 10);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x32) {
+    if (frame.timelineSlot->frameCounter == 50) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -226,11 +226,11 @@ void __cdecl BattleFx_SpecialRiderBreathGrowingSpriteTask(void)
     BattleFxRiderBreathSprite *task;
 
     task = (BattleFxRiderBreathSprite *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecRiderBreathSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xF, g_BattleSpecRiderBreathLoadedResTable);
-    g_BattleSpecRiderBreathSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(0xF, g_BattleSpecRiderBreathLoadedResTable);
+    (g_BattleSpecRiderBreathSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(15, g_BattleSpecRiderBreathLoadedResTable);
+    g_BattleSpecRiderBreathSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(15, g_BattleSpecRiderBreathLoadedResTable);
     BattleFx_InstallBillboardMatrix(&task->posX, (short)task->angle, 0);
     g_BattleSpecRiderBreathSpriteReq1.frame = task->variant;
-    g_BattleSpecRiderBreathSpriteReq1.colorB = SinFixed(task->step << 7) * 0x50 >> 0xC;
+    g_BattleSpecRiderBreathSpriteReq1.colorB = SinFixed(task->step << 7) * 0x50 >> 12;
     g_BattleSpecRiderBreathSpriteReq1.colorG = g_BattleSpecRiderBreathSpriteReq1.colorB;
     g_BattleSpecRiderBreathSpriteReq1.colorR = g_BattleSpecRiderBreathSpriteReq1.colorG;
     g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
@@ -240,7 +240,7 @@ void __cdecl BattleFx_SpecialRiderBreathGrowingSpriteTask(void)
         task->posY += task->velocityY;
         task->posZ += task->velocityZ;
         (task->step)++;
-        if (task->step == 0x10) {
+        if (task->step == 16) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -262,7 +262,7 @@ void __cdecl BattleFx_SpecialRiderBreathVariantSpriteTask(void)
     frame.table[0] = 0x10;
     frame.table[1] = 0x11;
     frame.table[2] = 0x12;
-    BattleFx_InstallBillboardMatrix(&frame.slot->posA, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.slot->posA, 0x2000 /* 2.0 */, 0);
     g_BattleSpecRiderBreathSpriteReq2.frame = frame.slot->frameIndex;
     (g_BattleSpecRiderBreathSpriteReq2.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(frame.table[frame.slot->variant], g_BattleSpecRiderBreathLoadedResTable);
     g_BattleSpecRiderBreathSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(frame.table[frame.slot->variant], g_BattleSpecRiderBreathLoadedResTable);
@@ -298,7 +298,7 @@ void __cdecl BattleFx_SpecialRiderBreathTrailSpritesTask(void)
 #pragma pack(pop)
 
     frame.trailSlot = (BattleFxHellBomberRocketSlot *)BATTLE_CURRENT_TASK_SLOT;
-    for (frame.trailIndex = 0; frame.trailIndex < 0xB; frame.trailIndex++) {
+    for (frame.trailIndex = 0; frame.trailIndex < 11; frame.trailIndex++) {
         frame.scaledX.vx = frame.trailSlot->posX * (6 - frame.trailIndex) / 6;
         frame.scaledX.vy = frame.trailSlot->posY * (6 - frame.trailIndex) / 6;
         frame.scaledX.vz = frame.trailSlot->posZ * (6 - frame.trailIndex) / 6;
@@ -307,81 +307,81 @@ void __cdecl BattleFx_SpecialRiderBreathTrailSpritesTask(void)
         case 0:
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 1:
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, (SinFixed(frame.trailSlot->frameCounter << 0xA) << 0xB >> 0xC) + 0x2000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, (SinFixed(frame.trailSlot->frameCounter << 10) << 11 >> 12) + 0x2000, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 2:
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(5, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(5, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 3:
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(6, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(6, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 4:
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(7, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(7, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 5:
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(8, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(8, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 6:
             (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(9, g_BattleSpecRiderBreathLoadedResTable);
             g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(9, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 7:
-            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecRiderBreathLoadedResTable);
-            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecRiderBreathLoadedResTable);
+            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(10, g_BattleSpecRiderBreathLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 8:
-            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecRiderBreathLoadedResTable);
-            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecRiderBreathLoadedResTable);
+            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecRiderBreathLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 9:
-            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecRiderBreathLoadedResTable);
-            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecRiderBreathLoadedResTable);
+            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecRiderBreathLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 0xA:
-            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xD, g_BattleSpecRiderBreathLoadedResTable);
-            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0xD, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(13, g_BattleSpecRiderBreathLoadedResTable);
+            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(13, g_BattleSpecRiderBreathLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
             break;
         case 0xB:
-            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xE, g_BattleSpecRiderBreathLoadedResTable);
-            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0xE, g_BattleSpecRiderBreathLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecRiderBreathSpriteReq3.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(14, g_BattleSpecRiderBreathLoadedResTable);
+            g_BattleSpecRiderBreathSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(14, g_BattleSpecRiderBreathLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecRiderBreathPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecRiderBreathSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRiderBreathPacketCursor);
         }
     }
@@ -392,7 +392,7 @@ void __cdecl BattleFx_SpecialRiderBreathTrailSpritesTask(void)
     frame.trailSlot->posY += frame.trailSlot->velocityY;
     frame.trailSlot->posZ += frame.trailSlot->velocityZ;
     (frame.trailSlot->frameCounter)++;
-    if (frame.trailSlot->frameCounter == 0xF) {
+    if (frame.trailSlot->frameCounter == 15) {
         frame.trailSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -426,7 +426,7 @@ void __cdecl BattleFx_SpecialRiderBreathExpandingModelTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)frame.expandSlot->data, frame.combinedMat.t, &frame.depth);
-    frame.combinedMat.m[2][2] = frame.expandSlot->frameCounter * 0x320 + 0x1000;
+    frame.combinedMat.m[2][2] = frame.expandSlot->frameCounter * 800 + 0x1000;
     frame.combinedMat.m[1][1] = frame.combinedMat.m[2][2];
     frame.combinedMat.m[0][0] = frame.combinedMat.m[1][1];
     RotMatrix((SVECTOR *)&g_BattleSpecRiderBreathRotAngles, &frame.rotMatrix);
@@ -440,7 +440,7 @@ void __cdecl BattleFx_SpecialRiderBreathExpandingModelTask(void)
         return;
     }
     (frame.expandSlot->frameCounter)++;
-    if (frame.expandSlot->frameCounter == 0xF) {
+    if (frame.expandSlot->frameCounter == 15) {
         frame.expandSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

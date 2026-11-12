@@ -205,12 +205,12 @@ void __cdecl BattleFx_MagicFireAnimatedSpriteTask(void)
         ((BattleFxBlueFlameThrowerDrawReq *)(g_BattleMagicFire_SpriteDrawReq.drawReq))->drawObj0 = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicFire_LoadedRes);
         ((BattleFxBlueFlameThrowerDrawReq *)(g_BattleMagicFire_SpriteDrawReq.drawReq))->drawObj1 = Gfx_ModelTableGetSpriteObject(1, g_BattleMagicFire_LoadedRes);
     }
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 8), 0x1000, task->pushLength);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 8), 0x1000 /* 1.0 */, task->pushLength);
     g_BattleMagicFire_SpriteDrawReq.frame = task->frameIndex;
     g_BattleMagicFire_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleMagicFire_SpriteDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicFire_DrawListHandle);
     if (g_BattleIsPaused == 0) {
         (task->frameIndex)++;
-        if (task->frameIndex >= 0xE) {
+        if (task->frameIndex >= 14) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }

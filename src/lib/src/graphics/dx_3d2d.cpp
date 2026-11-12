@@ -93,7 +93,7 @@ void __cdecl Gfx_DrawSortedScreenPrimitive(GfxSortedDrawRecord *drawRecord)
             break;
         default:
             // STRING: FF7 0x0090c86c
-            CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 0x7B);
+            CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 123);
             res = 0;
         }
     } while (res != 0);
@@ -164,7 +164,7 @@ void __cdecl Gfx_DrawSortedGroupRecord(GfxSortedGroupRecord *groupRecord)
                 break;
             default:
                 // STRING: FF7 0x0090c88c
-                CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 0x12A);
+                CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 298);
                 code = 0;
             }
         } while (code != 0);
@@ -215,7 +215,7 @@ void __cdecl Gfx_DrawSortedTriangleRecord(GfxSortedTriangleRecord *triangleRecor
             break;
         default:
             // STRING: FF7 0x0090c8ac
-            CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 0x19A);
+            CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 410);
             code = 0;
         }
     } while (code != 0);
@@ -267,7 +267,7 @@ void __cdecl Gfx_DrawSortedPrimitiveBatchRecord(GfxSortedBatchRecord *batchRecor
             break;
         default:
             // STRING: FF7 0x0090c8cc
-            CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 0x20E);
+            CheckDirectDrawResult(code, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 526);
             code = 0;
         }
     } while (code != 0);
@@ -315,7 +315,7 @@ void __cdecl Gfx_DestroySortedDrawQueue(GfxSortedDrawQueue *drawQueue)
         DestroyBlockHeapChain((MemBlockHeap *)(drawQueue->blockHeap));
         Sort_DestroyBucketTable((SortBucketTable *)(drawQueue->bucketTable));
         // STRING: FF7 0x0090c8ec
-        GameHeapFree(drawQueue, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 0x257);
+        GameHeapFree(drawQueue, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 599);
     }
 }
 
@@ -332,14 +332,14 @@ GfxSortedDrawQueue *__cdecl Gfx_CreateSortedDrawQueue(int blockCount, int depthR
 
     error = 1;
     // STRING: FF7 0x0090c90c
-    queue = (GfxSortedDrawQueue *)GameHeapAlloc(1, 0x28, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 0x261);
+    queue = (GfxSortedDrawQueue *)GameHeapAlloc(1, 40, "C:\\lib\\src\\graphics\\dx_3d2d.cpp", 609);
     if (queue != 0) {
         queue->setRenderState = 1;
         queue->depthRange = depthRange;
         queue->depthRangeFloat = (float)depthRange;
         queue->bucketCount = bucketCount;
         queue->bucketCountFloat = (float)bucketCount;
-        queue->blockHeap = CreateBlockHeap(0xF0, blockCount * 0xF0, 0);
+        queue->blockHeap = CreateBlockHeap(240, blockCount * 240, 0);
         if (queue->blockHeap != 0) {
             queue->bucketTable = (int)Sort_CreateBucketTable(bucketCount, blockCount);
             if (queue->bucketTable != 0) {

@@ -38,7 +38,7 @@ void __cdecl Battle_GetTargetMaskBoneCentroid(short actorMask, Vec3sPacked *cent
     frame.sumZ = 0;
     frame.sumY = frame.sumZ;
     frame.sumX = frame.sumY;
-    for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
         if ((actorMask & 1 << frame.actorIndex) != 0) {
             frame.selectedCount++;
             Battle_GetBoneWorldPos(frame.actorIndex, g_BattleActorRecords[frame.actorIndex].targetBone, &frame.boneX.vx);
@@ -102,9 +102,9 @@ void __cdecl BattleFx_InstallOrientedMatrixUniform(void *position, void *rotatio
     RotTransPoint(position, &frame.rotMatrix.t[0], &frame.depth);
     if (pushAmount != 0) {
         NormalizeVectorFixed(&frame.rotMatrix.t[0], &frame.dirX);
-        frame.rotMatrix.t[0] += frame.dirX.vx * pushAmount >> 0xC;
-        frame.rotMatrix.t[1] += frame.dirX.vy * pushAmount >> 0xC;
-        frame.rotMatrix.t[2] += frame.dirX.vz * pushAmount >> 0xC;
+        frame.rotMatrix.t[0] += frame.dirX.vx * pushAmount >> 12;
+        frame.rotMatrix.t[1] += frame.dirX.vy * pushAmount >> 12;
+        frame.rotMatrix.t[2] += frame.dirX.vz * pushAmount >> 12;
     }
     RotMatrix((SVECTOR *)rotation, &frame.rotMatrix);
     frame.scaleX.vz = scale;
@@ -136,9 +136,9 @@ void __cdecl BattleFx_InstallOrientedMatrixScaled(void *position, void *rotation
     RotTransPoint(position, &frame.rotMatrix.t[0], &frame.depth);
     if (pushAmount != 0) {
         NormalizeVectorFixed(&frame.rotMatrix.t[0], &frame.dirX);
-        frame.rotMatrix.t[0] += frame.dirX.vx * pushAmount >> 0xC;
-        frame.rotMatrix.t[1] += frame.dirX.vy * pushAmount >> 0xC;
-        frame.rotMatrix.t[2] += frame.dirX.vz * pushAmount >> 0xC;
+        frame.rotMatrix.t[0] += frame.dirX.vx * pushAmount >> 12;
+        frame.rotMatrix.t[1] += frame.dirX.vy * pushAmount >> 12;
+        frame.rotMatrix.t[2] += frame.dirX.vz * pushAmount >> 12;
     }
     RotMatrix((SVECTOR *)rotation, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, scale);

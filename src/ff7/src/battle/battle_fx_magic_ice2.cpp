@@ -106,16 +106,16 @@ void __cdecl BattleFx_MagicIce2TimelineTask(void)
         child->velocityX = 0;
         child = (BattleFxIce2TimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce2ShrinkingSpinModelTask);
         child->pos = task->pos;
-        child->velocityY = 0x200;
-        child->velocityX = 0x200;
+        child->velocityY = 512;
+        child->velocityX = 512;
         child->velocityZ = 0xFE00;
         child = (BattleFxIce2TimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce2ShrinkingSpinModelTask);
         child->pos = task->pos;
         child->velocityY = 0xFE00;
         child->velocityX = 0xFE00;
-        child->velocityZ = 0x200;
+        child->velocityZ = 512;
     }
-    if (task->timer == 0xF) {
+    if (task->timer == 15) {
         child = (BattleFxIce2TimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce2GrowHoldFadeModelTask);
         child->holdFrames = 4;
         child->pos = task->pos;
@@ -123,26 +123,26 @@ void __cdecl BattleFx_MagicIce2TimelineTask(void)
         child->velocityY = 0;
         child->velocityX = 0;
     }
-    if (task->timer == 0x11) {
+    if (task->timer == 17) {
         child = (BattleFxIce2TimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce2GrowHoldFadeModelTask);
         child->holdFrames = 2;
         child->pos = task->pos;
-        child->velocityY = 0x200;
-        child->velocityX = 0x200;
+        child->velocityY = 512;
+        child->velocityX = 512;
         child->velocityZ = 0xFE00;
     }
-    if (task->timer == 0x13) {
+    if (task->timer == 19) {
         child = (BattleFxIce2TimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce2GrowHoldFadeModelTask);
         child->holdFrames = 0;
         child->pos = task->pos;
         child->velocityY = 0xFE00;
         child->velocityX = 0xFE00;
-        child->velocityZ = 0x200;
+        child->velocityZ = 512;
     }
-    if (task->timer == 0x19) {
+    if (task->timer == 25) {
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
     }
-    if (task->timer == 0x19) {
+    if (task->timer == 25) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->timer)++;
@@ -161,7 +161,7 @@ void __cdecl BattleFx_MagicIce2ShrinkingSpinModelTask(void)
     (g_BattleMagicIce2_ModelReq.modelEntry) = Gfx_ModelTableGetRenderObject(0, g_BattleMagicIce2_ResourceHandle);
     pScales = (BattleIce2ShrinkState *)Gfx_GetPsxScratchpadPtr(0);
     matrix = &pScales->matrix;
-    pScales->nextValue = task->step * -0xC00 / 0xF + 0xC00;
+    pScales->nextValue = task->step * -0xC00 / 15 + 0xC00;
     pScales->curValue = pScales->nextValue;
     pScales->prevValue = pScales->curValue;
     localFrame = task->step;
@@ -169,8 +169,8 @@ void __cdecl BattleFx_MagicIce2ShrinkingSpinModelTask(void)
         g_BattleMagicIce2_ModelReq.spinFadeLevel = (localFrame << 7) / 5;
     } else {
         localFrame -= 5;
-        if (localFrame < 0xA) {
-            g_BattleMagicIce2_ModelReq.spinFadeLevel = 0x80;
+        if (localFrame < 10) {
+            g_BattleMagicIce2_ModelReq.spinFadeLevel = 128;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -187,7 +187,7 @@ void __cdecl BattleFx_MagicIce2ShrinkingSpinModelTask(void)
     g_BattleMagicIce2_ChainTail = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleMagicIce2_ModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicIce2_ChainTail);
     if (g_BattleIsPaused == 0) {
         (task->step)++;
-        task->spin.vx += 0x100;
+        task->spin.vx += 0x100 /* 22.5 deg */;
         task->spin.vy += 0x80;
         task->spin.vz += 0x40;
     }
@@ -208,24 +208,24 @@ void __cdecl BattleFx_MagicIce2GrowHoldFadeModelTask(void)
     matrix = &pScales->matrix;
     localFrame = task->frame;
     if (localFrame < 5) {
-        g_BattleMagicIce2_ModelReq.growFadeLevel = 0x80;
-        pScales->growLevel = (localFrame << 0xB) / 5;
+        g_BattleMagicIce2_ModelReq.growFadeLevel = 128;
+        pScales->growLevel = (localFrame << 11) / 5;
         pScales->holdLevel = pScales->growLevel;
         pScales->fadeLevel = pScales->holdLevel;
     } else {
         localFrame -= 5;
         if (localFrame < task->holdFrames + 5) {
-            g_BattleMagicIce2_ModelReq.growFadeLevel = 0x80;
-            pScales->growLevel = 0x800;
-            pScales->holdLevel = 0x800;
-            pScales->fadeLevel = 0x800;
+            g_BattleMagicIce2_ModelReq.growFadeLevel = 128;
+            pScales->growLevel = 0x800 /* 0.5 */;
+            pScales->holdLevel = 0x800 /* 0.5 */;
+            pScales->fadeLevel = 0x800 /* 0.5 */;
         } else {
             localFrame -= task->holdFrames + 5;
             if (localFrame < 5) {
-                g_BattleMagicIce2_ModelReq.growFadeLevel = localFrame * -0x80 / 5 + 0x80;
-                pScales->growLevel = 0x800;
-                pScales->holdLevel = 0x800;
-                pScales->fadeLevel = 0x800;
+                g_BattleMagicIce2_ModelReq.growFadeLevel = localFrame * -128 / 5 + 128;
+                pScales->growLevel = 0x800 /* 0.5 */;
+                pScales->holdLevel = 0x800 /* 0.5 */;
+                pScales->fadeLevel = 0x800 /* 0.5 */;
             } else {
                 task->holdFrames = BATTLE_TASK_FREE;
                 return;

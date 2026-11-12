@@ -403,7 +403,7 @@ typedef struct {
 // GLOBAL: FF7 0x00b44cc8
 BattleSummonTyphonRingAngles g_BattleSummonTyphonFallParam6 = {0};
 // GLOBAL: FF7 0x00b44cd0
-unsigned char g_BattleSummonTyphonFallParam7[0x130] = {0};
+unsigned char g_BattleSummonTyphonFallParam7[304] = {0};
 // GLOBAL: FF7 0x00b44e00
 unsigned char g_BattleSummonTyphonFallParam8 = 0;
 unsigned char g_bssPad_00b44e04[4] = {0};
@@ -436,7 +436,7 @@ unsigned char g_bssPad_00b44e3c[4] = {0};
 int g_BattleSummonTyphonFallParam14 = 0;
 unsigned char g_bssPad_00b44e44[4] = {0};
 // GLOBAL: FF7 0x00b44e48
-unsigned char g_BattleSummonTyphonFallParam15[0x10] = {0};
+unsigned char g_BattleSummonTyphonFallParam15[16] = {0};
 // GLOBAL: FF7 0x00b44e58
 struct BattleScreenFlashRamp *g_BattleSummonTyphonFadeRamp = 0;
 // GLOBAL: FF7 0x00b44e5c
@@ -501,13 +501,13 @@ void __cdecl BattleFx_SummonBeginTyphon(int targetMask, int actorIdx)
     BattleFx_SummonLoadResTyphon();
     Battle_GetActorMaskCentroid(g_BattleSummonTyphonTargetMaskB = targetMask, &center.vx);
     if (center.vz < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonTyphonFallParam11.rotY = 0x800;
-        g_BattleSummonTyphonFallParam10.position = center.vz + 0x1B58;
+        g_BattleSummonTyphonFallParam11.rotY = 0x800 /* 180 deg */;
+        g_BattleSummonTyphonFallParam10.position = center.vz + 7000;
     } else {
-        g_BattleSummonTyphonFallParam10.position = center.vz - 0x1B58;
+        g_BattleSummonTyphonFallParam10.position = center.vz - 7000;
     }
     RotMatrix((SVECTOR *)&g_BattleSummonTyphonFallParam11, (int *)&g_BattleSummonTyphonFallParam10);
-    for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    for (actorIndex = 0; actorIndex < 10; actorIndex++) {
         g_BattleSummonTyphonActorTargets[actorIndex] = g_BattleActorRecords[actorIndex].posY;
     }
     BattleFx_SummonTyphonClearParticleCallbacks();
@@ -644,7 +644,7 @@ void __cdecl BattleFx_TyphonRunCameraScript(void)
                 g_pBattleSummonTyphonCameraTrack[1].mode = *state->scriptPtr;
                 state->scriptPtr++;
                 g_pBattleSummonTyphonCameraTrack->progress = 0;
-                g_pBattleSummonTyphonCameraTrack->stepSize = 0x1000 / g_pBattleSummonTyphonCameraTrack->stepCount;
+                g_pBattleSummonTyphonCameraTrack->stepSize = 4096 / g_pBattleSummonTyphonCameraTrack->stepCount;
                 g_pBattleSummonTyphonCameraTrack->deltaX = g_pBattleSummonTyphonCameraTrack->posX;
                 g_pBattleSummonTyphonCameraTrack->deltaY = g_pBattleSummonTyphonCameraTrack->posY;
                 g_pBattleSummonTyphonCameraTrack->deltaZ = g_pBattleSummonTyphonCameraTrack->posZ;
@@ -697,9 +697,9 @@ void __cdecl BattleFx_TyphonRunCameraScript(void)
                 pVector->offsetY = g_BattleSummonTyphonCameraPitch->posY - g_pBattleSummonTyphonCameraTrack->deltaY;
                 pVector->offsetZ = g_BattleSummonTyphonCameraPitch->posZ - g_pBattleSummonTyphonCameraTrack->deltaZ;
                 VectorNormalToSVector((int *)pVector, (short *)delta);
-                g_pBattleSummonTyphonCameraTrack->posX = g_BattleSummonTyphonCameraPitch->posX - (delta->vx * g_pBattleSummonTyphonCameraTrack->progress >> 0xC);
-                g_pBattleSummonTyphonCameraTrack->posY = g_BattleSummonTyphonCameraPitch->posY - (delta->vy * g_pBattleSummonTyphonCameraTrack->progress >> 0xC);
-                g_pBattleSummonTyphonCameraTrack->posZ = g_BattleSummonTyphonCameraPitch->posZ - (delta->vz * g_pBattleSummonTyphonCameraTrack->progress >> 0xC);
+                g_pBattleSummonTyphonCameraTrack->posX = g_BattleSummonTyphonCameraPitch->posX - (delta->vx * g_pBattleSummonTyphonCameraTrack->progress >> 12);
+                g_pBattleSummonTyphonCameraTrack->posY = g_BattleSummonTyphonCameraPitch->posY - (delta->vy * g_pBattleSummonTyphonCameraTrack->progress >> 12);
+                g_pBattleSummonTyphonCameraTrack->posZ = g_BattleSummonTyphonCameraPitch->posZ - (delta->vz * g_pBattleSummonTyphonCameraTrack->progress >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_pBattleSummonTyphonCameraTrack->progress += g_pBattleSummonTyphonCameraTrack->stepSize;
@@ -707,9 +707,9 @@ void __cdecl BattleFx_TyphonRunCameraScript(void)
                 for (easeIndex = 0; easeIndex < g_pBattleSummonTyphonCameraTrack[1].mode; easeIndex++) {
                     easeVal = SinFixed(easeVal / 4);
                 }
-                g_pBattleSummonTyphonCameraTrack->posX = g_pBattleSummonTyphonCameraTrack->deltaX + (g_pBattleSummonTyphonCameraTrack->stepX * easeVal >> 0xC);
-                g_pBattleSummonTyphonCameraTrack->posY = g_pBattleSummonTyphonCameraTrack->deltaY + (g_pBattleSummonTyphonCameraTrack->stepY * easeVal >> 0xC);
-                g_pBattleSummonTyphonCameraTrack->posZ = g_pBattleSummonTyphonCameraTrack->deltaZ + (g_pBattleSummonTyphonCameraTrack->stepZ * easeVal >> 0xC);
+                g_pBattleSummonTyphonCameraTrack->posX = g_pBattleSummonTyphonCameraTrack->deltaX + (g_pBattleSummonTyphonCameraTrack->stepX * easeVal >> 12);
+                g_pBattleSummonTyphonCameraTrack->posY = g_pBattleSummonTyphonCameraTrack->deltaY + (g_pBattleSummonTyphonCameraTrack->stepY * easeVal >> 12);
+                g_pBattleSummonTyphonCameraTrack->posZ = g_pBattleSummonTyphonCameraTrack->deltaZ + (g_pBattleSummonTyphonCameraTrack->stepZ * easeVal >> 12);
             }
             (g_pBattleSummonTyphonCameraTrack->stepCount)--;
             g_pBattleSummonTyphonCameraTrack = (struct BattleFxCameraOrbitState *)&g_BattleSummonTyphonCameraTrackId;
@@ -793,7 +793,7 @@ void __cdecl BattleFx_SummonTyphonClearParticleCallbacks(void)
 {
     int i;
 
-    for (i = 0; i < 0x12C; i++) {
+    for (i = 0; i < 300; i++) {
         g_BattleSummonTyphonScratchBuffer[i] = 0;
     }
 }
@@ -810,7 +810,7 @@ void __cdecl BattleFx_SummonTyphonParticleCallbackTask(void)
 
     frame.slot = (int)BATTLE_CURRENT_TASK_SLOT;
     frame.active = 0;
-    for (frame.recordIndex = 0; frame.recordIndex < 0x12c; frame.recordIndex++) {
+    for (frame.recordIndex = 0; frame.recordIndex < 300; frame.recordIndex++) {
         if (g_BattleSummonTyphonScratchBuffer[frame.recordIndex] != 0) {
             g_BattleSummonTyphonScratchBuffer[frame.recordIndex]((int)&g_BattleSummonTyphonRingBuffer[frame.recordIndex]);
             if (g_BattleSummonTyphonRingBuffer[frame.recordIndex].state == -1) {
@@ -848,7 +848,7 @@ void __cdecl BattleFx_SummonTyphonTimelineTask(void)
         }
     } else {
         frameIndex -= 5;
-        if (frameIndex < 0x32) {
+        if (frameIndex < 50) {
             if (frameIndex == 0) {
                 spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonParticleModel2EmitterTask);
                 spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonParticleModel3EmitterTask);
@@ -857,11 +857,11 @@ void __cdecl BattleFx_SummonTyphonTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            frameIndex -= 0x32;
-            if (frameIndex < 0xA) { /* empty first arm: lib/codegen.h */
+            frameIndex -= 50;
+            if (frameIndex < 10) { /* empty first arm: lib/codegen.h */
             } else {
-                frameIndex -= 0xA;
-                if (frameIndex < 0xA) {
+                frameIndex -= 10;
+                if (frameIndex < 10) {
                     if (frameIndex == 9) {
                         ringRecord = (BattleFxTyphonTimelineRecord *)Battle_AllocSceneMessage(1);
                         ringRecord->vectorX = 0;
@@ -871,34 +871,34 @@ void __cdecl BattleFx_SummonTyphonTimelineTask(void)
                         Battle_AllocateResourceSlot(BattleFx_SummonTyphonActorFlagFadeTask);
                     }
                 } else {
-                    frameIndex -= 0xA;
-                    if (frameIndex < 0xF) {
+                    frameIndex -= 10;
+                    if (frameIndex < 15) {
                         if (frameIndex == 0) {
                             spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonPairedModelTask);
                             spawned->pointA = g_BattleSummonTyphonPairedModelPoints[0];
                             spawned->pointB = g_BattleSummonTyphonPairedModelPoints[1];
                         }
                     } else {
-                        frameIndex -= 0xF;
-                        if (frameIndex < 0x1E) { /* empty first arm: lib/codegen.h */
+                        frameIndex -= 15;
+                        if (frameIndex < 30) { /* empty first arm: lib/codegen.h */
                         } else {
-                            frameIndex -= 0x1E;
-                            if (frameIndex < 0x23) {
+                            frameIndex -= 30;
+                            if (frameIndex < 35) {
                                 if (frameIndex == 0) {
                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                                 }
-                                if (frameIndex == 0x22) {
+                                if (frameIndex == 34) {
                                     BattleFx_SummonTyphonPrepareStageOffscreenRequests();
                                 }
                             } else {
-                                frameIndex -= 0x23;
-                                if (frameIndex < 0xF) {
+                                frameIndex -= 35;
+                                if (frameIndex < 15) {
                                     if (frameIndex == 0) {
                                         spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonOrbitSpawnTask);
                                     }
                                 } else {
-                                    frameIndex -= 0xF;
-                                    if (frameIndex < 0x1E) {
+                                    frameIndex -= 15;
+                                    if (frameIndex < 30) {
                                         if (frameIndex == 0) {
                                             spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonDeformingRingsTask);
                                             spawned->angleX = rand() & 0xFFF;
@@ -912,38 +912,38 @@ void __cdecl BattleFx_SummonTyphonTimelineTask(void)
                                             spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonParticleEmitterTask);
                                         }
                                     } else {
-                                        frameIndex -= 0x1E;
-                                        if (frameIndex < 0x14) { /* empty first arm: lib/codegen.h */
+                                        frameIndex -= 30;
+                                        if (frameIndex < 20) { /* empty first arm: lib/codegen.h */
                                         } else {
-                                            frameIndex -= 0x14;
-                                            if (frameIndex < 0x1E) { /* empty first arm: lib/codegen.h */
+                                            frameIndex -= 20;
+                                            if (frameIndex < 30) { /* empty first arm: lib/codegen.h */
                                             } else {
-                                                frameIndex -= 0x1E;
-                                                if (frameIndex < 0x23) {
-                                                    if (frameIndex == 0x22) {
+                                                frameIndex -= 30;
+                                                if (frameIndex < 35) {
+                                                    if (frameIndex == 34) {
                                                         Battle_AllocateResourceSlot(BattleFx_SummonTyphonCameraRotationTask);
                                                     }
-                                                    if (frameIndex == 0x1E) {
+                                                    if (frameIndex == 30) {
                                                         Battle_AllocateResourceSlot(BattleFx_SummonTyphonFadeOverlayPulseTask);
                                                     }
-                                                    if (frameIndex == 0x1E) {
+                                                    if (frameIndex == 30) {
                                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                                         Sfx_ReleaseCachedBuffer(0x21A, 0);
                                                         Sfx_ReleaseCachedBuffer(0x21B, 0);
                                                         Sfx_ReleaseCachedBuffer(0x21C, 0);
                                                     }
                                                 } else {
-                                                    frameIndex -= 0x23;
-                                                    if (frameIndex < 0x19) {
+                                                    frameIndex -= 35;
+                                                    if (frameIndex < 25) {
                                                         if (frameIndex == 0) {
                                                             spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonRotatingModelTask);
                                                         }
-                                                        if (frameIndex == 0x17) {
+                                                        if (frameIndex == 23) {
                                                             Battle_AllocSceneMessage(2);
                                                         }
                                                     } else {
-                                                        frameIndex -= 0x19;
-                                                        if (frameIndex < 0x2D) {
+                                                        frameIndex -= 25;
+                                                        if (frameIndex < 45) {
                                                             if (frameIndex == 0) {
                                                                 spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonModelHexagonEmitterTask);
                                                                 spawned = (BattleFxTyphonTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonHexagonQuadsTask);
@@ -955,17 +955,17 @@ void __cdecl BattleFx_SummonTyphonTimelineTask(void)
                                                                 Sfx_ReleaseCachedBuffer(0x21E, 1);
                                                                 Sfx_ReleaseCachedBuffer(0x21F, 1);
                                                             }
-                                                            if (frameIndex == 0xA && g_BattleTimelineTargetMask != 0) {
+                                                            if (frameIndex == 10 && g_BattleTimelineTargetMask != 0) {
                                                                 Battle_CreateBitPatternCallbackTask(g_BattleTimelineTargetMask, 0, 2, BattleFx_SummonSpawnTyphonActorFallPerTarget);
                                                             }
                                                         } else {
-                                                            frameIndex -= 0x2D;
-                                                            if (frameIndex < 0x32) {
-                                                                if (frameIndex == 0x19) {
-                                                                    BattleFx_SummonTyphonBeginFadeOverlay(0xF);
+                                                            frameIndex -= 45;
+                                                            if (frameIndex < 50) {
+                                                                if (frameIndex == 25) {
+                                                                    BattleFx_SummonTyphonBeginFadeOverlay(15);
                                                                 }
-                                                                if (frameIndex == 0x31) {
-                                                                    for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+                                                                if (frameIndex == 49) {
+                                                                    for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                                                                         if ((g_BattleSummonTyphonTargetMaskB & 1 << actorIndex) != 0) {
                                                                             g_BattleActorRecords[actorIndex].posY = g_BattleSummonTyphonActorTargets[actorIndex];
                                                                         }
@@ -976,7 +976,7 @@ void __cdecl BattleFx_SummonTyphonTimelineTask(void)
                                                             } else {
                                                                 BattleFx_SummonTyphonSetFadeOverlayFadeOutRate(5);
                                                                 if ((g_BattleSummonTyphonTargetMaskB & ~g_BattleTimelineTargetMask) != 0) {
-                                                                    for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+                                                                    for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                                                                         if ((g_BattleSummonTyphonTargetMaskB & ~g_BattleTimelineTargetMask & 1 << actorIndex) != 0) {
                                                                             Battle_PostActorHitOrHurtMessage(actorIndex);
                                                                         }
@@ -1047,7 +1047,7 @@ void __cdecl BattleFx_SummonTyphonFadeOverlayTask(void)
             g_BattleSummonTyphonFadeRamp = 0;
             return;
         }
-        if (task->fadeLevel > 0xFFFF) {
+        if (task->fadeLevel > 65535) {
             task->fadeLevel = 0xFFFF;
             task->pendingStep = 0;
         }
@@ -1084,15 +1084,15 @@ void __cdecl BattleFx_SummonTyphonFlashColorCycleTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    subStep = taskPtr->phase % 0x10;
-    blend = (subStep << 0xC) / 0x10;
-    fromIndex = (taskPtr->phase / 0x10) % 6;
+    subStep = taskPtr->phase % 16;
+    blend = (subStep << 12) / 16;
+    fromIndex = (taskPtr->phase / 16) % 6;
     toIndex = (fromIndex + 1) % 6;
-    g_BattleFxTimelineState.red = g_BattleSummonTyphonColorPalette[fromIndex].red + ((g_BattleSummonTyphonColorPalette[toIndex].red - g_BattleSummonTyphonColorPalette[fromIndex].red) * blend >> 0xC);
-    g_BattleFxTimelineState.channel1 = g_BattleSummonTyphonColorPalette[fromIndex].channel1 + ((g_BattleSummonTyphonColorPalette[toIndex].channel1 - g_BattleSummonTyphonColorPalette[fromIndex].channel1) * blend >> 0xC);
-    g_BattleFxTimelineState.channel2 = g_BattleSummonTyphonColorPalette[fromIndex].channel2 + ((g_BattleSummonTyphonColorPalette[toIndex].channel2 - g_BattleSummonTyphonColorPalette[fromIndex].channel2) * blend >> 0xC);
+    g_BattleFxTimelineState.red = g_BattleSummonTyphonColorPalette[fromIndex].red + ((g_BattleSummonTyphonColorPalette[toIndex].red - g_BattleSummonTyphonColorPalette[fromIndex].red) * blend >> 12);
+    g_BattleFxTimelineState.channel1 = g_BattleSummonTyphonColorPalette[fromIndex].channel1 + ((g_BattleSummonTyphonColorPalette[toIndex].channel1 - g_BattleSummonTyphonColorPalette[fromIndex].channel1) * blend >> 12);
+    g_BattleFxTimelineState.channel2 = g_BattleSummonTyphonColorPalette[fromIndex].channel2 + ((g_BattleSummonTyphonColorPalette[toIndex].channel2 - g_BattleSummonTyphonColorPalette[fromIndex].channel2) * blend >> 12);
     (taskPtr->phase)++;
-    if (taskPtr->phase >= 0x195) {
+    if (taskPtr->phase >= 405) {
         g_BattleFxTimelineState.red = 0;
         g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.channel2 = 0;
@@ -1124,57 +1124,57 @@ void __cdecl BattleFx_SummonTyphonParticleModel2EmitterTask(void)
         return;
     }
     frameIndex = taskPtr->frameCounter;
-    if (frameIndex < 0x3C) {
-        progress = (frameIndex << 0xC) / 0x3C;
-        emitCount = (progress << 7 >> 0xC) + 0x80;
+    if (frameIndex < 60) {
+        progress = (frameIndex << 12) / 60;
+        emitCount = (progress << 7 >> 12) + 128;
         spreadFactor = progress;
-        zoomScale = (progress * 0xC00 >> 0xC) + 0x400;
+        zoomScale = (progress * 0xC00 /* 0.75 */ >> 12) + 0x400;
     } else {
-        frameIndex -= 0x3C;
-        if (frameIndex < 0x19) {
-            emitCount = 0x100;
-            spreadFactor = 0x1000;
-            zoomScale = 0x1000;
+        frameIndex -= 60;
+        if (frameIndex < 25) {
+            emitCount = 256;
+            spreadFactor = 4096;
+            zoomScale = 0x1000 /* 1.0 */;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
     emitCount = (emitCount * taskPtr->frameCounter & 0xFF) + emitCount;
-    while (emitCount >= 0x100) {
+    while (emitCount >= 256) {
         particle = (BattleFxTyphonEmitterRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonParticleModel2Task);
         particle->frameCount = taskPtr->frameCounter;
         heading = rand() & 0xFFF;
         if (DEAD_IN_RETAIL != 0) {
-            radiusRand = 0x12C;
+            radiusRand = 300;
         } else {
-            radiusRand = rand() % 0x12C;
+            radiusRand = rand() % 300;
         }
         ring = radiusRand;
-        particle->sinOffset = ring * SinFixed(heading) >> 0xC;
+        particle->sinOffset = ring * SinFixed(heading) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             baseX = 0xFFFFF060;
         } else {
-            baseX = rand() % 0xFA0 - 0x1F40;
+            baseX = rand() % 4000 - 8000;
         }
-        particle->offsetX = baseX * spreadFactor >> 0xC;
-        particle->cosOffset = ring * CosFixed(heading) >> 0xC;
+        particle->offsetX = baseX * spreadFactor >> 12;
+        particle->cosOffset = ring * CosFixed(heading) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             baseY = 0x32;
         } else {
-            baseY = rand() % 0x14 + 0x1E;
+            baseY = rand() % 20 + 30;
         }
-        particle->offsetY = baseY * spreadFactor >> 0xC;
-        particle->jitterA = (rand() % 0x40) - 0x20 >> 4;
+        particle->offsetY = baseY * spreadFactor >> 12;
+        particle->jitterA = (rand() % 64) - 32 >> 4;
         particle->phase = rand() & 0xFF;
-        particle->jitterB = (rand() % 0x40) - 0x20 >> 4;
+        particle->jitterB = (rand() % 64) - 32 >> 4;
         if (DEAD_IN_RETAIL != 0) {
             baseZ = 0x900;
         } else {
-            baseZ = (rand() % 0x200) + 0x700;
+            baseZ = (rand() % 512) + 1792;
         }
-        particle->offsetZ = baseZ * zoomScale >> 0xC;
-        emitCount -= 0x100;
+        particle->offsetZ = baseZ * zoomScale >> 12;
+        emitCount -= 256;
     }
     (taskPtr->frameCounter)++;
 }
@@ -1194,24 +1194,24 @@ void __cdecl BattleFx_SummonTyphonParticleModel2Task(void)
         g_BattleSummonTyphonModelVariant = (struct BattleFxTyphonModelVariant *)(Gfx_GetPsxScratchpadPtr(0));
     }
     (g_BattleSummonTyphonRingConfig0.ringValue) = Gfx_ModelTableGetRenderObject(2, g_BattleSummonTyphonFallParam9);
-    if (particle->phase + particle->ownerSlot >= 0x5A) {
-        elapsed = particle->phase + particle->ownerSlot + -0x5A;
-        if (elapsed >= 0xA) {
+    if (particle->phase + particle->ownerSlot >= 90) {
+        elapsed = particle->phase + particle->ownerSlot + -90;
+        if (elapsed >= 10) {
             particle->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
-        ratio = (elapsed << 0xC) / 0xA;
+        ratio = (elapsed << 12) / 10;
         g_BattleSummonTyphonRingConfig0.blend = ratio;
         for (i = 0; i < 3; i++) {
             ratio = SinFixed(ratio / 4);
         }
-        g_BattleSummonTyphonModelVariant->offset = particle->scale * ((ratio << 0xC >> 0xC) + 0x1000) >> 0xC;
+        g_BattleSummonTyphonModelVariant->offset = particle->scale * ((ratio << 12 >> 12) + 0x1000) >> 12;
         g_BattleSummonTyphonModelVariant->prevOffset = g_BattleSummonTyphonModelVariant->offset;
         g_BattleSummonTyphonModelVariant->scale = particle->scale;
     } else {
         elapsed = particle->phase;
         if (elapsed < 5) {
-            ratio = (elapsed << 0xC) / 5;
+            ratio = (elapsed << 12) / 5;
             g_BattleSummonTyphonRingConfig0.blend = 0x1000 - ratio;
         } else {
             elapsed -= 5;
@@ -1220,7 +1220,7 @@ void __cdecl BattleFx_SummonTyphonParticleModel2Task(void)
             } else {
                 elapsed -= 5;
                 if (elapsed < 5) {
-                    ratio = (elapsed << 0xC) / 5;
+                    ratio = (elapsed << 12) / 5;
                     g_BattleSummonTyphonRingConfig0.blend = ratio;
                 } else {
                     particle->ownerSlot = BATTLE_TASK_FREE;
@@ -1228,8 +1228,8 @@ void __cdecl BattleFx_SummonTyphonParticleModel2Task(void)
                 }
             }
         }
-        ratio = (particle->phase << 0xC) / 0xF;
-        g_BattleSummonTyphonModelVariant->offset = particle->scale * ((ratio * -0x800 >> 0xC) + 0x1000) >> 0xC;
+        ratio = (particle->phase << 12) / 15;
+        g_BattleSummonTyphonModelVariant->offset = particle->scale * ((ratio * -0x800 /* 0.5 */ >> 12) + 0x1000) >> 12;
         g_BattleSummonTyphonModelVariant->scale = g_BattleSummonTyphonModelVariant->offset;
         g_BattleSummonTyphonModelVariant->prevOffset = g_BattleSummonTyphonModelVariant->scale;
     }
@@ -1249,7 +1249,7 @@ void __cdecl BattleFx_SummonTyphonParticleModel2Task(void)
     if (g_BattleIsPaused == 0) {
         (particle->phase)++;
         particle->posY += particle->velocityY;
-        *(char *)&particle->gridY += 0x10;
+        *(char *)&particle->gridY += 16;
     }
 }
 
@@ -1276,24 +1276,24 @@ void __cdecl BattleFx_SummonTyphonParticleModel3EmitterTask(void)
         return;
     }
     age = task->frameCounter;
-    if (age < 0x3C) {
-        ratio = (age << 0xC) / 0x3C;
-        tempEmitRate = (ratio * 0x30 >> 0xC) + 0x10;
+    if (age < 60) {
+        ratio = (age << 12) / 60;
+        tempEmitRate = (ratio * 0x30 >> 12) + 0x10;
         liftRamp = ratio;
-        scaleRamp = (ratio * 0xC00 >> 0xC) + 0x400;
+        scaleRamp = (ratio * 0xC00 /* 0.75 */ >> 12) + 0x400;
     } else {
-        age -= 0x3C;
-        if (age < 0x19) {
+        age -= 60;
+        if (age < 25) {
             tempEmitRate = 0x40;
             liftRamp = 0x1000;
-            scaleRamp = 0x1000;
+            scaleRamp = 0x1000 /* 1.0 */;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
     tempEmitRate = (tempEmitRate * task->frameCounter & 0xFF) + tempEmitRate;
-    while (tempEmitRate >= 0x100) {
+    while (tempEmitRate >= 256) {
         spawned = (BattleFxTyphonParticleModel3 *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTyphonParticleModel3Task);
         spawned->frameCount = task->frameCounter;
         angle = rand() & 0xFFF;
@@ -1303,23 +1303,23 @@ void __cdecl BattleFx_SummonTyphonParticleModel3EmitterTask(void)
             rollDist = rand() % 0xC8;
         }
         range = rollDist;
-        spawned->velocityX = range * SinFixed(angle) >> 0xC;
+        spawned->velocityX = range * SinFixed(angle) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             rawVelY = 0xFFFFF060;
         } else {
-            rawVelY = rand() % 0xFA0 - 0x1F40;
+            rawVelY = rand() % 4000 - 8000;
         }
-        spawned->velocityY = rawVelY * liftRamp >> 0xC;
-        spawned->velocityZ = range * CosFixed(angle) >> 0xC;
+        spawned->velocityY = rawVelY * liftRamp >> 12;
+        spawned->velocityZ = range * CosFixed(angle) >> 12;
         spawned->angleX = 0;
         spawned->phase = rand() & 0xFFF;
         spawned->angleZ = 0;
         if (DEAD_IN_RETAIL != 0) {
-            sizeRand = 0x850;
+            sizeRand = 2128;
         } else {
-            sizeRand = rand() % 0x250 + 0x600;
+            sizeRand = rand() % 592 + 1536;
         }
-        spawned->scale = sizeRand * scaleRamp >> 0xC;
+        spawned->scale = sizeRand * scaleRamp >> 12;
         tempEmitRate -= 0x100;
     }
     (task->frameCounter)++;
@@ -1340,33 +1340,33 @@ void __cdecl BattleFx_SummonTyphonParticleModel3Task(void)
         g_BattleSummonTyphonDrawHandle = (BattleFxTyphonDrawHandle *)Gfx_GetPsxScratchpadPtr(0);
     }
     (g_BattleSummonTyphonRingConfig1.ringValue) = Gfx_ModelTableGetRenderObject(3, g_BattleSummonTyphonFallParam9);
-    if (particle->step + particle->phase >= 0x5A) {
-        elapsed = particle->step + particle->phase + -0x5A;
-        if (elapsed >= 0xA) {
+    if (particle->step + particle->phase >= 90) {
+        elapsed = particle->step + particle->phase + -90;
+        if (elapsed >= 10) {
             particle->phase = 0xFFFF;
             return;
         }
-        ratio = (elapsed << 0xC) / 0xA;
+        ratio = (elapsed << 12) / 10;
         g_BattleSummonTyphonRingConfig1.blend = ratio;
         for (i = 0; i < 3; i++) {
             ratio = SinFixed(ratio / 4);
         }
-        g_BattleSummonTyphonDrawHandle->scale = particle->scale * ((ratio << 0xC >> 0xC) + 0x1000) >> 0xC;
+        g_BattleSummonTyphonDrawHandle->scale = particle->scale * ((ratio << 12 >> 12) + 0x1000) >> 12;
         g_BattleSummonTyphonDrawHandle->scalePrev = g_BattleSummonTyphonDrawHandle->scale;
-        g_BattleSummonTyphonDrawHandle->scaleY = 0x400;
+        g_BattleSummonTyphonDrawHandle->scaleY = 0x400 /* 0.25 */;
     } else {
         elapsed = particle->step;
-        if (elapsed < 0xA) {
-            ratio = (elapsed << 0xC) / 0xA;
+        if (elapsed < 10) {
+            ratio = (elapsed << 12) / 10;
             g_BattleSummonTyphonRingConfig1.blend = 0x1000 - ratio;
         } else {
-            elapsed -= 0xA;
-            if (elapsed < 0xA) {
+            elapsed -= 10;
+            if (elapsed < 10) {
                 g_BattleSummonTyphonRingConfig1.blend = 0;
             } else {
-                elapsed -= 0xA;
-                if (elapsed < 0xA) {
-                    ratio = (elapsed << 0xC) / 0xA;
+                elapsed -= 10;
+                if (elapsed < 10) {
+                    ratio = (elapsed << 12) / 10;
                     g_BattleSummonTyphonRingConfig1.blend = ratio;
                 } else {
                     particle->phase = 0xFFFF;
@@ -1376,7 +1376,7 @@ void __cdecl BattleFx_SummonTyphonParticleModel3Task(void)
         }
         g_BattleSummonTyphonDrawHandle->scale = particle->scale;
         g_BattleSummonTyphonDrawHandle->scalePrev = g_BattleSummonTyphonDrawHandle->scale;
-        g_BattleSummonTyphonDrawHandle->scaleY = 0x400;
+        g_BattleSummonTyphonDrawHandle->scaleY = 0x400 /* 0.25 */;
     }
     RotMatrix((SVECTOR *)&particle->angleX, &g_BattleSummonTyphonDrawHandle->matrix);
     g_BattleSummonTyphonDrawHandle->transX = particle->x;
@@ -1406,14 +1406,14 @@ void __cdecl BattleFx_SummonTyphonPairedModelTask(void)
     (g_BattleSummonTyphonRingConfig2.fallParam) = Gfx_ModelTableGetRenderObject(0, g_BattleSummonTyphonFallParam9);
     localFrame = task->frameCounter;
     if (localFrame < 3) {
-        ratio = (localFrame << 0xC) / 3;
-        size = ratio << 0xB >> 0xC;
+        ratio = (localFrame << 12) / 3;
+        size = ratio << 11 >> 12;
         g_BattleSummonTyphonRingConfig2.blend = 0;
     } else {
         localFrame -= 3;
-        if (localFrame < 0xC) {
-            ratio = (localFrame << 0xC) / 0xC;
-            size = 0x1000 - ratio << 0xB >> 0xC;
+        if (localFrame < 12) {
+            ratio = (localFrame << 12) / 12;
+            size = 4096 - ratio << 11 >> 12;
             g_BattleSummonTyphonRingConfig2.blend = ratio;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -1446,9 +1446,9 @@ int __cdecl BattleFx_SummonTyphonInstallScaledPointMatrix(BattleFxSourcePoint *p
     RotTransPoint((void *)point, (int *)((char *)&g_BattleSummonTyphonFallParam15 + 0x2), &depth);
     if (distance != 0) {
         NormalizeVectorFixed((int *)((char *)&g_BattleSummonTyphonFallParam15 + 0x2), normal);
-        *(int *)((char *)&g_BattleSummonTyphonFallParam15 + 0x2) += normal[0] * distance >> 0xC;
-        *(int *)((char *)&g_BattleSummonTyphonFallParam15 + 0x6) += normal[1] * distance >> 0xC;
-        *(int *)((char *)&g_BattleSummonTyphonFallParam15 + 0xa) += normal[2] * distance >> 0xC;
+        *(int *)((char *)&g_BattleSummonTyphonFallParam15 + 0x2) += normal[0] * distance >> 12;
+        *(int *)((char *)&g_BattleSummonTyphonFallParam15 + 0x6) += normal[1] * distance >> 12;
+        *(int *)((char *)&g_BattleSummonTyphonFallParam15 + 0xa) += normal[2] * distance >> 12;
     }
     SetRotMatrix(&g_BattleSummonTyphonFallParam13);
     SetTransMatrix(&g_BattleSummonTyphonFallParam13);
@@ -1478,21 +1478,21 @@ void __cdecl BattleFx_SummonTyphonOrbitSpawnTask(void)
         frame.particle->origin = g_BattleSummonTyphonInitialAngles.pair;
         frame.angle = rand() & 0xFFF;
         if (DEAD_IN_RETAIL != 0)
-            frame.randRadius = 0x7D0;
+            frame.randRadius = 2000;
         else
-            frame.randRadius = rand() % 0x7D0;
+            frame.randRadius = rand() % 2000;
         frame.radius = frame.randRadius;
         frame.particle->rateX = (frame.radius * SinFixed(frame.angle) >> 12) - g_BattleSummonTyphonInitialAngles.x;
         frame.particle->rateY = -g_BattleSummonTyphonInitialAngles.y;
-        frame.particle->rateZ = (frame.radius * CosFixed(frame.angle) >> 12) + 0x1B58 - g_BattleSummonTyphonInitialAngles.z;
+        frame.particle->rateZ = (frame.radius * CosFixed(frame.angle) >> 12) + 7000 - g_BattleSummonTyphonInitialAngles.z;
         if (DEAD_IN_RETAIL != 0)
-            frame.scaleVal = 0x3000;
+            frame.scaleVal = 0x3000 /* 3.0 */;
         else
             frame.scaleVal = rand() % 0x1000 + 0x2000;
         frame.particle->scale = (short)frame.scaleVal;
     }
     frame.spawner->frameCounter += 1;
-    if (frame.spawner->frameCounter >= 0x28)
+    if (frame.spawner->frameCounter >= 40)
         frame.spawner->ownerSlot = BATTLE_TASK_FREE;
 }
 
@@ -1511,14 +1511,14 @@ void __cdecl BattleFx_SummonTyphonOrbitParticleTask(void)
         g_BattleSummonTyphonOrbitPoint = (Vec3sPacked *)Gfx_GetPsxScratchpadPtr(0);
     }
     age = task->frameCount;
-    if (age < 0x10) {
-        ratio = (age << 0xC) / 16;
-        g_BattleSummonTyphonOrbitPoint->vx = task->originX + (task->rateX * ratio >> 0xC);
-        g_BattleSummonTyphonOrbitPoint->vy = task->originY + (task->rateY * ratio >> 0xC);
-        g_BattleSummonTyphonOrbitPoint->vz = task->originZ + (task->rateZ * ratio >> 0xC);
-        g_BattleSummonTyphonOrbitPoint->vy += (short)((task->rateZ * SinFixed(ratio / 2) >> 0xC) * 0x280 >> 0xC);
-        g_BattleSummonTyphonOrbitPoint->vz -= (short)((task->rateY * SinFixed(ratio / 2) >> 0xC) * 0x280 >> 0xC);
-        tableIdx = ratio << 4 >> 0xC;
+    if (age < 16) {
+        ratio = (age << 12) / 16;
+        g_BattleSummonTyphonOrbitPoint->vx = task->originX + (task->rateX * ratio >> 12);
+        g_BattleSummonTyphonOrbitPoint->vy = task->originY + (task->rateY * ratio >> 12);
+        g_BattleSummonTyphonOrbitPoint->vz = task->originZ + (task->rateZ * ratio >> 12);
+        g_BattleSummonTyphonOrbitPoint->vy += (short)((task->rateZ * SinFixed(ratio / 2) >> 12) * 0x280 >> 12);
+        g_BattleSummonTyphonOrbitPoint->vz -= (short)((task->rateY * SinFixed(ratio / 2) >> 12) * 0x280 >> 12);
+        tableIdx = ratio << 4 >> 12;
     } else {
         task->ownerSlot = BATTLE_TASK_FREE;
         return;
@@ -1555,40 +1555,40 @@ void __cdecl BattleFx_SummonTyphonDeformingRingsTask(void)
     if (pTaskSlot->frameCounter == 0 && g_BattleIsPaused == 0) {
         BattleFx_SummonTyphonInitRingPackets();
     }
-    if (pTaskSlot->frameCounter < 0xA) {
-        fade = (pTaskSlot->frameCounter << 7) / 0xA;
+    if (pTaskSlot->frameCounter < 10) {
+        fade = (pTaskSlot->frameCounter << 7) / 10;
     } else {
-        fade = 0x80;
+        fade = 128;
     }
     if (g_BattleIsPaused == 0) {
         localFrame = pTaskSlot->frameCounter;
-        if (localFrame < 0x32) {
-            calcRatio = (localFrame << 0xC) / 0x32;
-            ringHeight = (calcRatio * 0x4A38 >> 0xC) + 0x3E8;
-            ringBytes = (calcRatio * 0xBB8 >> 0xC) + 0x3E8;
-            ringW = (calcRatio * 0x384 >> 0xC) + 0x64;
+        if (localFrame < 50) {
+            calcRatio = (localFrame << 12) / 50;
+            ringHeight = (calcRatio * 0x4A38 >> 12) + 1000;
+            ringBytes = (calcRatio * 0xBB8 >> 12) + 0x3E8;
+            ringW = (calcRatio * 0x384 >> 12) + 100;
             easing = 0x1000 - calcRatio;
             for (loopIdx = 0; loopIdx < 1; loopIdx++) {
                 easing = SinFixed(easing / 4);
             }
             easing = 0x1000 - easing;
-            calcRatio = easing << 0xC >> 0xC;
-            tiltParam = (calcRatio * -0x800 >> 0xC) + 0x800;
+            calcRatio = easing << 12 >> 12;
+            tiltParam = (calcRatio * -0x800 /* 0.5 */ >> 12) + 0x800;
         } else {
-            localFrame -= 0x32;
-            if (localFrame < 0x78) {
-                ringHeight = 0x4E20;
+            localFrame -= 50;
+            if (localFrame < 120) {
+                ringHeight = 20000;
                 ringBytes = 0xFA0;
-                ringW = 0x3E8;
+                ringW = 1000;
                 tiltParam = 0;
             } else {
-                localFrame -= 0x78;
-                if (localFrame < 0xF) {
-                    calcRatio = (localFrame << 0xC) / 0xF;
-                    fade = (calcRatio * -0x80 >> 0xC) + 0x80;
-                    ringHeight = 0x4E20;
+                localFrame -= 120;
+                if (localFrame < 15) {
+                    calcRatio = (localFrame << 12) / 15;
+                    fade = (calcRatio * -0x80 >> 12) + 128;
+                    ringHeight = 20000;
                     ringBytes = 0xFA0;
-                    ringW = 0x3E8;
+                    ringW = 1000;
                     tiltParam = 0;
                 } else {
                     pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
@@ -1621,7 +1621,7 @@ void __cdecl BattleFx_SummonTyphonInitRingPackets(void)
     int cell;
     unsigned char vHigh;
 
-    for (band = 0; band < 0x10; band++) {
+    for (band = 0; band < 16; band++) {
         if (band < 8) {
             cell = band;
             textureBase = 0;
@@ -1631,11 +1631,11 @@ void __cdecl BattleFx_SummonTyphonInitRingPackets(void)
             textureBase = 0;
             clut = 0x3F70;
         }
-        temp = (cell << 0xC) / 8;
+        temp = (cell << 12) / 8;
         vBottom = 0x7F - (cell << 4);
-        temp = ((cell + 1) << 0xC) / 8;
+        temp = ((cell + 1) << 12) / 8;
         vHigh = 0x80 - (cell + 1 << 4);
-        for (seg = 0; seg < 0x10; seg++) {
+        for (seg = 0; seg < 16; seg++) {
             cell = seg % 8;
             if (cell < 4) {
                 uLeft = (cell << 4) + textureBase;
@@ -1662,7 +1662,7 @@ void __cdecl BattleFx_SummonTyphonInitRingPackets(void)
             }
         }
     }
-    for (band = 0; band < 0x10; band++) {
+    for (band = 0; band < 16; band++) {
         ((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[band].alpha = 0;
         ((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[band].ringPhase = band * 0x3E8 / 0xF;
         ((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[band].heightOffset = 0x1B58;
@@ -1692,33 +1692,33 @@ void __cdecl BattleFx_SummonTyphonDrawRingQuads(int phase, int shade)
     *(Int64Pair *)g_BattleSummonTyphonRingState = *(Int64Pair *)(&g_BattleSummonTyphonFallParam5);
     scale = ((BattleFxTyphonRingScale *)&g_BattleSummonTyphonFallParam7)[0].scale;
     bank = 0;
-    for (idx = 0; idx < 0x10; idx++) {
-        g_BattleSummonTyphonRingState->vertices[bank][idx].vx = g_BattleSummonTyphonRingState->centerX + (scale * SinFixed(((idx << 0xC) / 0x10) + phase) >> 0xC);
+    for (idx = 0; idx < 16; idx++) {
+        g_BattleSummonTyphonRingState->vertices[bank][idx].vx = g_BattleSummonTyphonRingState->centerX + (scale * SinFixed(((idx << 12) / 16) + phase) >> 12);
         g_BattleSummonTyphonRingState->vertices[bank][idx].vy = g_BattleSummonTyphonRingState->centerY;
-        g_BattleSummonTyphonRingState->vertices[bank][idx].vz = g_BattleSummonTyphonRingState->centerZ + (scale * CosFixed(((idx << 0xC) / 0x10) + phase) >> 0xC);
+        g_BattleSummonTyphonRingState->vertices[bank][idx].vz = g_BattleSummonTyphonRingState->centerZ + (scale * CosFixed(((idx << 12) / 16) + phase) >> 12);
     }
-    for (idx = 1; idx < 0x10; idx++) {
+    for (idx = 1; idx < 16; idx++) {
         *(Int64Pair *)g_BattleSummonTyphonRingState = *(Int64Pair *)&((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[idx].alpha;
         scale = ((BattleFxTyphonRingScale *)&g_BattleSummonTyphonFallParam7)[idx].scale;
         bank ^= 1;
         phase -= 0x40;
-        for (segment = 0; segment < 0x10; segment++) {
-            g_BattleSummonTyphonRingState->vertices[bank][segment].vx = g_BattleSummonTyphonRingState->centerX + (scale * SinFixed(((segment << 0xC) / 0x10) + phase) >> 0xC);
+        for (segment = 0; segment < 16; segment++) {
+            g_BattleSummonTyphonRingState->vertices[bank][segment].vx = g_BattleSummonTyphonRingState->centerX + (scale * SinFixed(((segment << 12) / 16) + phase) >> 12);
             g_BattleSummonTyphonRingState->vertices[bank][segment].vy = g_BattleSummonTyphonRingState->centerY;
-            g_BattleSummonTyphonRingState->vertices[bank][segment].vz = g_BattleSummonTyphonRingState->centerZ + (scale * CosFixed(((segment << 0xC) / 0x10) + phase) >> 0xC);
+            g_BattleSummonTyphonRingState->vertices[bank][segment].vz = g_BattleSummonTyphonRingState->centerZ + (scale * CosFixed(((segment << 12) / 16) + phase) >> 12);
         }
-        for (segment = 0; segment < 0x10; segment++) {
+        for (segment = 0; segment < 16; segment++) {
             primitive = (int)&g_BattleSummonTyphonRingPad + (idx - 1) * 0x500 + segment * 0x50 + g_BattleSummonTyphonLoadedResTable2 * 0x28;
-            g_BattleSummonTyphonRingState->depth = Gfx_TransformQuadReturnDepth(&g_BattleSummonTyphonRingState->vertices[bank][segment], &g_BattleSummonTyphonRingState->vertices[bank][(segment + 1) % 0x10], &g_BattleSummonTyphonRingState->vertices[bank ^ 1][segment], &g_BattleSummonTyphonRingState->vertices[bank ^ 1][(segment + 1) % 0x10], &g_BattleSummonTyphonRingState->projectScratch, &g_BattleSummonTyphonRingState->flags);
+            g_BattleSummonTyphonRingState->depth = Gfx_TransformQuadReturnDepth(&g_BattleSummonTyphonRingState->vertices[bank][segment], &g_BattleSummonTyphonRingState->vertices[bank][(segment + 1) % 16], &g_BattleSummonTyphonRingState->vertices[bank ^ 1][segment], &g_BattleSummonTyphonRingState->vertices[bank ^ 1][(segment + 1) % 16], &g_BattleSummonTyphonRingState->projectScratch, &g_BattleSummonTyphonRingState->flags);
             if ((g_BattleSummonTyphonRingState->flags & 0x60000) == 0) {
                 *(int *)((char *)primitive + 4) = color;
                 if (idx < 8) {
-                    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x17, g_BattleSummonTyphonFallParam9)));
-                    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x18, g_BattleSummonTyphonFallParam9)));
+                    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(23, g_BattleSummonTyphonFallParam9)));
+                    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(24, g_BattleSummonTyphonFallParam9)));
                     Gfx_DrawPsxPrimitive((void *)primitive);
                 } else {
-                    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x15, g_BattleSummonTyphonFallParam9)));
-                    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x16, g_BattleSummonTyphonFallParam9)));
+                    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(21, g_BattleSummonTyphonFallParam9)));
+                    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(22, g_BattleSummonTyphonFallParam9)));
                     Gfx_DrawPsxPrimitive((void *)primitive);
                 }
             }
@@ -1741,7 +1741,7 @@ void __cdecl BattleFx_SummonTyphonUpdateRingRecords(int angle, int radius, int s
         g_BattleSummonTyphonRingScratch = (BattleSummonTyphonRingScratch *)Gfx_GetPsxScratchpadPtr(0);
     }
     for (ring = 0xF; ring >= 0; ring--) {
-        ratio = (ring << 0xC) / 0xF;
+        ratio = (ring << 12) / 15;
         if (ring > 0) {
             ((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleX)[ring].angle = ((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleX)[ring - 1].angle + (rand() % 0x20) + -0x10;
             ((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleY)[ring].angle = ((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleY)[ring - 1].angle + (rand() % 0x20) + -0x10;
@@ -1750,29 +1750,29 @@ void __cdecl BattleFx_SummonTyphonUpdateRingRecords(int angle, int radius, int s
             ((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleX)[ring].angle = g_BattleSummonTyphonOriginCoords.tiltX;
             ((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleY)[ring].angle = g_BattleSummonTyphonOriginCoords.tiltY;
             ((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleZ)[ring].angle = g_BattleSummonTyphonOriginCoords.tiltZ;
-            g_BattleSummonTyphonOriginCoords.phaseX += (short)(rand() % 0x100 - 0x80);
-            g_BattleSummonTyphonOriginCoords.phaseY += (short)(rand() % 0x100 - 0x80);
-            g_BattleSummonTyphonOriginCoords.phaseZ += (short)(rand() % 0x100 - 0x80);
-            g_BattleSummonTyphonOriginCoords.tiltX += (short)(SinFixed(g_BattleSummonTyphonOriginCoords.phaseX) << 9 >> 0xC);
-            g_BattleSummonTyphonOriginCoords.tiltY += (short)(SinFixed(g_BattleSummonTyphonOriginCoords.phaseY) << 9 >> 0xC);
-            g_BattleSummonTyphonOriginCoords.tiltZ += (short)(SinFixed(g_BattleSummonTyphonOriginCoords.phaseZ) << 9 >> 0xC);
+            g_BattleSummonTyphonOriginCoords.phaseX += (short)(rand() % 256 - 128);
+            g_BattleSummonTyphonOriginCoords.phaseY += (short)(rand() % 256 - 128);
+            g_BattleSummonTyphonOriginCoords.phaseZ += (short)(rand() % 256 - 128);
+            g_BattleSummonTyphonOriginCoords.tiltX += (short)(SinFixed(g_BattleSummonTyphonOriginCoords.phaseX) << 9 >> 12);
+            g_BattleSummonTyphonOriginCoords.tiltY += (short)(SinFixed(g_BattleSummonTyphonOriginCoords.phaseY) << 9 >> 12);
+            g_BattleSummonTyphonOriginCoords.tiltZ += (short)(SinFixed(g_BattleSummonTyphonOriginCoords.phaseZ) << 9 >> 12);
         }
-        g_BattleSummonTyphonRingScratch->v.vx = SinFixed(((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleX)[ring].angle) << 9 >> 0xC;
-        g_BattleSummonTyphonRingScratch->v.vy = SinFixed(((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleY)[ring].angle) << 9 >> 0xC;
-        g_BattleSummonTyphonRingScratch->v.vz = SinFixed(((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleZ)[ring].angle) << 9 >> 0xC;
+        g_BattleSummonTyphonRingScratch->v.vx = SinFixed(((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleX)[ring].angle) << 9 >> 12;
+        g_BattleSummonTyphonRingScratch->v.vy = SinFixed(((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleY)[ring].angle) << 9 >> 12;
+        g_BattleSummonTyphonRingScratch->v.vz = SinFixed(((BattleFxTyphonRingRecord *)&g_BattleSummonTyphonFallParam6.angleZ)[ring].angle) << 9 >> 12;
         RotMatrix(&g_BattleSummonTyphonRingScratch->v, &g_BattleSummonTyphonRingScratch->matrix);
-        g_BattleSummonTyphonRingScratch->v.vx = scale * ((ratio * 0xE00 >> 0xC) + 0x200) >> 0xC;
+        g_BattleSummonTyphonRingScratch->v.vx = scale * ((ratio * 0xE00 /* 0.875 */ >> 12) + 512) >> 12;
         g_BattleSummonTyphonRingScratch->v.vy = 0;
         g_BattleSummonTyphonRingScratch->v.vz = 0;
         TransformVectorToInt16(&g_BattleSummonTyphonRingScratch->matrix, &g_BattleSummonTyphonRingScratch->v, &g_BattleSummonTyphonRingScratch->v.vx);
         ((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[ring].alpha = g_BattleSummonTyphonRingScratch->v.vx;
-        ((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[ring].ringPhase = -(angle * ratio >> 0xC) + (g_BattleSummonTyphonRingScratch->v.vy >> 4);
+        ((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[ring].ringPhase = -(angle * ratio >> 12) + (g_BattleSummonTyphonRingScratch->v.vy >> 4);
         ((BattleSummonTyphonFallParam5 *)(g_BattleSummonTyphonFallParam5))[ring].heightOffset = g_BattleSummonTyphonRingScratch->v.vz + 0x1B58;
-        value = SinFixed((ratio << 0xB >> 0xC) + phaseOffset);
+        value = SinFixed((ratio << 11 >> 12) + phaseOffset);
         for (i = 0; i < 1; i++) {
             value = SinFixed(value / 4);
         }
-        ((BattleFxTyphonRingScale *)&g_BattleSummonTyphonFallParam7)[ring].scale = radius * (0x1000 - (value << 0xB >> 0xC)) >> 0xC;
+        ((BattleFxTyphonRingScale *)&g_BattleSummonTyphonFallParam7)[ring].scale = radius * (0x1000 - (value << 11 >> 12)) >> 12;
     }
 }
 
@@ -1883,11 +1883,11 @@ void __cdecl BattleFx_SummonTyphonParticleEmitterTask(void)
             rollDist = rand() % 0xFA0 + 0x3E8;
         }
         rad = rollDist;
-        offX = rad * SinFixed(angle) >> 0xC;
-        offsetZ = rad * CosFixed(angle) >> 0xC;
+        offX = rad * SinFixed(angle) >> 12;
+        offsetZ = rad * CosFixed(angle) >> 12;
         pTumbler->startX = offX;
         pTumbler->startY = 0;
-        pTumbler->startZ = offsetZ + 0x1B58;
+        pTumbler->startZ = offsetZ + 7000;
         if (DEAD_IN_RETAIL != 0) {
             fRoll = 0x258;
         } else {
@@ -1896,17 +1896,17 @@ void __cdecl BattleFx_SummonTyphonParticleEmitterTask(void)
         pTumbler->velocityY = -fRoll;
         pTumbler->colorWord = rand() & 0xFFFFFF;
         if (DEAD_IN_RETAIL != 0) {
-            hRoll = 0x200;
+            hRoll = 0x200 /* 45 deg */;
         } else {
             hRoll = rand() % 0x180 + 0x80;
         }
         pTumbler->posZ = hRoll;
-        texU = (offX + 0x1388) * 0x28 / 0x2710 + 0x14;
-        texV = (offsetZ + 0x1388) * 0x28 / 0x2710 + 0x14;
+        texU = (offX + 0x1388) * 40 / 10000 + 0x14;
+        texV = (offsetZ + 0x1388) * 40 / 10000 + 0x14;
         pTumbler->drawParam = texV << 8 | texU;
     }
     (pTaskSlot->frameCounter)++;
-    if (pTaskSlot->frameCounter >= 0x32) {
+    if (pTaskSlot->frameCounter >= 50) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1937,7 +1937,7 @@ void __cdecl BattleFx_SummonTyphonEmittedTumblingModelTask(void)
     BattleFx_SummonTyphonDrawIndexedModel(&g_BattleSummonTyphonTumbleState->matrix, task->modelIndex, (short)task->drawParam);
     if (g_BattleIsPaused == 0) {
         (task->timer)++;
-        if (task->timer >= 0xF) {
+        if (task->timer >= 15) {
             task->modelIndex = 0xFFFF;
         } else {
             task->posY += task->velY;
@@ -2204,7 +2204,7 @@ void __cdecl BattleFx_SummonTyphonRotatingModelTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonTyphonOffsetConfig, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        if (task->frameCounter >= 0x78) {
+        if (task->frameCounter >= 120) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             RotateMatrixY(0x10, &g_BattleSummonTyphonMatrixData2);
@@ -2235,20 +2235,20 @@ void __cdecl BattleFx_SummonTyphonCameraRotationTask(void)
             g_BattleSummonTyphonSavedPosZ.word = *(int *)&g_BattleActorRecords[3].posZ;
         }
         age = pSlot->frameCounter;
-        if (age < 0xA) {
-            easedValue = (pSlot->frameCounter + 1 << 0xC) / 0xA;
+        if (age < 10) {
+            easedValue = (pSlot->frameCounter + 1 << 12) / 10;
             sineVal = 0x1000 - easedValue;
             for (i = 0; i < 2; i++) {
                 sineVal = SinFixed(sineVal / 4);
             }
             sineVal = 0x1000 - sineVal;
-            easedValue = sineVal * 0xA00 + easedValue * 0x600 >> 0xC;
-            g_BattleCameraTransform.rotX = easedValue << 0xB >> 0xC;
+            easedValue = sineVal * 2560 + easedValue * 0x600 /* 0.375 */ >> 12;
+            g_BattleCameraTransform.rotX = easedValue << 11 >> 12;
         } else {
-            age -= 0xA;
-            if (age < 0xA) {
-                easedValue = 0x1000 - (age << 0xC) / 0xF - 5;
-                amplitude = easedValue << 5 >> 0xC;
+            age -= 10;
+            if (age < 10) {
+                easedValue = 0x1000 - (age << 12) / 15 - 5;
+                amplitude = easedValue << 5 >> 12;
                 if ((age & 1) != 0) {
                     localShakeOffset = amplitude;
                 } else {
@@ -2256,9 +2256,9 @@ void __cdecl BattleFx_SummonTyphonCameraRotationTask(void)
                 }
                 g_BattleCameraTransform.rotX = localShakeOffset + 0x800;
             } else {
-                age -= 0xA;
-                if (age < 0x64) {
-                    g_BattleCameraTransform.rotX = 0x800;
+                age -= 10;
+                if (age < 100) {
+                    g_BattleCameraTransform.rotX = 0x800 /* 180 deg */;
                 } else {
                     g_BattleCameraTransform.rotX = 0;
                     pSlot->ownerSlot = BATTLE_TASK_FREE;
@@ -2330,7 +2330,7 @@ void __cdecl BattleFx_SummonTyphonHexagonQuadsTask(void)
     g_BattleOverlayDrawListHead = (int)renderBlock;
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        if (task->frameCounter >= 0x2D) {
+        if (task->frameCounter >= 45) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2367,33 +2367,33 @@ void __cdecl BattleFx_SummonTyphonModelHexagonEmitterTask(void)
             rollDist = rand() % 0x1B58 + 0xBB8;
         }
         rad = rollDist;
-        offsetX = rad * SinFixed(angle) >> 0xC;
-        posZ = rad * CosFixed(angle) >> 0xC;
+        offsetX = rad * SinFixed(angle) >> 12;
+        posZ = rad * CosFixed(angle) >> 12;
         pRecord->posX = offsetX;
         pRecord->posY = 0;
-        pRecord->posZ = posZ + 0x1B58;
+        pRecord->posZ = posZ + 7000;
         pRecord->velocityY = 0;
         pRecord->packedSpinAngles = rand() & 0xFFFFFF;
         if (DEAD_IN_RETAIL != 0) {
-            spreadRand = 0x700;
+            spreadRand = 1792;
         } else {
-            spreadRand = rand() % 0x600 + 0x100;
+            spreadRand = rand() % 1536 + 256;
         }
         pRecord->spread = spreadRand;
-        uByte = (offsetX + 0x2710) * 0x50 / 0x4E20;
-        paramHi = (posZ + 0x2710) * 0x50 / 0x4E20;
+        uByte = (offsetX + 0x2710) * 80 / 20000;
+        paramHi = (posZ + 0x2710) * 80 / 20000;
         pRecord->drawParam = paramHi << 8 | uByte;
-        rad = pRecord->spread * 0x1388 >> 0xC;
+        rad = pRecord->spread * 0x1388 >> 12;
         for (vertex = 0; vertex < 6; vertex++) {
             angle = vertex * 0x2AA + rand() % 0x200;
-            g_BattleSummonTyphonRingVertexArray[g_BattleSummonTyphonTimelineCounter].v[vertex].vx = (rad * SinFixed(angle) >> 0xC) + offsetX;
+            g_BattleSummonTyphonRingVertexArray[g_BattleSummonTyphonTimelineCounter].v[vertex].vx = (rad * SinFixed(angle) >> 12) + offsetX;
             g_BattleSummonTyphonRingVertexArray[g_BattleSummonTyphonTimelineCounter].v[vertex].vy = 0;
-            g_BattleSummonTyphonRingVertexArray[g_BattleSummonTyphonTimelineCounter].v[vertex].vz = (rad * CosFixed(angle) >> 0xC) + posZ + 0x1B58;
+            g_BattleSummonTyphonRingVertexArray[g_BattleSummonTyphonTimelineCounter].v[vertex].vz = (rad * CosFixed(angle) >> 12) + posZ + 7000;
         }
         g_BattleSummonTyphonTimelineCounter++;
     }
     (pTaskSlot->frameCounter)++;
-    if (pTaskSlot->frameCounter >= 0x32) {
+    if (pTaskSlot->frameCounter >= 50) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2404,7 +2404,7 @@ int __cdecl BattleFx_SummonTyphonClaimTaskRecord(int taskFunc)
 {
     int slot;
 
-    for (slot = 0; slot < 0x12C; slot++) {
+    for (slot = 0; slot < 300; slot++) {
         if (g_BattleSummonTyphonScratchBuffer[slot] == 0) {
             g_BattleSummonTyphonScratchBuffer[slot] = (void (__cdecl *)(int))taskFunc;
             g_BattleSummonTyphonRingBuffer[slot].state = 0;
@@ -2442,7 +2442,7 @@ void __cdecl BattleFx_SummonTyphonBouncingModelRecordTask(BattleFxTyphonBouncing
     BattleFx_SummonTyphonDrawIndexedModel(&g_BattleSummonTyphonBouncingState->matrix, bouncer->modelIndex, (short)bouncer[1].callCount);
     if (g_BattleIsPaused == 0) {
         bouncer->posY += bouncer->velocityY;
-        if (bouncer->posY <= -0x4E20) {
+        if (bouncer->posY <= -20000) {
             spawnRecord = (BattleFxTyphonTaskRecord *)(BattleFx_SummonTyphonClaimTaskRecord((int)BattleFx_SummonTyphonScaledPointSpriteRecordTask));
             if (spawnRecord != 0) {
                 spawnRecord->posX = bouncer->posX;
@@ -2451,23 +2451,23 @@ void __cdecl BattleFx_SummonTyphonBouncingModelRecordTask(BattleFxTyphonBouncing
                 if (DEAD_IN_RETAIL != 0) {
                     spread = 0x8000;
                 } else {
-                    spread = rand() % 0x5000 + 0x3000;
+                    spread = rand() % 20480 + 12288;
                 }
                 spawnRecord->spread = spread;
             }
             if ((bouncer->callCount)++ == 0) {
                 bouncer->posY = 0xB1E0;
                 if (DEAD_IN_RETAIL != 0) {
-                    bounceVelocity = 0x12C;
+                    bounceVelocity = 300;
                 } else {
-                    bounceVelocity = rand() % 0xC8 + 0x64;
+                    bounceVelocity = rand() % 200 + 100;
                 }
                 bouncer->velocityY = bounceVelocity;
             } else {
                 bouncer->modelIndex = 0xFFFF;
             }
         } else {
-            bouncer->velocityY = (bouncer->velocityY * 0xF80 >> 0xC) - 0x32;
+            bouncer->velocityY = (bouncer->velocityY * 0xF80 >> 12) - 50;
             (*(char *)&bouncer->spinX)++;
             *(char *)&bouncer->spinY += 8;
             *(char *)&bouncer->spinZ += 0x10;
@@ -2479,8 +2479,8 @@ void __cdecl BattleFx_SummonTyphonBouncingModelRecordTask(BattleFxTyphonBouncing
 // FUNCTION: FF7 0x004dac67
 void __cdecl BattleFx_SummonTyphonScaledPointSpriteRecordTask(BattleFxTyphonBillboardRecord *record)
 {
-    (g_BattleSummonTyphonParticleParams2.scaledEntry) = Gfx_ModelTableGetLoadedRecord(0x14, g_BattleSummonTyphonFallParam9);
-    g_BattleSummonTyphonParticleParams2.scaledParam = Gfx_ModelTableGetSpriteObject(0x14, g_BattleSummonTyphonFallParam9);
+    (g_BattleSummonTyphonParticleParams2.scaledEntry) = Gfx_ModelTableGetLoadedRecord(20, g_BattleSummonTyphonFallParam9);
+    g_BattleSummonTyphonParticleParams2.scaledParam = Gfx_ModelTableGetSpriteObject(20, g_BattleSummonTyphonFallParam9);
     BattleFx_SummonTyphonInstallScaledPointMatrix((BattleFxSourcePoint *)((char *)record + 4), (short)record->scale, 0xFFFFFC18);
     g_BattleSummonTyphonParticleParams2.scaledSpriteFrame = record->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonTyphonParticleParams2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
@@ -2520,19 +2520,19 @@ void __cdecl BattleFx_SummonTyphonActorFallTask(void)
         return;
     }
     pActorFall = (BattleActorFallState *)&g_BattleActorRecords[fallTask->actorIndex].modelId;
-    fallTask->fallVelocity -= 0x32;
+    fallTask->fallVelocity -= 50;
     pActorFall->heightOffset += fallTask->fallVelocity;
-    if (pActorFall->heightOffset - pActorFall->radius <= -0x4E20) {
+    if (pActorFall->heightOffset - pActorFall->radius <= -20000) {
         pActorFall->heightOffset = pActorFall->radius - 0x4E20;
         for (i = 0; i < 5; i++) {
             dust = (BattleFxTyphonTaskRecord *)(BattleFx_SummonTyphonClaimTaskRecord((int)BattleFx_SummonTyphonBillboardSpriteRecordTask));
             if (dust != 0) {
                 angle = i * 0x333 + rand() % 0x333;
-                dust->posX = pActorFall->baseX + (pActorFall->radius * SinFixed(angle) >> 0xC);
+                dust->posX = pActorFall->baseX + (pActorFall->radius * SinFixed(angle) >> 12);
                 dust->posY = 0xB1E0;
-                dust->posZ = pActorFall->baseZ + (pActorFall->radius * CosFixed(angle) >> 0xC);
+                dust->posZ = pActorFall->baseZ + (pActorFall->radius * CosFixed(angle) >> 12);
                 if (DEAD_IN_RETAIL != 0) {
-                    sRoll = 0x8000;
+                    sRoll = 0x8000 /* 2880 deg */;
                 } else {
                     sRoll = rand() % 0x5000 + 0x3000;
                 }
@@ -2541,9 +2541,9 @@ void __cdecl BattleFx_SummonTyphonActorFallTask(void)
         }
         if (fallTask->frameCount == 0) {
             if (DEAD_IN_RETAIL != 0) {
-                bounceSpeed = 0x190;
+                bounceSpeed = 400;
             } else {
-                bounceSpeed = rand() % 0xC8 + 0xC8;
+                bounceSpeed = rand() % 200 + 200;
             }
             fallTask->fallVelocity = bounceSpeed;
             (fallTask->frameCount)++;
@@ -2558,8 +2558,8 @@ void __cdecl BattleFx_SummonTyphonActorFallTask(void)
 // FUNCTION: FF7 0x004daf50
 void __cdecl BattleFx_SummonTyphonBillboardSpriteRecordTask(BattleFxTyphonBillboardRecord *record)
 {
-    (g_BattleSummonTyphonParticleParams3.billboardEntry) = Gfx_ModelTableGetLoadedRecord(0x14, g_BattleSummonTyphonFallParam9);
-    g_BattleSummonTyphonParticleParams3.billboardParam = Gfx_ModelTableGetSpriteObject(0x14, g_BattleSummonTyphonFallParam9);
+    (g_BattleSummonTyphonParticleParams3.billboardEntry) = Gfx_ModelTableGetLoadedRecord(20, g_BattleSummonTyphonFallParam9);
+    g_BattleSummonTyphonParticleParams3.billboardParam = Gfx_ModelTableGetSpriteObject(20, g_BattleSummonTyphonFallParam9);
     BattleFx_InstallBillboardMatrix((char *)record + 4, (short)record->scale, 0xFFFFFC18);
     g_BattleSummonTyphonParticleParams3.billboardSpriteFrame = record->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonTyphonParticleParams3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
@@ -2594,17 +2594,17 @@ void __cdecl BattleFx_SummonTyphonActorFlagFadeTask(void)
             g_BattleActorRecords[3].tintG = g_BattleActorRecords[3].tintB;
             g_BattleActorRecords[3].tintR = g_BattleActorRecords[3].tintG;
             g_BattleActorRecords[3].tintPhase = 0x1000;
-            g_BattleActorRecords[3].scale = 0xC00;
+            g_BattleActorRecords[3].scale = 0xC00 /* 0.75 */;
             for (index = 0; index < g_BattleActorRecords[3].boneCount; index++) {
                 (&g_BattleActorRecords[3].fadeFlags)[index] |= 8;
             }
         }
         if (age >= 5) {
-            ratio = (age - 5 << 0xC) / 0xA;
+            ratio = (age - 5 << 12) / 10;
             g_BattleActorRecords[3].tintPhase = 0x1000 - ratio;
         }
         (task->frameCounter)++;
-        if (task->frameCounter >= 0xF) {
+        if (task->frameCounter >= 15) {
             for (index = 0; index < g_BattleActorRecords[3].boneCount; index++) {
                 (&g_BattleActorRecords[3].fadeFlags)[index] &= 0xF7;
             }
@@ -2629,8 +2629,8 @@ void __cdecl BattleFx_SummonTyphonWhiteFadeInTask(void)
     g_BattleSummonTyphonFadeTile.width = (short)g_BattleViewportWidth;
     g_BattleSummonTyphonFadeTile.height = *(short *)&g_BattleSceneViewportHeight;
     age = task->frameCounter;
-    if (age < 0x14) {
-        ratio = (age << 0xC) / 0x14;
+    if (age < 20) {
+        ratio = (age << 12) / 20;
         SetDrawColorRGB(0xFF, 0xFF, 0xFF);
         Gfx_ShadePsxVertexColor(&g_BattleSummonTyphonFadeTile.baseColor, ratio, (CVECTOR *)((quadIdx << 4) + (char *)&g_BattleSummonTyphonFadeTile.color));
         Gfx_SetBlendFactorPair(FLOAT_0_9999_BITS, FLOAT_ONE_BITS);

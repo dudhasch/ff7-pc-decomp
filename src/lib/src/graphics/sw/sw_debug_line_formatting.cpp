@@ -294,7 +294,7 @@ void __cdecl Gfx_DumpDriverCapsToLog(void)
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x009181ac
-            "TRIANGLE_HEIGHT", 0x10, (void *)local.line);
+            "TRIANGLE_HEIGHT", 16, (void *)local.line);
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x009181bc
@@ -302,7 +302,7 @@ void __cdecl Gfx_DumpDriverCapsToLog(void)
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x009181cc
-            "TRIANGLE_LEFT_X_DECIMAL", 0x18, (void *)local.line);
+            "TRIANGLE_LEFT_X_DECIMAL", 24, (void *)local.line);
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x009181e4
@@ -326,7 +326,7 @@ void __cdecl Gfx_DumpDriverCapsToLog(void)
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x00918294
-            "TRIANGLE_RIGHT_X_DECIMAL_INTERPOLATION_INCREMENT", 0x30, (void *)local.line);
+            "TRIANGLE_RIGHT_X_DECIMAL_INTERPOLATION_INCREMENT", 48, (void *)local.line);
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x009182c8
@@ -793,7 +793,7 @@ void __cdecl Gfx_DumpDriverCapsToLog(void)
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x00918ec8
-            "VERTEX_RENDER_DATA_VIEW_PIXEL_RIGHT", 0x24, (void *)local.line);
+            "VERTEX_RENDER_DATA_VIEW_PIXEL_RIGHT", 36, (void *)local.line);
         WriteDebugLog(local.line, local.file);
         FormatDefineLine(
             // STRING: FF7 0x00918eec

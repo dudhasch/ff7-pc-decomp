@@ -179,10 +179,10 @@ void __cdecl BattleFx_LimitBeginSatelliteBeam(int targetMask, int actorIdx)
 
     g_YasuiLimitSatelliteBeamTargetMask = targetMask;
     q = Battle_PopCountActorMask(g_YasuiLimitSatelliteBeamTargetMask);
-    g_YasuiLimitSatelliteBeamTimelineDuration = (q - 1) * 5 + 0x17;
+    g_YasuiLimitSatelliteBeamTimelineDuration = (q - 1) * 5 + 23;
     Battle_GetActorMaskCentroid(targetMask, (short *)&g_YasuiLimitSatelliteBeamTargetCentroidX);
     Battle_AllocateResourceSlot(BattleFx_LimitSatelliteBeamTimelineTask);
-    g_YasuiLimitSatelliteBeamYawDirection = g_BattleActorRecords[actorIdx].yaw + 0x400 < 0x800 ? 0xFFFFFF00 : 0x100;
+    g_YasuiLimitSatelliteBeamYawDirection = g_BattleActorRecords[actorIdx].yaw + 1024 < 2048 ? 0xFFFFFF00 : 0x100;
 }
 
 /*
@@ -199,12 +199,12 @@ void __cdecl BattleFx_LimitSatelliteBeamTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x12) {
+    if (task->frameCounter == 18) {
         spawned = BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamTargetEmitterTask);
         spawned->ownerSlot = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x246);
     }
-    if (task->frameCounter == 0x5A) {
+    if (task->frameCounter == 90) {
         Battle_CreateBitPatternCallbackTask(BATTLE_ACTOR_MASK_ENEMIES, 0, 5, BattleFx_LimitSpawnSatelliteBeamPerTarget);
         spawned = BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamScatteredColumnEmitterTask);
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -240,7 +240,7 @@ void __cdecl BattleFx_LimitSatelliteBeamTargetEmitterTask(void)
         Battle_GetBoneWorldPos(pEmitter->maskBit, g_BattleActorRecords[pEmitter->maskBit].targetBone, &reticleAddress->posX);
         (pEmitter->maskBit)++;
     }
-    if (pEmitter->frameCounter >= 0x41) {
+    if (pEmitter->frameCounter >= 65) {
         pEmitter->maskBit = 0xFFFF;
     }
     (pEmitter->frameCounter)++;
@@ -282,8 +282,8 @@ void __cdecl BattleFx_LimitSatelliteBeamTargetTimelineTask(void)
         newTask = (BattleFxLimitSatelliteBeamTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamProjectedSpritePairTask);
         newTask->value = timeline->value + timeline->step;
         *(Int64Pair *)&newTask->posX = *(Int64Pair *)&timeline->posX;
-        newTask->startU = rand() % 0x28 + 0x50;
-        newTask->startV = rand() % 0x1E + 0x3C;
+        newTask->startU = rand() % 40 + 80;
+        newTask->startV = rand() % 30 + 60;
         timeline->value = BATTLE_TASK_FREE;
     }
     (timeline->step)++;
@@ -316,12 +316,12 @@ void __cdecl BattleFx_LimitSatelliteBeamCrosshairLineTask(void)
     screenPointPtr = (BattleFxSatelliteBeamProjectedPair *)(bitsOut + 1);
     age = lineTask->age;
     if (age < 5) {
-        lerpFactor = (age << 0xC) / 5;
-        targetPoint->vx = lineTask->targetX * lerpFactor + lineTask->currentX * (0x1000 - lerpFactor) >> 0xC;
+        lerpFactor = (age << 12) / 5;
+        targetPoint->vx = lineTask->targetX * lerpFactor + lineTask->currentX * (4096 - lerpFactor) >> 12;
         lineTask->currentX = targetPoint->vx;
-        targetPoint->vy = lineTask->targetY * lerpFactor + lineTask->currentY * (0x1000 - lerpFactor) >> 0xC;
+        targetPoint->vy = lineTask->targetY * lerpFactor + lineTask->currentY * (4096 - lerpFactor) >> 12;
         lineTask->currentY = targetPoint->vy;
-        targetPoint->vz = lineTask->targetZ * lerpFactor + lineTask->currentZ * (0x1000 - lerpFactor) >> 0xC;
+        targetPoint->vz = lineTask->targetZ * lerpFactor + lineTask->currentZ * (4096 - lerpFactor) >> 12;
         lineTask->currentZ = targetPoint->vz;
         extent = g_BattleViewportWidth;
     } else {
@@ -331,7 +331,7 @@ void __cdecl BattleFx_LimitSatelliteBeamCrosshairLineTask(void)
             targetPoint->vy = lineTask->targetY;
             targetPoint->vz = lineTask->targetZ;
             extent = g_BattleViewportWidth + (0x10 - g_BattleViewportWidth) * age / 5;
-        } else if (lineTask->ownerSlot + lineTask->age < 0x41) {
+        } else if (lineTask->ownerSlot + lineTask->age < 65) {
             targetPoint->vx = lineTask->targetX;
             targetPoint->vy = lineTask->targetY;
             targetPoint->vz = lineTask->targetZ;
@@ -413,8 +413,8 @@ void __cdecl BattleFx_LimitSatelliteBeamQuadrantModelTask(void)
     geomOfsY = centerXAddr + 1;
     frame = pSlot->frameCounter;
     if (frame < 5) {
-        quadX = frame * -0x50 / 5 + 0x50;
-        quadY = frame * -0x3C / 5 + 0x3C;
+        quadX = frame * -80 / 5 + 80;
+        quadY = frame * -60 / 5 + 60;
     } else {
         frame -= 5;
         if (frame < 2) {
@@ -431,7 +431,7 @@ void __cdecl BattleFx_LimitSatelliteBeamQuadrantModelTask(void)
                 }
                 quadX = 0;
                 quadY = 0;
-            } else if (pSlot->ownerSlot + pSlot->frameCounter < 0x41) {
+            } else if (pSlot->ownerSlot + pSlot->frameCounter < 65) {
                 quadX = 0;
                 quadY = 0;
             } else {
@@ -511,14 +511,14 @@ void __cdecl BattleFx_LimitSatelliteBeamProjectedSpritePairTask(void)
     if (frameIndex < 5) {
         offsetX = taskPtr->startU + (0 - taskPtr->startU) * frameIndex / 5;
         offsetY = taskPtr->startV + (0 - taskPtr->startV) * frameIndex / 5;
-        offsetX -= SinFixed((frameIndex << 0xB) / 5) * 0x32 >> 0xC;
+        offsetX -= SinFixed((frameIndex << 11) / 5) * 0x32 >> 12;
         g_YasuiLimitSatelliteBeamScaleMatrix.battleLimitSBeamProjectedScale = frameIndex * -0x800 / 5 + 0x1000;
         g_YasuiLimitSatelliteBeamScaleMatrix.limitSBeamScaleMatrixWord8 = g_YasuiLimitSatelliteBeamScaleMatrix.battleLimitSBeamProjectedScale;
         (g_YasuiLimitSatelliteBeamScaleMatrix.word8Copy) = g_YasuiLimitSatelliteBeamScaleMatrix.limitSBeamScaleMatrixWord8;
-    } else if (taskPtr->timer + taskPtr->frameCount < 0x41) {
+    } else if (taskPtr->timer + taskPtr->frameCount < 65) {
         offsetX = 0;
         offsetY = 0;
-        g_YasuiLimitSatelliteBeamScaleMatrix.battleLimitSBeamProjectedScale = 0x800;
+        g_YasuiLimitSatelliteBeamScaleMatrix.battleLimitSBeamProjectedScale = 0x800 /* 0.5 */;
         g_YasuiLimitSatelliteBeamScaleMatrix.limitSBeamScaleMatrixWord8 = g_YasuiLimitSatelliteBeamScaleMatrix.battleLimitSBeamProjectedScale;
         (g_YasuiLimitSatelliteBeamScaleMatrix.word8Copy) = g_YasuiLimitSatelliteBeamScaleMatrix.limitSBeamScaleMatrixWord8;
     } else {
@@ -533,11 +533,11 @@ void __cdecl BattleFx_LimitSatelliteBeamProjectedSpritePairTask(void)
         switch (g_BattleUiScalingMode) {
         case MAIN_GRAPHICS_MODE_320X240:
             *geomOfsX = 0xA0;
-            *geomY = 0x78;
+            *geomY = 120;
             break;
         default:
             *geomOfsX = 0x140;
-            *geomY = 0xF0;
+            *geomY = 240;
         }
         screenPosition->projX -= *(short *)geomOfsX;
         screenPosition->projY -= *(short *)geomY;
@@ -577,9 +577,9 @@ void __cdecl BattleFx_LimitSatelliteBeamScatteredColumnEmitterTask(void)
     }
     if (task->frameCounter % 3 == 0) {
         pColumn = (BattleFxSatelliteBeamScatteredColumn *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamScatteredColumnModelTask);
-        pColumn->posX = *(short *)&g_YasuiLimitSatelliteBeamTargetCentroidX + rand() % 0x1770 + -0xBB8;
+        pColumn->posX = *(short *)&g_YasuiLimitSatelliteBeamTargetCentroidX + rand() % 6000 + -3000;
         pColumn->posY = 0;
-        pColumn->posZ = g_YasuiLimitSatelliteBeamTargetCentroidZ + rand() % 0x1770 + -0xBB8;
+        pColumn->posZ = g_YasuiLimitSatelliteBeamTargetCentroidZ + rand() % 6000 + -3000;
         pColumn->rotX = *(short *)&g_YasuiLimitSatelliteBeamYawDirection;
         pColumn->rotY = 0;
         pColumn->rotZ = 0;
@@ -589,7 +589,7 @@ void __cdecl BattleFx_LimitSatelliteBeamScatteredColumnEmitterTask(void)
         beamAddr->targetScale = 0x800;
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0x21) {
+    if (task->frameCounter >= 33) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -610,10 +610,10 @@ void __cdecl BattleFx_LimitSatelliteBeamGrowingModelTask(void)
         g_YasuiLimitSatelliteBeamScratchMatrixPtr = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     }
     (g_YasuiLimitSatelliteBeamMeshDescriptor.pillarModelResource) = Gfx_ModelTableGetRenderObject(8, g_YasuiLimitSatelliteBeamLoadedResTable);
-    growth = (taskPtr->frame << 0xC) / 0xA;
-    g_YasuiLimitSatelliteBeamMeshDescriptor.limitSBeamMeshDescriptorWord10 = (growth * -0x80 >> 0xC) + 0x80;
-    growth = (growth * 0xE00 >> 0xC) + 0x200;
-    (g_YasuiLimitSatelliteBeamColumnMatrixData.scaleY) = taskPtr->targetScale * growth >> 0xC;
+    growth = (taskPtr->frame << 12) / 10;
+    g_YasuiLimitSatelliteBeamMeshDescriptor.limitSBeamMeshDescriptorWord10 = (growth * -0x80 >> 12) + 0x80;
+    growth = (growth * 0xE00 /* 0.875 */ >> 12) + 0x200;
+    (g_YasuiLimitSatelliteBeamColumnMatrixData.scaleY) = taskPtr->targetScale * growth >> 12;
     g_YasuiLimitSatelliteBeamColumnScaleY = (g_YasuiLimitSatelliteBeamColumnMatrixData.scaleY);
     g_YasuiLimitSatelliteBeamColumnTransformMatrix = g_YasuiLimitSatelliteBeamColumnScaleY;
     g_YasuiLimitSatelliteBeamColumnMatrixData.limitSBeamColumnMatrixPosX = taskPtr->posX;
@@ -625,7 +625,7 @@ void __cdecl BattleFx_LimitSatelliteBeamGrowingModelTask(void)
     g_YasuiLimitSatelliteBeamDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitSatelliteBeamMeshDescriptor, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST, 0, g_YasuiLimitSatelliteBeamDrawHandle);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frame)++;
-        if (taskPtr->frame >= 0xA) {
+        if (taskPtr->frame >= 10) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -670,9 +670,9 @@ void __cdecl BattleFx_LimitSatelliteBeamScatteredColumnModelTask(void)
     Gte_OrthonormaliseFromYAxis((BattleOrthoMatrix *)matrixAddress);
     ScaleMatrix(matrixAddress, scaleVecPtr);
     NormalizeVectorFixed(matrixAddress->t, (int *)scaleVecPtr);
-    matrixAddress->t[0] -= scaleVecPtr->rateA * task->scatter >> 0xC;
-    matrixAddress->t[1] -= scaleVecPtr->rateB * task->scatter >> 0xC;
-    matrixAddress->t[2] -= scaleVecPtr->targetRate * task->scatter >> 0xC;
+    matrixAddress->t[0] -= scaleVecPtr->rateA * task->scatter >> 12;
+    matrixAddress->t[1] -= scaleVecPtr->rateB * task->scatter >> 12;
+    matrixAddress->t[2] -= scaleVecPtr->targetRate * task->scatter >> 12;
     SetRotMatrix(matrixAddress);
     SetTransMatrix(matrixAddress);
     g_YasuiLimitSatelliteBeamDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitSatelliteBeamMeshDescriptor.nextModelResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitSatelliteBeamDrawHandle);
@@ -696,10 +696,10 @@ void __cdecl BattleFx_LimitSpawnSatelliteBeamPerTarget(int actor)
         slot->radius = g_BattleActorRecords[actor].radius;
         slot->actorIndex = actor;
     } else {
-        slot->posX = *(short *)&g_YasuiLimitSatelliteBeamTargetCentroidX + rand() % 0x1770 - 0xBB8;
+        slot->posX = *(short *)&g_YasuiLimitSatelliteBeamTargetCentroidX + rand() % 6000 - 3000;
         slot->posY = 0;
-        slot->posZ = g_YasuiLimitSatelliteBeamTargetCentroidZ + rand() % 0x1770 - 0xBB8;
-        slot->radius = 0x3E8;
+        slot->posZ = g_YasuiLimitSatelliteBeamTargetCentroidZ + rand() % 6000 - 3000;
+        slot->radius = 1000;
         slot->actorIndex = 0xFFFF;
     }
 }
@@ -741,14 +741,14 @@ void __cdecl BattleFx_LimitSatelliteBeamImpactTimelineTask(void)
         spawned->rotZ = 0;
         spawned = (BattleFxLimitSatelliteBeamImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamBlackPuffEmitterTask);
         *(Int64Pair *)&spawned->posX = *(Int64Pair *)&taskPtr->posX;
-        for (puffIndex = 0; puffIndex < 0xF; puffIndex++) {
+        for (puffIndex = 0; puffIndex < 15; puffIndex++) {
             spawned = (BattleFxLimitSatelliteBeamImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamDampedSpriteParticleTask);
             *(Int64Pair *)&spawned->posX = *(Int64Pair *)&taskPtr->posX;
             params->timer = 0;
             params->phase = rand() & 0xFFF;
-            params->drift = -((rand() & 0x1FF) + 0x200);
+            params->drift = -((rand() & 0x1FF) + 512);
             RotMatrix((SVECTOR *)params, matrixAddress);
-            params->timer = rand() % 0x12C + 0x1F4;
+            params->timer = rand() % 300 + 500;
             params->phase = 0;
             params->drift = 0;
             TransformVectorToInt16(matrixAddress, (void *)params, &spawned->yaw);
@@ -757,7 +757,7 @@ void __cdecl BattleFx_LimitSatelliteBeamImpactTimelineTask(void)
         }
         spawned = (BattleFxLimitSatelliteBeamImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamGrowingModelTask);
         *(Int64Pair *)&spawned->posX = *(Int64Pair *)&taskPtr->posX;
-        spawned->driftX = 0x2000;
+        spawned->driftX = 8192;
         if (taskPtr->recordType != -1) {
             Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
         }
@@ -782,12 +782,12 @@ void __cdecl BattleFx_LimitSatelliteBeamImpactColumnModelTask(void)
     matrixAddress = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     scaleVecPtr = (BattleFxLimitSatelliteBeamImpact *)(matrixAddress + 1);
     frameIndex = task->frameCount;
-    if (frameIndex < 0xA) {
+    if (frameIndex < 10) {
         scaleVecPtr->targetRate = 0x800;
         scaleVecPtr->rateA = 0x800;
         scaleVecPtr->rateB = 0x800;
     } else {
-        frameIndex -= 0xA;
+        frameIndex -= 10;
         if (frameIndex < 5) {
             scaleVecPtr->targetRate = frameIndex * -0x800 / 5 + 0x800;
             scaleVecPtr->rateA = scaleVecPtr->targetRate;
@@ -805,9 +805,9 @@ void __cdecl BattleFx_LimitSatelliteBeamImpactColumnModelTask(void)
     Gte_OrthonormaliseFromYAxis((BattleOrthoMatrix *)matrixAddress);
     ScaleMatrix(matrixAddress, scaleVecPtr);
     NormalizeVectorFixed(matrixAddress->t, (int *)scaleVecPtr);
-    matrixAddress->t[0] -= scaleVecPtr->rateA * task->scatter >> 0xC;
-    matrixAddress->t[1] -= scaleVecPtr->rateB * task->scatter >> 0xC;
-    matrixAddress->t[2] -= scaleVecPtr->targetRate * task->scatter >> 0xC;
+    matrixAddress->t[0] -= scaleVecPtr->rateA * task->scatter >> 12;
+    matrixAddress->t[1] -= scaleVecPtr->rateB * task->scatter >> 12;
+    matrixAddress->t[2] -= scaleVecPtr->targetRate * task->scatter >> 12;
     SetRotMatrix(matrixAddress);
     SetTransMatrix(matrixAddress);
     g_YasuiLimitSatelliteBeamDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitSatelliteBeamLineColorParams2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitSatelliteBeamDrawHandle);
@@ -837,14 +837,14 @@ void __cdecl BattleFx_LimitSatelliteBeamExpandingShellModelTask(void)
         g_YasuiLimitSatelliteBeamLineColorParams2.flareScale = 0;
     } else {
         frameIndex -= 5;
-        if (frameIndex < 0xF) {
-            g_YasuiLimitSatelliteBeamLineColorParams2.flareScale = (frameIndex << 0xC) / 0xF;
+        if (frameIndex < 15) {
+            g_YasuiLimitSatelliteBeamLineColorParams2.flareScale = (frameIndex << 12) / 15;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    pScaleRec->nextSize = (taskPtr->frame << 0xC) / 0x14;
+    pScaleRec->nextSize = (taskPtr->frame << 12) / 20;
     pScaleRec->size = pScaleRec->nextSize;
     pScaleRec->prevSize = pScaleRec->size;
     RotMatrix((SVECTOR *)((int)taskPtr + 0xC), rotMatrix);
@@ -890,13 +890,13 @@ void __cdecl BattleFx_LimitSatelliteBeamBlackPuffEmitterTask(void)
     }
     pPuff = (BattleFxBlackPuffEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatelliteBeamBlackPuffModelTask);
     *(Int64Pair *)&pPuff->posX = *(Int64Pair *)&taskPtr->posX;
-    pPuff->scaleY = taskPtr->frame * 0xC00 / 0xD + 0x400;
-    if (taskPtr->frame > 0xA) {
+    pPuff->scaleY = taskPtr->frame * 0xC00 / 13 + 0x400;
+    if (taskPtr->frame > 10) {
         pPuff->frameOffset = taskPtr->frame - 0xA;
     }
-    taskPtr->posY -= 0x64;
+    taskPtr->posY -= 100;
     (taskPtr->frame)++;
-    if (taskPtr->frame >= 0xD) {
+    if (taskPtr->frame >= 13) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -913,7 +913,7 @@ void __cdecl BattleFx_LimitSatelliteBeamBlackPuffModelTask(void)
     task = (BattleFxSatelliteBeamPuffRecord *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiLimitSatelliteBeamLineColorParams2.ringModelRes = Gfx_ModelTableGetRenderObject(3, g_YasuiLimitSatelliteBeamLoadedResTable);
     matrixAddress = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
-    g_YasuiLimitSatelliteBeamLineColorParams2.ringScale = (task->frame << 0xC) / 3;
+    g_YasuiLimitSatelliteBeamLineColorParams2.ringScale = (task->frame << 12) / 3;
     (g_YasuiLimitSatelliteBeamPuffMatrixData.scaleY) = task->scaleY;
     g_YasuiLimitSatelliteBeamPuffScaleY = (g_YasuiLimitSatelliteBeamPuffMatrixData.scaleY);
     g_YasuiLimitSatelliteBeamPuffTransformMatrix = g_YasuiLimitSatelliteBeamPuffScaleY;
@@ -950,10 +950,10 @@ void __cdecl BattleFx_LimitSatelliteBeamDampedSpriteParticleTask(void)
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     displacePtr = (BattleFxLimitSatelliteBeamDisplacement *)(matrix + 1);
     frame = particle->frameCount;
-    if (frame < 0xA) {
+    if (frame < 10) {
         (*(int *)&g_YasuiLimitSatelliteBeamLineCoordParams2) = 0x2C808080;
     } else {
-        frame -= 0xA;
+        frame -= 10;
         if (frame < 5) {
             g_YasuiLimitSatelliteBeamLineCoordParams2.limitSBeamLineCoordParams2Byte2 = frame * -0x80 / 5 + 0x80;
             g_YasuiLimitSatelliteBeamLineCoordParams2.limitSBeamLineCoordParams2Byte1 = g_YasuiLimitSatelliteBeamLineCoordParams2.limitSBeamLineCoordParams2Byte2;
@@ -980,9 +980,9 @@ void __cdecl BattleFx_LimitSatelliteBeamDampedSpriteParticleTask(void)
         particle->posX += particle->velocityX;
         particle->posY += particle->velocityY;
         particle->posZ += particle->velocityZ;
-        particle->velocityX = particle->velocityX * 0xF00 >> 0xC;
-        particle->velocityY = (particle->velocityY * 0xF00 >> 0xC) + 0x3C;
-        particle->velocityZ = particle->velocityZ * 0xF00 >> 0xC;
+        particle->velocityX = particle->velocityX * 0xF00 /* 0.9375 */ >> 12;
+        particle->velocityY = (particle->velocityY * 0xF00 /* 0.9375 */ >> 12) + 60;
+        particle->velocityZ = particle->velocityZ * 0xF00 /* 0.9375 */ >> 12;
     }
 }
 } /* extern "C" */

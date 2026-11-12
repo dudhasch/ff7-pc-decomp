@@ -150,7 +150,7 @@ void __cdecl Gfx_LoadAppConfigFile(char *fileName, GfxEngineContext *config)
                             config->driverType = GFX_DRIVER_SOFTWARE;
                         }
                         if (_stricmp(text, g_GfxConfigOptionNames[11]) == 0) {
-                            text = TokenAsString(0xD, subFile);
+                            text = TokenAsString(13, subFile);
                             if (*text != 0) {
                                 config->driverType = GFX_DRIVER_DLL;
                                 config->driverName = (int)GameHeapStrDup(text);
@@ -166,7 +166,7 @@ void __cdecl Gfx_LoadAppConfigFile(char *fileName, GfxEngineContext *config)
                             config->driverType = GFX_DRIVER_OPENGL;
                         }
                     }
-                    text = TokenAsString(0xA, subFile);
+                    text = TokenAsString(10, subFile);
                     if (*text != 0) {
                         if (_stricmp(text, g_GfxConfigOptionNames[13]) == 0) {
                             config->activeB = 1;
@@ -174,7 +174,7 @@ void __cdecl Gfx_LoadAppConfigFile(char *fileName, GfxEngineContext *config)
                             config->activeB = 0;
                         }
                     }
-                    text = TokenAsString(0xB, subFile);
+                    text = TokenAsString(11, subFile);
                     if (*text != 0) {
                         if (_stricmp(text, g_GfxConfigOptionNames[14]) == 0) {
                             config->activeA = 1;
@@ -182,7 +182,7 @@ void __cdecl Gfx_LoadAppConfigFile(char *fileName, GfxEngineContext *config)
                             config->activeA = 0;
                         }
                     }
-                    text = TokenAsString(0xC, subFile);
+                    text = TokenAsString(12, subFile);
                     if (*text != 0) {
                         if (_stricmp(text, g_GfxConfigOptionNames[15]) == 0) {
                             config->configPending = 1;
@@ -191,7 +191,7 @@ void __cdecl Gfx_LoadAppConfigFile(char *fileName, GfxEngineContext *config)
                         }
                     }
                     config->fallbackFlag = 0;
-                    text = TokenAsString(0xE, subFile);
+                    text = TokenAsString(14, subFile);
                     if (*text != 0) {
                         if (_stricmp(text, g_GfxConfigOptionNames[16]) == 0) {
                             config->fallbackFlag = 1;

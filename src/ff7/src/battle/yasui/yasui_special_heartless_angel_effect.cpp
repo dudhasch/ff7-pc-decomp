@@ -132,12 +132,12 @@ void __cdecl BattleFx_SpecialHeartlessAngelEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.emitter->frameCounter < 0x38) {
+    if (frame.emitter->frameCounter < 56) {
         frame.particle = (BattleFxHeartlessAngelEmitterPoint *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeartlessAngelFallingSpriteParticleTask);
         Battle_GetBoneWorldPos(frame.emitter->actorIndex, g_BattleActorRecords[frame.emitter->actorIndex].targetBone, &frame.particle->x);
-        frame.particle->x += (short)(rand() % 0xC8 - 0x64);
-        frame.particle->y += (short)(rand() % 0xC8 - 0x64);
-        frame.particle->z += (short)(rand() % 0xC8 - 0x64);
+        frame.particle->x += (short)(rand() % 200 - 100);
+        frame.particle->y += (short)(rand() % 200 - 100);
+        frame.particle->z += (short)(rand() % 200 - 100);
         frame.rotX.vx = rand() % 0x1F4 + 0x15E;
         frame.rotX.vy = rand() % 0x1F4 - 0xFA;
         frame.rotX.vz = 0;
@@ -150,7 +150,7 @@ void __cdecl BattleFx_SpecialHeartlessAngelEmitterTask(void)
         RotTransPointToInt16(&g_HeartlessAngel_SpriteDrawReq.emitterScreenPoint, frame.particle->projected, &frame.projectedFlag);
     }
     (frame.emitter->frameCounter)++;
-    if (frame.emitter->frameCounter == 0x38) {
+    if (frame.emitter->frameCounter == 56) {
         Battle_PostActorHitOrHurtMessage(frame.emitter->target);
         g_HeartlessAngel_StopFlag = 1;
         frame.emitter->endMarker = 0xFFFF;
@@ -168,7 +168,7 @@ void __cdecl BattleFx_SpecialHeartlessAngelFallingSpriteParticleTask(void)
     taskSlot = (BattleFxHeartlessAngelFallingSprite *)BATTLE_CURRENT_TASK_SLOT;
     (g_HeartlessAngel_SpriteDrawReq.spriteField) = Gfx_ModelTableGetLoadedRecord(0, g_HeartlessAngel_LoadedResTable);
     g_HeartlessAngel_SpriteDrawReq.fallingSpriteResource = Gfx_ModelTableGetSpriteObject(0, g_HeartlessAngel_LoadedResTable);
-    BattleFx_InstallBillboardMatrix(&taskSlot->posA, 0x200, 0);
+    BattleFx_InstallBillboardMatrix(&taskSlot->posA, 0x200 /* 0.125 */, 0);
     g_HeartlessAngel_SpriteDrawHandle = BattleFx_SubmitSpriteDraw(&g_HeartlessAngel_SpriteDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_HeartlessAngel_SpriteDrawHandle);
     if (g_BattleIsPaused != 0) {
         return;

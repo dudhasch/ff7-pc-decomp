@@ -501,7 +501,7 @@ void SnowboardCourseAssets::initializeFrames()
         short *source;
         int frame;
     } f; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
-    frames = (SnowboardVec3 **)operator new(0x344);
+    frames = (SnowboardVec3 **)operator new(836);
     for (f.frame = 0; f.frame < 209; f.frame++) {
         frames[f.frame] = (SnowboardVec3 *)operator new(boneCount * 12);
         f.source = (short *)((int)g_SnoboKeyframeShortPtrs[courseIndex] + f.frame * g_SnoboKeyframeCounts[courseIndex] * 4);

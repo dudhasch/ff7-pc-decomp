@@ -52,9 +52,9 @@ void __cdecl FreeDirectoryListing(FileDirectoryListing *listing)
 {
     if (listing != 0) {
         // STRING: FF7 0x00910a6c
-        GameHeapFree((void *)listing->entries, "C:\\lib\\src\\file\\direct.cpp", 0x26);
+        GameHeapFree((void *)listing->entries, "C:\\lib\\src\\file\\direct.cpp", 38);
         // STRING: FF7 0x00910a88
-        GameHeapFree(listing, "C:\\lib\\src\\file\\direct.cpp", 0x27);
+        GameHeapFree(listing, "C:\\lib\\src\\file\\direct.cpp", 39);
     }
 }
 
@@ -67,12 +67,12 @@ int __cdecl AllocDirectoryListing(int entryCount)
     FileDirectoryListing *listing;
 
     // STRING: FF7 0x00910aa4
-    listing = (FileDirectoryListing *)GameHeapAlloc(1, 8, "C:\\lib\\src\\file\\direct.cpp", 0x2F);
+    listing = (FileDirectoryListing *)GameHeapAlloc(1, 8, "C:\\lib\\src\\file\\direct.cpp", 47);
     if (listing != 0) {
         listing->entryCount = entryCount;
         if (entryCount > 0) {
             // STRING: FF7 0x00910ac0
-            listing->entries = (int)GameHeapAlloc(entryCount, 0x20, "C:\\lib\\src\\file\\direct.cpp", 0x35);
+            listing->entries = (int)GameHeapAlloc(entryCount, 32, "C:\\lib\\src\\file\\direct.cpp", 53);
         } else {
             listing->entries = 0;
         }
@@ -240,7 +240,7 @@ int __cdecl AllocDirectoryEntryPointerArray(FileDirectoryListing *listing)
     pointers = 0;
     if (listing != 0) {
         // STRING: FF7 0x00910ae8
-        pointers = (int *)GameHeapAlloc(listing->entryCount, 4, "C:\\lib\\src\\file\\direct.cpp", 0xFE);
+        pointers = (int *)GameHeapAlloc(listing->entryCount, 4, "C:\\lib\\src\\file\\direct.cpp", 254);
         for (index = 0; index < listing->entryCount; index++) {
             pointers[index] = listing->entries + (index << 5);
         }

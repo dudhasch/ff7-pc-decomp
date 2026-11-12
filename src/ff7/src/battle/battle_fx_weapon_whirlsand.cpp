@@ -445,17 +445,17 @@ void __cdecl BattleFx_WhirlsandRunCameraScript(void)
                 ((BattleFxCameraVec *)buf)->y = g_pWhirlsandCameraOther->position.y - g_pWhirlsandCameraTrack->base.y;
                 ((BattleFxCameraVec *)buf)->z = g_pWhirlsandCameraOther->position.z - g_pWhirlsandCameraTrack->base.z;
                 VectorNormalToSVector((int *)buf, (short *)offset);
-                g_pWhirlsandCameraTrack->position.x = g_pWhirlsandCameraOther->position.x - (offset->vx * g_pWhirlsandCameraTrack->distance >> 0xC);
-                g_pWhirlsandCameraTrack->position.y = g_pWhirlsandCameraOther->position.y - (offset->vy * g_pWhirlsandCameraTrack->distance >> 0xC);
-                g_pWhirlsandCameraTrack->position.z = g_pWhirlsandCameraOther->position.z - (offset->vz * g_pWhirlsandCameraTrack->distance >> 0xC);
+                g_pWhirlsandCameraTrack->position.x = g_pWhirlsandCameraOther->position.x - (offset->vx * g_pWhirlsandCameraTrack->distance >> 12);
+                g_pWhirlsandCameraTrack->position.y = g_pWhirlsandCameraOther->position.y - (offset->vy * g_pWhirlsandCameraTrack->distance >> 12);
+                g_pWhirlsandCameraTrack->position.z = g_pWhirlsandCameraOther->position.z - (offset->vz * g_pWhirlsandCameraTrack->distance >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_pWhirlsandCameraTrack->distance += g_pWhirlsandCameraTrack->delta;
                 eased = g_pWhirlsandCameraTrack->distance;
                 eased = BattleFx_WhirlsandApplyCameraEasing(eased, g_pWhirlsandCameraTrack->easing);
-                g_pWhirlsandCameraTrack->position.x = g_pWhirlsandCameraTrack->base.x + (g_pWhirlsandCameraTrack->velocity.x * eased >> 0xC);
-                g_pWhirlsandCameraTrack->position.y = g_pWhirlsandCameraTrack->base.y + (g_pWhirlsandCameraTrack->velocity.y * eased >> 0xC);
-                g_pWhirlsandCameraTrack->position.z = g_pWhirlsandCameraTrack->base.z + (g_pWhirlsandCameraTrack->velocity.z * eased >> 0xC);
+                g_pWhirlsandCameraTrack->position.x = g_pWhirlsandCameraTrack->base.x + (g_pWhirlsandCameraTrack->velocity.x * eased >> 12);
+                g_pWhirlsandCameraTrack->position.y = g_pWhirlsandCameraTrack->base.y + (g_pWhirlsandCameraTrack->velocity.y * eased >> 12);
+                g_pWhirlsandCameraTrack->position.z = g_pWhirlsandCameraTrack->base.z + (g_pWhirlsandCameraTrack->velocity.z * eased >> 12);
             }
             (g_pWhirlsandCameraTrack->frames)--;
             g_pWhirlsandCameraTrack = &g_WhirlsandCameraFocus;
@@ -609,7 +609,7 @@ void __cdecl BattleFx_WhirlsandTimelineTask(void)
     if (localFrame < 5) { /* empty first arm: lib/codegen.h */
     } else {
         localFrame -= 5;
-        if (localFrame < 0x1E) {
+        if (localFrame < 30) {
             if (localFrame == 0) {
                 Battle_AllocateResourceSlot(BattleFx_WhirlsandRingGridHeightEnvelopeTask);
                 Battle_AllocateResourceSlot(BattleFx_WhirlsandShadedRingGridPairTask);
@@ -619,11 +619,11 @@ void __cdecl BattleFx_WhirlsandTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            localFrame -= 0x1E;
-            if (localFrame < 0x3C) { /* empty first arm: lib/codegen.h */
+            localFrame -= 30;
+            if (localFrame < 60) { /* empty first arm: lib/codegen.h */
             } else {
-                localFrame -= 0x3C;
-                if (localFrame < 0x1E) { /* empty first arm: lib/codegen.h */
+                localFrame -= 60;
+                if (localFrame < 30) { /* empty first arm: lib/codegen.h */
                 } else {
                     g_BattleScriptEffectFlag = 0;
                     task->ownerSlot = BATTLE_TASK_FREE;
@@ -673,26 +673,26 @@ void __cdecl BattleFx_WhirlsandRingGridHeightEnvelopeTask(void)
         (task->frameCounter)++;
     } else {
         age = task->frameCounter;
-        if (age < 0x1E) {
-            ratio = (age << 0xC) / 0x1E;
+        if (age < 30) {
+            ratio = (age << 12) / 30;
             g_WhirlsandScale = ratio;
             ratio = BattleFx_WhirlsandApplyCameraEasing(ratio, 0x3FF);
-            hBase = (ratio * 0 >> 0xC) + 0x80;
-            levelB = (ratio * -0x50 >> 0xC) + 0x80;
-            BattleFx_WhirlsandSetRingGridRowHeights(ratio * 0x3E8 >> 0xC, levelB, hBase);
+            hBase = (ratio * 0 >> 12) + 0x80;
+            levelB = (ratio * -0x50 >> 12) + 0x80;
+            BattleFx_WhirlsandSetRingGridRowHeights(ratio * 0x3E8 >> 12, levelB, hBase);
         } else {
-            age -= 0x1E;
-            if (age < 0x3C) {
-                g_WhirlsandScale = 0x1000;
+            age -= 30;
+            if (age < 60) {
+                g_WhirlsandScale = 0x1000 /* 1.0 */;
             } else {
-                age -= 0x3C;
-                if (age < 0x1E) {
-                    ratio = (0x1E - age << 0xC) / 0x1E;
+                age -= 60;
+                if (age < 30) {
+                    ratio = (0x1E - age << 12) / 30;
                     g_WhirlsandScale = ratio;
                     ratio = BattleFx_WhirlsandApplyCameraEasing(ratio, 0);
-                    hBase = (ratio * 0 >> 0xC) + 0x80;
-                    levelB = (ratio * -0x50 >> 0xC) + 0x80;
-                    BattleFx_WhirlsandSetRingGridRowHeights(ratio * 0x3E8 >> 0xC, levelB, hBase);
+                    hBase = (ratio * 0 >> 12) + 0x80;
+                    levelB = (ratio * -0x50 >> 12) + 0x80;
+                    BattleFx_WhirlsandSetRingGridRowHeights(ratio * 0x3E8 >> 12, levelB, hBase);
                 } else {
                     task->ownerSlot = BATTLE_TASK_FREE;
                     return;
@@ -790,53 +790,53 @@ void __cdecl BattleFx_WhirlsandBuildRingGridMesh(void)
     int k;
     int ringLen;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         innerRadius = i << 2;
-        if (innerRadius + 4 < 0x40) {
+        if (innerRadius + 4 < 64) {
             cap = innerRadius + 4;
         } else {
             cap = 0x3F;
         }
         outerRadius = cap;
-        for (seg = 0; seg < 0x10; seg++) {
+        for (seg = 0; seg < 16; seg++) {
             entry = &g_WhirlsandStageSwirlGridBasePointer->cells[i][seg];
             entry->corners.cornerRowCol = (int)&g_WhirlsandStageSwirlGridBasePointer->ring[i][seg];
             entry->corners.cornerNextCol = (int)&g_WhirlsandStageSwirlGridBasePointer->ring[i][(seg + 1) % 16];
             entry->corners.cornerNextRow = (int)&g_WhirlsandStageSwirlGridBasePointer->ring[i + 1][seg];
             entry->corners.cornerNextRowCol = (int)&g_WhirlsandStageSwirlGridBasePointer->ring[i + 1][(seg + 1) % 16];
-            a0 = (seg << 0xC) / 16;
-            a1 = ((seg + 1) << 0xC) / 16;
+            a0 = (seg << 12) / 16;
+            a1 = ((seg + 1) << 12) / 16;
             for (k = 0; k < 1; k++) {
                 entry->packets[k].code = 0xC000000;
                 entry->packets[k].tpage = 0x12E;
             }
             for (k = 0; k < 1; k++) {
                 (&entry->packets[2])[k].code = 0xC000000;
-                (&entry->packets[2])[k].u0 = (innerRadius * SinFixed(a0) >> 0xB) + 0x80;
-                (&entry->packets[2])[k].v0 = (innerRadius * CosFixed(a0) >> 0xB) + 0x80;
-                (&entry->packets[2])[k].u1 = (innerRadius * SinFixed(a1) >> 0xB) + 0x80;
-                (&entry->packets[2])[k].v1 = (innerRadius * CosFixed(a1) >> 0xB) + 0x80;
-                (&entry->packets[2])[k].u2 = (outerRadius * SinFixed(a0) >> 0xB) + 0x80;
-                (&entry->packets[2])[k].v2 = (outerRadius * CosFixed(a0) >> 0xB) + 0x80;
-                (&entry->packets[2])[k].u3 = (outerRadius * SinFixed(a1) >> 0xB) + 0x80;
-                (&entry->packets[2])[k].v3 = (outerRadius * CosFixed(a1) >> 0xB) + 0x80;
+                (&entry->packets[2])[k].u0 = (innerRadius * SinFixed(a0) >> 11) + 0x80;
+                (&entry->packets[2])[k].v0 = (innerRadius * CosFixed(a0) >> 11) + 0x80;
+                (&entry->packets[2])[k].u1 = (innerRadius * SinFixed(a1) >> 11) + 0x80;
+                (&entry->packets[2])[k].v1 = (innerRadius * CosFixed(a1) >> 11) + 0x80;
+                (&entry->packets[2])[k].u2 = (outerRadius * SinFixed(a0) >> 11) + 0x80;
+                (&entry->packets[2])[k].v2 = (outerRadius * CosFixed(a0) >> 11) + 0x80;
+                (&entry->packets[2])[k].u3 = (outerRadius * SinFixed(a1) >> 11) + 0x80;
+                (&entry->packets[2])[k].v3 = (outerRadius * CosFixed(a1) >> 11) + 0x80;
                 (&entry->packets[2])[k].tpage = 0xAC;
                 (&entry->packets[2])[k].clut = 0x3FF0;
             }
         }
     }
-    for (i = 0; i < 0x11; i++) {
-        if (i < 0x10) {
+    for (i = 0; i < 17; i++) {
+        if (i < 16) {
             ringLen = i << 2 << 6;
         } else {
-            ringLen = 0xFC0;
+            ringLen = 4032;
         }
         innerRadius = ringLen;
-        for (seg = 0; seg < 0x10; seg++) {
-            a0 = (seg << 0xC) / 16;
-            g_WhirlsandStageSwirlGridBasePointer->ring[i][seg].x = innerRadius * SinFixed(a0) >> 0xC;
+        for (seg = 0; seg < 16; seg++) {
+            a0 = (seg << 12) / 16;
+            g_WhirlsandStageSwirlGridBasePointer->ring[i][seg].x = innerRadius * SinFixed(a0) >> 12;
             g_WhirlsandStageSwirlGridBasePointer->ring[i][seg].y = 0;
-            g_WhirlsandStageSwirlGridBasePointer->ring[i][seg].z = -innerRadius * CosFixed(a0) >> 0xC;
+            g_WhirlsandStageSwirlGridBasePointer->ring[i][seg].z = -innerRadius * CosFixed(a0) >> 12;
         }
         g_WhirlsandStageSwirlGridBasePointer->rowColor[i] = 0x3C808080;
     }
@@ -855,15 +855,15 @@ void __cdecl BattleFx_WhirlsandSetRingGridRowHeights(int height, int colorFrom, 
     int rowIdx;
     int rowParam;
 
-    rowScale = (height << 0xC) / 0x3E8;
-    for (rowIdx = 0; rowIdx < 0x10; rowIdx++) {
-        rowParam = (rowIdx << 0xC) / 0xF;
+    rowScale = (height << 12) / 1000;
+    for (rowIdx = 0; rowIdx < 16; rowIdx++) {
+        rowParam = (rowIdx << 12) / 15;
         rowParam = BattleFx_WhirlsandApplyCameraEasing(rowParam, 0xFFFFFC01);
-        for (column = 0; column < 0x10; column++) {
-            g_WhirlsandStageSwirlGridBasePointer->ring[rowIdx][column].y = height * (0x1000 - rowParam) >> 0xC;
+        for (column = 0; column < 16; column++) {
+            g_WhirlsandStageSwirlGridBasePointer->ring[rowIdx][column].y = height * (4096 - rowParam) >> 12;
         }
-        value = colorFrom + ((colorTo - colorFrom) * (rowScale * rowParam >> 0xC) >> 0xC);
-        g_WhirlsandStageSwirlGridBasePointer->rowColor[rowIdx] = value | 0x3C000000 | value << 8 | value << 0x10;
+        value = colorFrom + ((colorTo - colorFrom) * (rowScale * rowParam >> 12) >> 12);
+        g_WhirlsandStageSwirlGridBasePointer->rowColor[rowIdx] = value | 0x3C000000 | value << 8 | value << 16;
     }
 }
 
@@ -875,7 +875,7 @@ void __cdecl BattleFx_WhirlsandTexturedRingGridDrawTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    if (task->frameCounter < 0x78) {
+    if (task->frameCounter < 120) {
         BattleFx_WhirlsandDrawTexturedRingGrid(&g_WhirlsandCompositeMatrix);
     } else {
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -917,28 +917,28 @@ void __cdecl BattleFx_WhirlsandDrawTexturedRingGrid(PsxMatrix *matrix)
     SetRotMatrix(&g_WhirlsandDataBlock3->matrix);
     SetTransMatrix(&g_WhirlsandDataBlock3->matrix);
     RefreshGlobalTransformState();
-    for (row = 0; row < 0x10; row++) {
+    for (row = 0; row < 16; row++) {
         level = row << 2;
-        if (level + 4 < 0x40) {
+        if (level + 4 < 64) {
             clampedRadius = level + 4;
         } else {
-            clampedRadius = 0x3F;
+            clampedRadius = 63;
         }
         radiusB = clampedRadius;
-        for (column = 0; column < 0x10; column++) {
+        for (column = 0; column < 16; column++) {
             cellPtr = &g_WhirlsandStageSwirlGridBasePointer->cells[row][column];
             g_WhirlsandDataBlock3->depth = Gfx_TransformQuadReturnDepth((void *)cellPtr->corners.cornerRowCol, (SVECTOR *)cellPtr->corners.cornerNextCol, (SVECTOR *)cellPtr->corners.cornerNextRow, (SVECTOR *)cellPtr->corners.cornerNextRowCol, &g_WhirlsandDataBlock3->projectDepth, &g_WhirlsandDataBlock3->projectFlags);
             if ((g_WhirlsandDataBlock3->projectFlags & 0x60000) == 0) {
-                angle = (column << 0xC) / 16;
-                angleEnd = ((column + 1) << 0xC) / 16;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].u0 = ((level * SinFixed(angle) >> 0xC) * g_WhirlsandScale >> 0xC) + 0x40;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].v0 = ((level * CosFixed(angle) >> 0xB) * g_WhirlsandScale >> 0xC) + 0x80;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].u1 = ((level * SinFixed(angleEnd) >> 0xC) * g_WhirlsandScale >> 0xC) + 0x40;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].v1 = ((level * CosFixed(angleEnd) >> 0xB) * g_WhirlsandScale >> 0xC) + 0x80;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].u2 = ((radiusB * SinFixed(angle) >> 0xC) * g_WhirlsandScale >> 0xC) + 0x40;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].v2 = ((radiusB * CosFixed(angle) >> 0xB) * g_WhirlsandScale >> 0xC) + 0x80;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].u3 = ((radiusB * SinFixed(angleEnd) >> 0xC) * g_WhirlsandScale >> 0xC) + 0x40;
-                cellPtr->packets[g_WhirlsandParticleRowIndex].v3 = ((radiusB * CosFixed(angleEnd) >> 0xB) * g_WhirlsandScale >> 0xC) + 0x80;
+                angle = (column << 12) / 16;
+                angleEnd = ((column + 1) << 12) / 16;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].u0 = ((level * SinFixed(angle) >> 12) * g_WhirlsandScale >> 12) + 0x40;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].v0 = ((level * CosFixed(angle) >> 11) * g_WhirlsandScale >> 12) + 0x80;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].u1 = ((level * SinFixed(angleEnd) >> 12) * g_WhirlsandScale >> 12) + 0x40;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].v1 = ((level * CosFixed(angleEnd) >> 11) * g_WhirlsandScale >> 12) + 0x80;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].u2 = ((radiusB * SinFixed(angle) >> 12) * g_WhirlsandScale >> 12) + 0x40;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].v2 = ((radiusB * CosFixed(angle) >> 11) * g_WhirlsandScale >> 12) + 0x80;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].u3 = ((radiusB * SinFixed(angleEnd) >> 12) * g_WhirlsandScale >> 12) + 0x40;
+                cellPtr->packets[g_WhirlsandParticleRowIndex].v3 = ((radiusB * CosFixed(angleEnd) >> 11) * g_WhirlsandScale >> 12) + 0x80;
                 if (g_BattleUiScalingMode != 2) {
                     *(unsigned char *)&cellPtr->packets[g_WhirlsandParticleRowIndex].u0 >>= 1;
                     *(unsigned char *)&cellPtr->packets[g_WhirlsandParticleRowIndex].v0 >>= 1;
@@ -984,17 +984,17 @@ void __cdecl BattleFx_WhirlsandShadedRingGridPairTask(void)
 
     frame.ringPair = BATTLE_CURRENT_TASK_SLOT;
     frame.count = frame.ringPair->frameCounter;
-    if (frame.count < 0x1E) {
-        frame.rampFrac = (frame.count << 0xC) / 0x1E;
+    if (frame.count < 30) {
+        frame.rampFrac = (frame.count << 12) / 30;
         frame.fraction = 0x1000 - frame.rampFrac;
     } else {
-        frame.count -= 0x1E;
-        if (frame.count < 0x3C) {
+        frame.count -= 30;
+        if (frame.count < 60) {
             frame.fraction = 0;
         } else {
-            frame.count -= 0x3C;
-            if (frame.count < 0x1E) {
-                frame.rampFrac = (frame.count << 0xC) / 0x1E;
+            frame.count -= 60;
+            if (frame.count < 30) {
+                frame.rampFrac = (frame.count << 12) / 30;
                 frame.fraction = frame.rampFrac;
             } else {
                 frame.ringPair->ownerSlot = BATTLE_TASK_FREE;
@@ -1007,14 +1007,14 @@ void __cdecl BattleFx_WhirlsandShadedRingGridPairTask(void)
     frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
     frame.rotMatrix.t[0] = frame.rotMatrix.t[1];
     MultiplyMatrix(&g_WhirlsandCompositeMatrix, &frame.rotMatrix, &frame.rotMatrix);
-    BattleFx_WhirlsandDrawShadedRingGrid(&frame.rotMatrix, (frame.fraction - 0x1000 << 0xB >> 0xC) + 0x1000);
-    g_WhirlsandModelRotationAngles1[1] += 0x100;
+    BattleFx_WhirlsandDrawShadedRingGrid(&frame.rotMatrix, (frame.fraction - 0x1000 << 11 >> 12) + 0x1000);
+    g_WhirlsandModelRotationAngles1[1] += 0x100 /* 22.5 deg */;
     RotMatrixXYZ(g_WhirlsandModelRotationAngles2, &frame.rotMatrix);
     frame.rotMatrix.t[2] = 0;
     frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
     frame.rotMatrix.t[0] = frame.rotMatrix.t[1];
     MultiplyMatrix(&g_WhirlsandCompositeMatrix, &frame.rotMatrix, &frame.rotMatrix);
-    BattleFx_WhirlsandDrawShadedRingGrid(&frame.rotMatrix, (frame.fraction - 0x1000 << 0xB >> 0xC) + 0x1000);
+    BattleFx_WhirlsandDrawShadedRingGrid(&frame.rotMatrix, (frame.fraction - 0x1000 << 11 >> 12) + 0x1000);
     g_WhirlsandModelRotationAngles2[1] += 0x80;
     if (g_BattleIsPaused == 0) {
         (frame.ringPair->frameCounter)++;
@@ -1093,18 +1093,18 @@ void __cdecl BattleFx_WhirlsandSurfaceParticleEmitterTask(void)
         return;
     }
     age = task->frameCounter;
-    if (age < 0x1E) {
-        ratio = (age << 0xC) / 0x1E;
-        emitAmount = ratio * 0x300 >> 0xC;
+    if (age < 30) {
+        ratio = (age << 12) / 30;
+        emitAmount = ratio * 0x300 /* 0.1875 */ >> 12;
     } else {
-        age -= 0x1E;
-        if (age < 0x3C) {
-            emitAmount = 0x300;
+        age -= 30;
+        if (age < 60) {
+            emitAmount = 768;
         } else {
-            age -= 0x3C;
-            if (age < 0x1E) {
-                ratio = (age << 0xC) / 0x1E;
-                emitAmount = (0x1000 - ratio) * 0x300 >> 0xC;
+            age -= 60;
+            if (age < 30) {
+                ratio = (age << 12) / 30;
+                emitAmount = (4096 - ratio) * 0x300 /* 0.1875 */ >> 12;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -1112,12 +1112,12 @@ void __cdecl BattleFx_WhirlsandSurfaceParticleEmitterTask(void)
         }
     }
     g_WhirlsandEmissionAccumulator += emitAmount;
-    while (emitAmount >= 0x100) {
+    while (emitAmount >= 256) {
         spawned = (BattleFxWhirlsandSurfaceParticleTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_WhirlsandSurfaceParticleTask);
         angle = rand() & 0xFFF;
-        extent = (g_WhirlsandScale << 0xC >> 0xC) * (rand() & 0xFFF) >> 0xC;
-        spawned->posX = SinFixed(angle) * extent >> 0xC;
-        spawned->posZ = CosFixed(angle) * extent >> 0xC;
+        extent = (g_WhirlsandScale << 12 >> 12) * (rand() & 0xFFF) >> 12;
+        spawned->posX = SinFixed(angle) * extent >> 12;
+        spawned->posZ = CosFixed(angle) * extent >> 12;
         spawned->posY = BattleFx_WhirlsandGetRingGridHeightAtPoint((BattleFxRingGridPoint *)&spawned->posX);
         if (0 != 0) {
             fallRoll = 0x12C;
@@ -1125,7 +1125,7 @@ void __cdecl BattleFx_WhirlsandSurfaceParticleEmitterTask(void)
             fallRoll = rand() % 0x64 + 0xC8;
         }
         spawned->velocityY = -fallRoll;
-        emitAmount -= 0x100;
+        emitAmount -= 256;
     }
     (task->frameCounter)++;
 }
@@ -1147,12 +1147,12 @@ int __cdecl BattleFx_WhirlsandGetRingGridHeightAtPoint(BattleFxRingGridPoint *po
     } else {
         deltaZ = point->posZ - g_WhirlsandBaseMatrix.t[2];
         idx = ((SqrtToInt(point->posX * point->posX + deltaZ * deltaZ)) / 64);
-        idx = (idx << 0xC) / g_WhirlsandScale;
-        if (idx / 4 < 0x10) {
+        idx = (idx << 12) / g_WhirlsandScale;
+        if (idx / 4 < 16) {
             lowHeight = g_WhirlsandStageSwirlGridBasePointer->ring[idx / 4][0].y;
             highHeight = g_WhirlsandStageSwirlGridBasePointer->ring[idx / 4 + 1][0].y;
-            fraction = ((idx % 4 << 0xC) / 4);
-            return lowHeight + ((highHeight - lowHeight) * fraction >> 0xC);
+            fraction = ((idx % 4 << 12) / 4);
+            return lowHeight + ((highHeight - lowHeight) * fraction >> 12);
         } else {
             return 0;
         }
@@ -1233,7 +1233,7 @@ void __cdecl BattleFx_WhirlsandSurfaceParticleTask(void)
         g_WhirlsandDataBlock0->angle[1] = f.slot->posY + f.slot->velocityY;
         g_WhirlsandDataBlock0->angle[2] = f.slot->posZ;
         TransformVectorToInt16(&g_WhirlsandDataBlock0->matrix, g_WhirlsandDataBlock0->angle, &f.slot->posX);
-        f.slot->velocityY = f.slot->velocityY * 0xe00 >> 12;
+        f.slot->velocityY = f.slot->velocityY * 0xe00 /* 0.875 */ >> 12;
     }
 }
 
@@ -1278,9 +1278,9 @@ void __cdecl BattleFx_WhirlsandActorGroundRideTask(void)
         (ride->step)++;
     } else {
         localStep = ride->step;
-        if (localStep < 0x78) {
+        if (localStep < 120) {
             BattleFx_WhirlsandSetActorGroundHeightAndDrawShadow(actor, ride);
-            if (localStep == 0x77) {
+            if (localStep == 119) {
                 actor->posY = ride->heightOffset;
                 actor->drawFlags = ((*(unsigned char *)&actor->drawFlags) & ~0x14) | ride->actorFlags & 0x14;
             }
@@ -1377,30 +1377,30 @@ void __cdecl BattleFx_WhirlsandActorSpiralAwayTask(void)
         (taskPtr->step)++;
     } else {
         stage = taskPtr->step;
-        if (stage < 0x5A) {
+        if (stage < 90) {
             BattleFx_WhirlsandSetActorGroundHeightAndDrawShadow(actor, taskPtr);
-            if (stage < 0xF) { /* empty first arm: lib/codegen.h */
+            if (stage < 15) { /* empty first arm: lib/codegen.h */
             } else {
-                stage -= 0xF;
-                if (stage < 0x3C) {
+                stage -= 15;
+                if (stage < 60) {
                     if (stage == 0) {
                         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
                     }
-                    tempRatio = (stage << 0xC) / 0x3C;
+                    tempRatio = (stage << 12) / 60;
                     eased = BattleFx_WhirlsandApplyCameraEasing(tempRatio, 0xFFFFFD01);
-                    g_WhirlsandActorOffsetAngles[1] += (short)(tempRatio << 8 >> 0xC);
+                    g_WhirlsandActorOffsetAngles[1] += (short)(tempRatio << 8 >> 12);
                     RotMatrixXYZ(&g_WhirlsandActorOffsetAngles, &g_WhirlsandDataBlock5->matrix);
-                    g_WhirlsandDataBlock5->offsetX = taskPtr->startOffset * (0x1000 - eased) >> 0xC;
+                    g_WhirlsandDataBlock5->offsetX = taskPtr->startOffset * (0x1000 - eased) >> 12;
                     g_WhirlsandDataBlock5->offsetY = 0;
-                    g_WhirlsandDataBlock5->offsetZ = (taskPtr->targetPos - g_WhirlsandBaseMatrix.t[2]) * (0x1000 - eased) >> 0xC;
+                    g_WhirlsandDataBlock5->offsetZ = (taskPtr->targetPos - g_WhirlsandBaseMatrix.t[2]) * (0x1000 - eased) >> 12;
                     TransformVectorToInt16(&g_WhirlsandDataBlock5->matrix, g_WhirlsandDataBlock5, &g_WhirlsandDataBlock5->posX);
                     actor->posX = g_WhirlsandDataBlock5->posX;
                     actor->posZ = g_WhirlsandDataBlock5->posZ + g_WhirlsandBaseMatrix.t[2];
-                    actor->yaw += 0x100;
+                    actor->yaw += 0x100 /* 22.5 deg */;
                 } else {
-                    stage -= 0x3C;
-                    if (stage < 0xF) {
-                        tempRatio = (stage << 0xC) / 0xF;
+                    stage -= 60;
+                    if (stage < 15) {
+                        tempRatio = (stage << 12) / 15;
                         actor->tintB = 0;
                         actor->tintG = 0;
                         actor->tintR = 0;
@@ -1411,7 +1411,7 @@ void __cdecl BattleFx_WhirlsandActorSpiralAwayTask(void)
                         for (boneIndex = 0; boneIndex < xformRecord->boneCount; boneIndex++) {
                             (&xformRecord->fadeFlags)[boneIndex] |= 8;
                         }
-                        actor->yaw += 0x100;
+                        actor->yaw += 0x100 /* 22.5 deg */;
                     }
                 }
             }

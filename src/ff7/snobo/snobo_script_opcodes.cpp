@@ -1342,25 +1342,25 @@ void __cdecl Mini_SnowboardUpdateRiderControls(SnowboardRiderControls *controls)
 {
     controls->turnRate = 0;
     controls->actionMode = 0;
-    g_SnoboSpeedFlag = controls->speed < 0x100;
+    g_SnoboSpeedFlag = controls->speed < 256;
     Mini_SnowboardRunOpcodeFrame();
     if ((g_SnoboStatePtr->modeFlags & INPUT_CROSS) != 0 && controls->turnStep < 8) {
         controls->actionCode = Mini_SnowboardChooseRiderActionCode((struct SnowboardRiderState *)controls);
     } else if ((g_SnoboStatePtr->inputFlags & INPUT_LEFT) != 0) {
-        if (controls->speed > 0x20) {
+        if (controls->speed > 32) {
             controls->actionCode = 0x11;
         } else {
             controls->heading -= 0.049087387f;
         }
     } else if ((g_SnoboStatePtr->inputFlags & INPUT_RIGHT) != 0) {
-        if (controls->speed > 0x20) {
+        if (controls->speed > 32) {
             controls->actionCode = 0x12;
         } else {
             controls->heading += 0.049087387f;
         }
-    } else if ((g_SnoboStatePtr->inputFlags & (INPUT_DOWN | INPUT_SQUARE)) != 0 && controls->speed > 0x100) {
+    } else if ((g_SnoboStatePtr->inputFlags & (INPUT_DOWN | INPUT_SQUARE)) != 0 && controls->speed > 256) {
         controls->actionCode = 0x16;
-    } else if (controls->speed < 0x100 && (g_SnoboStatePtr->inputFlags & INPUT_UP) != 0) {
+    } else if (controls->speed < 256 && (g_SnoboStatePtr->inputFlags & INPUT_UP) != 0) {
         controls->actionCode = 2;
     }
     /* Retail caller passes -1 arg(s) to 1-parameter `Mini_SnowboardTurnYawTowardVelocity` (__cdecl stack cleanup matches retail). */
@@ -1485,7 +1485,7 @@ void __cdecl Mini_SnowboardActionTurnRight(SnowboardRiderState *rider, int onEnt
 // FUNCTION: FF7 0x0072b3e7
 int __cdecl Mini_SnowboardChooseRiderActionCode(SnowboardRiderState *rider)
 {
-    if (rider->speed > 0x400) {
+    if (rider->speed > 1024) {
         if ((*(unsigned char *)&g_SnoboStatePtr->probeFlags & 8) != 0) {
             return 6;
         }
@@ -1514,13 +1514,13 @@ void __cdecl Mini_SnowboardRotateRiderVectorByTurn(SnowboardRiderTurn *turn, int
     float angle;
     int damping;
 
-    if (turn->turnTimer > 0x18) {
+    if (turn->turnTimer > 24) {
         return;
     }
-    damping = turn->turnRate * turn->turnRate >> 0xF;
-    turnAmount = turnAmount * (0x180 - damping) / 0x180;
+    damping = turn->turnRate * turn->turnRate >> 15;
+    turnAmount = turnAmount * (384 - damping) / 384;
     if (turn->turnTimer > 8) {
-        turnAmount = turnAmount * (0x18 - turn->turnTimer) >> 4;
+        turnAmount = turnAmount * (24 - turn->turnTimer) >> 4;
     }
     angle = (float)(turnAmount >> 2) * 0.0015339808f;
     Mini_SnowboardRotateVectorAboutYToDest(angle, (char *)turn + 0x30, &rotVec);
@@ -1574,7 +1574,7 @@ int __cdecl Mini_SnowboardTurnMagnitudeOverLimit(SnowboardRiderControls *rider)
     if (rider->turnStep != 0) {
         return 0;
     } else {
-        return 0x8C - (rider->speed * rider->speed >> 0x10) < rider->turnLimit;
+        return 0x8C - (rider->speed * rider->speed >> 16) < rider->turnLimit;
     }
 }
 
@@ -1704,13 +1704,13 @@ void __cdecl Mini_SnowboardActionSteerWithPush(SnowboardRiderState *rider, int o
         rider->velocityZ += frame.vector.z;
         g_SnoboCountdown--;
     }
-    frame.angularStep = (float)(0x20 - (rider->speed >> 4)) * 0.0015339808f;
+    frame.angularStep = (float)(32 - (rider->speed >> 4)) * 0.0015339808f;
     frame.turn = (g_SnoboStatePtr->inputFlags & INPUT_LEFT) ? -frame.angularStep : ((g_SnoboStatePtr->inputFlags & INPUT_RIGHT) ? frame.angularStep : 0.0f);
     if (frame.turn != 0.0f) {
         rider->heading += frame.turn;
         Mini_SnowboardRotateVectorAboutYInPlace(frame.turn, &rider->velocityX);
     }
-    g_SnoboSpeedFlag = !(rider->speed < 0x100 && (g_SnoboStatePtr->inputFlags & INPUT_UP) != 0);
+    g_SnoboSpeedFlag = !(rider->speed < 256 && (g_SnoboStatePtr->inputFlags & INPUT_UP) != 0);
     Mini_SnowboardRunOpcodeFrame();
     if ((rider->actionCode & 0xFF) != 2) {
         rider->actionMode = 0;
@@ -1803,7 +1803,7 @@ void __cdecl Mini_SnowboardActionBeginSpinNegative(SnowboardRiderState *riderSta
     if (isEntry != 0) {
         riderState->turnImpulse = 0xFF80;
         riderState->spinRate = 0;
-        riderState->frameCountdown = 0x40;
+        riderState->frameCountdown = 64;
         riderState->turnRate = 0;
         riderState->actionMode = 0;
         (g_SnoboStatePtr->spinCount)++;
@@ -1825,7 +1825,7 @@ void __cdecl Mini_SnowboardActionBeginSpinPositive(SnowboardRiderState *riderSta
     if (isEntry != 0) {
         riderState->turnImpulse = 0x80;
         riderState->spinRate = 0;
-        riderState->frameCountdown = 0x40;
+        riderState->frameCountdown = 64;
         riderState->turnRate = 0;
         riderState->actionMode = 0;
         (g_SnoboStatePtr->spinCount)++;
@@ -1846,7 +1846,7 @@ void __cdecl Mini_SnowboardUpdateSpinRate(SnowboardSpinState *spinState)
 {
     int rate;
 
-    if (spinState->speed < 0x200) {
+    if (spinState->speed < 512) {
         spinState->timer = 0;
     }
     if (spinState->timer != 0) {
@@ -1886,7 +1886,7 @@ void __cdecl Mini_SnowboardActionBeginHalvedVelocity(SnowboardRiderPhysics *phys
         physics->turnRate = 0;
         physics->state = 0;
         g_SnoboStatePtr->spinCount += 2;
-        if (physics->speed > 0x500) {
+        if (physics->speed > 1280) {
             choice = g_SnoboStatePtr->tick % 3 + 1;
         } else {
             choice = 0;
@@ -1935,10 +1935,10 @@ void __cdecl Mini_SnowboardDampVelocityComponents(SnowboardRiderPhysics *physics
     }
     physics->velocityX -= physics->velocityX * damping;
     physics->velocityZ -= physics->velocityZ * damping;
-    if (physics->speed < 0x180) {
+    if (physics->speed < 384) {
         physics->state = 3;
     }
-    if ((g_SnoboSpeedFlag == 0 && physics->speed < 0x100) || physics->frameCount > 0xF0) {
+    if ((g_SnoboSpeedFlag == 0 && physics->speed < 256) || physics->frameCount > 240) {
         physics->state = 0;
         g_SnoboSpeedFlag = 1;
     }
@@ -2017,7 +2017,7 @@ void __cdecl Mini_SnowboardTurnYawTowardVelocity(SnowboardRiderState *arg)
     struct {
         float round, angle, y, x;
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
-    if (arg->speed >= 0x80) {
+    if (arg->speed >= 128) {
         frame.x = arg->velocityX;
         frame.y = arg->velocityZ;
         frame.angle = +(frame.round = (float)atan2(frame.x, frame.y));
@@ -2197,16 +2197,16 @@ void __cdecl Mini_SnowboardSelectActionFromTable(SnowboardActionState *actionSta
     unsigned short action;
 
     idx = (actionState->actionIndex & 0xFF) * 9;
-    if (actionState->speed > 0x200) {
+    if (actionState->speed > 512) {
         idx++;
     }
-    if (actionState->speed > 0x500) {
+    if (actionState->speed > 1280) {
         idx++;
     }
-    if (magnitude > 0x200) {
+    if (magnitude > 512) {
         idx += 3;
     }
-    if (magnitude > 0x400) {
+    if (magnitude > 1024) {
         idx += 3;
     }
     action = g_SnoboActionTransitions[idx];
@@ -2219,7 +2219,7 @@ void __cdecl Mini_SnowboardSelectActionFromTable(SnowboardActionState *actionSta
         actionState->velocityY -= actionState->velocityY / 4.0f;
         break;
     case SNOWBOARD_RIDER_ACTION_IMPACT_TURN:
-        if (g_SnoboStatePtr->triangle % 0xC > 6) {
+        if (g_SnoboStatePtr->triangle % 12 > 6) {
             action++;
         }
     default:
@@ -2266,7 +2266,7 @@ void __cdecl Mini_SnowboardUpdateRiderSound(SnowboardRiderSound *rider)
     }
     if (sfxId != 0) {
         volume = rider->soundVolumeRaw >> 3;
-        if (volume >= 0x80) {
+        if (volume >= 128) {
             volume = 0x7F;
         }
         if (volume != g_SnoboLastSoundVolume) {

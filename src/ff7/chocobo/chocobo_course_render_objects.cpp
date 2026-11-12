@@ -186,7 +186,7 @@ void __cdecl Mini_ChocoboRaceSubmitCourseTriangles(void)
 
     g_ChocoboCourseSubmitGuard = 1;
     for (vertIdx = 0; vertIdx < g_ChocoboTrackData->floatVertexCount; vertIdx++) {
-        sourceAddress = g_ChocoboTrackData->trackVertexTable + vertIdx * 0x24;
+        sourceAddress = g_ChocoboTrackData->trackVertexTable + vertIdx * 36;
         entry = (ChocoboTrackEntry *)(g_ChocoboTrackData->builtFloatVertices + vertIdx * 0x30);
         Mini_ChocoboEmitTriangleRecord((int)&g_ChocoboViewScreenMatrix, g_ChocoboSubmitTriangleRenderObj, (int)entry);
     }
@@ -290,18 +290,18 @@ int __cdecl Mini_ChocoboRaceEmitCourseSpriteQuad(void *cameraMatrix, short sprit
     frame.sprite = *(ChocoboCourseSprite22 *)(g_ChocoboTrackData->courseSpriteTable + spriteIndex * 0x16);
     frame.quad = (ChocoboSpriteQuad *)&g_ChocoboSpriteRecords[((int *)g_ChocoboSpriteRecordMap)[spriteIndex]];
     frame.depth = RotTransPers((SVECTOR *)&frame.sprite, &frame.proj.x, &frame.projP, &frame.projFlag);
-    if (frame.depth > 0xFA0 || frame.depth < 0) {
+    if (frame.depth > 4000 || frame.depth < 0) {
         return 0;
     } else {
         frame.leftX = frame.proj.x;
         frame.topY = frame.proj.y;
-        if (frame.leftX < -0x28 || frame.topY < -0x28) {
+        if (frame.leftX < -40 || frame.topY < -40) {
             return 0;
-        } else if (frame.leftX > 0x15E || frame.topY > 0x10E) {
+        } else if (frame.leftX > 350 || frame.topY > 270) {
             return 0;
         } else {
             if (frame.depth != 0) {
-                frame.scaledWidth = frame.sprite.width * 0x10E / frame.depth;
+                frame.scaledWidth = frame.sprite.width * 270 / frame.depth;
             }
             frame.leftX -= (short)(frame.scaledWidth / 2);
             frame.rightX = frame.leftX + frame.scaledWidth;
@@ -357,7 +357,7 @@ int __cdecl Mini_ChocoboGetAltUvMode(int spriteIndex)
                 return 2;
             }
         }
-    } else if (spriteIndex != 0x49) {
+    } else if (spriteIndex != 73) {
         return 2;
     }
     return 0;
@@ -371,7 +371,7 @@ int __cdecl Mini_ChocoboRaceEmitCourseQuad(int cameraMatrix, int segmentIndex, i
     int segment;
     ChocoboCourseQuad *quadRecord;
 
-    segment = g_ChocoboTrackData->block + segmentIndex * 0x28;
+    segment = g_ChocoboTrackData->block + segmentIndex * 40;
     quadRecord = (ChocoboCourseQuad *)(g_ChocoboTrackData->builtQuads + (segmentIndex << 6));
     if (flags < 0) {
         return 0;
@@ -395,7 +395,7 @@ int __cdecl Mini_ChocoboRaceEmitCourseTriangle(int cameraMatrix, int triangleInd
     int vertex;
     ChocoboTrackEntry *triangle;
 
-    vertex = g_ChocoboTrackData->floatVertexTable + triangleIndex * 0x1C;
+    vertex = g_ChocoboTrackData->floatVertexTable + triangleIndex * 28;
     triangle = (ChocoboTrackEntry *)(g_ChocoboTrackData->builtTriangles + triangleIndex * 0x30);
     if (flags < 0) {
         return 0;

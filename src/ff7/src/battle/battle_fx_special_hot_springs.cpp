@@ -42,7 +42,7 @@ short g_BattleSpecHotSpringsSourceBonePosZ = 0;
 // The pool of BattleFxHotSpringsParticle records starts here; the code reaches all 300 through this
 // object. The span runs to the next named definition of the TU.
 // GLOBAL: FF7 0x00b66d40
-unsigned char g_BattleSpecHotSpringsParticlePool[0x8] = {0};
+unsigned char g_BattleSpecHotSpringsParticlePool[8] = {0};
 // Lies inside the pool: the position of the first particle record.
 // GLOBAL: FF7 0x00b66d48
 int g_BattleSpecHotSpringsFirstParticlePos = 0;
@@ -155,17 +155,17 @@ void __cdecl BattleFx_SpecialHotSpringsTimelineTask(void)
     if (mainSelf->timelineStep == 0) {
         spawned = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHotSpringsParticleSpritesTask);
     }
-    if (mainSelf->timelineStep < 0x10) {
+    if (mainSelf->timelineStep < 16) {
         *(short *)&g_BattleSpecHotSpringsFlashLevel += 4;
     }
-    if (mainSelf->timelineStep > 0x36) {
+    if (mainSelf->timelineStep > 54) {
         *(short *)&g_BattleSpecHotSpringsFlashLevel -= 4;
     }
-    if (mainSelf->timelineStep == 0x3C) {
+    if (mainSelf->timelineStep == 60) {
         Battle_PostActorHitOrHurtMessage(mainSelf->actorIndex);
     }
     (mainSelf->timelineStep)++;
-    if (mainSelf->timelineStep == 0x46) {
+    if (mainSelf->timelineStep == 70) {
         mainSelf->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -200,20 +200,20 @@ void __cdecl BattleFx_SpecialHotSpringsParticleSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x3C) {
+    if (task->frameCounter < 60) {
         for (index = 0; index < (0x3C - task->frameCounter) / 5 + 1; index++) {
             emitter = (BattleFxHotSpringsParticle *)BattleFx_SpecialHotSpringsClaimParticleRecord();
             if ((unsigned int)(int)emitter > (unsigned int)0) {
                 angle = (rand() % 4096);
-                rad = rand() % 0xC8;
-                emitter->pos.vx = g_BattleSpecHotSpringsSourceBonePosXY.x + (CosFixed(angle) * rad >> 0xC);
-                emitter->pos.vz = g_BattleSpecHotSpringsSourceBonePosZ + (SinFixed(angle) * rad >> 0xC);
+                rad = rand() % 200;
+                emitter->pos.vx = g_BattleSpecHotSpringsSourceBonePosXY.x + (CosFixed(angle) * rad >> 12);
+                emitter->pos.vz = g_BattleSpecHotSpringsSourceBonePosZ + (SinFixed(angle) * rad >> 12);
                 emitter->pos.vy = g_BattleSpecHotSpringsSourceBonePosXY.y;
                 angle = (rand() % 4096);
-                rad = rand() % 0x64;
-                emitter->vel.vx = CosFixed(angle) * rad >> 0xC;
-                emitter->vel.vz = SinFixed(angle) * rad >> 0xC;
-                emitter->vel.vy = (SinFixed(task->frameCounter << 0xA) * 0x14 >> 0xC) + task->frameCounter * 2 + -0x15E;
+                rad = rand() % 100;
+                emitter->vel.vx = CosFixed(angle) * rad >> 12;
+                emitter->vel.vz = SinFixed(angle) * rad >> 12;
+                emitter->vel.vy = (SinFixed(task->frameCounter << 10) * 0x14 >> 12) + task->frameCounter * 2 + -350;
                 emitter->scale = ((rand() % 4) << 9) + 0x800;
             }
         }
@@ -226,14 +226,14 @@ void __cdecl BattleFx_SpecialHotSpringsParticleSpritesTask(void)
             emitter->pos.vy += emitter->vel.vy;
             emitter->pos.vz += emitter->vel.vz;
             oldVy = emitter->vel.vy;
-            emitter->vel.vy += 0x14;
+            emitter->vel.vy += 20;
             if (emitter->fade == 0) {
                 if (oldVy < 0 && emitter->vel.vy >= 0) {
                     emitter->fade = 1;
                 }
             } else {
                 (emitter->fade)++;
-                if (emitter->fade == 0x10) {
+                if (emitter->fade == 16) {
                     emitter->state = 0;
                 }
             }
@@ -242,7 +242,7 @@ void __cdecl BattleFx_SpecialHotSpringsParticleSpritesTask(void)
         emitter++;
     }
     (task->frameCounter)++;
-    if (task->frameCounter > 0x3C && liveCount == 0) {
+    if (task->frameCounter > 60 && liveCount == 0) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

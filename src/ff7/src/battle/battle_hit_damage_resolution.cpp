@@ -224,7 +224,7 @@ void __cdecl Battle_AiVm_CopyCombatantState(int dstActor, int srcActor)
     g_BattleState.actors[dstActor].slipRate = g_BattleState.actors[srcActor].slipRate;
     g_BattleState.actors[dstActor].reflectState = g_BattleState.actors[srcActor].reflectState;
     g_BattleState.actors[dstActor].timingFlags = *(char *)&g_BattleState.actors[srcActor].timingFlags;
-    for (index = 0; index < 0x10; index++) {
+    for (index = 0; index < 16; index++) {
         (&g_BattleState.actors[dstActor].statusTimers[0])[index] = (&g_BattleState.actors[srcActor].statusTimers[0])[index];
     }
     for (index = 0; index < 8; index++) {
@@ -311,7 +311,7 @@ void __cdecl Battle_AttackOpExecute(void)
         Battle_ResolveTargetMask();
         Battle_FilterTargetsByEnemyLevel();
         if ((g_pBattleCommandCtx->attackFlags & BATTLE_ATTACK_FLAG_SKIP_KO_TARGETS) != 0) {
-            for (idx = 0; idx < 0xA; idx++) {
+            for (idx = 0; idx < 10; idx++) {
                 if ((g_pBattleCommandCtx->targetMask & 1 << idx) != 0 && (g_aCombatants[idx].status & BATTLE_STATUS_DEATH) != 0) {
                     g_pBattleCommandCtx->targetMask &= ~(1 << idx);
                 }
@@ -325,7 +325,7 @@ void __cdecl Battle_AttackOpExecute(void)
             Battle_AbortActionWithMessage(g_pBattleCommandCtx->messageId);
             break;
         }
-        for (idx = 0; idx < 0xA; idx++) {
+        for (idx = 0; idx < 10; idx++) {
             g_BattleActorNextTargetMask[idx] = 0;
             g_BattleActorReflectSource[idx] = 0xFF;
         }
@@ -340,11 +340,11 @@ void __cdecl Battle_AttackOpExecute(void)
                 }
             }
             // This pass's sources and targets: last pass's bounces, or the attacker's targets.
-            for (idx = 0; idx < 0xA; idx++) {
+            for (idx = 0; idx < 10; idx++) {
                 g_BattleActorCurrentTargetMask[idx] = g_BattleActorNextTargetMask[idx];
                 g_BattleActorNextTargetMask[idx] = 0;
             }
-            for (idx = 0; idx < 0xA; idx++) {
+            for (idx = 0; idx < 10; idx++) {
                 pendingMask = g_BattleActorCurrentTargetMask[idx];
                 if (pendingMask != 0) {
                     g_pBattleCommandCtx->actorIndex = idx;
@@ -370,7 +370,7 @@ void __cdecl Battle_AttackOpExecute(void)
                         if (pickRandom != 0) {
                             g_pBattleCommandCtx->targetMask = Battle_PickRandomBitFromMask(g_pBattleCommandCtx->targetMask);
                         }
-                        for (victim = 0; victim < 0xA; victim++) {
+                        for (victim = 0; victim < 10; victim++) {
                             if ((g_pBattleCommandCtx->targetMask & 1 << victim) != 0) {
                                 Battle_ResolveHitOnTarget(idx, victim);
                             }
@@ -386,7 +386,7 @@ void __cdecl Battle_AttackOpExecute(void)
                     Battle_RunSpecialAttackEffect(BATTLE_ADDED_FX_STAGE_AFTER_HITS);
                 }
             }
-            for (idx = 0; idx < 0xA; idx++) {
+            for (idx = 0; idx < 10; idx++) {
                 if (g_BattleState.actors[idx].pendingHpAmount != 0) {
                     Battle_QueueActorHpMpFlushStep(idx, 0);
                 }
@@ -404,7 +404,7 @@ void __cdecl Battle_AttackOpExecute(void)
                         recastMask = g_BattleScene.targetMaskBits & BATTLE_ACTOR_MASK_ENEMIES;
                     }
                     if (recastMask != 0) {
-                        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+                        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                             actorStatus = g_aCombatants[actorIndex].status;
                             if ((actorStatus & BATTLE_STATUS_DEATH) != 0) {
                                 recastMask &= ~(1 << actorIndex);
@@ -531,8 +531,8 @@ void __cdecl Battle_FilterTargetsByEnemyLevel(void)
     }
     if (g_pBattleCommandCtx->attackerSlot < 3 && ((g_pBattleCommandCtx->elementMask & BATTLE_ELEMENTS_CUT_HIT_PUNCH) != 0 || g_pBattleCommandCtx->stepFlags == BATTLE_COMMAND_STEAL)) {
         mask = g_pBattleCommandCtx->targetMask;
-        for (i = 4; i < 0xA; i++) {
-            if (g_aCombatants[i].row >= 0x10) {
+        for (i = 4; i < 10; i++) {
+            if (g_aCombatants[i].row >= 16) {
                 mask &= ~(1 << i);
             }
         }
@@ -902,10 +902,10 @@ void __cdecl Battle_ResolveHitOnTarget(int sourceActor, int targetActor)
     }
     // MP Absorb returns a hundredth of the damage as MP, HP Absorb a tenth as HP.
     if ((g_pBattleCommandCtx->attackFlags & BATTLE_ATTACK_FLAG_MP_ABSORB) != 0) {
-        Battle_AddHpMpTransferToPool(g_pBattleCommandCtx->actorIndex, g_pBattleCommandCtx->targetSlot, g_pBattleCommandCtx->damage / 0x64, 1);
+        Battle_AddHpMpTransferToPool(g_pBattleCommandCtx->actorIndex, g_pBattleCommandCtx->targetSlot, g_pBattleCommandCtx->damage / 100, 1);
     }
     if ((g_pBattleCommandCtx->attackFlags & BATTLE_ATTACK_FLAG_HP_ABSORB) != 0) {
-        Battle_AddHpMpTransferToPool(g_pBattleCommandCtx->actorIndex, g_pBattleCommandCtx->targetSlot, g_pBattleCommandCtx->damage / 0xA, 2);
+        Battle_AddHpMpTransferToPool(g_pBattleCommandCtx->actorIndex, g_pBattleCommandCtx->targetSlot, g_pBattleCommandCtx->damage / 10, 2);
     }
     // A party member hit by an enemy's Enemy Skill attack.
     if (targetActor < 3 && g_pBattleCommandCtx->attackerSlot >= 4 && ((BattleCommandTargetState *)(g_pBattleCommandCtx->targetStatePtr))->learnMask != 0 && g_pBattleCommandCtx->stepFlags == BATTLE_COMMAND_ENEMY_SKILL) {
@@ -1272,7 +1272,7 @@ void __cdecl Battle_BeginTargetHit(int targetIndex)
                 3);
         }
     }
-    if (g_pBattleCommandCtx->defence > 0x200) {
+    if (g_pBattleCommandCtx->defence > 512) {
         g_pBattleCommandCtx->defence = 0x200;
     }
     if (targetIndex >= 4) {
@@ -1319,16 +1319,16 @@ void __cdecl Battle_AbortActionWithMessage(int messageId)
     frame.effectStep = 3;
     switch (g_pBattleCommandCtx->stepFlags) {
     case BATTLE_COMMAND_MAGIC:
-        frame.effectStep = 0x38;
+        frame.effectStep = 56;
         break;
     case BATTLE_COMMAND_SUMMON:
-        frame.effectStep = 0x36;
+        frame.effectStep = 54;
         break;
     case BATTLE_COMMAND_ENEMY_SKILL:
-        frame.effectStep = 0x37;
+        frame.effectStep = 55;
         break;
     case BATTLE_COMMAND_LIMIT:
-        frame.effectStep = 0x35;
+        frame.effectStep = 53;
     }
     if (g_pBattleCommandCtx->attackerSlot < 3) {
         Battle_QueueCommandEffectStep(frame.effectStep);
@@ -1515,7 +1515,7 @@ int __cdecl Battle_RollStatusChangeSuccess(void)
         chance = BATTLE_STATUS_CHANCE_ALWAYS;
     }
     if (chance < BATTLE_STATUS_CHANCE_ALWAYS) {
-        chance += chance * g_pBattleCommandCtx->bonusPercent / 0x64;
+        chance += chance * g_pBattleCommandCtx->bonusPercent / 100;
         if ((g_pBattleCommandCtx->targetFlags & (BTL_TARGETF_DEFAULT_MULTIPLE | BTL_TARGETF_TOGGLE_MULTIPLE)) != BTL_TARGETF_DEFAULT_MULTIPLE && g_pBattleCommandCtx->targetCount > 1) {
             chance = (chance << 1) / 3;
         }

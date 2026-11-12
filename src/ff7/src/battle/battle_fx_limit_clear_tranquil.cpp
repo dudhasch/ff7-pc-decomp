@@ -131,7 +131,7 @@ void __cdecl BattleFx_LimitBeginClearTranquil(int targetMask, int actorIdx)
 
     g_BattleLimitClearTranquilTargetMask = targetMask;
     Battle_AllocateResourceSlot(BattleFx_LimitClearTranquilTimelineTask);
-    for (i = 0; i < 0x12C; i++) {
+    for (i = 0; i < 300; i++) {
         CLEAR_TRANQUIL_POOL->records[i].tag = BATTLE_MEIKYO_RECORD_FREE;
     }
 }
@@ -168,8 +168,8 @@ void __cdecl BattleFx_LimitClearTranquilTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (localTaskSlot->frameCounter == 0x3C) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (localTaskSlot->frameCounter == 60) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleLimitClearTranquilTargetMask & 1 << actorIdx) != 0) {
                 newTaskPtr = (BattleFxGrowingPairSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitClearTranquilGrowingModelPairTask);
                 Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, &newTaskPtr->posX);
@@ -181,8 +181,8 @@ void __cdecl BattleFx_LimitClearTranquilTimelineTask(void)
         }
         Battle_PlaySfxPannedToActor(0x130, -1, 0x40);
     }
-    if (localTaskSlot->frameCounter == 0x64) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (localTaskSlot->frameCounter == 100) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleLimitClearTranquilTargetMask & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
@@ -190,7 +190,7 @@ void __cdecl BattleFx_LimitClearTranquilTimelineTask(void)
         Battle_PlaySfxPannedToActor(0x6C, -1, 0x40);
     }
     (localTaskSlot->frameCounter)++;
-    if (localTaskSlot->frameCounter == 0x6E) {
+    if (localTaskSlot->frameCounter == 110) {
         localTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -206,7 +206,7 @@ void __cdecl BattleFx_LimitClearTranquilUpdateSpriteRecords(void)
 
     i = 0;
     recordAddr = CLEAR_TRANQUIL_POOL->records;
-    for (; i < 0x12C; i++, recordAddr++) {
+    for (; i < 300; i++, recordAddr++) {
         switch (recordAddr->tag) {
         case BATTLE_MEIKYO_RECORD_GRADIENT_LINE:
             BattleFx_LimitClearTranquilUpdateGradientLineRecord((BattleFxClearTranquilGradientLine *)recordAddr);
@@ -227,7 +227,7 @@ void __cdecl BattleFx_LimitClearTranquilUpdateFadingSpriteRecord(BattleFxClearTr
 {
     CLEAR_TRANQUIL_SPRITE_REQ->spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleLimitClearTranquilLoadedResTable);
     CLEAR_TRANQUIL_SPRITE_REQ->drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleLimitClearTranquilLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&fadeSprite->posX, 0x800, 0);
+    BattleFx_InstallBillboardMatrix(&fadeSprite->posX, 0x800 /* 0.5 */, 0);
     g_BattleLimitClearTranquilSpriteReq.colorB = 0x80 - (fadeSprite->frame << 3);
     g_BattleLimitClearTranquilSpriteReq.colorG = g_BattleLimitClearTranquilSpriteReq.colorB;
     g_BattleLimitClearTranquilSpriteReq.colorR = g_BattleLimitClearTranquilSpriteReq.colorG;
@@ -239,7 +239,7 @@ void __cdecl BattleFx_LimitClearTranquilUpdateFadingSpriteRecord(BattleFxClearTr
     fadeSprite->posY += fadeSprite->velocityY;
     fadeSprite->posZ += fadeSprite->velocityZ;
     (fadeSprite->frame)++;
-    if (fadeSprite->frame == 0x10) {
+    if (fadeSprite->frame == 16) {
         fadeSprite->recordTag = BATTLE_MEIKYO_RECORD_FREE;
     }
 }
@@ -273,11 +273,11 @@ void __cdecl BattleFx_LimitClearTranquilUpdateGradientLineRecord(BattleFxClearTr
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     RefreshGlobalTransformState();
-    frame.vertex0X.vz = (0xA - gradientLine->step) * 0x258;
+    frame.vertex0X.vz = (10 - gradientLine->step) * 600;
     frame.vertex0X.vy = 0;
     frame.vertex0X.vx = frame.vertex0X.vy;
     RotTransPointToInt16(&frame.vertex0X, (short *)&frame.vertex0X, &frame.depthOut);
-    frame.vertex1X.vz = (0xA - gradientLine->step) * 0xC8;
+    frame.vertex1X.vz = (10 - gradientLine->step) * 200;
     frame.vertex1X.vy = 0;
     frame.vertex1X.vx = frame.vertex1X.vy;
     RotTransPointToInt16(&frame.vertex1X, (short *)&frame.vertex1X, &frame.depthOut);
@@ -309,7 +309,7 @@ void __cdecl BattleFx_LimitClearTranquilUpdateGradientLineRecord(BattleFxClearTr
         return;
     }
     (gradientLine->step)++;
-    if (gradientLine->step == 0xA) {
+    if (gradientLine->step == 10) {
         gradientLine->recordTag = BATTLE_MEIKYO_RECORD_FREE;
     }
 }
@@ -351,7 +351,7 @@ void __cdecl BattleFx_LimitClearTranquilGrowingModelPairTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleLimitClearTranquilSpriteReq.fadeLevel = frame.pairRecord->timer * 0x64;
+    g_BattleLimitClearTranquilSpriteReq.fadeLevel = frame.pairRecord->timer * 100;
     g_BattleLimitClearTranquilSpriteReq.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleLimitClearTranquilLoadedResTable);
     CLEAR_TRANQUIL_POOL->drawPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitClearTranquilSpriteReq.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, CLEAR_TRANQUIL_POOL->drawPtr);
     RotMatrixXYZ(&g_BattleLimitClearTranquilPairAngles, &frame.rotMatrix);
@@ -370,7 +370,7 @@ void __cdecl BattleFx_LimitClearTranquilGrowingModelPairTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.pairRecord->timer < 0x14) {
+    if (frame.pairRecord->timer < 20) {
         for (frame.pairIndex = 0; frame.pairIndex < ((0x14 - frame.pairRecord->timer) / 4) + 1; frame.pairIndex++) {
             frame.modelPair = BattleFx_LimitClearTranquilClaimEffectRecord(BATTLE_MEIKYO_RECORD_GRADIENT_LINE);
             frame.modelPair->posX = frame.pairRecord->posX;
@@ -381,7 +381,7 @@ void __cdecl BattleFx_LimitClearTranquilGrowingModelPairTask(void)
             frame.modelPair->rotation.vz = 0;
         }
     }
-    if (frame.pairRecord->timer == 0x23) {
+    if (frame.pairRecord->timer == 35) {
         for (frame.pairIndex = 0; frame.pairIndex < 2; frame.pairIndex++) {
             for (frame.angleIndex = 0; frame.angleIndex < 0x10; frame.angleIndex++) {
                 frame.modelPair = BattleFx_LimitClearTranquilClaimEffectRecord(BATTLE_MEIKYO_RECORD_FADE_SPRITE);
@@ -389,12 +389,12 @@ void __cdecl BattleFx_LimitClearTranquilGrowingModelPairTask(void)
                     frame.modelPair->posX = frame.pairRecord->posX;
                     frame.modelPair->posY = frame.pairRecord->posY;
                     frame.modelPair->posZ = frame.pairRecord->posZ;
-                    frame.orbitX.vx = SinFixed(frame.angleIndex << 8) * 0xC8 >> 0xC;
+                    frame.orbitX.vx = SinFixed(frame.angleIndex << 8) * 0xC8 >> 12;
                     frame.orbitX.vy = 0;
-                    frame.orbitX.vz = CosFixed(frame.angleIndex << 8) * 0xC8 >> 0xC;
+                    frame.orbitX.vz = CosFixed(frame.angleIndex << 8) * 0xC8 >> 12;
                     frame.rotAngleX.vy = 0;
                     frame.rotAngleX.vx = frame.rotAngleX.vy;
-                    frame.rotAngleX.vz = (frame.pairIndex << 0xA) - 0x200;
+                    frame.rotAngleX.vz = (frame.pairIndex << 10) - 0x200;
                     RotMatrixZYX(&frame.rotAngleX, &frame.rotMatrix);
                     frame.rotMatrix.t[2] = 0;
                     frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
@@ -407,7 +407,7 @@ void __cdecl BattleFx_LimitClearTranquilGrowingModelPairTask(void)
         }
     }
     (frame.pairRecord->timer)++;
-    if (frame.pairRecord->timer == 0x28) {
+    if (frame.pairRecord->timer == 40) {
         frame.pairRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -420,7 +420,7 @@ BattleFxClearTranquilPoolRecord *__cdecl BattleFx_LimitClearTranquilClaimEffectR
 {
     short i;
 
-    for (i = 0; i < 0x12C; i++) {
+    for (i = 0; i < 300; i++) {
         if (CLEAR_TRANQUIL_POOL->records[i].tag == BATTLE_MEIKYO_RECORD_FREE) {
             CLEAR_TRANQUIL_POOL->records[i].tag = tag;
             CLEAR_TRANQUIL_POOL->records[i].age = 0;

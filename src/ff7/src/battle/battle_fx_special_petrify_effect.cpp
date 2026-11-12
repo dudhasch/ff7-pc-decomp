@@ -580,7 +580,7 @@ void __cdecl BattleFx_SpecialBeginPetrify(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0xA);
+    Battle_StartFixedPointRamp(0x1000, 10);
     Battle_PlaySfxPannedToActor(0x62, (short)actorIdx, 0x40);
     BattleFx_SpecialPetrifyInitParticleVelocities();
 }
@@ -594,15 +594,15 @@ void __cdecl BattleFx_SpecialPetrifyInitParticleVelocities(void)
 {
     short i, rad, angle;
 
-    for (i = 0; i < 0x80; i++) {
-        rad = rand() % 0xB4;
+    for (i = 0; i < 128; i++) {
+        rad = rand() % 180;
         angle = rand() % 0x1000;
         g_BattleSpecPetrifyBuffer2[i].z = 0;
         g_BattleSpecPetrifyBuffer2[i].y = 0;
         g_BattleSpecPetrifyBuffer2[i].x = 0;
-        g_BattleSpecPetrifyBuffer1[i].x = CosFixed(angle) * rad >> 0xC;
-        g_BattleSpecPetrifyBuffer1[i].z = SinFixed(angle) * rad >> 0xC;
-        g_BattleSpecPetrifyBuffer1[i].y = -rand() % 0x64 - 0x64;
+        g_BattleSpecPetrifyBuffer1[i].x = CosFixed(angle) * rad >> 12;
+        g_BattleSpecPetrifyBuffer1[i].z = SinFixed(angle) * rad >> 12;
+        g_BattleSpecPetrifyBuffer1[i].y = -rand() % 100 - 100;
     }
 }
 
@@ -668,27 +668,27 @@ void __cdecl BattleFx_SpecialPetrifyTimelineTask(void)
             frame.spawnSlot->posY = frame.timelineSlot->startY;
             frame.spawnSlot->posZ = frame.timelineSlot->startZ;
             frame.spawnSlot->angle = ArcTangentFixed(frame.timelineSlot->endX - frame.timelineSlot->startX, frame.timelineSlot->endZ - frame.timelineSlot->startZ);
-            frame.spawnSlot->scale = frame.pathLength * 0x1500 / 0xAF0;
+            frame.spawnSlot->scale = frame.pathLength * 0x1500 / 2800;
             frame.spawnSlot->variant = frame.spawnIndex;
             frame.spawnSlot->pathLength = frame.pathLength;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x2D) {
+    if (frame.timelineSlot->frameCounter == 45) {
         frame.spawnSlot = (BattleFxPetrifyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPetrifyGrowingModelTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
         Battle_PlaySfxPannedToActor(0x188, (short)frame.timelineSlot->actorIndex, 0);
     }
-    if (frame.timelineSlot->frameCounter >= 0x2D && frame.timelineSlot->frameCounter < 0x39) {
+    if (frame.timelineSlot->frameCounter >= 45 && frame.timelineSlot->frameCounter < 57) {
         frame.spawnSlot = (BattleFxPetrifyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPetrifyVariantSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x4B0 - 0x258);
-        frame.spawnSlot->posY += (short)(rand() % 0x4B0 - 0x258);
-        frame.spawnSlot->posZ += (short)(rand() % 0x4B0 - 0x258);
+        frame.spawnSlot->posX += (short)(rand() % 1200 - 600);
+        frame.spawnSlot->posY += (short)(rand() % 1200 - 600);
+        frame.spawnSlot->posZ += (short)(rand() % 1200 - 600);
         frame.spawnSlot->variant = rand() % 3;
-        frame.spawnSlot->scale = (rand() % 3 << 0xB) + 0x1000;
+        frame.spawnSlot->scale = (rand() % 3 << 11) + 0x1000;
         frame.randAngle = (rand() % 4096);
-        frame.offsetCos.vx = CosFixed(frame.randAngle) * 0x3C >> 0xC;
-        frame.offsetCos.vy = SinFixed(frame.randAngle) * 0x3C >> 0xC;
+        frame.offsetCos.vx = CosFixed(frame.randAngle) * 0x3C >> 12;
+        frame.offsetCos.vy = SinFixed(frame.randAngle) * 0x3C >> 12;
         frame.offsetCos.vz = 0;
         frame.rotAngleX.vz = 0;
         frame.rotAngleX.vx = frame.rotAngleX.vz;
@@ -701,22 +701,22 @@ void __cdecl BattleFx_SpecialPetrifyTimelineTask(void)
         SetTransMatrix(&frame.rotMatrix);
         RotTransPointToInt16(&frame.offsetCos, &((BattleFxPetrifyVariantSprite *)frame.spawnSlot)->velocityX, &frame.transFlag);
     }
-    if (frame.timelineSlot->frameCounter == 0x37) {
+    if (frame.timelineSlot->frameCounter == 55) {
         frame.spawnSlot = (BattleFxPetrifyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPetrifyPerFaceOffsetModelTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
         frame.spawnSlot = (BattleFxPetrifyTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPetrifySpawnOrbitSpritesTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posY -= 0x578;
+        frame.spawnSlot->posY -= 1400;
         Battle_PlaySfxPannedToActor(0x13C, (short)frame.timelineSlot->actorIndex, 0);
     }
-    if (frame.timelineSlot->frameCounter == 0x55) {
+    if (frame.timelineSlot->frameCounter == 85) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
         Battle_PlaySfxPannedToActor(0x189, (short)frame.timelineSlot->actorIndex, 0);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x64) {
+    if (frame.timelineSlot->frameCounter == 100) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
     }
 }
 
@@ -733,7 +733,7 @@ void __cdecl BattleFx_SpecialPetrifyVariantSpriteTask(void)
     BattleFxPetrifyVariantSprite *task;
 
     task = (BattleFxPetrifyVariantSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800 /* 1.5 */, 0);
     g_BattleSpecPetrifySpriteRequest1.sprite[1].frame = task->step;
     g_BattleSpecPetrifySpriteRequest1.sprite[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_BattleSpecPetrifyAnimData1[task->animIndex], g_BattleSpecPetrifyLoadedResTable);
     g_BattleSpecPetrifySpriteRequest1.sprite[1].drawObj = Gfx_ModelTableGetSpriteObject(g_BattleSpecPetrifyAnimData1[task->animIndex], g_BattleSpecPetrifyLoadedResTable);
@@ -780,7 +780,7 @@ void __cdecl BattleFx_SpecialPetrifyGrowingModelTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(&frame.growingModel->posX, frame.matrixBase.t, &frame.transDepth);
-    frame.matrixBase.m[2][2] = frame.growingModel->frameCounter * 0x258 + 0x800;
+    frame.matrixBase.m[2][2] = frame.growingModel->frameCounter * 600 + 0x800;
     frame.matrixBase.m[1][1] = frame.matrixBase.m[2][2];
     frame.matrixBase.m[0][0] = frame.matrixBase.m[1][1];
     RotMatrix((SVECTOR *)&g_BattleSpecPetrifyGrowingModelAngles, &frame.rotMatrix);
@@ -794,7 +794,7 @@ void __cdecl BattleFx_SpecialPetrifyGrowingModelTask(void)
         return;
     }
     (frame.growingModel->frameCounter)++;
-    if (frame.growingModel->frameCounter == 0xF) {
+    if (frame.growingModel->frameCounter == 15) {
         frame.growingModel->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -814,17 +814,17 @@ void __cdecl BattleFx_SpecialPetrifySpawnOrbitSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    spawnerPtr->posY += 0xBE;
+    spawnerPtr->posY += 190;
     for (childIndex = 0; childIndex < 3; childIndex++) {
         pOrbit = (BattlePetrifyOrbitRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPetrifyOrbitSpriteTask);
         pOrbit->posX = spawnerPtr->posX;
         pOrbit->posY = spawnerPtr->posY;
         pOrbit->posZ = spawnerPtr->posZ;
-        pOrbit->phase = rand() % 0x1000;
-        pOrbit->radius = (SinFixed(spawnerPtr->orbitStep << 7) * 0x320 + 0x190) >> 0xC;
+        pOrbit->phase = rand() % 4096;
+        pOrbit->radius = (SinFixed(spawnerPtr->orbitStep << 7) * 800 + 400) >> 12;
     }
     (spawnerPtr->orbitStep)++;
-    if (spawnerPtr->orbitStep == 0xF) {
+    if (spawnerPtr->orbitStep == 15) {
         spawnerPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -847,17 +847,17 @@ void __cdecl BattleFx_SpecialPetrifyOrbitSpriteTask(void)
 #pragma pack(pop)
 
     frame.orbitSprite = (BattleFxPetrifyOrbitSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecPetrifySpriteRequest2.sprite[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecPetrifyLoadedResTable);
+    g_BattleSpecPetrifySpriteRequest2.sprite[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecPetrifyLoadedResTable);
     g_BattleSpecPetrifySpriteRequest2.sprite[0].drawObj = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    frame.orbitX.vx = frame.orbitSprite->centerX + (CosFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 0xC);
-    frame.orbitX.vz = frame.orbitSprite->centerZ + (SinFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 0xC);
+    frame.orbitX.vx = frame.orbitSprite->centerX + (CosFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 12);
+    frame.orbitX.vz = frame.orbitSprite->centerZ + (SinFixed(frame.orbitSprite->angle) * frame.orbitSprite->radius >> 12);
     frame.orbitX.vy = frame.orbitSprite->posY;
-    BattleFx_InstallBillboardMatrix(&frame.orbitX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.orbitX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecPetrifySpriteRequest2.sprite[0].frame = frame.orbitSprite->step;
     g_BattleSpecPetrifyDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecPetrifySpriteRequest2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecPetrifyDrawListHead);
     if (g_BattleIsPaused == 0) {
-        frame.orbitSprite->posY -= 0x32;
-        frame.orbitSprite->angle += 0x100;
+        frame.orbitSprite->posY -= 50;
+        frame.orbitSprite->angle += 0x100 /* 22.5 deg */;
         if (g_BattleSpecPetrifySpriteRequest2.sprite[0].spriteGroup != 0) {
             (frame.orbitSprite->step)++;
             if (frame.orbitSprite->step == ((BattlePetrifySpriteGroup *)g_BattleSpecPetrifySpriteRequest2.sprite[0].spriteGroup)->header->frameCount) {
@@ -901,16 +901,16 @@ void __cdecl BattleFx_SpecialPetrifyPerFaceOffsetModelTask(void)
     frame.offsetY = frame.modelSlot->offsetY;
     frame.offsetZ = frame.modelSlot->offsetZ;
     MultiplyMatrix(&g_BattleCameraTransform, &frame.transformMatrix, &frame.transformMatrix);
-    if (frame.modelSlot->frameCounter < 0x1E) {
+    if (frame.modelSlot->frameCounter < 30) {
         SetRotMatrix(&frame.transformMatrix);
         SetTransMatrix(&frame.transformMatrix);
-        if (frame.modelSlot->frameCounter < 0x10) {
+        if (frame.modelSlot->frameCounter < 16) {
             frame.paramIndex = frame.modelSlot->frameCounter >> 1;
         } else {
             frame.paramIndex = 7;
         }
         g_BattleSpecPetrifySpriteRequest3.faceOffsetRecord = g_BattleSpecPetrifyFaceOffsets[frame.paramIndex];
-        if (frame.modelSlot->frameCounter < 0x10) {
+        if (frame.modelSlot->frameCounter < 16) {
             frame.animIndex = frame.modelSlot->frameCounter >> 1;
         } else {
             frame.animIndex = 7;
@@ -921,30 +921,30 @@ void __cdecl BattleFx_SpecialPetrifyPerFaceOffsetModelTask(void)
         g_BattleSpecPetrifySpriteRequest3.req3Word42 = 0x80 - (frame.modelSlot->frameCounter * 8 + -0xF0);
         RotMatrix((SVECTOR *)&g_BattleSpecPetrifyFaceSpinAngles, &frame.spinMatrix);
         RotateMatrixX(frame.modelSlot->frameCounter - 0x1E << 8, &frame.spinMatrix);
-        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x11, g_BattleSpecPetrifyLoadedResTable)));
+        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(17, g_BattleSpecPetrifyLoadedResTable)));
         g_BattleSpecPetrifyDrawListHead = BattleFx_SpecialPetrifyDrawPerFaceOffsetModel((BattleFxFreezeBreathDrawRecord *)&g_BattleSpecPetrifySpriteRequest3.faceOffsetRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, (BattleFxPetrifyDrawPrim *)g_BattleSpecPetrifyDrawListHead, (struct Vec3sPacked *)&g_BattleSpecPetrifyBuffer2, &frame.transformMatrix, (struct BattleFxOffsetTriMeshDesc *)&frame.spinMatrix);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.modelSlot->frameCounter == 0x1E) {
-        for (frame.spriteIndex = 0; frame.spriteIndex < 0x18; frame.spriteIndex++) {
+    if (frame.modelSlot->frameCounter == 30) {
+        for (frame.spriteIndex = 0; frame.spriteIndex < 24; frame.spriteIndex++) {
             frame.fallingSlot = (BattleFxPetrifyFallingSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPetrifyFallingSpriteTask);
             frame.fallingSlot->posX = frame.modelSlot->offsetX;
             frame.fallingSlot->posY = frame.modelSlot->offsetY;
             frame.fallingSlot->posZ = frame.modelSlot->offsetZ;
             frame.angle = (rand() % 4096);
-            frame.radius = rand() % 0x190;
-            frame.fallingSlot->offsetCos = CosFixed(frame.angle) * frame.radius >> 0xC;
-            frame.fallingSlot->offsetSin = SinFixed(frame.angle) * frame.radius >> 0xC;
-            frame.fallingSlot->randomVelocity = -rand() % 0x190;
+            frame.radius = rand() % 400;
+            frame.fallingSlot->offsetCos = CosFixed(frame.angle) * frame.radius >> 12;
+            frame.fallingSlot->offsetSin = SinFixed(frame.angle) * frame.radius >> 12;
+            frame.fallingSlot->randomVelocity = -rand() % 400;
         }
     }
-    if (frame.modelSlot->frameCounter >= 0x1E) {
+    if (frame.modelSlot->frameCounter >= 30) {
         BattleFx_SpecialPetrifyUpdateBouncingParticles();
     }
     (frame.modelSlot->frameCounter)++;
-    if (frame.modelSlot->frameCounter == 0x2D) {
+    if (frame.modelSlot->frameCounter == 45) {
         frame.modelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1091,16 +1091,16 @@ void __cdecl BattleFx_SpecialPetrifyFallingSpriteTask(void)
     BattleFxPulseOfLifeSprite *task;
 
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecPetrifySpriteRequest2.sprite[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecPetrifyLoadedResTable);
+    g_BattleSpecPetrifySpriteRequest2.sprite[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecPetrifyLoadedResTable);
     g_BattleSpecPetrifySpriteRequest2.sprite[1].drawObj = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000 /* 3.0 */, 0);
     g_BattleSpecPetrifySpriteRequest2.sprite[1].frame = task->frame;
     g_BattleSpecPetrifyDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecPetrifySpriteRequest2.sprite[1], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecPetrifyDrawListHead);
     if (g_BattleIsPaused == 0) {
         task->posX += task->velocityX;
         task->posY += task->velocityY;
         task->posZ += task->velocityZ;
-        task->velocityY += 0x14;
+        task->velocityY += 20;
         if (g_BattleSpecPetrifySpriteRequest2.sprite[1].spriteGroup != 0) {
             (task->frame)++;
             if (task->frame == ((BattlePetrifySpriteGroup *)g_BattleSpecPetrifySpriteRequest2.sprite[1].spriteGroup)->header->frameCount) {
@@ -1119,11 +1119,11 @@ void __cdecl BattleFx_SpecialPetrifyUpdateBouncingParticles(void)
 {
     short i;
 
-    for (i = 0; i < 0x80; i++) {
+    for (i = 0; i < 128; i++) {
         g_BattleSpecPetrifyBuffer2[i].x += g_BattleSpecPetrifyBuffer1[i].x;
         g_BattleSpecPetrifyBuffer2[i].y += g_BattleSpecPetrifyBuffer1[i].y;
         g_BattleSpecPetrifyBuffer2[i].z += g_BattleSpecPetrifyBuffer1[i].z;
-        g_BattleSpecPetrifyBuffer1[i].y += 0x14;
+        g_BattleSpecPetrifyBuffer1[i].y += 20;
         if (g_BattleSpecPetrifyBuffer2[i].y > 0) {
             g_BattleSpecPetrifyBuffer2[i].y = 0;
             g_BattleSpecPetrifyBuffer1[i].y = -g_BattleSpecPetrifyBuffer1[i].y;
@@ -1133,7 +1133,7 @@ void __cdecl BattleFx_SpecialPetrifyUpdateBouncingParticles(void)
 
 /*
  * One arm of the spiral: draws the spiral model along the path with a sine-driven twist and, on
- * even arms, spawns a two-phase sprite at the arm's far end. It retires after 0x20 frames.
+ * even arms, spawns a two-phase sprite at the arm's far end. It retires after 32 frames.
  */
 // FUNCTION: FF7 0x0051dce1
 void __cdecl BattleFx_SpecialPetrifySpiralModelTask(void)
@@ -1157,17 +1157,17 @@ void __cdecl BattleFx_SpecialPetrifySpiralModelTask(void)
 
     frame.spiralSlot = (BattleFxPetrifySpiralModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.armSign = (frame.spiralSlot->spiralArm >> 1) * 2 - 1;
-    frame.angleX.vx = SinFixed(frame.spiralSlot->frameCounter << 8) / 0x28 * frame.armSign;
+    frame.angleX.vx = SinFixed(frame.spiralSlot->frameCounter << 8) / 40 * frame.armSign;
     frame.baseAngleX.vx = frame.angleX.vx;
     frame.angleX.vy = (SinFixed(frame.spiralSlot->frameCounter << 7) >> 5) * frame.armSign;
     frame.baseAngleX.vy = frame.angleX.vy;
     frame.angleX.vz = 0;
     frame.baseAngleX.vz = frame.angleX.vz;
-    frame.angleX.vx -= 0x400;
+    frame.angleX.vx -= 0x400 /* 90 deg */;
     RotMatrix(&frame.angleX, &frame.spiralMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecPetrifyLookBasis, &frame.spiralMatrix, &frame.spiralMatrix);
     frame.scaleVector.vy = frame.spiralSlot->scaledPathLength;
-    frame.scaleVector.vz = 0x3000;
+    frame.scaleVector.vz = 0x3000 /* 3.0 */;
     frame.scaleVector.vx = frame.scaleVector.vz;
     ScaleMatrix(&frame.spiralMatrix, &frame.scaleVector);
     frame.spiralMatrix.t[0] = frame.spiralSlot->offsetX;
@@ -1185,7 +1185,7 @@ void __cdecl BattleFx_SpecialPetrifySpiralModelTask(void)
     if ((frame.spiralSlot->spiralArm % 2) == 0) {
         frame.spriteParam = 0x1000 - (g_BattleSpecPetrifyActiveCount << 5);
     } else {
-        frame.spriteParam = 0x1000 - g_BattleSpecPetrifyActiveCount * 0x18;
+        frame.spriteParam = 0x1000 - g_BattleSpecPetrifyActiveCount * 24;
     }
     g_BattleSpecPetrifySpriteRequest4.req4Word10 = *(short *)&frame.spriteParam;
     g_BattleSpecPetrifyDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecPetrifySpriteRequest4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecPetrifyDrawListHead);
@@ -1216,11 +1216,11 @@ void __cdecl BattleFx_SpecialPetrifySpiralModelTask(void)
     if (frame.spiralSlot->frameCounter < 8) {
         g_BattleSpecPetrifyActiveCount++;
     }
-    if (frame.spiralSlot->frameCounter > 0x18) {
+    if (frame.spiralSlot->frameCounter > 24) {
         g_BattleSpecPetrifyActiveCount--;
     }
     (frame.spiralSlot->frameCounter)++;
-    if (frame.spiralSlot->frameCounter == 0x20) {
+    if (frame.spiralSlot->frameCounter == 32) {
         frame.spiralSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1237,13 +1237,13 @@ void __cdecl BattleFx_SpecialPetrifyTwoPhaseSpriteTask(void)
     BattleFxPetrifyTwoPhaseSpriteSlot *task;
 
     task = (BattleFxPetrifyTwoPhaseSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->offsetX, 0x2400, 0);
+    BattleFx_InstallBillboardMatrix(&task->offsetX, 0x2400 /* 2.25 */, 0);
     if (task->phase == 0) {
-        g_BattleSpecPetrifySpriteRequest1.sprite[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecPetrifyLoadedResTable);
-        g_BattleSpecPetrifySpriteRequest1.sprite[0].drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecPetrifyLoadedResTable);
+        g_BattleSpecPetrifySpriteRequest1.sprite[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecPetrifyLoadedResTable);
+        g_BattleSpecPetrifySpriteRequest1.sprite[0].drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecPetrifyLoadedResTable);
     } else {
-        g_BattleSpecPetrifySpriteRequest1.sprite[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecPetrifyLoadedResTable);
-        g_BattleSpecPetrifySpriteRequest1.sprite[0].drawObj = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecPetrifyLoadedResTable);
+        g_BattleSpecPetrifySpriteRequest1.sprite[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecPetrifyLoadedResTable);
+        g_BattleSpecPetrifySpriteRequest1.sprite[0].drawObj = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecPetrifyLoadedResTable);
     }
     g_BattleSpecPetrifySpriteRequest1.sprite[0].frame = task->frameCounter;
     g_BattleSpecPetrifyDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecPetrifySpriteRequest1.sprite[0], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecPetrifyDrawListHead);

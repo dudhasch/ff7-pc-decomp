@@ -931,7 +931,7 @@ typedef struct FieldScriptHeader {
 /* g_FieldCharEntity (0xCC0998, 360 bytes): the field entity that plays each character, indexed by
  * character id (Script_OpBindCharacter writes it, Script_ResetState resets the first nine to 0xFF),
  * then per entity and priority the entity that requested that script with mode 3 of
- * Script_RequestEntityScript and waits for it to finish (0xFF: none). 0x30 rows, as the two other
+ * Script_RequestEntityScript and waits for it to finish (0xFF: none). 48 rows, as the two other
  * per-entity and per-priority tables Script_ResetState clears in the same loop
  * (g_FieldScriptPriorityPC[0x30][8], g_FieldScriptPriorityState[0x30][8]). */
 typedef struct FieldCharEntityMap {
@@ -1499,7 +1499,7 @@ typedef struct FieldMapRecord {
 } FieldMapRecord;
 
 /* One entry of the field map list (maplist): a NUL-padded map name. */
-typedef char FieldMapName[0x20];
+typedef char FieldMapName[32];
 
 /* One 0x18-byte draw group: a run of tiles drawn with one texture page. */
 typedef struct FieldTileDrawGroup {

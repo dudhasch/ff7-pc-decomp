@@ -43,9 +43,9 @@ unsigned int __cdecl ComputeAngleBetweenVectors(struct VECTOR *vecA, struct VECT
     int dotProduct;
     int magnitude;
 
-    dotProduct = vecA->vx * vecB->vx + vecA->vy * vecB->vy + vecA->vz * vecB->vz >> 0xC;
+    dotProduct = vecA->vx * vecB->vx + vecA->vy * vecB->vy + vecA->vz * vecB->vz >> 12;
     CrossProductFixed12(vecA, vecB, crossOut);
-    magnitude = crossOut->vx * crossOut->vx + crossOut->vy * crossOut->vy + crossOut->vz * crossOut->vz >> 0xC;
+    magnitude = crossOut->vx * crossOut->vx + crossOut->vy * crossOut->vy + crossOut->vz * crossOut->vz >> 12;
     magnitude = SquareRoot12(magnitude);
     angle = ArcTangentFixed(magnitude, dotProduct);
     NormalizeVectorFixed(&crossOut->vx, &crossOut->vx);
@@ -76,18 +76,18 @@ void __cdecl Gte_BuildAxisAngleMatrix(int angle, struct PsxMatrix *matrix, struc
     axisX = axis->vx;
     ay = axis->vy;
     vz = axis->vz;
-    xx = axisX * axisX >> 0xC;
-    yy = ay * ay >> 0xC;
-    zz = vz * vz >> 0xC;
-    matrix->m[0][0] = xx + ((0x1000 - xx) * cosVal >> 0xC);
-    matrix->m[0][1] = ((axisX * ay >> 0xC) * oneMinus >> 0xC) - (vz * sinValue >> 0xC);
-    matrix->m[0][2] = ((axisX * vz >> 0xC) * oneMinus >> 0xC) + (ay * sinValue >> 0xC);
-    matrix->m[1][0] = ((axisX * ay >> 0xC) * oneMinus >> 0xC) + (vz * sinValue >> 0xC);
-    matrix->m[1][1] = yy + ((0x1000 - yy) * cosVal >> 0xC);
-    matrix->m[1][2] = ((ay * vz >> 0xC) * oneMinus >> 0xC) - (axisX * sinValue >> 0xC);
-    matrix->m[2][0] = ((axisX * vz >> 0xC) * oneMinus >> 0xC) - (ay * sinValue >> 0xC);
-    matrix->m[2][1] = ((ay * vz >> 0xC) * oneMinus >> 0xC) + (axisX * sinValue >> 0xC);
-    matrix->m[2][2] = zz + ((0x1000 - zz) * cosVal >> 0xC);
+    xx = axisX * axisX >> 12;
+    yy = ay * ay >> 12;
+    zz = vz * vz >> 12;
+    matrix->m[0][0] = xx + ((0x1000 - xx) * cosVal >> 12);
+    matrix->m[0][1] = ((axisX * ay >> 12) * oneMinus >> 12) - (vz * sinValue >> 12);
+    matrix->m[0][2] = ((axisX * vz >> 12) * oneMinus >> 12) + (ay * sinValue >> 12);
+    matrix->m[1][0] = ((axisX * ay >> 12) * oneMinus >> 12) + (vz * sinValue >> 12);
+    matrix->m[1][1] = yy + ((0x1000 - yy) * cosVal >> 12);
+    matrix->m[1][2] = ((ay * vz >> 12) * oneMinus >> 12) - (axisX * sinValue >> 12);
+    matrix->m[2][0] = ((axisX * vz >> 12) * oneMinus >> 12) - (ay * sinValue >> 12);
+    matrix->m[2][1] = ((ay * vz >> 12) * oneMinus >> 12) + (axisX * sinValue >> 12);
+    matrix->m[2][2] = zz + ((0x1000 - zz) * cosVal >> 12);
 }
 
 /*
@@ -107,10 +107,10 @@ void __cdecl Gte_ProjectPointOntoPlaneUnused(Vec3sPacked *point, Vec3sPacked *or
     dx = point->vx - origin->vx;
     diffY = point->vy - origin->vy;
     dz = point->vz - origin->vz;
-    dotResult = normal->normalX * dx + normal->normalY * diffY + normal->normalZ * dz >> 0xC;
-    point->vx -= (short)(dotResult * normal->normalX >> 0xC);
-    point->vy -= (short)(dotResult * normal->normalY >> 0xC);
-    point->vz -= (short)(dotResult * normal->normalZ >> 0xC);
+    dotResult = normal->normalX * dx + normal->normalY * diffY + normal->normalZ * dz >> 12;
+    point->vx -= (short)(dotResult * normal->normalX >> 12);
+    point->vy -= (short)(dotResult * normal->normalY >> 12);
+    point->vz -= (short)(dotResult * normal->normalZ >> 12);
 }
 
 /*
@@ -134,7 +134,7 @@ short __cdecl Gte_PlaneHeightDelta(Vec3sPacked *pointA, Vec3sPacked *pointB, Bat
     upComp = 0;
     dotStart = pointA->vx * normal->normalX + pointA->vy * normal->normalY + pointA->vz * normal->normalZ;
     dotTail = pointB->vx * normal->normalX + pointB->vy * normal->normalY + pointB->vz * normal->normalZ;
-    divisor = xComp * normal->normalX + upY * normal->normalY + upComp * normal->normalZ >> 0xC;
+    divisor = xComp * normal->normalX + upY * normal->normalY + upComp * normal->normalZ >> 12;
     heightDelta = (dotTail - dotStart) / divisor;
     return heightDelta;
 }

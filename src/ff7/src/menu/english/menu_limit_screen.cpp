@@ -30,7 +30,7 @@ struct EnglishWindowFrame;
 //       "To change BREAK LEVEL," "it will begin from Limit Point 0." "Change BREAK LEVEL?" "Yes"
 //       "No" "Limit set!" "Sele"
 // GLOBAL: FF7 0x0091f4d8
-unsigned char g_LimitMenuTexts[0x1d8] = {
+unsigned char g_LimitMenuTexts[472] = {
     0x2c, 0x25, 0x36, 0x25, 0x2c, 0x00, 0x11, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x25, 0x36, 0x25, 0x2c, 0x00, 0x12, 0xff, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -614,9 +614,9 @@ void __cdecl Menu_DrawLimitScreenHeader2x(int phase)
     unsigned char slot;
     int color;
 
-    Menu_DrawCharStatBlock2x(0x6D, 0x14, g_LimitMenuPartySlot, 0.1f);
-    Menu_DrawCharPortrait2x(0x12, 9, g_LimitMenuPartySlot, 0.1f);
-    Menu_DrawEncodedString2x(0x147, 0x13, (&g_MenuMainLabels.headerText), 7, 0.1f);
+    Menu_DrawCharStatBlock2x(109, 20, g_LimitMenuPartySlot, 0.1f);
+    Menu_DrawCharPortrait2x(18, 9, g_LimitMenuPartySlot, 0.1f);
+    Menu_DrawEncodedString2x(327, 19, (&g_MenuMainLabels.headerText), 7, 0.1f);
     slot = ((MenuCharSaveSlot *)&g_CharIdToSaveSlot)[gSavemap.party[g_LimitMenuPartySlot]].saveSlot;
     if (gSavemap.chars[slot].limitBar == 0xFF) {
         color = g_MenuColorFormatBitmasks[phase >> 1 & 7];
@@ -627,11 +627,11 @@ void __cdecl Menu_DrawLimitScreenHeader2x(int phase)
     } else {
         color = 0x80802050;
     }
-    Menu_DrawGaugeBar2x(0x155, 0x2C, gSavemap.chars[slot].limitBar * 0x74 / 0x100, 0xB, color, 0.1f);
-    Menu_DrawAtlasQuad2x(0x151, 0x2B, 0x88, 8, 0x40, 8, 7, 0, 0, 0.1f);
-    Menu_DrawDecimalNumber2x(0x1A4, 0x17, gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_LimitMenuPartySlot]]].limitLevel, 1, 7, 0.1f);
-    Menu_DrawEncodedString2x(0x151, 0x51, &g_LimitMenuTexts[0xb4], 7, 0.1f);
-    Menu_DrawEncodedString2x(0x1A1, 0x51, &g_LimitMenuTexts[0xd8], 7, 0.1f);
+    Menu_DrawGaugeBar2x(341, 44, gSavemap.chars[slot].limitBar * 116 / 256, 11, color, 0.1f);
+    Menu_DrawAtlasQuad2x(337, 43, 0x88, 8, 64, 8, 7, 0, 0, 0.1f);
+    Menu_DrawDecimalNumber2x(420, 23, gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_LimitMenuPartySlot]]].limitLevel, 1, 7, 0.1f);
+    Menu_DrawEncodedString2x(337, 81, &g_LimitMenuTexts[0xb4], 7, 0.1f);
+    Menu_DrawEncodedString2x(417, 81, &g_LimitMenuTexts[0xd8], 7, 0.1f);
 }
 
 /*
@@ -647,9 +647,9 @@ void __cdecl Menu_DrawLimitScreenHeader1x(int phase)
     unsigned char slot;
     int color;
 
-    Menu_DrawCharStatBlock1x(0x37, 0xA, g_LimitMenuPartySlot, 0.1f);
+    Menu_DrawCharStatBlock1x(55, 10, g_LimitMenuPartySlot, 0.1f);
     Menu_DrawCharPortrait1x(9, 5, g_LimitMenuPartySlot, 0.1f);
-    Menu_DrawEncodedString1x(0xA4, 0xA, (&g_MenuMainLabels.headerText), 7, 0.1f);
+    Menu_DrawEncodedString1x(164, 10, (&g_MenuMainLabels.headerText), 7, 0.1f);
     slot = ((MenuCharSaveSlot *)&g_CharIdToSaveSlot)[gSavemap.party[g_LimitMenuPartySlot]].saveSlot;
     if (gSavemap.chars[slot].limitBar == 0xFF) {
         color = g_MenuColorFormatBitmasks[phase >> 1 & 7];
@@ -660,11 +660,11 @@ void __cdecl Menu_DrawLimitScreenHeader1x(int phase)
     } else {
         color = 0x80802050;
     }
-    Menu_DrawGaugeBar1x(0xAB, 0x16, gSavemap.chars[slot].limitBar * 0x3A / 0x100, 6, color, 0.1f);
-    Menu_DrawAtlasQuad1x(0xA9, 0x16, 0x88, 8, 0x40, 8, 7, 0, 0, 0.1f);
-    Menu_DrawDecimalNumber1x(0xD2, 0xC, gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_LimitMenuPartySlot]]].limitLevel, 1, 7, 0.1f);
-    Menu_DrawEncodedString1x(0xA9, 0x29, &g_LimitMenuTexts[0xb4], 7, 0.1f);
-    Menu_DrawEncodedString1x(0xD1, 0x29, &g_LimitMenuTexts[0xd8], 7, 0.1f);
+    Menu_DrawGaugeBar1x(171, 22, gSavemap.chars[slot].limitBar * 58 / 256, 6, color, 0.1f);
+    Menu_DrawAtlasQuad1x(169, 22, 136, 8, 64, 8, 7, 0, 0, 0.1f);
+    Menu_DrawDecimalNumber1x(210, 12, gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_LimitMenuPartySlot]]].limitLevel, 1, 7, 0.1f);
+    Menu_DrawEncodedString1x(169, 41, &g_LimitMenuTexts[0xb4], 7, 0.1f);
+    Menu_DrawEncodedString1x(209, 41, &g_LimitMenuTexts[0xd8], 7, 0.1f);
 }
 
 /*
@@ -703,8 +703,8 @@ void __cdecl Menu_RebuildPartyLimitRecords(void)
                                                        level * 3 + slot);
             memcpy(g_MenuPartyStats[i].limitRecords[slot],
                    src + Kernel_GetLimitAttackId(actor, level * 3 + slot) *
-                             0x1c,
-                   0x1c);
+                             28,
+                   28);
         }
     }
 }

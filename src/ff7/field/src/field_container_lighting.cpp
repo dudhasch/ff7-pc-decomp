@@ -48,7 +48,7 @@ unsigned char g_bssPad_00d85280[56] = {0};
 // GLOBAL: FF7 0x00d852b8
 int g_FieldLightMatrixFlags = 0;
 // GLOBAL: FF7 0x00d852bc
-unsigned char g_FieldLightMatrixIdentity[0x4] = {0};
+unsigned char g_FieldLightMatrixIdentity[4] = {0};
 unsigned char g_bssPad_00d852c0[64] = {0};
 // GLOBAL: FF7 0x00d85300
 int g_FieldLightColorAlphaMask = 0;
@@ -218,13 +218,13 @@ void __cdecl Field_SetupPointLight(FieldLightPosition *pos, GfxLightVertexRecord
     deltaY = (float)(light->posY - cameraPoint[1]);
     offsetZ = (float)(light->posZ - cameraPoint[2]);
     distance = SqrtToInt((int)(vecX * vecX + deltaY * deltaY + offsetZ * offsetZ)) + 2;
-    vecX = (float)((int)vecX << 0xC) / distance;
-    deltaY = (float)((int)deltaY << 0xC) / distance;
-    offsetZ = (float)((int)offsetZ << 0xC) / distance;
-    localFactor = ((range - distance < 0 ? 0 : range - distance) << 0xC) / range;
-    vecX = (float)((int)(localFactor * vecX) >> 0xC);
-    deltaY = (float)((int)(localFactor * deltaY) >> 0xC);
-    offsetZ = (float)((int)(localFactor * offsetZ) >> 0xC);
+    vecX = (float)((int)vecX << 12) / distance;
+    deltaY = (float)((int)deltaY << 12) / distance;
+    offsetZ = (float)((int)offsetZ << 12) / distance;
+    localFactor = ((range - distance < 0 ? 0 : range - distance) << 12) / range;
+    vecX = (float)((int)(localFactor * vecX) >> 12);
+    deltaY = (float)((int)(localFactor * deltaY) >> 12);
+    offsetZ = (float)((int)(localFactor * offsetZ) >> 12);
     g_FieldLight0_Type = 0;
     g_FieldLight0_Color = light->light0Color;
     g_FieldLight0_DirX = vecX;
@@ -297,7 +297,7 @@ int __cdecl Field_EvaluateCurveSteps(FieldModelInstance *container, FieldLightSo
     shiftBy = curve->shiftBy;
     offset = curve->offset;
     phaseDelta = curve->phaseDelta;
-    while ((phase = i * phaseDelta) <= 0x120) {
+    while ((phase = i * phaseDelta) <= 288) {
         sourceVec[0] = (g_FieldTrigTable.v[phase & 0xFF][1] >> shiftX) * magnitude;
         sourceVec[1] = (-g_FieldTrigTable.v[phase & 0xFF][0] >> shiftY) * magnitude;
         sourceVec[2] = ((g_FieldTrigTable.v[(phase >> shiftBy) & 0xFF][0] >> shiftZ) + offset) * magnitude;

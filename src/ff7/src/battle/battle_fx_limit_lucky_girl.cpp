@@ -164,19 +164,19 @@ void __cdecl BattleFx_LimitLuckyGirlTimelineTask(void)
     if (task->frameCounter == 6) {
         sprite = (BattleLimitLuckyGirlSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLuckyGirlFadingBillboardSpriteTask);
         *(Int64Pair *)&sprite->posX = *(Int64Pair *)&g_BattleLimitLuckyGirlSourcePos;
-        sprite->scale = 0xC00;
+        sprite->scale = 0xC00 /* 0.75 */;
     }
-    if (task->frameCounter == 0xE) {
+    if (task->frameCounter == 14) {
         sprite = (BattleLimitLuckyGirlSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLuckyGirlTrailingSpriteTask);
-        sprite->posX = 0xE6;
+        sprite->posX = 230;
         sprite->posY = 0xFEF2;
         sprite->posZ = 0xFDA8;
         sprite->bobAmplitude = 0xC8;
         *(Int64Pair *)&sprite->orbitX = *(Int64Pair *)&sprite->posX;
-        sprite->orbitRadius = 0x3C;
+        sprite->orbitRadius = 60;
         sprite->scaleRate = 0x199;
         sprite->scale = 0x199;
-        sprite->angle = 0x800;
+        sprite->angle = 0x800 /* 180 deg */;
         sprite->angleStep = 0x1F4;
         sprite->historyIndex = 0;
         /* count, readIndex and index start at 0, writeIndex at -1, capacity at 6 */
@@ -187,27 +187,27 @@ void __cdecl BattleFx_LimitLuckyGirlTimelineTask(void)
         g_BattleLimitLuckyGirlTrailHistory[0].capacity = 6;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(((short *)&g_BattleLimitLuckyGirlSourcePos)), 0x10D);
     }
-    if (task->frameCounter == 0x1E) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (task->frameCounter == 30) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleLimitLuckyGirlTargetActorMask & 1 << actorIdx) != 0) {
                 sprite = (BattleLimitLuckyGirlSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLuckyGirlSineScaledSpriteTask);
                 Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, &sprite->posX);
                 sprite->scale = 0;
-                sprite->scaleRate = 0x4B00;
+                sprite->scaleRate = 0x4B00 /* 4.6875 */;
                 sprite->angleStep = 0x15E;
                 sprite->angle = 0x15E;
             }
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleLimitLuckyGirlTargetActorMask), 0x11C);
     }
-    if (task->frameCounter == 0x37) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (task->frameCounter == 55) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleLimitLuckyGirlTargetActorMask & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
     }
-    if (task->frameCounter >= 0x3C) {
+    if (task->frameCounter >= 60) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -235,7 +235,7 @@ void __cdecl BattleFx_LimitLuckyGirlFadingBillboardSpriteTask(void)
         g_BattleLimitLuckyGirlColorData[3] = 0x2E;
         ramping = 1;
         level = task->timer << 4;
-    } else if (task->timer >= 0x2A) {
+    } else if (task->timer >= 42) {
         g_BattleLimitLuckyGirlColorData[3] = 0x2E;
         ramping = 1;
         level = 0x80 - (task->timer - 0x2A << 4);
@@ -251,7 +251,7 @@ void __cdecl BattleFx_LimitLuckyGirlFadingBillboardSpriteTask(void)
     g_BattleLimitLuckyGirlModelReq.texture = Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitLuckyGirlLoadedResTable);
     g_BattleLimitLuckyGirlModelReq.clut = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitLuckyGirlLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleLimitLuckyGirlModelReq.texture, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->timer >= 0x32) {
+    if (task->timer >= 50) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -302,7 +302,7 @@ void __cdecl BattleFx_LimitLuckyGirlTrailingSpriteTask(void)
         g_BattleLimitLuckyGirlTrailSpriteReq.colour[3] = 0x2E;
         frame.tmpLimit = 1;
         *(char *)&frame.gray = frame.trailTask->phase * 0x15;
-    } else if (frame.trailTask->phase >= 0xE) {
+    } else if (frame.trailTask->phase >= 14) {
         g_BattleLimitLuckyGirlTrailSpriteReq.colour[3] = 0x2E;
         frame.tmpLimit = 1;
         *(char *)&frame.gray = 0x80 - (frame.trailTask->phase - 0xE) * 0x15;
@@ -365,17 +365,17 @@ void __cdecl BattleFx_LimitLuckyGirlTrailingSpriteTask(void)
             g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleLimitLuckyGirlTrailSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         }
     }
-    if (frame.trailTask->phase >= 0x14) {
+    if (frame.trailTask->phase >= 20) {
         frame.trailTask->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.trailTask->orbitX += (short)-(frame.trailTask->orbitRadius * SinFixed(0x514) >> 0xC);
-    frame.trailTask->orbitY += (short)(frame.trailTask->orbitRadius * CosFixed(0x514) >> 0xC);
+    frame.trailTask->orbitX += (short)-(frame.trailTask->orbitRadius * SinFixed(1300) >> 12);
+    frame.trailTask->orbitY += (short)(frame.trailTask->orbitRadius * CosFixed(1300) >> 12);
     frame.trailTask->orbitRadius += (short)(frame.trailTask->orbitRadius >> 4);
     frame.trailTask->posX = frame.trailTask->orbitX;
-    frame.trailTask->posY = frame.trailTask->orbitY + (frame.trailTask->bobAmplitude * SinFixed(frame.trailTask->angle) >> 0xC);
+    frame.trailTask->posY = frame.trailTask->orbitY + (frame.trailTask->bobAmplitude * SinFixed(frame.trailTask->angle) >> 12);
     frame.trailTask->bobAmplitude += (short)(frame.trailTask->bobAmplitude >> 4);
     frame.trailTask->scale += frame.trailTask->scaleRate;
     frame.trailTask->angle += frame.trailTask->angleStep;
@@ -440,7 +440,7 @@ void __cdecl BattleFx_LimitLuckyGirlSineScaledSpriteTask(void)
 
     task = (BattleFxLuckyGirlSineSprite *)BATTLE_CURRENT_TASK_SLOT;
     if (task->step >= 6) {
-        brightness = 0x80 - (task->step - 6) * 0x15;
+        brightness = 0x80 - (task->step - 6) * 21;
     } else {
         brightness = 0x80;
     }
@@ -451,13 +451,13 @@ void __cdecl BattleFx_LimitLuckyGirlSineScaledSpriteTask(void)
     g_BattleLimitLuckyGirlSineSpriteReq.texture = Gfx_ModelTableGetLoadedRecord(1, g_BattleLimitLuckyGirlLoadedResTable);
     g_BattleLimitLuckyGirlSineSpriteReq.clut = Gfx_ModelTableGetSpriteObject(1, g_BattleLimitLuckyGirlLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleLimitLuckyGirlSineSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->step >= 0xC) {
+    if (task->step >= 12) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->scale = task->scaleRate * SinFixed(task->angle) >> 0xC;
+    task->scale = task->scaleRate * SinFixed(task->angle) >> 12;
     task->angle += task->angleStep;
     task->angleStep -= (short)(task->angleStep / 6);
     (task->step)++;

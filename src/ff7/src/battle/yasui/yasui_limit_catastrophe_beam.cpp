@@ -333,14 +333,14 @@ void __cdecl BattleFx_LimitBeginCatastrophe(int targetMask, int actorIdx)
     g_YasuiLimitCatastropheSourceActor = actorIdx;
     Battle_GetActorMaskCentroid(g_YasuiLimitCatastropheTargetMask, &g_YasuiLimitCatastropheCentroid.x);
     if (g_YasuiLimitCatastropheCentroid.z < g_BattleActorRecords[actorIdx].posZ) {
-        g_YasuiLimitCatastropheCameraAngles.cameraAngle = 0x800;
+        g_YasuiLimitCatastropheCameraAngles.cameraAngle = 0x800 /* 180 deg */;
     }
     RotMatrix((SVECTOR *)&g_YasuiLimitCatastropheCameraAngles, &g_YasuiLimitCatastropheCameraBasisMatrix);
     g_YasuiLimitCatastropheCenterPos.transX = 0;
     g_YasuiLimitCatastropheCenterPos.transY = 0;
     *(int *)&g_YasuiLimitCatastropheCenterPos.limitCatastroCenterFloorY = g_YasuiLimitCatastropheCentroid.z;
     targetCnt = Battle_PopCountActorMask(targetMask);
-    g_YasuiLimitCatastropheDuration = 0x5A / targetCnt;
+    g_YasuiLimitCatastropheDuration = 90 / targetCnt;
     g_YasuiLimitCatastropheDurationFirstHalf = g_YasuiLimitCatastropheDuration / 2;
     g_YasuiLimitCatastropheDurationSecondHalf = g_YasuiLimitCatastropheDuration - g_YasuiLimitCatastropheDurationFirstHalf;
     BattleFx_LimitCatastropheBuildSortedSlotTable();
@@ -642,29 +642,29 @@ void __cdecl BattleFx_LimitCatastropheActorYOffsetTask(void)
         return;
     }
     frameIndex = taskPtr->frameCounter + 1;
-    if (frameIndex < 0x36) { /* empty first arm: lib/codegen.h */
+    if (frameIndex < 54) { /* empty first arm: lib/codegen.h */
     } else {
-        frameIndex -= 0x36;
-        if (frameIndex < 0xA) {
+        frameIndex -= 54;
+        if (frameIndex < 10) {
             if (frameIndex == 0) {
                 Battle_AllocateResourceSlot(BattleFx_LimitCatastropheActorWorldSpriteBurstTask);
             }
-            g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posY = frameIndex * frameIndex * 0xC8 / 2 + frameIndex * -0x7D0;
+            g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posY = frameIndex * frameIndex * 200 / 2 + frameIndex * -2000;
         } else {
-            frameIndex -= 0xA;
-            if (frameIndex < 0x13) { /* empty first arm: lib/codegen.h */
+            frameIndex -= 10;
+            if (frameIndex < 19) { /* empty first arm: lib/codegen.h */
             } else {
-                frameIndex -= 0x13;
-                if (frameIndex < 0x73) {
-                    if (frameIndex == 0x31) {
+                frameIndex -= 19;
+                if (frameIndex < 115) {
+                    if (frameIndex == 49) {
                         ((ActorStatusBits *)((char *)&g_BattleActorStates[g_YasuiLimitCatastropheSourceActor].flags))->bit1 = 1;
-                    } else if (frameIndex == 0x72) {
+                    } else if (frameIndex == 114) {
                         ((ActorStatusBits *)((char *)&g_BattleActorStates[g_YasuiLimitCatastropheSourceActor].flags))->bit1 = 0;
                     }
                 } else {
-                    frameIndex -= 0x73;
-                    if (frameIndex < 0xA) {
-                        g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posY = frameIndex * frameIndex * 0xC8 / 2 - 0x2710;
+                    frameIndex -= 115;
+                    if (frameIndex < 10) {
+                        g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posY = frameIndex * frameIndex * 200 / 2 - 10000;
                     } else {
                         Battle_AllocateResourceSlot(BattleFx_LimitCatastropheActorWorldSpriteBurstTask);
                         g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posY = 0;
@@ -696,13 +696,13 @@ void __cdecl BattleFx_LimitCatastropheActorWorldSpriteBurstTask(void)
         return;
     }
     for (i = 0; i < 2; i++) {
-        g_YasuiLimitCatastropheJitterPosPtr->vx = g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posX + rand() % 0x3E8 + -0x1F4;
-        g_YasuiLimitCatastropheJitterPosPtr->vy = g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posY + 0x64;
-        g_YasuiLimitCatastropheJitterPosPtr->vz = g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posZ + rand() % 0x3E8 + -0x1F4;
+        g_YasuiLimitCatastropheJitterPosPtr->vx = g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posX + rand() % 1000 + -500;
+        g_YasuiLimitCatastropheJitterPosPtr->vy = g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posY + 100;
+        g_YasuiLimitCatastropheJitterPosPtr->vz = g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posZ + rand() % 1000 + -500;
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x1800;
         } else {
-            bytes = rand() % 0x800 + 0x1000;
+            bytes = rand() % 2048 + 4096;
         }
         scale = bytes;
         Battle_SpawnWorldSpriteTask((Vec3sPacked *)g_YasuiLimitCatastropheJitterPosPtr, scale, scale);
@@ -737,40 +737,40 @@ void __cdecl BattleFx_LimitCatastropheTimelineTask(void)
         return;
     }
     frameIndex = taskPtr->frameCounter;
-    if (frameIndex < 0x36) {
+    if (frameIndex < 54) {
         if (frameIndex == 0) {
             g_BattleFxTimelineState.red = 0x40;
             g_BattleFxTimelineState.channel1 = 0x10;
             g_BattleFxTimelineState.channel2 = 0;
-            Battle_StartFixedPointRamp(0x500, 0xA);
+            Battle_StartFixedPointRamp(0x500, 10);
         }
-        if (frameIndex == 0x1E) {
+        if (frameIndex == 30) {
             selChild = (int)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCatastropheSpawnSpriteTrailTask);
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posX), 0x18C);
         }
     } else {
-        frameIndex -= 0x36;
-        if (frameIndex < 0xA) { /* empty first arm: lib/codegen.h */
+        frameIndex -= 54;
+        if (frameIndex < 10) { /* empty first arm: lib/codegen.h */
         } else {
-            frameIndex -= 0xA;
-            if (frameIndex < 0x13) {
+            frameIndex -= 10;
+            if (frameIndex < 19) {
                 if (frameIndex == 0) {
                     g_YasuiLimitCatastropheHookTaskSlot = (int)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCatastropheHookDriverTask);
                 }
             } else {
-                frameIndex -= 0x13;
-                if (frameIndex < 0x73) {
+                frameIndex -= 19;
+                if (frameIndex < 115) {
                     if (frameIndex == 0) {
                         Battle_AllocateResourceSlot(BattleFx_LimitCatastropheBeamModelTask);
                         selChild = (int)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCatastropheBillboardModelTask);
                         *(Int64Pair *)((char *)selChild + 4) = g_YasuiLimitCatastropheGunAttachPoint.raw;
                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_YasuiLimitCatastropheGunAttachPoint), 0x182);
                     }
-                    if (frameIndex == 0xF) {
+                    if (frameIndex == 15) {
                         Battle_AllocateResourceSlot(BattleFx_LimitCatastropheJitterTask);
                     }
-                    if (frameIndex >= 0xF) {
-                        frameIndex -= 0xF;
+                    if (frameIndex >= 15) {
+                        frameIndex -= 15;
                         if (frameIndex % 9 == 4 && g_YasuiLimitCatastropheCurrentSortedTarget < 0xA) {
                             ring = (BattleFxCatastropheTimelineRecord *)Battle_AllocSceneMessage(0xA);
                             ring->targetSlot = g_YasuiLimitCatastropheTargetSlotTable[g_YasuiLimitCatastropheCurrentSortedTarget].targetSlot;
@@ -779,14 +779,14 @@ void __cdecl BattleFx_LimitCatastropheTimelineTask(void)
                         }
                     }
                 } else {
-                    frameIndex -= 0x73;
-                    if (frameIndex < 0xA) {
+                    frameIndex -= 115;
+                    if (frameIndex < 10) {
                         if (frameIndex == 0) {
                             Battle_AllocateResourceSlot(BattleFx_LimitCatastropheScreenFlashTask);
                         }
                     } else {
-                        frameIndex -= 0xA;
-                        if (frameIndex < 0xA) {
+                        frameIndex -= 10;
+                        if (frameIndex < 10) {
                             if (frameIndex == 0) {
                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_YasuiLimitCatastropheSourceActor].posX), 0x38);
                             }
@@ -816,12 +816,12 @@ void __cdecl BattleFx_LimitCatastropheJitterTask(void)
         return;
     }
     if ((task->frameCounter & 1) != 0) {
-        g_BattleCameraTransform.posY = 0x64;
+        g_BattleCameraTransform.posY = 100;
     } else {
         g_BattleCameraTransform.posY = 0xFF9C;
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0x64) {
+    if (task->frameCounter >= 100) {
         g_BattleCameraTransform.posY = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -839,13 +839,13 @@ void __cdecl BattleFx_LimitCatastropheBillboardModelTask(void)
     ((BattleFxModelDrawRequest *)&g_YasuiLimitCatastropheModelDrawReq1)->modelHandle = Gfx_ModelTableGetRenderObject(1, g_YasuiLimitCatastropheResourceHandle.resourceHandle);
     frameIndex = rec->frameCounter;
     if (frameIndex < 3) {
-        scale = (frameIndex << 0xD) / 3;
+        scale = (frameIndex << 13) / 3;
         *(short *)&g_YasuiLimitCatastropheModelDrawReq1.limitCatastroModelDrawReq1Fraction = 0;
     } else {
         frameIndex -= 3;
         if (frameIndex < 5) {
-            scale = 0x2000;
-            *(short *)&g_YasuiLimitCatastropheModelDrawReq1.limitCatastroModelDrawReq1Fraction = (frameIndex << 0xC) / 5;
+            scale = 0x2000 /* 2.0 */;
+            *(short *)&g_YasuiLimitCatastropheModelDrawReq1.limitCatastroModelDrawReq1Fraction = (frameIndex << 12) / 5;
         } else {
             rec->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -883,7 +883,7 @@ void __cdecl BattleFx_LimitCatastropheHookDriverTask(void)
     BattleFx_LimitCatastropheUpdateHookNoOp((int)&g_YasuiLimitCatastropheResourceHandle.hookState);
     if (g_BattleIsPaused == 0) {
         (taskSlot->frameCounter)++;
-        if (taskSlot->frameCounter >= 0x8A) {
+        if (taskSlot->frameCounter >= 138) {
             taskSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -926,51 +926,51 @@ void __cdecl BattleFx_LimitCatastropheBeamModelTask(void)
     }
     ((BattleFxModelDrawRequest *)&g_YasuiLimitCatastropheModelDrawReq3)->modelHandle = Gfx_ModelTableGetRenderObject(0, g_YasuiLimitCatastropheResourceHandle.resourceHandle);
     nextFrame = taskPtr->frameCounter;
-    if (nextFrame < 0xF) {
+    if (nextFrame < 15) {
         if (g_BattleIsPaused == 0 && taskPtr->frameCounter % 5 == 0) {
             Battle_AllocateResourceSlot(BattleFx_LimitCatastropheGrowingBlackModelTask);
         }
         MultiplyMatrix((void *)((g_YasuiLimitCatastropheSourceActor << 6) + (char *)g_BattleActorTransformRecords[0].auxNode), &g_YasuiLimitCatastropheTransformData2, &g_YasuiLimitCatastropheBeamMatrix);
         Gte_OrthonormaliseFromYAxis((BattleOrthoMatrix *)&g_YasuiLimitCatastropheBeamMatrix);
-        g_YasuiLimitCatastropheScaleVector.limitCatastroScaleVectorX = nextFrame * 0xD00 / 0xF;
+        g_YasuiLimitCatastropheScaleVector.limitCatastroScaleVectorX = nextFrame * 0xD00 / 15;
         ScaleMatrix(&g_YasuiLimitCatastropheBeamMatrix, &g_YasuiLimitCatastropheScaleVector);
     } else {
-        nextFrame -= 0xF;
-        if (nextFrame < 0x64) {
+        nextFrame -= 15;
+        if (nextFrame < 100) {
             if (g_BattleIsPaused == 0) {
                 BattleFx_LimitCatastropheAdvanceBeamPointAlongTargets((Vec3sPacked *)&g_YasuiLimitCatastropheBeamEndpoint);
                 BattleFx_LimitCatastrophePointHookNoOp((int)&g_YasuiLimitCatastropheBeamEndpoint);
                 for (cnt = 0; cnt < 3; cnt++) {
                     pChild = (BattleFxCatastropheBeamSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCatastropheAnimatedSpriteTask);
-                    theta = (cnt << 0xC) / 3 + rand() % 0x555;
-                    pChild->posX = g_YasuiLimitCatastropheBeamEndpoint.x + (SinFixed(theta) * 0x3E8 >> 0xC);
+                    theta = (cnt << 12) / 3 + rand() % 0x555;
+                    pChild->posX = g_YasuiLimitCatastropheBeamEndpoint.x + (SinFixed(theta) * 0x3E8 >> 12);
                     pChild->posY = 0;
-                    pChild->posZ = g_YasuiLimitCatastropheBeamEndpointZ + (CosFixed(theta) * 0x3E8 >> 0xC);
+                    pChild->posZ = g_YasuiLimitCatastropheBeamEndpointZ + (CosFixed(theta) * 0x3E8 >> 12);
                 }
                 for (cnt = 0; cnt < 2; cnt++) {
                     pChild = (BattleFxCatastropheBeamSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCatastropheRisingSpriteTask);
-                    theta = (cnt << 0xC) / 2 + rand() % 0x800;
-                    calcRad = rand() % 0x2BC + 0x1F4;
-                    pChild->posX = g_YasuiLimitCatastropheBeamEndpoint.x + (SinFixed(theta) * calcRad >> 0xC);
+                    theta = (cnt << 12) / 2 + rand() % 0x800;
+                    calcRad = rand() % 700 + 500;
+                    pChild->posX = g_YasuiLimitCatastropheBeamEndpoint.x + (SinFixed(theta) * calcRad >> 12);
                     pChild->posY = 0;
-                    pChild->posZ = g_YasuiLimitCatastropheBeamEndpointZ + (CosFixed(theta) * calcRad >> 0xC);
+                    pChild->posZ = g_YasuiLimitCatastropheBeamEndpointZ + (CosFixed(theta) * calcRad >> 12);
                     if (0, 0) {
                         magnitude = 0x6000;
                     } else {
-                        magnitude = rand() % 0x2000 + 0x4000;
+                        magnitude = rand() % 8192 + 16384;
                     }
                     pChild->beamX = (short)magnitude;
                     if (0, 0) {
                         fadeOffset = 0x64;
                     } else {
-                        fadeOffset = rand() % 0x32 + 0x32;
+                        fadeOffset = rand() % 50 + 50;
                     }
                     pChild->offset = (short)fadeOffset;
                 }
             }
             beamLength = BattleFx_LimitCatastropheBuildBeamMatrixFromEndpoints((Vec3sPacked *)&g_YasuiLimitCatastropheGunAttachPoint, (Vec3sPacked *)&g_YasuiLimitCatastropheBeamEndpoint, (BattleRotationMatrix *)&g_YasuiLimitCatastropheCameraRotMatrix);
             g_YasuiLimitCatastropheScaleVector.limitCatastroScaleVectorX = taskPtr->frameCounter & 1 ? 0xD00 : 0xD00;
-            g_YasuiLimitCatastropheScaleVector.limitCatastroScaleVectorY = (beamLength << 0xC) / 0x30D4;
+            g_YasuiLimitCatastropheScaleVector.limitCatastroScaleVectorY = (beamLength << 12) / 12500;
             MultiplyMatrix((void *)g_BattleCameraTransform.matrix, &g_YasuiLimitCatastropheCameraRotMatrix, &g_YasuiLimitCatastropheBeamMatrix);
             Gte_OrthonormaliseFromYAxis((BattleOrthoMatrix *)&g_YasuiLimitCatastropheBeamMatrix);
             ScaleMatrix(&g_YasuiLimitCatastropheBeamMatrix, &g_YasuiLimitCatastropheScaleVector);
@@ -984,26 +984,26 @@ void __cdecl BattleFx_LimitCatastropheBeamModelTask(void)
     g_YasuiLimitCatastropheModelPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitCatastropheModelDrawReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitCatastropheModelPacketCursor);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frameCounter)++;
-        if (taskPtr->frameCounter < 0x6D) {
+        if (taskPtr->frameCounter < 109) {
             for (cnt = 0; cnt < 5; cnt++) {
                 pChild = (BattleFxCatastropheBeamSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCatastropheLineSegmentTask);
                 if (0, 0) {
                     lateralOffset = 0x5DC;
                 } else {
-                    lateralOffset = rand() % 0xBB8 - 0x5DC;
+                    lateralOffset = rand() % 3000 - 1500;
                 }
                 pChild->beamZ = (short)lateralOffset;
                 pChild->posX = (short)lateralOffset;
                 if (0, 0) {
-                    lenValue = 0x7D0;
+                    lenValue = 2000;
                 } else {
-                    lenValue = rand() % 0x5DC + 0x1F4;
+                    lenValue = rand() % 1500 + 500;
                 }
                 theta = lenValue;
                 if (0x30D4 - theta == 0x3E8) {
-                    startY = 0x30D4 - theta;
+                    startY = 12500 - theta;
                 } else {
-                    startY = rand() % (0x30D4 - theta - 0x3E8) + 0x3E8;
+                    startY = rand() % (12500 - theta - 1000) + 1000;
                 }
                 pChild->posY = (short)startY;
                 pChild->offset = (short)startY + theta;
@@ -1063,7 +1063,7 @@ void __cdecl BattleFx_LimitCatastropheAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     (g_YasuiLimitCatastropheSpriteDrawReq1.animTable) = Gfx_ModelTableGetLoadedRecord(4, g_YasuiLimitCatastropheResourceHandle.resourceHandle);
     g_YasuiLimitCatastropheSpriteDrawReq1.drawObj = Gfx_ModelTableGetSpriteObject(4, g_YasuiLimitCatastropheResourceHandle.resourceHandle);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x5000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x5000 /* 5.0 */, 0);
     g_YasuiLimitCatastropheSpriteDrawReq1.frame = task->frameCounter;
     g_YasuiLimitCatastropheModelPacketCursor = BattleFx_SubmitSpriteDraw(&g_YasuiLimitCatastropheSpriteDrawReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitCatastropheModelPacketCursor);
     if (g_BattleIsPaused == 0 && (g_YasuiLimitCatastropheSpriteDrawReq1.animTable) != 0) {
@@ -1114,11 +1114,11 @@ void __cdecl BattleFx_LimitCatastropheGrowingBlackModelTask(void)
         g_YasuiLimitCatastropheMatrixPtr = (YasuiCatastroGrowBlock *)Gfx_GetPsxScratchpadPtr(0);
     }
     (g_YasuiLimitCatastropheModelDrawReq2.catastroModelResource) = Gfx_ModelTableGetRenderObject(2, g_YasuiLimitCatastropheResourceHandle.resourceHandle);
-    ratio = (task->frameCounter << 0xC) / 0xA;
-    g_YasuiLimitCatastropheMatrixPtr->scaleZ = ratio * 0x3000 >> 0xC;
+    ratio = (task->frameCounter << 12) / 10;
+    g_YasuiLimitCatastropheMatrixPtr->scaleZ = ratio * 0x3000 /* 3.0 */ >> 12;
     g_YasuiLimitCatastropheMatrixPtr->scaleY = g_YasuiLimitCatastropheMatrixPtr->scaleZ;
     g_YasuiLimitCatastropheMatrixPtr->scaleX = g_YasuiLimitCatastropheMatrixPtr->scaleY;
-    g_YasuiLimitCatastropheModelDrawReq2.limitCatastroModelDrawReq2Value = ratio << 0xC >> 0xC;
+    g_YasuiLimitCatastropheModelDrawReq2.limitCatastroModelDrawReq2Value = ratio << 12 >> 12;
     MultiplyMatrix((void *)((g_YasuiLimitCatastropheSourceActor << 6) + (char *)g_BattleActorTransformRecords[0].auxNode), (int *)&g_YasuiLimitCatastropheTransformData1, g_YasuiLimitCatastropheMatrixPtr);
     ScaleMatrix(g_YasuiLimitCatastropheMatrixPtr, &g_YasuiLimitCatastropheMatrixPtr->scaleX);
     SetRotMatrix(g_YasuiLimitCatastropheMatrixPtr);
@@ -1127,7 +1127,7 @@ void __cdecl BattleFx_LimitCatastropheGrowingBlackModelTask(void)
     g_YasuiLimitCatastropheModelPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitCatastropheModelDrawReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitCatastropheModelPacketCursor);
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        if (task->frameCounter >= 0xA) {
+        if (task->frameCounter >= 10) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -1149,20 +1149,20 @@ void __cdecl BattleFx_LimitCatastropheLineSegmentTask(void)
     }
     frame = task->frameIndex;
     if (frame < 3) {
-        ratio = (frame << 0xC) / 3;
+        ratio = (frame << 12) / 3;
         g_YasuiLimitCatastropheBeamPointPtr->x = task->startX;
         g_YasuiLimitCatastropheBeamPointPtr->baseY = task->startY;
         g_YasuiLimitCatastropheBeamPointPtr->baseZ = task->startZ;
-        g_YasuiLimitCatastropheBeamPointPtr->endX = task->startX + ((task->endX - task->startX) * ratio >> 0xC);
-        g_YasuiLimitCatastropheBeamPointPtr->y = task->startY + ((task->endY - task->startY) * ratio >> 0xC);
-        g_YasuiLimitCatastropheBeamPointPtr->z = task->startZ + ((task->endZ - task->startZ) * ratio >> 0xC);
+        g_YasuiLimitCatastropheBeamPointPtr->endX = task->startX + ((task->endX - task->startX) * ratio >> 12);
+        g_YasuiLimitCatastropheBeamPointPtr->y = task->startY + ((task->endY - task->startY) * ratio >> 12);
+        g_YasuiLimitCatastropheBeamPointPtr->z = task->startZ + ((task->endZ - task->startZ) * ratio >> 12);
     } else {
         frame -= 3;
         if (frame < 3) {
-            ratio = 0x1000 - (frame << 0xC) / 3;
-            g_YasuiLimitCatastropheBeamPointPtr->x = task->startX + ((task->endX - task->startX) * ratio >> 0xC);
-            g_YasuiLimitCatastropheBeamPointPtr->baseY = task->startY + ((task->endY - task->startY) * ratio >> 0xC);
-            g_YasuiLimitCatastropheBeamPointPtr->baseZ = task->startZ + ((task->endZ - task->startZ) * ratio >> 0xC);
+            ratio = 0x1000 - (frame << 12) / 3;
+            g_YasuiLimitCatastropheBeamPointPtr->x = task->startX + ((task->endX - task->startX) * ratio >> 12);
+            g_YasuiLimitCatastropheBeamPointPtr->baseY = task->startY + ((task->endY - task->startY) * ratio >> 12);
+            g_YasuiLimitCatastropheBeamPointPtr->baseZ = task->startZ + ((task->endZ - task->startZ) * ratio >> 12);
             g_YasuiLimitCatastropheBeamPointPtr->endX = task->endX;
             g_YasuiLimitCatastropheBeamPointPtr->y = task->endY;
             g_YasuiLimitCatastropheBeamPointPtr->z = task->endZ;
@@ -1199,9 +1199,9 @@ int __cdecl BattleFx_LimitCatastropheAdvanceBeamPointAlongTargets(Vec3sPacked *o
             g_YasuiLimitCatastropheTargetIndex++;
         }
         Battle_GetBoneWorldPos(g_YasuiLimitCatastropheTargetIndex, g_BattleActorRecords[g_YasuiLimitCatastropheTargetIndex].targetBone, &bonePos.vx);
-        outPoint->vx = bonePos.vx + rand() % 0x7D0 + -0x3E8;
+        outPoint->vx = bonePos.vx + rand() % 2000 + -1000;
         outPoint->vy = 0;
-        outPoint->vz = bonePos.vz + rand() % 0x7D0 + -0x3E8;
+        outPoint->vz = bonePos.vz + rand() % 2000 + -1000;
         g_YasuiLimitCatastropheBeamStep = 0;
         g_YasuiLimitCatastropheAdvanceStage++;
     }
@@ -1223,22 +1223,22 @@ int __cdecl BattleFx_LimitCatastropheAdvanceBeamPointAlongTargets(Vec3sPacked *o
         g_YasuiLimitCatastropheBeamStep = g_YasuiLimitCatastropheDuration;
     }
     if (g_YasuiLimitCatastropheBeamStep > g_YasuiLimitCatastropheDurationSecondHalf) {
-        outPoint->vx += (short)(g_YasuiLimitCatastropheDeltaX * g_YasuiLimitCatastropheBeamStepDelta >> 0xC);
-        outPoint->vz += (short)(g_YasuiLimitCatastropheDeltaZ * g_YasuiLimitCatastropheBeamStepDelta >> 0xC);
+        outPoint->vx += (short)(g_YasuiLimitCatastropheDeltaX * g_YasuiLimitCatastropheBeamStepDelta >> 12);
+        outPoint->vz += (short)(g_YasuiLimitCatastropheDeltaZ * g_YasuiLimitCatastropheBeamStepDelta >> 12);
     } else if (g_YasuiLimitCatastropheTargetIndex != -1) {
         Battle_GetBoneWorldPos(g_YasuiLimitCatastropheTargetIndex, g_BattleActorRecords[g_YasuiLimitCatastropheTargetIndex].targetBone, &bonePos.vx);
         g_YasuiLimitCatastropheTargetVectorX = bonePos.vx - outPoint->vx;
         g_YasuiLimitCatastropheTargetVectorY = 0;
         g_YasuiLimitCatastropheTargetVectorZ = bonePos.vz - outPoint->vz;
         g_YasuiLimitCatastropheHomingSpeed = SqrtToInt(NormalizeVectorFixed(&g_YasuiLimitCatastropheTargetVectorX, &g_YasuiLimitCatastropheTargetVectorX)) / g_YasuiLimitCatastropheDurationSecondHalf;
-        easeWeight = (g_YasuiLimitCatastropheBeamStep << 0xC) / g_YasuiLimitCatastropheDurationSecondHalf;
+        easeWeight = (g_YasuiLimitCatastropheBeamStep << 12) / g_YasuiLimitCatastropheDurationSecondHalf;
         easeWeight = BattleFx_CatastropheApplyCameraEasing(easeWeight, 0x130);
         complement = 0x1000 - easeWeight;
-        outPoint->vx += (short)((g_YasuiLimitCatastropheDeltaX * easeWeight + g_YasuiLimitCatastropheTargetVectorX * complement >> 0xC) * (g_YasuiLimitCatastropheBeamStepDelta * easeWeight + g_YasuiLimitCatastropheHomingSpeed * complement >> 0xC) >> 0xC);
-        outPoint->vz += (short)((g_YasuiLimitCatastropheDeltaZ * easeWeight + g_YasuiLimitCatastropheTargetVectorZ * complement >> 0xC) * (g_YasuiLimitCatastropheBeamStepDelta * easeWeight + g_YasuiLimitCatastropheHomingSpeed * complement >> 0xC) >> 0xC);
+        outPoint->vx += (short)((g_YasuiLimitCatastropheDeltaX * easeWeight + g_YasuiLimitCatastropheTargetVectorX * complement >> 12) * (g_YasuiLimitCatastropheBeamStepDelta * easeWeight + g_YasuiLimitCatastropheHomingSpeed * complement >> 12) >> 12);
+        outPoint->vz += (short)((g_YasuiLimitCatastropheDeltaZ * easeWeight + g_YasuiLimitCatastropheTargetVectorZ * complement >> 12) * (g_YasuiLimitCatastropheBeamStepDelta * easeWeight + g_YasuiLimitCatastropheHomingSpeed * complement >> 12) >> 12);
     } else {
-        outPoint->vx += (short)(g_YasuiLimitCatastropheDeltaX * g_YasuiLimitCatastropheBeamStepDelta >> 0xC);
-        outPoint->vz += (short)(g_YasuiLimitCatastropheDeltaZ * g_YasuiLimitCatastropheBeamStepDelta >> 0xC);
+        outPoint->vx += (short)(g_YasuiLimitCatastropheDeltaX * g_YasuiLimitCatastropheBeamStepDelta >> 12);
+        outPoint->vz += (short)(g_YasuiLimitCatastropheDeltaZ * g_YasuiLimitCatastropheBeamStepDelta >> 12);
         g_YasuiLimitCatastropheBeamStep++;
     }
     g_YasuiLimitCatastropheBeamStep--;
@@ -1272,10 +1272,10 @@ void __cdecl BattleFx_LimitCatastropheSpawnSpriteTrailTask(void)
         g_YasuiLimitCatastropheGunPointPtr->vy = g_YasuiLimitCatastropheGunAttachPoint.y;
         g_YasuiLimitCatastropheGunPointPtr->vz = g_YasuiLimitCatastropheGunAttachPoint.z;
         if (pTaskSlot->frameCounter != 0) {
-            ratio = (i << 0xC) / 4;
-            g_YasuiLimitCatastropheGunPointPtr->vx = (g_YasuiLimitCatastropheActorPos.posX) * ratio + g_YasuiLimitCatastropheGunPointPtr->vx * (0x1000 - ratio) >> 0xC;
-            g_YasuiLimitCatastropheGunPointPtr->vy = g_YasuiLimitCatastropheActorPos.posY * ratio + g_YasuiLimitCatastropheGunPointPtr->vy * (0x1000 - ratio) >> 0xC;
-            g_YasuiLimitCatastropheGunPointPtr->vz = g_YasuiLimitCatastropheActorOffsetInit * ratio + g_YasuiLimitCatastropheGunPointPtr->vz * (0x1000 - ratio) >> 0xC;
+            ratio = (i << 12) / 4;
+            g_YasuiLimitCatastropheGunPointPtr->vx = (g_YasuiLimitCatastropheActorPos.posX) * ratio + g_YasuiLimitCatastropheGunPointPtr->vx * (4096 - ratio) >> 12;
+            g_YasuiLimitCatastropheGunPointPtr->vy = g_YasuiLimitCatastropheActorPos.posY * ratio + g_YasuiLimitCatastropheGunPointPtr->vy * (4096 - ratio) >> 12;
+            g_YasuiLimitCatastropheGunPointPtr->vz = g_YasuiLimitCatastropheActorOffsetInit * ratio + g_YasuiLimitCatastropheGunPointPtr->vz * (4096 - ratio) >> 12;
         }
         pSprite->posX = g_YasuiLimitCatastropheGunPointPtr->vx;
         pSprite->posY = g_YasuiLimitCatastropheGunPointPtr->vy;
@@ -1283,17 +1283,17 @@ void __cdecl BattleFx_LimitCatastropheSpawnSpriteTrailTask(void)
         if (DEAD_IN_RETAIL != 0) {
             pickA = 0x96;
         } else {
-            pickA = rand() % 0x64 + 0x32;
+            pickA = rand() % 100 + 50;
         }
         radialSpeed = pickA;
         angle = rand() & 0xFFF;
-        pSprite->radialSin = radialSpeed * SinFixed(angle) >> 0xC;
+        pSprite->radialSin = radialSpeed * SinFixed(angle) >> 12;
         pSprite->velocityY = 0;
-        pSprite->radialCos = radialSpeed * CosFixed(angle) >> 0xC;
+        pSprite->radialCos = radialSpeed * CosFixed(angle) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             pickB = 0x1000;
         } else {
-            pickB = rand() % 0x800 + 0x800;
+            pickB = rand() % 2048 + 2048;
         }
         pSprite->spriteScale = pickB;
     }
@@ -1301,7 +1301,7 @@ void __cdecl BattleFx_LimitCatastropheSpawnSpriteTrailTask(void)
     g_YasuiLimitCatastropheActorPos.posY = pSprite->posY;
     g_YasuiLimitCatastropheActorOffsetInit = pSprite->posZ;
     (pTaskSlot->frameCounter)++;
-    if (pTaskSlot->frameCounter >= 0x23) {
+    if (pTaskSlot->frameCounter >= 35) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1329,9 +1329,9 @@ void __cdecl BattleFx_LimitCatastropheDampedSpriteParticleTask(void)
         task->posX += task->velocityX;
         task->posY += task->velocityY;
         task->posZ += task->velocityZ;
-        task->velocityX = task->velocityX * 0xA00 >> 0xC;
-        task->velocityY = (task->velocityY * 0xA00 >> 0xC) - 0xA;
-        task->velocityZ = task->velocityZ * 0xA00 >> 0xC;
+        task->velocityX = task->velocityX * 0xA00 /* 0.625 */ >> 12;
+        task->velocityY = (task->velocityY * 0xA00 /* 0.625 */ >> 12) - 10;
+        task->velocityZ = task->velocityZ * 0xA00 /* 0.625 */ >> 12;
     }
 }
 
@@ -1381,8 +1381,8 @@ void __cdecl BattleFx_LimitCatastropheBuildSortedSlotTable(void)
     int hitIdx;
 
     outCnt = 0;
-    for (slot = 0; slot < 0xA; slot++) {
-        for (hitIdx = 0; hitIdx < 0xA; hitIdx++) {
+    for (slot = 0; slot < 10; slot++) {
+        for (hitIdx = 0; hitIdx < 10; hitIdx++) {
             if (g_BattleHitTargetActors[hitIdx] == slot) {
                 g_YasuiLimitCatastropheTargetSlotTable[outCnt].targetSlot = slot;
                 g_YasuiLimitCatastropheTargetSlotTable[outCnt].slotIndex = hitIdx;

@@ -144,7 +144,7 @@ void __cdecl BattleFx_LimitBeginBloodfest(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel1 = 0;
     g_BattleFxTimelineState.channel2 = g_BattleFxTimelineState.channel1;
     g_BattleFxTimelineState.red = 0x40;
-    Battle_StartFixedPointRamp(0x1000, 0xA);
+    Battle_StartFixedPointRamp(0x1000, 10);
 }
 
 // Returns while paused. While the hit index is below ten and the task's step reaches that hit's
@@ -170,18 +170,18 @@ void __cdecl BattleFx_LimitBloodfestTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (g_BattleLimitBloodfestHitIndex < 0xA && taskPtr->step == ((short *)&g_BattleLimitBloodfestHitFrames1)[g_BattleLimitBloodfestHitIndex]) {
+    if (g_BattleLimitBloodfestHitIndex < 10 && taskPtr->step == ((short *)&g_BattleLimitBloodfestHitFrames1)[g_BattleLimitBloodfestHitIndex]) {
         g_BattleLimitBloodfestActorIdx = taskPtr->actorIndex;
         g_BattleLimitBloodfestTargetActorIdx = g_BattleHitTargetActors[g_BattleLimitBloodfestHitIndex];
         (g_BattleLimitBloodfestPosDeltaX.deltaX) = g_BattleActorRecords[g_BattleLimitBloodfestTargetActorIdx].posX;
         g_BattleLimitBloodfestPosDeltaX.posY = g_BattleActorRecords[g_BattleLimitBloodfestTargetActorIdx].posY;
         g_BattleLimitBloodfestPosDeltaZ = g_BattleActorRecords[g_BattleLimitBloodfestTargetActorIdx].posZ;
         heading = rand() % 0x1000;
-        distance = g_BattleActorRecords[g_BattleLimitBloodfestTargetActorIdx].radius + 0x5DC;
-        (g_BattleLimitBloodfestPosDeltaX.deltaX) += (short)(SinFixed(heading) * distance >> 0xC);
+        distance = g_BattleActorRecords[g_BattleLimitBloodfestTargetActorIdx].radius + 1500;
+        (g_BattleLimitBloodfestPosDeltaX.deltaX) += (short)(SinFixed(heading) * distance >> 12);
         (g_BattleLimitBloodfestComputedPosX.posX) = (g_BattleLimitBloodfestPosDeltaX.deltaX);
         g_BattleLimitBloodfestComputedPosX.posY = 0;
-        g_BattleLimitBloodfestPosDeltaZ += (short)(CosFixed(heading) * distance >> 0xC);
+        g_BattleLimitBloodfestPosDeltaZ += (short)(CosFixed(heading) * distance >> 12);
         g_BattleLimitBloodfestComputedPosZ = g_BattleLimitBloodfestPosDeltaZ;
         g_BattleActorRecords[taskPtr->actorIndex].posX = (g_BattleLimitBloodfestComputedPosX.posX);
         g_BattleActorRecords[taskPtr->actorIndex].posY = g_BattleLimitBloodfestComputedPosX.posY;
@@ -205,8 +205,8 @@ void __cdecl BattleFx_LimitBloodfestTimelineTask(void)
         }
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x82) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (taskPtr->step == 130) {
+        Battle_StartFixedPointRamp(0, 10);
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x159, 0xF);
         Sfx_ReleaseCachedBuffer(0x142, 0xF);
@@ -226,7 +226,7 @@ void __cdecl BattleFx_LimitBloodfestSpriteAnimationTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitBloodfestSpriteRequest.spriteHandle = Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitBloodfestLoadedResTable);
     g_BattleLimitBloodfestSpriteRequest.res = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitBloodfestLoadedResTable);
-    BattleFx_InstallBillboardMatrix(task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(task->data, 0x2000 /* 2.0 */, 0);
     g_BattleLimitBloodfestSpriteRequest.frame = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitBloodfestSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleLimitBloodfestSpriteRequest.spriteHandle != 0) {

@@ -32,7 +32,7 @@ EnglishWindowFrame g_MenuStub12_WindowRects[2] = {{0, 0, 640, 51}, {0, 51, 640, 
 // inverted `!`, `a` circumflex, so the shipped title is not English text. The four ints 4, 3, 2, 1 and the 0xFF fill after it
 // are not read under this name.
 // GLOBAL: FF7 0x0091f050
-unsigned char g_MenuStub12_Title[0x28] = {
+unsigned char g_MenuStub12_Title[40] = {
     0x53, 0x69, 0x17, 0x61, 0xa1, 0x69, 0xff, 0, 4, 0, 0, 0,
     3, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0,
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -44,13 +44,13 @@ unsigned char g_MenuStub12_Title[0x28] = {
 // checks before it adds MATERIA_BAHAMUT_ZERO (the twelve bytes after the pair are not read under
 // this name).
 // GLOBAL: FF7 0x0091f078
-char g_MasterMagicMateriaIds[0x15] = {49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 64, 65, 68, 69, 70, 71, 72};
+char g_MasterMagicMateriaIds[21] = {49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 64, 65, 68, 69, 70, 71, 72};
 // GLOBAL: FF7 0x0091f090
-char g_MasterSummonMateriaIds[0x10] = {74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89};
+char g_MasterSummonMateriaIds[16] = {74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89};
 // GLOBAL: FF7 0x0091f0a0
 char g_MasterCommandMateriaIds[7] = {36, 37, 39, 40, 41, 42, 43};
 // GLOBAL: FF7 0x0091f0a8
-char g_BahamutPairMateriaIds[0x10] = {MATERIA_BAHAMUT, MATERIA_NEO_BAHAMUT, 0, 0, 0, 0, 0, 0, 11, 1, (-49), 0, 107, 0, 67, 0};
+char g_BahamutPairMateriaIds[16] = {MATERIA_BAHAMUT, MATERIA_NEO_BAHAMUT, 0, 0, 0, 0, 0, 0, 11, 1, (-49), 0, 107, 0, 67, 0};
 // The screen's two cursors; g_MenuStub12_ActiveCursor picks the one MenuCursor_Update runs.
 // GLOBAL: FF7 0x00dc4218
 MenuCursor g_MenuStub12_Cursors[2] = {0};
@@ -105,7 +105,7 @@ void __cdecl Menu_StubScreen12Frame(unsigned int frameCounter)
                             0.0f);
         break;
     }
-    Menu_DrawEncodedString2x(0x10, 0xb, g_MenuStub12_Title, 7, 0.0f);
+    Menu_DrawEncodedString2x(16, 11, g_MenuStub12_Title, 7, 0.0f);
     for (y = 0; y < 2; y++) {
         Menu_DrawWindowFrame2x(&g_MenuStub12_WindowRects[y], 0.0f);
     }
@@ -216,14 +216,14 @@ void __cdecl Savemap_CheckMateriaSetComplete(int setIndex)
     gSavemap.materiaSetComplete = 0;
     switch (setIndex) {
     case SAVEMAP_MATERIA_SET_MAGIC:
-        for (i = 0; i < 0x15; i++) {
+        for (i = 0; i < 21; i++) {
             if (Savemap_HasMasteredMateriaId(g_MasterMagicMateriaIds[i]) == 0) {
                 return;
             }
         }
         break;
     case SAVEMAP_MATERIA_SET_SUMMON:
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             if (Savemap_HasMasteredMateriaId(g_MasterSummonMateriaIds[i]) == 0) {
                 return;
             }
@@ -284,7 +284,7 @@ int __cdecl Savemap_HasMasteredMateriaId(unsigned int materiaId)
             }
         }
     }
-    for (slotIdx = 0; slotIdx < 0xc8; slotIdx++) {
+    for (slotIdx = 0; slotIdx < 200; slotIdx++) {
         apbits = (unsigned int)gSavemap.materia[slotIdx] >> 8;
         id = gSavemap.materia[slotIdx] & 0xff;
         if (apbits == 0xffffff && id == materiaId) {
@@ -323,7 +323,7 @@ int __cdecl Savemap_HasMateriaId(unsigned int materiaId)
             }
         }
     }
-    for (slot = 0; slot < 0xc8; slot++) {
+    for (slot = 0; slot < 200; slot++) {
         id = gSavemap.materia[slot] & 0xff;
         if (id == materiaId) {
             return 1;
@@ -346,13 +346,13 @@ void __cdecl Savemap_ExchangeForMasterMateria(int groupId)
 
     switch (groupId) {
     case SAVEMAP_MATERIA_SET_MAGIC:
-        for (i = 0; i < 0x15; i++) {
+        for (i = 0; i < 21; i++) {
             Savemap_RemoveMasteredMateria(g_MasterMagicMateriaIds[i]);
         }
         Savemap_AddMateria(MATERIA_MASTER_MAGIC);
         break;
     case SAVEMAP_MATERIA_SET_SUMMON:
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             Savemap_RemoveMasteredMateria(g_MasterSummonMateriaIds[i]);
         }
         Savemap_AddMateria(MATERIA_MASTER_SUMMON);
@@ -399,7 +399,7 @@ int __cdecl Savemap_RemoveMasteredMateria(unsigned int materiaId)
             }
         }
     }
-    for (slot = 0; slot < 0xc8; slot++) {
+    for (slot = 0; slot < 200; slot++) {
         if (gSavemap.materia[slot] == materiaId) {
             gSavemap.materia[slot] = -1;
             return 0;

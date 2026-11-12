@@ -537,7 +537,7 @@ int __cdecl Movie_LoadCameraData(int unusedResult, int movieId)
             f.camera = g_CameraNames_Common[movieId];
         else {
             f.index = movieId;
-            f.index -= 0x14;
+            f.index -= 20;
             if (f.disc == 0)
                 f.camera = g_CameraNames_Disc1[f.index];
             else if (f.disc == 1)
@@ -550,7 +550,7 @@ int __cdecl Movie_LoadCameraData(int unusedResult, int movieId)
         if (f.entry != 0) {
             f.size = GetLgpEntrySize(f.entry, LGP_ARCHIVE_MOVIE_CAMERA);
             // STRING: FF7 0x007bbe74
-            g_MovieCameraAllocatedBuffer = (char *)GameHeapAllocRaw(f.size + 2, "C:\\FF7\\Src\\movie\\sm_movie.cpp", 0xe5);
+            g_MovieCameraAllocatedBuffer = (char *)GameHeapAllocRaw(f.size + 2, "C:\\FF7\\Src\\movie\\sm_movie.cpp", 229);
             ReadLgpEntry((void *)f.entry, LGP_ARCHIVE_MOVIE_CAMERA, g_MovieCameraAllocatedBuffer, f.size);
             g_MovieCameraAllocatedBuffer[f.size] = 0;
         }
@@ -625,7 +625,7 @@ void __cdecl Movie_FreeCameraDataBuffer(void)
 {
     if (g_MovieCameraDataBuffer != 0) {
         // STRING: FF7 0x007bbea8
-        GameHeapFree(g_MovieCameraAllocatedBuffer, "C:\\FF7\\Src\\movie\\sm_movie.cpp", 0x169);
+        GameHeapFree(g_MovieCameraAllocatedBuffer, "C:\\FF7\\Src\\movie\\sm_movie.cpp", 361);
         g_MovieCameraAllocatedBuffer = 0;
         g_MovieCameraDataBuffer = 0;
     }

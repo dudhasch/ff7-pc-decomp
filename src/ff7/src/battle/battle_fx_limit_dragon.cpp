@@ -328,7 +328,7 @@ void __cdecl BattleFx_LimitSpawnDragonPerTarget(int actor, int sourceActor)
 
 /*
  * Master timeline task for Dolphin Miracle effect sequence. At DM_PHASE_LAUNCH it spawns the
- * trailing projectile 0x12C0 units behind the source and sets phaseStart to the phase it
+ * trailing projectile 4800 units behind the source and sets phaseStart to the phase it
  * arrives; at the arrival it spawns the pulsing model and 32 radial sprites, then hits the target
  * and runs the two sprite emitters. The checks before `(s->phase)++` see this frame's phase, the
  * end check after it sees the next one.
@@ -357,10 +357,10 @@ void __cdecl BattleFx_LimitDragonTimelineTask(void)
     if (taskPtr->phase == DM_PHASE_LAUNCH) {
         heading = ArcTangentFixed(taskPtr->targetX - taskPtr->posX, taskPtr->targetZ - taskPtr->posZ);
         pRecord = (BattleFxLimitDMTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDragonTrailingProjectileTask);
-        pRecord->projectile.posX = taskPtr->posX - (SinFixed(heading) * 0x12C0 >> 0xC);
-        pRecord->projectile.posZ = taskPtr->posZ - (CosFixed(heading) * 0x12C0 >> 0xC);
+        pRecord->projectile.posX = taskPtr->posX - (SinFixed(heading) * 0x12C0 >> 12);
+        pRecord->projectile.posZ = taskPtr->posZ - (CosFixed(heading) * 0x12C0 >> 12);
         pRecord->projectile.posY = 0xFB50;
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             g_BattleLimitDragonTrail[i].x = pRecord->projectile.posX;
             g_BattleLimitDragonTrail[i].y = pRecord->projectile.posY;
             g_BattleLimitDragonTrail[i].z = pRecord->projectile.posZ;
@@ -368,11 +368,11 @@ void __cdecl BattleFx_LimitDragonTimelineTask(void)
         xDelta = taskPtr->targetX - pRecord->projectile.posX;
         deltaZ = taskPtr->targetZ - pRecord->projectile.posZ;
         distance = SqrtToInt(xDelta * xDelta + deltaZ * deltaZ);
-        pRecord->projectile.arrivalFrame = distance / 0xC8;
+        pRecord->projectile.arrivalFrame = distance / 200;
         pRecord->projectile.spiralRadius = 0;
-        pRecord->projectile.velocityX = SinFixed(heading) * 0xC8 >> 0xC;
-        pRecord->projectile.velocityZ = CosFixed(heading) * 0xC8 >> 0xC;
-        pRecord->projectile.invDistance = 0x3E8 / distance;
+        pRecord->projectile.velocityX = SinFixed(heading) * 0xC8 >> 12;
+        pRecord->projectile.velocityZ = CosFixed(heading) * 0xC8 >> 12;
+        pRecord->projectile.invDistance = 1000 / distance;
         taskPtr->phaseStart = pRecord->projectile.arrivalFrame + DM_PHASE_LAUNCH;
     }
     if (taskPtr->phase == DM_PHASE_LAUNCH_SOUND) {
@@ -384,7 +384,7 @@ void __cdecl BattleFx_LimitDragonTimelineTask(void)
         pRecord->pulse.posY = taskPtr->targetY;
         pRecord->pulse.posZ = taskPtr->targetZ;
         pRecord->pulse.pulsePhase = 0;
-        for (i = 0; i < 0x20; i++) {
+        for (i = 0; i < 32; i++) {
             pRecord = (BattleFxLimitDMTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDragonPulsingRadialSpriteTask);
             pRecord->radial.posX = taskPtr->targetX;
             pRecord->radial.posY = taskPtr->targetY;
@@ -397,7 +397,7 @@ void __cdecl BattleFx_LimitDragonTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0x10;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&taskPtr->targetX), DM_SFX_ARRIVAL, 0, 0, 0, 0, 0, 0);
     }
     if (taskPtr->phase == taskPtr->phaseStart + DM_AFTER_ARRIVAL_HIT) {
@@ -417,7 +417,7 @@ void __cdecl BattleFx_LimitDragonTimelineTask(void)
     }
     (taskPtr->phase)++;
     if (taskPtr->phase == taskPtr->phaseStart + DM_AFTER_ARRIVAL_END) {
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(DM_SFX_LAUNCH, 0xF);
         Sfx_ReleaseCachedBuffer(DM_SFX_ARRIVAL, 0xF);
@@ -458,8 +458,8 @@ void __cdecl BattleFx_LimitDragonTrailingProjectileTask(void)
 #pragma pack(pop)
 
     frame.projectile = (BattleFxDmTrailProjectile *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.projectile->timer > 0xE) {
-        for (frame.segmentIndex = 0; frame.segmentIndex < 0xE; frame.segmentIndex++) {
+    if (frame.projectile->timer > 14) {
+        for (frame.segmentIndex = 0; frame.segmentIndex < 14; frame.segmentIndex++) {
             frame.fromX = g_BattleLimitDragonTrail[(g_BattleLimitDragonTrailWriteIndex + frame.segmentIndex + 1) & 0xF].x;
             frame.fromY = g_BattleLimitDragonTrail[(g_BattleLimitDragonTrailWriteIndex + frame.segmentIndex + 1) & 0xF].y;
             frame.fromZ = g_BattleLimitDragonTrail[(g_BattleLimitDragonTrailWriteIndex + frame.segmentIndex + 1) & 0xF].z;
@@ -481,7 +481,7 @@ void __cdecl BattleFx_LimitDragonTrailingProjectileTask(void)
             SetRotMatrix(&frame.composedMatrix);
             SetTransMatrix(&frame.composedMatrix);
             SetDrawColorRGB(0, 0, 0);
-            g_BattleLimitDragonTrailModelReq.fadeLevel = 0x1000 - (g_BattleLimitDragonTrailFade << 8);
+            g_BattleLimitDragonTrailModelReq.fadeLevel = 4096 - (g_BattleLimitDragonTrailFade << 8);
             g_BattleLimitDragonTrailModelReq.flags = (g_BattleLimitDragonTrailFade - 0x10 != 0 ? 8 : 0) | 0x80;
             if (frame.segmentIndex == 0) {
                 for (frame.partIndex = 0; frame.partIndex < 4; frame.partIndex++) {
@@ -502,29 +502,29 @@ void __cdecl BattleFx_LimitDragonTrailingProjectileTask(void)
     if (frame.projectile->timer < frame.projectile->arrivalFrame) {
         frame.projectile->posX += frame.projectile->velocityX;
         frame.projectile->posZ += frame.projectile->velocityZ;
-        frame.projectile->posY += (short)(SinFixed(frame.projectile->timer * 0x190) * 0x78 >> 0xC);
+        frame.projectile->posY += (short)(SinFixed(frame.projectile->timer * 400) * 0x78 >> 12);
     } else {
-        if (frame.projectile->spiralRadius != 0x320) {
-            frame.projectile->spiralRadius += 0x50;
+        if (frame.projectile->spiralRadius != 800) {
+            frame.projectile->spiralRadius += 80;
         }
-        frame.projectile->posY += (short)((SinFixed(frame.projectile->timer << 9) * 0x32 >> 0xC) - 0x64);
+        frame.projectile->posY += (short)((SinFixed(frame.projectile->timer << 9) * 0x32 >> 12) - 100);
     }
     if (frame.projectile->timer > frame.projectile->arrivalFrame + 5) {
-        frame.randomOffset = rand() % 0xE + 1;
+        frame.randomOffset = rand() % 14 + 1;
         frame.spawnedSprite = (BattleFxLimitDragonVariantSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDragonVariantSpriteTask);
         frame.spawnedSprite->posX = g_BattleLimitDragonTrail[(g_BattleLimitDragonTrailWriteIndex + frame.randomOffset) & 0xF].x;
         frame.spawnedSprite->posY = g_BattleLimitDragonTrail[(g_BattleLimitDragonTrailWriteIndex + frame.randomOffset) & 0xF].y;
         frame.spawnedSprite->posZ = g_BattleLimitDragonTrail[(g_BattleLimitDragonTrailWriteIndex + frame.randomOffset) & 0xF].z;
-        frame.spawnedSprite->posX += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnedSprite->posY += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnedSprite->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+        frame.spawnedSprite->posX += (short)(rand() % 1000 - 500);
+        frame.spawnedSprite->posY += (short)(rand() % 1000 - 500);
+        frame.spawnedSprite->posZ += (short)(rand() % 1000 - 500);
         frame.spawnedSprite->variantIndex = 2;
     }
-    g_BattleLimitDragonTrail[g_BattleLimitDragonTrailWriteIndex].x = frame.projectile->posX + (SinFixed(frame.projectile->timer << 8) * frame.projectile->spiralRadius >> 0xC);
-    g_BattleLimitDragonTrail[g_BattleLimitDragonTrailWriteIndex].z = frame.projectile->posZ + (CosFixed(frame.projectile->timer << 8) * frame.projectile->spiralRadius >> 0xC);
+    g_BattleLimitDragonTrail[g_BattleLimitDragonTrailWriteIndex].x = frame.projectile->posX + (SinFixed(frame.projectile->timer << 8) * frame.projectile->spiralRadius >> 12);
+    g_BattleLimitDragonTrail[g_BattleLimitDragonTrailWriteIndex].z = frame.projectile->posZ + (CosFixed(frame.projectile->timer << 8) * frame.projectile->spiralRadius >> 12);
     g_BattleLimitDragonTrail[g_BattleLimitDragonTrailWriteIndex].y = frame.projectile->posY;
     g_BattleLimitDragonTrailWriteIndex = (g_BattleLimitDragonTrailWriteIndex - 1) & 0xF;
-    if (frame.projectile->timer >= 0x18 && frame.projectile->timer < 0x28) {
+    if (frame.projectile->timer >= 24 && frame.projectile->timer < 40) {
         g_BattleLimitDragonTrailFade++;
     }
     if (frame.projectile->timer > frame.projectile->arrivalFrame + 0x32) {
@@ -545,14 +545,14 @@ void __cdecl BattleFx_LimitDragonVariantSpriteTask(void)
     BattleFxLimitDragonVariantSprite *task;
 
     task = (BattleFxLimitDragonVariantSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000 /* 3.0 */, 0);
     g_BattleLimitDragonVariantSpriteReq.frameIndex = task->frameIndex;
     g_BattleLimitDragonVariantSpriteReq.texture = Gfx_ModelTableGetLoadedRecord(g_BattleLimitDragonVariantSpriteIndices[task->variantIndex], g_BattleLimitDragonLoadedResTable);
     g_BattleLimitDragonVariantSpriteReq.clut = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
     g_BattleLimitDragonDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitDragonVariantSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitDragonDrawListHead);
     if (g_BattleIsPaused == 0) {
         if (task->variantIndex == 2) {
-            task->posY -= 0x64;
+            task->posY -= 100;
         }
         if (g_BattleLimitDragonVariantSpriteReq.texture != 0) {
             (task->frameIndex)++;
@@ -582,7 +582,7 @@ void __cdecl BattleFx_LimitDragonPulsingModelTask(void)
 #pragma pack(pop)
 
     frame.pulseRecord = (BattleFxLimitDragonPulseRecord *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleLimitDragonPulseModelReq.modelGroup = Gfx_ModelTableGetRenderObject(0x14, g_BattleLimitDragonLoadedResTable);
+    g_BattleLimitDragonPulseModelReq.modelGroup = Gfx_ModelTableGetRenderObject(20, g_BattleLimitDragonLoadedResTable);
     RotMatrixXYZ(&g_BattleLimitDragonPulseAngles, &frame.rotMatrix);
     frame.scaleX.vz = frame.pulseRecord->pulsePhase * 0x50;
     frame.scaleX.vy = frame.scaleX.vz;
@@ -600,14 +600,14 @@ void __cdecl BattleFx_LimitDragonPulsingModelTask(void)
         return;
     }
     (frame.pulseRecord->age)++;
-    if (frame.pulseRecord->step < 0x10) {
+    if (frame.pulseRecord->step < 16) {
         frame.pulseRecord->pulsePhase += 8;
     }
-    if (frame.pulseRecord->step > 0x2C) {
+    if (frame.pulseRecord->step > 44) {
         frame.pulseRecord->pulsePhase -= 8;
     }
     (frame.pulseRecord->step)++;
-    if (frame.pulseRecord->step == 0x3C) {
+    if (frame.pulseRecord->step == 60) {
         frame.pulseRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -629,10 +629,10 @@ void __cdecl BattleFx_LimitDragonPulsingRadialSpriteTask(void)
 #pragma pack(pop)
 
     frame.spriteRecord = (BattleFxPulsingRadialSprite *)BATTLE_CURRENT_TASK_SLOT;
-    frame.spriteX.vx = frame.spriteRecord->posX + (SinFixed(frame.spriteRecord->angle) * frame.spriteRecord->radius << 3 >> 0xC);
-    frame.spriteX.vz = frame.spriteRecord->posZ + (CosFixed(frame.spriteRecord->angle) * frame.spriteRecord->radius << 3 >> 0xC);
+    frame.spriteX.vx = frame.spriteRecord->posX + (SinFixed(frame.spriteRecord->angle) * frame.spriteRecord->radius << 3 >> 12);
+    frame.spriteX.vz = frame.spriteRecord->posZ + (CosFixed(frame.spriteRecord->angle) * frame.spriteRecord->radius << 3 >> 12);
     frame.spriteX.vy = 0;
-    BattleFx_InstallBillboardMatrix(&frame.spriteX, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.spriteX, 0x3000 /* 3.0 */, 0);
     g_BattleLimitDragonRadialSpriteReq.frameIndex = ((frame.spriteRecord->cycleIndex) % 4);
     g_BattleLimitDragonRadialSpriteReq.texture = Gfx_ModelTableGetLoadedRecord(g_BattleLimitDragonRadialSpriteIndices[frame.spriteRecord->resIndex], g_BattleLimitDragonLoadedResTable);
     g_BattleLimitDragonRadialSpriteReq.clut = Gfx_ModelTableGetSpriteObject(g_BattleLimitDragonRadialSpriteIndices[frame.spriteRecord->resIndex], g_BattleLimitDragonLoadedResTable);
@@ -644,14 +644,14 @@ void __cdecl BattleFx_LimitDragonPulsingRadialSpriteTask(void)
         return;
     }
     (frame.spriteRecord->cycleIndex)++;
-    if (frame.spriteRecord->frameCount < 0x10) {
+    if (frame.spriteRecord->frameCount < 16) {
         frame.spriteRecord->radius += 8;
     }
-    if (frame.spriteRecord->frameCount > 0x2C) {
+    if (frame.spriteRecord->frameCount > 44) {
         frame.spriteRecord->radius -= 8;
     }
     (frame.spriteRecord->frameCount)++;
-    if (frame.spriteRecord->frameCount == 0x3C) {
+    if (frame.spriteRecord->frameCount == 60) {
         frame.spriteRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -675,13 +675,13 @@ void __cdecl BattleFx_LimitDragonVariantSpriteEmitterTask(void)
     for (i = 0; i < 2; i++) {
         angle = rand() % 0x1000;
         pSprite = (BattleFxLimitDragonVariantSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDragonVariantSpriteTask);
-        pSprite->posX = pEmitter->baseX + (SinFixed(angle) * 0x190 >> 0xC);
-        pSprite->posY = pEmitter->baseY + pEmitter->frameIndex * 0x1E + rand() % 0x258 + -0x320;
-        pSprite->posZ = pEmitter->baseZ + (CosFixed(angle) * 0x190 >> 0xC);
+        pSprite->posX = pEmitter->baseX + (SinFixed(angle) * 0x190 >> 12);
+        pSprite->posY = pEmitter->baseY + pEmitter->frameIndex * 30 + rand() % 600 + -800;
+        pSprite->posZ = pEmitter->baseZ + (CosFixed(angle) * 0x190 >> 12);
         pSprite->variantIndex = pEmitter->variantIndex;
     }
     (pEmitter->frameIndex)++;
-    if (pEmitter->frameIndex == 0x1E) {
+    if (pEmitter->frameIndex == 30) {
         pEmitter->ownerSlot = BATTLE_TASK_FREE;
     }
 }

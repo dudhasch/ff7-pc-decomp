@@ -121,7 +121,7 @@ void __cdecl Credits_LoadPeopleBinAndCreateRenderObjects(void)
 
     ctx = GetEngineContext();
     // STRING: FF7 0x0099c9d4
-    g_CreditsScriptDataBase = (struct CreditsScriptRecord *)((struct CreditsScriptRecord *)((int)(GameHeapAlloc(0x21B, 0x40, "C:\\FF7\\src\\Credits\\credfile.cpp", 0x10D))));
+    g_CreditsScriptDataBase = (struct CreditsScriptRecord *)((struct CreditsScriptRecord *)((int)(GameHeapAlloc(539, 64, "C:\\FF7\\src\\Credits\\credfile.cpp", 269))));
     // STRING: FF7 0x0099c9f4
     result = Credits_ReadLgpFileByName("people.bin", 0x86C0, g_CreditsScriptDataBase);
     if (result == 0) {
@@ -145,7 +145,7 @@ void __cdecl Credits_ReleasePeopleBinAndRenderObjects(void)
 
     if (g_CreditsScriptDataBase != 0) {
         // STRING: FF7 0x0099ca00
-        GameHeapFree(g_CreditsScriptDataBase, "C:\\FF7\\src\\Credits\\credfile.cpp", 0x13E);
+        GameHeapFree(g_CreditsScriptDataBase, "C:\\FF7\\src\\Credits\\credfile.cpp", 318);
         g_CreditsScriptDataBase = 0;
     }
     for (i = 0; i < 5; i++) {
@@ -297,7 +297,7 @@ void __cdecl Credits_ReleaseRenderObjectSets(void)
         for (i = 0; i < 6; i++) {
             DestroyRenderObjectAndClear(&g_CreditsFadeOverlayBatch.backdropSlots[i]);
         }
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsA[i]);
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsB[i]);
         }
@@ -306,7 +306,7 @@ void __cdecl Credits_ReleaseRenderObjectSets(void)
         for (i = 0; i < 6; i++) {
             DestroyRenderObjectAndClear(&g_CreditsFadeOverlayBatch.backdropSlots[i]);
         }
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsA[i]);
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsB[i]);
         }
@@ -328,7 +328,7 @@ void __cdecl Credits_ReleaseRenderObjectSetsAndBackground(void)
         for (i = 0; i < 6; i++) {
             DestroyRenderObjectAndClear(&g_CreditsFadeOverlayBatch.backdropSlots[i]);
         }
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsA[i]);
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsB[i]);
         }
@@ -337,7 +337,7 @@ void __cdecl Credits_ReleaseRenderObjectSetsAndBackground(void)
         for (i = 0; i < 6; i++) {
             DestroyRenderObjectAndClear(&g_CreditsFadeOverlayBatch.backdropSlots[i]);
         }
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsA[i]);
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsB[i]);
         }
@@ -432,7 +432,7 @@ void __cdecl Credits_CreateRenderObjectSets(void)
         for (p = 0; p < 6; p++) {
             DestroyRenderObjectAndClear(&g_CreditsFadeOverlayBatch.backdropSlots[p]);
         }
-        for (p = 0; p < 0x10; p++) {
+        for (p = 0; p < 16; p++) {
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsA[p]);
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsB[p]);
         }
@@ -440,7 +440,7 @@ void __cdecl Credits_CreateRenderObjectSets(void)
         for (p = 0; p < 6; p++) {
             DestroyRenderObjectAndClear(&g_CreditsFadeOverlayBatch.backdropSlots[p]);
         }
-        for (p = 0; p < 0x10; p++) {
+        for (p = 0; p < 16; p++) {
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsA[p]);
             DestroyRenderObjectAndClear(&g_CreditsQuadBatchListsB[p]);
         }
@@ -463,7 +463,7 @@ void __cdecl Credits_CreateRenderObjectSets(void)
                 1, GFX_DRAW_TEXTURED_QUAD_2D, &opts, g_CreditsOpeningBackTimFiles[p],
                 *(void **)&ctx->renderObjectBank);
         }
-        for (p = 0; p < 0x10; p++) {
+        for (p = 0; p < 16; p++) {
             Pfile_SetLoadOptionsBlendMode(BLEND_ADDITIVE, &opts);
             g_CreditsQuadBatchListsA[p] = (int)Gfx_CreateRenderObject(
                 1, GFX_DRAW_TEXTURED_QUAD_2D, &opts, g_CreditsNameCardLargeTimFiles[p],
@@ -493,7 +493,7 @@ void __cdecl Credits_CreateRenderObjectSets(void)
         for (p = 2; p < 6; p++) {
             g_CreditsFadeOverlayBatch.backdropSlots[p] = 0;
         }
-        for (p = 8; p < 0x10; p++) {
+        for (p = 8; p < 16; p++) {
             g_CreditsQuadBatchListsA[p] = 0;
             g_CreditsQuadBatchListsB[p] = 0;
         }
@@ -515,7 +515,7 @@ void __cdecl Credits_ClearState(void)
     for (i = 0; i < 6; i++) {
         g_CreditsFadeOverlayBatch.backdropSlots[i] = 0;
     }
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_CreditsQuadBatchListsA[i] = 0;
         g_CreditsQuadBatchListsB[i] = 0;
     }
@@ -670,7 +670,7 @@ void __cdecl Credits_ResetRecordDefaults(CreditsLineRecord *record)
     record->textGlyph3 = 0xE;
     record->textGlyph4 = 0x11;
     record->textGlyph5 = 0x7F;
-    record->wrapWidth = 0x50;
+    record->wrapWidth = 80;
 }
 
 /*
@@ -689,7 +689,7 @@ void __cdecl Credits_CenterRecordTexts(void)
     int fontSize;
 
     notScaled = GetUiScalingMode() != 2;
-    for (index = 0; index < 0x21B; index++) {
+    for (index = 0; index < 539; index++) {
         recordKind = ((CreditsLineRecord *)g_CreditsScriptDataBase)[index].drawerKind;
         if (recordKind < 0 || recordKind > 5) {
             Credits_ResetRecordDefaults(&((CreditsLineRecord *)g_CreditsScriptDataBase)[index]);

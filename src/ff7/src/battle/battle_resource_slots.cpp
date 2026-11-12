@@ -29,7 +29,7 @@ short __cdecl Battle_AllocateResourceSlot(BattleTaskFn callback)
 {
     short slot;
 
-    for (slot = 0; slot < 0x64; slot++) {
+    for (slot = 0; slot < 100; slot++) {
         if (g_BattleMainTaskCallbacks[slot] == 0 && g_BattleActiveTaskSlotIdx <= slot) {
             g_BattleMainTaskCallbacks[slot] = callback;
             g_BattleTaskSlotBuffer.mainSlots[slot].ownerSlot = g_BattleActiveTaskSlotIdx;
@@ -52,7 +52,7 @@ short __cdecl Battle_AllocateOverlayTaskSlot(BattleTaskFn callback)
 {
     short slot;
 
-    for (slot = 0; slot < 0xA; slot++) {
+    for (slot = 0; slot < 10; slot++) {
         if (g_BattleOverlayTaskCallbacks[slot] == 0 && g_BattleOverlayTaskSlotIdx <= slot) {
             g_BattleOverlayTaskCallbacks[slot] = callback;
             g_BattleOverlayTaskSlotBuffer[slot].ownerSlot = g_BattleOverlayTaskSlotIdx;
@@ -75,7 +75,7 @@ short __cdecl Battle_AllocateSecondaryResourceSlot(BattleTaskFn callback)
 {
     short slot;
 
-    for (slot = 0; slot < 0x3C; slot++) {
+    for (slot = 0; slot < 60; slot++) {
         if (g_BattleSecondaryTaskCallbacks[slot] == 0 && g_BattleSecondaryTaskActiveSlotIdx <= slot) {
             g_BattleSecondaryTaskCallbacks[slot] = callback;
             g_BattleTaskSlotBuffer.secondarySlots[slot].ownerSlot = g_BattleSecondaryTaskActiveSlotIdx;
@@ -98,7 +98,7 @@ short __cdecl Battle_AllocateAuxTaskSlot(BattleTaskFn callback)
 {
     short slot;
 
-    for (slot = 0; slot < 0x10; slot++) {
+    for (slot = 0; slot < 16; slot++) {
         if (g_BattleAuxTaskCallbackArray[slot] == 0) {
             g_BattleAuxTaskCallbackArray[slot] = callback;
             g_BattleAuxTaskSlotBuffer[slot].ownerSlot = g_BattleCameraAuxTaskSlot;
@@ -124,17 +124,17 @@ void __cdecl Battle_ResetAllTaskSlots(void)
     g_BattleSecondaryResourceCount = 0;
     g_BattleOverlayTaskActiveCount = g_BattleSecondaryResourceCount;
     g_BattleSecondaryTaskActiveCount = g_BattleOverlayTaskActiveCount;
-    for (task = 0; task < 0x64; task++) {
+    for (task = 0; task < 100; task++) {
         g_BattleMainTaskCallbacks[task] = 0;
         g_BattleTaskSlotBuffer.mainSlots[task].frameCounter = 0;
         g_BattleTaskSlotBuffer.mainSlots[task].ownerSlot = 0;
     }
-    for (task = 0; task < 0xA; task++) {
+    for (task = 0; task < 10; task++) {
         g_BattleOverlayTaskCallbacks[task] = 0;
         g_BattleOverlayTaskSlotBuffer[task].state = 0;
         g_BattleOverlayTaskSlotBuffer[task].ownerSlot = 0;
     }
-    for (task = 0; task < 0x3C; task++) {
+    for (task = 0; task < 60; task++) {
         g_BattleSecondaryTaskCallbacks[task] = 0;
         g_BattleTaskSlotBuffer.secondarySlots[task].frameCounter = 0;
         g_BattleTaskSlotBuffer.secondarySlots[task].ownerSlot = 0;
@@ -151,7 +151,7 @@ void __cdecl Battle_ResetAuxTaskSlots(void)
     int i;
 
     g_BattleAuxTaskActiveCount = 0;
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_BattleAuxTaskCallbackArray[i] = 0;
         g_BattleAuxTaskSlotBuffer[i].ownerSlot = 0;
         g_BattleAuxTaskSlotBuffer[i].timerWord = 0;
@@ -164,7 +164,7 @@ void __cdecl Battle_ResetAuxTaskSlots(void)
 // FUNCTION: FF7 0x005bf01f
 void __cdecl Battle_RunMainTaskSlots(void)
 {
-    for (g_BattleActiveTaskSlotIdx = 0; g_BattleActiveTaskSlotIdx < 0x64; g_BattleActiveTaskSlotIdx++) {
+    for (g_BattleActiveTaskSlotIdx = 0; g_BattleActiveTaskSlotIdx < 100; g_BattleActiveTaskSlotIdx++) {
         if (g_BattleMainTaskCallbacks[g_BattleActiveTaskSlotIdx] != 0 && g_BattleIsRunning != 0) {
             g_BattleMainTaskCallbacks[g_BattleActiveTaskSlotIdx]();
             if (g_BattleTaskSlotBuffer.mainSlots[g_BattleActiveTaskSlotIdx].ownerSlot == -1) {

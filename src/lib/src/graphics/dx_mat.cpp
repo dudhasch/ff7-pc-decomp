@@ -53,7 +53,7 @@ int __cdecl D3DCreateMaterial(GfxEngineContext *ctx)
     int result;
     result = 0;
     // STRING: FF7 0x0090de4c
-    CheckDirectDrawResult(((ComDirect3D *)ctx->direct3D)->CreateMaterial(&result, 0), "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x24);
+    CheckDirectDrawResult(((ComDirect3D *)ctx->direct3D)->CreateMaterial(&result, 0), "C:\\lib\\src\\graphics\\dx_mat.cpp", 36);
     return result;
 }
 
@@ -65,7 +65,7 @@ void __cdecl Gfx_FreeD3DMaterialStruct(void *record)
 {
     if (record != 0) {
         // STRING: FF7 0x0090de6c
-        GameHeapFree(record, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x31);
+        GameHeapFree(record, "C:\\lib\\src\\graphics\\dx_mat.cpp", 49);
     }
 }
 
@@ -78,9 +78,9 @@ int __cdecl Gfx_AllocD3DMaterialStruct(void)
     GfxSizedRecord *rec;
 
     // STRING: FF7 0x0090de8c
-    rec = (GfxSizedRecord *)GameHeapAlloc(1, 0x50, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x39);
+    rec = (GfxSizedRecord *)GameHeapAlloc(1, 80, "C:\\lib\\src\\graphics\\dx_mat.cpp", 57);
     if (rec != 0) {
-        rec->size = 0x50;
+        rec->size = 80;
         rec->rampSize = 1;
     }
     return (int)rec;
@@ -127,7 +127,7 @@ void __cdecl Gfx_FreePHundred(int renderState)
 {
     if (renderState != 0) {
         // STRING: FF7 0x0090deac
-        GameHeapFree((void *)renderState, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x6B);
+        GameHeapFree((void *)renderState, "C:\\lib\\src\\graphics\\dx_mat.cpp", 107);
     }
 }
 
@@ -140,7 +140,7 @@ int __cdecl Gfx_AllocPHundred(void)
     PolygonHundredState *rec;
 
     // STRING: FF7 0x0090decc
-    rec = (PolygonHundredState *)GameHeapAlloc(1, 0x64, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x73);
+    rec = (PolygonHundredState *)GameHeapAlloc(1, 100, "C:\\lib\\src\\graphics\\dx_mat.cpp", 115);
     if (rec != 0) {
         rec->initFlag = 1;
         rec->emitStates = 1;
@@ -187,7 +187,7 @@ void __cdecl D3DDeleteMatrixHandle(int matrix, GfxEngineContext *ctx)
 {
     if (matrix != 0 && ctx != 0 && ctx->d3dDevice != 0) {
         // STRING: FF7 0x0090deec
-        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->DeleteMatrix(matrix), "C:\\lib\\src\\graphics\\dx_mat.cpp", 0xA3);
+        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->DeleteMatrix(matrix), "C:\\lib\\src\\graphics\\dx_mat.cpp", 163);
     }
 }
 
@@ -201,7 +201,7 @@ int __cdecl D3DCreateMatrixHandle(GfxEngineContext *ctx)
     result = 0;
     if (ctx != 0 && ctx->d3dDevice != 0) {
         // STRING: FF7 0x0090df0c
-        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->CreateMatrix(&result), "C:\\lib\\src\\graphics\\dx_mat.cpp", 0xB2);
+        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->CreateMatrix(&result), "C:\\lib\\src\\graphics\\dx_mat.cpp", 178);
     }
     return result;
 }
@@ -214,7 +214,7 @@ void __cdecl D3DUploadMatrixToHandle(int matrix, int handle, GfxEngineContext *c
 {
     if (matrix != 0 && handle != 0 && ctx != 0) {
         // STRING: FF7 0x0090df2c
-        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->SetMatrix(handle, matrix), "C:\\lib\\src\\graphics\\dx_mat.cpp", 0xCB);
+        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->SetMatrix(handle, matrix), "C:\\lib\\src\\graphics\\dx_mat.cpp", 203);
     }
 }
 
@@ -226,7 +226,7 @@ void __cdecl D3DGetMatrix(int matrix, int handle, struct GfxEngineContext *ctx)
 {
     if (matrix != 0 && handle != 0 && ctx != 0) {
         // STRING: FF7 0x0090df4c
-        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->GetMatrix(handle, matrix), "C:\\lib\\src\\graphics\\dx_mat.cpp", 0xDF);
+        CheckDirectDrawResult(((ComDirect3DDevice *)ctx->d3dDevice)->GetMatrix(handle, matrix), "C:\\lib\\src\\graphics\\dx_mat.cpp", 223);
     }
 }
 
@@ -238,7 +238,7 @@ void __cdecl Gfx_FreeMatrix4x4(void *matrix)
 {
     if (matrix != 0) {
         // STRING: FF7 0x0090df6c
-        GameHeapFree(matrix, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0xEA);
+        GameHeapFree(matrix, "C:\\lib\\src\\graphics\\dx_mat.cpp", 234);
     }
 }
 
@@ -251,7 +251,7 @@ int __cdecl Gfx_AllocIdentityMatrix4x4(void)
     GfxMatrix4x4 *rec;
 
     // STRING: FF7 0x0090df8c
-    rec = (GfxMatrix4x4 *)GameHeapAlloc(1, 0x40, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0xF2);
+    rec = (GfxMatrix4x4 *)GameHeapAlloc(1, 64, "C:\\lib\\src\\graphics\\dx_mat.cpp", 242);
     if (rec != 0) {
         rec->m00 = 1.0f;
         rec->m11 = 1.0f;
@@ -1151,9 +1151,9 @@ void __cdecl DestroyRenderMaterial(GfxRenderMaterial *material)
     if (material != 0) {
         if (material->matrix != 0) {
             // STRING: FF7 0x0090dfac
-            GameHeapFree((void *)material->heapBlockA, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x6A9);
+            GameHeapFree((void *)material->heapBlockA, "C:\\lib\\src\\graphics\\dx_mat.cpp", 1705);
             // STRING: FF7 0x0090dfcc
-            GameHeapFree((void *)material->heapBlockB, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x6AA);
+            GameHeapFree((void *)material->heapBlockB, "C:\\lib\\src\\graphics\\dx_mat.cpp", 1706);
         }
         Gfx_FreeMatrix4x4(material->matrix4A);
         Gfx_FreeMatrix4x4((void *)material->matrix4B);
@@ -1165,7 +1165,7 @@ void __cdecl DestroyRenderMaterial(GfxRenderMaterial *material)
             D3DDeleteMatrixHandle(material[1].matrix, context);
         }
         // STRING: FF7 0x0090dfec
-        GameHeapFree(material, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x6BA);
+        GameHeapFree(material, "C:\\lib\\src\\graphics\\dx_mat.cpp", 1722);
     }
 }
 
@@ -1179,14 +1179,14 @@ int __cdecl CreateMatrixArray(int n)
     int index;
 
     // STRING: FF7 0x0090e00c
-    array = (GfxMatrixArray *)GameHeapAlloc(1, 0x2C, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x6C2);
+    array = (GfxMatrixArray *)GameHeapAlloc(1, 44, "C:\\lib\\src\\graphics\\dx_mat.cpp", 1730);
     if (array != 0 && n > 0) {
         array->hasMatrices = 1;
         array->count = n;
         // STRING: FF7 0x0090e02c
-        array->matrixBuffer = (int)GameHeapAlloc(n, 1, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x6CB);
+        array->matrixBuffer = (int)GameHeapAlloc(n, 1, "C:\\lib\\src\\graphics\\dx_mat.cpp", 1739);
         // STRING: FF7 0x0090e04c
-        array->matrices = (int)GameHeapAlloc(n, 0x40, "C:\\lib\\src\\graphics\\dx_mat.cpp", 0x6CC);
+        array->matrices = (int)GameHeapAlloc(n, 64, "C:\\lib\\src\\graphics\\dx_mat.cpp", 1740);
         if (array->matrices != 0) {
             for (index = 0; index < n; index++) {
                 SetIdentityMatrix4x4((void *)(array->matrices + index * 0x40));

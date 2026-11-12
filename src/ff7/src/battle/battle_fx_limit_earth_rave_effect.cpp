@@ -251,9 +251,9 @@ void __cdecl BattleFx_LimitEarthRaveTimelineTask(void)
     task = (BattleFxLimitEarthRaveRecord *)BATTLE_CURRENT_TASK_SLOT;
     if (task->frame < 1) {
         alpha = 0;
-    } else if (task->frame < 0x11) {
+    } else if (task->frame < 17) {
         alpha = task->frame * 3;
-    } else if (task->frame >= 0x77) {
+    } else if (task->frame >= 119) {
         alpha = 0x30 - (task->frame - 0x77) * 3;
     } else {
         alpha = 0x30;
@@ -269,32 +269,32 @@ void __cdecl BattleFx_LimitEarthRaveTimelineTask(void)
         g_BattleLimitEarthRaveSavedActorPose.rot = *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].rotX;
         task->standPoint = BattleFx_LimitEarthRaveComputeStandPointByBearing(task->standIndex);
         g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].yaw = g_BattleLimitEarthRaveStandPos.yaw;
-    } else if (task->frame >= 0xF && task->frame < 0x15) {
-        if (task->frame == 0xF) {
+    } else if (task->frame >= 15 && task->frame < 21) {
+        if (task->frame == 15) {
             stepX.vx = g_BattleLimitEarthRaveStandPos.x - g_BattleLimitEarthRaveCurrentPos.x;
             stepX.vy = 0;
             stepX.vz = g_BattleLimitEarthRaveStandPos.z - g_BattleLimitEarthRaveCurrentPos.z;
             NormalizeVectorFixed(&stepX, &stepX);
-            g_BattleLimitEarthRaveStepX = stepX.vx * 0x32 >> 0xC;
-            g_BattleLimitEarthRaveStepZ = stepX.vz * 0x32 >> 0xC;
+            g_BattleLimitEarthRaveStepX = stepX.vx * 0x32 >> 12;
+            g_BattleLimitEarthRaveStepZ = stepX.vz * 0x32 >> 12;
         }
         g_BattleLimitEarthRaveCurrentPos.x += g_BattleLimitEarthRaveStepX;
         g_BattleLimitEarthRaveCurrentPos.z += g_BattleLimitEarthRaveStepZ;
-    } else if (task->frame >= 0x15 && task->frame < 0x18) {
-        if (task->frame == 0x15) {
+    } else if (task->frame >= 21 && task->frame < 24) {
+        if (task->frame == 21) {
             g_BattleLimitEarthRaveStepX = (g_BattleLimitEarthRaveStandPos.x - g_BattleLimitEarthRaveCurrentPos.x) / 3;
             g_BattleLimitEarthRaveStepZ = (g_BattleLimitEarthRaveStandPos.z - g_BattleLimitEarthRaveCurrentPos.z) / 3;
         }
         g_BattleLimitEarthRaveCurrentPos.x += g_BattleLimitEarthRaveStepX;
         g_BattleLimitEarthRaveCurrentPos.z += g_BattleLimitEarthRaveStepZ;
-    } else if (task->frame >= 0x72 && task->frame < 0x7A) {
-        if (task->frame == 0x72) {
+    } else if (task->frame >= 114 && task->frame < 122) {
+        if (task->frame == 114) {
             g_BattleLimitEarthRaveStepX = (g_BattleLimitEarthRaveSavedActorPose.pos.x - g_BattleLimitEarthRaveCurrentPos.x) / 8;
             g_BattleLimitEarthRaveStepZ = (g_BattleLimitEarthRaveSavedActorPose.pos.z - g_BattleLimitEarthRaveCurrentPos.z) / 8;
         }
         g_BattleLimitEarthRaveCurrentPos.x += g_BattleLimitEarthRaveStepX;
         g_BattleLimitEarthRaveCurrentPos.z += g_BattleLimitEarthRaveStepZ;
-    } else if (task->frame >= 0x7A && task->frame < 0x7E) {
+    } else if (task->frame >= 122 && task->frame < 126) {
         g_BattleLimitEarthRaveCurrentPos.words[0] = g_BattleLimitEarthRaveSavedActorPose.pos.words[0];
         g_BattleLimitEarthRaveCurrentPos.words[1] = g_BattleLimitEarthRaveSavedActorPose.pos.words[1];
     }
@@ -324,7 +324,7 @@ void __cdecl BattleFx_LimitEarthRaveTimelineTask(void)
         (task->timingIndexB)++;
     }
     *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].posX = g_BattleLimitEarthRaveCurrentPos.pair;
-    if (task->frame >= 0x87) {
+    if (task->frame >= 135) {
         *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].posX = g_BattleLimitEarthRaveSavedActorPose.pos.pair;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -368,17 +368,17 @@ void __cdecl BattleFx_LimitEarthRaveImpactBurstTask(void)
         curTask->ownerSlot = BATTLE_TASK_FREE;
     } else {
         if (curTask->phase == 1 && curTask->stage >= 2) {
-            for (idx = 0; idx < 0xC; idx++) {
+            for (idx = 0; idx < 12; idx++) {
                 pDirSprite = (BattleFxLimitEarthRaveSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitEarthRaveDirectionalSpriteTask);
                 *(Int64Pair *)&pDirSprite->posX = *(Int64Pair *)&curTask->posX;
-                pDirSprite->speed = rand() % 0x118 + 0x44;
-                pDirSprite->direction.v[0] = rand() % 0x1000 - 0x800;
-                pDirSprite->direction.v[1] = rand() % 0x1000 - 0x800;
-                pDirSprite->direction.v[2] = rand() % 0x1000 - 0x800;
+                pDirSprite->speed = rand() % 280 + 68;
+                pDirSprite->direction.v[0] = rand() % 4096 - 2048;
+                pDirSprite->direction.v[1] = rand() % 4096 - 2048;
+                pDirSprite->direction.v[2] = rand() % 4096 - 2048;
                 NormalizeVectorFixed(pDirSprite->direction.v, pDirSprite->direction.v);
                 baseSize = 0x2580;
-                randFactor = rand() % 0x600 + 0xA00;
-                pDirSprite->sizeXZ = baseSize * randFactor >> 0xC;
+                randFactor = rand() % 1536 + 2560;
+                pDirSprite->sizeXZ = baseSize * randFactor >> 12;
                 pDirSprite->scale = pDirSprite->sizeXZ;
             }
         }
@@ -387,30 +387,30 @@ void __cdecl BattleFx_LimitEarthRaveImpactBurstTask(void)
             *(Int64Pair *)&childTask->posX = *(Int64Pair *)&curTask->posX;
             childTask->posY = 0;
             childTask->angle = rand() % 0x1000;
-            childTask->angularVelocity = rand() % 0xDC + 0xF0;
-            childTask->scale = ((curTask->stage - 2) * 0xC8 + 0x514 << 0xC) / 0x3E8;
+            childTask->angularVelocity = rand() % 220 + 240;
+            childTask->scale = ((curTask->stage - 2) * 0xC8 + 0x514 << 12) / 1000;
             childTask->scaleStep = childTask->scale / 7;
         }
         if (curTask->phase == 0 && curTask->stage >= 3) {
             power = (curTask->stage << 4) + 0xC8;
             for (idx = 0; idx < curTask->stage + 8; idx++) {
                 pTumbler = (BattleFxTumblingSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitEarthRaveTumblingModelTask);
-                pTumbler->posX = curTask->posX + rand() % 0x708 + -0x384;
-                pTumbler->posY = -(rand() % 0x30C + (curTask->stage - 2) * 0x1E + 0x46);
-                pTumbler->posZ = curTask->posZ + rand() % 0x708 + -0x384;
-                pTumbler->velocityY = -(rand() % 0x62 + (curTask->stage - 2) * 0xA + 0x10);
+                pTumbler->posX = curTask->posX + rand() % 1800 + -900;
+                pTumbler->posY = -(rand() % 780 + (curTask->stage - 2) * 30 + 70);
+                pTumbler->posZ = curTask->posZ + rand() % 1800 + -900;
+                pTumbler->velocityY = -(rand() % 98 + (curTask->stage - 2) * 10 + 16);
                 pTumbler->angleZ = rand() % 0x1000;
                 pTumbler->angleX = pTumbler->angleZ;
-                pTumbler->angleXStep = rand() % 0x48 + 0x60;
-                pTumbler->angleZStep = rand() % 0x80 + 0x4A;
-                baseSize = (power << 0xC) / 0x258;
-                randFactor = rand() % 0xA00 + 0x500;
-                pTumbler->scale = baseSize * randFactor >> 0xC;
+                pTumbler->angleXStep = rand() % 72 + 96;
+                pTumbler->angleZStep = rand() % 128 + 74;
+                baseSize = (power << 12) / 600;
+                randFactor = rand() % 2560 + 1280;
+                pTumbler->scale = baseSize * randFactor >> 12;
                 pTumbler->modelIndex = rand() % 4;
             }
         }
         if (curTask->phase >= 0 && curTask->phase <= 2 && curTask->stage >= 3) {
-            g_BattleCameraTransform.posY = (curTask->phase + 1 & 1) * 0x8C;
+            g_BattleCameraTransform.posY = (curTask->phase + 1 & 1) * 140;
         }
         if (curTask->phase >= 3) {
             g_BattleCameraTransform.posY = 0;
@@ -442,7 +442,7 @@ void __cdecl BattleFx_LimitEarthRaveSpriteParticlePool100Task(void)
     pParticlePool = (BattleLimitEarthRaveParticle *)(emitter->stage * 0x960 + (char *)&g_BattleLimitEarthRaveParticlePool);
     g_BattleLimitEarthRaveModelReq2.particleSpriteGroup = Gfx_ModelTableGetLoadedRecord(1, g_BattleLimitEarthRaveModelTable);
     g_BattleLimitEarthRaveModelReq2.particleSpriteDrawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleLimitEarthRaveModelTable);
-    for (idx = 0; idx < 0x64; idx++) {
+    for (idx = 0; idx < 100; idx++) {
         if (pParticlePool[idx].active != 0) {
             g_BattleLimitEarthRaveColorData.b = 0x80 - (pParticlePool[idx].age << 3);
             g_BattleLimitEarthRaveColorData.g = g_BattleLimitEarthRaveColorData.b;
@@ -455,8 +455,8 @@ void __cdecl BattleFx_LimitEarthRaveSpriteParticlePool100Task(void)
                 pParticlePool[idx].posZ += pParticlePool[idx].velocityZ;
                 pParticlePool[idx].velocityY += pParticlePool[idx].accelY;
                 pParticlePool[idx].accelY += (short)(pParticlePool[idx].accelY >> 4);
-                pParticlePool[idx].size -= 0x40;
-                if (pParticlePool[idx].posY > 0 || pParticlePool[idx].age >= 0xF) {
+                pParticlePool[idx].size -= 64;
+                if (pParticlePool[idx].posY > 0 || pParticlePool[idx].age >= 15) {
                     pParticlePool[idx].active = 0;
                 }
                 (pParticlePool[idx].age)++;
@@ -466,40 +466,40 @@ void __cdecl BattleFx_LimitEarthRaveSpriteParticlePool100Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (emitter->frame >= 0x14) {
+    if (emitter->frame >= 20) {
         emitter->ownerSlot = BATTLE_TASK_FREE;
     }
     if (emitter->frame < 2) {
         baseSize = 0x1800;
-        for (idx = 0; idx < 0xC; idx++) {
-            for (emptyIdx = 0; emptyIdx < 0x64 && pParticlePool[emptyIdx].active != 0; emptyIdx++) {
+        for (idx = 0; idx < 12; idx++) {
+            for (emptyIdx = 0; emptyIdx < 100 && pParticlePool[emptyIdx].active != 0; emptyIdx++) {
             }
-            if (emptyIdx >= 0x64) {
+            if (emptyIdx >= 100) {
                 break;
             }
             pParticlePool[emptyIdx].active = 1;
             pParticlePool[emptyIdx].age = 0;
-            pParticlePool[emptyIdx].posX = emitter->posX + rand() % 0xC8 + -0x64;
-            pParticlePool[emptyIdx].posY = emitter->posY + rand() % 0xC8 + -0x64;
-            pParticlePool[emptyIdx].posZ = emitter->posZ + rand() % 0xC8 + -0x64;
+            pParticlePool[emptyIdx].posX = emitter->posX + rand() % 200 + -100;
+            pParticlePool[emptyIdx].posY = emitter->posY + rand() % 200 + -100;
+            pParticlePool[emptyIdx].posZ = emitter->posZ + rand() % 200 + -100;
             if (emitter->linkedIndex > 0) {
                 rnd = ((rand()) % 4096);
-                speedValue = rand() % 0xBE + 0x8C;
-                pParticlePool[emptyIdx].velocityX = -(SinFixed(rnd) * speedValue >> 0xC);
-                pParticlePool[emptyIdx].velocityY = -(rand() % 0x10E + 0x78);
-                pParticlePool[emptyIdx].velocityZ = CosFixed(rnd) * speedValue >> 0xC;
-                pParticlePool[emptyIdx].accelY = rand() % 0x14 + 0x10;
-                rnd = rand() % 0x900 + 0x600 - (emitter->frame << 9);
-                pParticlePool[emptyIdx].size = baseSize * rnd >> 0xC;
+                speedValue = rand() % 190 + 140;
+                pParticlePool[emptyIdx].velocityX = -(SinFixed(rnd) * speedValue >> 12);
+                pParticlePool[emptyIdx].velocityY = -(rand() % 270 + 120);
+                pParticlePool[emptyIdx].velocityZ = CosFixed(rnd) * speedValue >> 12;
+                pParticlePool[emptyIdx].accelY = rand() % 20 + 16;
+                rnd = rand() % 2304 + 1536 - (emitter->frame << 9);
+                pParticlePool[emptyIdx].size = baseSize * rnd >> 12;
             } else {
                 rnd = ((rand()) % 4096);
-                speedValue = rand() % 0x5A + 0x46;
-                pParticlePool[emptyIdx].velocityX = -(SinFixed(rnd) * speedValue >> 0xC);
-                pParticlePool[emptyIdx].velocityY = -(rand() % 0x8C + 0x3C);
-                pParticlePool[emptyIdx].velocityZ = CosFixed(rnd) * speedValue >> 0xC;
-                pParticlePool[emptyIdx].accelY = rand() % 0xA + 8;
-                rnd = rand() % 0x700 + 0x400 - emitter->frame * 0x180;
-                pParticlePool[emptyIdx].size = baseSize * rnd >> 0xC;
+                speedValue = rand() % 90 + 70;
+                pParticlePool[emptyIdx].velocityX = -(SinFixed(rnd) * speedValue >> 12);
+                pParticlePool[emptyIdx].velocityY = -(rand() % 140 + 60);
+                pParticlePool[emptyIdx].velocityZ = CosFixed(rnd) * speedValue >> 12;
+                pParticlePool[emptyIdx].accelY = rand() % 10 + 8;
+                rnd = rand() % 1792 + 1024 - emitter->frame * 384;
+                pParticlePool[emptyIdx].size = baseSize * rnd >> 12;
             }
         }
     }
@@ -593,10 +593,10 @@ void __cdecl BattleFx_LimitEarthRaveSpinningShrinkingModelTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     frame.drawDesc = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.drawDesc->modelGroup = Gfx_ModelTableGetRenderObject(0xA, g_BattleLimitEarthRaveModelTable);
+    frame.drawDesc->modelGroup = Gfx_ModelTableGetRenderObject(10, g_BattleLimitEarthRaveModelTable);
     frame.drawDesc->flags = 0x28;
     frame.drawDesc->uvScroll = 0;
-    frame.drawDesc->fadeLevel = 0x80;
+    frame.drawDesc->fadeLevel = 128;
     frame.drawDesc->stateFlags = 0x20;
     frame.drawDesc->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawDesc, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
@@ -654,16 +654,16 @@ void __cdecl BattleFx_LimitEarthRaveTumblingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleLimitEarthRaveModelReq1[frame.tumblingSlot->modelIndex], g_BattleLimitEarthRaveModelTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.tumblingSlot->timer >= 0xA) {
+    if (frame.tumblingSlot->timer >= 10) {
         frame.modelDraw->flags |= 8;
-        frame.modelDraw->fadeLevel = 0x80 - (frame.tumblingSlot->timer - 0xA) * 0x15;
+        frame.modelDraw->fadeLevel = 128 - (frame.tumblingSlot->timer - 10) * 21;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleLimitEarthRaveModelReq2.fadeModels[frame.tumblingSlot->modelIndex], g_BattleLimitEarthRaveModelTable);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.tumblingSlot->timer >= 0x10) {
+    if (frame.tumblingSlot->timer >= 16) {
         frame.tumblingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -691,10 +691,10 @@ int __cdecl BattleFx_LimitEarthRaveComputeStandPointByFacing(int sequenceIndex)
 
     actorIdx = g_BattleHitTargetActors[sequenceIndex];
     Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, &g_BattleLimitEarthRaveStandPos.x);
-    distance = (g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].radius * g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].scale >> 0xC) + (g_BattleActorRecords[actorIdx].radius * g_BattleActorRecords[actorIdx].scale >> 0xC);
+    distance = (g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].radius * g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].scale >> 12) + (g_BattleActorRecords[actorIdx].radius * g_BattleActorRecords[actorIdx].scale >> 12);
     facing = g_BattleActorRecords[actorIdx].facing;
-    g_BattleLimitEarthRaveStandPos.x += SinFixed(facing) * distance >> 0xC;
-    g_BattleLimitEarthRaveStandPos.z -= CosFixed(facing) * distance >> 0xC;
+    g_BattleLimitEarthRaveStandPos.x += SinFixed(facing) * distance >> 12;
+    g_BattleLimitEarthRaveStandPos.z -= CosFixed(facing) * distance >> 12;
     g_BattleLimitEarthRaveStandPos.yaw = facing + 0x800;
     return actorIdx;
 }
@@ -715,11 +715,11 @@ int __cdecl BattleFx_LimitEarthRaveComputeStandPointByBearing(int sequenceIndex)
 
     actorIndex = g_BattleHitTargetActors[sequenceIndex];
     Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].targetBone, &g_BattleLimitEarthRaveStandPos.x);
-    range = (g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].radius * g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].scale >> 0xC) + (g_BattleActorRecords[actorIndex].radius * g_BattleActorRecords[actorIndex].scale >> 0xC);
+    range = (g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].radius * g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].scale >> 12) + (g_BattleActorRecords[actorIndex].radius * g_BattleActorRecords[actorIndex].scale >> 12);
     bearing = ArcTangentFixed(g_BattleActorRecords[actorIndex].posX - g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].posX, g_BattleActorRecords[actorIndex].posZ - g_BattleActorRecords[g_BattleLimitEarthRaveActorIndex].posZ);
     ofsAngle = 0x1000 - (bearing + 0x800);
-    g_BattleLimitEarthRaveStandPos.x -= (short)(SinFixed(ofsAngle) * range >> 0xC);
-    g_BattleLimitEarthRaveStandPos.z += (short)(CosFixed(ofsAngle) * range >> 0xC);
+    g_BattleLimitEarthRaveStandPos.x -= (short)(SinFixed(ofsAngle) * range >> 12);
+    g_BattleLimitEarthRaveStandPos.z += (short)(CosFixed(ofsAngle) * range >> 12);
     g_BattleLimitEarthRaveStandPos.yaw = bearing + 0x800;
     return actorIndex;
 }

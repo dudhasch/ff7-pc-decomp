@@ -99,11 +99,11 @@ void __cdecl Battle_ItemFxSmokeBombSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pEmitter->count < 0x1E) {
+    if (pEmitter->count < 30) {
         for (i = 0; i < 7; i++) {
             smoke = (BattleItemFxSmokeBombSpriteTask *)BATTLE_NEW_TASK_SLOT(Battle_ItemFxSmokeBombAnimatedSpriteTask);
-            smoke->offsetX = rand() % 0x140 - 0xA0;
-            smoke->offsetY = rand() % 0x5C - 0x78;
+            smoke->offsetX = rand() % 320 - 160;
+            smoke->offsetY = rand() % 92 - 120;
         }
     } else {
         pEmitter->ownerSlot = BATTLE_TASK_FREE;

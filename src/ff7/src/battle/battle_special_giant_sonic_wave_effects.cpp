@@ -177,18 +177,18 @@ void __cdecl BattleFx_SpecialGiantSonicWaveTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.timelineSlot->frameCounter < 0x14) {
+    if (frame.timelineSlot->frameCounter < 20) {
         for (frame.loopIndex = 0; frame.loopIndex < 2; frame.loopIndex++) {
             frame.spawnSlot = (BattleFxIcicleDropDebrisState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGiantSonicWaveSpinFadeSpriteTask);
             frame.spawnSlot->posX = frame.timelineSlot->posX;
             frame.spawnSlot->posY = frame.timelineSlot->posY;
             frame.spawnSlot->posZ = frame.timelineSlot->posZ;
-            frame.spawnSlot->velocityX = (frame.timelineSlot->targetX - frame.timelineSlot->posX) / 0xF;
-            frame.spawnSlot->velocityY = (frame.timelineSlot->targetY - frame.timelineSlot->posY) / 0xF;
-            frame.spawnSlot->velocityZ = (frame.timelineSlot->targetZ - frame.timelineSlot->posZ) / 0xF;
+            frame.spawnSlot->velocityX = (frame.timelineSlot->targetX - frame.timelineSlot->posX) / 15;
+            frame.spawnSlot->velocityY = (frame.timelineSlot->targetY - frame.timelineSlot->posY) / 15;
+            frame.spawnSlot->velocityZ = (frame.timelineSlot->targetZ - frame.timelineSlot->posZ) / 15;
             frame.randomAngle = (rand() % 4096);
-            frame.offsetX.vx = CosFixed(frame.randomAngle) * 0x64 >> 0xC;
-            frame.offsetX.vy = SinFixed(frame.randomAngle) * 0x64 >> 0xC;
+            frame.offsetX.vx = CosFixed(frame.randomAngle) * 0x64 >> 12;
+            frame.offsetX.vy = SinFixed(frame.randomAngle) * 0x64 >> 12;
             frame.offsetX.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -204,16 +204,16 @@ void __cdecl BattleFx_SpecialGiantSonicWaveTimelineTask(void)
             frame.spawnSlot->variant = rand() % 7;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x1E) {
+    if (frame.timelineSlot->frameCounter == 30) {
         frame.spawnSlot = (BattleFxIcicleDropDebrisState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGiantSonicWaveSpinGrowingModelTask);
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
         g_BattleFxTimelineState.red = 0;
         g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.channel2 = 0x20;
         Battle_PlaySfxPannedToActor(0xF6, -1, 0x40);
     }
-    if (frame.timelineSlot->frameCounter == 0x36) {
-        for (frame.loopIndex = 0; frame.loopIndex < 0xA; frame.loopIndex++) {
+    if (frame.timelineSlot->frameCounter == 54) {
+        for (frame.loopIndex = 0; frame.loopIndex < 10; frame.loopIndex++) {
             if ((g_BattleSpecGiantSonicWaveTargetMask & 1 << frame.loopIndex) != 0) {
                 frame.spawnSlot = (BattleFxIcicleDropDebrisState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGiantSonicWaveGrowingModelTask);
                 Battle_GetBoneWorldPos(frame.loopIndex, g_BattleActorRecords[frame.loopIndex].targetBone, (short *)((char *)frame.spawnSlot + 4));
@@ -221,20 +221,20 @@ void __cdecl BattleFx_SpecialGiantSonicWaveTimelineTask(void)
         }
         Battle_PlaySfxPannedToActor(0x189, -1, 0x40);
     }
-    if (frame.timelineSlot->frameCounter > 0x38 && frame.timelineSlot->frameCounter < 0x40) {
-        for (frame.loopIndex = 0; frame.loopIndex < 0xA; frame.loopIndex++) {
+    if (frame.timelineSlot->frameCounter > 56 && frame.timelineSlot->frameCounter < 64) {
+        for (frame.loopIndex = 0; frame.loopIndex < 10; frame.loopIndex++) {
             if ((g_BattleSpecGiantSonicWaveTargetMask & 1 << frame.loopIndex) != 0) {
                 for (frame.innerIndex = 0; frame.innerIndex < 2; frame.innerIndex++) {
                     frame.spawnSlot = (BattleFxIcicleDropDebrisState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGiantSonicWaveVariantSpriteTask);
                     Battle_GetBoneWorldPos(frame.loopIndex, g_BattleActorRecords[frame.loopIndex].targetBone, (short *)((char *)frame.spawnSlot + 4));
-                    frame.spawnSlot->posX += (short)(rand() % 0x4B0 - 0x258);
-                    frame.spawnSlot->posY += (short)(rand() % 0x4B0 - 0x258);
-                    frame.spawnSlot->posZ += (short)(rand() % 0x4B0 - 0x258);
+                    frame.spawnSlot->posX += (short)(rand() % 1200 - 600);
+                    frame.spawnSlot->posY += (short)(rand() % 1200 - 600);
+                    frame.spawnSlot->posZ += (short)(rand() % 1200 - 600);
                     frame.spawnSlot->variant = rand() % 6;
-                    frame.spawnSlot->spinAngle = (rand() % 3 << 0xB) + 0x1000;
+                    frame.spawnSlot->spinAngle = (rand() % 3 << 11) + 0x1000;
                     frame.tmpAngle = (rand() % 4096);
-                    frame.offsetX.vx = CosFixed(frame.tmpAngle) * 0x3C >> 0xC;
-                    frame.offsetX.vy = SinFixed(frame.tmpAngle) * 0x3C >> 0xC;
+                    frame.offsetX.vx = CosFixed(frame.tmpAngle) * 0x3C >> 12;
+                    frame.offsetX.vy = SinFixed(frame.tmpAngle) * 0x3C >> 12;
                     frame.offsetX.vz = 0;
                     frame.rotX.vz = 0;
                     frame.rotX.vx = frame.rotX.vz;
@@ -250,16 +250,16 @@ void __cdecl BattleFx_SpecialGiantSonicWaveTimelineTask(void)
             }
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x3C) {
-        for (frame.loopIndex = 0; frame.loopIndex < 0xA; frame.loopIndex++) {
+    if (frame.timelineSlot->frameCounter == 60) {
+        for (frame.loopIndex = 0; frame.loopIndex < 10; frame.loopIndex++) {
             if ((g_BattleSpecGiantSonicWaveTargetMask & 1 << frame.loopIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.loopIndex);
             }
         }
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x46) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (frame.timelineSlot->frameCounter == 70) {
+        Battle_StartFixedPointRamp(0, 10);
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -286,7 +286,7 @@ void __cdecl BattleFx_SpecialGiantSonicWaveVariantSpriteTask(void)
     frame.table[3] = 0xC;
     frame.table[4] = 0xD;
     frame.table[5] = 0xE;
-    BattleFx_InstallBillboardMatrix((char *)frame.slot + 4, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((char *)frame.slot + 4, 0x1800 /* 1.5 */, 0);
     g_BattleSpecGiantSonicWaveSpriteRequest.frame = frame.slot->frameIndex;
     g_BattleSpecGiantSonicWaveSpriteRequest.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(frame.table[frame.slot->variant], g_BattleSpecGiantSonicWaveResTable);
     g_BattleSpecGiantSonicWaveSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(frame.table[frame.slot->variant], g_BattleSpecGiantSonicWaveResTable);
@@ -332,7 +332,7 @@ void __cdecl BattleFx_SpecialGiantSonicWaveGrowingModelTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(frame.growingModel->data, frame.growMatrixA.t, &frame.projDepth);
-    frame.growMatrixA.m[2][2] = frame.growingModel->frameCounter * 0x258 + 0x800;
+    frame.growMatrixA.m[2][2] = frame.growingModel->frameCounter * 600 + 0x800;
     frame.growMatrixA.m[1][1] = frame.growMatrixA.m[2][2];
     frame.growMatrixA.m[0][0] = frame.growMatrixA.m[1][1];
     RotMatrix(&g_BattleSpecGiantSonicWaveGrowAngles, &frame.rotMatrix);
@@ -346,7 +346,7 @@ void __cdecl BattleFx_SpecialGiantSonicWaveGrowingModelTask(void)
         return;
     }
     (frame.growingModel->frameCounter)++;
-    if (frame.growingModel->frameCounter == 0xF) {
+    if (frame.growingModel->frameCounter == 15) {
         frame.growingModel->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -389,11 +389,11 @@ void __cdecl BattleFx_SpecialGiantSonicWaveSpinGrowingModelTask(void)
     if (frame.spinSlot->frameCounter < 8) {
         g_BattleSpecGiantSonicWaveFade++;
     }
-    if (frame.spinSlot->frameCounter > 0x16) {
+    if (frame.spinSlot->frameCounter > 22) {
         g_BattleSpecGiantSonicWaveFade--;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x1E) {
+    if (frame.spinSlot->frameCounter == 30) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -446,10 +446,10 @@ void __cdecl BattleFx_SpecialGiantSonicWaveSpinFadeSpriteTask(void)
     ConcatMatrixIntoFirst(&frame.matrixBase, &frame.rotMatrix);
     SetRotMatrix(&frame.matrixBase);
     SetTransMatrix(&frame.matrixBase);
-    if (frame.spriteSlot->frameCounter < 0xC) {
+    if (frame.spriteSlot->frameCounter < 12) {
         frame.fadeLevel = 8;
     } else {
-        frame.fadeLevel = 0x14 - frame.spriteSlot->frameCounter;
+        frame.fadeLevel = 20 - frame.spriteSlot->frameCounter;
     }
     frame.fadeLevelCopy = *(short *)&frame.fadeLevel;
     g_BattleSpecGiantSonicWaveAnimData2.spriteRecord = Gfx_ModelTableGetLoadedRecord(frame.recordIds[frame.spriteSlot->recordIndex], g_BattleSpecGiantSonicWaveResTable);
@@ -463,7 +463,7 @@ void __cdecl BattleFx_SpecialGiantSonicWaveSpinFadeSpriteTask(void)
         frame.spriteSlot->posY += frame.spriteSlot->velocityY;
         frame.spriteSlot->posZ += frame.spriteSlot->velocityZ;
         (frame.spriteSlot->frameCounter)++;
-        if (frame.spriteSlot->frameCounter == 0x14) {
+        if (frame.spriteSlot->frameCounter == 20) {
             frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }

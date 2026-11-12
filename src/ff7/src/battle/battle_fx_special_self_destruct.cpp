@@ -111,17 +111,17 @@ void __cdecl BattleFx_SpecialSelfDestructTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (mainSelf->step >= 0 && mainSelf->step < 0xA) {
+    if (mainSelf->step >= 0 && mainSelf->step < 10) {
         spawned = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSelfDestructAnimatedSpriteTask);
-        spawned->posX = mainSelf->posX + rand() % 0x3E8 - 0x1F4;
-        spawned->posY = mainSelf->posY + rand() % 0x3E8 - 0x1F4;
-        spawned->posZ = mainSelf->posZ + rand() % 0x3E8 - 0x1F4;
+        spawned->posX = mainSelf->posX + rand() % 1000 - 500;
+        spawned->posY = mainSelf->posY + rand() % 1000 - 500;
+        spawned->posZ = mainSelf->posZ + rand() % 1000 - 500;
     }
     if (mainSelf->step == 0) {
         Battle_PostActorHitOrHurtMessage(mainSelf->actorIndex);
     }
     (mainSelf->step)++;
-    if (mainSelf->step == 0x14) {
+    if (mainSelf->step == 20) {
         mainSelf->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -137,7 +137,7 @@ void __cdecl BattleFx_SpecialSelfDestructAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialSelfDestructSpriteReq1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecialSelfDestructLoadedRes);
     g_BattleSpecialSelfDestructSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecialSelfDestructLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialSelfDestructSpriteReq1.frame = task->frameCounter;
     g_BattleSpecialSelfDestructDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSelfDestructSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSelfDestructDrawListHandle);
     if (g_BattleIsPaused != 0) {

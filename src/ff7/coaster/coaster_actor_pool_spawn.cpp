@@ -48,7 +48,7 @@ short g_CoasterCrosshairX = 0;
 short g_CoasterCrosshairY = 0;
 // The free list of actor slots: each entry is the next free slot after it.
 // GLOBAL: FF7 0x00c3fa80
-short g_CoasterActorFreeList[0x64] = {0};
+short g_CoasterActorFreeList[100] = {0};
 // GLOBAL: FF7 0x00c3fb48
 short g_CoasterShotCharge = 0;
 // GLOBAL: FF7 0x00c3fb4c
@@ -94,19 +94,19 @@ void __cdecl Mini_CoasterResetActorPool(void)
 {
     int i;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         ((CoasterActorPoolBounds *)&g_CoasterActorRecords)[i].objIndex = 0xFFFF;
         ((CoasterActorPoolBounds *)&g_CoasterActorRecords)[i].isActive = 0;
     }
     g_CoasterFreeActorSlotHead = 0;
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         g_CoasterActorFreeList[i] = i + 1;
     }
     g_CoasterBeamCharge = 0x80;
     g_CoasterShotFlag = 0;
     g_CoasterShotCooldown = 0;
-    g_CoasterReticleX = 0xA0;
-    g_CoasterReticleY = 0x78;
+    g_CoasterReticleX = 160;
+    g_CoasterReticleY = 120;
     g_CoasterSpawnScriptCursor = 0;
     g_CoasterSpawnScriptIndex = 0;
     g_CoasterActorCount = 0;
@@ -238,7 +238,7 @@ short __cdecl Mini_CoasterSpawnActor(CoasterActor *spawnRecord, short parentSlot
     short selMinX;
     short maxY;
 
-    if (g_CoasterActorCount < 0x63) {
+    if (g_CoasterActorCount < 99) {
         g_CoasterActorCount++;
         actorSlot = Mini_CoasterAllocActorSlot();
         ((CoasterActor *)&g_CoasterActorPool)[actorSlot] = *spawnRecord;
@@ -346,7 +346,7 @@ void __cdecl Mini_CoasterRunSpawnScript(void)
             } else {
                 spawnTable = (CoasterSpawnScriptRecord *)(g_CoasterPsxDataSet.binData + ofsB);
             }
-            for (fieldIndex = 0; fieldIndex < 0x14; fieldIndex++) {
+            for (fieldIndex = 0; fieldIndex < 20; fieldIndex++) {
                 g_CoasterSpawnRequestBlock.state.params[fieldIndex] = spawnTable[g_CoasterSpawnScriptIndex].params[fieldIndex];
             }
             g_CoasterSpawnRequestBlock.state.pathIndex = spawnTable[g_CoasterSpawnScriptIndex].pathIndex;
@@ -427,7 +427,7 @@ void __cdecl Mini_CoasterUpdateActors(void)
     Mini_CoasterDrawCrosshair();
     Mini_CoasterDrawBeam();
 
-    for (local.i = 0; local.i < 0x64; local.i++) {
+    for (local.i = 0; local.i < 100; local.i++) {
         local.actor = &((CoasterActor *)&g_CoasterActorPool)[local.i];
         local.state = &local.actor->state;
         local.unusedShort.value = 0;
@@ -472,7 +472,7 @@ void __cdecl Mini_CoasterUpdateActors(void)
                     local.deltaY = local.actor->pos.vy - local.cameraPosition.vy;
                     local.deltaZ = local.actor->pos.vz - local.cameraPosition.vz;
                     local.unusedDistance = SqrtToInt(local.deltaX * local.deltaX + local.deltaY * local.deltaY + local.deltaZ * local.deltaZ);
-                    if (local.state->frameCount > 0x80) {
+                    if (local.state->frameCount > 128) {
                         if (g_CoasterScore > 5)
                             g_CoasterScore -= 5;
                         else
@@ -697,7 +697,7 @@ void __cdecl Mini_CoasterUpdateActors(void)
                     if (local.state->isHit) {
                         if (local.state->params[0xA] != COASTER_KILL_BIG_EXPLOSION)
                             Mini_CoasterApplyBeamDamage(local.actor);
-                        else if (g_CoasterRideSpeed < 0x4015)
+                        else if (g_CoasterRideSpeed < 16405)
                             Mini_CoasterApplyBeamDamage(local.actor);
                         if (local.state->params[0xA] == COASTER_KILL_BIG_EXPLOSION)
                             local.state->params[0xE] = 1;
@@ -1076,9 +1076,9 @@ void __cdecl Mini_CoasterUpdateActors(void)
                 }
                 local.alpha.value = 0xFF - (local.state->frameCount * 2);
                 Mini_CoasterDrawFadeOverlay(local.alpha.value);
-                if (local.state->frameCount > 0x7D) {
+                if (local.state->frameCount > 125) {
                     Mini_CoasterDespawnActor(local.actor);
-                    g_CoasterRideSpeed = 0x4000;
+                    g_CoasterRideSpeed = 16384;
                 }
                 break;
 
@@ -1094,9 +1094,9 @@ void __cdecl Mini_CoasterUpdateActors(void)
                 }
                 local.alpha.value = local.state->frameCount * 2;
                 Mini_CoasterDrawFadeOverlay(local.alpha.value);
-                if (local.state->frameCount > 0x7F) {
+                if (local.state->frameCount > 127) {
                     Mini_CoasterDespawnActor(local.actor);
-                    g_CoasterRideSpeed = 0x4000;
+                    g_CoasterRideSpeed = 16384;
                     g_CoasterRideActive = 0;
                     g_CoasterRideFinished = 1;
                 }
@@ -1172,11 +1172,11 @@ void __cdecl Mini_CoasterAwardKill(CoasterActor *target)
         Mini_CoasterPlaySfxAlternating((short)award->sfxId);
         award->hp = 0;
         for (i = 0; i < 3; i++) {
-            Mini_CoasterSpawnEffect((short)target->pos.vx, (short)target->pos.vy, (short)target->pos.vz, COASTER_BEHAVIOUR_HIT_SPARK, rand() % 3 + 0x3F);
+            Mini_CoasterSpawnEffect((short)target->pos.vx, (short)target->pos.vy, (short)target->pos.vz, COASTER_BEHAVIOUR_HIT_SPARK, rand() % 3 + 63);
         }
         g_CoasterKillScore = target->node->modelId;
         g_CoasterScorePopupValue = *(short *)&award->score;
-        g_CoasterScorePopupTimer = 0x64;
+        g_CoasterScorePopupTimer = 100;
         g_coasterFreezeState = 1;
         g_CoasterScorePopupState.coasterScorePopupVx = 0;
         g_CoasterScorePopupState.coasterScorePopupVy = 0;
@@ -1187,11 +1187,11 @@ void __cdecl Mini_CoasterAwardKill(CoasterActor *target)
         Mini_CoasterPlaySfxAlternating((short)award->sfxId);
         award->hp = 0;
         for (i = 0; i < 3; i++) {
-            Mini_CoasterSpawnEffect((short)target->pos.vx, (short)target->pos.vy, (short)target->pos.vz, COASTER_BEHAVIOUR_EXPLOSION_DEBRIS, rand() % 3 + 0x3C);
+            Mini_CoasterSpawnEffect((short)target->pos.vx, (short)target->pos.vy, (short)target->pos.vz, COASTER_BEHAVIOUR_EXPLOSION_DEBRIS, rand() % 3 + 60);
         }
         g_CoasterKillScore = target->node->modelId;
         g_CoasterScorePopupValue = *(short *)&award->score;
-        g_CoasterScorePopupTimer = 0x64;
+        g_CoasterScorePopupTimer = 100;
         g_coasterFreezeState = 1;
         g_CoasterScorePopupState.coasterScorePopupVx = 0;
         g_CoasterScorePopupState.coasterScorePopupVy = 0;
@@ -1207,7 +1207,7 @@ void __cdecl Mini_CoasterAwardKill(CoasterActor *target)
         award->hp = 0;
         g_CoasterKillScore = target->node->modelId;
         g_CoasterScorePopupValue = *(short *)&award->score;
-        g_CoasterScorePopupTimer = 0x64;
+        g_CoasterScorePopupTimer = 100;
         g_coasterFreezeState = 1;
         g_CoasterScorePopupState.coasterScorePopupVx = 0;
         g_CoasterScorePopupState.coasterScorePopupVy = 0;
@@ -1217,12 +1217,12 @@ void __cdecl Mini_CoasterAwardKill(CoasterActor *target)
         g_CoasterScore += award->score;
         Mini_CoasterPlaySfxAlternating((short)award->sfxId);
         award->hp = 0;
-        for (i = 0; i < 0x64; i++) {
-            Mini_CoasterSpawnEffect((short)target->pos.vx, (short)target->pos.vy, (short)target->pos.vz, COASTER_BEHAVIOUR_EXPLOSION_DEBRIS, rand() % 3 + 0x3F);
+        for (i = 0; i < 100; i++) {
+            Mini_CoasterSpawnEffect((short)target->pos.vx, (short)target->pos.vy, (short)target->pos.vz, COASTER_BEHAVIOUR_EXPLOSION_DEBRIS, rand() % 3 + 63);
         }
         g_CoasterKillScore = target->node->modelId;
         g_CoasterScorePopupValue = *(short *)&award->score;
-        g_CoasterScorePopupTimer = 0x64;
+        g_CoasterScorePopupTimer = 100;
         g_coasterFreezeState = 1;
         g_CoasterScorePopupState.coasterScorePopupVx = 0;
         g_CoasterScorePopupState.coasterScorePopupVy = 0;

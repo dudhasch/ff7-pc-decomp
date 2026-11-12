@@ -185,13 +185,13 @@ void __cdecl WorldMap_ModuleEnter(GfxEngineContext *ctx)
             g_WorldViewportY = 0;
             g_WorldDisplayScale = 2;
             g_WorldUiScaleFactor = 2.0f;
-            g_WorldRenderWidth = 0x280;
-            g_WorldRenderHeight = 0x1E0;
+            g_WorldRenderWidth = 640;
+            g_WorldRenderHeight = 480;
             Menu_ApplyUiScalingViewportForMode(2);
         } else {
             if (mode == 1) {
-                g_WorldViewportX = 0xA0;
-                g_WorldViewportY = 0x78;
+                g_WorldViewportX = 160;
+                g_WorldViewportY = 120;
                 Menu_ApplyUiScalingViewportForMode(1);
             } else {
                 g_WorldViewportX = 0;
@@ -200,12 +200,12 @@ void __cdecl WorldMap_ModuleEnter(GfxEngineContext *ctx)
             }
             g_WorldDisplayScale = 1;
             g_WorldUiScaleFactor = 1.0f;
-            g_WorldRenderWidth = 0x140;
-            g_WorldRenderHeight = 0xF0;
+            g_WorldRenderWidth = 320;
+            g_WorldRenderHeight = 240;
         }
         SetMatrixLayoutMode(1);
         SetGeomScreenReference(240.0);
-        Input_SetRepeatRates(0xC8, 0x32);
+        Input_SetRepeatRates(0xC8, 50);
         World_AllocArena();
         g_WorldMapInitialized = 0;
         g_WorldMapExitRequested = g_WorldMapInitialized;
@@ -400,7 +400,7 @@ void __cdecl World_FlushTerrainBatches(void)
         return;
     }
     Gfx_SetScenePassCall(0, ctx);
-    for (i = 0; i < 0x16; i++) {
+    for (i = 0; i < 22; i++) {
         Gfx_EmitPrimitiveBatchList(g_WorldTexturePageRenderObjects[g_WorldAnimTexturePages[i]], ctx);
     }
     for (i = 0; i < g_WorldTexturePageCount; i++) {

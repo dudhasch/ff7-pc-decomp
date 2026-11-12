@@ -102,16 +102,16 @@ void __cdecl BattleFx_BuiltinPuffEmitterTask(void)
         return;
     }
     dataBlock = Gfx_GetPsxScratchpadPtr(0);
-    if (pEmitter->frame < 0x1E) {
+    if (pEmitter->frame < 30) {
         for (i = 0; i < 3; i++) {
             newParticle = (BattleFxPuffParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_BuiltinPuffParticleTask);
             theta = rand() & 0xFFF;
-            distance = rand() % 0x3E8;
-            newParticle->posX = pEmitter->posX + (SinFixed(theta) * distance >> 0xC);
-            newParticle->posY = rand() % 0x64 - 0x834;
-            newParticle->posZ = pEmitter->posZ + (CosFixed(theta) * distance >> 0xC);
-            newParticle->velocityY = 0x64;
-            newParticle->scale = 0x1000;
+            distance = rand() % 1000;
+            newParticle->posX = pEmitter->posX + (SinFixed(theta) * distance >> 12);
+            newParticle->posY = rand() % 100 - 2100;
+            newParticle->posZ = pEmitter->posZ + (CosFixed(theta) * distance >> 12);
+            newParticle->velocityY = 100;
+            newParticle->scale = 0x1000 /* 1.0 */;
             newParticle->angleOffset = rand() & 7;
         }
     } else {
@@ -187,7 +187,7 @@ void BattleFx_LimitMogDanceSpawnHitSparksPerTarget(short actor)
     rec = (BattleHitLivewireShortEmitter *)&g_BattleTaskSlotBuffer.mainSlots[Battle_AllocateResourceSlot(BattleFx_LimitMogDanceHitSparksEmitterTask)];
     rec->targetIndex = actor;
     rec->boneIndex = 0;
-    rec->lifetime = 0x3A;
+    rec->lifetime = 58;
 }
 
 /*
@@ -212,16 +212,16 @@ void BattleFx_LimitMogDanceHitSparksEmitterTask(void)
                 g_BattleActorRecords[pParent->targetSlot].boneCount;
             Battle_GetBoneWorldPos(pParent->targetSlot, pParent->boneIndex,
                                    &particle->posX);
-            particle->posX += rand() % 0x1F4 - 0xFA;
-            particle->posY += rand() % 0x1F4 - 0xFA;
-            particle->posZ += rand() % 0x1F4 - 0xFA;
+            particle->posX += rand() % 500 - 250;
+            particle->posY += rand() % 500 - 250;
+            particle->posZ += rand() % 500 - 250;
             particle->texRow = rand() % 3 << 5;
             particle->texCoord = g_BattleFxLimitMogDanceHitLivewireTexCoords[rand() % 5];
             particle->scale = (rand() & 0xFFF) + 0x1000;
             particle->spriteFlags = pParent->spriteFlags;
         }
         (pParent->frameCount)++;
-        if (pParent->frameCount >= 0x1E) {
+        if (pParent->frameCount >= 30) {
             Battle_PostActorHitOrHurtMessage(pParent->targetSlot);
             pParent->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -246,8 +246,8 @@ void __cdecl BattleFx_LimitMogDanceAnimatedSpriteTask(void)
     request->offsetX = 0xFFF0;
     request->cellX = g_BattleFxPuffTextureOffsets[task->timer];
     request->cellY = task->cellY;
-    request->widthUnits = 0x1F;
-    request->heightUnits = 0x1F;
+    request->widthUnits = 31;
+    request->heightUnits = 31;
     request->flags = task->flags;
     request->cellWord = task->cellWord;
     *(int *)&request->colorR = 0x2E808080;
@@ -255,7 +255,7 @@ void __cdecl BattleFx_LimitMogDanceAnimatedSpriteTask(void)
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteQuadDraw(request, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     if (g_BattleIsPaused == 0) {
         (task->timer)++;
-        if (task->timer >= (*(unsigned char *)&task->cellY != 0x80) + 8) {
+        if (task->timer >= (*(unsigned char *)&task->cellY != 128) + 8) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -291,9 +291,9 @@ void __cdecl BattleFx_LimitMogDanceSpawnTimeline(void)
     Battle_GetActorMaskCentroid(g_BattleFxLimitMogDanceTargetActorMask, &task->posX);
     task->yaw = g_BattleActorRecords[g_BattleFxLimitMogDanceActingActorIdx].yaw;
     if (task->yaw == 0x800) {
-        task->posZ += 0x384;
+        task->posZ += 900;
     } else {
-        task->posZ -= 0x384;
+        task->posZ -= 900;
     }
 }
 
@@ -318,17 +318,17 @@ void __cdecl BattleFx_LimitMogDanceTimelineTask(void)
         record->pos = *(Int64Pair *)&task->posX;
         record->yaw = task->angle + 0x800;
     }
-    if (task->step == 0x15 || (task->step == 0x1D || (task->step == 0x25 || (task->step == 0x2C || task->step == 0x32)))) {
+    if (task->step == 21 || (task->step == 29 || (task->step == 37 || (task->step == 44 || task->step == 50)))) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->posX), 0x263);
     }
-    if (task->step == 0x24) {
-        g_BattleActorRecords[3].yaw += 0x800;
+    if (task->step == 36) {
+        g_BattleActorRecords[3].yaw += 0x800 /* 180 deg */;
     }
-    if (task->step == 0x32) {
+    if (task->step == 50) {
         Battle_AllocSceneMessage(2);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (task->step == 0x30) {
+    if (task->step == 48) {
         BattleFx_LimitMogDanceBeginHitSparks(g_BattleFxLimitMogDanceTargetActorMask, g_BattleFxLimitMogDanceActingActorIdx);
     }
     (task->step)++;

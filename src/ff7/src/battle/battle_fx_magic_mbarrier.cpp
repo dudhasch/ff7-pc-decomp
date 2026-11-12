@@ -81,7 +81,7 @@ void __cdecl BattleFx_MagicEnterMBarrier(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x005b3eea
 void __cdecl BattleFx_MagicBeginMBarrier(int targetMask, int actorIdx)
 {
-    g_BattleMagicMBarrier_Scale = 0x2000;
+    g_BattleMagicMBarrier_Scale = 0x2000 /* 2.0 */;
     g_BattleMagicMBarrier_BlendFactor = 0;
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 0, BattleFx_MagicSpawnMBarrierPerTarget);
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x43);
@@ -95,8 +95,8 @@ void __cdecl BattleFx_MagicSpawnMBarrierPerTarget(int actor)
 
     effectSlot = (BattleFxMBarrierSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicMBarrierTimelineTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &effectSlot->posX);
-    effectSlot->posX -= (short)(SinFixed(g_BattleActorRecords[actor].yaw) * g_BattleActorRecords[actor].radius >> 0xC);
-    effectSlot->posZ -= (short)(CosFixed(g_BattleActorRecords[actor].yaw) * g_BattleActorRecords[actor].radius >> 0xC);
+    effectSlot->posX -= (short)(SinFixed(g_BattleActorRecords[actor].yaw) * g_BattleActorRecords[actor].radius >> 12);
+    effectSlot->posZ -= (short)(CosFixed(g_BattleActorRecords[actor].yaw) * g_BattleActorRecords[actor].radius >> 12);
     *(Int64Pair *)&effectSlot->rot = *(Int64Pair *)&g_BattleActorRecords[actor].rotX;
     effectSlot->actorIndex = actor;
 }
@@ -127,7 +127,7 @@ void __cdecl BattleFx_MagicMBarrierTimelineTask(void)
         *(Int64Pair *)&child->posX = *(Int64Pair *)&task->posX;
         *(Int64Pair *)&child->rot = *(Int64Pair *)&task->rot;
     }
-    if (task->step == 0x10) {
+    if (task->step == 16) {
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -151,15 +151,15 @@ void __cdecl BattleFx_MagicMBarrierScaledModelTask(void)
 
     frame.slot = (BattleFxMBarrierSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleMagicMBarrier_ModelReq.tableField) = Gfx_ModelTableGetRenderObject(0, g_BattleMagicMBarrier_ResourceHandle);
-    frame.scaleX.vz = (((frame.slot->step * 0x3BFF) / 16) + 0x400) * g_BattleMagicMBarrier_Scale >> 0xC;
+    frame.scaleX.vz = (((frame.slot->step * 0x3BFF) / 16) + 0x400) * g_BattleMagicMBarrier_Scale >> 12;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     if (frame.slot->step < 8) {
         frame.blend = 0;
     } else {
-        frame.blend = (frame.slot->step - 8 << 0xC) / 8;
+        frame.blend = (frame.slot->step - 8 << 12) / 8;
     }
-    frame.blend += (0x1000 - frame.blend) * g_BattleMagicMBarrier_BlendFactor >> 0xC;
+    frame.blend += (0x1000 - frame.blend) * g_BattleMagicMBarrier_BlendFactor >> 12;
     RotMatrix(&frame.slot->rot, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.slot->posX;
     frame.rotMatrix.t[1] = frame.slot->posY;
@@ -173,7 +173,7 @@ void __cdecl BattleFx_MagicMBarrierScaledModelTask(void)
     g_BattleMagicMBarrier_ChainTail = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleMagicMBarrier_ModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicMBarrier_ChainTail);
     if (g_BattleIsPaused == 0) {
         (frame.slot->step)++;
-        if (frame.slot->step >= 0x10) {
+        if (frame.slot->step >= 16) {
             frame.slot->ownerSlot = BATTLE_TASK_FREE;
         }
     }

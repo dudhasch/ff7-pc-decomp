@@ -137,7 +137,7 @@ void __cdecl BattleFx_SpecialEnterSewerTsunami(int targetMask, int actorIdx)
     BattleFx_SpecialLoadResSewerTsunami();
     g_BattleSpecSewerTsunamiSpriteRequest.direction = 1;
     g_BattleSpecSewerTsunamiStep = 0;
-    g_BattleSpecSewerTsunamiTimer = 0x190;
+    g_BattleSpecSewerTsunamiTimer = 400;
     BattleFx_SpecialSewerTsunamiSpawnTimeline(targetMask, actorIdx);
 }
 
@@ -151,7 +151,7 @@ void __cdecl BattleFx_SpecialEnterSewerTsunamiAlt(int targetMask, int actorIdx)
     BattleFx_SpecialLoadResSewerTsunami();
     g_BattleSpecSewerTsunamiSpriteRequest.direction = 1;
     g_BattleSpecSewerTsunamiStep = 0;
-    g_BattleSpecSewerTsunamiTimer = 0x190;
+    g_BattleSpecSewerTsunamiTimer = 400;
     BattleFx_SpecialSewerTsunamiSpawnTimelineAlt(targetMask, actorIdx);
 }
 
@@ -167,7 +167,7 @@ void __cdecl BattleFx_SpecialSewerTsunamiSpawnTimeline(int targetIdx, int actorI
     short i;
 
     g_BattleSpecSewerTsunamiActiveCount = targetIdx;
-    for (i = 0; i < 0x1000; i++) {
+    for (i = 0; i < 4096; i++) {
         ((short *)&g_BattleSpecSewerTsunamiCoordBuffer)[i] = SinFixed(i);
     }
     recordAddress = (BattleFxBigWaveTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSewerTsunamiTimelineTask);
@@ -202,39 +202,39 @@ void __cdecl BattleFx_SpecialSewerTsunamiTimelineTask(void)
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         Battle_StartFixedPointRamp(0x1000, 4);
     }
-    if (pCurrent->frameCounter == 0x14) {
+    if (pCurrent->frameCounter == 20) {
         Battle_StartFixedPointRamp(0, 8);
     }
     if (pCurrent->frameCounter == 0) {
         child = (BattleFxSewerTsunamiTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSewerTsunamiWaveSurfaceTask);
     }
-    if (pCurrent->frameCounter > 0x24 && pCurrent->frameCounter < 0x2C) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (pCurrent->frameCounter > 36 && pCurrent->frameCounter < 44) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleSpecSewerTsunamiActiveCount & 1 << actorIdx) != 0) {
                 child = (BattleFxSewerTsunamiTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSewerTsunamiAnimatedSpriteTask);
                 Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, &child->posX);
-                child->posX += (short)(rand() % 0x258 - 0x12C);
-                child->posY += (short)(rand() % 0x258 - 0x12C);
-                child->posZ += (short)(rand() % 0x258 - 0x12C);
+                child->posX += (short)(rand() % 600 - 300);
+                child->posY += (short)(rand() % 600 - 300);
+                child->posZ += (short)(rand() % 600 - 300);
                 child->isActive = 1;
                 child = (BattleFxSewerTsunamiTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSewerTsunamiAnimatedSpriteTask);
                 Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, &child->posX);
-                child->posX += (short)(rand() % 0x578 - 0x2BC);
-                child->posY += (short)(rand() % 0x578 - 0x2BC);
-                child->posZ += (short)(rand() % 0x578 - 0x2BC);
+                child->posX += (short)(rand() % 1400 - 700);
+                child->posY += (short)(rand() % 1400 - 700);
+                child->posZ += (short)(rand() % 1400 - 700);
                 child->isActive = 0;
             }
         }
     }
-    if (pCurrent->frameCounter == 0x28) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (pCurrent->frameCounter == 40) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleSpecSewerTsunamiActiveCount & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
     }
     (pCurrent->frameCounter)++;
-    if (pCurrent->frameCounter == 0x3C) {
+    if (pCurrent->frameCounter == 60) {
         pCurrent->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -308,21 +308,21 @@ void __cdecl BattleFx_SpecialSewerTsunamiWaveSurfaceTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (frame.rowIndex = 0xFFFC; frame.rowIndex < 0x10; frame.rowIndex++) {
-        for (frame.colIndex = 0; frame.colIndex < 0x10; frame.colIndex++) {
-            frame.waveRow = frame.rowIndex - frame.wavePhase / 0x3E8;
-            frame.quadX0.vx = (frame.colIndex - 8) * 0x3E8;
-            frame.quadX0.vz = (frame.wavePhase + (frame.waveRow - 8) * 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
-            frame.quadX1.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-            frame.quadX1.vz = (frame.wavePhase + (frame.waveRow - 8) * 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
-            frame.quadX2.vx = (frame.colIndex - 8) * 0x3E8;
-            frame.quadX2.vz = (frame.wavePhase + (frame.waveRow - 8) * 0x3E8 + 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
-            frame.quadX3.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-            frame.quadX3.vz = (frame.wavePhase + (frame.waveRow - 8) * 0x3E8 + 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
-            frame.quadX0.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 0xA0 - frame.waveRow * 0x190, (short)frame.colIndex) - 0xC8;
-            frame.quadX2.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 0xA0 - (frame.waveRow + 1) * 0x190, (short)frame.colIndex) - 0xC8;
-            frame.quadX1.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 0xA0 - frame.waveRow * 0x190, frame.colIndex + 1) - 0xC8;
-            frame.quadX3.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 0xA0 - (frame.waveRow + 1) * 0x190, frame.colIndex + 1) - 0xC8;
+    for (frame.rowIndex = 0xFFFC; frame.rowIndex < 16; frame.rowIndex++) {
+        for (frame.colIndex = 0; frame.colIndex < 16; frame.colIndex++) {
+            frame.waveRow = frame.rowIndex - frame.wavePhase / 1000;
+            frame.quadX0.vx = (frame.colIndex - 8) * 1000;
+            frame.quadX0.vz = (frame.wavePhase + (frame.waveRow - 8) * 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+            frame.quadX1.vx = (frame.colIndex - 8) * 1000 + 1000;
+            frame.quadX1.vz = (frame.wavePhase + (frame.waveRow - 8) * 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+            frame.quadX2.vx = (frame.colIndex - 8) * 1000;
+            frame.quadX2.vz = (frame.wavePhase + (frame.waveRow - 8) * 1000 + 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+            frame.quadX3.vx = (frame.colIndex - 8) * 1000 + 1000;
+            frame.quadX3.vz = (frame.wavePhase + (frame.waveRow - 8) * 1000 + 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+            frame.quadX0.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 160 - frame.waveRow * 400, (short)frame.colIndex) - 200;
+            frame.quadX2.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 160 - (frame.waveRow + 1) * 400, (short)frame.colIndex) - 200;
+            frame.quadX1.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 160 - frame.waveRow * 400, frame.colIndex + 1) - 200;
+            frame.quadX3.vy = (short)BattleFx_SpecialSewerTsunamiSampleWaveHeight(frame.waveSlot->frameCounter * 160 - (frame.waveRow + 1) * 400, frame.colIndex + 1) - 200;
             StoreDeferredDrawArgs(&frame.quadX0, &frame.quadX2, &frame.quadX1);
             ApplyDeferredDrawArgs();
             SetPendingResourceHandle((GfxPsxShortVertexSlot *)&frame.quadX3);
@@ -330,7 +330,7 @@ void __cdecl BattleFx_SpecialSewerTsunamiWaveSurfaceTask(void)
             Gfx_ReadTransformOrderingDepth2(&frame.elementCount);
             if (frame.elementCount > 0) {
                 frame.renderState->packetTag = 0x9000000;
-                frame.renderState->rgbCmd = g_BattleSpecSewerTsunamiStep * 0x10101 + (g_BattleSpecSewerTsunamiStep - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
+                frame.renderState->rgbCmd = g_BattleSpecSewerTsunamiStep * 65793 + (g_BattleSpecSewerTsunamiStep - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
                 frame.renderState->vertex0U = frame.colIndex << 6;
                 frame.renderState->vertex0V = frame.waveRow << 6;
                 frame.renderState->vertex1U = frame.colIndex + 1 << 6;
@@ -357,7 +357,7 @@ void __cdecl BattleFx_SpecialSewerTsunamiWaveSurfaceTask(void)
                 }
                 frame.renderState->tpage = frame.tpage;
                 frame.renderState->clut = frame.clut;
-                if (g_BattleSpecSewerTsunamiStep != 0x80) {
+                if (g_BattleSpecSewerTsunamiStep != 128) {
                     frame.spriteState = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecSewerTsunamiLoadedResTable);
                     if (frame.spriteState != 0) {
                         Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)frame.spriteState);
@@ -372,18 +372,18 @@ void __cdecl BattleFx_SpecialSewerTsunamiWaveSurfaceTask(void)
             }
         }
     }
-    frame.wavePhase = frame.waveSlot->frameCounter * 0x19;
+    frame.wavePhase = frame.waveSlot->frameCounter * 25;
     if (DEAD_IN_RETAIL != 0) {
-        for (frame.rowIndex = 0xFFFE; frame.rowIndex < 0x10; frame.rowIndex++) {
-            for (frame.colIndex = 0; frame.colIndex < 0x10; frame.colIndex++) {
-                frame.quadX0.vx = (frame.colIndex - 8) * 0x3E8;
-                frame.quadX0.vz = (frame.wavePhase + (frame.rowIndex - 8) * 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
-                frame.quadX1.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-                frame.quadX1.vz = (frame.wavePhase + (frame.rowIndex - 8) * 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
-                frame.quadX2.vx = (frame.colIndex - 8) * 0x3E8;
-                frame.quadX2.vz = (frame.wavePhase + (frame.rowIndex - 8) * 0x3E8 + 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
-                frame.quadX3.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-                frame.quadX3.vz = (frame.wavePhase + (frame.rowIndex - 8) * 0x3E8 + 0x3E8) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+        for (frame.rowIndex = 0xFFFE; frame.rowIndex < 16; frame.rowIndex++) {
+            for (frame.colIndex = 0; frame.colIndex < 16; frame.colIndex++) {
+                frame.quadX0.vx = (frame.colIndex - 8) * 1000;
+                frame.quadX0.vz = (frame.wavePhase + (frame.rowIndex - 8) * 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+                frame.quadX1.vx = (frame.colIndex - 8) * 1000 + 1000;
+                frame.quadX1.vz = (frame.wavePhase + (frame.rowIndex - 8) * 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+                frame.quadX2.vx = (frame.colIndex - 8) * 1000;
+                frame.quadX2.vz = (frame.wavePhase + (frame.rowIndex - 8) * 1000 + 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
+                frame.quadX3.vx = (frame.colIndex - 8) * 1000 + 1000;
+                frame.quadX3.vz = (frame.wavePhase + (frame.rowIndex - 8) * 1000 + 1000) * g_BattleSpecSewerTsunamiSpriteRequest.direction;
                 frame.quadX3.vy = 0;
                 frame.quadX2.vy = frame.quadX3.vy;
                 frame.quadX1.vy = frame.quadX2.vy;
@@ -395,7 +395,7 @@ void __cdecl BattleFx_SpecialSewerTsunamiWaveSurfaceTask(void)
                 Gfx_ReadTransformOrderingDepth2(&frame.elementCount);
                 if (frame.elementCount > 0) {
                     frame.renderState->packetTag = 0x9000000;
-                    frame.renderState->rgbCmd = g_BattleSpecSewerTsunamiStep * 0x10101 + (g_BattleSpecSewerTsunamiStep - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
+                    frame.renderState->rgbCmd = g_BattleSpecSewerTsunamiStep * 65793 + (g_BattleSpecSewerTsunamiStep - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
                     frame.renderState->vertex0U = frame.colIndex << 5;
                     frame.renderState->vertex0V = frame.rowIndex << 5;
                     frame.renderState->vertex1U = frame.colIndex + 1 << 5;
@@ -433,13 +433,13 @@ void __cdecl BattleFx_SpecialSewerTsunamiWaveSurfaceTask(void)
     }
     g_BattleSpecSewerTsunamiTimer -= 3;
     if (frame.waveSlot->frameCounter < 4) {
-        g_BattleSpecSewerTsunamiStep += 0x20;
+        g_BattleSpecSewerTsunamiStep += 32;
     }
-    if (frame.waveSlot->frameCounter > 0x2A) {
-        g_BattleSpecSewerTsunamiStep -= 0x10;
+    if (frame.waveSlot->frameCounter > 42) {
+        g_BattleSpecSewerTsunamiStep -= 16;
     }
     (frame.waveSlot->frameCounter)++;
-    if (frame.waveSlot->frameCounter == 0x32) {
+    if (frame.waveSlot->frameCounter == 50) {
         frame.waveSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -477,8 +477,8 @@ short __cdecl BattleFx_SpecialSewerTsunamiSampleWaveHeight(short angle, short ro
     if (angle < 0 || angle > 0x800) {
         angle = 0;
     }
-    height = -((short *)&g_BattleSpecSewerTsunamiCoordBuffer)[angle] * 0x9C4 >> 0xC;
-    height = ((short *)&g_BattleSpecSewerTsunamiStateBuffer)[row * 0x60] * height >> 0xC;
+    height = -((short *)&g_BattleSpecSewerTsunamiCoordBuffer)[angle] * 0x9C4 >> 12;
+    height = ((short *)&g_BattleSpecSewerTsunamiStateBuffer)[row * 0x60] * height >> 12;
     return (short)height;
 }
 
@@ -493,7 +493,7 @@ void __cdecl BattleFx_SpecialSewerTsunamiSpawnTimelineAlt(int targetIdx, int act
     short idx;
 
     g_BattleSpecSewerTsunamiActiveCount = (short)targetIdx;
-    for (idx = 0; idx < 0x1000; idx++) {
+    for (idx = 0; idx < 4096; idx++) {
         ((short *)&g_BattleSpecSewerTsunamiCoordBuffer)[idx] = SinFixed(idx);
     }
     taskRec = (BattleFxBigWaveTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSewerTsunamiTimelineTask);

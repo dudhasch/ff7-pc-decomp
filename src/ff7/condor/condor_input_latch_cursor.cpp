@@ -396,14 +396,14 @@ void __cdecl Input_ClampCursorPosition(CondorCursorPos *cursor)
     if (cursor->cursorX < 0) {
         cursor->cursorX = 0;
     }
-    if (cursor->cursorX > 0x1F0) {
-        cursor->cursorX = 0x1F0;
+    if (cursor->cursorX > 496) {
+        cursor->cursorX = 496;
     }
     if (cursor->cursorY < -256) {
         cursor->cursorY = 0xFFFFFF00;
     }
-    if (cursor->cursorY > 0xF0) {
-        cursor->cursorY = 0xF0;
+    if (cursor->cursorY > 240) {
+        cursor->cursorY = 240;
     }
 }
 
@@ -450,7 +450,7 @@ void __cdecl Input_BeginCursorTracking(void)
 {
     CondorCursorPos cursorX;
 
-    Input_WriteCursorPos(0x80, 0x80);
+    Input_WriteCursorPos(128, 128);
     Input_ReadCursorPos(&cursorX);
     g_CondorCursorTargetX = cursorX.cursorX;
     g_CondorCursorTargetY = cursorX.cursorY;
@@ -497,7 +497,7 @@ void __cdecl Input_UpdateCursorMotion(void)
         moved = 1;
     }
     if (moved != 0) {
-        Input_WriteCursorPos(0x80, 0x80);
+        Input_WriteCursorPos(128, 128);
     }
 }
 } /* extern "C" */

@@ -305,7 +305,7 @@ int __cdecl BattleFx_SummonEnterAlexander(int targetMask, int actorIdx)
     int p; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
     int q; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
-    memcpy((void *)&g_BattleSummonAlexanderVertexBlob1, (void *)&g_BattleSummonAlexanderVertexBlob2, 0x5394);
+    memcpy((void *)&g_BattleSummonAlexanderVertexBlob1, (void *)&g_BattleSummonAlexanderVertexBlob2, 21396);
     g_BattleSummonAlexanderBillboardMatrix.transZ = 0;
     g_BattleSummonAlexanderBillboardMatrix.transY = g_BattleSummonAlexanderBillboardMatrix.transZ;
     g_BattleSummonAlexanderBillboardMatrix.transX = g_BattleSummonAlexanderBillboardMatrix.transY;
@@ -333,10 +333,10 @@ void __cdecl BattleFx_SummonBeginAlexander(int targetMask, int actorIdx)
 
     Battle_GetActorMaskCentroid(g_BattleSummonAlexanderTimer = targetMask, &centroid.vx);
     if (centroid.vz < g_BattleActorRecords[actorIdx].posZ) {
-        ((BattleFxTimeDamageOrbitRing *)&g_BattleSummonAlexanderDword)->screenY = 0x800;
-        g_BattleSummonAlexanderBillboardMatrix.transZ = centroid.vz + 0x1388;
+        ((BattleFxTimeDamageOrbitRing *)&g_BattleSummonAlexanderDword)->screenY = 2048;
+        g_BattleSummonAlexanderBillboardMatrix.transZ = centroid.vz + 5000;
     } else {
-        g_BattleSummonAlexanderBillboardMatrix.transZ = centroid.vz - 0x1388;
+        g_BattleSummonAlexanderBillboardMatrix.transZ = centroid.vz - 5000;
     }
     RotMatrix((SVECTOR *)&g_BattleSummonAlexanderDword, &(g_BattleSummonAlexanderBillboardMatrix.rotation));
     BattleFx_SummonAlexanderClearCallbackRecords();
@@ -477,7 +477,7 @@ void __cdecl BattleFx_AlexanderRunCameraScript(void)
             case SUMMON_CAMERA_MOVE_EASED:
                 g_BattleSummonAlexanderCameraState->stepCount = BattleFx_AlexanderReadCameraScriptOperand(&task->script);
                 g_BattleSummonAlexanderCameraState->progress = 0;
-                g_BattleSummonAlexanderCameraState->stepSize = 0x1000 / g_BattleSummonAlexanderCameraState->stepCount;
+                g_BattleSummonAlexanderCameraState->stepSize = 4096 / g_BattleSummonAlexanderCameraState->stepCount;
                 g_BattleSummonAlexanderCameraState->deltaX = g_BattleSummonAlexanderCameraState->posX;
                 g_BattleSummonAlexanderCameraState->deltaY = g_BattleSummonAlexanderCameraState->posY;
                 g_BattleSummonAlexanderCameraState->deltaZ = g_BattleSummonAlexanderCameraState->posZ;
@@ -530,17 +530,17 @@ void __cdecl BattleFx_AlexanderRunCameraScript(void)
                 dirVec->offsetY = g_BattleSummonAlexanderCameraScratch->posY - g_BattleSummonAlexanderCameraState->deltaY;
                 dirVec->offsetZ = g_BattleSummonAlexanderCameraScratch->posZ - g_BattleSummonAlexanderCameraState->deltaZ;
                 VectorNormalToSVector((int *)dirVec, (short *)scriptBlockPtr);
-                g_BattleSummonAlexanderCameraState->posX = g_BattleSummonAlexanderCameraScratch->posX - (scriptBlockPtr->vx * g_BattleSummonAlexanderCameraState->progress >> 0xC);
-                g_BattleSummonAlexanderCameraState->posY = g_BattleSummonAlexanderCameraScratch->posY - (scriptBlockPtr->vy * g_BattleSummonAlexanderCameraState->progress >> 0xC);
-                g_BattleSummonAlexanderCameraState->posZ = g_BattleSummonAlexanderCameraScratch->posZ - (scriptBlockPtr->vz * g_BattleSummonAlexanderCameraState->progress >> 0xC);
+                g_BattleSummonAlexanderCameraState->posX = g_BattleSummonAlexanderCameraScratch->posX - (scriptBlockPtr->vx * g_BattleSummonAlexanderCameraState->progress >> 12);
+                g_BattleSummonAlexanderCameraState->posY = g_BattleSummonAlexanderCameraScratch->posY - (scriptBlockPtr->vy * g_BattleSummonAlexanderCameraState->progress >> 12);
+                g_BattleSummonAlexanderCameraState->posZ = g_BattleSummonAlexanderCameraScratch->posZ - (scriptBlockPtr->vz * g_BattleSummonAlexanderCameraState->progress >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_BattleSummonAlexanderCameraState->progress += g_BattleSummonAlexanderCameraState->stepSize;
                 easing = g_BattleSummonAlexanderCameraState->progress;
                 easing = SinFixed(SinFixed(easing / 4) / 4);
-                g_BattleSummonAlexanderCameraState->posX = g_BattleSummonAlexanderCameraState->deltaX + (g_BattleSummonAlexanderCameraState->stepX * easing >> 0xC);
-                g_BattleSummonAlexanderCameraState->posY = g_BattleSummonAlexanderCameraState->deltaY + (g_BattleSummonAlexanderCameraState->stepY * easing >> 0xC);
-                g_BattleSummonAlexanderCameraState->posZ = g_BattleSummonAlexanderCameraState->deltaZ + (g_BattleSummonAlexanderCameraState->stepZ * easing >> 0xC);
+                g_BattleSummonAlexanderCameraState->posX = g_BattleSummonAlexanderCameraState->deltaX + (g_BattleSummonAlexanderCameraState->stepX * easing >> 12);
+                g_BattleSummonAlexanderCameraState->posY = g_BattleSummonAlexanderCameraState->deltaY + (g_BattleSummonAlexanderCameraState->stepY * easing >> 12);
+                g_BattleSummonAlexanderCameraState->posZ = g_BattleSummonAlexanderCameraState->deltaZ + (g_BattleSummonAlexanderCameraState->stepZ * easing >> 12);
             }
             (g_BattleSummonAlexanderCameraState->stepCount)--;
             g_BattleSummonAlexanderCameraState = &g_BattleSummonAlexanderTargetActor;
@@ -628,7 +628,7 @@ void __cdecl BattleFx_SummonAlexanderClearCallbackRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleSummonAlexanderVertexBuffer[i] = 0;
     }
 }
@@ -648,7 +648,7 @@ void __cdecl BattleFx_SummonAlexanderRunCallbackRecordsTask(void)
 
     frame.slot = (int)BATTLE_CURRENT_TASK_SLOT;
     frame.active = 0;
-    for (frame.recordIndex = 0; frame.recordIndex < 0xc8; frame.recordIndex++) {
+    for (frame.recordIndex = 0; frame.recordIndex < 200; frame.recordIndex++) {
         if (g_BattleSummonAlexanderVertexBuffer[frame.recordIndex] != 0) {
             g_BattleSummonAlexanderVertexBuffer[frame.recordIndex]((int)&g_BattleSummonAlexanderParticleBuffer.records[frame.recordIndex]);
             if (g_BattleSummonAlexanderParticleBuffer.records[frame.recordIndex].state == -1) {
@@ -690,11 +690,11 @@ void __cdecl BattleFx_SummonAlexanderTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL != 0) {
-        destinationColX = g_BattleSummonAlexanderLoadedResTable2 % 0x200;
+        destinationColX = g_BattleSummonAlexanderLoadedResTable2 % 512;
         g_BattleSummonAlexanderLoadedResTable2++;
-        posYValue = 0x64;
-        bytesX = 0x100;
-        spriteBytesY = 0x100;
+        posYValue = 100;
+        bytesX = 256;
+        spriteBytesY = 256;
         sourceX = 0;
         sourceY = 0;
         flagWord = 0;
@@ -702,16 +702,16 @@ void __cdecl BattleFx_SummonAlexanderTimelineTask(void)
         if (Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot1) != 0) {
             Gfx_EmitPsxTexturedSpriteQuad(destinationColX, posYValue, bytesX, spriteBytesY, sourceX, sourceY, flagWord, FLOAT_ONE_BITS, nextFillColor, 0, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot1));
         }
-        destinationColX = (g_BattleSummonAlexanderLoadedResTable2 + 0x100) % 0x200;
+        destinationColX = (g_BattleSummonAlexanderLoadedResTable2 + 256) % 512;
         if (Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot2) != 0) {
             Gfx_EmitPsxTexturedSpriteQuad(destinationColX, posYValue, bytesX, spriteBytesY, sourceX, sourceY, flagWord, FLOAT_ONE_BITS, nextFillColor, 0, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot2));
         }
     }
-    if (taskEnt->frameCount == 0x69) {
+    if (taskEnt->frameCount == 105) {
         g_BattleFxTimelineState.red = 0;
         g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.channel2 = 0;
-        Battle_StartFixedPointRamp(0x400, 0x32);
+        Battle_StartFixedPointRamp(0x400, 50);
     }
     stage = taskEnt->frameCount;
     if (stage < 5) {
@@ -720,7 +720,7 @@ void __cdecl BattleFx_SummonAlexanderTimelineTask(void)
         }
     } else {
         stage -= 5;
-        if (stage < 0xA) {
+        if (stage < 10) {
             if (stage == 0) {
                 slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderMorphingMeshTask);
                 slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderSpawnSwirlingSpritesTask);
@@ -730,16 +730,16 @@ void __cdecl BattleFx_SummonAlexanderTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            stage -= 0xA;
-            if (stage < 0x1E) {
-                if (stage == 0x1C) {
+            stage -= 10;
+            if (stage < 30) {
+                if (stage == 28) {
                     ringRecord = (BattleFxRingWaveSlot *)Battle_AllocSceneMessage(1);
                     ringRecord->flags = 0;
-                    ringRecord->lifetime = 0x4E20;
+                    ringRecord->lifetime = 20000;
                     ringRecord->transZ = *(short *)&g_BattleSummonAlexanderBillboardMatrix.transZ;
                     ringRecord->angleY = ((BattleFxTimeDamageOrbitRing *)&g_BattleSummonAlexanderDword)->screenY + 0x800;
                 }
-                if (stage == 0x1D) {
+                if (stage == 29) {
                     g_BattleActorRecords[3].tintB = 0;
                     g_BattleActorRecords[3].tintG = g_BattleActorRecords[3].tintB;
                     g_BattleActorRecords[3].tintR = g_BattleActorRecords[3].tintG;
@@ -747,58 +747,58 @@ void __cdecl BattleFx_SummonAlexanderTimelineTask(void)
                     Battle_AllocateResourceSlot(BattleFx_SummonAlexanderEaseOffsetsTask);
                 }
             } else {
-                stage -= 0x1E;
-                if (stage < 0x1E) { /* empty first arm: lib/codegen.h */
+                stage -= 30;
+                if (stage < 30) { /* empty first arm: lib/codegen.h */
                 } else {
-                    stage -= 0x1E;
-                    if (stage < 0x1E) {
+                    stage -= 30;
+                    if (stage < 30) {
                         if (stage == 0) {
                             slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderSpawnShardsTask);
                         }
-                        if (stage == 0xA) {
+                        if (stage == 10) {
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                         }
                     } else {
-                        stage -= 0x1E;
-                        if (stage < 0x28) {
+                        stage -= 30;
+                        if (stage < 40) {
                             if (stage == 0) {
                                 slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderSpawnYStepAnimatedSpritesTask);
                             }
                         } else {
-                            stage -= 0x28;
-                            if (stage < 0xA) { /* empty first arm: lib/codegen.h */
+                            stage -= 40;
+                            if (stage < 10) { /* empty first arm: lib/codegen.h */
                             } else {
-                                stage -= 0xA;
-                                if (stage < 0x23) {
-                                    if (stage == 0x18) {
+                                stage -= 10;
+                                if (stage < 35) {
+                                    if (stage == 24) {
                                         slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderCameraDecayShakeTask);
                                     }
-                                    if (stage == 0x18) {
-                                        for (row = 0; row < 0x14; row++) {
+                                    if (stage == 24) {
+                                        for (row = 0; row < 20; row++) {
                                             for (subIndex = 0; subIndex < 2; subIndex++) {
                                                 slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderDampedDriftSpriteTask);
-                                                heading = (row << 0xC) / 0x14 + rand() % 0xCC;
-                                                slotPointer->heading = *(short *)((char *)&(*(int *)((char *)&g_BattleSummonAlexanderSubTableDesc2 + 0x8)) + subIndex * 8) + (SinFixed(heading) * 0x320 >> 0xC);
+                                                heading = (row << 12) / 20 + rand() % 0xCC;
+                                                slotPointer->heading = *(short *)((char *)&(*(int *)((char *)&g_BattleSummonAlexanderSubTableDesc2 + 0x8)) + subIndex * 8) + (SinFixed(heading) * 0x320 >> 12);
                                                 slotPointer->spinRate = 0;
-                                                slotPointer->yVel = *(short *)((char *)&(*(int *)((char *)&g_BattleSummonAlexanderSubTableDesc2 + 0xc)) + subIndex * 8) + (CosFixed(heading) * 0x320 >> 0xC);
+                                                slotPointer->yVel = *(short *)((char *)&(*(int *)((char *)&g_BattleSummonAlexanderSubTableDesc2 + 0xc)) + subIndex * 8) + (CosFixed(heading) * 0x320 >> 12);
                                                 if (DEAD_IN_RETAIL != 0) {
                                                     rate = 0x64;
                                                 } else {
-                                                    rate = rand() % 0x32 + 0x32;
+                                                    rate = rand() % 50 + 50;
                                                 }
                                                 magAmt = rate;
-                                                slotPointer->velocityX = magAmt * SinFixed(heading) >> 0xC;
+                                                slotPointer->velocityX = magAmt * SinFixed(heading) >> 12;
                                                 if (DEAD_IN_RETAIL != 0) {
                                                     liftAmt = 0x32;
                                                 } else {
-                                                    liftAmt = rand() % 0x14 + 0x1E;
+                                                    liftAmt = rand() % 20 + 30;
                                                 }
                                                 slotPointer->liftStep = -liftAmt;
-                                                slotPointer->velocityZ = magAmt * CosFixed(heading) >> 0xC;
+                                                slotPointer->velocityZ = magAmt * CosFixed(heading) >> 12;
                                                 if (DEAD_IN_RETAIL != 0) {
-                                                    lifeLen = 0x4000;
+                                                    lifeLen = 16384;
                                                 } else {
-                                                    lifeLen = (rand()) % 0x2000 + 0x2000;
+                                                    lifeLen = (rand()) % 8192 + 8192;
                                                 }
                                                 slotPointer->life = lifeLen;
                                             }
@@ -811,60 +811,60 @@ void __cdecl BattleFx_SummonAlexanderTimelineTask(void)
                                         Sfx_ReleaseCachedBuffer(0x20F, 0);
                                     }
                                 } else {
-                                    stage -= 0x23;
-                                    if (stage < 0x19) {
+                                    stage -= 35;
+                                    if (stage < 25) {
                                         if (stage == 0) {
                                             slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderSpawnRadialSparkSpritesTask);
                                         }
                                     } else {
-                                        stage -= 0x19;
-                                        if (stage < 0x1E) {
+                                        stage -= 25;
+                                        if (stage < 30) {
                                             if (stage == 0) {
                                                 slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderSpawnPrimitivePairsTask);
                                                 slotPointer->variant = 0;
                                                 slotPointer->heading = rand() & 0xFFF;
                                                 heading = slotPointer->heading;
-                                                slotPointer->velocityX = 0x77;
+                                                slotPointer->velocityX = 119;
                                                 slotPointer->spinRate = (rand()) % 0x800 - 0x400;
                                                 if (DEAD_IN_RETAIL != 0) {
-                                                    vertexSpeed = 0x3000;
+                                                    vertexSpeed = 12288;
                                                 } else {
-                                                    vertexSpeed = (rand()) % 0x2000 + 0x1000;
+                                                    vertexSpeed = (rand()) % 8192 + 4096;
                                                 }
-                                                slotPointer->liftStep = -vertexSpeed / 0x1E;
+                                                slotPointer->liftStep = -vertexSpeed / 30;
                                                 if (DEAD_IN_RETAIL != 0) {
-                                                    yVel = 0x280;
+                                                    yVel = 640;
                                                 } else {
-                                                    yVel = (rand()) % 0x100 + 0x180;
+                                                    yVel = (rand()) % 256 + 384;
                                                 }
                                                 slotPointer->yVel = yVel;
                                                 if (DEAD_IN_RETAIL != 0) {
-                                                    workLife = 0x7D0;
+                                                    workLife = 2000;
                                                 } else {
-                                                    workLife = rand() % 0x3E8 + 0x3E8;
+                                                    workLife = rand() % 1000 + 1000;
                                                 }
                                                 slotPointer->life = workLife;
                                                 slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderSpawnPrimitivePairsTask);
                                                 slotPointer->variant = 1;
                                                 slotPointer->heading = heading + (rand() & 0x7FF) + 0x400;
-                                                slotPointer->velocityX = 0x77;
+                                                slotPointer->velocityX = 119;
                                                 slotPointer->spinRate = (rand()) % 0x800 - 0x400;
                                                 if (DEAD_IN_RETAIL != 0) {
                                                     dropRate = 0x3000;
                                                 } else {
-                                                    dropRate = (rand()) % 0x2000 + 0x1000;
+                                                    dropRate = (rand()) % 8192 + 4096;
                                                 }
-                                                slotPointer->liftStep = dropRate / 0x1E;
+                                                slotPointer->liftStep = dropRate / 30;
                                                 if (DEAD_IN_RETAIL != 0) {
-                                                    newYMagnitude = 0x280;
+                                                    newYMagnitude = 640;
                                                 } else {
-                                                    newYMagnitude = (rand()) % 0x100 + 0x180;
+                                                    newYMagnitude = (rand()) % 256 + 384;
                                                 }
                                                 slotPointer->yVel = -newYMagnitude;
                                                 if (DEAD_IN_RETAIL != 0) {
                                                     subTimeout = 0x7D0;
                                                 } else {
-                                                    subTimeout = rand() % 0x3E8 + 0x3E8;
+                                                    subTimeout = rand() % 1000 + 1000;
                                                 }
                                                 slotPointer->life = subTimeout;
                                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 3);
@@ -873,94 +873,94 @@ void __cdecl BattleFx_SummonAlexanderTimelineTask(void)
                                                 Sfx_ReleaseCachedBuffer(0x212, 1);
                                             }
                                         } else {
-                                            stage -= 0x1E;
+                                            stage -= 30;
                                             if (stage < 5) {
                                                 if (stage == 0) {
                                                     slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderScalingModelTask);
                                                     slotPointer->heading = 0;
                                                     slotPointer->spinRate = 0;
-                                                    slotPointer->yVel = 0x1388;
+                                                    slotPointer->yVel = 5000;
                                                     slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderSpawnScalingMeshesTask);
                                                 }
                                             } else {
                                                 stage -= 5;
-                                                if (stage < 0x14) {
+                                                if (stage < 20) {
                                                     if (stage == 0) {
                                                         slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderGrowingModelTask);
-                                                        for (row = 0; row < 0x28; row++) {
+                                                        for (row = 0; row < 40; row++) {
                                                             slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderScatteredShardMeshTask);
                                                             slotPointer->variant = rand() % 3;
                                                             heading = rand() & 0xFFF;
                                                             if (DEAD_IN_RETAIL != 0) {
-                                                                radialDist = 0x1388;
+                                                                radialDist = 5000;
                                                             } else {
-                                                                radialDist = rand() % 0x1194 + 0x1F4;
+                                                                radialDist = rand() % 4500 + 500;
                                                             }
                                                             magAmt = radialDist;
-                                                            slotPointer->heading = magAmt * SinFixed(heading) >> 0xC;
+                                                            slotPointer->heading = magAmt * SinFixed(heading) >> 12;
                                                             slotPointer->spinRate = 0;
-                                                            slotPointer->yVel = (magAmt * CosFixed(heading) >> 0xC) + 0x1388;
+                                                            slotPointer->yVel = (magAmt * CosFixed(heading) >> 12) + 5000;
                                                             if (DEAD_IN_RETAIL != 0) {
                                                                 offsetZ = 0x2BC;
                                                             } else {
-                                                                offsetZ = rand() % 0x258 + 0x64;
+                                                                offsetZ = rand() % 600 + 100;
                                                             }
                                                             slotPointer->liftStep = -offsetZ;
                                                             if (DEAD_IN_RETAIL != 0) {
-                                                                dropAmount = 0x320;
+                                                                dropAmount = 800;
                                                             } else {
-                                                                dropAmount = rand() % 0x258 + 0xC8;
+                                                                dropAmount = rand() % 600 + 200;
                                                             }
                                                             slotPointer->dropAmount = -dropAmount;
                                                             if (DEAD_IN_RETAIL != 0) {
                                                                 span = 0x250;
                                                             } else {
-                                                                span = (rand()) % 0x200 + 0x50;
+                                                                span = (rand()) % 512 + 80;
                                                             }
                                                             slotPointer->life = span;
                                                             slotPointer->anglesPacked = rand() & 0xFFFFFF;
                                                         }
-                                                        for (row = 0; row < 0x64; row++) {
+                                                        for (row = 0; row < 100; row++) {
                                                             heading = rand() & 0xFFF;
                                                             if (DEAD_IN_RETAIL != 0) {
                                                                 reach = 0x1388;
                                                             } else {
-                                                                reach = rand() % 0x1194 + 0x1F4;
+                                                                reach = rand() % 4500 + 500;
                                                             }
                                                             magAmt = reach;
-                                                            g_BattleSummonAlexanderOffset->offsetX = magAmt * SinFixed(heading) >> 0xC;
-                                                            g_BattleSummonAlexanderOffset->offsetZ = (magAmt * CosFixed(heading) >> 0xC) + 0x1388;
+                                                            g_BattleSummonAlexanderOffset->offsetX = magAmt * SinFixed(heading) >> 12;
+                                                            g_BattleSummonAlexanderOffset->offsetZ = (magAmt * CosFixed(heading) >> 12) + 0x1388;
                                                             for (subIndex = 0; subIndex < 3; subIndex++) {
                                                                 if (DEAD_IN_RETAIL != 0) {
                                                                     increment = 0x700;
                                                                 } else {
-                                                                    increment = rand() % 0x500 + 0x200;
+                                                                    increment = rand() % 1280 + 512;
                                                                 }
                                                                 heading += increment;
-                                                                *(short *)((char *)&(g_BattleSummonAlexanderSubState.vertexAX) + (row * 0x18 + subIndex * 8)) = g_BattleSummonAlexanderOffset->offsetX + (SinFixed(heading) * 0x3E8 >> 0xC);
+                                                                *(short *)((char *)&(g_BattleSummonAlexanderSubState.vertexAX) + (row * 0x18 + subIndex * 8)) = g_BattleSummonAlexanderOffset->offsetX + (SinFixed(heading) * 0x3E8 >> 12);
                                                                 *(short *)((char *)&g_BattleSummonAlexanderSubState.vertexAY + (row * 0x18 + subIndex * 8)) = 0;
-                                                                *(short *)((char *)&g_BattleSummonAlexanderSubState.vertexAZ + (row * 0x18 + subIndex * 8)) = g_BattleSummonAlexanderOffset->offsetZ + (CosFixed(heading) * 0x3E8 >> 0xC);
+                                                                *(short *)((char *)&g_BattleSummonAlexanderSubState.vertexAZ + (row * 0x18 + subIndex * 8)) = g_BattleSummonAlexanderOffset->offsetZ + (CosFixed(heading) * 0x3E8 >> 12);
                                                             }
                                                         }
                                                         Battle_AllocateResourceSlot(BattleFx_SummonAlexanderFlatTrianglesTask);
                                                     }
                                                 } else {
-                                                    stage -= 0x14;
-                                                    if (stage < 0x15) {
+                                                    stage -= 20;
+                                                    if (stage < 21) {
                                                         if (stage == 0) {
                                                             slotPointer = (BattleFxSummonAlexanderSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderAnimatedSpriteTask);
                                                         }
                                                         if (stage == 2) {
-                                                            BattleFx_StartScreenFlashRamp(0xA);
+                                                            BattleFx_StartScreenFlashRamp(10);
                                                         }
-                                                        if (stage == 0x13) {
+                                                        if (stage == 19) {
                                                             Battle_StartFixedPointRamp(0, 1);
                                                             Battle_AllocSceneMessage(2);
                                                         }
                                                     } else {
                                                         g_BattleStageHideFlags = 0;
                                                         BattleFx_FadeOutScreenFlashRamp(8);
-                                                        for (row = 0; row < 0xA; row++) {
+                                                        for (row = 0; row < 10; row++) {
                                                             if ((g_BattleSummonAlexanderTimer & 1 << row) != 0) {
                                                                 Battle_PostActorHitOrHurtMessage(row);
                                                             }
@@ -1024,17 +1024,17 @@ void __cdecl BattleFx_SummonAlexanderCameraYThenZShakeTask(void)
     g_BattleSummonAlexanderShakeAmplitude = 0;
     g_BattleSummonAlexanderShakeOffset = g_BattleSummonAlexanderShakeAmplitude;
     phaseFrame = task->frameCount;
-    if (phaseFrame < 0x28) {
+    if (phaseFrame < 40) {
         g_BattleSummonAlexanderShakeOffset = 0x32;
     } else {
-        phaseFrame -= 0x28;
-        if (phaseFrame < 0x1E) {
+        phaseFrame -= 40;
+        if (phaseFrame < 30) {
             g_BattleSummonAlexanderShakeAmplitude = 0x32;
         } else {
-            phaseFrame -= 0x1E;
-            if (phaseFrame < 0xA) {
-                easeRatio = (phaseFrame << 0xC) / 0xA;
-                g_BattleSummonAlexanderShakeOffset = (0x1000 - easeRatio) * 0x32 >> 0xC;
+            phaseFrame -= 30;
+            if (phaseFrame < 10) {
+                easeRatio = (phaseFrame << 12) / 10;
+                g_BattleSummonAlexanderShakeOffset = (0x1000 - easeRatio) * 0x32 >> 12;
             } else {
                 task->stage = 0xFFFF;
                 return;
@@ -1072,7 +1072,7 @@ void __cdecl BattleFx_SummonAlexanderBuildAndQueueStageOffscreenRequests(void)
         g_BattleSummonAlexanderTransformMatrix.originX = *(short *)&g_BattleViewportOriginX;
         g_BattleSummonAlexanderTransformMatrix.originY = *(short *)&g_BattleViewportOriginY;
         g_BattleSummonAlexanderTransformMatrix.scaleX = 0xC0;
-        g_BattleSummonAlexanderTransformMatrix.scaleY = 0x100;
+        g_BattleSummonAlexanderTransformMatrix.scaleY = 0x100 /* 0.0625 */;
     } else {
         g_BattleSummonAlexanderTransformMatrix.originX = *(short *)&g_BattleViewportOriginX;
         g_BattleSummonAlexanderTransformMatrix.originY = *(short *)&g_BattleViewportOriginY;
@@ -1203,15 +1203,15 @@ void __cdecl BattleFx_SummonAlexanderMorphingMeshTask(void)
     if (stepIdx == 0) { /* empty first arm: lib/codegen.h */
     } else {
         stepIdx--;
-        if (stepIdx < 0x28) {
+        if (stepIdx < 40) {
             if ((stepIdx % 4) == 0) {
                 BattleFx_SummonAlexanderComputeMorphDeltas(&g_BattleSummonAlexanderVertexBlob1, (struct Vec3sPacked *)g_BattleSummonAlexanderPoseTable[stepIdx / 4], (struct SVECTOR *)&g_BattleSummonAlexanderInterpolatedPose);
             }
             blendFraction = (((stepIdx % 4) + 1) << 12) / 4;
             BattleFx_SummonAlexanderApplyMorphBlend(&g_BattleSummonAlexanderVertexBlob1, (struct Vec3sPacked *)g_BattleSummonAlexanderPoseTable[stepIdx / 4], (struct SVECTOR *)&g_BattleSummonAlexanderInterpolatedPose, blendFraction);
         } else {
-            stepIdx -= 0x28;
-            if (stepIdx < 0x3C) { /* empty first arm: lib/codegen.h */
+            stepIdx -= 40;
+            if (stepIdx < 60) { /* empty first arm: lib/codegen.h */
             } else {
                 taskSlot->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -1226,7 +1226,7 @@ void __cdecl BattleFx_SummonAlexanderMorphingMeshTask(void)
         Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot2));
         Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot2));
         SetDrawColorRGB(0, 0, 0);
-        g_BattleOverlayDrawListHead = BattleFx_AlexanderDrawPsxMeshDepthShaded((BattleFxPsxMeshDraw *)&g_BattleSummonAlexanderMeshSourceDescriptor, (meshIdx << 0xA) + (int)&g_BattleSummonAlexanderDescentInitFlag, 8, g_BattleOverlayDrawListHead);
+        g_BattleOverlayDrawListHead = BattleFx_AlexanderDrawPsxMeshDepthShaded((BattleFxPsxMeshDraw *)&g_BattleSummonAlexanderMeshSourceDescriptor, (meshIdx << 10) + (int)&g_BattleSummonAlexanderDescentInitFlag, 8, g_BattleOverlayDrawListHead);
         g_BattleSummonAlexanderComposedMatrix[3].posY = 0;
         g_BattleSummonAlexanderComposedMatrix[2].posY = 0;
         g_BattleSummonAlexanderComposedMatrix[1].posY = 0;
@@ -1234,10 +1234,10 @@ void __cdecl BattleFx_SummonAlexanderMorphingMeshTask(void)
         zero = 0;
         for (segIdx = 0; segIdx < 2; segIdx++) {
             lerp = (segIdx << 12) / 2;
-            g_BattleSummonAlexanderComposedMatrix[1].posZ = (lerp * 0x2E88 >> 0xC) - 0x16E4;
+            g_BattleSummonAlexanderComposedMatrix[1].posZ = (lerp * 0x2E88 >> 12) - 5860;
             g_BattleSummonAlexanderComposedMatrix->posZ = g_BattleSummonAlexanderComposedMatrix[1].posZ;
             lerp = ((segIdx + 1) << 12) / 2;
-            g_BattleSummonAlexanderComposedMatrix[3].posZ = (lerp * 0x2E88 >> 0xC) - 0x16E4;
+            g_BattleSummonAlexanderComposedMatrix[3].posZ = (lerp * 0x2E88 >> 12) - 5860;
             g_BattleSummonAlexanderComposedMatrix[2].posZ = g_BattleSummonAlexanderComposedMatrix[3].posZ;
         }
     }
@@ -1282,9 +1282,9 @@ void __cdecl BattleFx_SummonAlexanderApplyMorphBlend(void *dst, Vec3sPacked *bas
     outVert = (Vec3sPacked *)((char *)dst + 4);
     blend = 0x1000 - blend;
     for (i = 0; i < vertCnt; i++) {
-        outVert->vx = base->vx + (deltas->vx * blend >> 0xC);
-        outVert->vy = base->vy + (deltas->vy * blend >> 0xC);
-        outVert->vz = base->vz + (deltas->vz * blend >> 0xC);
+        outVert->vx = base->vx + (deltas->vx * blend >> 12);
+        outVert->vy = base->vy + (deltas->vy * blend >> 12);
+        outVert->vz = base->vz + (deltas->vz * blend >> 12);
         outVert = (Vec3sPacked *)((char *)outVert + 8);
         base = (Vec3sPacked *)((char *)base + 8);
         deltas++;
@@ -1605,7 +1605,7 @@ int __cdecl BattleFx_SummonAlexanderClaimSpriteRecord(int tag)
 {
     int index;
 
-    for (index = 0; index < 0xC8; index++) {
+    for (index = 0; index < 200; index++) {
         if (g_BattleSummonAlexanderVertexBuffer[index] == 0) {
             g_BattleSummonAlexanderVertexBuffer[index] = (void(__cdecl *)(int))tag;
             g_BattleSummonAlexanderParticleBuffer.records[index].state = 0;
@@ -1636,8 +1636,8 @@ void __cdecl BattleFx_SummonAlexanderSwirlingSpriteRecordTask(BattleFxSwirlingSp
             sprite->phase += sprite->phaseStep;
             sinAngle = SinFixed(sprite->angle);
             cosine = CosFixed(sprite->angle);
-            sprite->offsetX = (cosine * sprite->offsetX + sinAngle * sprite->offsetY) >> 0xC;
-            sprite->offsetY = (-sinAngle * sprite->offsetX + cosine * sprite->offsetY) >> 0xC;
+            sprite->offsetX = (cosine * sprite->offsetX + sinAngle * sprite->offsetY) >> 12;
+            sprite->offsetY = (-sinAngle * sprite->offsetX + cosine * sprite->offsetY) >> 12;
         }
     }
 }
@@ -1680,9 +1680,9 @@ int __cdecl BattleFx_SummonAlexanderInstallSpriteMatrix(void *point, short value
     RotTransPoint(point, &g_BattleSummonAlexanderSpriteRecord.x, &depth);
     if (distance != 0) {
         NormalizeVectorFixed(&g_BattleSummonAlexanderSpriteRecord.x, direction);
-        g_BattleSummonAlexanderSpriteRecord.x += direction[0] * distance >> 0xC;
-        g_BattleSummonAlexanderSpriteRecord.y += direction[1] * distance >> 0xC;
-        g_BattleSummonAlexanderSpriteRecord.z += direction[2] * distance >> 0xC;
+        g_BattleSummonAlexanderSpriteRecord.x += direction[0] * distance >> 12;
+        g_BattleSummonAlexanderSpriteRecord.y += direction[1] * distance >> 12;
+        g_BattleSummonAlexanderSpriteRecord.z += direction[2] * distance >> 12;
     }
     SetRotMatrix(&g_BattleSummonAlexanderQuad);
     SetTransMatrix(&g_BattleSummonAlexanderQuad);
@@ -1716,28 +1716,28 @@ void __cdecl BattleFx_SummonAlexanderSpawnShardsTask(void)
         shard = (BattleFxAlexanderShardSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderShardMeshTask);
         shard->variant = rand() % 3;
         if (DEAD_IN_RETAIL != 0) {
-            thetaRand = 0xB00;
+            thetaRand = 0xB00 /* 247.5 deg */;
         } else {
             thetaRand = rand() % 0xE00 - 0x300;
         }
         heading = thetaRand;
-        shard->posX = CosFixed(heading) * 0xBB8 >> 0xC;
+        shard->posX = CosFixed(heading) * 0xBB8 >> 12;
         if (DEAD_IN_RETAIL != 0) {
             yRand = 0xFFFFF448;
         } else {
-            yRand = rand() % 0xFA0 - 0x1B58;
+            yRand = rand() % 4000 - 7000;
         }
         shard->posY = yRand + g_BattleActorRecords[3].posY;
-        shard->posZ = (SinFixed(heading) * 0x5DC >> 0xC) - 0x1F4;
+        shard->posZ = (SinFixed(heading) * 0x5DC >> 12) - 500;
         if (DEAD_IN_RETAIL != 0) {
             magRand = 0x96;
         } else {
-            magRand = rand() % 0x46 + 0x50;
+            magRand = rand() % 70 + 80;
         }
         speed = magRand;
-        shard->velocityX = speed * CosFixed(heading) >> 0xC;
+        shard->velocityX = speed * CosFixed(heading) >> 12;
         shard->velocityY = 0;
-        shard->velocityZ = speed * SinFixed(heading) >> 0xC;
+        shard->velocityZ = speed * SinFixed(heading) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             scaleDraw = 0x150;
         } else {
@@ -1746,7 +1746,7 @@ void __cdecl BattleFx_SummonAlexanderSpawnShardsTask(void)
         shard->scale = scaleDraw;
     }
     (localTaskSlot->frameCounter)++;
-    if (localTaskSlot->frameCounter >= 0x32) {
+    if (localTaskSlot->frameCounter >= 50) {
         localTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1771,16 +1771,16 @@ void __cdecl BattleFx_SummonAlexanderShardMeshTask(void)
         g_BattleSummonAlexanderShardRotation = (BattleFxAlexanderShardScratch *)Gfx_GetPsxScratchpadPtr(0);
     }
     localFrame = shardPtr->frame;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         g_BattleSummonAlexanderSpriteRequest1.shardMeshFlags = 0x80;
         g_BattleSummonAlexanderSpriteRequest1.shardFraction = 0;
         Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot1));
         Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot2));
     } else {
-        localFrame -= 0xA;
+        localFrame -= 10;
         if (localFrame < 5) {
             g_BattleSummonAlexanderSpriteRequest1.shardMeshFlags = 0x88;
-            g_BattleSummonAlexanderSpriteRequest1.shardFraction = (localFrame << 0xC) / 5;
+            g_BattleSummonAlexanderSpriteRequest1.shardFraction = (localFrame << 12) / 5;
             Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot3));
             Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot4));
         } else {
@@ -1814,9 +1814,9 @@ void __cdecl BattleFx_SummonAlexanderShardMeshTask(void)
             shardPtr->resourceIndex = 0xFFFF;
         } else {
             shardPtr->posZ += shardPtr->velocityZ;
-            shardPtr->velocityX = shardPtr->velocityX * 0xF00 >> 0xC;
-            shardPtr->velocityY = (shardPtr->velocityY * 0xF00 >> 0xC) + 0x32;
-            shardPtr->velocityZ = shardPtr->velocityZ * 0xF00 >> 0xC;
+            shardPtr->velocityX = shardPtr->velocityX * 0xF00 /* 0.9375 */ >> 12;
+            shardPtr->velocityY = (shardPtr->velocityY * 0xF00 /* 0.9375 */ >> 12) + 50;
+            shardPtr->velocityZ = shardPtr->velocityZ * 0xF00 /* 0.9375 */ >> 12;
             *(char *)&shardPtr->angleX += 8;
             *(char *)&shardPtr->angleY += 0x10;
             *(char *)&shardPtr->angleZ += 0x20;
@@ -2068,23 +2068,23 @@ void __cdecl BattleFx_SummonAlexanderSpawnYStepAnimatedSpritesTask(void)
     for (spriteIndex = 0; spriteIndex < 4; spriteIndex++) {
         sprite = (BattleFxAlexanderSprite *)(BattleFx_SummonAlexanderClaimSpriteRecord((int)BattleFx_SummonAlexanderYStepAnimatedSpriteRecordTask));
         theta = rand() & 0x7FF;
-        sprite->posX = CosFixed(theta) * 0xBB8 >> 0xC;
+        sprite->posX = CosFixed(theta) * 0xBB8 >> 12;
         if (DEAD_IN_RETAIL != 0) {
             yRand = 0xFFFFFC18;
         } else {
-            yRand = rand() % 0x1388 - 0x1770;
+            yRand = rand() % 5000 - 6000;
         }
         sprite->timer = yRand;
-        sprite->posY = (SinFixed(theta) * 0x5DC >> 0xC) - 0x1F4;
+        sprite->posY = (SinFixed(theta) * 0x5DC >> 12) - 500;
         if (DEAD_IN_RETAIL != 0) {
-            scaleValue = 0x4000;
+            scaleValue = 0x4000 /* 4.0 */;
         } else {
             scaleValue = rand() % 0x3000 + 0x1000;
         }
         sprite->scale = scaleValue;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0x2D) {
+    if (taskPtr->frameCounter >= 45) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2124,8 +2124,8 @@ void __cdecl BattleFx_SummonAlexanderCameraDecayShakeTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    amplitude = (taskPtr->frameCounter << 0xC) / 0xA;
-    amplitude = (0x1000 - amplitude) * 0x28 >> 0xC;
+    amplitude = (taskPtr->frameCounter << 12) / 10;
+    amplitude = (0x1000 - amplitude) * 0x28 >> 12;
     if ((taskPtr->frameCounter & 1) != 0) {
         g_BattleCameraPosition.cameraPosY += amplitude;
         g_BattleCameraFocalPoint.focalPointY += amplitude;
@@ -2134,7 +2134,7 @@ void __cdecl BattleFx_SummonAlexanderCameraDecayShakeTask(void)
         g_BattleCameraFocalPoint.focalPointY -= amplitude;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0xA) {
+    if (taskPtr->frameCounter >= 10) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2157,8 +2157,8 @@ void __cdecl BattleFx_SummonAlexanderDampedDriftSpriteTask(void)
             task->posX += task->velocityX;
             task->posY += task->velocityY;
             task->posZ += task->velocityZ;
-            task->velocityX = task->velocityX * 0xF00 >> 0xC;
-            task->velocityZ = task->velocityZ * 0xF00 >> 0xC;
+            task->velocityX = task->velocityX * 0xF00 /* 0.9375 */ >> 12;
+            task->velocityZ = task->velocityZ * 0xF00 /* 0.9375 */ >> 12;
         }
     }
 }
@@ -2192,7 +2192,7 @@ void __cdecl BattleFx_SummonAlexanderSpawnRadialSparkSpritesTask(void)
             if (DEAD_IN_RETAIL != 0)
                 deltaRand = 0x700;
             else
-                deltaRand = rand() % 0x600 + 0x100;
+                deltaRand = rand() % 1536 + 256;
             g_BattleSummonAlexanderPosDelta[laneIndex] = deltaRand;
             if (DEAD_IN_RETAIL != 0)
                 periodDraw = 5;
@@ -2210,7 +2210,7 @@ void __cdecl BattleFx_SummonAlexanderSpawnRadialSparkSpritesTask(void)
         g_BattleSummonAlexanderBeamScratch->spinSpeed = -0x120;
         RotMatrix((SVECTOR *)g_BattleSummonAlexanderBeamScratch, (char *)g_BattleSummonAlexanderBeamScratch + 8);
         sparkPtr = (BattleFxRadialLivewireSlot *)(BattleFx_SummonAlexanderClaimSpriteRecord((int)BattleFx_SummonAlexanderRadialSparkSpriteRecordTask));
-        g_BattleSummonAlexanderBeamScratch->vecX = -0x12C;
+        g_BattleSummonAlexanderBeamScratch->vecX = -300;
         g_BattleSummonAlexanderBeamScratch->wheelAngle = 0;
         g_BattleSummonAlexanderBeamScratch->spinSpeed = 0;
         TransformVectorToInt16((void *)((int)g_BattleSummonAlexanderBeamScratch + 8), (void *)g_BattleSummonAlexanderBeamScratch, (void *)g_BattleSummonAlexanderBeamScratch);
@@ -2222,9 +2222,9 @@ void __cdecl BattleFx_SummonAlexanderSpawnRadialSparkSpritesTask(void)
         g_BattleSummonAlexanderBeamScratch->spinSpeed = 0;
         TransformVectorToInt16((void *)((int)g_BattleSummonAlexanderBeamScratch + 8), (void *)g_BattleSummonAlexanderBeamScratch, (void *)((int)sparkPtr + 0xC));
         if (DEAD_IN_RETAIL != 0)
-            sizeRand = 0x1800;
+            sizeRand = 6144;
         else
-            sizeRand = rand() % 0x800 + 0x1000;
+            sizeRand = rand() % 2048 + 4096;
         sparkPtr->scaleOrVariant = sizeRand;
     }
     (taskSlot->frameCounter)++;
@@ -2247,15 +2247,15 @@ void __cdecl BattleFx_SummonAlexanderRadialSparkSpriteRecordTask(BattleFxRadialL
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&(*(int *)((char *)&g_BattleSummonAlexanderSubTableDesc + 0x8)), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (record->frame)++;
-        if (record->frame >= 0xA) {
+        if (record->frame >= 10) {
             record->spriteIndex = 0xFFFF;
         } else {
             record->posX += record->velocityX;
             record->posY += record->velocityY;
             record->posZ += record->velocityZ;
-            record->velocityX = record->velocityX * 0xE00 >> 0xC;
-            record->velocityY = record->velocityY * 0xE00 >> 0xC;
-            record->velocityZ = record->velocityZ * 0xE00 >> 0xC;
+            record->velocityX = record->velocityX * 0xE00 /* 0.875 */ >> 12;
+            record->velocityY = record->velocityY * 0xE00 /* 0.875 */ >> 12;
+            record->velocityZ = record->velocityZ * 0xE00 /* 0.875 */ >> 12;
         }
     }
 }
@@ -2285,29 +2285,29 @@ void __cdecl BattleFx_SummonAlexanderSpawnPrimitivePairsTask(void)
     g_BattleSummonAlexanderTimelineState->spinSpeed = 0;
     RotMatrix((SVECTOR *)g_BattleSummonAlexanderTimelineState, (char *)g_BattleSummonAlexanderTimelineState + 0x10);
     for (side = 0; side < 2; side++) {
-        g_BattleSummonAlexanderTimelineState->posX = CosFixed(taskPtr->angleA) * 0xBB8 >> 0xC;
+        g_BattleSummonAlexanderTimelineState->posX = CosFixed(taskPtr->angleA) * 0xBB8 >> 12;
         g_BattleSummonAlexanderTimelineState->vecY = 0;
-        g_BattleSummonAlexanderTimelineState->posY = (SinFixed(taskPtr->angleA) * 0x3E8 >> 0xC) + (taskPtr->amplitude * SinFixed(taskPtr->angleB) >> 0xC);
+        g_BattleSummonAlexanderTimelineState->posY = (SinFixed(taskPtr->angleA) * 0x3E8 >> 12) + (taskPtr->amplitude * SinFixed(taskPtr->angleB) >> 12);
         TransformVectorToInt16((void *)(((int)g_BattleSummonAlexanderTimelineState) + 0x10), (void *)(((int)g_BattleSummonAlexanderTimelineState) + 8), (void *)(((int)g_BattleSummonAlexanderTimelineState) + 8));
-        g_BattleSummonAlexanderTimelineState->posY += 0x1388;
+        g_BattleSummonAlexanderTimelineState->posY += 5000;
         taskPtr->angleA += taskPtr->angleStepA;
         taskPtr->angleB += taskPtr->angleStepB;
-        g_BattleSummonAlexanderTimelineState->vecX = CosFixed(taskPtr->angleA) * 0xBB8 >> 0xC;
+        g_BattleSummonAlexanderTimelineState->vecX = CosFixed(taskPtr->angleA) * 0xBB8 >> 12;
         g_BattleSummonAlexanderTimelineState->wheelAngle = 0;
-        g_BattleSummonAlexanderTimelineState->spinSpeed = (SinFixed(taskPtr->angleA) * 0x3E8 >> 0xC) + (taskPtr->amplitude * SinFixed(taskPtr->angleB) >> 0xC);
+        g_BattleSummonAlexanderTimelineState->spinSpeed = (SinFixed(taskPtr->angleA) * 0x3E8 >> 12) + (taskPtr->amplitude * SinFixed(taskPtr->angleB) >> 12);
         TransformVectorToInt16((void *)(((int)g_BattleSummonAlexanderTimelineState) + 0x10), (void *)((int)g_BattleSummonAlexanderTimelineState), (void *)((int)g_BattleSummonAlexanderTimelineState));
         g_BattleSummonAlexanderTimelineState->spinSpeed += 0x1388;
         pairPtr = (BattleFxAlexanderPrimitivePair *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderGradientTriangleTask);
         pairPtr->pairIndex = taskPtr->pendingPairIndex;
         pairPtr->side = 1 - side;
-        if (taskPtr->pairIndex < 0xA) {
+        if (taskPtr->pairIndex < 10) {
             pairPtr->stepA = 0;
             pairPtr->stepB = 0;
         } else {
-            rampIdx = side + taskPtr->pairIndex * 2 + -0x14;
-            pairPtr->stepB = (rampIdx << 0xC) / 0xA;
+            rampIdx = side + taskPtr->pairIndex * 2 + -20;
+            pairPtr->stepB = (rampIdx << 12) / 10;
             rampIdx++;
-            pairPtr->stepA = (rampIdx << 0xC) / 0xA;
+            pairPtr->stepA = (rampIdx << 12) / 10;
         }
         pairPtr->cornerA = *(SVECTOR *)g_BattleSummonAlexanderTimelineState;
         pairPtr->cornerB = *(SVECTOR *)&g_BattleSummonAlexanderTimelineState->posX;
@@ -2317,7 +2317,7 @@ void __cdecl BattleFx_SummonAlexanderSpawnPrimitivePairsTask(void)
         pairPtr->cornerB = *(SVECTOR *)&g_BattleSummonAlexanderTimelineState->posX;
     }
     (taskPtr->pairIndex)++;
-    if (taskPtr->pairIndex >= 0xF) {
+    if (taskPtr->pairIndex >= 15) {
         taskPtr->pendingPairIndex = 0xFFFF;
     }
 }
@@ -2353,10 +2353,10 @@ void __cdecl BattleFx_SummonAlexanderGradientTriangleTask(void)
     RefreshGlobalTransformState();
     Gfx_TransformTriangleReturnDepth((void *)(taskSlot->pointIndex * 8 + ((int)&g_BattleSummonAlexanderDefaultPosition + 8)), &taskSlot->cornerA, &taskSlot->cornerB, (void *)(g_BattleSummonAlexanderTriangleState + 4), (void *)(g_BattleSummonAlexanderTriangleState + 8));
     if ((*(int *)((char *)g_BattleSummonAlexanderTriangleState + 8) & 0x60000) == 0) {
-        frac = (taskSlot->step << 0xC) / 6;
-        p = taskSlot->blendA + ((0x1000 - taskSlot->blendA) * frac >> 0xC);
-        frac = (taskSlot->step + 1 << 0xC) / 6;
-        curMixedB = taskSlot->blendB + ((0x1000 - taskSlot->blendB) * frac >> 0xC);
+        frac = (taskSlot->step << 12) / 6;
+        p = taskSlot->blendA + ((0x1000 - taskSlot->blendA) * frac >> 12);
+        frac = (taskSlot->step + 1 << 12) / 6;
+        curMixedB = taskSlot->blendB + ((0x1000 - taskSlot->blendB) * frac >> 12);
         colorA = BattleFx_SummonAlexanderGradientToPackedColor(p);
         wordA = colorA;
         packedB = BattleFx_SummonAlexanderGradientToPackedColor(curMixedB);
@@ -2377,7 +2377,7 @@ void __cdecl BattleFx_SummonAlexanderGradientTriangleTask(void)
 
 // Maps a 0..0xFFF hue-like value in hue onto a packed 0x00BBGGRR colour: three 0x555-wide bands
 // each scale hue*3 by fixed constants (>>12) with per-band offsets into three unsigned char
-// lanes, returned as b | c<<8 | a<<16. Returns 0 for hue >= 0xFFF.
+// lanes, returned as b | c<<8 | a<<16. Returns 0 for hue >= 4095.
 // FUNCTION: FF7 0x005068ae
 int __cdecl BattleFx_SummonAlexanderGradientToPackedColor(int hue)
 {
@@ -2385,31 +2385,31 @@ int __cdecl BattleFx_SummonAlexanderGradientToPackedColor(int hue)
     unsigned char red;
     unsigned char green;
 
-    if (hue < 0x555) {
+    if (hue < 1365) {
         hue = hue * 3;
-        red = (hue * -0x80 >> 0xC) + 0x80;
-        green = (hue * -0x40 >> 0xC) + 0x80;
-        highByte = (hue * 0 >> 0xC) + 0x80;
+        red = (hue * -0x80 >> 12) + 0x80;
+        green = (hue * -0x40 >> 12) + 0x80;
+        highByte = (hue * 0 >> 12) + 0x80;
     } else {
         hue = hue - 0x555;
-        if (hue < 0x555) {
+        if (hue < 1365) {
             hue = hue * 3;
-            red = (hue * 0x20 >> 0xC) + 0;
-            green = (hue * -0x40 >> 0xC) + 0x40;
-            highByte = (hue * -0x40 >> 0xC) + 0x80;
+            red = (hue * 0x20 >> 12) + 0;
+            green = (hue * -0x40 >> 12) + 0x40;
+            highByte = (hue * -0x40 >> 12) + 0x80;
         } else {
             hue = hue - 0x555;
-            if (hue < 0x555) {
+            if (hue < 1365) {
                 hue = hue * 3;
-                red = (hue * -0x20 >> 0xC) + 0x20;
-                green = (hue * 0 >> 0xC) + 0;
-                highByte = (hue * -0x40 >> 0xC) + 0x40;
+                red = (hue * -0x20 >> 12) + 0x20;
+                green = (hue * 0 >> 12) + 0;
+                highByte = (hue * -0x40 >> 12) + 0x40;
             } else {
                 return 0;
             }
         }
     }
-    return red | (green << 8) | (highByte << 0x10);
+    return red | (green << 8) | (highByte << 16);
 }
 
 // Per-frame task that draws the gradient strip of two quads of Alexander's summon. The first call
@@ -2437,15 +2437,15 @@ void __cdecl BattleFx_SummonAlexanderGradientStripQuadsTask(void)
     SetTransMatrix(&g_BattleSummonAlexanderLightMatrix);
     RefreshGlobalTransformState();
     stepIdx = taskSlot->stepCount + taskSlot->startIndex;
-    if (stepIdx < 0xF) {
+    if (stepIdx < 15) {
         wOffset = 0x64;
         color = 0x808080;
     } else {
-        stepIdx -= 0xF;
-        if (stepIdx < 0xF) {
-            ratio = (stepIdx << 0xC) / 0xF;
-            wOffset = (ratio * 0x384 >> 0xC) + 0x64;
-            color = (ratio * 0 >> 0xC) + 0x80 | (ratio * -0x80 >> 0xC) + 0x80 << 8 | (ratio * -0x80 >> 0xC) + 0x80 << 0x10;
+        stepIdx -= 15;
+        if (stepIdx < 15) {
+            ratio = (stepIdx << 12) / 15;
+            wOffset = (ratio * 0x384 >> 12) + 0x64;
+            color = (ratio * 0 >> 12) + 0x80 | (ratio * -0x80 >> 12) + 0x80 << 8 | (ratio * -0x80 >> 12) + 0x80 << 16;
         } else {
             wOffset = 0x3E8;
             color = 0x80;
@@ -2488,7 +2488,7 @@ void __cdecl BattleFx_SummonAlexanderGradientStripQuadsTask(void)
     g_BattleOverlayDrawListHead = (int)g_pBattleSummonAlexanderStripPacket;
     if (g_BattleIsPaused == 0) {
         (taskSlot->stepCount)++;
-        if (taskSlot->stepCount + taskSlot->startIndex >= 0x23) {
+        if (taskSlot->stepCount + taskSlot->startIndex >= 35) {
             taskSlot->startIndex = 0xFFFF;
         }
     }
@@ -2519,15 +2519,15 @@ void __cdecl BattleFx_SummonAlexanderScalingModelTask(void)
     } else {
         nextFrame -= 5;
         if (nextFrame < 0) {
-            frac = (nextFrame << 0xC) / 0;
+            frac = (nextFrame << 12) / 0;
             g_BattleSummonAlexanderModelDrawRequest.scale = frac;
         } else {
             rec->stage = 0xFFFF;
             return;
         }
     }
-    frac = (rec->frameCount << 0xC) / 5;
-    scale = (frac * 0x5B00 >> 0xC) + 0x500;
+    frac = (rec->frameCount << 12) / 5;
+    scale = (frac * 0x5B00 /* 5.6875 */ >> 12) + 0x500;
     BattleFx_SummonAlexanderInstallSpriteMatrix((char *)rec + 4, scale, 0);
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)(((char *)&g_BattleSummonAlexanderModelDrawRequest + 0x8)), g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleOverlayDrawListHead);
@@ -2556,13 +2556,13 @@ void __cdecl BattleFx_SummonAlexanderSpawnScalingMeshesTask(void)
     for (meshIdx = 0; meshIdx < 3; meshIdx++) {
         pMesh = (BattleFxAlexanderScalingMesh *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonAlexanderScalingMeshTask);
         angle = meshIdx * 0xE00 / 3 + rand() % 0x4AA + -0x100;
-        pMesh->x = SinFixed(angle) * 0x3E8 >> 0xC;
+        pMesh->x = SinFixed(angle) * 0x3E8 >> 12;
         pMesh->y = 0;
-        pMesh->z = (CosFixed(angle) * 0x3E8 >> 0xC) + 0x1388;
+        pMesh->z = (CosFixed(angle) * 0x3E8 >> 12) + 5000;
         if (DEAD_IN_RETAIL != 0) {
-            speedValue = 0x300;
+            speedValue = 768;
         } else {
-            speedValue = rand() % 0x100 + 0x200;
+            speedValue = rand() % 256 + 512;
         }
         pMesh->speed = -speedValue;
         pMesh->angle = angle;
@@ -2570,7 +2570,7 @@ void __cdecl BattleFx_SummonAlexanderSpawnScalingMeshesTask(void)
         if (DEAD_IN_RETAIL != 0) {
             bytesDraw = 0x2000;
         } else {
-            bytesDraw = rand() % 0x1000 + 0x1000;
+            bytesDraw = rand() % 4096 + 4096;
         }
         pMesh->scale = bytesDraw;
     }
@@ -2599,19 +2599,19 @@ void __cdecl BattleFx_SummonAlexanderScalingMeshTask(void)
         g_BattleFxSummonAlexanderScalingMeshTaskInit |= 1;
         g_BattleSummonAlexanderTable.scalingScratch = (BattleFxAlexanderScalingScratch *)Gfx_GetPsxScratchpadPtr(0);
     }
-    g_BattleSummonAlexanderTable.scalingScratch->scaleZ = 0x1000;
-    g_BattleSummonAlexanderTable.scalingScratch->scaleY = 0x1000;
+    g_BattleSummonAlexanderTable.scalingScratch->scaleZ = 0x1000 /* 1.0 */;
+    g_BattleSummonAlexanderTable.scalingScratch->scaleY = 0x1000 /* 1.0 */;
     localFrame = mesh->frameCount;
     if (localFrame < 5) {
-        ratio = (localFrame << 0xC) / 5;
-        g_BattleSummonAlexanderTable.scalingScratch->scaleX = mesh->scale * ratio >> 0xC;
+        ratio = (localFrame << 12) / 5;
+        g_BattleSummonAlexanderTable.scalingScratch->scaleX = mesh->scale * ratio >> 12;
         g_BattleSummonAlexanderAnimConfig.scalingMeshParam = 0;
     } else {
         localFrame -= 5;
         if (localFrame < 5) {
-            ratio = (localFrame << 0xC) / 5;
+            ratio = (localFrame << 12) / 5;
             g_BattleSummonAlexanderTable.scalingScratch->scaleX = mesh->scale;
-            g_BattleSummonAlexanderAnimConfig.scalingMeshParam = ratio << 0xC >> 0xC;
+            g_BattleSummonAlexanderAnimConfig.scalingMeshParam = ratio << 12 >> 12;
         } else {
             mesh->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -2649,26 +2649,26 @@ void __cdecl BattleFx_SummonAlexanderGrowingModelTask(void)
     }
     g_BattleSummonAlexanderAnimConfig.growingModelDraw = Gfx_ModelTableGetRenderObject(1, g_BattleSummonAlexanderTableCursor);
     nextFrame = taskPtr->frameCount;
-    if (nextFrame < 0xF) {
+    if (nextFrame < 15) {
         g_BattleSummonAlexanderAnimConfig.growthFraction = 0;
     } else {
-        nextFrame -= 0xF;
-        if (nextFrame < 0xA) {
-            g_BattleSummonAlexanderAnimConfig.growthFraction = (nextFrame << 0xC) / 0xA;
+        nextFrame -= 15;
+        if (nextFrame < 10) {
+            g_BattleSummonAlexanderAnimConfig.growthFraction = (nextFrame << 12) / 10;
         } else {
             taskPtr->stage = 0xFFFF;
             return;
         }
     }
-    ramp = (taskPtr->frameCount << 0xC) / 0x19;
+    ramp = (taskPtr->frameCount << 12) / 25;
     wave = ramp;
     for (iteration = 0; iteration < 4; iteration++) {
         wave = SinFixed(wave / 4);
     }
-    ramp = (wave * 0x600 >> 0xC) + (ramp * 0xA00 >> 0xC);
-    g_BattleSummonAlexanderScaleFactor = (ramp * 0 >> 0xC) + 0x2500;
+    ramp = (wave * 0x600 /* 0.375 */ >> 12) + (ramp * 0xA00 /* 0.625 */ >> 12);
+    g_BattleSummonAlexanderScaleFactor = (ramp * 0 >> 12) + 0x2500;
     g_BattleSummonAlexanderScaleFixed12 = g_BattleSummonAlexanderScaleFactor;
-    (*(short *)&g_BattleSummonAlexanderScaleVector) = ramp * 0x3500 >> 0xC;
+    (*(short *)&g_BattleSummonAlexanderScaleVector) = ramp * 0x3500 /* 3.3125 */ >> 12;
     MultiplyMatrix(&g_BattleSummonAlexanderLightMatrix, &g_BattleSummonAlexanderScaleFixed12, g_pBattleSummonAlexanderGrowingModelMatrix);
     SetRotMatrix(g_pBattleSummonAlexanderGrowingModelMatrix);
     SetTransMatrix(g_pBattleSummonAlexanderGrowingModelMatrix);
@@ -2694,7 +2694,7 @@ void __cdecl BattleFx_SummonAlexanderAnimatedSpriteTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     frameIdx = task->frameCounter << 8 >> 8;
-    if (frameIdx >= 0xC) {
+    if (frameIdx >= 12) {
         task->ownerSlot = BATTLE_TASK_FREE;
     } else {
         SetRotMatrix(&g_BattleSummonAlexanderBaseDistance);
@@ -2736,7 +2736,7 @@ void __cdecl BattleFx_SummonAlexanderScatteredShardMeshTask(void)
         localFrame -= 8;
         if (localFrame < 6) {
             g_BattleSummonAlexanderEffectDescriptor2.scatterMeshFlags = 0x88;
-            g_BattleSummonAlexanderEffectDescriptor2.scatterFraction = (localFrame << 0xC) / 6;
+            g_BattleSummonAlexanderEffectDescriptor2.scatterFraction = (localFrame << 12) / 6;
             Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot3));
             Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonAlexanderOffscreenSlot4));
         } else {
@@ -2764,8 +2764,8 @@ void __cdecl BattleFx_SummonAlexanderScatteredShardMeshTask(void)
     g_BattleOverlayDrawListHead = BattleFx_AlexanderDrawPsxMesh((BattleFxProceduralMesh *)&g_BattleSummonAlexanderEffectDescriptor2.scatterMeshPtr, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (shardPtr->frame)++;
-        shardPtr->posY += (short)(shardPtr->velocityY - 0x1E);
-        shardPtr->velocityY = shardPtr->velocityY * 0xD00 >> 0xC;
+        shardPtr->posY += (short)(shardPtr->velocityY - 30);
+        shardPtr->velocityY = shardPtr->velocityY * 0xD00 /* 0.8125 */ >> 12;
         *(char *)&shardPtr->angleX += 4;
         *(char *)&shardPtr->angleY += 8;
         *(char *)&shardPtr->angleZ += 0x15;
@@ -2794,7 +2794,7 @@ void __cdecl BattleFx_SummonAlexanderFlatTrianglesTask(void)
     SetRotMatrix(&g_BattleSummonAlexanderLightMatrix);
     SetTransMatrix(&g_BattleSummonAlexanderLightMatrix);
     RefreshGlobalTransformState();
-    for (triIdx = 0; triIdx < 0x64; triIdx++) {
+    for (triIdx = 0; triIdx < 100; triIdx++) {
         Gfx_TransformTriangleReturnDepthAlt((void *)(triIdx * 0x18 + (char *)&(g_BattleSummonAlexanderSubState.vertexAX)), (SVECTOR *)(triIdx * 0x18 + (char *)&g_BattleSummonAlexanderSubState.vertexB), (SVECTOR *)(triIdx * 0x18 + (char *)&g_BattleSummonAlexanderSubState.vertexC), (void *)g_BattleSummonAlexanderBlendTimer, (void *)(g_BattleSummonAlexanderBlendTimer + 4));
         if ((*(int *)((char *)g_BattleSummonAlexanderBlendTimer + 4) & 0x60000) == 0) {
             renderState->lengthTag = 0x4000000;
@@ -2805,7 +2805,7 @@ void __cdecl BattleFx_SummonAlexanderFlatTrianglesTask(void)
     g_BattleOverlayDrawListHead = (int)renderState;
     if (g_BattleIsPaused == 0) {
         (taskPtr->frameCounter)++;
-        if (taskPtr->frameCounter >= 0x29) {
+        if (taskPtr->frameCounter >= 41) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2828,40 +2828,40 @@ void __cdecl BattleFx_SummonAlexanderEaseOffsetsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pTaskSlot->frameCounter >= 0x1E && pTaskSlot->frameCounter < 0x28) {
-        localFrame = pTaskSlot->frameCounter - 0x1E;
-        easedValue = (localFrame << 0xC) / 0xA;
+    if (pTaskSlot->frameCounter >= 30 && pTaskSlot->frameCounter < 40) {
+        localFrame = pTaskSlot->frameCounter - 30;
+        easedValue = (localFrame << 12) / 10;
         if ((pTaskSlot->frameCounter & 1) != 0) {
-            g_BattleActorRecords[3].posZ = g_BattleSummonAlexanderBillboardMatrix.transZ + (easedValue * 0x3E8 >> 0xC);
+            g_BattleActorRecords[3].posZ = g_BattleSummonAlexanderBillboardMatrix.transZ + (easedValue * 0x3E8 >> 12);
         } else {
-            g_BattleActorRecords[3].posZ = g_BattleSummonAlexanderBillboardMatrix.transZ - (easedValue * 0x3E8 >> 0xC);
+            g_BattleActorRecords[3].posZ = g_BattleSummonAlexanderBillboardMatrix.transZ - (easedValue * 0x3E8 >> 12);
         }
     } else {
         g_BattleActorRecords[3].posZ = *(short *)&g_BattleSummonAlexanderBillboardMatrix.transZ;
     }
-    if (pTaskSlot->frameCounter < 0x1E) {
-        easedValue = (pTaskSlot->frameCounter + 1 << 0xC) / 0x1E;
+    if (pTaskSlot->frameCounter < 30) {
+        easedValue = (pTaskSlot->frameCounter + 1 << 12) / 30;
         easedValue = 0x1000 - easedValue;
         for (iter = 0; iter < 2; iter++) {
             easedValue = SinFixed(easedValue / 4);
         }
         easedValue = 0x1000 - easedValue;
-        g_BattleActorRecords[3].scale = (easedValue << 0xB >> 0xC) + 0x800;
+        g_BattleActorRecords[3].scale = (easedValue << 11 >> 12) + 0x800;
         g_BattleActorRecords[3].tintPhase = 0x1000 - easedValue;
     }
     localFrame = pTaskSlot->frameCounter;
-    if (localFrame < 0x28) {
-        easedValue = (localFrame + 1 << 0xC) / 0x28;
+    if (localFrame < 40) {
+        easedValue = (localFrame + 1 << 12) / 40;
         easedValue = 0x1000 - easedValue;
         for (iter = 0; iter < 2; iter++) {
             easedValue = SinFixed(easedValue / 4);
         }
         easedValue = 0x1000 - easedValue;
-        g_BattleActorRecords[3].posY = (easedValue * -21000 >> 0xC) + 0x4E20;
+        g_BattleActorRecords[3].posY = (easedValue * -21000 >> 12) + 20000;
     } else {
-        localFrame -= 0x28;
+        localFrame -= 40;
         if (localFrame < 5) {
-            g_BattleActorRecords[3].posY += 0xC8;
+            g_BattleActorRecords[3].posY += 200;
         } else {
             pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -2983,7 +2983,7 @@ int g_BattleSummonAlexanderDword = 0;
 // GLOBAL: FF7 0x00b4f87c
 short g_BattleSummonAlexanderRotationZ = 0;
 // GLOBAL: FF7 0x00b4f880
-unsigned char g_BattleSummonAlexanderQuad[0x4] = {0};
+unsigned char g_BattleSummonAlexanderQuad[4] = {0};
 unsigned char g_bssPad_00b4f884[4] = {0};
 // GLOBAL: FF7 0x00b4f888
 short g_BattleSummonAlexanderSpriteScaleY = 0;

@@ -131,26 +131,26 @@ void __cdecl BattleFx_SpecialUltrasoundTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (mainSelf->frame < 0xA && mainSelf->frame % 1 == 0) {
+    if (mainSelf->frame < 10 && mainSelf->frame % 1 == 0) {
         spawned = (BattleFxUltrasoundParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialUltrasoundGrowingModelTask);
         spawned->posX = mainSelf->startX;
         spawned->posY = mainSelf->startY;
         spawned->posZ = mainSelf->startZ;
-        spawned->velocityX = (mainSelf->endX - mainSelf->startX) / 0x14;
-        spawned->velocityY = (mainSelf->endY - mainSelf->startY) / 0x14;
-        spawned->velocityZ = (mainSelf->endZ - mainSelf->startZ) / 0x14;
-        spawned->scale = 0x800;
+        spawned->velocityX = (mainSelf->endX - mainSelf->startX) / 20;
+        spawned->velocityY = (mainSelf->endY - mainSelf->startY) / 20;
+        spawned->velocityZ = (mainSelf->endZ - mainSelf->startZ) / 20;
+        spawned->scale = 0x800 /* 0.5 */;
     }
-    if (mainSelf->frame >= 0x10 && mainSelf->frame < 0x18) {
+    if (mainSelf->frame >= 16 && mainSelf->frame < 24) {
         spawned = (BattleFxUltrasoundParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialUltrasoundSpriteTask);
-        spawned->velocityX = CosFixed((mainSelf->frame - 0x10 << 9) - 0x400) * 0x3C >> 0xC;
-        spawned->velocityY = SinFixed((mainSelf->frame - 0x10 << 9) - 0x400) * 0x3C >> 0xC;
-        spawned->posX = mainSelf->endX + spawned->velocityX * 0xA;
-        spawned->posY = mainSelf->endY + spawned->velocityY * 0xA;
+        spawned->velocityX = CosFixed((mainSelf->frame - 16 << 9) - 1024) * 0x3C >> 12;
+        spawned->velocityY = SinFixed((mainSelf->frame - 16 << 9) - 1024) * 0x3C >> 12;
+        spawned->posX = mainSelf->endX + spawned->velocityX * 10;
+        spawned->posY = mainSelf->endY + spawned->velocityY * 10;
         spawned->posZ = mainSelf->endZ;
     }
     (mainSelf->frame)++;
-    if (mainSelf->frame == 0x18) {
+    if (mainSelf->frame == 24) {
         Battle_PostActorHitOrHurtMessage(mainSelf->actorIndex);
         mainSelf->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -170,7 +170,7 @@ void __cdecl BattleFx_SpecialUltrasoundSpriteTask(void)
     task = (BattleFxUltrasoundParticle *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecUltrasoundDrawReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecUltrasoundLoadedRes);
     g_BattleSpecUltrasoundDrawReq.radialSpriteField = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecUltrasoundDrawReq.radialFrameIndex = task->frame;
     g_BattleSpecUltrasoundPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecUltrasoundDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecUltrasoundPacketCursor);
     if (g_BattleIsPaused == 0) {
@@ -230,7 +230,7 @@ void __cdecl BattleFx_SpecialUltrasoundGrowingModelTask(void)
     frame.onpaSlot->posZ += frame.onpaSlot->velocityZ;
     frame.onpaSlot->scale += 0x190;
     (frame.onpaSlot->frame)++;
-    if (frame.onpaSlot->frame == 0x14) {
+    if (frame.onpaSlot->frame == 20) {
         frame.onpaSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

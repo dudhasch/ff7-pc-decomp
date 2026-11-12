@@ -348,7 +348,7 @@ void __cdecl Battle_FreeUiTextures(void)
 {
     if (g_pBtlMenuUiTextures != 0) {
         // STRING: FF7 0x0091bddc
-        GameHeapFree((void *)g_pBtlMenuUiTextures, "C:\\FF7\\src\\menu\\btlmenu\\english\\callback.cpp", 0x20D);
+        GameHeapFree((void *)g_pBtlMenuUiTextures, "C:\\FF7\\src\\menu\\btlmenu\\english\\callback.cpp", 525);
         g_pBtlMenuUiTextures = 0;
     }
     if (GetUiScalingMode() == 2) {
@@ -452,20 +452,20 @@ void __cdecl Menu_ApplyUiScalingViewport(void)
     if (mode == 0) {
         g_MenuViewportX = 0;
         g_MenuViewportY = 0;
-        g_MenuViewportWidth = 0x140;
-        g_MenuViewportHeight = 0xf0;
+        g_MenuViewportWidth = 320;
+        g_MenuViewportHeight = 240;
         g_MenuIsSmallViewport320x240 = 1;
     } else if (mode == 1) {
-        g_MenuViewportX = 0xa0;
-        g_MenuViewportY = 0x78;
-        g_MenuViewportWidth = 0x140;
-        g_MenuViewportHeight = 0xf0;
+        g_MenuViewportX = 160;
+        g_MenuViewportY = 120;
+        g_MenuViewportWidth = 320;
+        g_MenuViewportHeight = 240;
         g_MenuIsSmallViewport320x240 = 1;
     } else {
         g_MenuViewportX = 0;
         g_MenuViewportY = 0;
-        g_MenuViewportWidth = 0x280;
-        g_MenuViewportHeight = 0x1e0;
+        g_MenuViewportWidth = 640;
+        g_MenuViewportHeight = 480;
         g_MenuIsSmallViewport320x240 = 0;
     }
 }

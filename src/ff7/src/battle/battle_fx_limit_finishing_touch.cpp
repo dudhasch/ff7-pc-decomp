@@ -169,11 +169,11 @@ short g_BattleLimitFinishingTouchRingPackets[4] = {0};
 // The ring records (BattleLimitFinishingTouchRing) are 20 bytes each; g_BattleLimitFinishingTouchRingAngles
 // holds the first record's angle triple.
 // GLOBAL: FF7 0x00b01248
-unsigned char g_BattleLimitFinishingTouchRingAngles[0x8] = {0};
+unsigned char g_BattleLimitFinishingTouchRingAngles[8] = {0};
 // The radius of each of the 16 ring records, read at a 20-byte stride; the array runs
 // 20 * 15 + 4 = 0x130 bytes, up to g_BattleLimitFinishingTouchLiftState.
 // GLOBAL: FF7 0x00b01250
-unsigned char g_BattleLimitFinishingTouchRingScales[0x130] = {0};
+unsigned char g_BattleLimitFinishingTouchRingScales[304] = {0};
 // 10-slot actor lift state table (split into head + g_bssPad_00b01388).
 // GLOBAL: FF7 0x00b01380
 struct BattleLimitFinishingTouchLiftState g_BattleLimitFinishingTouchLiftState = {0};
@@ -294,7 +294,7 @@ void __cdecl BattleFx_LimitFinishingTouchSpawnTimeline(void)
     g_BattleLimitFinishingTouchAttachPoint.radius = g_BattleActorRecords[g_BattleLimitFinishingTouchActorIndex].radius;
     task = (BattleLimitFinishingTouchTimeline *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_LimitFinishingTouchTimelineTask)];
     Battle_GetActorMaskCentroid(g_BattleLimitFinishingTouchTargetMask, &task->targetX);
-    for (idx = 0; idx < 0xA; idx++) {
+    for (idx = 0; idx < 10; idx++) {
         *(Int64Pair *)&g_BattleLimitFinishingTouchLiftStates[idx] = *(Int64Pair *)&g_BattleActorRecords[idx].posX;
         g_BattleLimitFinishingTouchSavedRotationTable[idx] = *(Int64Pair *)&g_BattleActorRecords[idx].rotX;
         g_BattleLimitFinishingTouchSavedDrawFlags[idx] = g_BattleActorRecords[idx].drawFlags;
@@ -342,7 +342,7 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
         SfxLoadIntoBuffer(0x182, 0);
     }
     if (frame.timeline->phase == 0x18) {
-        frame.actorIndex = 0x1333;
+        frame.actorIndex = 4915;
         frame.garyotenSlot = (BattleFxLimitGaryotenSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitFinishingTouchGrowShrinkModelTask);
         *(Int64Pair *)&frame.garyotenSlot->growShrink.posX = *(Int64Pair *)&g_BattleLimitFinishingTouchAttachPoint;
         frame.garyotenSlot->growShrink.growth = 0;
@@ -356,7 +356,7 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
         frame.garyotenSlot = (BattleFxLimitGaryotenSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitFinishingTouchScaledModelTask);
         frame.attachX = 0;
         frame.attachY = 0;
-        frame.attachZ = 0xFDD5;
+        frame.attachZ = 0xFDD5 /* -555 */;
         BattleFx_LimitFinishingTouchTransformAttachPointToEffectSpace(g_BattleLimitFinishingTouchActorIndex, -1, &frame.attachX, &frame.garyotenSlot->scaledModel.posX);
         frame.garyotenSlot->scaledModel.baseScale = 0x1CCC;
     }
@@ -367,8 +367,8 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
         frame.attachZ = 0;
         BattleFx_LimitFinishingTouchTransformAttachPointToEffectSpace(g_BattleLimitFinishingTouchActorIndex, -1, &frame.attachX, &g_BattleLimitFinishingTouchAttachPoint.posX);
         *(Int64Pair *)&frame.ringRecord->centerX = *(Int64Pair *)&g_BattleLimitFinishingTouchAttachPoint;
-        frame.ringRecord->velocityX = (frame.timeline->targetX - g_BattleLimitFinishingTouchAttachPoint.posX) / 0xA << 1;
-        frame.ringRecord->velocityZ = (frame.timeline->targetZ - g_BattleLimitFinishingTouchAttachPoint.posZ) / 0xA << 1;
+        frame.ringRecord->velocityX = (frame.timeline->targetX - g_BattleLimitFinishingTouchAttachPoint.posX) / 10 << 1;
+        frame.ringRecord->velocityZ = (frame.timeline->targetZ - g_BattleLimitFinishingTouchAttachPoint.posZ) / 10 << 1;
     }
     if (frame.timeline->phase == 0x35) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x182);
@@ -379,13 +379,13 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
         frame.garyotenSlot = (BattleFxLimitGaryotenSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_LimitFinishingTouchRadialSpriteEmitterTask)];
         *(int *)&g_BattleLimitFinishingTouchRadialBurst.posX = *(int *)&g_BattleLimitFinishingTouchAttachPoint.posX;
         *(int *)&g_BattleLimitFinishingTouchRadialBurst.posZ = *(int *)&g_BattleLimitFinishingTouchAttachPoint.posZ;
-        g_BattleLimitFinishingTouchRadialBurst.radius = 0x258;
+        g_BattleLimitFinishingTouchRadialBurst.radius = 600;
     }
     if (frame.timeline->phase == 0x3C) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_BattleLimitFinishingTouchTargetMask & 1 << frame.actorIndex) != 0) {
                 frame.peerCount = 0;
-                for (frame.otherIndex = 0; frame.otherIndex < 0xA; frame.otherIndex++) {
+                for (frame.otherIndex = 0; frame.otherIndex < 10; frame.otherIndex++) {
                     if (frame.actorIndex == frame.otherIndex) {
                         continue;
                     }
@@ -410,7 +410,7 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
                     break;
                 }
                 if (frame.otherIndex >= frame.peerCount) {
-                    frame.garyotenSlot->lift.liftVelocity = -(rand() % 0x1E + 0x28);
+                    frame.garyotenSlot->lift.liftVelocity = -(rand() % 30 + 40);
                     frame.garyotenSlot->lift.yawVelocity = 0;
                     frame.garyotenSlot->lift.yawAccel = rand() % 0x22 + 0x1C;
                     if ((frame.garyotenSlot->lift.liftVelocity & 1) != 0) {
@@ -430,7 +430,7 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
         }
     }
     if (frame.timeline->phase == 0x5F) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_BattleLimitFinishingTouchTargetMask & 1 << frame.actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
             }
@@ -438,13 +438,13 @@ void __cdecl BattleFx_LimitFinishingTouchTimelineTask(void)
         g_BattleLimitFinishingTouchEventFlags = GARYOTEN_EVENT_HOLD | GARYOTEN_EVENT_RELEASE_FIRST;
     }
     if (frame.timeline->phase == 0x6E && (g_BattleLimitFinishingTouchEventFlags & GARYOTEN_EVENT_CANCEL) == 0) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((g_BattleLimitFinishingTouchTargetMask & 1 << frame.actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
             }
         }
     }
-    if (frame.timeline->phase >= 0x78 || (g_BattleLimitFinishingTouchEventFlags & GARYOTEN_EVENT_CANCEL) != 0) {
+    if (frame.timeline->phase >= 120 || (g_BattleLimitFinishingTouchEventFlags & GARYOTEN_EVENT_CANCEL) != 0) {
         g_BattleLimitFinishingTouchEventFlags |= GARYOTEN_EVENT_DONE | GARYOTEN_EVENT_RELEASE_SECOND | GARYOTEN_EVENT_RELEASE_FIRST;
         frame.timeline->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x182, 0xF);
@@ -485,49 +485,49 @@ void __cdecl BattleFx_LimitFinishingTouchRingChainTask(void)
     if (taskSlot->timer == 0 && g_BattleIsPaused == 0) {
         BattleFx_LimitFinishingTouchInitRingPackets();
     }
-    if (taskSlot->timer < 0xA) {
-        fadeLevel = (taskSlot->timer << 7) / 0xA;
-    } else if (taskSlot->timer >= 0x36) {
-        fadeLevel = 0x80 - (taskSlot->timer - 0x36 << 7) / 0xC;
+    if (taskSlot->timer < 10) {
+        fadeLevel = (taskSlot->timer << 7) / 10;
+    } else if (taskSlot->timer >= 54) {
+        fadeLevel = 128 - (taskSlot->timer - 54 << 7) / 12;
     } else {
-        fadeLevel = 0x80;
+        fadeLevel = 128;
     }
     if (g_BattleIsPaused == 0) {
         phaseAge = taskSlot->timer;
-        if (phaseAge < 0x11) {
-            outRatio = (phaseAge << 0xC) / 0x11;
-            ringSpacing = (outRatio * 0x316 >> 0xC) + 0xA;
-            size = (outRatio * 0x1F4 >> 0xC) + 0x258;
-            len = (outRatio * 0xC8 >> 0xC) + 0x32;
+        if (phaseAge < 17) {
+            outRatio = (phaseAge << 12) / 17;
+            ringSpacing = (outRatio * 0x316 >> 12) + 10;
+            size = (outRatio * 0x1F4 >> 12) + 600;
+            len = (outRatio * 0xC8 >> 12) + 50;
             ringTilt = 0xE00;
         } else {
-            phaseAge -= 0x11;
-            if (phaseAge < 0xA) {
+            phaseAge -= 17;
+            if (phaseAge < 10) {
                 taskSlot->centerX += taskSlot->velocityX;
                 taskSlot->centerZ += taskSlot->velocityZ;
                 taskSlot->velocityX -= (short)(taskSlot->velocityX >> 3);
                 taskSlot->velocityZ -= (short)(taskSlot->velocityZ >> 3);
-                outRatio = (phaseAge << 0xC) / 0xA;
-                ringSpacing = (outRatio * 0x708 >> 0xC) + 0x320;
-                size = (outRatio * 0x3E8 >> 0xC) + 0x44C;
-                len = (outRatio * 0xFA >> 0xC) + 0xFA;
-                ringTilt = (outRatio * (-0x500) >> 0xC) + 0xE00;
+                outRatio = (phaseAge << 12) / 10;
+                ringSpacing = (outRatio * 0x708 >> 12) + 800;
+                size = (outRatio * 0x3E8 >> 12) + 1100;
+                len = (outRatio * 0xFA >> 12) + 250;
+                ringTilt = (outRatio * (-0x500) >> 12) + 0xE00;
             } else {
-                phaseAge -= 0xA;
-                if (phaseAge < 0x16) {
-                    outRatio = (phaseAge << 0xC) / 0x16;
-                    ringSpacing = (outRatio * 0x1900 >> 0xC) + 0xA28;
-                    size = (outRatio * 0x7D0 >> 0xC) + 0x834;
-                    len = (outRatio * 0x4B0 >> 0xC) + 0x1F4;
-                    ringTilt = (outRatio * (-0x3E0) >> 0xC) + 0x900;
+                phaseAge -= 10;
+                if (phaseAge < 22) {
+                    outRatio = (phaseAge << 12) / 22;
+                    ringSpacing = (outRatio * 0x1900 /* 1.5625 */ >> 12) + 2600;
+                    size = (outRatio * 0x7D0 >> 12) + 2100;
+                    len = (outRatio * 0x4B0 >> 12) + 500;
+                    ringTilt = (outRatio * (-0x3E0) >> 12) + 0x900;
                 } else {
-                    phaseAge -= 0x16;
-                    if (phaseAge < 0x11) {
-                        outRatio = (phaseAge << 0xC) / 0x11;
-                        ringSpacing = (outRatio * (-0xFA0) >> 0xC) + 0x2328;
-                        size = (outRatio * (-0x8FC) >> 0xC) + 0x1004;
-                        len = (outRatio * (-0x320) >> 0xC) + 0x6A4;
-                        ringTilt = (outRatio << 0xA >> 0xC) + 0x520;
+                    phaseAge -= 22;
+                    if (phaseAge < 17) {
+                        outRatio = (phaseAge << 12) / 17;
+                        ringSpacing = (outRatio * (-4000) >> 12) + 9000;
+                        size = (outRatio * (-2300) >> 12) + 4100;
+                        len = (outRatio * (-800) >> 12) + 1700;
+                        ringTilt = (outRatio << 10 >> 12) + 0x520;
                     } else {
                         taskSlot->ownerSlot = BATTLE_TASK_FREE;
                         return;
@@ -547,22 +547,22 @@ void __cdecl BattleFx_LimitFinishingTouchRingChainTask(void)
     *(Int64Pair *)&g_BattleLimitFinishingTouchRadialBurst = *(Int64Pair *)&taskSlot->centerX;
     g_BattleLimitFinishingTouchRadialBurst.radius = size;
     if (g_BattleIsPaused == 0) {
-        if (taskSlot->timer >= 0x20 && taskSlot->timer <= 0x36) {
+        if (taskSlot->timer >= 32 && taskSlot->timer <= 54) {
             for (cnt = 0; cnt < 3; cnt++) {
-                if (g_BattleSecondaryResourceCount > 0x32) {
+                if (g_BattleSecondaryResourceCount > 50) {
                     break;
                 }
                 newTask = (BattleFxFallingModelSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_LimitFinishingTouchFallingModelTask)];
                 dirAngle = ((rand()) % 4096);
                 outRatio = (size >> 1) + rand() % (size >> 1);
-                newTask->posX = taskSlot->centerX + (CosFixed(dirAngle) * size >> 0xC);
+                newTask->posX = taskSlot->centerX + (CosFixed(dirAngle) * size >> 12);
                 newTask->fallPos = taskSlot->centerHeight;
-                newTask->posZ = taskSlot->centerZ - (SinFixed(dirAngle) * size >> 0xC);
-                newTask->fallVelocity = -(rand() % 0x6C + 0x26);
+                newTask->posZ = taskSlot->centerZ - (SinFixed(dirAngle) * size >> 12);
+                newTask->fallVelocity = -(rand() % 108 + 38);
                 newTask->angleZ = 0;
                 newTask->angleX = 0;
-                newTask->angleSpeedX = rand() % 0xE6 + 0x40;
-                newTask->angleSpeedZ = rand() % 0xB4 + 0x30;
+                newTask->angleSpeedX = rand() % 230 + 64;
+                newTask->angleSpeedZ = rand() % 180 + 48;
                 newTask->scale = rand() % 0x580 + 0x260;
                 newTask->modelIndex = newTask->scale % 3;
             }
@@ -611,16 +611,16 @@ void __cdecl BattleFx_LimitFinishingTouchFallingModelTask(void)
     frame.drawReq->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleLimitFinishingTouchModelReq1[frame.fallSlot->modelIndex], g_pBattleLimitFinishingTouchTableCursor);
     frame.drawReq->flags = 0;
     frame.drawReq->uvScroll = 0;
-    frame.drawReq->fadeLevel = 0x80;
+    frame.drawReq->fadeLevel = 128;
     frame.drawReq->stateFlags = 0x20;
     frame.drawReq->texturePageBits = 0;
-    if (frame.fallSlot->timer >= 0xE) {
+    if (frame.fallSlot->timer >= 14) {
         frame.drawReq->flags |= 8;
-        frame.drawReq->fadeLevel = 0x80 - (frame.fallSlot->timer - 0xE) * 0x15;
+        frame.drawReq->fadeLevel = 128 - (frame.fallSlot->timer - 14) * 21;
         frame.drawReq->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleLimitFinishingTouchModelReq2[frame.fallSlot->modelIndex], g_pBattleLimitFinishingTouchTableCursor);
     }
     g_BattleLimitFinishingTouchDrawHandle = BattleFx_SubmitModelDraw(frame.drawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitFinishingTouchDrawHandle);
-    if (frame.fallSlot->timer >= 0x14) {
+    if (frame.fallSlot->timer >= 20) {
         frame.fallSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -656,21 +656,21 @@ void __cdecl BattleFx_LimitFinishingTouchInitRingPackets(void)
     unsigned char vB;
 
     clutVal = 0x3FF0;
-    for (row = 0; row < 0xF; row++) {
+    for (row = 0; row < 15; row++) {
         cellIndex = row;
-        fraction = (cellIndex << 0xC) / 0x10;
-        vStart = 0xFE - (fraction * 0xFE >> 0xC);
-        fraction = ((cellIndex + 1) << 0xC) / 0x10;
-        vB = 0xFE - (fraction * 0xFE >> 0xC);
-        for (column = 0; column < 0x10; column++) {
+        fraction = (cellIndex << 12) / 16;
+        vStart = 0xFE - (fraction * 0xFE >> 12);
+        fraction = ((cellIndex + 1) << 12) / 16;
+        vB = 0xFE - (fraction * 0xFE >> 12);
+        for (column = 0; column < 16; column++) {
             cellIndex = column % 8;
             if (cellIndex < 4) {
                 uRemaining = cellIndex << 4;
-                uRight = uRemaining + 0xF;
+                uRight = uRemaining + 15;
             } else {
                 cellIndex = 8 - cellIndex;
                 uRemaining = (cellIndex << 4) - 1;
-                uRight = uRemaining - 0xF;
+                uRight = uRemaining - 15;
             }
             for (packetIdx = 0; packetIdx < 2; packetIdx++) {
                 packet = &((BattleLimitGaryotenQuadRow *)g_BattleLimitFinishingTouchRingQuadPackets)[row][column][packetIdx];
@@ -689,11 +689,11 @@ void __cdecl BattleFx_LimitFinishingTouchInitRingPackets(void)
             }
         }
     }
-    for (row = 0; row < 0x10; row++) {
+    for (row = 0; row < 16; row++) {
         ((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[row].posX = 0;
         ((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[row].height = row * 0xA / 0xF;
         ((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[row].posZ = 0;
-        ((BattleLimitFinishingTouchRingRadius *)g_BattleLimitFinishingTouchRingScales)[row].radius = 0x258;
+        ((BattleLimitFinishingTouchRingRadius *)g_BattleLimitFinishingTouchRingScales)[row].radius = 600;
     }
 }
 
@@ -722,25 +722,25 @@ void __cdecl BattleFx_LimitFinishingTouchDrawRingChain(int phase, int grayLevel)
     *(Int64Pair *)g_pBattleLimitFinishingTouchDrawBlock = *(Int64Pair *)g_BattleLimitFinishingTouchRingPackets;
     scale = ((BattleLimitFinishingTouchRingRadius *)g_BattleLimitFinishingTouchRingScales)->radius;
     bank = 0;
-    for (idx = 0; idx < 0x10; idx++) {
-        g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][idx].vx = g_pBattleLimitFinishingTouchDrawBlock->posX + (scale * SinFixed(((idx << 0xC) / 0x10) + phase) >> 0xC);
+    for (idx = 0; idx < 16; idx++) {
+        g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][idx].vx = g_pBattleLimitFinishingTouchDrawBlock->posX + (scale * SinFixed(((idx << 12) / 16) + phase) >> 12);
         g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][idx].vy = g_pBattleLimitFinishingTouchDrawBlock->posY;
-        g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][idx].vz = g_pBattleLimitFinishingTouchDrawBlock->posZ + (scale * CosFixed(((idx << 0xC) / 0x10) + phase) >> 0xC);
+        g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][idx].vz = g_pBattleLimitFinishingTouchDrawBlock->posZ + (scale * CosFixed(((idx << 12) / 16) + phase) >> 12);
     }
     Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_pBattleLimitFinishingTouchTableCursor)));
-    for (idx = 1; idx < 0x10; idx++) {
+    for (idx = 1; idx < 16; idx++) {
         *(Int64Pair *)g_pBattleLimitFinishingTouchDrawBlock = *(Int64Pair *)&((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[idx].posX;
         scale = ((BattleLimitFinishingTouchRingRadius *)g_BattleLimitFinishingTouchRingScales)[idx].radius;
         bank ^= 1;
         phase -= 0x40;
-        for (pointIndex = 0; pointIndex < 0x10; pointIndex++) {
-            g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][pointIndex].vx = g_pBattleLimitFinishingTouchDrawBlock->posX + (scale * SinFixed(((pointIndex << 0xC) / 0x10) + phase) >> 0xC);
+        for (pointIndex = 0; pointIndex < 16; pointIndex++) {
+            g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][pointIndex].vx = g_pBattleLimitFinishingTouchDrawBlock->posX + (scale * SinFixed(((pointIndex << 12) / 16) + phase) >> 12);
             g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][pointIndex].vy = g_pBattleLimitFinishingTouchDrawBlock->posY;
-            g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][pointIndex].vz = g_pBattleLimitFinishingTouchDrawBlock->posZ + (scale * CosFixed(((pointIndex << 0xC) / 0x10) + phase) >> 0xC);
+            g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][pointIndex].vz = g_pBattleLimitFinishingTouchDrawBlock->posZ + (scale * CosFixed(((pointIndex << 12) / 16) + phase) >> 12);
         }
-        for (pointIndex = 0; pointIndex < 0x10; pointIndex++) {
+        for (pointIndex = 0; pointIndex < 16; pointIndex++) {
             packet = &((BattleLimitGaryotenQuadRow *)g_BattleLimitFinishingTouchRingQuadPackets)[idx - 1][pointIndex][g_BattleLimitFinishingTouchPacketBank];
-            g_pBattleLimitFinishingTouchDrawBlock->quadDepth = Gfx_TransformQuadReturnDepth(&g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][pointIndex], &g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][(pointIndex + 1) % 0x10], &g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank ^ 1][pointIndex], &g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank ^ 1][(pointIndex + 1) % 0x10], &g_pBattleLimitFinishingTouchDrawBlock->unused114, &g_pBattleLimitFinishingTouchDrawBlock->flags);
+            g_pBattleLimitFinishingTouchDrawBlock->quadDepth = Gfx_TransformQuadReturnDepth(&g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][pointIndex], &g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank][(pointIndex + 1) % 16], &g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank ^ 1][pointIndex], &g_pBattleLimitFinishingTouchDrawBlock->ringPoints[bank ^ 1][(pointIndex + 1) % 16], &g_pBattleLimitFinishingTouchDrawBlock->unused114, &g_pBattleLimitFinishingTouchDrawBlock->flags);
             if ((g_pBattleLimitFinishingTouchDrawBlock->flags & 0x60000) == 0) {
                 packet->command = packedColor;
                 Gfx_DrawPsxPrimitive(packet);
@@ -769,7 +769,7 @@ void __cdecl BattleFx_LimitFinishingTouchUpdateRingChain(int height, int radius,
         g_pBattleLimitFinishingTouchRingScratch = (BattleLimitFinishingTouchRingScratch *)Gfx_GetPsxScratchpadPtr(0);
     }
     for (ring = 0xF; ring >= 0; ring--) {
-        ratio = (ring << 0xC) / 0xF;
+        ratio = (ring << 12) / 15;
         if (ring > 0) {
             ((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleX = ((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring - 1].angleX + (rand() % 0x20) + -0x10;
             ((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleY = ((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring - 1].angleY + (rand() % 0x20) + -0x10;
@@ -778,29 +778,29 @@ void __cdecl BattleFx_LimitFinishingTouchUpdateRingChain(int height, int radius,
             ((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleX = (g_BattleLimitFinishingTouchSwayState.ringPhase);
             ((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleY = g_BattleLimitFinishingTouchSwayState.angle;
             ((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleZ = g_BattleLimitFinishingTouchSwayAngleZ;
-            (g_BattleLimitFinishingTouchSwayWalk.randomWalk) += (short)(rand() % 0x100 - 0x80);
+            (g_BattleLimitFinishingTouchSwayWalk.randomWalk) += (short)(rand() % 256 - 128);
             g_BattleLimitFinishingTouchSwayWalk.angle += (short)(rand() % 0x100 - 0x80);
-            g_BattleLimitFinishingTouchSwayWalkZ += (short)(rand() % 0x100 - 0x80);
-            (g_BattleLimitFinishingTouchSwayState.ringPhase) += (short)(SinFixed((g_BattleLimitFinishingTouchSwayWalk.randomWalk)) << 9 >> 0xC);
-            g_BattleLimitFinishingTouchSwayState.angle += (short)(SinFixed(g_BattleLimitFinishingTouchSwayWalk.angle) << 9 >> 0xC);
-            g_BattleLimitFinishingTouchSwayAngleZ += (short)(SinFixed(g_BattleLimitFinishingTouchSwayWalkZ) << 9 >> 0xC);
+            g_BattleLimitFinishingTouchSwayWalkZ += (short)(rand() % 256 - 128);
+            (g_BattleLimitFinishingTouchSwayState.ringPhase) += (short)(SinFixed((g_BattleLimitFinishingTouchSwayWalk.randomWalk)) << 9 >> 12);
+            g_BattleLimitFinishingTouchSwayState.angle += (short)(SinFixed(g_BattleLimitFinishingTouchSwayWalk.angle) << 9 >> 12);
+            g_BattleLimitFinishingTouchSwayAngleZ += (short)(SinFixed(g_BattleLimitFinishingTouchSwayWalkZ) << 9 >> 12);
         }
-        g_pBattleLimitFinishingTouchRingScratch->vector.vx = SinFixed(((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleX) << 9 >> 0xC;
-        g_pBattleLimitFinishingTouchRingScratch->vector.vy = SinFixed(((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleY) << 9 >> 0xC;
-        g_pBattleLimitFinishingTouchRingScratch->vector.vz = SinFixed(((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleZ) << 9 >> 0xC;
+        g_pBattleLimitFinishingTouchRingScratch->vector.vx = SinFixed(((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleX) << 9 >> 12;
+        g_pBattleLimitFinishingTouchRingScratch->vector.vy = SinFixed(((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleY) << 9 >> 12;
+        g_pBattleLimitFinishingTouchRingScratch->vector.vz = SinFixed(((BattleLimitFinishingTouchRingAngles *)g_BattleLimitFinishingTouchRingAngles)[ring].angleZ) << 9 >> 12;
         RotMatrix(&g_pBattleLimitFinishingTouchRingScratch->vector, &g_pBattleLimitFinishingTouchRingScratch->rotation);
-        g_pBattleLimitFinishingTouchRingScratch->vector.vx = xScale * ((ratio * 0xE00 >> 0xC) + 0x200) >> 0xC;
+        g_pBattleLimitFinishingTouchRingScratch->vector.vx = xScale * ((ratio * 0xE00 /* 0.875 */ >> 12) + 512) >> 12;
         g_pBattleLimitFinishingTouchRingScratch->vector.vy = 0;
         g_pBattleLimitFinishingTouchRingScratch->vector.vz = 0;
         TransformVectorToInt16(&g_pBattleLimitFinishingTouchRingScratch->rotation, &g_pBattleLimitFinishingTouchRingScratch->vector, &g_pBattleLimitFinishingTouchRingScratch->vector.vx);
         ((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[ring].posX = g_pBattleLimitFinishingTouchRingScratch->vector.vx;
-        ((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[ring].height = -(height * ratio >> 0xC) + (g_pBattleLimitFinishingTouchRingScratch->vector.vy >> 4);
+        ((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[ring].height = -(height * ratio >> 12) + (g_pBattleLimitFinishingTouchRingScratch->vector.vy >> 4);
         ((BattleLimitFinishingTouchRing *)g_BattleLimitFinishingTouchRingPackets)[ring].posZ = g_pBattleLimitFinishingTouchRingScratch->vector.vz;
-        factor = SinFixed(ratio << 0xB >> 0xC);
+        factor = SinFixed(ratio << 11 >> 12);
         for (iteration = 0; iteration < 1; iteration++) {
             factor = SinFixed(factor / 4);
         }
-        ((BattleLimitFinishingTouchRingRadius *)g_BattleLimitFinishingTouchRingScales)[ring].radius = radius * (0x1000 - ((0x1000 - falloff) * factor >> 0xC)) >> 0xC;
+        ((BattleLimitFinishingTouchRingRadius *)g_BattleLimitFinishingTouchRingScales)[ring].radius = radius * (4096 - ((4096 - falloff) * factor >> 12)) >> 12;
     }
 }
 
@@ -856,7 +856,7 @@ void __cdecl BattleFx_LimitFinishingTouchRadialSpriteEmitterTask(void)
     task = (BattleTaskSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
     g_BattleLimitFinishingTouchSpriteReqPool.radialSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_pBattleLimitFinishingTouchTableCursor);
     g_BattleLimitFinishingTouchSpriteReqPool.radialSprite.drawObj = Gfx_ModelTableGetSpriteObject(1, g_pBattleLimitFinishingTouchTableCursor);
-    for (idx = 0; idx < 0x8C; idx++) {
+    for (idx = 0; idx < 140; idx++) {
         if (g_BattleLimitFinishingTouchRadialSprites[idx].active != 0) {
             g_BattleLimitFinishingTouchSpriteReqPool.radialSprite.frame = g_BattleLimitFinishingTouchRadialSprites[idx].age << 1;
             BattleFx_InstallBillboardMatrix(&g_BattleLimitFinishingTouchRadialSprites[idx].posX, (short)g_BattleLimitFinishingTouchRadialSprites[idx].scale, -(g_BattleLimitFinishingTouchRadialSprites[idx].scale >> 3));
@@ -876,29 +876,29 @@ void __cdecl BattleFx_LimitFinishingTouchRadialSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter >= 0x4B) {
+    if (task->frameCounter >= 75) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (task->frameCounter < 0x41) {
-        sizeBase = (g_BattleLimitFinishingTouchRadialBurst.radius / 3 << 0xC) / 256;
+    if (task->frameCounter < 65) {
+        sizeBase = (g_BattleLimitFinishingTouchRadialBurst.radius / 3 << 12) / 256;
         for (idx = 0; idx < 9; idx++) {
-            for (freeSlot = 0; freeSlot < 0x8C && g_BattleLimitFinishingTouchRadialSprites[freeSlot].active != 0; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 140 && g_BattleLimitFinishingTouchRadialSprites[freeSlot].active != 0; freeSlot++) {
             }
-            if (freeSlot >= 0x8C) {
+            if (freeSlot >= 140) {
                 break;
             }
             g_BattleLimitFinishingTouchRadialSprites[freeSlot].active = 1;
             g_BattleLimitFinishingTouchRadialSprites[freeSlot].age = 0;
             theta = ((rand()) % 4096);
             dist = g_BattleLimitFinishingTouchRadialBurst.radius + rand() % (g_BattleLimitFinishingTouchRadialBurst.radius >> 2);
-            g_BattleLimitFinishingTouchRadialSprites[freeSlot].posX = g_BattleLimitFinishingTouchRadialBurst.posX + (CosFixed(theta) * dist >> 0xC);
+            g_BattleLimitFinishingTouchRadialSprites[freeSlot].posX = g_BattleLimitFinishingTouchRadialBurst.posX + (CosFixed(theta) * dist >> 12);
             g_BattleLimitFinishingTouchRadialSprites[freeSlot].posY = 0;
-            g_BattleLimitFinishingTouchRadialSprites[freeSlot].posZ = g_BattleLimitFinishingTouchRadialBurst.posZ - (SinFixed(theta) * dist >> 0xC);
-            dist = rand() % 0x32 + task->frameCounter * 8 + 0x3C;
-            g_BattleLimitFinishingTouchRadialSprites[freeSlot].velocityX = CosFixed(theta) * dist >> 0xC;
-            g_BattleLimitFinishingTouchRadialSprites[freeSlot].velocityZ = -(SinFixed(theta) * dist >> 0xC);
+            g_BattleLimitFinishingTouchRadialSprites[freeSlot].posZ = g_BattleLimitFinishingTouchRadialBurst.posZ - (SinFixed(theta) * dist >> 12);
+            dist = rand() % 50 + task->frameCounter * 8 + 60;
+            g_BattleLimitFinishingTouchRadialSprites[freeSlot].velocityX = CosFixed(theta) * dist >> 12;
+            g_BattleLimitFinishingTouchRadialSprites[freeSlot].velocityZ = -(SinFixed(theta) * dist >> 12);
             theta = rand() % 0xA00 + task->frameCounter * 8 + 0x800;
-            g_BattleLimitFinishingTouchRadialSprites[freeSlot].scale = sizeBase * theta >> 0xC;
+            g_BattleLimitFinishingTouchRadialSprites[freeSlot].scale = sizeBase * theta >> 12;
         }
     }
     (task->frameCounter)++;
@@ -941,20 +941,20 @@ void __cdecl BattleFx_LimitFinishingTouchActorLiftReturnTask(void)
             return;
         }
         if (((BattleLimitFinishingTouchPeerGroup *)&g_BattleLimitFinishingTouchPeerGroupHead)[actorIdx].timelineId > 0) {
-            if (task->phase < 0x23 && g_BattleActorRecords[actorIdx].posY > -10000) {
+            if (task->phase < 35 && g_BattleActorRecords[actorIdx].posY > -10000) {
                 g_BattleActorRecords[actorIdx].posY += task->liftVelocity;
                 task->liftVelocity += (short)(task->liftVelocity / 6);
                 g_BattleActorRecords[actorIdx].yaw += task->yawVelocity;
                 task->yawVelocity += task->yawAccel;
                 task->yawAccel += (short)(task->yawAccel >> 4);
-            } else if (task->phase >= 0x23 && task->returnBlocked == 0) {
+            } else if (task->phase >= 35 && task->returnBlocked == 0) {
                 if (task->phase == 0x23) {
                     task->liftVelocity = g_BattleActorRecords[actorIdx].posY;
-                    task->liftDecay = task->liftVelocity / 0xA;
+                    task->liftDecay = task->liftVelocity / 10;
                 }
                 task->liftVelocity -= task->liftDecay;
                 g_BattleActorRecords[actorIdx].posY = task->liftVelocity + task->baseY;
-                g_BattleActorRecords[actorIdx].rotZ = 0x800;
+                g_BattleActorRecords[actorIdx].rotZ = 0x800 /* 180 deg */;
                 g_BattleActorRecords[actorIdx].yaw += task->yawVelocity;
                 task->yawVelocity += task->yawAccel;
                 task->yawAccel -= (short)(task->yawAccel >> 3);
@@ -965,23 +965,23 @@ void __cdecl BattleFx_LimitFinishingTouchActorLiftReturnTask(void)
                 *(Int64Pair *)&g_BattleActorRecords[peerActor].rotX = *(Int64Pair *)&g_BattleActorRecords[actorIdx].rotX;
             }
         }
-        if (task->phase >= 0x2D) {
+        if (task->phase >= 45) {
             if (task->returnBlocked == 0 && ((BattleLimitFinishingTouchPeerGroup *)&g_BattleLimitFinishingTouchPeerGroupHead)[actorIdx].timelineId > 0) {
                 pBurst = (BattleFxFinishingTouchBurst *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitFinishingTouchActorRadialSpriteBurstTask);
                 *(Int64Pair *)&pBurst->centerX = *(Int64Pair *)&g_BattleLimitFinishingTouchLiftStates[actorIdx];
                 pBurst->centerY = 0;
                 pBurst->speedBase = 0x5A;
-                pBurst->speedRange = 0x46;
+                pBurst->speedRange = 70;
                 pBurst->radiusBase = g_BattleActorRecords[actorIdx].radius / 3 << 1;
                 pBurst->radiusRange = pBurst->radiusBase >> 3;
                 pBurst->spawnLimit = 2;
-                pBurst->spriteCount = 0xA;
+                pBurst->spriteCount = 10;
                 pBurst->baseScale = pBurst->radiusBase + 0xE0;
                 if (pBurst->baseScale > 0x4F2) {
                     pBurst->baseScale = 0x4F2;
                 }
                 pBurst->stateIndex = actorIdx;
-                for (peerIdx = 0; peerIdx < 0x30; peerIdx++) {
+                for (peerIdx = 0; peerIdx < 48; peerIdx++) {
                     ((BattleLimitGaryotenBurstPool *)g_BattleLimitFinishingTouchParticleBuf)[actorIdx][peerIdx].active = 0;
                 }
                 g_BattleActorRecords[actorIdx].posY = g_BattleLimitFinishingTouchLiftStates[actorIdx].posY;
@@ -1033,7 +1033,7 @@ void __cdecl BattleFx_LimitFinishingTouchActorRadialSpriteBurstTask(void)
     pParticlePool = ((BattleLimitGaryotenBurstPool *)g_BattleLimitFinishingTouchParticleBuf)[task->stateIndex];
     g_BattleLimitFinishingTouchSpriteReqPool.burstSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_pBattleLimitFinishingTouchTableCursor);
     g_BattleLimitFinishingTouchSpriteReqPool.burstSprite.drawObj = Gfx_ModelTableGetSpriteObject(1, g_pBattleLimitFinishingTouchTableCursor);
-    for (idx = 0; idx < 0x30; idx++) {
+    for (idx = 0; idx < 48; idx++) {
         if (pParticlePool[idx].active != 0) {
             g_BattleLimitFinishingTouchSpriteReqPool.burstSprite.frame = pParticlePool[idx].age;
             BattleFx_InstallBillboardMatrix(&pParticlePool[idx].posX, (short)pParticlePool[idx].scale, -(pParticlePool[idx].scale >> 3));
@@ -1043,7 +1043,7 @@ void __cdecl BattleFx_LimitFinishingTouchActorRadialSpriteBurstTask(void)
                 pParticlePool[idx].posZ += pParticlePool[idx].velocityZ;
                 pParticlePool[idx].velocityX -= (short)(pParticlePool[idx].velocityX >> 3);
                 pParticlePool[idx].velocityZ -= (short)(pParticlePool[idx].velocityZ >> 3);
-                if (pParticlePool[idx].age >= 0xF) {
+                if (pParticlePool[idx].age >= 15) {
                     pParticlePool[idx].active = 0;
                 }
                 (pParticlePool[idx].age)++;
@@ -1053,29 +1053,29 @@ void __cdecl BattleFx_LimitFinishingTouchActorRadialSpriteBurstTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frame >= 0x14) {
+    if (task->frame >= 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (task->frame < task->spawnLimit) {
-        sizeBase = (task->baseScale << 0xC) / 256;
+        sizeBase = (task->baseScale << 12) / 256;
         for (idx = 0; idx < task->spriteCount; idx++) {
-            for (freeSlot = 0; freeSlot < 0x30 && pParticlePool[freeSlot].active != 0; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 48 && pParticlePool[freeSlot].active != 0; freeSlot++) {
             }
-            if (freeSlot >= 0x30) {
+            if (freeSlot >= 48) {
                 break;
             }
             pParticlePool[freeSlot].active = 1;
             pParticlePool[freeSlot].age = 0;
             theta = ((rand()) % 4096);
             dist = task->radiusBase + rand() % task->radiusRange;
-            pParticlePool[freeSlot].posX = task->centerX + (CosFixed(theta) * dist >> 0xC);
+            pParticlePool[freeSlot].posX = task->centerX + (CosFixed(theta) * dist >> 12);
             pParticlePool[freeSlot].posY = task->centerY;
-            pParticlePool[freeSlot].posZ = task->centerZ - (SinFixed(theta) * dist >> 0xC);
+            pParticlePool[freeSlot].posZ = task->centerZ - (SinFixed(theta) * dist >> 12);
             dist = task->speedBase + rand() % task->speedRange + (task->radiusBase >> 4);
-            pParticlePool[freeSlot].velocityX = CosFixed(theta) * dist >> 0xC;
-            pParticlePool[freeSlot].velocityZ = -(SinFixed(theta) * dist >> 0xC);
+            pParticlePool[freeSlot].velocityX = CosFixed(theta) * dist >> 12;
+            pParticlePool[freeSlot].velocityZ = -(SinFixed(theta) * dist >> 12);
             theta = rand() % 0xB00 + 0x600;
-            pParticlePool[freeSlot].scale = sizeBase * theta >> 0xC;
+            pParticlePool[freeSlot].scale = sizeBase * theta >> 12;
         }
     }
     (task->frame)++;
@@ -1107,7 +1107,7 @@ void __cdecl BattleFx_LimitFinishingTouchScaledModelTask(void)
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.matrix);
-    frame.scaleX.vz = frame.scaledModel->baseScale * g_BattleLimitFinishingTouchScaleTable[frame.scaledModel->stage] >> 0xC;
+    frame.scaleX.vz = frame.scaledModel->baseScale * g_BattleLimitFinishingTouchScaleTable[frame.scaledModel->stage] >> 12;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.matrix, &frame.scaleX);
@@ -1179,7 +1179,7 @@ void __cdecl BattleFx_LimitFinishingTouchGrowShrinkModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleLimitFinishingTouchDrawHandle = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitFinishingTouchDrawHandle);
-    if (frame.growShrinkRecord->step >= 0xC) {
+    if (frame.growShrinkRecord->step >= 12) {
         frame.growShrinkRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

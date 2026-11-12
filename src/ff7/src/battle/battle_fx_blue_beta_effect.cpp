@@ -123,27 +123,27 @@ void __cdecl BattleFx_BlueBetaInitParticles(void)
     int coordinateY;
     int offZ;
 
-    spreadX = 0x1F40;
-    heightY = 0xBB8;
-    rangeZ = 0x1F40;
-    for (particle = 0; particle < 0x78; particle++) {
+    spreadX = 8000;
+    heightY = 3000;
+    rangeZ = 8000;
+    for (particle = 0; particle < 120; particle++) {
         g_BattleBlueBetaParticles[particle].timer = 0;
         offX = g_BattleBlueBetaTargetCentroid.x + rand() % spreadX - (spreadX >> 1);
         offZ = g_BattleBlueBetaTargetCentroid.z + rand() % rangeZ - (rangeZ >> 1);
         coordinateY = -(rand() % heightY);
         if (offX > 0) {
-            if (offX < 0x320) {
-                offX += 0x320;
+            if (offX < 800) {
+                offX += 800;
             }
-        } else if (offX > -0x320) {
-            offX -= 0x320;
+        } else if (offX > -800) {
+            offX -= 800;
         }
         if (offZ > 0) {
-            if (offZ < 0x320) {
-                offZ += 0x320;
+            if (offZ < 800) {
+                offZ += 800;
             }
-        } else if (offZ > -0x320) {
-            offZ -= 0x320;
+        } else if (offZ > -800) {
+            offZ -= 800;
         }
         g_BattleBlueBetaParticles[particle].posX = offX;
         g_BattleBlueBetaParticles[particle].posY = coordinateY;
@@ -151,9 +151,9 @@ void __cdecl BattleFx_BlueBetaInitParticles(void)
         for (wordIndex = 0; wordIndex < 4; wordIndex++) {
             g_BattleBlueBetaParticles[particle].cleared[wordIndex] = 0;
         }
-        g_BattleBlueBetaParticles[particle].period = (((offX & 0xF) + ((offZ & 0xF) + 0x56)) + ((coordinateY & 3) << 4));
+        g_BattleBlueBetaParticles[particle].period = (((offX & 0xF) + ((offZ & 0xF) + 86)) + ((coordinateY & 3) << 4));
     }
-    for (particle = 0; particle < 0x10; particle++) {
+    for (particle = 0; particle < 16; particle++) {
         g_BattleBlueBetaParticleOffsets[particle].offsetX += g_BattleBlueBetaTargetCentroid.x;
         g_BattleBlueBetaParticleOffsets[particle].offsetY += g_BattleBlueBetaTargetCentroid.y;
         g_BattleBlueBetaParticleOffsets[particle].offsetZ += g_BattleBlueBetaTargetCentroid.z;
@@ -173,47 +173,47 @@ void __cdecl BattleFx_BlueBetaTimelineTask(void)
         return;
     }
     if (task->step == 0) {
-        BattleFx_StartScreenFlashRamp(0xA);
+        BattleFx_StartScreenFlashRamp(10);
     }
-    if (task->step == 0xE) {
-        BattleFx_FadeOutScreenFlashRamp(0x24);
+    if (task->step == 14) {
+        BattleFx_FadeOutScreenFlashRamp(36);
         pChild = (BattleFxBlueBetaTimeline2 *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueBetaSpinStretchFadeModelTask);
         *(Int64Pair *)&pChild->posX = *(Int64Pair *)task->centroid;
         pChild->spinAngle = 0;
         pChild->offset = 0xFFF0;
-        pChild->scale = (task->stretchBase << 0xC) / 0x898;
+        pChild->scale = (task->stretchBase << 12) / 2200;
         pChild = (BattleFxBlueBetaTimeline2 *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueBetaSpinStretchFadeModelEntry1Task);
         *(Int64Pair *)&pChild->posX = *(Int64Pair *)task->centroid;
         pChild->posY = 0xF63C;
         pChild->spinAngle = 0;
         pChild->offset = 0xFFF4;
-        pChild->scale = (task->stretchBase << 0xC) / 0x960;
+        pChild->scale = (task->stretchBase << 12) / 2400;
         pChild = (BattleFxBlueBetaTimeline2 *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueBetaParticleFieldTask);
         pChild->nextIndex = 0;
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
     }
-    if (task->step >= 0xE && task->step < 0x22) {
-        g_BattleBlueBetaScreenBrightness = (task->step - 0xE) * 0xCC;
-        if (g_BattleBlueBetaScreenBrightness > 0x1000) {
-            g_BattleBlueBetaScreenBrightness = 0x1000;
+    if (task->step >= 14 && task->step < 34) {
+        g_BattleBlueBetaScreenBrightness = (task->step - 14) * 204;
+        if (g_BattleBlueBetaScreenBrightness > 4096) {
+            g_BattleBlueBetaScreenBrightness = 4096;
         }
     }
-    if (task->step >= 0x40) {
-        g_BattleBlueBetaScreenBrightness = 0x1000 - (task->step - 0x40 << 9);
+    if (task->step >= 64) {
+        g_BattleBlueBetaScreenBrightness = 4096 - (task->step - 64 << 9);
         if (g_BattleBlueBetaScreenBrightness < 0) {
             g_BattleBlueBetaScreenBrightness = 0;
         }
     }
-    if (task->step == 0x3C) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (task->step == 60) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleBlueBetaTargetMask & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
     }
-    if (task->step >= 0x48) {
+    if (task->step >= 72) {
         g_BattleBlueBetaScreenBrightness = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -260,14 +260,14 @@ void __cdecl BattleFx_BlueBetaSpinStretchFadeModelTask(void)
     frame.modelReq->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleBlueBetaModelTable);
     frame.modelReq->flags = 8;
     frame.modelReq->uvScroll = 0;
-    frame.modelReq->fadeLevel = 0x80;
+    frame.modelReq->fadeLevel = 128;
     frame.modelReq->stateFlags = 0x20;
     frame.modelReq->texturePageBits = 0;
-    if (frame.beataSlot->frameCounter >= 0x2A) {
-        frame.modelReq->fadeLevel -= (short)(frame.beataSlot->frameCounter - 0x2A << 4);
+    if (frame.beataSlot->frameCounter >= 42) {
+        frame.modelReq->fadeLevel -= (short)(frame.beataSlot->frameCounter - 42 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.beataSlot->frameCounter >= 0x32) {
+    if (frame.beataSlot->frameCounter >= 50) {
         frame.beataSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -316,14 +316,14 @@ void __cdecl BattleFx_BlueBetaSpinStretchFadeModelEntry1Task(void)
     frame.modelReq->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleBlueBetaModelTable);
     frame.modelReq->flags = 8;
     frame.modelReq->uvScroll = 0;
-    frame.modelReq->fadeLevel = 0x80;
+    frame.modelReq->fadeLevel = 128;
     frame.modelReq->stateFlags = 0x20;
     frame.modelReq->texturePageBits = 0;
-    if (frame.beataSlot->frameCounter >= 0x2A) {
-        frame.modelReq->fadeLevel -= (short)(frame.beataSlot->frameCounter - 0x2A << 4);
+    if (frame.beataSlot->frameCounter >= 42) {
+        frame.modelReq->fadeLevel -= (short)(frame.beataSlot->frameCounter - 42 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.beataSlot->frameCounter >= 0x32) {
+    if (frame.beataSlot->frameCounter >= 50) {
         frame.beataSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -348,17 +348,17 @@ void __cdecl BattleFx_BlueBetaParticleFieldTask(void)
     pBlock->end = Gfx_GetPsxPacketScratchPtr();
     pBlock->cameraTransform = g_BattleCameraTransform.psxMatrix;
     g_BattleFxActiveDrawListPtr = BattleFx_BlueBetaDrawParticleField(pBlock);
-    if (task->frame >= 0x36) {
+    if (task->frame >= 54) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frame < 0xC) {
+    if (task->frame < 12) {
         first = task->nextIndex;
         end = first + 0xA;
         for (; first < end; first++) {
-            g_BattleBlueBetaParticles[first].timer = rand() % 8 + 0x22;
+            g_BattleBlueBetaParticles[first].timer = rand() % 8 + 34;
         }
         task->nextIndex = end;
     }
@@ -385,7 +385,7 @@ int __cdecl BattleFx_BlueBetaDrawParticleField(BattleFxBlueBetaParticleField *fi
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (particleCur = 0; particleCur < 0x78; particleCur++) {
+    for (particleCur = 0; particleCur < 120; particleCur++) {
         if (g_BattleBlueBetaParticles[particleCur].timer == 0) {
             continue;
         }
@@ -394,7 +394,7 @@ int __cdecl BattleFx_BlueBetaDrawParticleField(BattleFxBlueBetaParticleField *fi
         pz = g_BattleBlueBetaParticles[particleCur].posZ;
         field->minDeltaXSeen = 0x7FFFFFFF;
         field->minDeltaX = 0x7FFFFFFF;
-        for (loopDivisor = 0; loopDivisor < 0x10; loopDivisor++) {
+        for (loopDivisor = 0; loopDivisor < 16; loopDivisor++) {
             tmpDeltaX = xCoord - g_BattleBlueBetaParticleOffsets[loopDivisor].offsetX;
             if (tmpDeltaX < 0) {
                 absDeltaX = -tmpDeltaX;

@@ -152,11 +152,11 @@ void __cdecl Mini_HighwayResetRun(void)
     g_HighwayHighScore = 0;
     g_HighwayHighScore += gSavemap.highScoreHigh << 8;
     g_HighwayHighScore += gSavemap.highScoreLow;
-    g_HighwayFalloffDistanceMin = 0xBB8;
-    g_HighwayFalloffDistanceMax = 0x1770;
+    g_HighwayFalloffDistanceMin = 3000;
+    g_HighwayFalloffDistanceMax = 6000;
     g_HighwayDefaultNearParam = 0x41A0;
     g_HighwayDefaultFarParam = 0x4F4C;
-    g_HighwayScrollSpeed = 0x7A;
+    g_HighwayScrollSpeed = 122;
     g_HighwayExitRequested = 0;
     g_HighwayRunClearedFlag = 0;
     g_HighwaySpawningStopped = 0;
@@ -164,7 +164,7 @@ void __cdecl Mini_HighwayResetRun(void)
     g_HighwayTrackProgress = 0;
     g_HighwayScrollSubpixel = 0;
     g_HighwayDefaultPitchParam = 0;
-    g_HighwayDefaultVolumeStep = 0x80;
+    g_HighwayDefaultVolumeStep = 128;
     g_HighwaySoundParam = 0;
     g_HighwayDefaultOffsetParam = 0;
     g_HighwayNearestRivalVolume = 0;
@@ -221,7 +221,7 @@ void __cdecl Mini_HighwayResetRun(void)
  *   null), the model roster and its RSD models (fails when null), the actor index, the layer
  *   block and its layers, the HUD block and the track block (fails when null);
  * - sets up the six actor slots and their skeletons, the effect pool, a text buffer of
- *   640 * 240 + 1 bytes (`Mini_InitPrimBuffer(0x18, 0xF0, 0x280, 0xF0, 0, 0)`) and the input
+ *   640 * 240 + 1 bytes (`Mini_InitPrimBuffer(24, 240, 640, 240, 0, 0)`) and the input
  *   state;
  * - loads the ten sounds of g_HighwaySfxIdTable, starts the music and dispatches sound 0xB3 of
  *   kind 4 and 0x12B of kind 3;
@@ -268,7 +268,7 @@ extern "C" int __cdecl Mini_HighwayInit()
         return 0;
     slotResult = Mini_HighwayInitSlotArray((int)GetEngineContext());
     Mini_HighwayInitEffectPool();
-    Mini_InitPrimBuffer(0x18, 0xf0, 0x280, 0xf0, 0, 0);
+    Mini_InitPrimBuffer(24, 240, 640, 240, 0, 0);
     Mini_HighwayResetInputState();
     for (sfxIdx = 9; sfxIdx >= 0; sfxIdx--) {
         SfxLoadIntoBuffer(g_HighwaySfxIdTable[sfxIdx], 0);
@@ -384,7 +384,7 @@ void __cdecl Mini_HighwayRunFrame(struct GfxEngineContext *context)
         ResetFrameDrawPool(context);
         ResetRenderPools(context);
         Gfx_ResetNodeList(context);
-        for (i = 0; i < 0x16; i++) {
+        for (i = 0; i < 22; i++) {
             Gfx_SetRenderStateCall(i, 0, (struct GfxEngineContext *)context);
         }
         Gfx_SetRenderStateCall(RENDER_STATE_DEPTH_TEST, 1, (struct GfxEngineContext *)context);
@@ -511,7 +511,7 @@ void __cdecl Mini_HighwayRunEventTimeline(void)
     if (g_HighwaySlotCountdown > 0) {
         g_HighwaySlotCountdown--;
     }
-    if (g_HighwayTrackProgress - 0x2D > g_pHighwayTrackEventTable[g_HighwayTrackEventIndex].triggerProgress) {
+    if (g_HighwayTrackProgress - 45 > g_pHighwayTrackEventTable[g_HighwayTrackEventIndex].triggerProgress) {
         switch (g_pHighwayTrackEventTable[g_HighwayTrackEventIndex].eventType) {
         case HIGHWAY_EVENT_SCENE_INIT:
             if ((g_HighwayControlFlags & (HIGHWAY_CTRL_DEBUG_CAM_MODE7 | HIGHWAY_CTRL_DEBUG_CAM_MODE6_FREEZE_SCROLL)) == 0) {
@@ -602,8 +602,8 @@ void __cdecl Mini_HighwayRunEventTimeline(void)
         case HIGHWAY_EVENT_ENDING_B:
             if (g_HighwayEndingBStarted == 0) {
                 (((HighwayActorGroup *)&g_HighwaySlotActors)->timer)--;
-                ((HighwayActorGroup *)&g_HighwaySlotActors)->slot0AnimCountdown = 0x4A;
-                ((HighwayActorGroup *)&g_HighwaySlotActors)->slot1AnimCountdown = 0x31;
+                ((HighwayActorGroup *)&g_HighwaySlotActors)->slot0AnimCountdown = 74;
+                ((HighwayActorGroup *)&g_HighwaySlotActors)->slot1AnimCountdown = 49;
                 ((HighwayEffect *)g_pHighwaySceneBlock)->init(9, 4, 0x10000);
                 g_HighwayInputLock = 1;
                 g_HighwayEndingBStarted = 1;
@@ -632,13 +632,13 @@ void __cdecl Mini_HighwayRunEventTimeline(void)
     if (g_HighwayEndingBStarted != 0) {
         if (g_HighwaySceneStep > 5) {
             if (g_HighwayScrollSpeed > 0) {
-                g_HighwayScrollSpeed -= 0xA;
+                g_HighwayScrollSpeed -= 10;
             }
             if (g_HighwayScrollSpeed < 0) {
                 g_HighwayScrollSpeed = 0;
             }
         }
-        if (g_HighwaySceneStep == 0x109) {
+        if (g_HighwaySceneStep == 265) {
             Mini_HighwaySendSoundCommandB9();
             fadeBlockB = g_pHighwayRenderBlock;
             ((HighwayRenderOwner *)fadeBlockB)->fadeActive = 1;
@@ -650,28 +650,28 @@ void __cdecl Mini_HighwayRunEventTimeline(void)
             Mini_HighwaySendChannelCommandB0(1, 4);
             Mini_HighwayDispatchSoundCategory(0x241, 3, 0);
             Mini_HighwayDispatchSoundCategory(0x241, 4, 0);
-            ((HighwayActorGroup *)&g_HighwaySlotActors)->scrollPos -= 0x2800;
-            ((HighwayActorGroup *)&g_HighwaySlotActors)->slot1ScrollPos += 0x6400;
+            ((HighwayActorGroup *)&g_HighwaySlotActors)->scrollPos -= 10240;
+            ((HighwayActorGroup *)&g_HighwaySlotActors)->slot1ScrollPos += 25600;
         }
-        if (g_HighwaySceneStep == 0x19) {
+        if (g_HighwaySceneStep == 25) {
             Mini_HighwayDispatchSoundCategory(0, 3, 0);
             Mini_HighwayDispatchSoundCategory(0, 4, 0);
             Mini_HighwaySendChannelCommandA0(0, 3);
             Mini_HighwaySendChannelCommandA0(0, 4);
         }
-        if (g_HighwaySceneStep == 0x14A) {
+        if (g_HighwaySceneStep == 330) {
             g_HighwayRunPhase = 2;
         }
-        if (g_HighwaySceneStep == 0x190) {
+        if (g_HighwaySceneStep == 400) {
             g_HighwayExitRequested = 1;
         }
         g_HighwaySceneStep++;
     }
     if (g_HighwayEndingAStarted != 0) {
-        if (g_HighwaySceneStep > 0xDC) {
+        if (g_HighwaySceneStep > 220) {
             (((HighwayActorGroup *)&g_HighwaySlotActors)->frameCount)++;
         }
-        if (g_HighwaySceneStep > 0xB4) {
+        if (g_HighwaySceneStep > 180) {
             if (g_HighwayScrollSpeed > 0) {
                 g_HighwayScrollSpeed -= 3;
             }
@@ -679,12 +679,12 @@ void __cdecl Mini_HighwayRunEventTimeline(void)
                 g_HighwayScrollSpeed = 0;
             }
         }
-        if (g_HighwaySceneStep == 0x13B) {
+        if (g_HighwaySceneStep == 315) {
             Mini_HighwaySendSoundCommandB9();
             endAFadeBlock = g_pHighwayRenderBlock;
             ((HighwayRenderOwner *)endAFadeBlock)->fadeActive = 1;
         }
-        if (g_HighwaySceneStep > 0x13B) {
+        if (g_HighwaySceneStep > 315) {
             volume = 0x7F - (g_HighwaySceneStep - 0x13B);
             if (volume < 0) {
                 volume = 0;
@@ -692,7 +692,7 @@ void __cdecl Mini_HighwayRunEventTimeline(void)
             MidiSetVolume(volume);
             SoundUpdateFades();
         }
-        if (g_HighwaySceneStep == 0xB8) {
+        if (g_HighwaySceneStep == 184) {
             Mini_HighwaySendChannelCommandA0(0x7F, 3);
             Mini_HighwaySendChannelCommandA0(0x7F, 4);
             Mini_HighwaySendChannelCommandB0(1, 3);
@@ -700,16 +700,16 @@ void __cdecl Mini_HighwayRunEventTimeline(void)
             Mini_HighwayDispatchSoundCategory(0x241, 3, 0);
             Mini_HighwayDispatchSoundCategory(0x241, 4, 0);
         }
-        if (g_HighwaySceneStep == 0xCB) {
+        if (g_HighwaySceneStep == 203) {
             Mini_HighwayDispatchSoundCategory(0, 3, 0);
             Mini_HighwayDispatchSoundCategory(0, 4, 0);
             Mini_HighwaySendChannelCommandA0(0, 3);
             Mini_HighwaySendChannelCommandA0(0, 4);
         }
-        if (g_HighwaySceneStep == 0x17C) {
+        if (g_HighwaySceneStep == 380) {
             g_HighwayRunPhase = 2;
         }
-        if (g_HighwaySceneStep == 0x1C2) {
+        if (g_HighwaySceneStep == 450) {
             g_HighwayExitRequested = 1;
         }
         g_HighwaySceneStep++;
@@ -729,10 +729,10 @@ void __cdecl Mini_HighwayDamageCharacter(char category, short amount)
     char found;
     char candidate;
 
-    if (g_HighwayHpBarTable.bars[2].remaining < 0x1E && category == 2) {
+    if (g_HighwayHpBarTable.bars[2].remaining < 30 && category == 2) {
         amount = 0;
     }
-    g_HighwayHpBarTable.bars[category].flashTimer = 0x70;
+    g_HighwayHpBarTable.bars[category].flashTimer = 112;
     g_HighwayHpBarTable.bars[category].damageTaken += amount;
     if (g_HighwayHpBarTable.bars[category].remaining > amount) {
         *(short *)&g_HighwayHpBarTable.bars[category].remaining -= amount;
@@ -749,7 +749,7 @@ void __cdecl Mini_HighwayDamageCharacter(char category, short amount)
             }
         }
         if (found == 1) {
-            g_HighwayHpBarTable.bars[category].flashTimer = 0x70;
+            g_HighwayHpBarTable.bars[category].flashTimer = 112;
             g_HighwayHpBarTable.bars[category].damageTaken += amount;
             if (g_HighwayHpBarTable.bars[category].remaining > amount) {
                 *(short *)&g_HighwayHpBarTable.bars[category].remaining -= amount;

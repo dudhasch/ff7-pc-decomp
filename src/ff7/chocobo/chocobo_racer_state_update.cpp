@@ -94,9 +94,9 @@ void __cdecl Mini_ChocoboRaceBuildRacers(void)
     frame.engineContext = (int)GetEngineContext();
     for (frame.racerIndex = 0; frame.racerIndex < 6; frame.racerIndex++) {
         frame.racer = &g_ChocoboRacers[frame.racerIndex];
-        frame.racer->laneBlend = frame.racerIndex * 0xE0 / 6 + 0x10;
+        frame.racer->laneBlend = frame.racerIndex * 224 / 6 + 0x10;
     }
-    for (frame.racerIndex = 0; frame.racerIndex < 0x28; frame.racerIndex++) {
+    for (frame.racerIndex = 0; frame.racerIndex < 40; frame.racerIndex++) {
         frame.racerSwapA = rand() % 6;
         frame.racerSwapB = rand() % 6;
         frame.laneBlendTmp = g_ChocoboRacers[frame.racerSwapA].laneBlend;
@@ -115,7 +115,7 @@ void __cdecl Mini_ChocoboRaceBuildRacers(void)
             frame.racer->stamina = frame.racer->staminaMax;
             frame.racer->autoPilot = 1;
             frame.racer->personality = gSavemap.racePersonality;
-            frame.racer->intelligenceDiv8 = frame.racer->intelligence / 0xA;
+            frame.racer->intelligenceDiv8 = frame.racer->intelligence / 10;
             switch (gSavemap.raceChocoboColor) {
             case CHOCOBO_COLOR_GREEN:
                 frame.racer->terrainPenaltyMask = CHOCOBO_TRACK_FLAG_SLOW_1;
@@ -134,30 +134,30 @@ void __cdecl Mini_ChocoboRaceBuildRacers(void)
         } else {
             frame.racer->topSpeed = g_ChocoboClassStats[gSavemap.raceClass].topSpeedBase + rand() % g_ChocoboClassStats[gSavemap.raceClass].topSpeedRange;
             frame.racer->baseSpeed = g_ChocoboClassStats[gSavemap.raceClass].baseSpeedBase + rand() % g_ChocoboClassStats[gSavemap.raceClass].baseSpeedRange;
-            frame.racer->acceleration = 0x32;
+            frame.racer->acceleration = 50;
             frame.racer->cooperation = 0x64;
             frame.racer->mode = rand() % 4;
-            frame.racer->staminaMax = g_ChocoboClassStats[gSavemap.raceClass].topSpeedBase + rand() % 0x12C;
+            frame.racer->staminaMax = g_ChocoboClassStats[gSavemap.raceClass].topSpeedBase + rand() % 300;
             frame.racer->stamina = frame.racer->staminaMax;
             frame.racer->autoPilot = 1;
             /* CHOCOBO_PERSONALITY_DASHES_WHEN_SPURRED one time in eight, else NONE */
             frame.racer->personality = ((rand() & 7) != 0 ? -2 : 0) + 2;
-            frame.racer->intelligenceDiv8 = frame.racer->intelligence / 0xA;
+            frame.racer->intelligenceDiv8 = frame.racer->intelligence / 10;
             frame.racer->terrainPenaltyMask = CHOCOBO_TRACK_FLAG_SLOW_1 | CHOCOBO_TRACK_FLAG_SLOW_2;
-            frame.racer->intelligence = (rand() & 1) * 0x32 + 0x32;
+            frame.racer->intelligence = (rand() & 1) * 50 + 50;
         }
-        if (frame.racer->intelligence < 0x28) {
+        if (frame.racer->intelligence < 40) {
             frame.racer->racingLine = 3;
-            frame.racer->steerStep = (0x28 - frame.racer->intelligence) / 0xA;
-        } else if (frame.racer->intelligence < 0x3C) {
+            frame.racer->steerStep = (40 - frame.racer->intelligence) / 10;
+        } else if (frame.racer->intelligence < 60) {
             frame.racer->racingLine = 2;
-            frame.racer->steerStep = (0x3C - frame.racer->intelligence) / 5;
-        } else if (frame.racer->intelligence < 0x50) {
+            frame.racer->steerStep = (60 - frame.racer->intelligence) / 5;
+        } else if (frame.racer->intelligence < 80) {
             frame.racer->racingLine = 1;
-            frame.racer->steerStep = (0x50 - frame.racer->intelligence) / 5;
+            frame.racer->steerStep = (80 - frame.racer->intelligence) / 5;
         } else {
             frame.racer->racingLine = 0;
-            frame.racer->steerStep = (0x6E - frame.racer->intelligence) / 5;
+            frame.racer->steerStep = (110 - frame.racer->intelligence) / 5;
         }
         frame.racer->intelligenceDiv8 = (frame.racer->intelligence) / 8;
         frame.racer->dashSegment = *(short *)&g_ChocoboTrackData->segmentTable;
@@ -216,9 +216,9 @@ void __cdecl Mini_ChocoboRaceBuildRacers(void)
         *(int *)&g_ChocoboRacers[1].targetZ = frame.savedTargetZ;
         g_ChocoboRacers[1].staminaMax += g_ChocoboRacers[1].staminaMax / 4;
         g_ChocoboRacers[1].stamina += g_ChocoboRacers[1].stamina / 4;
-        g_ChocoboRacers[1].baseSpeed += (short)(g_ChocoboRacers[1].baseSpeed / 0xA);
-        g_ChocoboRacers[1].topSpeed += (short)(g_ChocoboRacers[1].topSpeed / 0xA);
-        g_ChocoboRacers[1].acceleration = 0x64;
+        g_ChocoboRacers[1].baseSpeed += (short)(g_ChocoboRacers[1].baseSpeed / 10);
+        g_ChocoboRacers[1].topSpeed += (short)(g_ChocoboRacers[1].topSpeed / 10);
+        g_ChocoboRacers[1].acceleration = 100;
         g_ChocoboRacers[1].intelligence = 0x64;
         g_ChocoboRacers[1].tableIndex = 2;
         g_ChocoboRacers[1].mode = CHOCOBO_RACER_MODE_STEADY_HOME_LANE;
@@ -226,12 +226,12 @@ void __cdecl Mini_ChocoboRaceBuildRacers(void)
         g_ChocoboRacers[1].tableIndex = 9;
         g_ChocoboRacers[1].lane = 1;
     }
-    for (frame.permutationIndex = 0; frame.permutationIndex < 0x2D; frame.permutationIndex++) {
+    for (frame.permutationIndex = 0; frame.permutationIndex < 45; frame.permutationIndex++) {
         frame.permutation[frame.permutationIndex] = frame.permutationIndex;
     }
-    for (frame.permutationIndex = 0; frame.permutationIndex < 0xC8; frame.permutationIndex++) {
-        frame.laneSwapA = rand() % 0x2D;
-        frame.laneSwapB = rand() % 0x2D;
+    for (frame.permutationIndex = 0; frame.permutationIndex < 200; frame.permutationIndex++) {
+        frame.laneSwapA = rand() % 45;
+        frame.laneSwapB = rand() % 45;
         frame.laneTmp = frame.permutation[frame.laneSwapA];
         frame.permutation[frame.laneSwapA] = frame.permutation[frame.laneSwapB];
         frame.permutation[frame.laneSwapB] = frame.laneTmp;
@@ -448,8 +448,8 @@ void __cdecl Mini_ChocoboRaceUpdateRacerAnimationAndCollisions(short racerIndex)
     frame.racer = &g_ChocoboRacers[racerIndex];
     if (g_ChocoboRaceAdvanceEnabled == 0) {
         frame.racer->targetIndex = 3;
-        frame.racer->stepRate = 0x100;
-        frame.racer->stepSpeed = 0xA;
+        frame.racer->stepRate = 256;
+        frame.racer->stepSpeed = 10;
     } else if (frame.racer->stepSpeed != 0) {
         Mini_ChocoboRaceAdvanceRacerAlongCourse((short)racerIndex);
         frame.racer->stepRate = frame.racer->stepSpeed / g_ChocoboRacerStepDivisor;
@@ -480,7 +480,7 @@ void __cdecl Mini_ChocoboRaceUpdateRacerAnimationAndCollisions(short racerIndex)
                 frame.racer->targetIndex = 3;
             }
         }
-        frame.racer->stepRate = 0x100;
+        frame.racer->stepRate = 256;
     }
     frame.racer->animPhase += frame.racer->stepRate;
     frame.racer->trackPhase += frame.racer->stepRate;
@@ -502,10 +502,10 @@ void __cdecl Mini_ChocoboRaceUpdateRacerAnimationAndCollisions(short racerIndex)
         frame.distance = frame.racer->posX - frame.otherRacer->posX;
         frame.deltaZ = frame.racer->posZ - frame.otherRacer->posZ;
         frame.distance = SqrtToInt(frame.distance * frame.distance + frame.deltaZ * frame.deltaZ);
-        if (frame.distance < 0x96) {
+        if (frame.distance < 150) {
             if (frame.otherRacer->finished != 0) {
                 frame.otherRacer->stepSpeed = frame.racer->stepSpeed;
-                frame.racer->stepSpeed = 0xA;
+                frame.racer->stepSpeed = 10;
             }
             if (frame.otherRacer->stepSpeed == 0 || frame.racer->stepSpeed == 0) {
                 continue;
@@ -518,22 +518,22 @@ void __cdecl Mini_ChocoboRaceUpdateRacerAnimationAndCollisions(short racerIndex)
             frame.otherStepDivisor = 0x80000 / frame.racer->stepSpeed;
             frame.pushHeading = (short)Mini_ChocoboHeadingFromXZ(*(short *)&frame.dir.vx, *(short *)&frame.dir.vz);
             if (frame.racer->lane == 0 && frame.racer->countdown < 0) {
-                frame.racer->countdown = 0x1E;
+                frame.racer->countdown = 30;
                 frame.soundArg = 0x7F - (g_ChocoboRacerScreenDepth[racerIndex] >> 5);
                 g_pChocoboSoundCommand->soundCommand = 0xA3;
                 g_pChocoboSoundCommand->soundArg = frame.soundArg;
                 SoundDispatchCommand((short)g_pChocoboSoundCommand->soundCommand, g_pChocoboSoundCommand->soundArg, 0, 0, 0, 0, 0, 0, 0);
                 g_pChocoboSoundCommand->soundCommand = 0x2B;
                 g_pChocoboSoundCommand->soundArg = frame.racer->laneBlend / 2;
-                g_pChocoboSoundCommand->soundParam1 = (rand() & 1) + 0x114;
+                g_pChocoboSoundCommand->soundParam1 = (rand() & 1) + 276;
                 SoundDispatchCommand((short)g_pChocoboSoundCommand->soundCommand, g_pChocoboSoundCommand->soundArg, g_pChocoboSoundCommand->soundParam1, 0, 0, 0, 0, 0, 0);
             }
             if (frame.selfStepDivisor != 0) {
                 frame.racer->posX += (short)(SinFixed(frame.pushHeading) / frame.selfStepDivisor);
                 frame.racer->posZ += (short)(-CosFixed(frame.pushHeading) / frame.selfStepDivisor);
                 frame.racer->stepSpeed -= (short)(frame.racer->stepSpeed / 8);
-                if (frame.racer->stepSpeed < 0x64) {
-                    frame.racer->stepSpeed = 0x64;
+                if (frame.racer->stepSpeed < 100) {
+                    frame.racer->stepSpeed = 100;
                 }
             }
             if (frame.otherStepDivisor != 0) {
@@ -541,7 +541,7 @@ void __cdecl Mini_ChocoboRaceUpdateRacerAnimationAndCollisions(short racerIndex)
                 frame.otherRacer->posZ -= (short)(-CosFixed(frame.pushHeading) / frame.otherStepDivisor);
             }
         }
-        if (frame.racer->personality == CHOCOBO_PERSONALITY_DASHES_WHEN_SPURRED && frame.distance < 0xAA) {
+        if (frame.racer->personality == CHOCOBO_PERSONALITY_DASHES_WHEN_SPURRED && frame.distance < 170) {
             rand();
             if (DEAD_IN_RETAIL != 0) {
                 frame.racer->dashTimer = 4;
@@ -550,7 +550,7 @@ void __cdecl Mini_ChocoboRaceUpdateRacerAnimationAndCollisions(short racerIndex)
     }
     g_ChocoboRacerOnScreen[racerIndex] = 0;
     frame.depth = RotTransPers((SVECTOR *)&frame.racer->posX, &frame.screenPos.x, &frame.projScale, &frame.projFlags);
-    if (frame.depth < 0x898 && frame.screenPos.x > -0x14 && frame.screenPos.x < 0x15E && frame.screenPos.y > 0 && frame.screenPos.y < 0x140) {
+    if (frame.depth < 2200 && frame.screenPos.x > -20 && frame.screenPos.x < 350 && frame.screenPos.y > 0 && frame.screenPos.y < 320) {
         frame.racerRecord->headingFlipped = 0;
         frame.laneState->headingFlipped = 0;
         frame.laneState->yaw = 0x100 - (frame.racer->heading >> 4);
@@ -596,8 +596,8 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
 
     racerPtr = &g_ChocoboRacers[racerIndex];
     if (racerPtr->finished != 0) {
-        racerPtr->stepSpeed -= (short)((racerPtr->place + 1) * 0x50 + ((racerPtr->stepSpeed) / 64));
-        if (racerPtr->stepSpeed < 0x64) {
+        racerPtr->stepSpeed -= (short)((racerPtr->place + 1) * 80 + ((racerPtr->stepSpeed) / 64));
+        if (racerPtr->stepSpeed < 100) {
             racerPtr->stepSpeed = 0;
         } else {
             racerPtr->targetIndex = 0;
@@ -605,7 +605,7 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
             if (racerPtr->personality == CHOCOBO_PERSONALITY_DASHES_WHEN_SPURRED) {
                 racerPtr->animPhase = 0;
                 racerPtr->targetIndex = 1;
-                racerPtr->stepSpeed -= 0x32;
+                racerPtr->stepSpeed -= 50;
             }
         }
     }
@@ -641,7 +641,7 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
         racerPtr->nextSegment = segGap + g_ChocoboCourseSegmentCount;
         racerPtr->nextSegment = racerPtr->nextSegment % g_ChocoboCourseSegmentCount;
         if (racerIndex != 0 || (g_ChocoboPlayerRides == 0 || racerPtr->autoPilot != 0)) {
-            if (rand() < 0x1388) {
+            if (rand() < 5000) {
                 switch (racerPtr->mode) {
                 case CHOCOBO_RACER_MODE_STEADY_HOME_LANE:
                     if (racerPtr->dashSegment < racerPtr->segment) {
@@ -654,8 +654,8 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
                         }
                     }
                     if (nodeSteerDelta != racerIndex) {
-                        if (g_ChocoboRacers[nodeSteerDelta].rank - racerPtr->rank > 0x1E) {
-                            racerPtr->actionTimer = 0xA;
+                        if (g_ChocoboRacers[nodeSteerDelta].rank - racerPtr->rank > 30) {
+                            racerPtr->actionTimer = 10;
                         } else if (racerPtr->speed > (racerPtr->baseSpeed * 5) / 4) {
                             racerPtr->actionTimer = 0xFFFB;
                         } else if (racerPtr->speed < racerPtr->baseSpeed) {
@@ -672,7 +672,7 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
                         }
                     } else if (racerPtr->speed > (racerPtr->baseSpeed * 5) / 4) {
                         racerPtr->actionTimer = 0xFFFB;
-                    } else if (racerPtr->speed < racerPtr->baseSpeed * 9 / 0xA) {
+                    } else if (racerPtr->speed < racerPtr->baseSpeed * 9 / 10) {
                         racerPtr->actionTimer = 3;
                     } else {
                         racerPtr->actionTimer = 0;
@@ -680,11 +680,11 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
                     break;
                 case CHOCOBO_RACER_MODE_EARLY_SPRINT:
                     if (racerPtr->stamina > racerPtr->staminaMax / 3) {
-                        racerPtr->actionTimer = 0x14;
+                        racerPtr->actionTimer = 20;
                         if (racerPtr->dashSegment > racerPtr->segment && racerPtr->dashAllowed != 0) {
-                            racerPtr->dashTimer = 0xA;
+                            racerPtr->dashTimer = 10;
                         }
-                    } else if (racerPtr->speed > racerPtr->baseSpeed * 0xA / 9) {
+                    } else if (racerPtr->speed > racerPtr->baseSpeed * 10 / 9) {
                         racerPtr->actionTimer = 0xFFF6;
                     } else {
                         racerPtr->actionTimer = 2;
@@ -692,7 +692,7 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
                 }
                 if (racerPtr->dashSegment < racerPtr->segment && racerPtr->mode != CHOCOBO_RACER_MODE_EARLY_SPRINT) {
                     if (racerPtr->dashAllowed != 0) {
-                        racerPtr->dashTimer = 0x32;
+                        racerPtr->dashTimer = 50;
                     }
                     if (racerPtr->dashTimer != 0) {
                         g_ChocoboDashActiveFlag = 0xFFFFFFFF;
@@ -718,7 +718,7 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
             }
         }
         if ((rand() & 0x3F) < racerPtr->cooperation && racerPtr->dashTimer == 0) {
-            racerPtr->speed += (short)(racerPtr->speed * racerPtr->actionTimer / 0x64);
+            racerPtr->speed += (short)(racerPtr->speed * racerPtr->actionTimer / 100);
             nodeSteerDelta = (racerPtr->baseSpeed * 5) / 4;
             if (racerPtr->speed > nodeSteerDelta) {
                 racerPtr->speed = nodeSteerDelta;
@@ -740,7 +740,7 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
             if (racerPtr->dashTimer < 0) {
                 racerPtr->dashTimer = 0;
             }
-            racerPtr->stamina -= racerPtr->staminaMax / 0x12C;
+            racerPtr->stamina -= racerPtr->staminaMax / 300;
             if (racerPtr->stamina <= 0) {
                 racerPtr->dashTimer = 0;
                 racerPtr->stamina = 0;
@@ -750,18 +750,18 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
             } else {
                 racerPtr->targetIndex = 1;
             }
-            if (racerPtr->hasStartBoost != 0 && g_ChocoboStartTimer < 0x96) {
-                racerPtr->currentSpeed = 0x157C;
+            if (racerPtr->hasStartBoost != 0 && g_ChocoboStartTimer < 150) {
+                racerPtr->currentSpeed = 5500;
             } else {
                 racerPtr->currentSpeed = racerPtr->topSpeed;
             }
         } else if (racerPtr->locksBaseSpeed != 0) {
             racerPtr->currentSpeed = racerPtr->baseSpeed;
         } else {
-            racerPtr->currentSpeed += (short)((racerPtr->speed - racerPtr->currentSpeed) * racerPtr->acceleration / 0x64);
+            racerPtr->currentSpeed += (short)((racerPtr->speed - racerPtr->currentSpeed) * racerPtr->acceleration / 100);
         }
         if (racerPtr->rank > 1 && racerPtr->personality == CHOCOBO_PERSONALITY_SLOWS_WHEN_BEHIND) {
-            racerPtr->currentSpeed = racerPtr->currentSpeed * 9 / 0xA;
+            racerPtr->currentSpeed = racerPtr->currentSpeed * 9 / 10;
         }
         if (racerPtr->autoPilot == 0 && g_ChocoboPlayerRides != 0) {
             if ((rand() & 0x3F) < racerPtr->cooperation) {
@@ -778,9 +778,9 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
                     racerPtr->laneBlend += (short)(((rand() & 3) - 1) * nodeSteerDelta);
                     if (racerPtr->stamina > 0) {
                         if ((rand() & 7) == 0) {
-                            racerPtr->stamina -= racerPtr->staminaMax / 0x1F4;
+                            racerPtr->stamina -= racerPtr->staminaMax / 500;
                             if (racerPtr->personality == CHOCOBO_PERSONALITY_DASHES_WHEN_SPURRED) {
-                                racerPtr->dashTimer = 0xA;
+                                racerPtr->dashTimer = 10;
                             } else {
                                 racerPtr->stepSpeed -= (short)((racerPtr->stepSpeed) / 4);
                             }
@@ -804,10 +804,10 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
                 }
                 segGap = racerPtr->segment - g_ChocoboRacers[scanEnd].segment;
                 segGap = segGap < 0 ? -segGap : segGap;
-                if (segGap < 0x14) {
+                if (segGap < 20) {
                     segGap = racerPtr->laneBlend - g_ChocoboRacers[scanEnd].laneBlend;
                     segGap = segGap < 0 ? -segGap : segGap;
-                    if ((segGap < 0x10 && (rand() & 0x1F) == 0) || racerPtr->finished != 0) {
+                    if ((segGap < 16 && (rand() & 0x1F) == 0) || racerPtr->finished != 0) {
                         nodeSteerDelta += (rand() & 7) - 3 << 4;
                     }
                 }
@@ -869,7 +869,7 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
     } else {
         restBlend = 0x100 - racerPtr->laneBlend;
         (racerPtr->stuckFrames)++;
-        if (racerPtr->stuckFrames > 0xF && g_ChocoboRaceAdvanceEnabled != 0 && racerPtr->finished == 0) {
+        if (racerPtr->stuckFrames > 15 && g_ChocoboRaceAdvanceEnabled != 0 && racerPtr->finished == 0) {
             racerPtr->segment += 2;
             racerPtr->nextSegment += 2;
             racerPtr->posX = (g_pChocoboCourseWaypoints[racerPtr->segment].x * racerPtr->laneBlend + g_pChocoboCourseWaypoints[racerPtr->segment].auxX * restBlend) / 256;
@@ -924,10 +924,10 @@ void __cdecl Mini_ChocoboRaceAdvanceRacerAlongCourse(short racerIndex)
         }
     }
     if (racerPtr->heading - racerPtr->targetHeading > 0xBB8) {
-        racerPtr->heading -= 0x1000;
+        racerPtr->heading -= 0x1000 /* 360 deg */;
     }
     if (racerPtr->heading - racerPtr->targetHeading < -3000) {
-        racerPtr->heading += 0x1000;
+        racerPtr->heading += 0x1000 /* 360 deg */;
     }
     racerPtr->heading = (racerPtr->heading * 3 + racerPtr->targetHeading) / 4;
     if (distance != 0) {
@@ -977,32 +977,32 @@ void __cdecl Mini_ChocoboRaceSelectRacerStateIfChanged(int racerIndex)
         (g_pChocoboCourseWaypoints[dst->segment].x *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[dst->segment].auxX * weightB) /
-        0x100;
+        256;
     dst->posY =
         (g_pChocoboCourseWaypoints[dst->segment].y *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[dst->segment].auxY * weightB) /
-        0x100;
+        256;
     dst->posZ =
         (g_pChocoboCourseWaypoints[dst->segment].z *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[dst->segment].auxZ * weightB) /
-        0x100;
+        256;
     dst->targetX =
         (g_pChocoboCourseWaypoints[dst->nextSegment].x *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[dst->nextSegment].auxX * weightB) /
-        0x100;
+        256;
     dst->targetY =
         (g_pChocoboCourseWaypoints[dst->nextSegment].y *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[dst->nextSegment].auxY * weightB) /
-        0x100;
+        256;
     dst->targetZ =
         (g_pChocoboCourseWaypoints[dst->nextSegment].z *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[dst->nextSegment].auxZ * weightB) /
-        0x100;
+        256;
     dirVector.vx = dst->targetX - dst->posX;
     dirVector.vy = 0;
     dirVector.vz = dst->targetZ - dst->posZ;
@@ -1033,32 +1033,32 @@ void __cdecl Mini_ChocoboRaceSelectRacerStateAtRoutePoint(int racerIndex, int pr
         (g_pChocoboCourseWaypoints[segment].x *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[segment].auxX * weightB) /
-        0x100;
+        256;
     dst->posY =
         (g_pChocoboCourseWaypoints[segment].y *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[segment].auxY * weightB) /
-        0x100;
+        256;
     dst->posZ =
         (g_pChocoboCourseWaypoints[segment].z *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[segment].auxZ * weightB) /
-        0x100;
+        256;
     dst->targetX =
         (g_pChocoboCourseWaypoints[nextSegment].x *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[nextSegment].auxX * weightB) /
-        0x100;
+        256;
     dst->targetY =
         (g_pChocoboCourseWaypoints[nextSegment].y *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[nextSegment].auxY * weightB) /
-        0x100;
+        256;
     dst->targetZ =
         (g_pChocoboCourseWaypoints[nextSegment].z *
              dst->laneBlend +
          g_pChocoboCourseWaypoints[nextSegment].auxZ * weightB) /
-        0x100;
+        256;
     dirVector.vx = dst->targetX - dst->posX;
     dirVector.vy = 0;
     dirVector.vz = dst->targetZ - dst->posZ;
@@ -1152,10 +1152,10 @@ void __cdecl Mini_ChocoboRaceAdvanceSelectedRacerAlongRoute(int updateSpeed)
         }
     }
     if (racerState->heading - racerState->targetHeading > 0xBB8) {
-        racerState->heading -= 0x1000;
+        racerState->heading -= 0x1000 /* 360 deg */;
     }
     if (racerState->heading - racerState->targetHeading < -0xBB8) {
-        racerState->heading += 0x1000;
+        racerState->heading += 0x1000 /* 360 deg */;
     }
     racerState->heading = ((racerState->heading * 7 + racerState->targetHeading) / 8);
     racerState->subPosX += ((SinFixed(racerState->heading) * racerState->stepSpeed) / 64);
@@ -1187,7 +1187,7 @@ void __cdecl Mini_ChocoboRaceAdvanceSelectedRacerAlongRoute(int updateSpeed)
             if (routeDelta < 1) {
                 racerState->stepSpeed = 0;
             } else if (routeDelta > 2) {
-                racerState->stepSpeed += (short)(routeDelta * 0x96);
+                racerState->stepSpeed += (short)(routeDelta * 150);
             }
         }
     }

@@ -257,7 +257,7 @@ void __cdecl BattleFx_MagicQuake3SelectTimelineTask(void)
     int firstTarget;
 
     idx = 0;
-    for (targetCount = 0; idx < 0xA; idx++) {
+    for (targetCount = 0; idx < 10; idx++) {
         if ((g_BattleMagicQuake3TargetMask & 1 << idx) != 0) {
             targetCount++;
             if (targetCount == 1) {
@@ -275,11 +275,11 @@ void __cdecl BattleFx_MagicQuake3SelectTimelineTask(void)
         task->burstIndexA = 0;
         Battle_GetBoneWorldPos(firstTarget, g_BattleActorRecords[firstTarget].targetBone, &task->originX);
         task->originY = 0;
-        task->size = g_BattleActorRecords[firstTarget].radius + 0x200;
-        if (task->size > 0x76C) {
-            task->size = 0x76C;
+        task->size = g_BattleActorRecords[firstTarget].radius + 512;
+        if (task->size > 1900) {
+            task->size = 1900;
         }
-        shards->shardCount = 0xB;
+        shards->shardCount = 11;
         shards->baseVelocity = 8;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleMagicQuake3TargetMask), 0x58);
     } else {
@@ -287,8 +287,8 @@ void __cdecl BattleFx_MagicQuake3SelectTimelineTask(void)
         task->burstIndexB = 0;
         task->burstIndexA = 0;
         Battle_GetActorMaskCentroid(g_BattleMagicQuake3TargetMask, &task->originX);
-        task->size = 0x800;
-        shards->shardCount = 0xB;
+        task->size = 2048;
+        shards->shardCount = 11;
         shards->baseVelocity = 0x10;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_2, Battle_ComputePanForEntity(g_BattleMagicQuake3TargetMask), 0);
     }
@@ -462,7 +462,7 @@ void __cdecl BattleFx_MagicQuake3CopyMeshVertices(SVECTOR *srcVertices)
     SVECTOR *dstVertices;
 
     dstVertices = g_BattleMagicQuake3MeshPayload.vertices;
-    for (index = 0; index < 0x61; index++) {
+    for (index = 0; index < 97; index++) {
         dstVertices[index] = srcVertices[index];
     }
 }
@@ -532,7 +532,7 @@ void __cdecl BattleFx_MagicQuake3MultiTargetTimelineTask(void)
         burstPtr->radius = 0;
         burstPtr->baseRadius = taskPtr->size / 12;
         burstPtr->morphWeight = 0;
-        burstPtr->growStep = 0x400;
+        burstPtr->growStep = 1024;
         BattleFx_MagicQuake3BuildMeshVertexDeltas(g_BattleMagicQuake3MeshPayload.seedVertices, g_BattleMagicQuake3ReferenceVertices, g_BattleMagicQuake3MeshVertexDeltas);
         ring = (BattleFxQuake3RingSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake3FlatteningRingModelTask);
         *(BattleSchedulePair *)&ring->posX = *(BattleSchedulePair *)&taskPtr->originX;
@@ -570,7 +570,7 @@ void __cdecl BattleFx_MagicQuake3FlatteningRingModelTask(void)
     frame.modelMatrix.t[0] = frame.ringSlot->posX;
     frame.modelMatrix.t[1] = frame.ringSlot->posY;
     frame.modelMatrix.t[2] = frame.ringSlot->posZ;
-    frame.ringScale = (frame.ringSlot->radius << 0xB) / 0x5AA;
+    frame.ringScale = (frame.ringSlot->radius << 11) / 1450;
     frame.flattenScale = 0x1000 - frame.ringSlot->step * 0x155;
     frame.scaleVec.vx = frame.ringScale;
     frame.scaleVec.vy = frame.flattenScale;
@@ -583,11 +583,11 @@ void __cdecl BattleFx_MagicQuake3FlatteningRingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(4, g_BattleMagicQuake3LoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.ringSlot->step >= 0xC) {
+    if (frame.ringSlot->step >= 12) {
         frame.ringSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -605,7 +605,7 @@ void __cdecl BattleFx_MagicQuake3BuildMeshVertexDeltas(SVECTOR *prevPose, SVECTO
 {
     int index;
 
-    for (index = 0; index < 0x61; index++) {
+    for (index = 0; index < 97; index++) {
         deltas[index].deltaX = nextPose[index].vx - prevPose[index].vx;
         deltas[index].deltaY = nextPose[index].vy - prevPose[index].vy;
         deltas[index].deltaZ = nextPose[index].vz - prevPose[index].vz;
@@ -636,7 +636,7 @@ void __cdecl BattleFx_MagicQuake3MultiTargetBurstModelTask(void)
         int unused;
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
     frame.slot = (BattleFxQuake3Burst *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scale = (frame.slot->radius << 12) / 0x5aa;
+    frame.scale = (frame.slot->radius << 12) / 1450;
     if (frame.slot->timer < 12)
         frame.scaleY = 16;
     else if (frame.slot->timer < 16)
@@ -709,16 +709,16 @@ void __cdecl BattleFx_MagicQuake3MultiTargetBurstModelTask(void)
             frame.output->position = frame.slot->posY - rand() % (frame.scale >> 3);
             frame.output->posZ = frame.slot->posZ + rand() % (frame.scale * 2) - frame.scale;
             frame.output->fadeWord = ((frame.choice + frame.scaleY) & 3) << 5;
-            frame.output->heightOffset = (rand() % 4) * 0x555 + 0x800;
-            frame.output->velocity = frame.output->fadeWord + frame.slot->timer * 2 - 0x180;
+            frame.output->heightOffset = (rand() % 4) * 1365 + 2048;
+            frame.output->velocity = frame.output->fadeWord + frame.slot->timer * 2 - 384;
             frame.output->acceleration = rand() % 12 + frame.slot->timer + 12;
             frame.output->fadeWord += 0x80;
         }
     } else if (frame.slot->timer >= 15 && frame.slot->timer < 20) {
         BattleFx_MagicQuake3CopyMeshVertices(g_BattleMagicQuake3MeshPayload.seedVertices);
-        BattleFx_MagicQuake3AddScaledMeshVertexDeltas(g_BattleMagicQuake3MeshPayload.vertices, g_BattleMagicQuake3MeshVertexDeltas, 0x61, frame.slot->morphWeight);
+        BattleFx_MagicQuake3AddScaledMeshVertexDeltas(g_BattleMagicQuake3MeshPayload.vertices, g_BattleMagicQuake3MeshVertexDeltas, 97, frame.slot->morphWeight);
         frame.slot->morphWeight += frame.slot->growStep;
-        if (frame.slot->morphWeight > 0x1000)
+        if (frame.slot->morphWeight > 4096)
             frame.slot->morphWeight = 0x1000;
     }
     ++frame.slot->timer;
@@ -940,9 +940,9 @@ void __cdecl BattleFx_MagicQuake3AddScaledMeshVertexDeltas(SVECTOR *dstVertices,
     int i;
 
     for (i = 0; i < count; i++) {
-        dstVertices[i].vx += (short)(srcDeltas[i].deltaX * scale >> 0xC);
-        dstVertices[i].vy += (short)(srcDeltas[i].deltaY * scale >> 0xC);
-        dstVertices[i].vz += (short)(srcDeltas[i].deltaZ * scale >> 0xC);
+        dstVertices[i].vx += (short)(srcDeltas[i].deltaX * scale >> 12);
+        dstVertices[i].vy += (short)(srcDeltas[i].deltaY * scale >> 12);
+        dstVertices[i].vz += (short)(srcDeltas[i].deltaZ * scale >> 12);
     }
 }
 
@@ -993,7 +993,7 @@ int __cdecl BattleFx_MagicQuake3DrawShardTriangles(BattleFxQuake3Shard *shard, v
     for (i = 0; i < numTris; i++, shardIndex++, record++) {
         if (g_BattleMagicQuake3ShardRecords[shardIndex].fadeCounter >= fadeStart) {
             fadeVal = (g_BattleMagicQuake3ShardRecords[shardIndex].fadeCounter - fadeStart) * 0xA0A0A;
-            if (fadeVal > 0x808080) {
+            if (fadeVal > 8421504) {
                 continue;
             }
         }
@@ -1010,9 +1010,9 @@ int __cdecl BattleFx_MagicQuake3DrawShardTriangles(BattleFxQuake3Shard *shard, v
         shard->point2X -= shard->velocityX;
         shard->point2Y -= shard->velocityY;
         shard->point2Z -= shard->velocityZ;
-        shard->posX = (shard->velocityX * stepFactor >> 0xC) + shard->baseX;
-        shard->posY = (shard->velocityY * stepFactor >> 0xC) + shard->baseY;
-        shard->posZ = (shard->velocityZ * stepFactor >> 0xC) + shard->baseZ;
+        shard->posX = (shard->velocityX * stepFactor >> 12) + shard->baseX;
+        shard->posY = (shard->velocityY * stepFactor >> 12) + shard->baseY;
+        shard->posZ = (shard->velocityZ * stepFactor >> 12) + shard->baseZ;
         if (g_BattleMagicQuake3ShardRecords[shardIndex].positionY < threshold) {
             shard->posY += g_BattleMagicQuake3ShardRecords[shardIndex].velocityY;
             if (g_BattleIsPaused == 0) {
@@ -1075,15 +1075,15 @@ void __cdecl BattleFx_MagicQuake3BuildScaledRotationMatrix(BattleFxEulerAngles16
     sxScale = scaleVec->scaleX;
     innerScaleY = scaleVec->scaleY;
     zScale = scaleVec->scaleZ;
-    matrix->m00 = (cz * cy >> 0xC) * sxScale >> 0xC;
-    matrix->m10 = ((sz * cosA >> 0xC) - ((cz * sy >> 0xC) * sx >> 0xC)) * sxScale >> 0xC;
-    matrix->m20 = ((sz * sx >> 0xC) + ((cz * sy >> 0xC) * cosA >> 0xC)) * sxScale >> 0xC;
-    matrix->m01 = (-sz * cy >> 0xC) * innerScaleY >> 0xC;
-    matrix->m11 = ((cz * cosA >> 0xC) + ((sz * sy >> 0xC) * sx >> 0xC)) * innerScaleY >> 0xC;
-    matrix->m21 = ((cz * sx >> 0xC) - ((sz * sy >> 0xC) * cosA >> 0xC)) * innerScaleY >> 0xC;
-    matrix->m02 = -sy * zScale >> 0xC;
-    matrix->m12 = (-cy * sx >> 0xC) * zScale >> 0xC;
-    matrix->m22 = (cy * cosA >> 0xC) * zScale >> 0xC;
+    matrix->m00 = (cz * cy >> 12) * sxScale >> 12;
+    matrix->m10 = ((sz * cosA >> 12) - ((cz * sy >> 12) * sx >> 12)) * sxScale >> 12;
+    matrix->m20 = ((sz * sx >> 12) + ((cz * sy >> 12) * cosA >> 12)) * sxScale >> 12;
+    matrix->m01 = (-sz * cy >> 12) * innerScaleY >> 12;
+    matrix->m11 = ((cz * cosA >> 12) + ((sz * sy >> 12) * sx >> 12)) * innerScaleY >> 12;
+    matrix->m21 = ((cz * sx >> 12) - ((sz * sy >> 12) * cosA >> 12)) * innerScaleY >> 12;
+    matrix->m02 = -sy * zScale >> 12;
+    matrix->m12 = (-cy * sx >> 12) * zScale >> 12;
+    matrix->m22 = (cy * cosA >> 12) * zScale >> 12;
 }
 
 /*
@@ -1176,7 +1176,7 @@ int __cdecl BattleFx_MagicQuake3DrawShardQuads(BattleFxQuake3Shard *shard, void 
     for (i = 0; i < numQuads; i++, shardIndex++, record++) {
         if (g_BattleMagicQuake3ShardRecords[shardIndex].fadeCounter >= fadeStart) {
             fadeVal = (g_BattleMagicQuake3ShardRecords[shardIndex].fadeCounter - fadeStart) * 0xA0A0A;
-            if (fadeVal > 0x808080) {
+            if (fadeVal > 8421504) {
                 continue;
             }
         }
@@ -1197,9 +1197,9 @@ int __cdecl BattleFx_MagicQuake3DrawShardQuads(BattleFxQuake3Shard *shard, void 
         shard->point3X -= shard->velocityX;
         shard->point3Y -= shard->velocityY;
         shard->point3Z -= shard->velocityZ;
-        shard->posX = (shard->velocityX * speedScale >> 0xC) + shard->baseX;
-        shard->posY = (shard->velocityY * speedScale >> 0xC) + shard->baseY;
-        shard->posZ = (shard->velocityZ * speedScale >> 0xC) + shard->baseZ;
+        shard->posX = (shard->velocityX * speedScale >> 12) + shard->baseX;
+        shard->posY = (shard->velocityY * speedScale >> 12) + shard->baseY;
+        shard->posZ = (shard->velocityZ * speedScale >> 12) + shard->baseZ;
         if (g_BattleMagicQuake3ShardRecords[shardIndex].positionY < threshold) {
             shard->posY += g_BattleMagicQuake3ShardRecords[shardIndex].velocityY;
             if (g_BattleIsPaused == 0) {
@@ -1258,7 +1258,7 @@ void __cdecl BattleFx_MagicQuake3FadingQuadParticleTask(void)
     SetTransMatrix(g_BattleMagicQuake3TransformMatrix);
     if (particle->step > 3) {
         color = 0x2E808080;
-        color -= (particle->step - 4) * 0x202020;
+        color -= (particle->step - 4) * 2105376;
         g_BattleMagicQuake3SpriteDrawReq.request.sourcePtr = color;
     }
     g_BattleMagicQuake3SpriteDrawReq.request.resource = Gfx_ModelTableGetSpriteObject(5, g_BattleMagicQuake3LoadedResTable);
@@ -1312,14 +1312,14 @@ void __cdecl BattleFx_MagicQuake3GroundQuadTask(void)
     frame.groundPacket = (BattleFxGroundTilePacket *)g_BattleFxActiveDrawListPtr;
     frame.shardAx.vx = 0xF600;
     frame.shardAx.vy = 0;
-    frame.shardAx.vz = 0xA00;
-    frame.stripBx.vx = 0xA00;
+    frame.shardAx.vz = 2560;
+    frame.stripBx.vx = 2560;
     frame.stripBx.vy = 0;
-    frame.stripBx.vz = 0xA00;
+    frame.stripBx.vz = 2560;
     frame.shardCx.vx = 0xF600;
     frame.shardCx.vy = 0;
     frame.shardCx.vz = 0xF600;
-    frame.stripDx.vx = 0xA00;
+    frame.stripDx.vx = 2560;
     frame.stripDx.vy = 0;
     frame.stripDx.vz = 0xF600;
     frame.projectResult = Gfx_ProjectQuadToScreen(&frame.shardAx, &frame.stripBx, &frame.shardCx, &frame.stripDx, &frame.groundPacket->screenXy0, &frame.groundPacket->screenXy1, &frame.groundPacket->screenXy2, &frame.groundPacket->screenXy3, &frame.projectOutA, &frame.projectOutB);
@@ -1374,7 +1374,7 @@ void __cdecl BattleFx_MagicQuake3PulsingIndexedModelTask(void)
         frame.pulseLevel = frame.pulseRecord->baseLevel - frame.pulseRecord->levelStep * (frame.pulseRecord->timer - 9);
     }
     frame.scaleVec.vx = frame.pulseLevel;
-    frame.scaleVec.vy = 0x1000;
+    frame.scaleVec.vy = 0x1000 /* 1.0 */;
     frame.scaleVec.vz = frame.pulseRecord->baseLevel;
     ScaleMatrix(&frame.modelMatrix, &frame.scaleVec);
     MultiplyMatrix(&g_BattleCameraTransform, &frame.modelMatrix, &frame.modelMatrix);
@@ -1384,11 +1384,11 @@ void __cdecl BattleFx_MagicQuake3PulsingIndexedModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleMagicQuake3ModelIndices[frame.pulseRecord->modelIndex], g_BattleMagicQuake3LoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.pulseRecord->timer >= 0x10) {
+    if (frame.pulseRecord->timer >= 16) {
         frame.pulseRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1441,7 +1441,7 @@ void __cdecl BattleFx_MagicQuake3SingleTargetTimelineTask(void)
         pBurst->burstSize = 0;
         pBurst->burstIndex = task->size / 12;
         pBurst->morphWeight = 0;
-        pBurst->growStep = 0x400;
+        pBurst->growStep = 1024;
         BattleFx_MagicQuake3BuildMeshVertexDeltas(g_BattleMagicQuake3MeshPayload.seedVertices, g_BattleMagicQuake3ReferenceVertices, g_BattleMagicQuake3MeshVertexDeltas);
     }
     task->timer += 1;
@@ -1471,7 +1471,7 @@ void __cdecl BattleFx_MagicQuake3SingleTargetBurstModelTask(void)
         int unused;
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
     frame.slot = (BattleFxQuake3BurstSprite *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scale = (frame.slot->burstSize << 12) / 0x5aa;
+    frame.scale = (frame.slot->burstSize << 12) / 1450;
     if (frame.slot->timer < 12)
         frame.scaleY = 16;
     else if (frame.slot->timer < 16)
@@ -1540,16 +1540,16 @@ void __cdecl BattleFx_MagicQuake3SingleTargetBurstModelTask(void)
             frame.output->position = frame.slot->posY - rand() % (frame.scale >> 3);
             frame.output->posZ = frame.slot->posZ + rand() % (frame.scale * 2) - frame.scale;
             frame.output->fadeWord = ((frame.choice + frame.scaleY) & 3) << 5;
-            frame.output->heightOffset = (rand() % 4) * 0x555 + 0x400;
-            frame.output->velocity = frame.output->fadeWord + frame.slot->timer * 2 - 0x180;
+            frame.output->heightOffset = (rand() % 4) * 1365 + 1024;
+            frame.output->velocity = frame.output->fadeWord + frame.slot->timer * 2 - 384;
             frame.output->acceleration = rand() % 12 + frame.slot->timer + 12;
             frame.output->fadeWord += 0x80;
         }
     } else if (frame.slot->timer >= 15 && frame.slot->timer < 20) {
         BattleFx_MagicQuake3CopyMeshVertices(g_BattleMagicQuake3MeshPayload.seedVertices);
-        BattleFx_MagicQuake3AddScaledMeshVertexDeltas(g_BattleMagicQuake3MeshPayload.vertices, g_BattleMagicQuake3MeshVertexDeltas, 0x61, frame.slot->morphWeight);
+        BattleFx_MagicQuake3AddScaledMeshVertexDeltas(g_BattleMagicQuake3MeshPayload.vertices, g_BattleMagicQuake3MeshVertexDeltas, 97, frame.slot->morphWeight);
         frame.slot->morphWeight += frame.slot->growStep;
-        if (frame.slot->morphWeight > 0x1000)
+        if (frame.slot->morphWeight > 4096)
             frame.slot->morphWeight = 0x1000;
     }
     ++frame.slot->timer;

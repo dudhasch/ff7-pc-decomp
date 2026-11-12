@@ -171,18 +171,18 @@ void __cdecl BattleFx_MagicSpawnDeBarrierPerTarget(int actor)
     shatterTask->yaw = g_BattleActorRecords[actor].yaw;
     flashTask->yaw = shatterTask->yaw;
     value = g_BattleActorRecords[actor].radius + 0xE0;
-    if (value > 0x76C) {
+    if (value > 1900) {
         value = 0x76C;
     }
     shatterTask->zOffset = value;
     flashTask->angle = value;
     flashTask->angle += 0xFA;
-    if (value > 0x4F2) {
+    if (value > 1266) {
         value = 0x4F2;
     }
-    scaledExtent = value << 0xC;
-    flashTask->extent = scaledExtent / 0x177;
-    shatterTask->scaledExtent = scaledExtent / 0x1F4;
+    scaledExtent = value << 12;
+    flashTask->extent = scaledExtent / 375;
+    shatterTask->scaledExtent = scaledExtent / 500;
     shatterTask->targetIndex = actor;
     shatterTask->bufBank = *(short *)&g_BattleMagicDeBarrierTargetIndex;
     g_BattleMagicDeBarrierTargetIndex++;
@@ -309,13 +309,13 @@ void __cdecl BattleFx_MagicDeBarrierShatterModelTask(void)
     frame.drawBlock->scaleX = frame.drawBlock->prevValue;
     ScaleMatrix(frame.drawBlock->modelMatrix, &frame.drawBlock->scaleX);
     g_BattleFxActiveDrawListPtr = BattleFx_MagicDeBarrierDrawShatterModel(frame.drawBlock, frame.slot->frameCounter);
-    if (frame.slot->frameCounter >= 0x1E) {
+    if (frame.slot->frameCounter >= 30) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter == 0x16) {
+    if (frame.slot->frameCounter == 22) {
         Battle_PostActorHitOrHurtMessage(frame.slot->actorIndex);
     }
     (frame.slot->frameCounter)++;
@@ -360,7 +360,7 @@ int __cdecl BattleFx_MagicDeBarrierDrawShatterFragments(BattleFxDeBarrierShatter
     recordPtr = fragList + 4;
     prim = (BattleEffectGouraudPrim *)(fragment->primCursor);
     for (i = 0; i < numFragments; i++, slotIdx++, recordPtr += 0x14) {
-        if (g_BattleMagicDeBarrierFragmentStates[bankIndex].shards[slotIdx].age >= 0x12) {
+        if (g_BattleMagicDeBarrierFragmentStates[bankIndex].shards[slotIdx].age >= 18) {
             continue;
         }
         if (g_BattleMagicDeBarrierFragmentStates[bankIndex].shards[slotIdx].depth >= threshold) {
@@ -423,17 +423,17 @@ void __cdecl BattleFx_MagicDeBarrierBuildEulerRotationMatrix(BattleFxEulerAngles
     sinX = BattleFx_MagicDeBarrierSineLookup(angles->angleX);
     rawNegSinB = -BattleFx_MagicDeBarrierSineLookup(angles->angleY);
     subSinZ = BattleFx_MagicDeBarrierSineLookup(angles->angleZ);
-    tmpA = cosC * rawNegSinB >> 0xC;
-    tmpB = subSinZ * rawNegSinB >> 0xC;
-    matrix->m00 = cosC * cos1 >> 0xC;
-    matrix->m10 = (subSinZ * cosATerm >> 0xC) - (tmpA * sinX >> 0xC);
-    matrix->m20 = (subSinZ * sinX >> 0xC) + (tmpA * cosATerm >> 0xC);
-    matrix->m01 = -subSinZ * cos1 >> 0xC;
-    matrix->m11 = (cosC * cosATerm >> 0xC) + (tmpB * sinX >> 0xC);
-    matrix->m21 = (cosC * sinX >> 0xC) - (tmpB * cosATerm >> 0xC);
+    tmpA = cosC * rawNegSinB >> 12;
+    tmpB = subSinZ * rawNegSinB >> 12;
+    matrix->m00 = cosC * cos1 >> 12;
+    matrix->m10 = (subSinZ * cosATerm >> 12) - (tmpA * sinX >> 12);
+    matrix->m20 = (subSinZ * sinX >> 12) + (tmpA * cosATerm >> 12);
+    matrix->m01 = -subSinZ * cos1 >> 12;
+    matrix->m11 = (cosC * cosATerm >> 12) + (tmpB * sinX >> 12);
+    matrix->m21 = (cosC * sinX >> 12) - (tmpB * cosATerm >> 12);
     matrix->m02 = -rawNegSinB;
-    matrix->m12 = -cos1 * sinX >> 0xC;
-    matrix->m22 = cos1 * cosATerm >> 0xC;
+    matrix->m12 = -cos1 * sinX >> 12;
+    matrix->m22 = cos1 * cosATerm >> 12;
 }
 
 /* Computes trigonometric sine from table lookup. */

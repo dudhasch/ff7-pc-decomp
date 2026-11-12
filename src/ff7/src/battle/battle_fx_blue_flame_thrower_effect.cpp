@@ -248,13 +248,13 @@ void __cdecl BattleFx_BlueFlameThrowerTimelineTask(void)
         BattleFx_BlueFlameThrowerClearParticleRecords();
         Battle_AllocateResourceSlot(BattleFx_BlueFlameThrowerParticleArrayTask);
     }
-    if (task->step >= 0 && task->step < 0x12) {
+    if (task->step >= 0 && task->step < 18) {
         BattleFx_BlueFlameThrowerSpawnParticles((Vec3sPacked *)&task->posX, (Vec3sPacked *)&task->dirX, task->step, 4);
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         Battle_PostActorHitOrHurtMessage(task->ownerSlot);
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x1DE, 0xF);
         Sfx_ReleaseCachedBuffer(0x1FA, 0xF);
@@ -274,7 +274,7 @@ void __cdecl BattleFx_BlueFlameThrowerParticleArrayTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     activeCount = 0;
-    for (particleIdx = 0; particleIdx < 0xC8; particleIdx++) {
+    for (particleIdx = 0; particleIdx < 200; particleIdx++) {
         if (g_BattleBlueFlameThrowerParticleRecords58bd1[particleIdx].state != -1) {
             BattleFx_BlueFlameThrowerDrawParticle((BattleFxFlameThrowerParticle *)((particleIdx << 5) + (char *)&g_BattleBlueFlameThrowerParticleRecords58bd1));
             activeCount++;
@@ -305,19 +305,19 @@ void __cdecl BattleFx_BlueFlameThrowerDrawParticle(BattleFxFlameThrowerParticle 
         ((BattleFxBlueFlameThrowerDrawReq *)(g_BattleBlueFlameThrowerSpriteDrawReq.drawReqPtr))->drawObj0 = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueFlameThrowerLoadedResTable58bd1);
         ((BattleFxBlueFlameThrowerDrawReq *)(g_BattleBlueFlameThrowerSpriteDrawReq.drawReqPtr))->drawObj1 = Gfx_ModelTableGetSpriteObject(1, g_BattleBlueFlameThrowerLoadedResTable58bd1);
     }
-    sinValue = SinFixed(particle->angleSpeed * particle->frameCounter / 0x14);
-    g_BattleBlueFlameThrowerDataBlock1->vx = particle->posX + (particle->ampX * sinValue >> 0xC);
+    sinValue = SinFixed(particle->angleSpeed * particle->frameCounter / 20);
+    g_BattleBlueFlameThrowerDataBlock1->vx = particle->posX + (particle->ampX * sinValue >> 12);
     if (particle->offsetY < 0) {
         yScaled = particle->offsetY;
     } else {
         yScaled = particle->offsetY / 4;
     }
     yOfsCopy = yScaled;
-    g_BattleBlueFlameThrowerDataBlock1->vy = particle->posY + (particle->ampY * sinValue >> 0xC) + particle->offsetY;
-    g_BattleBlueFlameThrowerDataBlock1->vz = particle->posZ + (particle->ampZ * sinValue >> 0xC);
-    g_BattleBlueFlameThrowerSpriteDrawReq.kaennSpriteDrawFade = (particle->frameCounter * 0xA / particle->lifeFrames) | 0x8000;
+    g_BattleBlueFlameThrowerDataBlock1->vy = particle->posY + (particle->ampY * sinValue >> 12) + particle->offsetY;
+    g_BattleBlueFlameThrowerDataBlock1->vz = particle->posZ + (particle->ampZ * sinValue >> 12);
+    g_BattleBlueFlameThrowerSpriteDrawReq.kaennSpriteDrawFade = (particle->frameCounter * 10 / particle->lifeFrames) | 0x8000;
     g_BattleBlueFlameThrowerSpriteDrawReq.kaennSpriteDrawAux = particle->clutWord;
-    BattleFx_InstallBillboardMatrix(g_BattleBlueFlameThrowerDataBlock1, 0x1800, 0xFFFFFE80);
+    BattleFx_InstallBillboardMatrix(g_BattleBlueFlameThrowerDataBlock1, 0x1800 /* 1.5 */, 0xFFFFFE80);
     g_BattleBlueFlameThrowerPacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleBlueFlameThrowerSpriteDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleBlueFlameThrowerPacketCursor);
     if (g_BattleIsPaused == 0) {
         (particle->frameCounter)++;
@@ -338,7 +338,7 @@ void __cdecl BattleFx_BlueFlameThrowerClearParticleRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleBlueFlameThrowerParticleRecords58bd1[i].state = 0xFFFF;
     }
 }
@@ -357,26 +357,26 @@ void __cdecl BattleFx_BlueFlameThrowerSpawnParticles(Vec3sPacked *origin, Vec3sP
 
     for (spawnIndex = 0; spawnIndex < count; spawnIndex++) {
         particle = (BattleFxFlameThrowerParticle *)BattleFx_BlueFlameThrowerClaimParticleRecord();
-        particle->lifeFrames = rand() % 0xF + 0xA;
-        particle->posX = origin->vx + rand() % 0xC8 + -0x64;
-        particle->posY = origin->vy + rand() % 0xC8 + -0x64;
-        particle->posZ = origin->vz + rand() % 0xC8 + -0x64;
-        speed = (SinFixed((angle << 0xC) / 6) << 0xA >> 0xC) + (rand() % 0x400) + 0xE00;
-        particle->ampX = direction->vx * speed >> 0xC;
-        particle->ampY = direction->vy * speed >> 0xC;
-        particle->ampZ = direction->vz * speed >> 0xC;
+        particle->lifeFrames = rand() % 15 + 10;
+        particle->posX = origin->vx + rand() % 200 + -100;
+        particle->posY = origin->vy + rand() % 200 + -100;
+        particle->posZ = origin->vz + rand() % 200 + -100;
+        speed = (SinFixed((angle << 12) / 6) << 10 >> 12) + (rand() % 1024) + 3584;
+        particle->ampX = direction->vx * speed >> 12;
+        particle->ampY = direction->vy * speed >> 12;
+        particle->ampZ = direction->vz * speed >> 12;
         particle->offsetY = 0;
-        particle->velocityY = 0x4B;
+        particle->velocityY = 75;
         if (DEAD_IN_RETAIL != 0) {
             delta = 0x14;
         } else {
-            delta = rand() % 0xF + 5;
+            delta = rand() % 15 + 5;
         }
         particle->accelY = -delta;
         if (DEAD_IN_RETAIL != 0) {
             span = 0x5C0;
         } else {
-            span = rand() % 0x180 + 0x440;
+            span = rand() % 384 + 1088;
         }
         particle->angleSpeed = span;
         switch (g_BattleBlueFlameThrowerVariantFlag) {
@@ -401,7 +401,7 @@ int __cdecl BattleFx_BlueFlameThrowerClaimParticleRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleBlueFlameThrowerParticleRecords58bd1[i].state == -1) {
             g_BattleBlueFlameThrowerParticleRecords58bd1[i].state = 0;
             g_BattleBlueFlameThrowerParticleRecords58bd1[i].frameCounter = 0;
@@ -463,7 +463,7 @@ void __cdecl BattleFx_BlueBeginFlameThrowerFang(int targetMask, int actorIdx)
     frame.slot = (BattleFxFlameThrowerSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueFlameThrowerFangTimelineTask);
     frame.slot->ownerSlot = actorIdx;
     *(BattleBonePosCopy *)&frame.slot->dirX = frame.source.pair;
-    frame.slot->angle = 0x200;
+    frame.slot->angle = 0x200 /* 45 deg */;
     frame.slot->angleStep = 0xffc8;
 }
 
@@ -488,7 +488,7 @@ void __cdecl BattleFx_BlueFlameThrowerFangTimelineTask(void)
         BattleFx_BlueFlameThrowerClearParticleRecords();
         Battle_AllocateResourceSlot(BattleFx_BlueFlameThrowerParticleArrayTask);
     }
-    if (task->step >= 0 && task->step < 0x12) {
+    if (task->step >= 0 && task->step < 18) {
         g_BattleBlueFlameThrowerDataBlock0->vecX = 0;
         g_BattleBlueFlameThrowerDataBlock0->wheelAngle = task->angle;
         g_BattleBlueFlameThrowerDataBlock0->spinSpeed = 0;
@@ -505,14 +505,14 @@ void __cdecl BattleFx_BlueFlameThrowerFangTimelineTask(void)
         BattleFx_BlueFlameThrowerSpawnParticles((Vec3sPacked *)((int)g_BattleBlueFlameThrowerDataBlock0 + 8), (Vec3sPacked *)g_BattleBlueFlameThrowerDataBlock0, task->step, 4);
         task->angle += task->angleStep;
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         for (targetIdx = 0; targetIdx < 0xA; targetIdx++) {
             if ((g_BattleBlueFlameThrowerTargetActorCentroid & 1 << targetIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(targetIdx);
             }
         }
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x1DE, 0xF);
         Sfx_ReleaseCachedBuffer(0x1FA, 0xF);
@@ -541,7 +541,7 @@ void __cdecl BattleFx_SpecialBeginTwinBurner(int targetMask, int actorIdx)
     frame.slot = (BattleFxFlameThrowerSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTwinBurnerTimelineTask);
     frame.slot->ownerSlot = actorIdx;
     *(BattleBonePosCopy *)&frame.slot->dirX = frame.source.pair;
-    frame.slot->angle = 0x200;
+    frame.slot->angle = 0x200 /* 45 deg */;
     frame.slot->angleStep = 0xffc8;
 }
 
@@ -567,7 +567,7 @@ void __cdecl BattleFx_SpecialTwinBurnerTimelineTask(void)
         BattleFx_BlueFlameThrowerClearParticleRecords();
         Battle_AllocateResourceSlot(BattleFx_BlueFlameThrowerParticleArrayTask);
     }
-    if (task->step >= 0 && task->step < 0x12) {
+    if (task->step >= 0 && task->step < 18) {
         Battle3d_GetActorAttachMatrix(task->ownerSlot, 2, (PsxMatrix *)attachXform);
         Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, attachXform, (PsxMatrix *)(((int)g_pBattleSpecialTwinBurnerScratch) + 0x30));
         SetRotMatrix((void *)(((int)g_pBattleSpecialTwinBurnerScratch) + 0x30));
@@ -594,14 +594,14 @@ void __cdecl BattleFx_SpecialTwinBurnerTimelineTask(void)
         BattleFx_BlueFlameThrowerSpawnParticles((Vec3sPacked *)(((int)g_pBattleSpecialTwinBurnerScratch) + 8), (Vec3sPacked *)((int)g_pBattleSpecialTwinBurnerScratch), task->step, 4);
         task->angle += task->angleStep;
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         for (targetIdx = 0; targetIdx < 0xA; targetIdx++) {
             if ((g_BattleBlueFlameThrowerTargetActorCentroid & 1 << targetIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(targetIdx);
             }
         }
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x1DE, 0xF);
         Sfx_ReleaseCachedBuffer(0x1FA, 0xF);

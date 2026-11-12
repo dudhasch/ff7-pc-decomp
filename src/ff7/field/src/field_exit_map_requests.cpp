@@ -151,8 +151,8 @@ void __cdecl Field_ResetMapState(void)
         g_FieldTransitionPendingFlag = 1;
         g_FieldFxStepCounter = 0;
         g_FieldActorState.state.fadeType = FIELD_FADE_SCALED_COMPLEMENT_OUT;
-        g_FieldActorState.state.fadeSpeed = 0x10;
-        g_FieldActorState.state.fadeAdjust = 0x100;
+        g_FieldActorState.state.fadeSpeed = 16;
+        g_FieldActorState.state.fadeAdjust = 256;
         g_FieldActorState.state.red = 0;
         g_FieldActorState.state.green = 0;
         g_FieldActorState.state.blue = 0;
@@ -161,8 +161,8 @@ void __cdecl Field_ResetMapState(void)
         g_FieldBgFlag = 0;
         g_FieldLayerScrollX = 0;
         g_FieldLayerScrollY = 0;
-        g_FieldBgLayer1ScrollX = 0xA0;
-        g_FieldBgLayer1ScrollY = 0x78;
+        g_FieldBgLayer1ScrollX = 160;
+        g_FieldBgLayer1ScrollY = 120;
         SfxClearChannelLoopRecords();
         g_FieldActorState.state.layer2ScrollXSpeed = 0;
         g_FieldActorState.state.layer2ScrollYSpeed = 0;
@@ -197,7 +197,7 @@ void __cdecl Field_ResetMapState(void)
         }
         g_FieldEncounterStepCounter = 0;
         Field_PlacePlayerOnWalkmesh();
-        for (idx = 0; idx < 0x10; idx++) {
+        for (idx = 0; idx < 16; idx++) {
             g_FieldScriptExecFlags[idx] = 0xFF;
         }
         Field_InitDoorTriggers((int)g_pFieldScrollBounds + 0x158);
@@ -277,7 +277,7 @@ int __cdecl Field_UpdateLogic(void)
     Field_UpdateMovieCamera();
     inputFlags = Field_ReadInput(&g_FieldLayerScrollX, &g_FieldLayerScrollY);
     g_FieldActorState.state.currentMovieFrame = Movie_GetCurrentFrame();
-    if (g_FieldCurrentMapId == 0x74 && g_FieldActorState.state.currentMovieFrame == 0x6E0) {
+    if (g_FieldCurrentMapId == 0x74 && g_FieldActorState.state.currentMovieFrame == 1760) {
         MidiPlaySong(2, 0, 0);
         g_pFieldState->nextFieldMusic = 2;
         g_FieldMusicIdAlt = 2;

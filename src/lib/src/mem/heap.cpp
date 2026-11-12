@@ -16,11 +16,11 @@ void __cdecl DestroyBlockHeapChain(MemBlockHeap *heap)
     if (heap != 0) {
         DestroyBlockHeapChain((MemBlockHeap *)(heap->childHeap));
         // STRING: FF7 0x00912f90
-        GameHeapFree((void *)heap->freeList, "C:\\lib\\src\\mem\\heap.cpp", 0x11);
+        GameHeapFree((void *)heap->freeList, "C:\\lib\\src\\mem\\heap.cpp", 17);
         // STRING: FF7 0x00912fa8
-        GameHeapFree((void *)heap->dataAlloc, "C:\\lib\\src\\mem\\heap.cpp", 0x12);
+        GameHeapFree((void *)heap->dataAlloc, "C:\\lib\\src\\mem\\heap.cpp", 18);
         // STRING: FF7 0x00912fc0
-        GameHeapFree(heap, "C:\\lib\\src\\mem\\heap.cpp", 0x13);
+        GameHeapFree(heap, "C:\\lib\\src\\mem\\heap.cpp", 19);
     }
 }
 
@@ -35,7 +35,7 @@ int __cdecl CreateBlockHeapEx(int blockSize, int blockCount, int depth, GfxSprit
     result = 0;
     if (blockSize > 0 && blockCount > 0) {
         // STRING: FF7 0x00912fd8
-        result = (MemBlockHeap *)GameHeapAlloc(1, 0x3c, "C:\\lib\\src\\mem\\heap.cpp", 0x1e);
+        result = (MemBlockHeap *)GameHeapAlloc(1, 60, "C:\\lib\\src\\mem\\heap.cpp", 30);
         if (result != 0) {
             result->depth = depth;
             result->owner = (int)owner;
@@ -43,25 +43,25 @@ int __cdecl CreateBlockHeapEx(int blockSize, int blockCount, int depth, GfxSprit
             result->reservedWord = 0;
             result->dataSize = blockCount;
             // STRING: FF7 0x00912ff0
-            result->dataAlloc = (int)GameHeapAlloc(blockCount + 0x20, 1, "C:\\lib\\src\\mem\\heap.cpp", 0x28);
+            result->dataAlloc = (int)GameHeapAlloc(blockCount + 0x20, 1, "C:\\lib\\src\\mem\\heap.cpp", 40);
             if (result->dataAlloc != 0) {
                 data = result->dataAlloc;
                 result->dataBase = (data + 0x1f) & ~0x1f;
                 result->blockSize = blockSize;
                 result->blockTotal = blockCount / blockSize;
                 result->cursor = result->dataBase;
-                if (result->blockTotal <= 0x100) {
+                if (result->blockTotal <= 256) {
                     result->indexMode = 0;
                     // STRING: FF7 0x00913008
-                    result->freeList = (int)GameHeapAlloc(result->blockTotal, 1, "C:\\lib\\src\\mem\\heap.cpp", 0x3b);
-                } else if (result->blockTotal <= 0x10000) {
+                    result->freeList = (int)GameHeapAlloc(result->blockTotal, 1, "C:\\lib\\src\\mem\\heap.cpp", 59);
+                } else if (result->blockTotal <= 65536) {
                     result->indexMode = 1;
                     // STRING: FF7 0x00913020
-                    result->freeList = (int)GameHeapAlloc(result->blockTotal, 2, "C:\\lib\\src\\mem\\heap.cpp", 0x42);
+                    result->freeList = (int)GameHeapAlloc(result->blockTotal, 2, "C:\\lib\\src\\mem\\heap.cpp", 66);
                 } else {
                     result->indexMode = 2;
                     // STRING: FF7 0x00913038
-                    result->freeList = (int)GameHeapAlloc(result->blockTotal, 4, "C:\\lib\\src\\mem\\heap.cpp", 0x47);
+                    result->freeList = (int)GameHeapAlloc(result->blockTotal, 4, "C:\\lib\\src\\mem\\heap.cpp", 71);
                 }
                 if (callback != 0)
                     /* Invokes untyped callback slot `callback` with its runtime (int, int) -> void signature. */

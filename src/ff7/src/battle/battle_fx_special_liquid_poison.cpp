@@ -153,28 +153,28 @@ void __cdecl BattleFx_SpecialLiquidPoisonTimelineTask(void)
         rawParticle->posZ = pCur->startZ;
         dx9 = pCur->endX - rawParticle->posX;
         dz = pCur->endZ - rawParticle->posZ;
-        rawParticle->distance = SqrtToInt(dx9 * dx9 + dz * dz) / 0x18;
+        rawParticle->distance = SqrtToInt(dx9 * dx9 + dz * dz) / 24;
     }
-    if (pCur->frame == 0x32) {
+    if (pCur->frame == 50) {
         Battle_PostActorHitOrHurtMessage(pCur->actorIndex);
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, 0x40, 0x95, 0, 0, 0, 0, 0, 0);
     }
-    if (pCur->frame > 0x28 && pCur->frame < 0x30) {
+    if (pCur->frame > 40 && pCur->frame < 48) {
         theta = (pCur->frame - 0x28 << 9) - 0x400;
         rawParticle = (BattleFxLiquidPoisonParticleRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialLiquidPoisonVariantSpriteTask);
         Battle_GetBoneWorldPos(pCur->actorIndex, g_BattleActorRecords[pCur->actorIndex].targetBone, &rawParticle->posX);
-        rawParticle->posX += (short)(CosFixed(theta) * 0x320 >> 0xC);
-        rawParticle->posY += (short)(SinFixed(theta) * 0x320 >> 0xC);
+        rawParticle->posX += (short)(CosFixed(theta) * 0x320 >> 12);
+        rawParticle->posY += (short)(SinFixed(theta) * 0x320 >> 12);
         rawParticle->active = 1;
         rawParticle = (BattleFxLiquidPoisonParticleRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialLiquidPoisonVariantSpriteTask);
         Battle_GetBoneWorldPos(pCur->actorIndex, g_BattleActorRecords[pCur->actorIndex].targetBone, &rawParticle->posX);
-        rawParticle->posX += (short)(rand() % 0x258 - 0x12C);
-        rawParticle->posY += (short)(rand() % 0x258 - 0x12C);
-        rawParticle->posZ += (short)(rand() % 0x258 - 0x12C);
+        rawParticle->posX += (short)(rand() % 600 - 300);
+        rawParticle->posY += (short)(rand() % 600 - 300);
+        rawParticle->posZ += (short)(rand() % 600 - 300);
         rawParticle->active = 0;
     }
     (pCur->frame)++;
-    if (pCur->frame == 0x3C) {
+    if (pCur->frame == 60) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -193,7 +193,7 @@ void __cdecl BattleFx_SpecialLiquidPoisonVariantSpriteTask(void)
     frame.slot = (BattleFxWaterGunSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     frame.table[0] = 1;
     frame.table[1] = 2;
-    BattleFx_InstallBillboardMatrix(&frame.slot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.slot->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialLiquidPoisonSpriteReq1.frameSelector = frame.slot->frameIndex;
     g_BattleSpecialLiquidPoisonSpriteReq1.blue = (frame.slot->variant - 4 != 0 ? 0x20 : 0) + 0x40;
     g_BattleSpecialLiquidPoisonSpriteReq1.green = g_BattleSpecialLiquidPoisonSpriteReq1.blue;
@@ -249,7 +249,7 @@ void __cdecl BattleFx_SpecialLiquidPoisonStreamSpawnerTask(void)
     frame.pointX.vz = frame.streamSlot->speed;
     frame.angleX.vx = 0;
     frame.angleX.vy = -SinFixed(frame.streamSlot->step * 0x88) / 16;
-    frame.angleX.vz = 0x200;
+    frame.angleX.vz = 0x200 /* 45 deg */;
     RotMatrixZYX(&frame.angleX, &frame.rotMatrix);
     RotateMatrixY(frame.streamSlot->angleY, &frame.rotMatrix);
     frame.rotMatrix.t[2] = 0;
@@ -259,7 +259,7 @@ void __cdecl BattleFx_SpecialLiquidPoisonStreamSpawnerTask(void)
     SetTransMatrix(&frame.rotMatrix);
     RotTransPointToInt16(&frame.pointX, &frame.driftSlot->velocityX, &frame.projected);
     (frame.streamSlot->step)++;
-    if (frame.streamSlot->step == 0x20) {
+    if (frame.streamSlot->step == 32) {
         frame.streamSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -280,9 +280,9 @@ void __cdecl BattleFx_SpecialLiquidPoisonDriftingAnimatedSpriteTask(void)
     (g_BattleSpecialLiquidPoisonColor2.resource) = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecialLiquidPoisonLoadedRes);
     g_BattleSpecialLiquidPoisonColor2.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecialLiquidPoisonLoadedRes);
     poolIdx = drift->unusedParam;
-    size = 0x4000;
+    size = 16384;
     limit = size;
-    BattleFx_InstallBillboardMatrix(&drift->posX, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix(&drift->posX, 0x1800 /* 1.5 */, 0);
     g_BattleSpecialLiquidPoisonColor2.driftSlot = drift->slotIndex;
     if (g_BattleSpecialLiquidPoisonColor2.resource != 0) {
         g_BattleSpecialLiquidPoisonDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialLiquidPoisonColor2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialLiquidPoisonDrawListHandle);

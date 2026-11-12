@@ -133,23 +133,23 @@ void __cdecl BattleFx_LimitBoostJumpTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step == 0x20) {
+    if (taskPtr->step == 32) {
         Battle_PlaySfxPannedToActor(0x30, (short)taskPtr->level, 0);
     }
-    if (taskPtr->step == 0x3A) {
-        for (i = 0; i < 0x10; i++) {
+    if (taskPtr->step == 58) {
+        for (i = 0; i < 16; i++) {
             emitter = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBoostJumpMovingSpriteTask);
             emitter->posX = taskPtr->posX;
             emitter->posY = 0;
             emitter->posZ = taskPtr->posZ;
-            emitter->velocityX = SinFixed(i << 8) * 0xC8 >> 0xC;
-            emitter->velocityZ = CosFixed(i << 8) * 0xC8 >> 0xC;
-            emitter->velocityY = -rand() % 0xC8;
+            emitter->velocityX = SinFixed(i << 8) * 0xC8 >> 12;
+            emitter->velocityZ = CosFixed(i << 8) * 0xC8 >> 12;
+            emitter->velocityY = -rand() % 200;
         }
-        BattleFx_HitMarkSpawnScriptAtActorBone(taskPtr->actorIndex, 0x21, 0x1000);
+        BattleFx_HitMarkSpawnScriptAtActorBone(taskPtr->actorIndex, 0x21, 0x1000 /* 1.0 */);
         Battle_PlaySfxPannedToActor(0x15A, (short)taskPtr->level, 0);
     }
-    if (taskPtr->step == 0x44) {
+    if (taskPtr->step == 68) {
         emitter = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBoostJumpSpriteAnimationTask);
         emitter->posX = taskPtr->posX;
         emitter->posY = taskPtr->posY;
@@ -158,7 +158,7 @@ void __cdecl BattleFx_LimitBoostJumpTimelineTask(void)
         Battle_PlaySfxPannedToActor(0x141, (short)taskPtr->level, 0);
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x64) {
+    if (taskPtr->step == 100) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -174,7 +174,7 @@ void __cdecl BattleFx_LimitBoostJumpSpriteAnimationTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitBoostJumpSpriteReqPool[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleLimitBoostJumpLoadedResTable);
     g_BattleLimitBoostJumpSpriteReqPool[0].drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleLimitBoostJumpLoadedResTable);
-    BattleFx_InstallBillboardMatrix(task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(task->data, 0x2000 /* 2.0 */, 0);
     g_BattleLimitBoostJumpSpriteReqPool[0].frame = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitBoostJumpSpriteReqPool[0], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleLimitBoostJumpSpriteReqPool[0].spriteGroup != 0) {
@@ -196,7 +196,7 @@ void __cdecl BattleFx_LimitBoostJumpMovingSpriteTask(void)
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitBoostJumpSpriteReqPool[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitBoostJumpLoadedResTable);
     g_BattleLimitBoostJumpSpriteReqPool[1].drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitBoostJumpLoadedResTable);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x2000 /* 2.0 */, 0);
     g_BattleLimitBoostJumpSpriteReqPool[1].frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitBoostJumpSpriteReqPool[1], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {

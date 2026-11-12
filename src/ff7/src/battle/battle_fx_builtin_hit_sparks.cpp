@@ -77,16 +77,16 @@ void __cdecl BattleFx_HitSparkEmitterTask(void)
             particle = (BattleFxHitLivewireParticle *)&g_BattleTaskSlotBuffer.mainSlots[Battle_AllocateResourceSlot(BattleFx_HitSparkParticleTask)];
             Battle_GetBoneWorldPos(pParent->actorIndex, pParent->boneIndex,
                                    (short *)((int)particle + 4));
-            particle->posX += rand() % 0x1F4 - 0xFA;
-            particle->posY += rand() % 0x1F4 - 0xFA;
-            particle->posZ += rand() % 0x1F4 - 0xFA;
+            particle->posX += rand() % 500 - 250;
+            particle->posY += rand() % 500 - 250;
+            particle->posZ += rand() % 500 - 250;
             particle->cellRow = pParent->cellRow;
             particle->texCoord = pParent->texCoord;
             particle->scale = (rand() & 0xFFF) + 0x1000;
             particle->spriteFlags = pParent->spriteFlags;
         }
         (pParent->frameCount)++;
-        if (pParent->frameCount >= 0x1E) {
+        if (pParent->frameCount >= 30) {
             Battle_PostActorHitOrHurtMessage(pParent->actorIndex);
             pParent->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -111,8 +111,8 @@ void __cdecl BattleFx_HitSparkParticleTask(void)
     request->offsetX = 0xFFF0;
     request->cellX = *(char *)(((char *)&g_BattleFxHitSparkAngleOffsets) + task->timer);
     request->cellY = task->cellRow;
-    request->widthUnits = 0x1F;
-    request->heightUnits = 0x1F;
+    request->widthUnits = 31;
+    request->heightUnits = 31;
     request->flags = task->flags;
     request->cellWord = task->cellWord;
     *(int *)((char *)request + 8) = 0x2E808080;
@@ -120,7 +120,7 @@ void __cdecl BattleFx_HitSparkParticleTask(void)
     BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)request, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, 0);
     if (g_BattleIsPaused == 0) {
         (task->timer)++;
-        if (task->timer >= (*(unsigned char *)&task->cellRow != 0x80) + 8) {
+        if (task->timer >= (*(unsigned char *)&task->cellRow != 128) + 8) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -151,7 +151,7 @@ void BattleFx_SpawnHitSparkEmitterSnd08(short actor)
     rec = (BattleFxHitLivewireEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkEmitterTask);
     rec->actorIndex = actor;
     rec->boneIndex = 0;
-    rec->cellRow = 0x40;
+    rec->cellRow = 64;
     rec->texCoord = 0x7947;
     rec->spriteFlags = 0x3A;
 }
@@ -180,7 +180,7 @@ void BattleFx_SpawnHitSparkEmitterRandomRow(short actor)
     rec = (BattleHitLivewireShortEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkEmitterTaskRandomRow);
     rec->targetIndex = actor;
     rec->boneIndex = 0;
-    rec->lifetime = 0x3A;
+    rec->lifetime = 58;
 }
 
 /*
@@ -202,16 +202,16 @@ void __cdecl BattleFx_HitSparkEmitterTaskRandomRow(void)
             particle = (BattleFxHitLivewireRowParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkParticleTask);
             pEmitter->boneIndex = (pEmitter->boneIndex + (rand() & 3) + 1) % g_BattleActorRecords[pEmitter->actorIndex].boneCount;
             Battle_GetBoneWorldPos(pEmitter->actorIndex, pEmitter->boneIndex, (short *)((char *)particle + 4));
-            particle->posX += (short)(rand() % 0x1F4 - 0xFA);
-            particle->posY += (short)(rand() % 0x1F4 - 0xFA);
-            particle->posZ += (short)(rand() % 0x1F4 - 0xFA);
+            particle->posX += (short)(rand() % 500 - 250);
+            particle->posY += (short)(rand() % 500 - 250);
+            particle->posZ += (short)(rand() % 500 - 250);
             particle->texRow = rand() % 3 << 5;
             particle->texCoord = ((short *)&g_BattleFxHitSparkRandomTexCoords)[rand() % 5];
             particle->scale = (rand() & 0xFFF) + 0x1000;
             particle->spriteFlags = pEmitter->spriteFlags;
         }
         (pEmitter->frameCount)++;
-        if (pEmitter->frameCount >= 0x1E) {
+        if (pEmitter->frameCount >= 30) {
             Battle_PostActorHitOrHurtMessage(pEmitter->actorIndex);
             pEmitter->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -241,7 +241,7 @@ void BattleFx_SpawnHitSparkEmitterShort(short actor)
     rec = (BattleHitLivewireShortEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkEmitterTaskShort);
     rec->targetIndex = actor;
     rec->boneIndex = 0;
-    rec->lifetime = 0x3A;
+    rec->lifetime = 58;
 }
 
 /*
@@ -267,15 +267,15 @@ void __cdecl BattleFx_HitSparkEmitterTaskShort(void)
                 g_BattleActorRecords[pParent->actorIndex].boneCount;
             Battle_GetBoneWorldPos(pParent->actorIndex, pParent->boneIndex,
                                    (short *)((int)particle + 4));
-            particle->posX += (rand() & 0x1F4) - 0xFA;
-            particle->posY += (rand() & 0x1F4) - 0xFA;
-            particle->posZ += (rand() & 0x1F4) - 0xFA;
-            particle->selector = (rand() & 1) * 0x60 + 0x20;
+            particle->posX += (rand() & 0x1F4) - 250;
+            particle->posY += (rand() & 0x1F4) - 250;
+            particle->posZ += (rand() & 0x1F4) - 250;
+            particle->selector = (rand() & 1) * 96 + 32;
             particle->texCoord = 0x7887;
             particle->scale = (rand() & 0xFFF) + 0x1000;
             particle->spriteFlags = pParent->spriteFlags;
         }
-        if ((pParent->frameCount)++ >= 0xF) {
+        if ((pParent->frameCount)++ >= 15) {
             Battle_PostActorHitOrHurtMessage(pParent->actorIndex);
             pParent->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -306,7 +306,7 @@ void BattleFx_SpawnHitSparkEmitterSnd5B(short actor)
     rec = (BattleFxHitLivewireEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkEmitterTask);
     rec->actorIndex = actor;
     rec->boneIndex = 0;
-    rec->cellRow = 0x60;
+    rec->cellRow = 96;
     rec->texCoord = 0x7887;
     rec->spriteFlags = 0x3A;
 }
@@ -364,7 +364,7 @@ void BattleFx_SpawnHitSparkEmitterSnd1Fb(short actor)
     rec = (BattleFxHitLivewireEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkEmitterTask);
     rec->actorIndex = actor;
     rec->boneIndex = 0;
-    rec->cellRow = 0x20;
+    rec->cellRow = 32;
     rec->texCoord = 0x7907;
     rec->spriteFlags = 0x3A;
 }
@@ -393,7 +393,7 @@ void BattleFx_SpawnHitSparkEmitterSnd17E(short actor)
     rec = (BattleFxHitLivewireEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkEmitterTask);
     rec->actorIndex = actor;
     rec->boneIndex = 0;
-    rec->cellRow = 0x20;
+    rec->cellRow = 32;
     rec->texCoord = 0x78c7;
     rec->spriteFlags = 0x3A;
 }
@@ -449,7 +449,7 @@ void BattleFx_SpawnHitSparkEmitterSnd07(short actor)
     rec = (BattleFxHitLivewireEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_HitSparkEmitterTask);
     rec->actorIndex = actor;
     rec->boneIndex = 0;
-    rec->cellRow = 0x20;
+    rec->cellRow = 32;
     rec->texCoord = 0x7847;
     rec->spriteFlags = 0x3A;
 }

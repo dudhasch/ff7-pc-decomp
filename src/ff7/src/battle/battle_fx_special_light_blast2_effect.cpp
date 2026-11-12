@@ -142,7 +142,7 @@ void __cdecl BattleFx_SpecialLightBlast2TimelineTask(void)
         frame.particle->angle = ArcTangentFixed(frame.effectSlot->targetX - frame.effectSlot->posX, frame.effectSlot->targetZ - frame.effectSlot->posZ);
         frame.offsetX.vy = 0;
         frame.offsetX.vx = frame.offsetX.vy;
-        frame.offsetX.vz = 0x64;
+        frame.offsetX.vz = 100;
         RotMatrix((SVECTOR *)&frame.particle->angleX, &frame.rotMatrix);
         frame.rotMatrix.t[2] = 0;
         frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
@@ -159,36 +159,36 @@ void __cdecl BattleFx_SpecialLightBlast2TimelineTask(void)
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         g_BattleFxTimelineState.startValue = 0x1000;
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             g_BattleSpecLightBlast2SavedActorAlpha[frame.actorIndex] = (short)*(unsigned char *)&g_BattleActorRecords[frame.actorIndex].drawFlags;
             g_BattleActorRecords[frame.actorIndex].drawFlags |= 2;
         }
     }
     if (frame.effectSlot->stage == 4) {
         g_BattleFxTimelineState.startValue = 0;
-        BattleFx_SpecialLightBlast2BeginWhiteFlashFadeIn(0xF);
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        BattleFx_SpecialLightBlast2BeginWhiteFlashFadeIn(15);
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             g_BattleActorRecords[frame.actorIndex].drawFlags = (char)g_BattleSpecLightBlast2SavedActorAlpha[frame.actorIndex];
         }
     }
-    if (frame.effectSlot->stage == 0x14) {
-        BattleFx_SpecialLightBlast2BeginWhiteFlashFadeOut(0xF);
+    if (frame.effectSlot->stage == 20) {
+        BattleFx_SpecialLightBlast2BeginWhiteFlashFadeOut(15);
     }
-    if (frame.effectSlot->stage == 0x1E) {
+    if (frame.effectSlot->stage == 30) {
         Battle_PostActorHitOrHurtMessage(frame.effectSlot->boneIndex);
         Battle_PlaySfxPannedToActor(0x95, (short)frame.effectSlot->boneIndex, 0x40);
     }
-    if (frame.effectSlot->stage > 0x1E && frame.effectSlot->stage < 0x23) {
+    if (frame.effectSlot->stage > 30 && frame.effectSlot->stage < 35) {
         for (frame.actorIndex = 0; frame.actorIndex < 2; frame.actorIndex++) {
             frame.particle = (BattleFxStareDownParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialLightBlast2AnimatedSpriteEntry1Task);
             Battle_GetBoneWorldPos(frame.effectSlot->boneIndex, g_BattleActorRecords[frame.effectSlot->boneIndex].targetBone, &frame.particle->posX);
-            frame.particle->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.particle->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.particle->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            frame.particle->posX += (short)(rand() % 1000 - 500);
+            frame.particle->posY += (short)(rand() % 1000 - 500);
+            frame.particle->posZ += (short)(rand() % 1000 - 500);
         }
     }
     (frame.effectSlot->stage)++;
-    if (frame.effectSlot->stage == 0x28) {
+    if (frame.effectSlot->stage == 40) {
         frame.effectSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -203,7 +203,7 @@ void __cdecl BattleFx_SpecialLightBlast2BeginWhiteFlashFadeIn(short duration)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0xF);
+    Battle_StartFixedPointRamp(0x1000, 15);
 }
 
 /* Draws the white flash at the current intensity and steps it; frees the task when it returns to 0. */
@@ -228,8 +228,8 @@ void __cdecl BattleFx_SpecialLightBlast2WhiteFlashTask(void)
 void __cdecl BattleFx_SpecialLightBlast2BeginWhiteFlashFadeOut(short duration)
 {
     g_BattleSpecLightBlast2FlashIntensity = 0xFF;
-    g_BattleSpecLightBlast2FlashStep = -(0xFF / duration);
-    Battle_StartFixedPointRamp(0, 0xF);
+    g_BattleSpecLightBlast2FlashStep = -(255 / duration);
+    Battle_StartFixedPointRamp(0, 15);
 }
 
 /* Draws sprite entry 0 (the light) at the task position and frees the task after its last frame. */
@@ -241,7 +241,7 @@ void __cdecl BattleFx_SpecialLightBlast2AnimatedSpriteEntry0Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecLightBlast2SpriteReq[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecLightBlast2LoadedResTable);
     g_BattleSpecLightBlast2SpriteReq[0].drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecLightBlast2LoadedResTable);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800 /* 1.5 */, 0);
     g_BattleSpecLightBlast2SpriteReq[0].frame = task->frameCounter;
     g_BattleSpecLightBlast2PacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightBlast2SpriteReq[0], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightBlast2PacketCursor);
     if (g_BattleIsPaused != 0) {
@@ -264,7 +264,7 @@ void __cdecl BattleFx_SpecialLightBlast2AnimatedSpriteEntry1Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecLightBlast2SpriteReq[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecLightBlast2LoadedResTable);
     g_BattleSpecLightBlast2SpriteReq[1].drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecLightBlast2LoadedResTable);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800 /* 1.5 */, 0);
     g_BattleSpecLightBlast2SpriteReq[1].frame = task->frameCounter;
     g_BattleSpecLightBlast2PacketCursor = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightBlast2SpriteReq[1], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightBlast2PacketCursor);
     if (g_BattleIsPaused == 0 && g_BattleSpecLightBlast2SpriteReq[1].spriteGroup != 0) {

@@ -210,7 +210,7 @@ void __cdecl BattleFx_SpecialBeginUltimateBlast(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0x10);
+    Battle_StartFixedPointRamp(0x1000, 16);
 }
 
 /*
@@ -241,21 +241,21 @@ void __cdecl BattleFx_SpecialUltimateBlastTimelineTask(void)
         spawn->posZ = 0;
         Battle_PlaySfxPannedToActor(0x164, -1, 0x40);
     }
-    if (pCur->frameCounter == 0xC) {
+    if (pCur->frameCounter == 12) {
         Battle_AllocateResourceSlot(BattleFx_SpecialUltimateBlastScreenFlashTask);
     }
-    if (pCur->frameCounter == 0x1C) {
-        Battle_StartFixedPointRamp(0, 0x10);
+    if (pCur->frameCounter == 28) {
+        Battle_StartFixedPointRamp(0, 16);
     }
-    if (pCur->frameCounter == 0x28) {
-        for (actorIndex8 = 0; actorIndex8 < 0xA; actorIndex8++) {
+    if (pCur->frameCounter == 40) {
+        for (actorIndex8 = 0; actorIndex8 < 10; actorIndex8++) {
             if ((g_BattleSpecUltimateBlastTargetMask & 1 << actorIndex8) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIndex8);
             }
         }
     }
     (pCur->frameCounter)++;
-    if (pCur->frameCounter == 0x32) {
+    if (pCur->frameCounter == 50) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -275,14 +275,14 @@ void __cdecl BattleFx_SpecialUltimateBlastScreenFlashTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x10) {
-        g_BattleSpecUltimateBlastStep += 0xF;
+    if (task->frameCounter < 16) {
+        g_BattleSpecUltimateBlastStep += 15;
     }
-    if (task->frameCounter > 0x10) {
-        g_BattleSpecUltimateBlastStep -= 0xF;
+    if (task->frameCounter > 16) {
+        g_BattleSpecUltimateBlastStep -= 15;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x20) {
+    if (task->frameCounter == 32) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -310,13 +310,13 @@ void __cdecl BattleFx_SpecialUltimateBlastGrowingModelSparksTask(void)
 #pragma pack(pop)
 
     frame.growingSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecUltimateBlastAnimData4.spriteField = Gfx_ModelTableGetLoadedRecord(0xF, g_BattleSpecUltimateBlastLoadedResTable);
-    g_BattleSpecUltimateBlastAnimData4.spriteAlt = Gfx_ModelTableGetSpriteObject(0xF, g_BattleSpecUltimateBlastLoadedResTable);
+    g_BattleSpecUltimateBlastAnimData4.spriteField = Gfx_ModelTableGetLoadedRecord(15, g_BattleSpecUltimateBlastLoadedResTable);
+    g_BattleSpecUltimateBlastAnimData4.spriteAlt = Gfx_ModelTableGetSpriteObject(15, g_BattleSpecUltimateBlastLoadedResTable);
     frame.angleX.vz = 0;
     frame.angleX.vx = frame.angleX.vz;
     frame.angleX.vy = 0;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecUltimateBlastVelZ = frame.growingSlot->frameCounter << 0xA;
+    g_BattleSpecUltimateBlastVelZ = frame.growingSlot->frameCounter << 10;
     g_BattleSpecUltimateBlastVelY = g_BattleSpecUltimateBlastVelZ;
     g_BattleSpecUltimateBlastVelX = g_BattleSpecUltimateBlastVelY;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecUltimateBlastVelX);
@@ -335,7 +335,7 @@ void __cdecl BattleFx_SpecialUltimateBlastGrowingModelSparksTask(void)
     g_BattleSpecUltimateBlastAnimData2.flags = 0x28;
     g_BattleSpecUltimateBlastAnimData2.angle = g_BattleSpecUltimateBlastAngle << 3;
     g_BattleSpecUltimateBlastDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecUltimateBlastAnimData2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecUltimateBlastDrawListHandle);
-    BattleFx_InstallBillboardMatrix(&frame.growingSlot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.growingSlot->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecUltimateBlastSpriteRequest2.request2Byte2 = g_BattleSpecUltimateBlastAngle << 3;
     g_BattleSpecUltimateBlastSpriteRequest2.request2Byte1 = g_BattleSpecUltimateBlastSpriteRequest2.request2Byte2;
     (g_BattleSpecUltimateBlastSpriteRequest2.red) = g_BattleSpecUltimateBlastSpriteRequest2.request2Byte1;
@@ -343,13 +343,13 @@ void __cdecl BattleFx_SpecialUltimateBlastGrowingModelSparksTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.growingSlot->frameCounter < 0xC) {
+    if (frame.growingSlot->frameCounter < 12) {
         for (frame.sparkIndex = 0; frame.sparkIndex < 4; frame.sparkIndex++) {
             frame.sparkSlot = (BattleFxEnergyWaveSpinSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialUltimateBlastDriftingSpriteTask)]);
             frame.sparkSlot->posX = frame.growingSlot->posX;
             frame.sparkSlot->posY = frame.growingSlot->posY;
             frame.sparkSlot->posZ = frame.growingSlot->posZ;
-            frame.sparkVecX.vy = 0x190;
+            frame.sparkVecX.vy = 400;
             frame.sparkVecX.vz = 0;
             frame.sparkVecX.vx = frame.sparkVecX.vz;
             frame.angleX.vx = (rand() % 4096);
@@ -365,12 +365,12 @@ void __cdecl BattleFx_SpecialUltimateBlastGrowingModelSparksTask(void)
             frame.sparkSlot->spriteVariant = rand() % 7;
         }
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - ((frame.growingSlot->frameCounter % 2) << 6));
-    if (frame.growingSlot->frameCounter > 0xE) {
+    g_BattleCameraFocalPoint.focalPointY += (short)(32 - ((frame.growingSlot->frameCounter % 2) << 6));
+    if (frame.growingSlot->frameCounter > 14) {
         g_BattleSpecUltimateBlastAngle--;
     }
     (frame.growingSlot->frameCounter)++;
-    if (frame.growingSlot->frameCounter == 0x1E) {
+    if (frame.growingSlot->frameCounter == 30) {
         frame.growingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -418,7 +418,7 @@ void __cdecl BattleFx_SpecialUltimateBlastDriftingSpriteTask(void)
     if (frame.driftSprite->frameCounter < 4) {
         frame.fadeLevel = 8;
     } else {
-        frame.fadeLevel = 0xC - frame.driftSprite->frameCounter;
+        frame.fadeLevel = 12 - frame.driftSprite->frameCounter;
     }
     frame.fadeWord = *(short *)&frame.fadeLevel;
     g_BattleSpecUltimateBlastSpriteRequest1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_BattleSpecUltimateBlastAnimData1[frame.driftSprite->animIndex], g_BattleSpecUltimateBlastLoadedResTable);
@@ -432,7 +432,7 @@ void __cdecl BattleFx_SpecialUltimateBlastDriftingSpriteTask(void)
         frame.driftSprite->posY += frame.driftSprite->velocityY;
         frame.driftSprite->posZ += frame.driftSprite->velocityZ;
         (frame.driftSprite->frameCounter)++;
-        if (frame.driftSprite->frameCounter == 0xC) {
+        if (frame.driftSprite->frameCounter == 12) {
             frame.driftSprite->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -475,7 +475,7 @@ void __cdecl BattleFx_SpecialUltimateBlastExpandingShellsTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecUltimateBlastSpriteRequest3.fadeLevel = 0x80 - frame.shellSlot->frameCounter * 6;
+    g_BattleSpecUltimateBlastSpriteRequest3.fadeLevel = 128 - frame.shellSlot->frameCounter * 6;
     g_BattleSpecUltimateBlastSpriteRequest3.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecUltimateBlastLoadedResTable);
     g_BattleSpecUltimateBlastDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecUltimateBlastSpriteRequest3.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecUltimateBlastDrawListHandle);
     RotMatrixXYZ((short *)&g_BattleSpecUltimateBlastBuffer, &frame.rotMatrix);
@@ -489,26 +489,26 @@ void __cdecl BattleFx_SpecialUltimateBlastExpandingShellsTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    g_BattleSpecUltimateBlastSpriteRequest3.fadeLevel = 0x80 - frame.shellSlot->frameCounter * 6;
+    g_BattleSpecUltimateBlastSpriteRequest3.fadeLevel = 128 - frame.shellSlot->frameCounter * 6;
     g_BattleSpecUltimateBlastSpriteRequest3.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecUltimateBlastLoadedResTable);
     g_BattleSpecUltimateBlastDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecUltimateBlastSpriteRequest3.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecUltimateBlastDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.spreadRadius = frame.shellSlot->frameCounter * 0xF0;
+    frame.spreadRadius = frame.shellSlot->frameCounter * 240;
     frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialUltimateBlastRisingFadeSpriteTask);
     for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
         frame.angle = (rand() % 4096);
-        frame.spawnSlot->posX = CosFixed(frame.angle) * frame.spreadRadius >> 0xC;
-        frame.spawnSlot->posZ = SinFixed(frame.angle) * frame.spreadRadius >> 0xC;
+        frame.spawnSlot->posX = CosFixed(frame.angle) * frame.spreadRadius >> 12;
+        frame.spawnSlot->posZ = SinFixed(frame.angle) * frame.spreadRadius >> 12;
         frame.spawnSlot->posY = 0;
         frame.spawnSlot->variant = (rand() % 16);
     }
     if ((frame.shellSlot->frameCounter % 2) == 0) {
         frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialUltimateBlastRisingSpinModelTask);
         frame.angle = (rand() % 4096);
-        frame.spawnSlot->posX = CosFixed(frame.angle) * frame.spreadRadius >> 0xC;
-        frame.spawnSlot->posZ = SinFixed(frame.angle) * frame.spreadRadius >> 0xC;
+        frame.spawnSlot->posX = CosFixed(frame.angle) * frame.spreadRadius >> 12;
+        frame.spawnSlot->posZ = SinFixed(frame.angle) * frame.spreadRadius >> 12;
         frame.spawnSlot->posY = 0;
         frame.spawnSlot->variant = (rand() % 4);
         frame.spawnSlot->angle = (rand() % 4096);
@@ -516,12 +516,12 @@ void __cdecl BattleFx_SpecialUltimateBlastExpandingShellsTask(void)
     for (frame.spawnIndex = 0; frame.spawnIndex < 3; frame.spawnIndex++) {
         frame.spawnSlot = (BattleFxTailLaserTargetTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialUltimateBlastAnimatedSpriteTask);
         frame.angle = (rand() % 4096);
-        frame.spawnSlot->posX = CosFixed(frame.angle) * frame.spreadRadius >> 0xC;
-        frame.spawnSlot->posZ = SinFixed(frame.angle) * frame.spreadRadius >> 0xC;
+        frame.spawnSlot->posX = CosFixed(frame.angle) * frame.spreadRadius >> 12;
+        frame.spawnSlot->posZ = SinFixed(frame.angle) * frame.spreadRadius >> 12;
         frame.spawnSlot->posY = 0;
     }
     (frame.shellSlot->frameCounter)++;
-    if (frame.shellSlot->frameCounter == 0x14) {
+    if (frame.shellSlot->frameCounter == 20) {
         frame.shellSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -536,9 +536,9 @@ void __cdecl BattleFx_SpecialUltimateBlastAnimatedSpriteTask(void)
     BattleFxUltimateBlastAnimatedSpriteSlot *task;
 
     task = (BattleFxUltimateBlastAnimatedSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecUltimateBlastTransformData1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSpecUltimateBlastLoadedResTable);
-    g_BattleSpecUltimateBlastTransformData1.drawObj = Gfx_ModelTableGetSpriteObject(0x11, g_BattleSpecUltimateBlastLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000, 0);
+    g_BattleSpecUltimateBlastTransformData1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(17, g_BattleSpecUltimateBlastLoadedResTable);
+    g_BattleSpecUltimateBlastTransformData1.drawObj = Gfx_ModelTableGetSpriteObject(17, g_BattleSpecUltimateBlastLoadedResTable);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000 /* 3.0 */, 0);
     g_BattleSpecUltimateBlastTransformData1.frame = task->frameCounter;
     g_BattleSpecUltimateBlastDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecUltimateBlastTransformData1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecUltimateBlastDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecUltimateBlastTransformData1.spriteGroup != 0) {
@@ -571,7 +571,7 @@ void __cdecl BattleFx_SpecialUltimateBlastRisingSpinModelTask(void)
     frame.angleX.vx = frame.angleX.vy;
     frame.angleX.vz = frame.spinSlot->spinAngle;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecUltimateBlastSpinScaleZ = 0x1000;
+    g_BattleSpecUltimateBlastSpinScaleZ = 0x1000 /* 1.0 */;
     g_BattleSpecUltimateBlastSpinScaleY = g_BattleSpecUltimateBlastSpinScaleZ;
     g_BattleSpecUltimateBlastSpinScaleX = g_BattleSpecUltimateBlastSpinScaleY;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecUltimateBlastSpinScaleX);
@@ -581,16 +581,16 @@ void __cdecl BattleFx_SpecialUltimateBlastRisingSpinModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    g_BattleSpecUltimateBlastTransformData1.fadeLevel = 0x80 - (frame.spinSlot->frameCounter << 3);
+    g_BattleSpecUltimateBlastTransformData1.fadeLevel = 128 - (frame.spinSlot->frameCounter << 3);
     g_BattleSpecUltimateBlastTransformData1.modelGroup = Gfx_ModelTableGetRenderObject(g_BattleSpecUltimateBlastAnimData5[frame.spinSlot->animIndex], g_BattleSpecUltimateBlastLoadedResTable);
     g_BattleSpecUltimateBlastDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecUltimateBlastTransformData1.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecUltimateBlastDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
     frame.spinSlot->posY -= 0x190;
-    frame.spinSlot->spinAngle += 0x100;
+    frame.spinSlot->spinAngle += 0x100 /* 22.5 deg */;
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0xF) {
+    if (frame.spinSlot->frameCounter == 15) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -605,9 +605,9 @@ void __cdecl BattleFx_SpecialUltimateBlastRisingFadeSpriteTask(void)
     BattleFxHeatWaveRisingFadeSprite *task;
 
     task = (BattleFxHeatWaveRisingFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecUltimateBlastAnimData6.spriteField = Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSpecUltimateBlastLoadedResTable);
-    g_BattleSpecUltimateBlastAnimData6.spriteAlt = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSpecUltimateBlastLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    g_BattleSpecUltimateBlastAnimData6.spriteField = Gfx_ModelTableGetLoadedRecord(16, g_BattleSpecUltimateBlastLoadedResTable);
+    g_BattleSpecUltimateBlastAnimData6.spriteAlt = Gfx_ModelTableGetSpriteObject(16, g_BattleSpecUltimateBlastLoadedResTable);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecUltimateBlastSpriteRequest3.frameIndex = task->variant;
     g_BattleSpecUltimateBlastSpriteRequest3.blue = 0x80 - (task->fadeStep << 3);
     g_BattleSpecUltimateBlastSpriteRequest3.green = g_BattleSpecUltimateBlastSpriteRequest3.blue;
@@ -616,9 +616,9 @@ void __cdecl BattleFx_SpecialUltimateBlastRisingFadeSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY -= 0x12C;
+    task->posY -= 300;
     (task->fadeStep)++;
-    if (task->fadeStep == 0xF) {
+    if (task->fadeStep == 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

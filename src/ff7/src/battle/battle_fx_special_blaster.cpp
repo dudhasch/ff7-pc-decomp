@@ -133,7 +133,7 @@ struct BattleSpecialBlasterColorBuffer g_BattleSpecialBlasterColorBuffer = {0};
 // GLOBAL: FF7 0x00b6f0fc
 short g_BattleSpecialBlasterState = 0;
 // GLOBAL: FF7 0x00b6f100
-unsigned char g_BattleSpecialBlasterLookBasis[0x4] = {0};
+unsigned char g_BattleSpecialBlasterLookBasis[4] = {0};
 unsigned char g_bssPad_00b6f104[4] = {0};
 unsigned char g_bssPad_00b6f108[8] = {0};
 // GLOBAL: FF7 0x00b6f110
@@ -260,7 +260,7 @@ void __cdecl BattleFx_SpecialBlasterTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step >= 0 && taskPtr->step <= 0xA && taskPtr->step % 4 == 0) {
+    if (taskPtr->step >= 0 && taskPtr->step <= 10 && taskPtr->step % 4 == 0) {
         pChild = (BattleFxSpecialBlasterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBlasterShrinkingModelTask);
         pChild->posX = taskPtr->posX;
         pChild->posY = taskPtr->posY;
@@ -273,7 +273,7 @@ void __cdecl BattleFx_SpecialBlasterTimelineTask(void)
         pChild->posZ = taskPtr->posZ;
         pChild->timer = 0;
     }
-    if (taskPtr->step == 0x1E) {
+    if (taskPtr->step == 30) {
         pChild = (BattleFxSpecialBlasterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBlasterStretchModelsTask);
         pChild->posX = taskPtr->posX;
         pChild->posY = taskPtr->posY;
@@ -282,7 +282,7 @@ void __cdecl BattleFx_SpecialBlasterTimelineTask(void)
         diff[1] = taskPtr->targetY - pChild->posY;
         diff[2] = taskPtr->targetZ - pChild->posZ;
         beamLen = SqrtToInt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] * diff[2]);
-        pChild->timer = beamLen * 0x1200 / 0xBB8;
+        pChild->timer = beamLen * 4608 / 3000;
         pChild->clearedWord = 0;
         pChild = (BattleFxSpecialBlasterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBlasterForwardBurstTask);
         pChild->posX = taskPtr->posX;
@@ -296,52 +296,52 @@ void __cdecl BattleFx_SpecialBlasterTimelineTask(void)
         pChild->posZ = taskPtr->posZ;
         g_BattleOverlayDrawListHead = BattleFx_FlashScreenWhite(0x80, 0x80, 0x80);
     }
-    if (taskPtr->step == 0x24) {
+    if (taskPtr->step == 36) {
         pChild = (BattleFxSpecialBlasterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBlasterPulseModelsTask);
         pChild->posX = taskPtr->targetX;
         pChild->posY = taskPtr->targetY;
         pChild->posZ = taskPtr->targetZ;
         g_BattleFxTimelineState.channel2 = g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.red = 0x20;
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
     }
-    if (taskPtr->step > 0x32 && taskPtr->step < 0x42) {
+    if (taskPtr->step > 50 && taskPtr->step < 66) {
         for (n6 = 0; n6 < 2; n6++) {
             pChild = (BattleFxSpecialBlasterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBlasterVariantSpriteTask);
             g_BattleSpecialBlasterAngle = taskPtr->step << 9;
-            sinOfs = SinFixed(g_BattleSpecialBlasterAngle) * 0x320 >> 0xC;
-            cosOffset = CosFixed(g_BattleSpecialBlasterAngle) * 0x320 >> 0xC;
+            sinOfs = SinFixed(g_BattleSpecialBlasterAngle) * 0x320 >> 12;
+            cosOffset = CosFixed(g_BattleSpecialBlasterAngle) * 0x320 >> 12;
             pChild->posX = taskPtr->targetX + sinOfs;
-            pChild->posY = taskPtr->targetY + rand() % 0x320;
+            pChild->posY = taskPtr->targetY + rand() % 800;
             pChild->posZ = taskPtr->targetZ + cosOffset;
             pChild->targetX = sinOfs >> 2;
             pChild->targetZ = cosOffset >> 2;
             pChild->flag = 0;
         }
     }
-    if (taskPtr->step == 0x43) {
+    if (taskPtr->step == 67) {
         pChild = (BattleFxSpecialBlasterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBlasterFinalFlashModelsTask);
         pChild->posX = taskPtr->targetX;
         pChild->posY = taskPtr->targetY;
         pChild->posZ = taskPtr->targetZ;
     }
-    if (taskPtr->step == 0x48) {
+    if (taskPtr->step == 72) {
         Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
         for (n6 = 0; n6 < 4; n6++) {
             pChild = (BattleFxSpecialBlasterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBlasterVariantSpriteTask);
             pChild->posX = taskPtr->targetX;
             pChild->posY = taskPtr->targetY;
             pChild->posZ = taskPtr->targetZ;
-            pChild->posX += rand() % 0x4B0 - 0x258;
-            pChild->posY += rand() % 0x4B0 - 0x258;
-            pChild->posZ += rand() % 0x4B0 - 0x258;
+            pChild->posX += rand() % 1200 - 600;
+            pChild->posY += rand() % 1200 - 600;
+            pChild->posZ += rand() % 1200 - 600;
             pChild->flag = 1;
         }
         Battle_PlaySfxPannedToActor(0xFA, taskPtr->recordType, 0x40);
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x50) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (taskPtr->step == 80) {
+        Battle_StartFixedPointRamp(0, 10);
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -369,7 +369,7 @@ void __cdecl BattleFx_SpecialBlasterVariantSpriteTask(void)
         if (frame.slot->flag == 0) {
             frame.slot->posX += frame.slot->velocityX;
             frame.slot->posZ += frame.slot->velocityZ;
-            frame.slot->posY -= 0x64;
+            frame.slot->posY -= 100;
         }
         if ((g_BattleSpecialBlasterSpriteReq1.spriteGroup) != 0) {
             (frame.slot->frameIndex)++;
@@ -415,7 +415,7 @@ void __cdecl BattleFx_SpecialBlasterShrinkingModelTask(void)
         return;
     }
     (frame.shrinkSlot->step)++;
-    if (frame.shrinkSlot->step == 0x14) {
+    if (frame.shrinkSlot->step == 20) {
         frame.shrinkSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -452,7 +452,7 @@ void __cdecl BattleFx_SpecialBlasterDrawSpinModelsTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    (((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq2)->fadeLevel) = 0x1000 - (g_BattleSpecialBlasterAlphaStep << 9);
+    (((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq2)->fadeLevel) = 4096 - (g_BattleSpecialBlasterAlphaStep << 9);
     g_BattleSpecialBlasterModelReq2[0] = Gfx_ModelTableGetRenderObject(2, g_BattleSpecialBlasterLoadedRes);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
@@ -472,7 +472,7 @@ void __cdecl BattleFx_SpecialBlasterDrawSpinModelsTask(void)
     SetTransMatrix(&frame.combinedMatrix);
     g_BattleSpecialBlasterModelReq2[0] = Gfx_ModelTableGetRenderObject(3, g_BattleSpecialBlasterLoadedRes);
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
-    BattleFx_InstallBillboardMatrix(&frame.spinSlot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.spinSlot->posX, 0x2000 /* 2.0 */, 0);
     (g_BattleSpecialBlasterModelReq3.alpha) = g_BattleSpecialBlasterAlphaStep << 4;
     (g_BattleSpecialBlasterModelReq3.alphaPrev) = (g_BattleSpecialBlasterModelReq3.alpha);
     (g_BattleSpecialBlasterModelReq3.alphaOld) = (g_BattleSpecialBlasterModelReq3.alphaPrev);
@@ -484,14 +484,14 @@ void __cdecl BattleFx_SpecialBlasterDrawSpinModelsTask(void)
     if (frame.spinSlot->frameCounter <= 8) {
         g_BattleSpecialBlasterAlphaStep++;
     }
-    if (frame.spinSlot->frameCounter > 0x16) {
+    if (frame.spinSlot->frameCounter > 22) {
         g_BattleSpecialBlasterAlphaStep--;
         frame.spinSlot->spinParam -= 0x514;
     } else {
         frame.spinSlot->spinParam += 0x1F4;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x1E) {
+    if (frame.spinSlot->frameCounter == 30) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -509,11 +509,11 @@ void __cdecl BattleFx_SpecialBlasterFinalFlashModelsTask(void)
         return;
     }
     if (task->phase == 2) {
-        BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+        BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
         SetDrawColorRGB(0, 0, 0);
-        g_BattleSpecialBlasterModelReq4[0] = Gfx_ModelTableGetRenderObject(0x12, g_BattleSpecialBlasterLoadedRes);
+        g_BattleSpecialBlasterModelReq4[0] = Gfx_ModelTableGetRenderObject(18, g_BattleSpecialBlasterLoadedRes);
         g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
-        g_BattleSpecialBlasterModelReq4[0] = Gfx_ModelTableGetRenderObject(0x13, g_BattleSpecialBlasterLoadedRes);
+        g_BattleSpecialBlasterModelReq4[0] = Gfx_ModelTableGetRenderObject(19, g_BattleSpecialBlasterLoadedRes);
         g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
     }
     if (task->phase == 3) {
@@ -552,7 +552,7 @@ void __cdecl BattleFx_SpecialBlasterStretchModelsTask(void)
     frame.clampedFrameWord = *(short *)&frame.clampedFrame;
     RotMatrix(&g_BattleSpecialBlasterRotAngle1, &frame.rotMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialBlasterLookBasis, &frame.rotMatrix, &frame.rotMatrix);
-    frame.scaleX.vz = 0x4000 - (frame.clampedFrameWord << 0xA);
+    frame.scaleX.vz = 0x4000 - (frame.clampedFrameWord << 10);
     frame.scaleX.vx = frame.scaleX.vz;
     frame.scaleX.vy = frame.stretchSlot->baseLength * frame.clampedFrameWord / 6;
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
@@ -563,7 +563,7 @@ void __cdecl BattleFx_SpecialBlasterStretchModelsTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    (((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq6)->fadeLevel) = 0x1000 - (g_BattleSpecialBlasterAlpha1 << 7);
+    (((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq6)->fadeLevel) = 4096 - (g_BattleSpecialBlasterAlpha1 << 7);
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq6, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
     RotMatrix(&g_BattleSpecialBlasterRotAngle1, &frame.rotMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialBlasterLookBasis, &frame.rotMatrix, &frame.rotMatrix);
@@ -585,7 +585,7 @@ void __cdecl BattleFx_SpecialBlasterStretchModelsTask(void)
         g_BattleSpecialBlasterAlpha1 -= 2;
     }
     (frame.stretchSlot->frameCounter)++;
-    if (frame.stretchSlot->frameCounter == 0xA) {
+    if (frame.stretchSlot->frameCounter == 10) {
         frame.stretchSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -635,7 +635,7 @@ void __cdecl BattleFx_SpecialBlasterForwardBurstTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    (((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq7)->fadeLevel) = 0x1000 - (g_BattleSpecialBlasterAngles1[0] << 9);
+    (((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq7)->fadeLevel) = 4096 - (g_BattleSpecialBlasterAngles1[0] << 9);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecialBlasterModelReq7[0] = Gfx_ModelTableGetRenderObject(4, g_BattleSpecialBlasterLoadedRes);
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq7, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
@@ -643,7 +643,7 @@ void __cdecl BattleFx_SpecialBlasterForwardBurstTask(void)
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq7, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
     g_BattleSpecialBlasterModelReq7[0] = Gfx_ModelTableGetRenderObject(6, g_BattleSpecialBlasterLoadedRes);
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq7, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
-    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecialBlasterColorBuffer, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((short *)&g_BattleSpecialBlasterColorBuffer, 0x3000 /* 3.0 */, 0);
     (g_BattleSpecialBlasterModelReq8.angle) = g_BattleSpecialBlasterAngles1[0] * 0x14;
     (g_BattleSpecialBlasterModelReq8.anglePrev) = (g_BattleSpecialBlasterModelReq8.angle);
     (g_BattleSpecialBlasterModelReq8.angleOld) = (g_BattleSpecialBlasterModelReq8.anglePrev);
@@ -662,7 +662,7 @@ void __cdecl BattleFx_SpecialBlasterForwardBurstTask(void)
         g_BattleSpecialBlasterAngles1[0] -= 2;
     }
     (frame.burstSlot->frameCounter)++;
-    if (frame.burstSlot->frameCounter == 0xA) {
+    if (frame.burstSlot->frameCounter == 10) {
         frame.burstSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -707,7 +707,7 @@ void __cdecl BattleFx_SpecialBlasterTrailModelTask(void)
         return;
     }
     (frame.trailSlot->frameCounter)++;
-    if (frame.trailSlot->frameCounter == 0xA) {
+    if (frame.trailSlot->frameCounter == 10) {
         frame.trailSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -744,7 +744,7 @@ void __cdecl BattleFx_SpecialBlasterPulseModelsTask(void)
     frame.angleX.vy = frame.angleX.vz;
     frame.angleX.vx = frame.angleX.vy;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
-    frame.scaleVec.vz = SinFixed(frame.taskSlot->frameCounter * 0x33) * 0x3000 >> 0xC;
+    frame.scaleVec.vz = SinFixed(frame.taskSlot->frameCounter * 0x33) * 0x3000 /* 3.0 */ >> 12;
     frame.scaleVec.vy = frame.scaleVec.vz;
     frame.scaleVec.vx = frame.scaleVec.vy;
     ScaleMatrix(&frame.rotMatrix, &frame.scaleVec);
@@ -759,14 +759,14 @@ void __cdecl BattleFx_SpecialBlasterPulseModelsTask(void)
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq9, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
     g_BattleSpecialBlasterModelReq9[0] = Gfx_ModelTableGetRenderObject(frame.pulseModelId0[((frame.taskSlot->frameCounter) % 8)], g_BattleSpecialBlasterLoadedRes);
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialBlasterModelReq9, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
-    BattleFx_InstallBillboardMatrix(&frame.taskSlot->posX, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.taskSlot->posX, 0x3000 /* 3.0 */, 0);
     (*(short *)((char *)&g_BattleSpecialBlasterModelReq10 + 0xc)) = ((frame.taskSlot->frameCounter) % 2);
     g_BattleSpecialBlasterDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialBlasterModelReq10, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialBlasterDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x28) {
+    if (frame.taskSlot->frameCounter == 40) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -809,7 +809,7 @@ void __cdecl BattleFx_SpecialBlasterGrowModelTask(void)
         return;
     }
     (frame.taskSlot->step)++;
-    if (frame.taskSlot->step == 0x14) {
+    if (frame.taskSlot->step == 20) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

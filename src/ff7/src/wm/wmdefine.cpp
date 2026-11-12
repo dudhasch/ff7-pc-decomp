@@ -41,7 +41,7 @@ unsigned char g_bssPad_00e2d604[4] = {0};
 void __cdecl World_AllocArena(void)
 {
     // STRING: FF7 0x0096d55c
-    gWorldArena = (unsigned char *)GameHeapAllocRaw(0xE7801, "C:\\FF7\\src\\wm\\wmdefine.cpp", 31);
+    gWorldArena = (unsigned char *)GameHeapAllocRaw(948225, "C:\\FF7\\src\\wm\\wmdefine.cpp", 31);
     if (gWorldArena != 0) {
         g_pWorldArenaRegion0 = gWorldArena;
         g_pWorldArenaRegion1 = gWorldArena + 0x79000;

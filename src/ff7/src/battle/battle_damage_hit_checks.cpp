@@ -249,7 +249,7 @@ void __cdecl Battle_DmgOpManipulateCheck(void)
         if ((g_pBattleCommandCtx->elemReaction & BATTLE_ELEM_REACTION_AUTO_HIT) != 0) {
             frame.chance = BATTLE_HIT_ALWAYS;
         }
-        if ((unsigned char)g_BattleState.actors[g_pBattleCommandCtx->attackerSlot].accessoryKind == 5 && frame.chance < 0x64) {
+        if ((unsigned char)g_BattleState.actors[g_pBattleCommandCtx->attackerSlot].accessoryKind == 5 && frame.chance < 100) {
             frame.chance = 0x64;
         }
         /* Retail caller treats `Battle_RandBelow` return (`int`) as `unsigned char` for caller zero/sign extension. */

@@ -172,7 +172,7 @@ void __cdecl BattleFx_SpecialHarrierTimelineTask(void)
     if (frame.timelineSlot->frameCounter == 0) {
         frame.offsetX.vx = 0;
         frame.offsetX.vy = 0;
-        frame.offsetX.vz = 0xC8;
+        frame.offsetX.vz = 200;
         g_BattleSpecialHarrierLookMatrix.transX = frame.timelineSlot->startX;
         g_BattleSpecialHarrierLookMatrix.transY = frame.timelineSlot->startY;
         g_BattleSpecialHarrierLookMatrix.transZ = frame.timelineSlot->startZ;
@@ -184,7 +184,7 @@ void __cdecl BattleFx_SpecialHarrierTimelineTask(void)
         frame.spawnSlot->posY = frame.timelineSlot->startY;
         frame.spawnSlot->posZ = frame.timelineSlot->startZ;
     }
-    if (frame.timelineSlot->frameCounter < 0xF) {
+    if (frame.timelineSlot->frameCounter < 15) {
         g_BattleSpecialHarrierLookMatrix.transX = frame.timelineSlot->startX;
         g_BattleSpecialHarrierLookMatrix.transY = frame.timelineSlot->startY;
         g_BattleSpecialHarrierLookMatrix.transZ = frame.timelineSlot->startZ;
@@ -195,48 +195,48 @@ void __cdecl BattleFx_SpecialHarrierTimelineTask(void)
         frame.velocityZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 8;
         for (frame.driftIndex = 0; frame.driftIndex < 3; frame.driftIndex++) {
             frame.spawnSlot = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHarrierDriftModelsTask);
-            frame.driftX.vx = CosFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 0x555) >> 5;
-            frame.driftX.vy = SinFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 0x555) >> 5;
-            frame.driftX.vz = rand() % 0x64 - 0x32;
+            frame.driftX.vx = CosFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 1365) >> 5;
+            frame.driftX.vy = SinFixed((frame.timelineSlot->frameCounter << 9) + frame.driftIndex * 1365) >> 5;
+            frame.driftX.vz = rand() % 100 - 50;
             RotTransPointToInt16(&frame.driftX, &frame.spawnSlot->posX, &frame.depth);
             frame.spawnSlot->velocityX = frame.velocityX;
             frame.spawnSlot->velocityY = frame.velocityY;
             frame.spawnSlot->velocityZ = frame.velocityZ;
         }
     }
-    if (frame.timelineSlot->frameCounter >= 5 && frame.timelineSlot->frameCounter < 0xF) {
+    if (frame.timelineSlot->frameCounter >= 5 && frame.timelineSlot->frameCounter < 15) {
         frame.spawnSlot = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHarrierVariantSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posY += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posZ += (short)(rand() % 0x320 - 0x190);
+        frame.spawnSlot->posX += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posY += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posZ += (short)(rand() % 800 - 400);
         frame.spawnSlot->variant = 1;
         frame.spawnSlot = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHarrierVariantSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posY += (short)(rand() % 0x320 - 0x190);
-        frame.spawnSlot->posZ += (short)(rand() % 0x320 - 0x190);
+        frame.spawnSlot->posX += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posY += (short)(rand() % 800 - 400);
+        frame.spawnSlot->posZ += (short)(rand() % 800 - 400);
         frame.spawnSlot->variant = 2;
     }
-    if (frame.timelineSlot->frameCounter > 0xF && frame.timelineSlot->frameCounter < 0x13) {
+    if (frame.timelineSlot->frameCounter > 15 && frame.timelineSlot->frameCounter < 19) {
         for (frame.driftIndex = 0; frame.driftIndex < 2; frame.driftIndex++) {
             frame.spawnSlot = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHarrierVariantSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, &frame.spawnSlot->posX);
-            frame.spawnSlot->posX += (short)(rand() % 0x320 - 0x190);
-            frame.spawnSlot->posY += (short)(rand() % 0x320 - 0x190);
-            frame.spawnSlot->posZ += (short)(rand() % 0x320 - 0x190);
+            frame.spawnSlot->posX += (short)(rand() % 800 - 400);
+            frame.spawnSlot->posY += (short)(rand() % 800 - 400);
+            frame.spawnSlot->posZ += (short)(rand() % 800 - 400);
             g_BattleSpecialHarrierRandomAngle = (rand() % 4096);
-            frame.spawnSlot->velocityX = CosFixed(g_BattleSpecialHarrierRandomAngle) * 0x32 >> 0xC;
-            frame.spawnSlot->velocityZ = SinFixed(g_BattleSpecialHarrierRandomAngle) * 0x32 >> 0xC;
-            frame.spawnSlot->velocityY = -rand() % 0x64;
+            frame.spawnSlot->velocityX = CosFixed(g_BattleSpecialHarrierRandomAngle) * 0x32 >> 12;
+            frame.spawnSlot->velocityZ = SinFixed(g_BattleSpecialHarrierRandomAngle) * 0x32 >> 12;
+            frame.spawnSlot->velocityY = -rand() % 100;
             frame.spawnSlot->variant = 0;
         }
     }
-    if (frame.timelineSlot->frameCounter == 0xF) {
+    if (frame.timelineSlot->frameCounter == 15) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -274,7 +274,7 @@ void __cdecl BattleFx_SpecialHarrierAnimatedSpriteTask(void)
     g_BattleSpecialHarrierDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialHarrierSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialHarrierDrawListHandle);
     if (g_BattleIsPaused == 0) {
         (frame.spriteSlot->frame)++;
-        if (frame.spriteSlot->frame == 0x14) {
+        if (frame.spriteSlot->frame == 20) {
             frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }

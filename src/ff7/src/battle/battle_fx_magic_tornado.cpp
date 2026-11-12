@@ -122,7 +122,7 @@ void __cdecl BattleFx_MagicEnterTornado(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x005ab4d4
 void __cdecl BattleFx_MagicRegisterTornadoPerTargetCallback(int targetMask, int param)
 {
-    Battle_CreateBitPatternCallbackTask(targetMask, param, 0x5A, BattleFx_MagicSpawnTornadoPerTarget);
+    Battle_CreateBitPatternCallbackTask(targetMask, param, 90, BattleFx_MagicSpawnTornadoPerTarget);
 }
 
 /*
@@ -134,10 +134,10 @@ void __cdecl BattleFx_MagicSpawnTornadoPerTarget(int actor, int param)
     int idx;
     BattleFxOrbitCloudTask *effect;
 
-    for (idx = 0; idx < 0x64; idx++) {
+    for (idx = 0; idx < 100; idx++) {
         g_BattleMagicTornado_SpiralParticleRecords[idx].claimState = 0xFFFF;
     }
-    for (idx = 0; idx < 0x64; idx++) {
+    for (idx = 0; idx < 100; idx++) {
         g_BattleMagicTornado_StripParticleRecords[idx].claimState = 0xFFFF;
     }
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)&g_BattleMagicTornado_TargetPosition);
@@ -175,7 +175,7 @@ void __cdecl BattleFx_MagicTornadoTimelineTask(void)
         g_BattleMagicTornado_ModelPairTaskHandle = (BattleTornadoModelPairRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicTornadoModelPairTask);
         g_BattleMagicTornado_ModelPairTaskHandle->target = g_BattleMagicTornado_TargetPosition;
     }
-    if (task->step == 0x22) {
+    if (task->step == 34) {
         Battle_PostActorHitOrHurtMessage(task->recordType);
     }
     if (task->step == 0) {
@@ -186,11 +186,11 @@ void __cdecl BattleFx_MagicTornadoTimelineTask(void)
     }
     relStep = task->step - 4;
     if (relStep >= 0) {
-        if (relStep < 0x1E) {
+        if (relStep < 30) {
             if (relStep % 5 == 0) {
                 strip = BattleFx_MagicTornadoClaimStripParticleRecord();
                 if (strip != 0) {
-                    strip->period = rand() % 0x3E8 + 0x1388;
+                    strip->period = rand() % 1000 + 5000;
                     strip->height = 0;
                     strip->angle = rand() & 0xFFF;
                 }
@@ -198,23 +198,23 @@ void __cdecl BattleFx_MagicTornadoTimelineTask(void)
             if (relStep % 1 == 0) {
                 spiral = BattleFx_MagicTornadoClaimSpiralParticleRecord();
                 if (spiral != 0) {
-                    spiral->period = rand() % 0x3E8 + 0x1388;
+                    spiral->period = rand() % 1000 + 5000;
                     spiral->height = 0;
                     spiral->angle = rand() & 0xFFF;
                     spiral->claimState = 0;
                 }
             }
         } else {
-            relStep -= 0x1E;
-            if (relStep < 0xF) {
-                g_BattleMagicTornado_AlphaFactor = relStep * -0x1000 / 0xF + 0x1000;
+            relStep -= 30;
+            if (relStep < 15) {
+                g_BattleMagicTornado_AlphaFactor = relStep * -0x1000 / 15 + 0x1000;
             } else {
                 g_BattleMagicTornado_SpiralTaskHandle->state = -1;
                 g_BattleMagicTornado_StripTaskHandle->state = -1;
             }
         }
     }
-    if (task->step == 0x31) {
+    if (task->step == 49) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -228,7 +228,7 @@ BattleFxTornadoParticleRecord *__cdecl BattleFx_MagicTornadoClaimSpiralParticleR
 {
     int i;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (g_BattleMagicTornado_SpiralParticleRecords[i].claimState == -1) {
             g_BattleMagicTornado_SpiralParticleRecords[i].claimState = 0;
             g_BattleMagicTornado_SpiralParticleRecords[i].step = 0;
@@ -247,7 +247,7 @@ BattleFxTornadoParticleRecord *__cdecl BattleFx_MagicTornadoClaimStripParticleRe
 {
     int i;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (g_BattleMagicTornado_StripParticleRecords[i].claimState == -1) {
             g_BattleMagicTornado_StripParticleRecords[i].claimState = 0;
             g_BattleMagicTornado_StripParticleRecords[i].step = 0;
@@ -270,7 +270,7 @@ void __cdecl BattleFx_MagicTornadoSpiralParticleControllerTask(void)
 
     taskSlot = (BattleFxTornadoControllerTask *)BATTLE_CURRENT_TASK_SLOT;
     activeCnt = 0;
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (g_BattleMagicTornado_SpiralParticleRecords[i].claimState != -1) {
             BattleFx_MagicTornadoDrawAndStepSpiralParticle(&g_BattleMagicTornado_SpiralParticleRecords[i]);
             activeCnt++;
@@ -305,15 +305,15 @@ void __cdecl BattleFx_MagicTornadoDrawAndStepSpiralParticle(BattleFxTornadoParti
     if (g_BattleIsPaused == 0) {
         for (idx = 0; idx < 3; idx++) {
             particle->angle += (short)(0x25000 / particle->period);
-            particle->height -= (short)(0x3A98 / (particle->period - 0x12C));
-            if (particle->height >> 3 > -0x6E) {
+            particle->height -= (short)(15000 / (particle->period - 300));
+            if (particle->height >> 3 > -110) {
                 heightDelta = particle->height >> 4;
             } else {
-                heightDelta = -0x6E;
+                heightDelta = -110;
             }
-            particle->period -= (short)(heightDelta + 0x64);
-            if (particle->period < 0x190) {
-                particle->period = 0x190;
+            particle->period -= (short)(heightDelta + 100);
+            if (particle->period < 400) {
+                particle->period = 400;
             }
             scratch->period = particle->period;
             scratch->height = particle->height;
@@ -337,9 +337,9 @@ void __cdecl BattleFx_MagicTornadoDrawAndStepSpiralParticle(BattleFxTornadoParti
     numSteps = stepCap;
     ringIndex = particle->pointIndex - numSteps & 7;
     for (idx = 1; idx < numSteps; idx++) {
-        billboard = (PsxMatrix *)BattleFx_InstallBillboardMatrix((short *)&particle->points[ringIndex], 0x1000, 0);
-        if (billboard->t[2] > 0 && billboard->t[2] < 0x7530) {
-            g_BattleMagicTornado_QuadData.blue = (idx << 7) / 5 * g_BattleMagicTornado_AlphaFactor >> 0xC;
+        billboard = (PsxMatrix *)BattleFx_InstallBillboardMatrix((short *)&particle->points[ringIndex], 0x1000 /* 1.0 */, 0);
+        if (billboard->t[2] > 0 && billboard->t[2] < 30000) {
+            g_BattleMagicTornado_QuadData.blue = (idx << 7) / 5 * g_BattleMagicTornado_AlphaFactor >> 12;
             g_BattleMagicTornado_QuadData.green = g_BattleMagicTornado_QuadData.blue;
             (g_BattleMagicTornado_QuadData.red) = g_BattleMagicTornado_QuadData.green;
             g_BattleMagicTornado_DrawListHandle = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleMagicTornado_QuadReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicTornado_DrawListHandle);
@@ -348,7 +348,7 @@ void __cdecl BattleFx_MagicTornadoDrawAndStepSpiralParticle(BattleFxTornadoParti
     }
     if (g_BattleIsPaused == 0) {
         (particle->step)++;
-        if (particle->step > 0x32) {
+        if (particle->step > 50) {
             particle->claimState = 0xFFFF;
         }
     }
@@ -366,7 +366,7 @@ void __cdecl BattleFx_MagicTornadoStripParticleControllerTask(void)
 
     taskSlot = (BattleFxTornadoControllerTask *)BATTLE_CURRENT_TASK_SLOT;
     activeCnt = 0;
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (g_BattleMagicTornado_StripParticleRecords[i].claimState != -1) {
             BattleFx_MagicTornadoDrawAndStepStripParticle(&g_BattleMagicTornado_StripParticleRecords[i]);
             activeCnt++;
@@ -418,15 +418,15 @@ void __cdecl BattleFx_MagicTornadoDrawAndStepStripParticle(BattleFxTornadoPartic
     if (g_BattleIsPaused == 0) {
         for (i = 0; i < 3; i++) {
             stripState->angle += (short)(0x25000 / stripState->period);
-            stripState->height -= (short)(0x3A98 / (stripState->period - 0x12C));
-            if (stripState->height >> 3 > -0x6E) {
+            stripState->height -= (short)(15000 / (stripState->period - 300));
+            if (stripState->height >> 3 > -110) {
                 dH = stripState->height >> 4;
             } else {
-                dH = -0x6E;
+                dH = -110;
             }
-            stripState->period -= (short)(dH + 0x64);
-            if (stripState->period < 0x190) {
-                stripState->period = 0x190;
+            stripState->period -= (short)(dH + 100);
+            if (stripState->period < 400) {
+                stripState->period = 400;
             }
             pStripBlock->period = stripState->period;
             pStripBlock->posY = stripState->height;
@@ -456,15 +456,15 @@ void __cdecl BattleFx_MagicTornadoDrawAndStepStripParticle(BattleFxTornadoPartic
         primitive = (BattleTornadoStripPrimitive *)g_BattleMagicTornado_DrawListHandle;
         vertA->vx = stripState->points[slotIdx].vx;
         xyzA->vx = vertA->vx;
-        xyzA->vy = stripState->points[slotIdx].vy - 0x19;
-        vertA->vy = stripState->points[slotIdx].vy + 0x19;
+        xyzA->vy = stripState->points[slotIdx].vy - 25;
+        vertA->vy = stripState->points[slotIdx].vy + 25;
         vertA->vz = stripState->points[slotIdx].vz;
         xyzA->vz = vertA->vz;
         nextIdx = slotIdx + 1 & 7;
         vertexBPtr->vx = stripState->points[nextIdx].vx;
         quadBuf->corner0X = vertexBPtr->vx;
-        quadBuf->corner0Y = stripState->points[nextIdx].vy - 0x19;
-        vertexBPtr->vy = stripState->points[nextIdx].vy + 0x19;
+        quadBuf->corner0Y = stripState->points[nextIdx].vy - 25;
+        vertexBPtr->vy = stripState->points[nextIdx].vy + 25;
         vertexBPtr->vz = stripState->points[nextIdx].vz;
         quadBuf->depth = vertexBPtr->vz;
         zDepth = Gfx_TransformQuadReturnDepth(xyzA, vertA, (SVECTOR *)quadBuf, vertexBPtr, &projection, &bits);
@@ -475,7 +475,7 @@ void __cdecl BattleFx_MagicTornadoDrawAndStepStripParticle(BattleFxTornadoPartic
             if (i == stepSegCount - 1) {
                 color = 0x3A000000;
             } else {
-                color += g_BattleMagicTornado_AlphaFactor << 4 >> 0xC << 0x10 | g_BattleMagicTornado_AlphaFactor << 4 >> 0xC << 8 | g_BattleMagicTornado_AlphaFactor << 4 >> 0xC;
+                color += g_BattleMagicTornado_AlphaFactor << 4 >> 12 << 0x10 | g_BattleMagicTornado_AlphaFactor << 4 >> 12 << 8 | g_BattleMagicTornado_AlphaFactor << 4 >> 12;
             }
             primitive->colorD = color;
             primitive->colorC = color;
@@ -485,7 +485,7 @@ void __cdecl BattleFx_MagicTornadoDrawAndStepStripParticle(BattleFxTornadoPartic
     }
     if (g_BattleIsPaused == 0) {
         (stripState->step)++;
-        if (stripState->step > 0x32) {
+        if (stripState->step > 50) {
             stripState->claimState = 0xFFFF;
         }
     }
@@ -506,25 +506,25 @@ void __cdecl BattleFx_MagicTornadoModelPairTask(void)
     matrix = (BattleFxTornadoModelWork *)Gfx_GetPsxScratchpadPtr(0);
     scale = &matrix->scale;
     frame = task->frame;
-    if (frame < 0xF) {
-        g_BattleMagicTornado_ModelReq.alpha = (frame << 7) / 0xF;
-        scale->current = frame * 0x1500 / 0xF;
+    if (frame < 15) {
+        g_BattleMagicTornado_ModelReq.alpha = (frame << 7) / 15;
+        scale->current = frame * 0x1500 / 15;
         scale->previous = scale->current;
-        scale->baseValue = frame * 0 / 0xF + 0x1500;
+        scale->baseValue = frame * 0 / 15 + 0x1500;
     } else {
-        frame -= 0xF;
+        frame -= 15;
         if (frame < 0) {
             g_BattleMagicTornado_ModelReq.alpha = 0x80;
-            scale->current = 0x1500;
-            scale->previous = 0x1500;
+            scale->current = 0x1500 /* 1.3125 */;
+            scale->previous = 0x1500 /* 1.3125 */;
             scale->baseValue = 0x1500;
         } else {
             frame = frame;
-            if (frame < 0x1E) {
-                g_BattleMagicTornado_ModelReq.alpha = frame * -0x80 / 0x1E + 0x80;
-                scale->current = (frame << 0xC) / 0x1E + 0x1500;
+            if (frame < 30) {
+                g_BattleMagicTornado_ModelReq.alpha = frame * -0x80 / 30 + 0x80;
+                scale->current = (frame << 12) / 30 + 0x1500;
                 scale->previous = scale->current;
-                scale->baseValue = (frame << 0xC) / 0x1E + 0x1500;
+                scale->baseValue = (frame << 12) / 30 + 0x1500;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;

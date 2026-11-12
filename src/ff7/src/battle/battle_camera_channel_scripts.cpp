@@ -300,9 +300,9 @@ void __cdecl Battle_RunCameraEyeScript(char channel, short param, short scriptGr
             (g_BattleCameraEyeChannels[channel].scriptOffset)++;
             g_BattleVmReg_2 = (int)(short)Battle_CameraEyeFetchWord(pActorState->scriptPtr, (char)channel);
             pActorState->secondarySlot = 0x1000 - (g_BattleActorRecords[g_BattleCameraFocusActor].yaw + 0x800) + g_BattleVmReg_2;
-            pActorState->angle = (g_BattleActorRecords[g_BattleActiveActorId].radius * g_BattleActorRecords[g_BattleActiveActorId].scale >> 0xC) + (g_BattleActorRecords[g_BattleCameraFocusActor].radius * g_BattleActorRecords[g_BattleCameraFocusActor].scale >> 0xC);
-            g_BattleCameraEyeChannels[channel].x = g_BattleActorRecords[g_BattleCameraFocusActor].posX - ((SinFixed(pActorState->secondarySlot) * pActorState->angle) / 0x1000 << g_BattleVmReg_3);
-            g_BattleCameraEyeChannels[channel].z = g_BattleActorRecords[g_BattleCameraFocusActor].posZ + ((CosFixed(pActorState->secondarySlot) * pActorState->angle) / 0x1000 << g_BattleVmReg_3);
+            pActorState->angle = (g_BattleActorRecords[g_BattleActiveActorId].radius * g_BattleActorRecords[g_BattleActiveActorId].scale >> 12) + (g_BattleActorRecords[g_BattleCameraFocusActor].radius * g_BattleActorRecords[g_BattleCameraFocusActor].scale >> 12);
+            g_BattleCameraEyeChannels[channel].x = g_BattleActorRecords[g_BattleCameraFocusActor].posX - ((SinFixed(pActorState->secondarySlot) * pActorState->angle) / 4096 << g_BattleVmReg_3);
+            g_BattleCameraEyeChannels[channel].z = g_BattleActorRecords[g_BattleCameraFocusActor].posZ + ((CosFixed(pActorState->secondarySlot) * pActorState->angle) / 4096 << g_BattleVmReg_3);
             g_BattleCameraEyeChannels[channel].y = g_BattleCameraFocusChannels[channel].y - (short)Battle_CameraEyeFetchWord(pActorState->scriptPtr, (char)channel);
             break;
         case BATTLE_CAMERA_EYE_POLAR_ATTACKER:
@@ -310,9 +310,9 @@ void __cdecl Battle_RunCameraEyeScript(char channel, short param, short scriptGr
             (g_BattleCameraEyeChannels[channel].scriptOffset)++;
             g_BattleVmReg_2 = (int)(short)Battle_CameraEyeFetchWord(pActorState->scriptPtr, (char)channel);
             pActorState->secondarySlot = 0x1000 - (g_BattleActorRecords[g_BattleActiveActorId].yaw + 0x800) + g_BattleVmReg_2;
-            pActorState->angle = (g_BattleActorRecords[g_BattleActiveActorId].radius * g_BattleActorRecords[g_BattleActiveActorId].scale >> 0xC) + (g_BattleActorRecords[g_BattleCameraFocusActor].radius * g_BattleActorRecords[g_BattleCameraFocusActor].scale >> 0xC);
-            g_BattleCameraEyeChannels[channel].x = g_BattleActorRecords[g_BattleActiveActorId].posX - ((SinFixed(pActorState->secondarySlot) * pActorState->angle) / 0x1000 << g_BattleVmReg_3);
-            g_BattleCameraEyeChannels[channel].z = g_BattleActorRecords[g_BattleActiveActorId].posZ + ((CosFixed(pActorState->secondarySlot) * pActorState->angle) / 0x1000 << g_BattleVmReg_3);
+            pActorState->angle = (g_BattleActorRecords[g_BattleActiveActorId].radius * g_BattleActorRecords[g_BattleActiveActorId].scale >> 12) + (g_BattleActorRecords[g_BattleCameraFocusActor].radius * g_BattleActorRecords[g_BattleCameraFocusActor].scale >> 12);
+            g_BattleCameraEyeChannels[channel].x = g_BattleActorRecords[g_BattleActiveActorId].posX - ((SinFixed(pActorState->secondarySlot) * pActorState->angle) / 4096 << g_BattleVmReg_3);
+            g_BattleCameraEyeChannels[channel].z = g_BattleActorRecords[g_BattleActiveActorId].posZ + ((CosFixed(pActorState->secondarySlot) * pActorState->angle) / 4096 << g_BattleVmReg_3);
             g_BattleCameraEyeChannels[channel].y = g_BattleCameraFocusChannels[channel].y - (short)Battle_CameraEyeFetchWord(pActorState->scriptPtr, (char)channel);
             break;
         case BATTLE_CAMERA_EYE_SNAP_BONE_ACTOR:
@@ -1145,7 +1145,7 @@ void __cdecl Battle_CameraScaleAndRotateOffset(short actorIndex, char slot, char
     ratio = g_BattleActorStates[actorIndex].ratioX;
     if (g_BattleActorRecords[actorIndex].scale < 0x1000) {
         ratio = g_BattleActorStates[actorIndex].ratioX / 2;
-        if (ratio < 0x100) {
+        if (ratio < 256) {
             ratio = 0x100;
         }
     }
@@ -1154,7 +1154,7 @@ void __cdecl Battle_CameraScaleAndRotateOffset(short actorIndex, char slot, char
     ratio = g_BattleActorStates[actorIndex].ratioY;
     if (g_BattleActorRecords[actorIndex].scale < 0x1000) {
         ratio = g_BattleActorStates[actorIndex].ratioY / 2;
-        if (ratio < 0x100) {
+        if (ratio < 256) {
             ratio = 0x100;
         }
     }
@@ -1163,7 +1163,7 @@ void __cdecl Battle_CameraScaleAndRotateOffset(short actorIndex, char slot, char
     ratio = g_BattleActorStates[actorIndex].ratioZ;
     if (g_BattleActorRecords[actorIndex].scale < 0x1000) {
         ratio = g_BattleActorStates[actorIndex].ratioZ / 2;
-        if (ratio < 0x100) {
+        if (ratio < 256) {
             ratio = 0x100;
         }
     }
@@ -1178,8 +1178,8 @@ void __cdecl Battle_CameraScaleAndRotateOffset(short actorIndex, char slot, char
     } else {
         yaw = ArcTangentFixed(g_BattleVmReg_0, g_BattleVmReg_2) + g_BattleActorRecords[actorIndex].yaw;
     }
-    g_BattleVmReg_0 = SinFixed(yaw) * length >> 0xC;
-    g_BattleVmReg_2 = CosFixed(yaw) * length >> 0xC;
+    g_BattleVmReg_0 = SinFixed(yaw) * length >> 12;
+    g_BattleVmReg_2 = CosFixed(yaw) * length >> 12;
 }
 
 /*
@@ -1236,9 +1236,9 @@ int __cdecl Battle_CameraCosineEase(int endValue, int startValue, int duration, 
     int delta;
     short phase;
 
-    phase = (elapsed << 0xB) / duration + 0x800;
+    phase = (elapsed << 11) / duration + 0x800;
     delta = startValue - endValue;
-    endValue += (CosFixed(phase) + 0x1000) * delta / 0x2000;
+    endValue += (CosFixed(phase) + 0x1000) * delta / 8192;
     return endValue;
 }
 } /* extern "C" */

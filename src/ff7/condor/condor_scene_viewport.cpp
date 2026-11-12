@@ -20,7 +20,7 @@ void __cdecl Mini_CondorApplyViewportPreset(int state, int presetMode)
     g_CondorUsesSoftwareDriver = state;
     g_CondorPresetMode = presetMode;
     if (presetMode == 2) {
-        Mini_CondorSetViewportRect(0, 0x14, 0x280, 0x1B8);
+        Mini_CondorSetViewportRect(0, 20, 640, 440);
         g_CondorViewportScale = 2;
         g_CondorScreenReferenceScale = FLOAT_220_BITS;
         g_CondorViewportOffsetX = 0;
@@ -31,11 +31,11 @@ void __cdecl Mini_CondorApplyViewportPreset(int state, int presetMode)
         g_CondorScreenReferenceScale = FLOAT_220_BITS;
         g_CondorViewportInset = 0xA;
         if (presetMode == 0) {
-            Mini_CondorSetViewportRect(0, 0xA, 0x140, 0xDC);
+            Mini_CondorSetViewportRect(0, 10, 320, 220);
             g_CondorViewportOffsetX = 0;
             g_CondorViewportOffsetY = 0;
         } else {
-            Mini_CondorSetViewportRect(0xA0, 0x82, 0x140, 0xDC);
+            Mini_CondorSetViewportRect(160, 130, 320, 220);
             g_CondorViewportOffsetX = 0xA0;
             g_CondorViewportOffsetY = 0x78;
         }

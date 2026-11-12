@@ -129,16 +129,16 @@ void __cdecl BattleFx_MagicResistSpawnRadialSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step < 0xA) {
+    if (taskPtr->step < 10) {
         ((SVECTOR *)&g_BattleMagicResist_ParticleRotation)->vy = rand() & 0xFFF;
         for (i = 0; i < g_BattleMagicResist_SpritesPerTick; i++) {
             newTask = (BattleWhiteWindFadingSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicResistFadingSpriteTask);
             newTask->origin = taskPtr->origin;
             newTask->scale = rand() % 0x300 + 0x100;
             newTask->angle = g_BattleMagicResist_ParticleRotation;
-            newTask->radialSpeed = rand() % 0x190 + 0x64 << 4;
+            newTask->radialSpeed = rand() % 400 + 100 << 4;
             newTask->spinStep = rand() % 0x64 - 0x32;
-            ((SVECTOR *)&g_BattleMagicResist_ParticleRotation)->vy += (short)(0x1000 / g_BattleMagicResist_SpritesPerTick);
+            ((SVECTOR *)&g_BattleMagicResist_ParticleRotation)->vy += (short)(4096 / g_BattleMagicResist_SpritesPerTick);
         }
     } else {
         Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
@@ -195,12 +195,12 @@ void __cdecl BattleFx_MagicResistFadingSpriteTask(void)
     frame.fadeVelocity = (BattleFxWhiteWindFadeState *)Gfx_GetPsxScratchpadPtr(0);
     frame.rotMatrix = (int)frame.fadeVelocity + 8;
     frame.age = frame.sprite->timer;
-    if (frame.age < 0xD) {
+    if (frame.age < 13) {
         frame.shadeA = 0x80;
         frame.shadeB = frame.shadeA;
         frame.shadeC = frame.shadeB;
     } else {
-        frame.age -= 0xD;
+        frame.age -= 13;
         if (frame.age < 4) {
             frame.shadeA = ((frame.age * -0x80) / 4) + 0x80;
             frame.shadeB = frame.shadeA;
@@ -222,8 +222,8 @@ void __cdecl BattleFx_MagicResistFadingSpriteTask(void)
         frame.sprite->posX += (short)(frame.fadeVelocity->velocityX >> 4);
         frame.sprite->posY += (short)(frame.fadeVelocity->velocityY >> 4);
         frame.sprite->posZ += (short)(frame.fadeVelocity->velocityZ >> 4);
-        frame.sprite->radialSpeed -= (short)(frame.sprite->radialSpeed * 0x300 >> 0xC);
-        frame.sprite->rotZ += (short)((-0x400 - frame.sprite->rotZ) * 0x300 >> 0xC);
+        frame.sprite->radialSpeed -= (short)(frame.sprite->radialSpeed * 0x300 /* 0.1875 */ >> 12);
+        frame.sprite->rotZ += (short)((-0x400 - frame.sprite->rotZ) * 0x300 /* 0.1875 */ >> 12);
         frame.sprite->rotX += frame.sprite->spinStep;
     }
 }

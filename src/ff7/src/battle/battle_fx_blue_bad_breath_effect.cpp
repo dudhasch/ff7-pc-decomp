@@ -47,7 +47,7 @@ struct BattleFxBadBreathParticleRing g_BattleBlueBadBreathParticleCount = {0};
 // g_BattleBlueBadBreathParticlePool is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0xba5190..0xba5f68 are aliases.
 // GLOBAL: FF7 0x00ba5190
-unsigned char g_BattleBlueBadBreathParticlePool[0xdd8] = {0};
+unsigned char g_BattleBlueBadBreathParticlePool[3544] = {0};
 // GLOBAL: FF7 0x00ba5f68
 int g_BattleBlueBadBreathTargetMask = 0;
 // GLOBAL: FF7 0x00ba5f6c
@@ -132,32 +132,32 @@ void __cdecl BattleFx_BlueBadBreathTimelineTask(void)
         return;
     }
     task = (BattleFxBadBreathRecord *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->frame > 1 && task->frame < 0x21) {
+    if (task->frame > 1 && task->frame < 33) {
         ringIndex = (g_BattleBlueBadBreathParticleCount.ringIndex);
         pNewTask = BATTLE_NEW_TASK_SLOT(BattleFx_BlueBadBreathAnimatedSpritesTask);
         ((BattleFxBerserkFadeSprite *)pNewTask)->ringIndex = ringIndex;
         for (idx = 0; idx < 4; idx++) {
-            bytesRand = rand() % 0x1000 + 0x800;
+            bytesRand = rand() % 4096 + 2048;
             *(short *)((char *)&(((BattleFxBadBreathParticleRing *)&(g_BattleBlueBadBreathParticleCount.ringIndex))->posX) + (ringIndex << 4)) = task->baseX + rand() % task->jitterRange - task->jitterOffset;
             *(short *)((char *)&(((BattleBlueBadBreathParticleCountObject *)&(g_BattleBlueBadBreathParticleCount.ringIndex))->kusaiParticlePosY) + (ringIndex << 4)) = task->baseY - rand() % task->jitterRangeY + task->jitterOffsetY;
             *(short *)((char *)&(((BattleFxBadBreathParticleRing *)&(g_BattleBlueBadBreathParticleCount.ringIndex))->posZ) + (ringIndex << 4)) = task->baseZ + rand() % task->jitterRange - task->jitterOffset;
-            baseSize = task->scale * bytesRand >> 0xC;
+            baseSize = task->scale * bytesRand >> 12;
             ((BattleFxBlueBadBreathParticle *)&g_BattleBlueBadBreathParticlePool)[ringIndex].timeline = baseSize;
             ringIndex++;
-            if (ringIndex >= 0xDE) {
+            if (ringIndex >= 222) {
                 ringIndex = 0;
             }
         }
         (g_BattleBlueBadBreathParticleCount.ringIndex) = ringIndex;
     }
-    if (task->frame == 0x28) {
-        for (idx = 0; idx < 0xA; idx++) {
+    if (task->frame == 40) {
+        for (idx = 0; idx < 10; idx++) {
             if ((g_BattleBlueBadBreathTargetMask & 1 << idx) != 0) {
                 Battle_PostActorHitOrHurtMessage(idx);
             }
         }
     }
-    if (task->frame >= 0x30) {
+    if (task->frame >= 48) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frame)++;
@@ -179,11 +179,11 @@ void __cdecl BattleFx_BlueBadBreathAnimatedSpritesTask(void)
         BattleFx_InstallBillboardMatrix((void *)((slotIdx << 4) + (int)&(((BattleFxBadBreathParticleRing *)&(g_BattleBlueBadBreathParticleCount.ringIndex))->posX)), (short)((BattleFxBlueBadBreathParticle *)&g_BattleBlueBadBreathParticlePool)[slotIdx].timeline, -(((BattleFxBlueBadBreathParticle *)&g_BattleBlueBadBreathParticlePool)[slotIdx].timeline >> 2));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&(g_BattleBlueBadBreathSpriteReq.spriteGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         slotIdx++;
-        if (slotIdx >= 0xDE) {
+        if (slotIdx >= 222) {
             slotIdx = 0;
         }
     }
-    if (pSprite->frame >= 0xB) {
+    if (pSprite->frame >= 11) {
         pSprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

@@ -212,42 +212,42 @@ void __cdecl BattleFx_LimitHighwindTimelineTask(void)
         SfxLoadIntoBuffer(0x7C, 0);
         SfxLoadIntoBuffer(0x21B, 0);
     }
-    if (frame.hiwindRecord->step == 0x35) {
+    if (frame.hiwindRecord->step == 53) {
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, 0x40, 0x21B, 0, 0, 0, 0, 0, 0);
     }
-    if (frame.hiwindRecord->step == 0x45 || frame.hiwindRecord->step == 0x6F) {
+    if (frame.hiwindRecord->step == 69 || frame.hiwindRecord->step == 111) {
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, 0x40, 0x223, 0, 0, 0, 0, 0, 0);
     }
-    if (((frame.hiwindRecord->step >= 0x3C && frame.hiwindRecord->step < 0x5A) || (frame.hiwindRecord->step >= 0x66 && frame.hiwindRecord->step < 0x84)) && frame.hiwindRecord->step % 3 != 0) {
+    if (((frame.hiwindRecord->step >= 60 && frame.hiwindRecord->step < 90) || (frame.hiwindRecord->step >= 102 && frame.hiwindRecord->step < 132)) && frame.hiwindRecord->step % 3 != 0) {
         frame.projectileSlot = (BattleFxHighwindProjectile *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHighwindProjectileTask);
         frame.projectileSlot->posX = frame.hiwindRecord->posX;
         frame.projectileSlot->posY = frame.hiwindRecord->posY;
         frame.projectileSlot->posZ = frame.hiwindRecord->posZ;
         frame.angle = (rand() % 4096);
-        frame.projectileSlot->posX += (short)(SinFixed(frame.angle) * 0x3E8 >> 0xC);
-        frame.projectileSlot->posZ += (short)(CosFixed(frame.angle) * 0x3E8 >> 0xC);
+        frame.projectileSlot->posX += (short)(SinFixed(frame.angle) * 0x3E8 >> 12);
+        frame.projectileSlot->posZ += (short)(CosFixed(frame.angle) * 0x3E8 >> 12);
         frame.targetX = g_BattleLimitHighwindTargetCentroid[0];
         frame.targetY = g_BattleLimitHighwindTargetCentroid[1];
         frame.targetZ = g_BattleLimitHighwindTargetCentroidZ;
         if (rand() % 3 == 0) {
             frame.angle = (rand() % 4096);
-            frame.targetX += (short)(SinFixed(frame.angle) * 0xFA0 >> 0xC);
-            frame.targetZ += (short)(CosFixed(frame.angle) * 0xFA0 >> 0xC);
+            frame.targetX += (short)(SinFixed(frame.angle) * 0xFA0 >> 12);
+            frame.targetZ += (short)(CosFixed(frame.angle) * 0xFA0 >> 12);
         } else {
-            frame.targetX += (short)(rand() % 0xBB8 - 0x5DC);
-            frame.targetZ += (short)(rand() % 0xBB8 - 0x5DC);
+            frame.targetX += (short)(rand() % 3000 - 1500);
+            frame.targetZ += (short)(rand() % 3000 - 1500);
         }
-        frame.projectileSlot->velocityX = (frame.targetX - frame.projectileSlot->posX) / 0xA;
-        frame.projectileSlot->velocityY = 0x258;
-        frame.projectileSlot->velocityZ = (frame.targetZ - frame.projectileSlot->posZ) / 0xA;
+        frame.projectileSlot->velocityX = (frame.targetX - frame.projectileSlot->posX) / 10;
+        frame.projectileSlot->velocityY = 600;
+        frame.projectileSlot->velocityZ = (frame.targetZ - frame.projectileSlot->posZ) / 10;
     }
-    if (((frame.hiwindRecord->step >= 0x45 && frame.hiwindRecord->step < 0x60) || (frame.hiwindRecord->step >= 0x6F && frame.hiwindRecord->step < 0x8A)) && frame.hiwindRecord->step % 3 == 0) {
+    if (((frame.hiwindRecord->step >= 69 && frame.hiwindRecord->step < 96) || (frame.hiwindRecord->step >= 111 && frame.hiwindRecord->step < 138)) && frame.hiwindRecord->step % 3 == 0) {
         frame.ringRecord = (BattleFxHighwindHitRecord *)Battle_AllocSceneMessage(0xA);
         frame.ringRecord->targetActor = g_BattleHitTargetActors[g_BattleLimitHighwindHitIndex];
         frame.ringRecord->hitIndex = g_BattleLimitHighwindHitIndex;
         g_BattleLimitHighwindHitIndex++;
     }
-    if (frame.hiwindRecord->step == 0x8C) {
+    if (frame.hiwindRecord->step == 140) {
         frame.projectileSlot = (BattleFxHighwindProjectile *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHighwindShrinkingModelTask);
         frame.projectileSlot->posX = g_BattleLimitHighwindTargetCentroid[0];
         frame.projectileSlot->posY = g_BattleLimitHighwindTargetCentroid[1];
@@ -256,7 +256,7 @@ void __cdecl BattleFx_LimitHighwindTimelineTask(void)
         Battle_AllocateResourceSlot(BattleFx_LimitHighwindSpriteAnimationEmitterTask);
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, 0x40, 0x7C, 0, 0, 0, 0, 0, 0);
     }
-    if (frame.hiwindRecord->step == 0x8C) {
+    if (frame.hiwindRecord->step == 140) {
         for (frame.typeIndex = 0; frame.typeIndex < 0xA; frame.typeIndex++) {
             if ((g_BattleLimitHighwindTargetBits & 1 << frame.typeIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.typeIndex);
@@ -264,7 +264,7 @@ void __cdecl BattleFx_LimitHighwindTimelineTask(void)
         }
     }
     (frame.hiwindRecord->step)++;
-    if (frame.hiwindRecord->step == 0xAA) {
+    if (frame.hiwindRecord->step == 170) {
         g_BattleScriptEffectFlag = 0;
         frame.hiwindRecord->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x223, 0xF);
@@ -289,7 +289,7 @@ void __cdecl BattleFx_LimitHighwindScreenFlashTask(void)
     }
     g_BattleLimitHighwindFlashLevel -= 0xF;
     (task->frameCounter)++;
-    if (task->frameCounter == 0x10) {
+    if (task->frameCounter == 16) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -316,14 +316,14 @@ void __cdecl BattleFx_LimitHighwindSpriteAnimationEmitterTask(void)
         pSprite->posX = g_BattleLimitHighwindTargetCentroid[0];
         pSprite->posY = g_BattleLimitHighwindTargetCentroid[1];
         pSprite->posZ = g_BattleLimitHighwindTargetCentroidZ;
-        pSprite->posX += (short)(SinFixed(angle) * 0x3E8 >> 0xC);
-        pSprite->posZ += (short)(CosFixed(angle) * 0x3E8 >> 0xC);
+        pSprite->posX += (short)(SinFixed(angle) * 0x3E8 >> 12);
+        pSprite->posZ += (short)(CosFixed(angle) * 0x3E8 >> 12);
         pSprite->rotation.vx = 0xFFFFFE0C - rand() % 0x1F4;
         pSprite->rotation.vy = angle;
         pSprite->rotation.vz = 0;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x10) {
+    if (taskPtr->frameCounter == 16) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -410,13 +410,13 @@ void __cdecl BattleFx_LimitHighwindProjectileTask(void)
     frame.projectile->posX += frame.projectile->velocityX;
     frame.projectile->posY += frame.projectile->velocityY;
     frame.projectile->posZ += frame.projectile->velocityZ;
-    frame.projectile->velocityY -= 0x3C;
+    frame.projectile->velocityY -= 60;
     frame.spriteState = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHighwindProjectileTrailSpriteTask);
     frame.spriteState->posX = frame.projectile->posX;
     frame.spriteState->posY = frame.projectile->posY;
     frame.spriteState->posZ = frame.projectile->posZ;
     (frame.projectile->age)++;
-    if (frame.projectile->age == 0xA) {
+    if (frame.projectile->age == 10) {
         frame.spriteState = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHighwindProjectileImpactSpriteTask);
         frame.spriteState->posX = frame.projectile->posX;
         frame.spriteState->posY = frame.projectile->posY;
@@ -436,7 +436,7 @@ void __cdecl BattleFx_LimitHighwindProjectileImpactSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitHighwindSpriteReqPool[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(4, g_BattleLimitHighwindModelTable);
     g_BattleLimitHighwindSpriteReqPool[0].drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleLimitHighwindModelTable);
-    BattleFx_InstallBillboardMatrix(task->data, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(task->data, 0x3000 /* 3.0 */, 0);
     g_BattleLimitHighwindSpriteReqPool[0].frame = task->frameCounter;
     g_BattleLimitHighwindDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleLimitHighwindSpriteReqPool[0], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitHighwindDrawHandle);
     if (g_BattleIsPaused != 0) {
@@ -463,7 +463,7 @@ void __cdecl BattleFx_LimitHighwindProjectileTrailSpriteTask(void)
     g_BattleLimitHighwindAnimTable68.trailSpriteGroup = Gfx_ModelTableGetLoadedRecord(2, g_BattleLimitHighwindModelTable);
     g_BattleLimitHighwindAnimTable68.trailDrawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleLimitHighwindModelTable);
     if (task->frameCounter > 1) {
-        BattleFx_InstallBillboardMatrix(task->data, 0x1C00, 0);
+        BattleFx_InstallBillboardMatrix(task->data, 0x1C00 /* 1.75 */, 0);
         g_BattleLimitHighwindColorData80.frame = task->frameCounter - 2;
         g_BattleLimitHighwindColorData80.colorB = ((task->frameCounter - 2 != 0 ? -1 : 0) & (char)0xA0) + 0x80;
         g_BattleLimitHighwindColorData80.colorG = g_BattleLimitHighwindColorData80.colorB;
@@ -517,7 +517,7 @@ void __cdecl BattleFx_LimitHighwindShrinkingModelTask(void)
         return;
     }
     (local.p->frameCount)++;
-    if (local.p->frameCount == 0x14) {
+    if (local.p->frameCount == 20) {
         local.p->ownerSlot = BATTLE_TASK_FREE;
     }
 }

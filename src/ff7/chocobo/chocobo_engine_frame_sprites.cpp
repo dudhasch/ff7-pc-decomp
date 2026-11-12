@@ -1047,15 +1047,15 @@ void __cdecl Mini_ChocoboEmitSpriteBatchCornerQuad(ChocoboSpriteRecord *cornerSp
 
     if (AcquireBatchNode(1, g_ChocoboHudRenderObjects[cornerSprite->renderObjectIndex].renderObj) != 0) {
         red = cornerSprite->uColorR << 1;
-        if (red > 0xFF) {
+        if (red > 255) {
             red = 0xFF;
         }
         green = cornerSprite->uColorG << 1;
-        if (green > 0xFF) {
+        if (green > 255) {
             green = 0xFF;
         }
         blueVal = cornerSprite->uColorB << 1;
-        if (blueVal > 0xFF) {
+        if (blueVal > 255) {
             blueVal = 0xFF;
         }
         colour = red << 0x10 | 0x80000000 | green << 8 | blueVal;
@@ -1120,15 +1120,15 @@ void __cdecl Mini_ChocoboEmitInsetRect(ChocoboSpriteRecord *rect)
 #pragma pack(pop)
 
     frame.doubledR = rect->uColorR << 1;
-    if (frame.doubledR > 0xFF) {
+    if (frame.doubledR > 255) {
         frame.doubledR = 0xFF;
     }
     frame.doubledG = rect->uColorG << 1;
-    if (frame.doubledG > 0xFF) {
+    if (frame.doubledG > 255) {
         frame.doubledG = 0xFF;
     }
     frame.doubledB = rect->uColorB << 1;
-    if (frame.doubledB > 0xFF) {
+    if (frame.doubledB > 255) {
         frame.doubledB = 0xFF;
     }
     if (frame.doubledR == 0xFF && frame.doubledG == 0xFF && frame.doubledB == 0xFF) {
@@ -1217,15 +1217,15 @@ void __cdecl Mini_ChocoboEmitSpriteObjectDoubledColor(ChocoboSpriteObject *objec
     unsigned short index;
 
     red = object->colorR << 1;
-    if (red > 0xFF) {
+    if (red > 255) {
         red = 0xFF;
     }
     green = object->colorG << 1;
-    if (green > 0xFF) {
+    if (green > 255) {
         green = 0xFF;
     }
     b = object->colorB << 1;
-    if (b > 0xFF) {
+    if (b > 255) {
         b = 0xFF;
     }
     primitive = Gfx_EmitTexturedRect(g_ChocoboViewportOffsetX + object->posX * g_ChocoboUiScaleFactor, g_ChocoboViewportOffsetY + object->posY * g_ChocoboUiScaleFactor + g_ChocoboViewportOffsetBase, object->texWidth * g_ChocoboUiScaleFactor, object->texHeight * g_ChocoboUiScaleFactor, object->texX, object->texY, object->texWidth, object->texHeight, object[1].slot, object->depth, FLOAT_ONE_BITS, (int)g_ChocoboHudRenderObjects[object->slot].renderObj);
@@ -1256,7 +1256,7 @@ void __cdecl Mini_ChocoboEmitBlackSpriteRect(ChocoboBlackSpriteRect *rect)
     *(char *)&frame.blackColor = 0;
     frame.zeroByte3 = 0;
     frame.zeroByte2 = 0;
-    if (*(unsigned char *)&rect->level > 0xFF) {
+    if (*(unsigned char *)&rect->level > 255) {
         rect->level = 0xFF;
     }
     frame.alpha = rect->level;
@@ -1306,7 +1306,7 @@ void __cdecl Mini_ChocoboDrawFrame(void)
     Gfx_BeginSceneCall(0, pEngine);
     Gfx_SetScenePassCall(GFX_SCENE_PASS_OPAQUE, (struct GfxEngineContext *)((int)pEngine));
     Gfx_SetRenderStateCall(RENDER_STATE_LINEAR_FILTER, 0, (struct GfxEngineContext *)((int)pEngine));
-    for (slotIndex = 0; slotIndex < 0x28; slotIndex++) {
+    for (slotIndex = 0; slotIndex < 40; slotIndex++) {
         if (g_ChocoboHudRenderObjects[slotIndex].activeFlag != 0 && g_ChocoboHudRenderObjects[slotIndex].slotUsedFlag != 0 && g_ChocoboHudRenderObjects[slotIndex].readyFlag == 0) {
             if (g_ChocoboHudRenderObjects[slotIndex].alternateFlag != 0) {
                 Gfx_DrawRenderObjectCall(g_ChocoboHudRenderObjects[slotIndex].renderObj, pEngine);
@@ -1344,7 +1344,7 @@ void __cdecl Mini_ChocoboDrawFrame(void)
         Gfx_DrawRenderObjectCall((GfxRenderObject *)g_ChocoboHudObj, pEngine);
     }
     Mini_ChocoboEmitSpriteObjectsGroup1(pEngine);
-    for (slotIndex = 0; slotIndex < 0x28; slotIndex++) {
+    for (slotIndex = 0; slotIndex < 40; slotIndex++) {
         if (g_ChocoboHudRenderObjects[slotIndex].activeFlag != 0 && g_ChocoboHudRenderObjects[slotIndex].slotUsedFlag != 0 && g_ChocoboHudRenderObjects[slotIndex].readyFlag != 0) {
             if (g_ChocoboHudRenderObjects[slotIndex].alternateFlag != 0) {
                 Gfx_DrawRenderObjectCall(g_ChocoboHudRenderObjects[slotIndex].renderObj, pEngine);
@@ -1403,7 +1403,7 @@ void __cdecl Mini_ChocoboSyncDisplayEntryToObject(ChocoboRacerEntry *entry)
         if (entry->noGroundOffset != 0) {
             entry->player->posY = (float)entry->posY;
         } else {
-            entry->player->posY = (float)(entry->posY - 0xA);
+            entry->player->posY = (float)(entry->posY - 10);
         }
         entry->player->posZ = (float)entry->posZ;
         entry->drawPending = 1;
@@ -1892,8 +1892,8 @@ void __cdecl Mini_ChocoboRunRaceResultLoop(void)
             break;
         case CHOCOBO_RACE_PHASE_RACE:
             frame.loopDone = 1;
-            if (g_ChocoboRaceTimer > 0xBB8) {
-                g_ChocoboFadeStep = 0x10;
+            if (g_ChocoboRaceTimer > 3000) {
+                g_ChocoboFadeStep = 16;
                 if (g_ChocoboCameraControlRecord.initialized == 0) {
                     g_pChocoboSoundCommand->soundCommand = SOUND_MUSIC_VOLUME_TRANS;
                     g_pChocoboSoundCommand->soundArg = 0x3C;
@@ -1905,7 +1905,7 @@ void __cdecl Mini_ChocoboRunRaceResultLoop(void)
             g_ChocoboSpriteClearedWord = 0;
             Mini_ChocoboRaceUpdateCameraTargets();
             g_ChocoboCameraControlRecord.bufferPtr = &g_pChocoboCourseWaypoints[g_ChocoboRacers[g_ChocoboViewedRacer].segment];
-            if (g_ChocoboCourseVariant == 1 && g_ChocoboRacers[g_ChocoboViewedRacer].segment > 0x35 && g_ChocoboRacers[g_ChocoboViewedRacer].segment < 0x9B) {
+            if (g_ChocoboCourseVariant == 1 && g_ChocoboRacers[g_ChocoboViewedRacer].segment > 53 && g_ChocoboRacers[g_ChocoboViewedRacer].segment < 155) {
                 g_ChocoboCameraControlRecord.bufferPtr->cameraFlags = 1;
             }
             if ((g_ChocoboCameraControlRecord.bufferPtr->cameraFlags & 1) != 0) {
@@ -1938,19 +1938,19 @@ void __cdecl Mini_ChocoboRunRaceResultLoop(void)
                 }
             }
             g_ChocoboStartTimer++;
-            if (g_ChocoboStartTimer == 0x3C) {
+            if (g_ChocoboStartTimer == 60) {
                 g_ChocoboRaceAdvanceEnabled = 0xFFFFFFFF;
                 for (frame.racerIndex = 0; frame.racerIndex < 6; frame.racerIndex++) {
                     if (g_ChocoboRacers[frame.racerIndex].hasStartBoost != 0) {
-                        g_ChocoboRacers[frame.racerIndex].dashTimer = 0x3C;
+                        g_ChocoboRacers[frame.racerIndex].dashTimer = 60;
                     } else {
-                        g_ChocoboRacers[frame.racerIndex].dashTimer = 0xA;
+                        g_ChocoboRacers[frame.racerIndex].dashTimer = 10;
                     }
                 }
             }
             g_ChocoboPrevInputLatch = *(int *)&g_ChocoboPackedInputLatches;
             if ((*(int *)&g_ChocoboPackedInputLatches & INPUT_START) != 0 && g_ChocoboSkipPromptActive != 0) {
-                g_ChocoboFadeStep = 0x10;
+                g_ChocoboFadeStep = 16;
                 g_pChocoboSoundCommand->soundCommand = SOUND_MUSIC_VOLUME_TRANS;
                 g_pChocoboSoundCommand->soundArg = 0x3C;
                 g_pChocoboSoundCommand->soundParam1 = 0;
@@ -1969,14 +1969,14 @@ void __cdecl Mini_ChocoboRunRaceResultLoop(void)
                 g_ChocoboCameraControlRecord.toggle = g_ChocoboCameraControlRecord.toggle == 0;
                 g_ChocoboCameraControlRecord.frameCounter++;
             }
-            if (g_ChocoboPlayerRides != 0 && g_ChocoboCameraControlRecord.frameCounter > 0xA) {
-                (g_ChocoboRacers[0].stamina) += (g_ChocoboRacers[0].staminaMax) / 0x96;
+            if (g_ChocoboPlayerRides != 0 && g_ChocoboCameraControlRecord.frameCounter > 10) {
+                (g_ChocoboRacers[0].stamina) += (g_ChocoboRacers[0].staminaMax) / 150;
                 if ((g_ChocoboRacers[0].stamina) > (g_ChocoboRacers[0].staminaMax)) {
                     (g_ChocoboRacers[0].stamina) = (g_ChocoboRacers[0].staminaMax);
                 }
                 g_ChocoboCameraControlRecord.frameCounter = 0;
             }
-            if (g_ChocoboFadeLevel > 0xFF && g_ChocoboFadeStep > 0) {
+            if (g_ChocoboFadeLevel > 255 && g_ChocoboFadeStep > 0) {
                 g_ChocoboFadeStep = 0;
                 g_ChocoboRacePhase = CHOCOBO_RACE_PHASE_FINISH;
             }

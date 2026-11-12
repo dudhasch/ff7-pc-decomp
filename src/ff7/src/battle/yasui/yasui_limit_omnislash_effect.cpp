@@ -392,7 +392,7 @@ int __cdecl BattleFx_LimitEnterOmnislash(int targetMask, int actorIdx)
     g_YasuiLimitOmnislashSubAngle = 0;
     g_YasuiLimitOmnislashFlashIntensity = 0;
     g_YasuiLimitOmnislashAlphaPhase = 0;
-    g_YasuiLimitOmnislashScaleVector1 = 0x2000;
+    g_YasuiLimitOmnislashScaleVector1 = 0x2000 /* 2.0 */;
     g_YasuiLimitOmnislashUnused2b4 = 0;
     g_YasuiLimitOmnislashSineOffset = 0;
     g_YasuiLimitOmnislashScaleTarget2 = 0x2000;
@@ -401,7 +401,7 @@ int __cdecl BattleFx_LimitEnterOmnislash(int targetMask, int actorIdx)
     g_YasuiLimitOmnislashScaleTarget = 0x2000;
     g_YasuiLimitOmnislashScaleInterp2 = g_YasuiLimitOmnislashScaleTarget;
     g_YasuiLimitOmnislashScaleInterp1 = g_YasuiLimitOmnislashScaleInterp2;
-    g_YasuiLimitOmnislashScaleVector2 = 0x100;
+    g_YasuiLimitOmnislashScaleVector2 = 0x100 /* 0.0625 */;
     g_YasuiLimitOmnislashRadiusTarget = 0x400;
     g_YasuiLimitOmnislashRadiusInterp = g_YasuiLimitOmnislashRadiusTarget;
     g_YasuiLimitOmnislashScalePulse3 = 0;
@@ -446,7 +446,7 @@ void __cdecl BattleFx_LimitBeginOmnislash(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel1 = 0;
     g_BattleFxTimelineState.channel2 = g_BattleFxTimelineState.channel1;
     g_BattleFxTimelineState.red = 0x60;
-    Battle_StartFixedPointRamp(0x1000, 0xA);
+    Battle_StartFixedPointRamp(0x1000, 10);
     g_BattleScriptEffectFlag = 1;
     BattleFx_LimitOmnislashBeginParticlePool();
 }
@@ -487,7 +487,7 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
     if (frame.timeline->state >= 0x45 && frame.timeline->state < 0x48) {
         g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posX += frame.timeline->deltaPosX;
         g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posZ += frame.timeline->deltaPosZ;
-        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posX, 0xC8, -0x64, 2);
+        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posX, 200, -100, 2);
     }
     if (frame.timeline->state == 0x45) {
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posX), 0x1A, 0, 0, 0, 0, 0, 0);
@@ -530,18 +530,18 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
     }
     if (frame.timeline->state >= 0xAB && frame.timeline->state < 0xB5) {
         Battle_GetBoneWorldPos(g_YasuiLimitOmnislashSourceActor, g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].bone36, &frame.pointX);
-        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.pointX, 0x64, 0x64, 1);
+        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.pointX, 100, 100, 1);
     }
     if (frame.timeline->state == 0xA9) {
         frame.entry = (BattleFxOmnislashSlashEntry *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitOmnislashSpritePairParticleEmitterTask);
         frame.entry->worldX = 0;
         frame.entry->velocityY = 0xFC18;
-        frame.entry->worldZ = 0x3E80;
+        frame.entry->worldZ = 16000;
     }
     if (frame.timeline->state == 0xFA) {
         Battle_AllocateResourceSlot(BattleFx_LimitOmnislashWhiteFlashPulseTask);
     }
-    if (g_YasuiLimitOmnislashSlashIndex < 0xF && frame.timeline->state == g_YasuiLimitOmnislashMotionTable1[g_YasuiLimitOmnislashSlashIndex] + 0x2A) {
+    if (g_YasuiLimitOmnislashSlashIndex < 15 && frame.timeline->state == g_YasuiLimitOmnislashMotionTable1[g_YasuiLimitOmnislashSlashIndex] + 0x2A) {
         g_YasuiLimitOmnislashTargetActor = g_BattleHitTargetActors[g_YasuiLimitOmnislashSlashIndex];
         (g_YasuiLimitOmnislashBasePosX.posX) = g_BattleActorRecords[g_YasuiLimitOmnislashTargetActor].posX;
         g_YasuiLimitOmnislashBasePosX.posY = g_BattleActorRecords[g_YasuiLimitOmnislashTargetActor].posY;
@@ -549,12 +549,12 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
         if (g_YasuiLimitOmnislashBasePosZ < frame.timeline->targetPosZ) {
             g_YasuiLimitOmnislashAttackAngle = 0;
         } else {
-            g_YasuiLimitOmnislashAttackAngle = 0x800;
+            g_YasuiLimitOmnislashAttackAngle = 0x800 /* 180 deg */;
         }
         frame.param = g_BattleActorRecords[g_YasuiLimitOmnislashTargetActor].radius + 0x5DC;
-        (g_YasuiLimitOmnislashTargetPosX.posX) = (g_YasuiLimitOmnislashBasePosX.posX) + (SinFixed(g_YasuiLimitOmnislashAttackAngle) * frame.param >> 0xC);
+        (g_YasuiLimitOmnislashTargetPosX.posX) = (g_YasuiLimitOmnislashBasePosX.posX) + (SinFixed(g_YasuiLimitOmnislashAttackAngle) * frame.param >> 12);
         g_YasuiLimitOmnislashTargetPosX.posY = 0;
-        g_YasuiLimitOmnislashTargetPosZ = g_YasuiLimitOmnislashBasePosZ + (CosFixed(g_YasuiLimitOmnislashAttackAngle) * frame.param >> 0xC);
+        g_YasuiLimitOmnislashTargetPosZ = g_YasuiLimitOmnislashBasePosZ + (CosFixed(g_YasuiLimitOmnislashAttackAngle) * frame.param >> 12);
         g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posX = (g_YasuiLimitOmnislashTargetPosX.posX);
         g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posY = g_YasuiLimitOmnislashTargetPosX.posY;
         g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posZ = g_YasuiLimitOmnislashTargetPosZ;
@@ -564,7 +564,7 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
         g_YasuiLimitOmnislashSlashDuration = g_YasuiLimitOmnislashMotionTable2[g_YasuiLimitOmnislashSlashIndex] - g_YasuiLimitOmnislashMotionTable1[g_YasuiLimitOmnislashSlashIndex];
         Battle_CreateEffectTrailTask(g_YasuiLimitOmnislashSourceActor, -1, 0x320, 0x208020, 4, (&g_YasuiLimitOmnislashMotionTable1[1])[g_YasuiLimitOmnislashSlashIndex] - g_YasuiLimitOmnislashMotionTable1[g_YasuiLimitOmnislashSlashIndex]);
         Battle_GetBoneWorldPos(g_YasuiLimitOmnislashSourceActor, g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].bone36, &frame.pointX);
-        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.pointX, 0xC8, -0x64, 4);
+        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.pointX, 200, -100, 4);
     }
     if (g_YasuiLimitOmnislashSlashDuration > 0) {
         g_YasuiLimitOmnislashSlashDuration--;
@@ -576,12 +576,12 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
             frame.entry->targetActor = g_YasuiLimitOmnislashTargetActor;
             frame.entry->animValue = g_YasuiLimitOmnislashMotionTable5[g_YasuiLimitOmnislashSlashIndex];
             frame.entry->motionId = g_YasuiLimitOmnislashMotionTable6[g_YasuiLimitOmnislashSlashIndex];
-            if (g_YasuiLimitOmnislashSlashIndex != 0xE) {
+            if (g_YasuiLimitOmnislashSlashIndex != 14) {
                 frame.entry = (BattleFxOmnislashSlashEntry *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitOmnislashScalingModelEntry0Task);
                 Battle_GetBoneWorldPos(g_YasuiLimitOmnislashTargetActor, g_BattleActorRecords[g_YasuiLimitOmnislashTargetActor].targetBone, &frame.entry->worldX);
                 frame.param = g_YasuiLimitOmnislashMotionTable4[g_YasuiLimitOmnislashSlashIndex];
                 if (frame.param == -1) {
-                    frame.angleX.vx = 0x400;
+                    frame.angleX.vx = 0x400 /* 90 deg */;
                     frame.angleX.vy = 0;
                     frame.angleX.vz = 0;
                 } else {
@@ -600,12 +600,12 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
                     frame.count <<= 1;
                     frame.param = 0x1000 / frame.count;
                     for (frame.index = 0; frame.index < frame.count; (frame.index)++) {
-                        frame.radius = rand() % 0xC8 + 0xC8;
+                        frame.radius = rand() % 200 + 200;
                         frame.entry = (BattleFxOmnislashSlashEntry *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitOmnislashMovingPulsingModelTask);
                         Battle_GetBoneWorldPos(g_YasuiLimitOmnislashTargetActor, g_BattleActorRecords[g_YasuiLimitOmnislashTargetActor].targetBone, &frame.entry->worldX);
-                        frame.pointX = SinFixed(frame.index * frame.param) * frame.radius >> 0xC;
+                        frame.pointX = SinFixed(frame.index * frame.param) * frame.radius >> 12;
                         frame.pointY = 0;
-                        frame.pointZ = CosFixed(frame.index * frame.param) * frame.radius >> 0xC;
+                        frame.pointZ = CosFixed(frame.index * frame.param) * frame.radius >> 12;
                         RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
                         frame.rotMatrix.t[2] = 0;
                         frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
@@ -613,7 +613,7 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
                         SetRotMatrix(&frame.rotMatrix);
                         SetTransMatrix(&frame.rotMatrix);
                         RotTransPointToInt16(&frame.pointX, &frame.entry->posX, &frame.rotFlag);
-                        frame.entry->animValue = rand() % 0x6000 + 0x2000;
+                        frame.entry->animValue = rand() % 24576 + 8192;
                     }
                 }
                 frame.param = g_YasuiLimitOmnislashMotionTable8[g_YasuiLimitOmnislashSlashIndex];
@@ -623,8 +623,8 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
                     frame.entry->velocityY = 0;
                     frame.entry->animValue = frame.param;
                 }
-                if (g_YasuiLimitOmnislashSlashIndex <= 0xD) {
-                    if (g_YasuiLimitOmnislashSlashIndex == 0xD) {
+                if (g_YasuiLimitOmnislashSlashIndex <= 13) {
+                    if (g_YasuiLimitOmnislashSlashIndex == 13) {
                         g_BattleStageHideFlags |= 7;
                         g_BattleFxTimelineState.red = 0;
                         g_BattleFxTimelineState.channel1 = 0;
@@ -653,7 +653,7 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
                     Battle_GetBoneWorldPos(g_YasuiLimitOmnislashTargetActor, g_BattleActorRecords[g_YasuiLimitOmnislashTargetActor].targetBone, &frame.entry->worldX);
                     frame.pointX = 0;
                     frame.pointY = 0;
-                    frame.pointZ = rand() % 0xC8 + 0x190;
+                    frame.pointZ = rand() % 200 + 400;
                     frame.angleX.vx = rand() % 0x1000;
                     frame.angleX.vy = rand() % 0x1000;
                     frame.angleX.vz = 0;
@@ -664,7 +664,7 @@ void __cdecl BattleFx_LimitOmnislashTimelineTask(void)
                     SetRotMatrix(&frame.rotMatrix);
                     SetTransMatrix(&frame.rotMatrix);
                     RotTransPointToInt16(&frame.pointX, &frame.entry->posX, &frame.rotFlag);
-                    frame.entry->animValue = rand() % 0x2000 + 0x6000;
+                    frame.entry->animValue = rand() % 8192 + 24576;
                 }
                 SoundDispatchCommand(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posX), 0x285, 0, 0, 0, 0, 0, 0);
                 SoundDispatchCommand(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].posX), 0x22A, 0, 0, 0, 0, 0, 0);
@@ -719,7 +719,7 @@ void __cdecl BattleFx_LimitOmnislashScalingModelEntry0Task(void)
     frame.entry = (YasuiLimitOmnislashScaleEntry0 *)BATTLE_CURRENT_TASK_SLOT;
     (g_YasuiLimitOmnislashDrawReqPool1.modelRes) = Gfx_ModelTableGetRenderObject(0, g_YasuiLimitOmnislashResourceHandle);
     RotMatrixXYZ(&frame.entry->rotX, &frame.xform);
-    frame.scaleX.vz = frame.entry->baseScale * frame.entry->scalePercent / 0x64;
+    frame.scaleX.vz = frame.entry->baseScale * frame.entry->scalePercent / 100;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.xform, &frame.scaleX);
@@ -730,14 +730,14 @@ void __cdecl BattleFx_LimitOmnislashScalingModelEntry0Task(void)
     SetRotMatrix(&frame.viewMatrix);
     SetTransMatrix(&frame.viewMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_YasuiLimitOmnislashDrawReqPool1.alpha0 = frame.entry->timer * 0x199;
+    g_YasuiLimitOmnislashDrawReqPool1.alpha0 = frame.entry->timer * 409;
     g_YasuiLimitOmnislashPacketCursor = BattleFx_SubmitModelDraw(&g_YasuiLimitOmnislashDrawReqPool1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitOmnislashPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
     }
     frame.entry->scalePercent += (short)((0x64 - frame.entry->scalePercent) / frame.entry->scaleDivisor);
     (frame.entry->timer)++;
-    if (frame.entry->timer == 0xA) {
+    if (frame.entry->timer == 10) {
         frame.entry->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -760,7 +760,7 @@ void __cdecl BattleFx_LimitOmnislashScalingModelEntry1Task(void)
     frame.entry = (YasuiLimitOmnislashScaleEntry0 *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiLimitOmnislashDrawReqPool1.modelRes1 = Gfx_ModelTableGetRenderObject(1, g_YasuiLimitOmnislashResourceHandle);
     RotMatrixXYZ(&frame.entry->rotX, &frame.xform);
-    frame.scaleX.vz = frame.entry->baseScale * frame.entry->scalePercent / 0x96;
+    frame.scaleX.vz = frame.entry->baseScale * frame.entry->scalePercent / 150;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.xform, &frame.scaleX);
@@ -771,14 +771,14 @@ void __cdecl BattleFx_LimitOmnislashScalingModelEntry1Task(void)
     SetRotMatrix(&frame.viewMatrix);
     SetTransMatrix(&frame.viewMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_YasuiLimitOmnislashDrawReqPool1.alpha1 = frame.entry->timer * 0x111;
+    g_YasuiLimitOmnislashDrawReqPool1.alpha1 = frame.entry->timer * 273;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(&g_YasuiLimitOmnislashDrawReqPool1.modelRes1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     frame.entry->scalePercent += (short)((0x96 - frame.entry->scalePercent) / frame.entry->scaleDivisor);
     (frame.entry->timer)++;
-    if (frame.entry->timer == 0xF) {
+    if (frame.entry->timer == 15) {
         frame.entry->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -800,7 +800,7 @@ void __cdecl BattleFx_LimitOmnislashMovingPulsingModelTask(void)
     frame.pulse = (BattleFxLimitOmnislashPulse *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiLimitOmnislashDrawReqPool1.modelRes2 = Gfx_ModelTableGetRenderObject(3, g_YasuiLimitOmnislashResourceHandle);
     Gte_BuildLookBasisFromDirection(&frame.pulse->velocityX, frame.xform.m[0]);
-    g_YasuiLimitOmnislashSineOffset = SinFixed(frame.pulse->phase * 0xCC) * frame.pulse->amplitude >> 0xC;
+    g_YasuiLimitOmnislashSineOffset = SinFixed(frame.pulse->phase * 204) * frame.pulse->amplitude >> 12;
     ScaleMatrix(&frame.xform, &g_YasuiLimitOmnislashScaleVector1);
     frame.xform.t[0] = frame.pulse->posX;
     frame.xform.t[1] = frame.pulse->posY;
@@ -831,7 +831,7 @@ void __cdecl BattleFx_LimitOmnislashSpritePairParticleEmitterTask(void)
     int theta;
     int spawnIndex;
     BattleFxOmnislashParticle *ent;
-    char u[0x20];
+    char u[32];
 
     taskPtr = (BattleFxBlasterFlashSlot *)BATTLE_CURRENT_TASK_SLOT;
     {
@@ -839,16 +839,16 @@ void __cdecl BattleFx_LimitOmnislashSpritePairParticleEmitterTask(void)
         short w;
         int x;
 
-        g_YasuiLimitOmnislashDrawReqPool1.spriteRecord = Gfx_ModelTableGetLoadedRecord(0xE, g_YasuiLimitOmnislashResourceHandle);
-        g_YasuiLimitOmnislashDrawReqPool1.spriteObject = Gfx_ModelTableGetSpriteObject(0xE, g_YasuiLimitOmnislashResourceHandle);
+        g_YasuiLimitOmnislashDrawReqPool1.spriteRecord = Gfx_ModelTableGetLoadedRecord(14, g_YasuiLimitOmnislashResourceHandle);
+        g_YasuiLimitOmnislashDrawReqPool1.spriteObject = Gfx_ModelTableGetSpriteObject(14, g_YasuiLimitOmnislashResourceHandle);
         v.vz = -taskPtr->phase << 5;
-        BattleFx_LimitOmnislashInstallRotatedScaledMatrix((BattleFxLimitOmnislashMatrix *)((int)taskPtr + 4), &v, 0x4000);
+        BattleFx_LimitOmnislashInstallRotatedScaledMatrix((BattleFxLimitOmnislashMatrix *)((int)taskPtr + 4), &v, 0x4000 /* 4.0 */);
         g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte2 = g_YasuiLimitOmnislashAlphaPhase << 3;
         g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte1 = g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte2;
         (g_YasuiLimitOmnislashSpriteTint.currentTintByte) = g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte1;
         g_YasuiLimitOmnislashPacketCursor = BattleFx_SubmitSpriteDraw(&g_YasuiLimitOmnislashDrawReqPool1.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_0, 1, g_YasuiLimitOmnislashPacketCursor);
         v.vz = taskPtr->phase << 5;
-        BattleFx_LimitOmnislashInstallRotatedScaledMatrix((BattleFxLimitOmnislashMatrix *)((int)taskPtr + 4), &v, 0x3000);
+        BattleFx_LimitOmnislashInstallRotatedScaledMatrix((BattleFxLimitOmnislashMatrix *)((int)taskPtr + 4), &v, 0x3000 /* 3.0 */);
         g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte2 = g_YasuiLimitOmnislashAlphaPhase << 3;
         g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte1 = g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte2;
         (g_YasuiLimitOmnislashSpriteTint.currentTintByte) = g_YasuiLimitOmnislashSpriteTint.limitBusinSpriteTintByte1;
@@ -856,22 +856,22 @@ void __cdecl BattleFx_LimitOmnislashSpritePairParticleEmitterTask(void)
         if (g_BattleIsPaused != 0) {
             return;
         }
-        w = 8 - (SinFixed(taskPtr->phase * 0xE + 0x400) << 3 >> 0xC);
+        w = 8 - (SinFixed(taskPtr->phase * 14 + 1024) << 3 >> 12);
         for (spawnIndex = 0; spawnIndex < w; spawnIndex++) {
             ent = &g_YasuiLimitOmnislashParticleTable[BattleFx_LimitOmnislashClaimParticleRecord()];
             ent->posX = 0;
             ent->posY = 0xFC18;
-            ent->posZ = 0x36B0;
+            ent->posZ = 14000;
             ent->velocityZ = 0xFB50;
-            ent->velocityY = 0x50;
-            ent->spriteIndex = taskPtr->phase * 0x78 + 0x800;
+            ent->velocityY = 80;
+            ent->spriteIndex = taskPtr->phase * 120 + 2048;
             theta = rand() % 0x1000;
             ent->angle = (short)theta;
-            distance = rand() % 0x1F4 + 0x1F4;
-            ent->posX += (short)(CosFixed(theta) * distance >> 0xC);
-            ent->posY += (short)(SinFixed(theta) * distance >> 0xC);
+            distance = rand() % 500 + 500;
+            ent->posX += (short)(CosFixed(theta) * distance >> 12);
+            ent->posY += (short)(SinFixed(theta) * distance >> 12);
         }
-        if (taskPtr->phase < 0x10) {
+        if (taskPtr->phase < 16) {
             g_YasuiLimitOmnislashAlphaPhase++;
         }
         (taskPtr->phase)++;
@@ -917,28 +917,28 @@ void __cdecl BattleFx_LimitOmnislashBoneModelShrinkingEmitterTask(void)
     frame.emitter = (BattleFxShrinkingEmitterState *)BATTLE_CURRENT_TASK_SLOT;
     (g_YasuiLimitOmnislashDrawReqPool2.modelRes) = Gfx_ModelTableGetRenderObject(6, g_YasuiLimitOmnislashResourceHandle);
     Battle_GetBoneWorldPos(g_YasuiLimitOmnislashSourceActor, g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].primaryBone, &frame.boneX.vx);
-    frame.boneX.vy -= 0x2BC;
-    BattleFx_InstallBillboardMatrix(&frame.boneX, (short)frame.emitter->scale, 0xC8);
+    frame.boneX.vy -= 700;
+    BattleFx_InstallBillboardMatrix(&frame.boneX, (short)frame.emitter->scale, 200);
     SetDrawColorRGB(0, 0, 0);
     g_YasuiLimitOmnislashPacketCursor = BattleFx_SubmitModelDraw(&g_YasuiLimitOmnislashDrawReqPool2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitOmnislashPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.emitter->timer < 0xA) {
-        frame.emitter->scale = frame.emitter->scale * 0xC0 / 0x100;
+    if (frame.emitter->timer < 10) {
+        frame.emitter->scale = frame.emitter->scale * 0xC0 / 256;
         g_YasuiLimitOmnislashStepCounter++;
-    } else if (frame.emitter->timer < 0x1C) {
+    } else if (frame.emitter->timer < 28) {
         frame.sineModel = (BattleFxOmnislashShrinkRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitOmnislashSineScaledModelTask);
         frame.sineModel->anchorX = frame.boneX.vx;
         frame.sineModel->anchorY = frame.boneX.vy;
         frame.sineModel->anchorZ = frame.boneX.vz;
-        frame.sineModel->randomOffset = rand() % 0x1000;
+        frame.sineModel->randomOffset = rand() % 4096;
     }
-    if (frame.emitter->timer >= 0x20) {
-        frame.emitter->scale = frame.emitter->scale * 0xE0 / 0x100;
+    if (frame.emitter->timer >= 32) {
+        frame.emitter->scale = frame.emitter->scale * 0xE0 / 256;
     }
     (frame.emitter->timer)++;
-    if (frame.emitter->timer == 0x28) {
+    if (frame.emitter->timer == 40) {
         frame.emitter->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -964,7 +964,7 @@ void __cdecl BattleFx_LimitOmnislashSineScaledModelTask(void)
     RotTransPoint(&frame.sineModel->posX, &frame.viewMatrix.t[0], &frame.rotFlag);
     g_YasuiLimitOmnislashModelPitch = frame.sineModel->modelPitch;
     RotMatrix((SVECTOR *)&g_YasuiLimitOmnislashModelRotX, &frame.viewMatrix);
-    g_YasuiLimitOmnislashScaleInterp3 = SinFixed(frame.sineModel->step << 8) * 0x7F00 >> 0xC;
+    g_YasuiLimitOmnislashScaleInterp3 = SinFixed(frame.sineModel->step << 8) * 0x7F00 /* 7.9375 */ >> 12;
     ScaleMatrix(&frame.viewMatrix, &g_YasuiLimitOmnislashScaleInterp3);
     SetRotMatrix(&frame.viewMatrix);
     SetTransMatrix(&frame.viewMatrix);
@@ -1011,7 +1011,7 @@ void __cdecl BattleFx_LimitOmnislashGrowingBillboardModelTask(void)
         return;
     }
     if (t->frameCount < 2) {
-        t->angle += 0x2000;
+        t->angle += 0x2000 /* 720 deg */;
     }
     if (t->frameCount >= 2) {
         t->spin += 0x2A8;
@@ -1036,9 +1036,9 @@ void __cdecl BattleFx_LimitOmnislashSpawnDampedSpriteParticles(short *origin, sh
         spark->originY = origin[1];
         spark->originZ = origin[2];
         theta = rand() % 0x1000;
-        spark->velocityX = SinFixed(theta) * count >> 0xC;
-        spark->velocityZ = CosFixed(theta) * count >> 0xC;
-        spark->lifetime = rand() % 0x1800 + 0x1000;
+        spark->velocityX = SinFixed(theta) * count >> 12;
+        spark->velocityZ = CosFixed(theta) * count >> 12;
+        spark->lifetime = rand() % 6144 + 4096;
         spark->speed = speed;
     }
 }
@@ -1050,8 +1050,8 @@ void __cdecl BattleFx_LimitOmnislashDampedSpriteParticleTask(void)
     BattleFxOmnislashParticle *task;
 
     task = (BattleFxOmnislashParticle *)BATTLE_CURRENT_TASK_SLOT;
-    g_YasuiLimitOmnislashDrawReqPool2.sparkSpriteRecord = Gfx_ModelTableGetLoadedRecord(0xD, g_YasuiLimitOmnislashResourceHandle);
-    g_YasuiLimitOmnislashDrawReqPool2.sparkSpriteObject = Gfx_ModelTableGetSpriteObject(0xD, g_YasuiLimitOmnislashResourceHandle);
+    g_YasuiLimitOmnislashDrawReqPool2.sparkSpriteRecord = Gfx_ModelTableGetLoadedRecord(13, g_YasuiLimitOmnislashResourceHandle);
+    g_YasuiLimitOmnislashDrawReqPool2.sparkSpriteObject = Gfx_ModelTableGetSpriteObject(13, g_YasuiLimitOmnislashResourceHandle);
     BattleFx_InstallBillboardMatrix((void *)((int)task + 4), (short)task->spriteIndex, 0);
     g_YasuiLimitOmnislashDrawReqPool2.limitBusinDrawReqPool2Frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_YasuiLimitOmnislashDrawReqPool2.sparkSpriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
@@ -1059,9 +1059,9 @@ void __cdecl BattleFx_LimitOmnislashDampedSpriteParticleTask(void)
         task->posX += task->velocityX;
         task->posY += task->velocityY;
         task->posZ += task->velocityZ;
-        task->velocityX = task->velocityX * 0xC0 / 0x100;
-        task->velocityY = task->velocityY * 0xC0 / 0x100;
-        task->velocityZ = task->velocityZ * 0xC0 / 0x100;
+        task->velocityX = task->velocityX * 192 / 256;
+        task->velocityY = task->velocityY * 192 / 256;
+        task->velocityZ = task->velocityZ * 192 / 256;
         if (g_YasuiLimitOmnislashDrawReqPool2.sparkSpriteRecord != 0) {
             (task->frame)++;
             if (task->frame == *(int *)((char *)*(int *)g_YasuiLimitOmnislashDrawReqPool2.sparkSpriteRecord + 4)) {
@@ -1103,8 +1103,8 @@ void __cdecl BattleFx_LimitOmnislashSpriteAnimationTask(void)
     BattleFxDeathForceAnimSprite *task;
 
     task = (BattleFxDeathForceAnimSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_YasuiLimitOmnislashDrawReqPool2.burstSpriteRecord = Gfx_ModelTableGetLoadedRecord(0xC, g_YasuiLimitOmnislashResourceHandle);
-    g_YasuiLimitOmnislashDrawReqPool2.burstSpriteObject = Gfx_ModelTableGetSpriteObject(0xC, g_YasuiLimitOmnislashResourceHandle);
+    g_YasuiLimitOmnislashDrawReqPool2.burstSpriteRecord = Gfx_ModelTableGetLoadedRecord(12, g_YasuiLimitOmnislashResourceHandle);
+    g_YasuiLimitOmnislashDrawReqPool2.burstSpriteObject = Gfx_ModelTableGetSpriteObject(12, g_YasuiLimitOmnislashResourceHandle);
     BattleFx_InstallBillboardMatrix((void *)((int)task + 4), (short)task->scale, 0);
     g_YasuiLimitOmnislashDrawReqPool2.burstFrame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_YasuiLimitOmnislashDrawReqPool2.burstSpriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
@@ -1133,7 +1133,7 @@ void __cdecl BattleFx_LimitOmnislashSpinningCylinderPairTask(void)
     frame.pair = (BattleFxLimitOmnislashCylinderPair *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiLimitOmnislashRotationVector.limitBusinRotationVectorY = frame.pair->step << 7;
     RotMatrixXYZ(&g_YasuiLimitOmnislashRotationVector, &frame.xform);
-    g_YasuiLimitOmnislashScalePulse3 = 0x6000;
+    g_YasuiLimitOmnislashScalePulse3 = 0x6000 /* 6.0 */;
     g_YasuiLimitOmnislashScalePulse1 = g_YasuiLimitOmnislashScalePulse3;
     ScaleMatrix(&frame.xform, &g_YasuiLimitOmnislashScalePulse1);
     frame.xform.t[0] = frame.pair->posX;
@@ -1146,7 +1146,7 @@ void __cdecl BattleFx_LimitOmnislashSpinningCylinderPairTask(void)
     BattleFx_LimitOmnislashDrawTexturedCylinder((short)g_YasuiLimitOmnislashCylinderData.spinStep);
     g_YasuiLimitOmnislashRotationVector.limitBusinRotationVectorY = frame.pair->step * 0xC4;
     RotMatrixXYZ(&g_YasuiLimitOmnislashRotationVector, &frame.xform);
-    g_YasuiLimitOmnislashScalePulse3 = 0x7000;
+    g_YasuiLimitOmnislashScalePulse3 = 0x7000 /* 7.0 */;
     g_YasuiLimitOmnislashScalePulse1 = g_YasuiLimitOmnislashScalePulse3;
     ScaleMatrix(&frame.xform, &g_YasuiLimitOmnislashScalePulse1);
     frame.xform.t[0] = frame.pair->posX;
@@ -1160,17 +1160,17 @@ void __cdecl BattleFx_LimitOmnislashSpinningCylinderPairTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.pair->step < 0x14) {
+    if (frame.pair->step < 20) {
         g_YasuiLimitOmnislashScalePulse2 += (0x14 - frame.pair->step) * 0x64;
     }
-    if (frame.pair->step < 0x30) {
-        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.pair->posX, 0x258, -0x64, 4);
+    if (frame.pair->step < 48) {
+        BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.pair->posX, 600, -100, 4);
     }
-    if (frame.pair->step >= 0x34) {
+    if (frame.pair->step >= 52) {
         (g_YasuiLimitOmnislashCylinderData.spinStep) -= 0x10;
     }
     (frame.pair->step)++;
-    if (frame.pair->step == 0x3C) {
+    if (frame.pair->step == 60) {
         frame.pair->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1203,17 +1203,17 @@ void __cdecl BattleFx_LimitOmnislashDrawTexturedCylinder(short angle)
 
     frame.tpage = 0;
     frame.clut = 0x7948;
-    frame.colorWord = angle | angle << 8 | angle << 0x10;
+    frame.colorWord = angle | angle << 8 | angle << 16;
     frame.prim = (BattleFxTexturedCylinder *)Gfx_GetPsxPacketScratchPtr();
     *((char *)frame.prim + 7) |= 2;
-    for (frame.ringIdx = 0; frame.ringIdx < 0x20; (frame.ringIdx)++) {
-        frame.bottom0.vx = SinFixed(frame.ringIdx << 7) * 0x64 >> 0xC;
+    for (frame.ringIdx = 0; frame.ringIdx < 32; (frame.ringIdx)++) {
+        frame.bottom0.vx = SinFixed(frame.ringIdx << 7) * 0x64 >> 12;
         frame.top0.vx = frame.bottom0.vx;
-        frame.bottom0.vz = CosFixed(frame.ringIdx << 7) * 0x64 >> 0xC;
+        frame.bottom0.vz = CosFixed(frame.ringIdx << 7) * 0x64 >> 12;
         frame.top0.vz = frame.bottom0.vz;
-        frame.bottom1.vx = SinFixed(frame.ringIdx + 1 << 7) * 0x64 >> 0xC;
+        frame.bottom1.vx = SinFixed(frame.ringIdx + 1 << 7) * 0x64 >> 12;
         frame.top1.vx = frame.bottom1.vx;
-        frame.bottom1.vz = CosFixed(frame.ringIdx + 1 << 7) * 0x64 >> 0xC;
+        frame.bottom1.vz = CosFixed(frame.ringIdx + 1 << 7) * 0x64 >> 12;
         frame.top1.vz = frame.bottom1.vz;
         frame.top1.vy = 0xFE70;
         frame.top0.vy = frame.top1.vy;
@@ -1239,7 +1239,7 @@ void __cdecl BattleFx_LimitOmnislashDrawTexturedCylinder(short angle)
             frame.prim->v2 = 0xFF;
             frame.prim->tpage = frame.tpage;
             frame.prim->clut = frame.clut;
-            frame.quadState = Gfx_ModelTableGetSpriteObject(0xF, g_YasuiLimitOmnislashResourceHandle);
+            frame.quadState = Gfx_ModelTableGetSpriteObject(15, g_YasuiLimitOmnislashResourceHandle);
             if (frame.quadState != 0) {
                 Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(frame.quadState));
             }
@@ -1267,7 +1267,7 @@ void __cdecl BattleFx_LimitOmnislashSineScaledModelParticleEmitterTask(void)
     (g_YasuiLimitOmnislashDrawReq1.modelRes) = Gfx_ModelTableGetRenderObject(8, g_YasuiLimitOmnislashResourceHandle);
     g_YasuiLimitOmnislashEulerAngles.limitBusinEulerAnglesY = frame.sineRecord->angle << 7;
     RotMatrixXYZ(&g_YasuiLimitOmnislashEulerAngles, &frame.xform);
-    g_YasuiLimitOmnislashScale2 = SinFixed(frame.sineRecord->angle << 6) * 0x7F00 >> 0xC;
+    g_YasuiLimitOmnislashScale2 = SinFixed(frame.sineRecord->angle << 6) * 0x7F00 /* 7.9375 */ >> 12;
     g_YasuiLimitOmnislashScale1 = g_YasuiLimitOmnislashScale2;
     ScaleMatrix(&frame.xform, &g_YasuiLimitOmnislashScale1);
     frame.xform.t[0] = frame.sineRecord->posX;
@@ -1276,12 +1276,12 @@ void __cdecl BattleFx_LimitOmnislashSineScaledModelParticleEmitterTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.xform, &frame.viewMatrix);
     SetRotMatrix(&frame.viewMatrix);
     SetTransMatrix(&frame.viewMatrix);
-    g_YasuiLimitOmnislashDrawReq1.alpha = SinFixed(frame.sineRecord->angle << 7) << 7 >> 0xC;
+    g_YasuiLimitOmnislashDrawReq1.alpha = SinFixed(frame.sineRecord->angle << 7) << 7 >> 12;
     g_YasuiLimitOmnislashPacketCursor = BattleFx_SubmitModelDraw(&g_YasuiLimitOmnislashDrawReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitOmnislashPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.sineRecord->posX, 0x258, -0x64, 1);
+    BattleFx_LimitOmnislashSpawnDampedSpriteParticles(&frame.sineRecord->posX, 600, -100, 1);
     (frame.sineRecord->angle)++;
     if (frame.sineRecord->angle == 0x10) {
         frame.sineRecord->ownerSlot = BATTLE_TASK_FREE;
@@ -1306,7 +1306,7 @@ void __cdecl BattleFx_LimitOmnislashSpinningPulsingModelTask(void)
     (g_YasuiLimitOmnislashDrawReq2.modelRes) = Gfx_ModelTableGetRenderObject(9, g_YasuiLimitOmnislashResourceHandle);
     g_YasuiLimitOmnislashEulerAngles.spinAngleY = frame.spin->angle << 7;
     RotMatrixXYZ(&g_YasuiLimitOmnislashEulerAngles.spinAngleX, &frame.xform);
-    g_YasuiLimitOmnislashScale4 = SinFixed(frame.spin->angle << 6) * frame.spin->scaleAmplitude >> 0xC;
+    g_YasuiLimitOmnislashScale4 = SinFixed(frame.spin->angle << 6) * frame.spin->scaleAmplitude >> 12;
     g_YasuiLimitOmnislashScale3 = g_YasuiLimitOmnislashScale4;
     ScaleMatrix(&frame.xform, &g_YasuiLimitOmnislashScale3);
     frame.xform.t[0] = frame.spin->posX;
@@ -1346,20 +1346,20 @@ void __cdecl BattleFx_LimitOmnislashBoneModelGrowingEmitterTask(void)
     (g_YasuiLimitOmnislashDrawReq3.modelRes) = Gfx_ModelTableGetRenderObject(6, g_YasuiLimitOmnislashResourceHandle);
     Battle_GetBoneWorldPos(g_YasuiLimitOmnislashSourceActor, g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].primaryBone, &frame.boneX.vx);
     frame.factor = g_BattleActorRecords[g_YasuiLimitOmnislashSourceActor].yaw;
-    frame.boneX.vz += (short)((frame.factor != 0 ? 0xFFFFFC18 : 0) + 0x1F4);
-    frame.boneX.vy += 0x2BC;
-    BattleFx_InstallBillboardMatrix(&frame.boneX, (short)frame.emitter->angle, 0xC8);
+    frame.boneX.vz += (short)((frame.factor != 0 ? 0xFFFFFC18 : 0) + 500);
+    frame.boneX.vy += 700;
+    BattleFx_InstallBillboardMatrix(&frame.boneX, (short)frame.emitter->angle, 200);
     SetDrawColorRGB(0, 0, 0);
     g_YasuiLimitOmnislashDrawReq3.alpha = g_YasuiLimitOmnislashSubAngle;
     g_YasuiLimitOmnislashPacketCursor = BattleFx_SubmitModelDraw(&g_YasuiLimitOmnislashDrawReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitOmnislashPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.emitter->timer < 0xA) {
+    if (frame.emitter->timer < 10) {
         frame.factor = 0xA - frame.emitter->timer;
         frame.emitter->angle += (frame.factor * 0x14);
     }
-    if (frame.emitter->timer < 0x1C) {
+    if (frame.emitter->timer < 28) {
         frame.rotatingModel = (BattleFxLimitOmnislashBoneEmitter2 *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitOmnislashSineScaledRotatingModelTask);
         frame.rotatingModel->posX = frame.boneX.vx;
         frame.rotatingModel->posY = frame.boneX.vy;
@@ -1367,13 +1367,13 @@ void __cdecl BattleFx_LimitOmnislashBoneModelGrowingEmitterTask(void)
         frame.rotatingModel->angle = rand() % 0x1000;
         frame.rotatingModel->scale = rand() % 0x1000 + 0x2000;
     }
-    if (frame.emitter->timer >= 0x20) {
+    if (frame.emitter->timer >= 32) {
         frame.factor = 0x28 - frame.emitter->timer;
         frame.emitter->angle += (frame.factor * 0xC8);
-        g_YasuiLimitOmnislashSubAngle += 0x200;
+        g_YasuiLimitOmnislashSubAngle += 0x200 /* 45 deg */;
     }
     (frame.emitter->timer)++;
-    if (frame.emitter->timer == 0x28) {
+    if (frame.emitter->timer == 40) {
         frame.emitter->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1393,19 +1393,19 @@ void __cdecl BattleFx_LimitOmnislashSineScaledRotatingModelTask(void)
 #pragma pack(pop)
 
     frame.rotTask = (BattleFxLimitOmnislashRotationTask *)BATTLE_CURRENT_TASK_SLOT;
-    g_YasuiLimitOmnislashDrawReqPool1.modelRes4 = Gfx_ModelTableGetRenderObject(0xA, g_YasuiLimitOmnislashResourceHandle);
+    g_YasuiLimitOmnislashDrawReqPool1.modelRes4 = Gfx_ModelTableGetRenderObject(10, g_YasuiLimitOmnislashResourceHandle);
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(&frame.rotTask->posX, &frame.viewMatrix.t[0], &frame.rotFlag);
     g_YasuiLimitOmnislashModelYaw = frame.rotTask->yaw;
     RotMatrix((SVECTOR *)&g_YasuiLimitOmnislashModelRotY, &frame.viewMatrix);
-    g_YasuiLimitOmnislashScaleInterp1 = SinFixed(frame.rotTask->phase << 8) * 0x7F00 >> 0xC;
+    g_YasuiLimitOmnislashScaleInterp1 = SinFixed(frame.rotTask->phase << 8) * 0x7F00 /* 7.9375 */ >> 12;
     g_YasuiLimitOmnislashScaleInterp2 = frame.rotTask->scale;
     ScaleMatrix(&frame.viewMatrix, &g_YasuiLimitOmnislashScaleInterp1);
     SetRotMatrix(&frame.viewMatrix);
     SetTransMatrix(&frame.viewMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_YasuiLimitOmnislashDrawReqPool1.alpha4 = 0x1000 - (SinFixed(frame.rotTask->phase << 8) << 0xC >> 0xC);
+    g_YasuiLimitOmnislashDrawReqPool1.alpha4 = 0x1000 - (SinFixed(frame.rotTask->phase << 8) << 12 >> 12);
     g_YasuiLimitOmnislashPacketCursor = BattleFx_SubmitModelDraw(&g_YasuiLimitOmnislashDrawReqPool1.modelRes4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitOmnislashPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
@@ -1429,15 +1429,15 @@ void __cdecl BattleFx_LimitOmnislashWhiteFlashPulseTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    g_YasuiLimitOmnislashFlashIntensity = SinFixed(taskPtr->frameCounter * 0x66) * 0x180 >> 0xC;
-    if (g_YasuiLimitOmnislashFlashIntensity > 0xFF) {
+    g_YasuiLimitOmnislashFlashIntensity = SinFixed(taskPtr->frameCounter * 102) * 0x180 >> 12;
+    if (g_YasuiLimitOmnislashFlashIntensity > 255) {
         clamped = 0xFF;
     } else {
         clamped = g_YasuiLimitOmnislashFlashIntensity;
     }
     g_YasuiLimitOmnislashFlashIntensity = clamped;
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x14) {
+    if (taskPtr->frameCounter == 20) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1450,7 +1450,7 @@ void __cdecl BattleFx_LimitOmnislashBeginParticlePool(void)
     short slotIdx;
 
     particle = g_YasuiLimitOmnislashParticleTable;
-    for (slotIdx = 0; slotIdx < 0xC8; slotIdx++) {
+    for (slotIdx = 0; slotIdx < 200; slotIdx++) {
         particle->frame = 0;
         particle->ownerSlot = 0;
         particle++;
@@ -1467,7 +1467,7 @@ void __cdecl BattleFx_LimitOmnislashParticlePoolTask(void)
 
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     particle = g_YasuiLimitOmnislashParticleTable;
-    for (g_YasuiLimitOmnislashParticleIndex = 0; g_YasuiLimitOmnislashParticleIndex < 0xC8; g_YasuiLimitOmnislashParticleIndex++) {
+    for (g_YasuiLimitOmnislashParticleIndex = 0; g_YasuiLimitOmnislashParticleIndex < 200; g_YasuiLimitOmnislashParticleIndex++) {
         if (particle->ownerSlot == 1) {
             BattleFx_LimitOmnislashOrientedPoolParticleModel();
             if (particle->ownerSlot == -1) {
@@ -1498,9 +1498,9 @@ void __cdecl BattleFx_LimitOmnislashOrientedPoolParticleModel(void)
 #pragma pack(pop)
 
     frame.particle = &g_YasuiLimitOmnislashParticleTable[g_YasuiLimitOmnislashParticleIndex];
-    g_YasuiLimitOmnislashDrawReqPool1.modelRes5 = Gfx_ModelTableGetRenderObject(0xB, g_YasuiLimitOmnislashResourceHandle);
+    g_YasuiLimitOmnislashDrawReqPool1.modelRes5 = Gfx_ModelTableGetRenderObject(11, g_YasuiLimitOmnislashResourceHandle);
     Gte_BuildLookBasisFromDirection(&frame.particle->velocityX, frame.lookBasis.m[0]);
-    frame.angleX.vx = 0xFC00;
+    frame.angleX.vx = 0xFC00 /* 5670 deg */;
     frame.angleX.vy = frame.particle->angle + 0x400;
     frame.angleX.vz = 0;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
@@ -1520,7 +1520,7 @@ void __cdecl BattleFx_LimitOmnislashOrientedPoolParticleModel(void)
     frame.particle->posY += frame.particle->velocityY;
     frame.particle->posZ += frame.particle->velocityZ;
     (frame.particle->frame)++;
-    if (frame.particle->frame == 0xC) {
+    if (frame.particle->frame == 12) {
         frame.particle->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1533,7 +1533,7 @@ short __cdecl BattleFx_LimitOmnislashClaimParticleRecord(void)
     short slotIdx;
 
     recordAddr = g_YasuiLimitOmnislashParticleTable;
-    for (slotIdx = 0; slotIdx < 0xC8; slotIdx++) {
+    for (slotIdx = 0; slotIdx < 200; slotIdx++) {
         if (recordAddr->ownerSlot == 0) {
             recordAddr->ownerSlot = 1;
             return slotIdx;

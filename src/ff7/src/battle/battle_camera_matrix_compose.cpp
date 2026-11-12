@@ -48,9 +48,9 @@ int __cdecl BattleFx_MakeViewSpacePointPushed(void *srcPoint, int pushLength, Ve
     RotTransPoint(srcPoint, (char *)outPoint + 0x12, &depth);
     if (pushLength != 0) {
         NormalizeVectorFixed((char *)outPoint + 0x12, &normLength);
-        *(int *)((char *)outPoint + 0x12) += normLength.vx * pushLength >> 0xC;
-        *(int *)((char *)outPoint + 0x16) += normLength.vy * pushLength >> 0xC;
-        *(int *)((char *)outPoint + 0x1A) += normLength.vz * pushLength >> 0xC;
+        *(int *)((char *)outPoint + 0x12) += normLength.vx * pushLength >> 12;
+        *(int *)((char *)outPoint + 0x16) += normLength.vy * pushLength >> 12;
+        *(int *)((char *)outPoint + 0x1A) += normLength.vz * pushLength >> 12;
     }
     return (int)outPoint;
 }
@@ -73,9 +73,9 @@ void *__cdecl BattleFx_InstallBillboardMatrix(void *srcPoint, short scale, int p
     RotTransPoint(srcPoint, g_BattleFxBillboardMatrix.t, &depth);
     if (pushLength != 0) {
         NormalizeVectorFixed(g_BattleFxBillboardMatrix.t, &normLength);
-        g_BattleFxBillboardMatrix.t[0] += normLength.vx * pushLength >> 0xC;
-        g_BattleFxBillboardMatrix.t[1] += normLength.vy * pushLength >> 0xC;
-        g_BattleFxBillboardMatrix.t[2] += normLength.vz * pushLength >> 0xC;
+        g_BattleFxBillboardMatrix.t[0] += normLength.vx * pushLength >> 12;
+        g_BattleFxBillboardMatrix.t[1] += normLength.vy * pushLength >> 12;
+        g_BattleFxBillboardMatrix.t[2] += normLength.vz * pushLength >> 12;
     }
     SetRotMatrix(&g_BattleFxBillboardMatrix);
     SetTransMatrix(&g_BattleFxBillboardMatrix);

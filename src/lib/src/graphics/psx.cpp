@@ -345,7 +345,7 @@ void __cdecl GtePsxMatrixToFloat4x4Transposed(void *src, void *mm)
 // FUNCTION: FF7 0x00661939
 void __cdecl SetIdentityPsxMatrix(PsxMatrix *dst)
 {
-    ZeroFillMemory32(0x1E, dst);
+    ZeroFillMemory32(30, dst);
     dst->m[0][0] = 0x1000;
     dst->m[1][1] = 0x1000;
     dst->m[2][2] = 0x1000;
@@ -1775,10 +1775,10 @@ void __cdecl Psx_FreeModelTable(GfxPsxModelTable *modelTable)
                 entries += 8;
             }
             // STRING: FF7 0x0090aaf4
-            GameHeapFree(modelTable->entries, "C:\\lib\\src\\graphics\\psx.cpp", 0x696);
+            GameHeapFree(modelTable->entries, "C:\\lib\\src\\graphics\\psx.cpp", 1686);
         }
         // STRING: FF7 0x0090ab10
-        GameHeapFree(modelTable, "C:\\lib\\src\\graphics\\psx.cpp", 0x699);
+        GameHeapFree(modelTable, "C:\\lib\\src\\graphics\\psx.cpp", 1689);
     }
 }
 
@@ -1818,13 +1818,13 @@ GfxPsxModelTable *__cdecl Psx_LoadModelTableFromRecords(char *owner, int count, 
 
     frame.failed = 1;
     // STRING: FF7 0x0090ab2c
-    frame.result = (GfxPsxModelTable *)GameHeapAlloc(1, 0x10, "C:\\lib\\src\\graphics\\psx.cpp", 0x6AC);
+    frame.result = (GfxPsxModelTable *)GameHeapAlloc(1, 16, "C:\\lib\\src\\graphics\\psx.cpp", 1708);
     if (frame.result != 0) {
         frame.result->directory = owner;
         frame.result->count = count;
         frame.result->recordTable = recordTable;
         // STRING: FF7 0x0090ab48
-        frame.result->entries = (GfxPsxModelTableEntry *)GameHeapAlloc(frame.result->count, 8, "C:\\lib\\src\\graphics\\psx.cpp", 0x6B3);
+        frame.result->entries = (GfxPsxModelTableEntry *)GameHeapAlloc(frame.result->count, 8, "C:\\lib\\src\\graphics\\psx.cpp", 1715);
         if (frame.result->entries != 0) {
             frame.context = GetEngineContext();
             frame.opts = &frame.options;

@@ -86,8 +86,8 @@ void __cdecl Submarine_UpdatePlayerControls(void)
         if (Input_GetHeld(INPUT_CROSS) != 0) {
             speedIdx--;
         }
-        if (speedIdx > 0x11) {
-            speedIdx = 0x11;
+        if (speedIdx > 17) {
+            speedIdx = 17;
         }
         if (speedIdx < 1) {
             speedIdx = 1;
@@ -116,10 +116,10 @@ void __cdecl Submarine_UpdatePlayerControls(void)
         if (newDepthSpan < g_SubmarineWorkingLevelParams[2]) {
             newDepthSpan = g_SubmarineWorkingLevelParams[2];
         }
-        if (newDepthSpan > 0x400000) {
+        if (newDepthSpan > 4194304) {
             newDepthSpan = 0x400000;
         }
-        if (newDepthSpan < g_SubmarineGridCellTable[g_SubmarineState.currentCellIndex].height << 0xC) {
+        if (newDepthSpan < g_SubmarineGridCellTable[g_SubmarineState.currentCellIndex].height << 12) {
             g_SubmarineState.player.posY = newDepthSpan;
         }
         angleX = g_SubmarineState.player.angle;
@@ -143,7 +143,7 @@ void __cdecl Submarine_UpdatePlayerControls(void)
         if (angleX < -1008) {
             angleX = -1008;
         }
-        if (course > 0x800) {
+        if (course > 2048) {
             course -= 0x1000;
         }
         if (course < -2048) {
@@ -173,17 +173,17 @@ void __cdecl Submarine_UpdatePlayerControls(void)
             selHorizHeld = 1;
             camRotY -= 8;
         }
-        if (viewX > 0x3F0) {
-            viewX = 0x3F0;
+        if (viewX > 1008) {
+            viewX = 1008;
         }
         if (viewX < -1008) {
             viewX = -1008;
         }
         if (camRotY > 0x800) {
-            camRotY -= 0x1000;
+            camRotY -= 0x1000 /* 360 deg */;
         }
         if (camRotY < -2048) {
-            camRotY += 0x1000;
+            camRotY += 0x1000 /* 360 deg */;
         }
         if (g_SubmarineState.tableIndex != 3 && g_SubmarineState.tableIndex != 2 && g_SubmarineState.auxFlags == 0) {
             offsetX = g_SubmarineState.camRotX - g_SubmarineState.player.angle;
@@ -235,10 +235,10 @@ void __cdecl Submarine_UpdatePlayerControls(void)
             rollAngle -= 8;
         }
         if (rollAngle > 0x800) {
-            rollAngle -= 0x1000;
+            rollAngle -= 0x1000 /* 360 deg */;
         }
         if (rollAngle < -2048) {
-            rollAngle += 0x1000;
+            rollAngle += 0x1000 /* 360 deg */;
         }
         g_SubmarineState.height = height;
         g_SubmarineState.aimYaw = rollAngle;
@@ -281,23 +281,23 @@ void __cdecl Submarine_UpdatePlayerControls(void)
                 axisZ++;
             }
         }
-        if (axisY < -0x10) {
+        if (axisY < -16) {
             axisY = -16;
         }
-        if (axisJ < -0x10) {
+        if (axisJ < -16) {
             axisJ = -16;
         }
-        if (axisZ < -0x10) {
+        if (axisZ < -16) {
             axisZ = -16;
         }
-        if (axisY > 0x10) {
-            axisY = 0x10;
+        if (axisY > 16) {
+            axisY = 16;
         }
-        if (axisJ > 0x10) {
-            axisJ = 0x10;
+        if (axisJ > 16) {
+            axisJ = 16;
         }
-        if (axisZ > 0x10) {
-            axisZ = 0x10;
+        if (axisZ > 16) {
+            axisZ = 16;
         }
         g_SubmarineState.gridIndexY = axisY;
         g_SubmarineState.gridIndexJ = axisJ;
@@ -355,10 +355,10 @@ void __cdecl Submarine_ArmRecordInterpolation(int targetIndex)
     g_SubmarineRecordInterpTargetA = target;
     angleDelta = (target + 0x1000 & 0xFFF) - (cur + 0x1000 & 0xFFF);
     if (angleDelta > 0x800) {
-        angleDelta -= 0x1000;
+        angleDelta -= 0x1000 /* 360 deg */;
     }
     if (angleDelta < (-2048)) {
-        angleDelta += 0x1000;
+        angleDelta += 0x1000 /* 360 deg */;
     }
     g_SubmarineRecordInterpDeltaA = angleDelta;
     cur = g_SubmarineState.currentAngleA;
@@ -367,10 +367,10 @@ void __cdecl Submarine_ArmRecordInterpolation(int targetIndex)
     g_SubmarineInterpTargetAngleAHigh = target;
     angleDelta = (target + 0x1000 & 0xFFF) - (cur + 0x1000 & 0xFFF);
     if (angleDelta > 0x800) {
-        angleDelta -= 0x1000;
+        angleDelta -= 0x1000 /* 360 deg */;
     }
     if (angleDelta < (-2048)) {
-        angleDelta += 0x1000;
+        angleDelta += 0x1000 /* 360 deg */;
     }
     g_SubmarineInterpDeltaAngleAHigh = angleDelta;
     cur = g_SubmarineState.currentAngleB;
@@ -379,10 +379,10 @@ void __cdecl Submarine_ArmRecordInterpolation(int targetIndex)
     g_SubmarineRecordInterpTargetB = target;
     angleDelta = (target + 0x1000 & 0xFFF) - (cur + 0x1000 & 0xFFF);
     if (angleDelta > 0x800) {
-        angleDelta -= 0x1000;
+        angleDelta -= 0x1000 /* 360 deg */;
     }
     if (angleDelta < (-2048)) {
-        angleDelta += 0x1000;
+        angleDelta += 0x1000 /* 360 deg */;
     }
     g_SubmarineRecordInterpDeltaB = angleDelta;
     cur = g_SubmarineState.camOffset;
@@ -396,7 +396,7 @@ void __cdecl Submarine_ArmRecordInterpolation(int targetIndex)
     g_SubmarineRecordInterpTargetD = (short)target;
     g_SubmarineRecordInterpDeltaD = (short)(target - cur);
     g_SubmarineRecordInterpFraction = 0;
-    g_SubmarineRecordInterpStep = 0x100;
+    g_SubmarineRecordInterpStep = 256;
     g_SubmarineState.controlState = g_SubmarineState.tableEntries[targetIndex].controlState;
     g_SubmarineState.currentFlag = g_SubmarineState.tableEntries[targetIndex].stateFlag;
     g_SubmarineTorpedoLaunchOffsetFactor = g_SubmarineState.tableEntries[targetIndex].torpedoLaunchOffsetFactor;
@@ -427,7 +427,7 @@ void __cdecl Submarine_StepRecordInterpolation(void)
         pEngine = GetEngineContext();
         pEngine->farPlane -= pEngine->farPlane / 5e+01f;
     }
-    if (g_SubmarineRecordInterpFraction < 0x1000) {
+    if (g_SubmarineRecordInterpFraction < 4096) {
         fraction = g_SubmarineRecordInterpFraction;
         scaledA = g_SubmarineRecordInterpDeltaA;
         scaledB = g_SubmarineInterpDeltaAngleAHigh;
@@ -435,15 +435,15 @@ void __cdecl Submarine_StepRecordInterpolation(void)
         scaledA *= fraction;
         scaledB *= fraction;
         scaledC *= fraction;
-        g_SubmarineState.rotationStatePointer = g_SubmarineRecordInterpBaseA + (scaledA >> 0xC);
-        g_SubmarineState.currentAngleA = g_SubmarineInterpStartAngleAHigh + (scaledB >> 0xC);
-        g_SubmarineState.currentAngleB = g_SubmarineRecordInterpBaseB + (scaledC >> 0xC);
+        g_SubmarineState.rotationStatePointer = g_SubmarineRecordInterpBaseA + (scaledA >> 12);
+        g_SubmarineState.currentAngleA = g_SubmarineInterpStartAngleAHigh + (scaledB >> 12);
+        g_SubmarineState.currentAngleB = g_SubmarineRecordInterpBaseB + (scaledC >> 12);
         scaledA = g_SubmarineRecordInterpDeltaC;
         scaledB = g_SubmarineRecordInterpDeltaD;
         scaledA *= fraction;
         scaledB *= fraction;
-        g_SubmarineState.camOffset = g_SubmarineRecordInterpBaseC + (scaledA >> 0xC);
-        g_SubmarineState.geomScreen = g_SubmarineRecordInterpBaseD + (scaledB >> 0xC);
+        g_SubmarineState.camOffset = g_SubmarineRecordInterpBaseC + (scaledA >> 12);
+        g_SubmarineState.geomScreen = g_SubmarineRecordInterpBaseD + (scaledB >> 12);
         g_SubmarineRecordInterpFraction += g_SubmarineRecordInterpStep;
     } else {
         g_SubmarineState.rotationStatePointer = g_SubmarineRecordInterpTargetA;
@@ -509,13 +509,13 @@ void __cdecl Submarine_UpdateMotionAndCollision(void)
     candidateYVal = g_SubmarineState.directionY;
     probeZ = g_SubmarineState.directionZ;
     scale = g_SubmarineState.speedScale;
-    candPosX = (candPosX * scale >> 0xC) + g_SubmarineState.player.posX;
-    candidateYVal = (candidateYVal * scale >> 0xC) + g_SubmarineState.player.posY;
-    probeZ = (probeZ * scale >> 0xC) + g_SubmarineState.player.posZ;
-    cellNum = ((0x800 - (probeZ >> 12)) / 64 << 6) + (((candPosX >> 12) + 0x800) / 64);
-    gridH = g_SubmarineGridCellTable[cellNum].height << 0xC;
+    candPosX = (candPosX * scale >> 12) + g_SubmarineState.player.posX;
+    candidateYVal = (candidateYVal * scale >> 12) + g_SubmarineState.player.posY;
+    probeZ = (probeZ * scale >> 12) + g_SubmarineState.player.posZ;
+    cellNum = ((2048 - (probeZ >> 12)) / 64 << 6) + (((candPosX >> 12) + 2048) / 64);
+    gridH = g_SubmarineGridCellTable[cellNum].height << 12;
     floorLimit = g_SubmarineWorkingLevelParams[2];
-    if (candPosX < -0x800000 || (candPosX > 0x800000 || (probeZ < -0x800000 || probeZ > 0x800000))) {
+    if (candPosX < -8388608 || (candPosX > 8388608 || (probeZ < -8388608 || probeZ > 8388608))) {
         g_SubmarineState.motionFlags |= SUBMARINE_MOTION_NEAR_TERRAIN;
     } else if (candidateYVal >= gridH) {
         if (g_SubmarineState.player.angle < 0) {
@@ -551,7 +551,7 @@ void __cdecl Submarine_UpdateMotionAndCollision(void)
     pointZ = g_SubmarineState.orientationZ;
     pointZ = 0;
     refX = pointZ;
-    refY = 0x410000 - g_SubmarineState.player.posY >> 0xC;
+    refY = 0x410000 - g_SubmarineState.player.posY >> 12;
     auxPitchAngle = -g_SubmarineState.height % 4096;
     if (auxPitchAngle > 0 && auxPitchAngle < 0x400) {
         auxPitchAngle = SinFixed(auxPitchAngle);
@@ -564,35 +564,35 @@ void __cdecl Submarine_UpdateMotionAndCollision(void)
             }
         }
     }
-    refX = (g_SubmarineState.player.posX >> 0xC) + refX;
-    refY = (g_SubmarineState.player.posY >> 0xC) + refY;
-    pointZ = (g_SubmarineState.player.posZ >> 0xC) + pointZ;
+    refX = (g_SubmarineState.player.posX >> 12) + refX;
+    refY = (g_SubmarineState.player.posY >> 12) + refY;
+    pointZ = (g_SubmarineState.player.posZ >> 12) + pointZ;
     g_SubmarineState.referencePointX = refX;
     g_SubmarineState.referencePointY = refY;
     g_SubmarineState.referencePointZ = pointZ;
-    cellCol = g_SubmarineState.player.posX >> 0xC;
-    cellRow = g_SubmarineState.player.posZ >> 0xC;
-    cellCol = (cellCol + 0x800) / 64;
+    cellCol = g_SubmarineState.player.posX >> 12;
+    cellRow = g_SubmarineState.player.posZ >> 12;
+    cellCol = (cellCol + 2048) / 64;
     if (cellCol < 0) {
         cellCol = 0;
     }
-    if (cellCol >= 0x40) {
-        cellCol = 0x3F;
+    if (cellCol >= 64) {
+        cellCol = 63;
     }
-    cellRow = (0x800 - cellRow) / 64;
+    cellRow = (2048 - cellRow) / 64;
     if (cellRow < 0) {
         cellRow = 0;
     }
-    if (cellRow >= 0x40) {
-        cellRow = 0x3F;
+    if (cellRow >= 64) {
+        cellRow = 63;
     }
     gridCell = (cellRow << 6) + cellCol;
     g_SubmarineState.currentCellIndex = gridCell;
     if ((g_SubmarineGridCellTable[gridCell].flags & SUBMARINE_CELL_FLAGGED) != 0 && (g_SubmarineGridCellTable[gridCell].flags & SUBMARINE_CELL_TIMED) == 0) {
         cost = 0;
         hudBonus = 0;
-        heightDelta = (g_SubmarineState.player.posY >> 0xC) - g_SubmarineGridCellTable[gridCell].raisedHeight;
-        if (heightDelta > -0x40 && heightDelta < 0) {
+        heightDelta = (g_SubmarineState.player.posY >> 12) - g_SubmarineGridCellTable[gridCell].raisedHeight;
+        if (heightDelta > -64 && heightDelta < 0) {
             g_SubmarineGridCellTable[gridCell].flags |= SUBMARINE_CELL_TIMED | SUBMARINE_CELL_TIMER_INIT;
             cost = 0x800;
             hudBonus = g_SubmarineHudOffset * 6;
@@ -628,7 +628,7 @@ void __cdecl Submarine_UpdateMotionAndCollision(void)
     counter = 0;
     do {
         cooldownValue = g_SubmarineState.cooldownTable[counter];
-        switch ((unsigned int)cooldownValue >> 0x10 << 0x10) {
+        switch ((unsigned int)cooldownValue >> 16 << 16) {
         case SUBMARINE_LAUNCHER_FIRED:
             cooldownValue = g_SubmarineHudScale | SUBMARINE_LAUNCHER_RELOADING;
             break;
@@ -660,9 +660,9 @@ void __cdecl Submarine_BuildDirectionVectorFromAngles(SubmarineDirectionAngles *
     cosA = CosFixed(angles->angleFirst);
     sinSecond = SinFixed(angles->angleSecond);
     subCosSecond = CosFixed(angles->angleSecond);
-    vector->x = cosA * sinSecond >> 0xC;
+    vector->x = cosA * sinSecond >> 12;
     vector->y = -sinFirst;
-    vector->z = cosA * subCosSecond >> 0xC;
+    vector->z = cosA * subCosSecond >> 12;
 }
 
 // Offsets caller XYZ values shifted left by 6 by the current submarine coordinates, shifts them
@@ -688,44 +688,44 @@ int __cdecl Submarine_ProbeGridCellCollision(int probeX, int probeY, int probeZ)
     probeX += g_SubmarineState.player.posX;
     probeY += g_SubmarineState.player.posY;
     probeZ += g_SubmarineState.player.posZ;
-    probeX >>= 0xC;
-    probeY >>= 0xC;
-    probeZ >>= 0xC;
-    probeX = ((probeX + 0x800) / 64);
+    probeX >>= 12;
+    probeY >>= 12;
+    probeZ >>= 12;
+    probeX = ((probeX + 2048) / 64);
     if (probeX < 0) {
         probeX = 0;
     }
-    if (probeX >= 0x40) {
-        probeX = 0x3F;
+    if (probeX >= 64) {
+        probeX = 63;
     }
-    probeZ = ((0x800 - probeZ) / 64);
+    probeZ = ((2048 - probeZ) / 64);
     if (probeZ < 0) {
         probeZ = 0;
     }
-    if (probeZ >= 0x40) {
-        probeZ = 0x3F;
+    if (probeZ >= 64) {
+        probeZ = 63;
     }
     cellIdx = (probeZ << 6) + probeX;
     storedCell = g_SubmarineState.currentCellIndex;
-    currentCol = (((g_SubmarineState.player.posX >> 0xC) + 0x800) / 64);
+    currentCol = (((g_SubmarineState.player.posX >> 12) + 2048) / 64);
     if (currentCol < 0) {
         currentCol = 0;
     }
-    if (currentCol >= 0x40) {
-        currentCol = 0x3F;
+    if (currentCol >= 64) {
+        currentCol = 63;
     }
-    curRow = ((0x800 - (g_SubmarineState.player.posZ >> 0xC)) / 64);
+    curRow = ((2048 - (g_SubmarineState.player.posZ >> 12)) / 64);
     if (curRow < 0) {
         curRow = 0;
     }
-    if (curRow >= 0x40) {
-        curRow = 0x3F;
+    if (curRow >= 64) {
+        curRow = 63;
     }
     currentIndex = (curRow << 6) + currentCol;
     flags = 0;
     if ((g_SubmarineGridCellTable[cellIdx].flags & SUBMARINE_CELL_FLAGGED) != 0 && (g_SubmarineGridCellTable[cellIdx].flags & SUBMARINE_CELL_TIMED) == 0) {
         dH = probeY - g_SubmarineGridCellTable[cellIdx].raisedHeight;
-        if (dH > -0x40 && dH < 0) {
+        if (dH > -64 && dH < 0) {
             flags |= SUBMARINE_MOTION_HIT_MINE;
         }
     }
@@ -752,9 +752,9 @@ void __cdecl Submarine_LoadStateFromRecord(SubmarineStateRecord *stateRecord)
     int workTemp;
     int i;
 
-    g_SubmarineState.player.posX = stateRecord->posX << 6 << 0xC;
-    g_SubmarineState.player.posY = stateRecord->posY << 6 << 0xC;
-    g_SubmarineState.player.posZ = stateRecord->posZ << 6 << 0xC;
+    g_SubmarineState.player.posX = stateRecord->posX << 6 << 12;
+    g_SubmarineState.player.posY = stateRecord->posY << 6 << 12;
+    g_SubmarineState.player.posZ = stateRecord->posZ << 6 << 12;
     g_SubmarineState.player.playerResource = stateRecord->playerResource;
     g_SubmarineState.player.angle = stateRecord->angle;
     g_SubmarineState.camRotX = g_SubmarineState.player.angle;
@@ -777,10 +777,10 @@ void __cdecl Submarine_LoadStateFromRecord(SubmarineStateRecord *stateRecord)
     g_SubmarineState.currentBandBase = pTableRow->bandBase;
     g_SubmarineState.currentBandStep = pTableRow->bandStep;
     g_SubmarineState.currentBandOffset = pTableRow->bandOffset;
-    gridX = g_SubmarineState.player.posX >> 0xC;
-    gridRow = g_SubmarineState.player.posZ >> 0xC;
-    gridX = ((gridX + 0x800) / 64);
-    gridRow = ((0x800 - gridRow) / 64);
+    gridX = g_SubmarineState.player.posX >> 12;
+    gridRow = g_SubmarineState.player.posZ >> 12;
+    gridX = ((gridX + 2048) / 64);
+    gridRow = ((2048 - gridRow) / 64);
     g_SubmarineState.currentCellIndex = (gridRow << 6) + gridX;
     g_SubmarineState.speedScale = g_SubmarineState.speedScaleTable[g_SubmarineState.speedScaleIndex];
     g_SubmarineState.modelDescriptor = (int)&g_SubmarineModelDescriptors[stateRecord[1].posZ];
@@ -810,10 +810,10 @@ void __cdecl Submarine_LoadStateFromRecord(SubmarineStateRecord *stateRecord)
     g_SubmarineRecordInterpTargetD = (short)workTemp;
     g_SubmarineRecordInterpDeltaD = (short)(workTemp - value);
     g_SubmarineRecordInterpFraction = 0;
-    g_SubmarineRecordInterpStep = 0x20;
+    g_SubmarineRecordInterpStep = 32;
     g_SubmarineRecordInterpActive = 1;
     factor = stateRecord[1].posX;
-    for (i = 0; i < 0x13; i++) {
+    for (i = 0; i < 19; i++) {
         g_SubmarineState.speedScaleTable[i] = ((factor * (g_SubmarineState.speedScaleTable[i])) / 16);
     }
 }
@@ -848,7 +848,7 @@ void __cdecl Submarine_BuildRotationBasisFromAngles(SubmarineRotationAngles *rot
 
     frame.cosAngle0 = CosFixed(rotationAngles->angle0 + 0x1000 & 0xFFF);
     frame.sinAngle0 = SinFixed(rotationAngles->angle0 + 0x1000 & 0xFFF);
-    frame.rotMatrix.m[0][0] = 0x1000;
+    frame.rotMatrix.m[0][0] = 0x1000 /* 360 deg */;
     frame.rotMatrix.m[0][1] = 0;
     frame.rotMatrix.m[0][2] = 0;
     frame.rotMatrix.m[1][0] = 0;
@@ -867,7 +867,7 @@ void __cdecl Submarine_BuildRotationBasisFromAngles(SubmarineRotationAngles *rot
     frame.basisBX.vz = 0;
     frame.basisCX.vx = 0;
     frame.basisCX.vy = 0;
-    frame.basisCX.vz = 0x1000;
+    frame.basisCX.vz = 4096;
     TransformVectorToInt32(&frame.rotMatrix, &frame.basisAX, &frame.xform.vx);
     frame.basisAX.vx = frame.xform.vx;
     frame.basisAX.vy = frame.xform.vy;
@@ -886,7 +886,7 @@ void __cdecl Submarine_BuildRotationBasisFromAngles(SubmarineRotationAngles *rot
     frame.rotMatrix.m[0][1] = 0;
     frame.rotMatrix.m[0][2] = *(short *)&frame.sinAngle1;
     frame.rotMatrix.m[1][0] = 0;
-    frame.rotMatrix.m[1][1] = 0x1000;
+    frame.rotMatrix.m[1][1] = 0x1000 /* 360 deg */;
     frame.rotMatrix.m[1][2] = 0;
     frame.rotMatrix.m[2][0] = -frame.sinAngle1;
     frame.rotMatrix.m[2][1] = 0;
@@ -964,8 +964,8 @@ void __cdecl Submarine_DrawVerticalSliceQuads(void)
         frame.points[0].y = (float)frame.sliceTop;
         frame.sliceTop -= frame.sliceStep;
         frame.sliceStep = frame.sliceTop - frame.subY;
-        if (frame.sliceStep > 0x40)
-            frame.sliceStep = 0x40;
+        if (frame.sliceStep > 64)
+            frame.sliceStep = 64;
         if (frame.sliceTop <= frame.subY)
             frame.sliceTop = frame.subY;
         frame.points[2].y = (float)frame.sliceTop;

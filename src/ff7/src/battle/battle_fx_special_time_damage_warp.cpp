@@ -151,30 +151,30 @@ void __cdecl BattleFx_SpecialEnterTimeDamage(int targetMask, int actorIdx)
     BattleFx_SpecialLoadResTimeDamage();
     switch (g_BattleUiScalingMode) {
     case MAIN_GRAPHICS_MODE_320X240:
-        g_BattleSpecTimeDamageRectSize = 0x78;
-        g_BattleSpecTimeDamageRectHalfSize = 0x3C;
+        g_BattleSpecTimeDamageRectSize = 120;
+        g_BattleSpecTimeDamageRectHalfSize = 60;
         g_BattleSpecTimeDamageGeomOffsetX = 0xA0;
         g_BattleSpecTimeDamageGeomOffsetY = 0x78;
-        g_BattleSpecTimeDamageViewCenterX = 0x50;
-        g_BattleSpecTimeDamageViewCenterY = 0x3C;
+        g_BattleSpecTimeDamageViewCenterX = 80;
+        g_BattleSpecTimeDamageViewCenterY = 60;
         g_BattleSpecTimeDamageMode = 1;
         break;
     case MAIN_GRAPHICS_MODE_320X240_CENTERED:
-        g_BattleSpecTimeDamageRectSize = 0x78;
-        g_BattleSpecTimeDamageRectHalfSize = 0x3C;
+        g_BattleSpecTimeDamageRectSize = 120;
+        g_BattleSpecTimeDamageRectHalfSize = 60;
         g_BattleSpecTimeDamageGeomOffsetX = 0x140;
         g_BattleSpecTimeDamageGeomOffsetY = 0xF0;
-        g_BattleSpecTimeDamageViewCenterX = 0xA0;
-        g_BattleSpecTimeDamageViewCenterY = 0x78;
+        g_BattleSpecTimeDamageViewCenterX = 160;
+        g_BattleSpecTimeDamageViewCenterY = 120;
         g_BattleSpecTimeDamageMode = 1;
         break;
     case MAIN_GRAPHICS_MODE_640X480:
-        g_BattleSpecTimeDamageRectSize = 0xF0;
-        g_BattleSpecTimeDamageRectHalfSize = 0x78;
+        g_BattleSpecTimeDamageRectSize = 240;
+        g_BattleSpecTimeDamageRectHalfSize = 120;
         g_BattleSpecTimeDamageGeomOffsetX = 0x140;
         g_BattleSpecTimeDamageGeomOffsetY = 0xF0;
-        g_BattleSpecTimeDamageViewCenterX = 0xA0;
-        g_BattleSpecTimeDamageViewCenterY = 0x78;
+        g_BattleSpecTimeDamageViewCenterX = 160;
+        g_BattleSpecTimeDamageViewCenterY = 120;
         g_BattleSpecTimeDamageMode = 0;
         break;
     }
@@ -273,23 +273,23 @@ void __cdecl BattleFx_SpecialTimeDamageBuildWarpGridMesh(void)
     int radius;
     int padSlot[3]; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
-    for (row = 0; row < 0x11; row++) {
-        radius = g_BattleSpecTimeDamageGridRadius * row / 0x10;
-        fall = (g_BattleSpecTimeDamageGridRadius - radius << 0xC) / g_BattleSpecTimeDamageGridRadius;
-        fall = fall * fall >> 0xC;
-        for (column = 0; column < 0x10; column++) {
-            g_BattleSpecTimeDamageGridMesh[row][column].x = radius * SinFixed((column << 0xC) / 0x10) >> 0xC;
-            g_BattleSpecTimeDamageGridMesh[row][column].y = radius * CosFixed((column << 0xC) / 0x10) >> 0xC;
+    for (row = 0; row < 17; row++) {
+        radius = g_BattleSpecTimeDamageGridRadius * row / 16;
+        fall = (g_BattleSpecTimeDamageGridRadius - radius << 12) / g_BattleSpecTimeDamageGridRadius;
+        fall = fall * fall >> 12;
+        for (column = 0; column < 16; column++) {
+            g_BattleSpecTimeDamageGridMesh[row][column].x = radius * SinFixed((column << 12) / 16) >> 12;
+            g_BattleSpecTimeDamageGridMesh[row][column].y = radius * CosFixed((column << 12) / 16) >> 12;
             g_BattleSpecTimeDamageGridScratch[row][column] = fall;
         }
     }
-    for (row = 0; row < 0x10; row++) {
-        for (column = 0; column < 0x10; column++) {
+    for (row = 0; row < 16; row++) {
+        for (column = 0; column < 16; column++) {
             gridCell = (BattleFxTimeDamageGridCell *)(row * 0x600 + column * 0x60 + (char *)&g_BattleSpecTimeDamageGridRecords);
             gridCell->corner00 = (BattleFxWarpMeshPoint *)((row << 6) + column * 4 + (char *)&g_BattleSpecTimeDamageGridMesh);
-            gridCell->corner01 = (BattleFxWarpMeshPoint *)((row << 6) + (column + 1) % 0x10 * 4 + (char *)&g_BattleSpecTimeDamageGridMesh);
+            gridCell->corner01 = (BattleFxWarpMeshPoint *)((row << 6) + (column + 1) % 16 * 4 + (char *)&g_BattleSpecTimeDamageGridMesh);
             gridCell->corner10 = (BattleFxWarpMeshPoint *)((row + 1 << 6) + column * 4 + (char *)&g_BattleSpecTimeDamageGridMesh);
-            gridCell->corner11 = (BattleFxWarpMeshPoint *)((row + 1 << 6) + (column + 1) % 0x10 * 4 + (char *)&g_BattleSpecTimeDamageGridMesh);
+            gridCell->corner11 = (BattleFxWarpMeshPoint *)((row + 1 << 6) + (column + 1) % 16 * 4 + (char *)&g_BattleSpecTimeDamageGridMesh);
             for (primIdx = 0; primIdx < 1; primIdx++) {
                 gridCell->quad[primIdx].command = gridCell->quad[primIdx].command & 0xFFFFFF | 0x9000000;
                 gridCell->quad[primIdx].primCode = PSX_PRIM_POLY_FT4;
@@ -309,7 +309,7 @@ void __cdecl BattleFx_SpecialTimeDamageBuildWarpGridMesh(void)
         }
     }
     for (row = 0; row < 1; row++) {
-        for (column = 0; column < 0x10; column++) {
+        for (column = 0; column < 16; column++) {
             ((BattleFxWarpTriangleRow *)g_BattleSpecTimeDamageActorPositions)[row][column].tag.length = 4;
             ((BattleFxWarpTriangleRow *)g_BattleSpecTimeDamageActorPositions)[row][column].primCode = PSX_PRIM_POLY_F3;
             ((BattleFxWarpTriangleRow *)g_BattleSpecTimeDamageActorPositions)[row][column].colorB = 0;
@@ -343,11 +343,11 @@ void __cdecl BattleFx_SpecialTimeDamageTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL != 0) {
-        spriteIdx = g_BattleSpecTimeDamageSpriteCounter % 0x200;
+        spriteIdx = g_BattleSpecTimeDamageSpriteCounter % 512;
         g_BattleSpecTimeDamageSpriteCounter++;
         screenX = 0;
-        w = 0x100;
-        spriteHeight = 0x100;
+        w = 256;
+        spriteHeight = 256;
         texU = 0;
         texV = 0;
         rot = 0;
@@ -371,13 +371,13 @@ void __cdecl BattleFx_SpecialTimeDamageTimelineTask(void)
             pChild->ownerSlot = 0;
             pChild->angleY = 0;
             pChild->angleX = 0;
-            pChild->angleZ = (ringIndex << 0xB) / 4;
+            pChild->angleZ = (ringIndex << 11) / 4;
             pChild->pos = pTimeline->pos;
         }
         pChild = (BattleFxTimeDamageTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTimeDamageRotatingSpritePairTask);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&pTimeline->pos), 0x181);
     }
-    if (pTimeline->age == 0x27) {
+    if (pTimeline->age == 39) {
         Battle_PostActorHitOrHurtMessage(pTimeline->ownerSlot);
         pTimeline->ownerSlot = BATTLE_TASK_FREE;
         if (g_BattleSpecTimeDamageOffscreenSlot[0] >= 0) {
@@ -403,34 +403,34 @@ void __cdecl BattleFx_SpecialTimeDamageWarpGridTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     localFrame = task->frameCounter;
-    if (localFrame < 0xA) {
-        amount = localFrame * 0x5DC / 0xA;
+    if (localFrame < 10) {
+        amount = localFrame * 1500 / 10;
         rotation = 0;
         spreadVal = 0;
     } else {
-        localFrame -= 0xA;
+        localFrame -= 10;
         if (localFrame < 5) {
-            amount = 0x5DC;
+            amount = 1500;
             rotation = 0;
             spreadVal = 0;
         } else {
             localFrame -= 5;
             if (localFrame < 5) {
-                amount = localFrame * -1500 / 5 + 0x5DC;
+                amount = localFrame * -1500 / 5 + 1500;
                 rotation = -task->frameCounter << 9;
                 spreadVal = (localFrame << 9) / 5;
             } else {
                 localFrame -= 5;
-                if (localFrame < 0xF) {
+                if (localFrame < 15) {
                     amount = 0;
                     rotation = -task->frameCounter << 9;
-                    spreadVal = 0x200;
+                    spreadVal = 512;
                 } else {
-                    localFrame -= 0xF;
-                    if (localFrame < 0xA) {
+                    localFrame -= 15;
+                    if (localFrame < 10) {
                         amount = 0;
                         rotation = -task->frameCounter << 9;
-                        spreadVal = localFrame * -512 / 0xA + 0x200;
+                        spreadVal = localFrame * -512 / 10 + 512;
                     } else {
                         task->ownerSlot = BATTLE_TASK_FREE;
                         return;
@@ -455,8 +455,8 @@ void __cdecl BattleFx_SpecialTimeDamageDrawWarpGrid(int deltaX, int deltaY)
     int row;
     int column;
 
-    for (row = 0; row < 0x10; row++) {
-        for (column = 0; column < 0x10; column++) {
+    for (row = 0; row < 16; row++) {
+        for (column = 0; column < 16; column++) {
             TIME_DAMAGE_CELLS[row][column].quad[g_BattleSpecTimeDamagePrimIndex].x0 = TIME_DAMAGE_CELLS[row][column].corner00->x + deltaX;
             TIME_DAMAGE_CELLS[row][column].quad[g_BattleSpecTimeDamagePrimIndex].y0 = TIME_DAMAGE_CELLS[row][column].corner00->y + deltaY;
             TIME_DAMAGE_CELLS[row][column].quad[g_BattleSpecTimeDamagePrimIndex].x1 = TIME_DAMAGE_CELLS[row][column].corner01->x + deltaX;
@@ -503,20 +503,20 @@ void __cdecl BattleFx_SpecialTimeDamageBuildWarpGridOffsets(int depthScale, int 
     dstCenterY = g_BattleSpecTimeDamageGeomOffsetY;
     SetRotMatrix(&g_BattleSpecTimeDamageScale);
     SetTransMatrix(&g_BattleSpecTimeDamageScale);
-    for (rowIdx = 0; rowIdx < 0x10; rowIdx++) {
+    for (rowIdx = 0; rowIdx < 16; rowIdx++) {
         rowRadius = (g_BattleSpecTimeDamageGridRadius * rowIdx) / 16;
-        for (column = 0; column < 0x10; column++) {
-            scratchVector->vx = rowRadius * SinFixed(((column << 0xC) / 16)) >> 0xC;
-            scratchVector->vy = rowRadius * CosFixed(((column << 0xC) / 16)) >> 0xC;
-            scratchVector->vz = depthScale * g_BattleSpecTimeDamageGridScratch[rowIdx][column] >> 0xC;
+        for (column = 0; column < 16; column++) {
+            scratchVector->vx = rowRadius * SinFixed(((column << 12) / 16)) >> 12;
+            scratchVector->vy = rowRadius * CosFixed(((column << 12) / 16)) >> 12;
+            scratchVector->vz = depthScale * g_BattleSpecTimeDamageGridScratch[rowIdx][column] >> 12;
             ProjectPointHardware(scratchVector, (short *)warpPointPtr, &screenPosition, &screenY);
             if (amplitude != 0) {
                 warpPointPtr->offsetX -= originX;
                 warpPointPtr->offsetY -= dstCenterY;
                 length = SqrtToInt(warpPointPtr->offsetX * warpPointPtr->offsetX + warpPointPtr->offsetY * warpPointPtr->offsetY);
-                warpScale = (SinFixed(length * 0x64 + phase) * amplitude >> 0xC) + 0x1000;
-                warpPointPtr->offsetX = (warpPointPtr->offsetX * warpScale >> 0xC) + originX;
-                warpPointPtr->offsetY = (warpPointPtr->offsetY * warpScale >> 0xC) + dstCenterY;
+                warpScale = (SinFixed(length * 0x64 + phase) * amplitude >> 12) + 0x1000;
+                warpPointPtr->offsetX = (warpPointPtr->offsetX * warpScale >> 12) + originX;
+                warpPointPtr->offsetY = (warpPointPtr->offsetY * warpScale >> 12) + dstCenterY;
             }
             g_BattleSpecTimeDamageGridMesh[rowIdx][column].x = warpPointPtr->offsetX - originX;
             g_BattleSpecTimeDamageGridMesh[rowIdx][column].y = warpPointPtr->offsetY - dstCenterY;
@@ -553,25 +553,25 @@ void __cdecl BattleFx_SpecialTimeDamageOrbitingSpriteRingTask(void)
     pPt2d = (BattleFxTimeDamageOrbitRing *)((char *)matrix + 0x1E);
     pSpriteXform = (PsxMatrix *)((int)pPt2d + 4);
     stage = taskPtr->frameIndex;
-    if (stage < 0xA) {
-        g_BattleSpecTimeDamageColor1.blue = (stage << 7) / 0xA;
+    if (stage < 10) {
+        g_BattleSpecTimeDamageColor1.blue = (stage << 7) / 10;
         g_BattleSpecTimeDamageColor1.green = g_BattleSpecTimeDamageColor1.blue;
         g_BattleSpecTimeDamageColor1.red = g_BattleSpecTimeDamageColor1.green;
-        size = stage * 0x3E8 / 0xA;
+        size = stage * 1000 / 10;
     } else {
-        stage -= 0xA;
-        if (stage < 0x19) {
+        stage -= 10;
+        if (stage < 25) {
             g_BattleSpecTimeDamageColor1.blue = 0x80;
             g_BattleSpecTimeDamageColor1.green = g_BattleSpecTimeDamageColor1.blue;
             g_BattleSpecTimeDamageColor1.red = g_BattleSpecTimeDamageColor1.green;
-            size = 0x3E8;
+            size = 1000;
         } else {
-            stage -= 0x19;
-            if (stage < 0xA) {
-                g_BattleSpecTimeDamageColor1.blue = stage * -0x80 / 0xA + 0x80;
+            stage -= 25;
+            if (stage < 10) {
+                g_BattleSpecTimeDamageColor1.blue = stage * -0x80 / 10 + 0x80;
                 g_BattleSpecTimeDamageColor1.green = g_BattleSpecTimeDamageColor1.blue;
                 g_BattleSpecTimeDamageColor1.red = g_BattleSpecTimeDamageColor1.green;
-                size = stage * 0xFA0 / 0xA + 0x3E8;
+                size = stage * 4000 / 10 + 1000;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -589,12 +589,12 @@ void __cdecl BattleFx_SpecialTimeDamageOrbitingSpriteRingTask(void)
     matrix->t[0] = 0;
     matrix->t[1] = 0;
     matrix->t[2] = GetGeomScreen() * 5;
-    for (spokeIndex = 0; spokeIndex < 0x10; spokeIndex++) {
+    for (spokeIndex = 0; spokeIndex < 16; spokeIndex++) {
         SetRotMatrix(matrix);
         SetTransMatrix(matrix);
-        vertPtr->vx = SinFixed(((spokeIndex << 0xC) / 16)) * size >> 0xC;
-        vertPtr->vy = SinFixed(((spokeIndex << 0xE) / 16)) * size >> 0xF;
-        vertPtr->vz = CosFixed(((spokeIndex << 0xC) / 16)) * size >> 0xC;
+        vertPtr->vx = SinFixed(((spokeIndex << 12) / 16)) * size >> 12;
+        vertPtr->vy = SinFixed(((spokeIndex << 14) / 16)) * size >> 15;
+        vertPtr->vz = CosFixed(((spokeIndex << 12) / 16)) * size >> 12;
         ProjectPointHardware(vertPtr, (short *)pPt2d, &flagOut, &rawDepth);
         pSpriteXform->t[0] = pPt2d->screenX - g_BattleSpecTimeDamageGeomOffsetX + (((g_BattleSpecTimeDamageTargetScreenPos.x) / 2) - offsetX) * 5;
         pSpriteXform->t[1] = pPt2d->screenY - g_BattleSpecTimeDamageGeomOffsetY + (((g_BattleSpecTimeDamageTargetScreenPos.y) / 2) - offsetY) * 5;
@@ -604,7 +604,7 @@ void __cdecl BattleFx_SpecialTimeDamageOrbitingSpriteRingTask(void)
         g_BattleSpecTimeDamageDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecTimeDamageTransformMatrix1.spriteGroup, g_BattleCurrentOrderingTable + 0x4088, 0, g_BattleSpecTimeDamageDrawHandle);
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->frameIndex < 0x23) {
+        if (taskPtr->frameIndex < 35) {
             taskPtr->angleX += 0x10;
             taskPtr->angleY += 0xC0;
             taskPtr->angleZ += 0x40;
@@ -632,19 +632,19 @@ void __cdecl BattleFx_SpecialTimeDamageRotatingSpritePairTask(void)
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     rotRecord = (BattleFxRotatingSpritePair *)((char *)matrix + 0x1E);
     stage = taskPtr->frameCounter;
-    if (stage < 0xA) {
-        g_BattleSpecTimeDamageColor2[0].blue = (stage << 7) / 0xA;
+    if (stage < 10) {
+        g_BattleSpecTimeDamageColor2[0].blue = (stage << 7) / 10;
         g_BattleSpecTimeDamageColor2[0].green = g_BattleSpecTimeDamageColor2[0].blue;
         g_BattleSpecTimeDamageColor2[0].red = g_BattleSpecTimeDamageColor2[0].green;
         g_BattleSpecTimeDamageColor2[0].primCode = PSX_PRIM_POLY_FT4_TRANS;
     } else {
-        stage -= 0xA;
-        if (stage < 0x19) {
+        stage -= 10;
+        if (stage < 25) {
             *(int *)&g_BattleSpecTimeDamageColor2 = 0x2C808080;
         } else {
-            stage -= 0x19;
-            if (stage < 0xA) {
-                g_BattleSpecTimeDamageColor2[0].blue = stage * -0x80 / 0xA + 0x80;
+            stage -= 25;
+            if (stage < 10) {
+                g_BattleSpecTimeDamageColor2[0].blue = stage * -0x80 / 10 + 0x80;
                 g_BattleSpecTimeDamageColor2[0].green = g_BattleSpecTimeDamageColor2[0].blue;
                 g_BattleSpecTimeDamageColor2[0].red = g_BattleSpecTimeDamageColor2[0].green;
                 g_BattleSpecTimeDamageColor2[0].primCode = PSX_PRIM_POLY_FT4_TRANS;
@@ -672,7 +672,7 @@ void __cdecl BattleFx_SpecialTimeDamageRotatingSpritePairTask(void)
     SetRotMatrix(matrix);
     SetTransMatrix(matrix);
     g_BattleSpecTimeDamageDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecTimeDamageTransformMatrix2.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleSpecTimeDamageDrawHandle);
-    rotRecord->angle = rotRecord->angle / 0xC;
+    rotRecord->angle = rotRecord->angle / 12;
     RotMatrix((SVECTOR *)rotRecord, matrix);
     ScaleMatrix(matrix, &g_BattleSpecTimeDamageDistance);
     SetRotMatrix(matrix);

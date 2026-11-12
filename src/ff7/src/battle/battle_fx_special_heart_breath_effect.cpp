@@ -137,7 +137,7 @@ void __cdecl BattleFx_SpecialBeginHeartBreath(int targetMask, int actorIdx)
     task = (BattleFxSpecialHeartBreathSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeartBreathTimelineTask);
     Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].bone33, &task->start.vx);
     Battle_GetActorMaskCentroid(targetMask, &task->end.vx);
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleSpecHeartBreathParticleRecords[i].active = 0;
     }
     BattleFx_SpecialHeartBreathInitParticleSpritePool();
@@ -159,10 +159,10 @@ void __cdecl BattleFx_SpecialHeartBreathTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (self8->timer < 0x10) {
+    if (self8->timer < 16) {
         g_BattleSpecHeartBreathEmitterState += 4;
     }
-    if (self8->timer > 0x5E) {
+    if (self8->timer > 94) {
         g_BattleSpecHeartBreathEmitterState -= 4;
     }
     if (self8->timer == 0) {
@@ -171,24 +171,24 @@ void __cdecl BattleFx_SpecialHeartBreathTimelineTask(void)
         spawned->posX = self8->start.vx;
         spawned->posHeight = self8->start.vy;
         spawned->posY = self8->start.vz;
-        spawned->stepX = (self8->end.vx - self8->start.vx) / 0x14;
+        spawned->stepX = (self8->end.vx - self8->start.vx) / 20;
         spawned->angle = 0;
-        spawned->stepY = (self8->end.vz - self8->start.vz) / 0x14;
+        spawned->stepY = (self8->end.vz - self8->start.vz) / 20;
         spawned->phase = heading;
         spawned->scalePhase = 0;
         spawned = (BattleFxHeartBreathTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeartBreathGrowingModelTask);
         spawned->posX = self8->start.vx;
         spawned->posHeight = self8->start.vy;
         spawned->posY = self8->start.vz;
-        spawned->stepY = 0x400;
+        spawned->stepY = 1024;
         spawned->angle = heading - 0x400;
         xDelta = self8->end.vx - self8->start.vx;
         dy5 = self8->end.vz - self8->start.vz;
         dist = SqrtToInt(xDelta * xDelta + dy5 * dy5);
-        spawned->lengthScale = dist * 0x1500 / 0xAF0;
+        spawned->lengthScale = dist * 0x1500 / 2800;
         spawned->scalePhase = 0;
     }
-    if (self8->timer == 0x30) {
+    if (self8->timer == 48) {
         for (srcBit = 0; srcBit < 0xA; srcBit++) {
             if ((g_BattleSpecHeartBreathTargetMask & 1 << srcBit) != 0) {
                 spawned = (BattleFxHeartBreathTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHeartBreathTargetGrowingModelTask);
@@ -197,7 +197,7 @@ void __cdecl BattleFx_SpecialHeartBreathTimelineTask(void)
         }
         Battle_PlaySfxPannedToActor(0x19B, -1, 0x40);
     }
-    if (self8->timer == 0x50) {
+    if (self8->timer == 80) {
         for (srcBit = 0; srcBit < 0xA; srcBit++) {
             if ((g_BattleSpecHeartBreathTargetMask & 1 << srcBit) != 0) {
                 Battle_PostActorHitOrHurtMessage(srcBit);
@@ -205,7 +205,7 @@ void __cdecl BattleFx_SpecialHeartBreathTimelineTask(void)
         }
     }
     (self8->timer)++;
-    if (self8->timer == 0x6E) {
+    if (self8->timer == 110) {
         g_BattleSpecHeartBreathParticleActiveFlag = 1;
         self8->step = 0xFFFF;
     }
@@ -225,17 +225,17 @@ void __cdecl BattleFx_SpecialHeartBreathParticleEmitterTask(void)
         return;
     }
     taskPtr->angle += 0xA;
-    if (taskPtr->age > 0 && taskPtr->age < 0x19) {
+    if (taskPtr->age > 0 && taskPtr->age < 25) {
         for (i = 0; i < 4; i++) {
             claimed = (BattleFxClaimedParticleRecord *)BattleFx_SpecialHeartBreathClaimParticleRecord();
             if (claimed != 0) {
-                claimed->radius = rand() % 0x320;
+                claimed->radius = rand() % 800;
                 claimed->angle = rand() & 0xFFF;
             }
         }
     }
     i = 0;
-    for (alive = 0; i < 0xC8; i++) {
+    for (alive = 0; i < 200; i++) {
         if (g_BattleSpecHeartBreathParticleRecords[i].active != 0) {
             alive++;
             g_BattleSpecHeartBreathParticleRecords[i].angle -= 0x80;
@@ -246,7 +246,7 @@ void __cdecl BattleFx_SpecialHeartBreathParticleEmitterTask(void)
         }
     }
     (taskPtr->age)++;
-    if (taskPtr->age > 0x19 && alive == 0) {
+    if (taskPtr->age > 25 && alive == 0) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -257,7 +257,7 @@ int __cdecl BattleFx_SpecialHeartBreathClaimParticleRecord(void)
 {
     short i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSpecHeartBreathParticleRecords[i].active == 0) {
             g_BattleSpecHeartBreathParticleRecords[i].active = 1;
             g_BattleSpecHeartBreathParticleRecords[i].radiusScale = 0;
@@ -296,11 +296,11 @@ void __cdecl BattleFx_SpecialHeartBreathDrawParticleSprites(BattleFxHeartBreathP
     frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
     frame.rotMatrix.t[0] = frame.rotMatrix.t[1];
     frame.particleIndex = 0;
-    for (frame.activeCount = 0; frame.particleIndex < 0xC8; frame.particleIndex++) {
+    for (frame.activeCount = 0; frame.particleIndex < 200; frame.particleIndex++) {
         if (g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].active != 0) {
             frame.activeCount++;
-            frame.posX.vx = CosFixed(g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].angle) * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radius * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale / 0x14 * (emitterSlot->angle + 0x100) >> 0x14;
-            frame.posX.vy = SinFixed(g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].angle) * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radius * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale / 0x14 * (emitterSlot->angle + 0x100) >> 0x14;
+            frame.posX.vx = CosFixed(g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].angle) * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radius * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale / 20 * (emitterSlot->angle + 256) >> 20;
+            frame.posX.vy = SinFixed(g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].angle) * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radius * g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale / 20 * (emitterSlot->angle + 256) >> 20;
             frame.posX.vz = 0;
             SetRotMatrix(&frame.rotMatrix);
             SetTransMatrix(&frame.rotMatrix);
@@ -311,7 +311,7 @@ void __cdecl BattleFx_SpecialHeartBreathDrawParticleSprites(BattleFxHeartBreathP
             if (g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale < 0x11) {
                 frame.sizeValue = 8;
             } else {
-                frame.sizeValue = 0x19 - g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale;
+                frame.sizeValue = 25 - g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale;
             }
             frame.sizeIndex = *(short *)&frame.sizeValue;
             BattleFx_InstallBillboardMatrix(&frame.posX, (g_BattleSpecHeartBreathParticleRecords[frame.particleIndex].radiusScale << 6) + 0x800, 0);
@@ -360,11 +360,11 @@ void __cdecl BattleFx_SpecialHeartBreathGrowingModelTask(void)
     if (frame.slot->frameCounter < 8) {
         g_BattleSpecHeartBreathPoolActiveFlag++;
     }
-    if (frame.slot->frameCounter > 0x25) {
+    if (frame.slot->frameCounter > 37) {
         g_BattleSpecHeartBreathPoolActiveFlag--;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x2D) {
+    if (frame.slot->frameCounter == 45) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -405,24 +405,24 @@ void __cdecl BattleFx_SpecialHeartBreathTargetGrowingModelTask(void)
     SetRotMatrix(&frame.rotAngles);
     SetTransMatrix(&frame.rotAngles);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecHeartBreathSpriteReq4.alpha = frame.slot->frameCounter * 0x64;
+    g_BattleSpecHeartBreathSpriteReq4.alpha = frame.slot->frameCounter * 100;
     g_BattleSpecHeartBreathDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecHeartBreathSpriteReq4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHeartBreathDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter < 0x14) {
+    if (frame.slot->frameCounter < 20) {
         frame.particleRecord = (BattleFxRadiantBreathAnimatedSpriteSlot *)(((short)BattleFx_SpecialHeartBreathClaimParticleSpriteSlot() << 5) + (char *)&g_BattleSpecHeartBreathParticleSlots);
         frame.particleRecord->posX = frame.slot->posX;
-        frame.particleRecord->posY = -rand() % 0x64;
+        frame.particleRecord->posY = -rand() % 100;
         frame.particleRecord->posZ = frame.slot->posZ;
         frame.spriteAngle = ((rand()) % 4096);
-        frame.particleRecord->rotOrVelX = SinFixed(frame.spriteAngle) * 0x3C >> 0xC;
-        frame.particleRecord->rotOrVelZ = CosFixed(frame.spriteAngle) * 0x3C >> 0xC;
-        frame.particleRecord->rotOrVelY = 0xFFFFFF6A - rand() % 0x32;
+        frame.particleRecord->rotOrVelX = SinFixed(frame.spriteAngle) * 0x3C >> 12;
+        frame.particleRecord->rotOrVelZ = CosFixed(frame.spriteAngle) * 0x3C >> 12;
+        frame.particleRecord->rotOrVelY = 0xFFFFFF6A - rand() % 50;
         frame.particleRecord->animIndex = ((rand()) % 2);
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x28) {
+    if (frame.slot->frameCounter == 40) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -435,7 +435,7 @@ void __cdecl BattleFx_SpecialHeartBreathInitParticleSpritePool(void)
     short i;
 
     cursor = g_BattleSpecHeartBreathParticleSlots;
-    for (i = 0; i < 0x96; i++) {
+    for (i = 0; i < 150; i++) {
         cursor->timer = 0;
         cursor->status = 0;
         cursor += 8;
@@ -452,7 +452,7 @@ void __cdecl BattleFx_SpecialHeartBreathParticleSpritePoolTask(void)
 
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     rec = g_BattleSpecHeartBreathParticleSlots;
-    for (g_BattleSpecHeartBreathParticleLoopIndex = 0; g_BattleSpecHeartBreathParticleLoopIndex < 0x96; g_BattleSpecHeartBreathParticleLoopIndex++) {
+    for (g_BattleSpecHeartBreathParticleLoopIndex = 0; g_BattleSpecHeartBreathParticleLoopIndex < 150; g_BattleSpecHeartBreathParticleLoopIndex++) {
         if (rec->status == 1) {
             BattleFx_SpecialHeartBreathUpdateParticleSprite();
             if (rec->status == -1) {
@@ -482,7 +482,7 @@ void __cdecl BattleFx_SpecialHeartBreathUpdateParticleSprite(void)
     BattleFx_InstallBillboardMatrix(&frame.slot->posX, (frame.slot->angle << 11) + 0x800, 0);
     g_BattleSpecHeartBreathParticleSpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(frame.table[frame.slot->angle], g_BattleSpecHeartBreathLoadedResTable);
     g_BattleSpecHeartBreathParticleSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(frame.table[frame.slot->angle], g_BattleSpecHeartBreathLoadedResTable);
-    if (frame.slot->timer < 0x16)
+    if (frame.slot->timer < 22)
         frame.color = 8;
     else
         frame.color = 0x1E - frame.slot->timer;
@@ -497,7 +497,7 @@ void __cdecl BattleFx_SpecialHeartBreathUpdateParticleSprite(void)
     frame.slot->posZ += frame.slot->velocityZ;
     frame.slot->velocityY += 10;
     (frame.slot->timer)++;
-    if (frame.slot->timer == 0x1E)
+    if (frame.slot->timer == 30)
         frame.slot->status = 0xFFFF;
 }
 
@@ -509,7 +509,7 @@ short __cdecl BattleFx_SpecialHeartBreathClaimParticleSpriteSlot(void)
     short i;
 
     cursor = g_BattleSpecHeartBreathParticleSlots;
-    for (i = 0; i < 0x96; i++) {
+    for (i = 0; i < 150; i++) {
         if (cursor->status == 0) {
             cursor->status = 1;
             return i;

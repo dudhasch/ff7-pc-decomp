@@ -112,27 +112,27 @@ void __cdecl BattleFx_MagicSpawnSleepelPerTarget(int actor)
     model->orbitAngle = 0;
     model->spinAngle = 0;
     model->diameter = g_BattleActorRecords[actor].radius << 1;
-    if (model->diameter > 0x76C) {
+    if (model->diameter > 1900) {
         model->diameter = 0x76C;
     }
-    scratch = model->diameter / 0x26;
+    scratch = model->diameter / 38;
     if (scratch <= 0) {
         steps = 1;
     } else {
         steps = scratch;
     }
     model->steps = steps;
-    scratch = -(model->posY * 3 / 0x37);
-    if (scratch < 0x16) {
+    scratch = -(model->posY * 3 / 55);
+    if (scratch < 22) {
         spinRate = 0x16;
     } else {
         spinRate = scratch;
     }
     model->riseSpeed = spinRate;
-    model->scale = 0x400;
+    model->scale = 0x400 /* 0.25 */;
     scratch = 0xBC;
-    if (scratch < 0x20) {
-        duration = 0x20;
+    if (scratch < 32) {
+        duration = 32;
     } else {
         duration = scratch;
     }
@@ -143,8 +143,8 @@ void __cdecl BattleFx_MagicSpawnSleepelPerTarget(int actor)
     pSpawnRecord->radius = g_BattleActorRecords[actor].radius;
     pSpawnRecord->diameter = pSpawnRecord->radius << 1;
     pSpawnRecord->sizeTotal = g_BattleActorRecords[actor].scaleX + g_BattleActorRecords[actor].scaleY;
-    if (pSpawnRecord->sizeTotal < 0x1000) {
-        sizeTotal = 0x1000;
+    if (pSpawnRecord->sizeTotal < 4096) {
+        sizeTotal = 4096;
     } else {
         sizeTotal = pSpawnRecord->sizeTotal;
     }
@@ -174,7 +174,7 @@ void __cdecl BattleFx_MagicSleepelSpinGrowFadeModelTask(void)
 
     frame.spinRecord = (BattleFxSleepelSpinRecord *)BATTLE_CURRENT_TASK_SLOT;
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.rotX.vx = 0x800;
+    frame.rotX.vx = 0x800 /* 180 deg */;
     frame.rotX.vy = frame.spinRecord->spinAngleY + 0x400;
     frame.rotX.vz = 0;
     RotMatrix(&frame.rotX, &frame.rotMatrixA);
@@ -199,16 +199,16 @@ void __cdecl BattleFx_MagicSleepelSpinGrowFadeModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicSleepelLoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.spinRecord->phase < 6) {
-        frame.modelDraw->fadeLevel -= (short)((6 - frame.spinRecord->phase) * 0x15);
-    } else if (frame.spinRecord->phase >= 0x26) {
-        frame.modelDraw->fadeLevel -= (short)((frame.spinRecord->phase - 0x26) * 7);
+        frame.modelDraw->fadeLevel -= (short)((6 - frame.spinRecord->phase) * 21);
+    } else if (frame.spinRecord->phase >= 38) {
+        frame.modelDraw->fadeLevel -= (short)((frame.spinRecord->phase - 38) * 7);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinRecord->phase >= 0x37) {
+    if (frame.spinRecord->phase >= 55) {
         frame.spinRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -217,21 +217,21 @@ void __cdecl BattleFx_MagicSleepelSpinGrowFadeModelTask(void)
     if (frame.spinRecord->phase == 0x26) {
         Battle_PostActorHitOrHurtMessage(frame.spinRecord->actorSlot);
     }
-    frame.spinRecord->spinAngleY -= 0x100;
-    if (frame.spinRecord->phase >= 0x20) {
+    frame.spinRecord->spinAngleY -= 0x100 /* 22.5 deg */;
+    if (frame.spinRecord->phase >= 32) {
         frame.spinRecord->spinAngleY += (short)((frame.spinRecord->phase - 0x20) * 0xB);
     }
-    frame.spinRecord->orbitAngleY -= 0x100;
+    frame.spinRecord->orbitAngleY -= 0x100 /* 22.5 deg */;
     frame.spinRecord->orbitRadius -= frame.spinRecord->orbitRadiusStep;
     if (frame.spinRecord->orbitRadius <= 0) {
         frame.spinRecord->orbitRadius = 0;
     }
     frame.spinRecord->posY -= frame.spinRecord->riseSpeed;
-    if (frame.spinRecord->phase >= 0x26) {
+    if (frame.spinRecord->phase >= 38) {
         frame.spinRecord->posY -= frame.spinRecord->riseSpeed;
     }
     frame.spinRecord->scale += frame.spinRecord->scaleStep;
-    if (frame.spinRecord->phase >= 0x26) {
+    if (frame.spinRecord->phase >= 38) {
         frame.spinRecord->scale += (short)(frame.spinRecord->scaleStep >> 1);
     }
     (frame.spinRecord->phase)++;
@@ -261,7 +261,7 @@ void __cdecl BattleFx_MagicSleepelSpawnQuadParticlesTask(void)
             particle->scaleX = particle->depth;
         }
     }
-    if (task->timer > 0x1E) {
+    if (task->timer > 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->timer)++;

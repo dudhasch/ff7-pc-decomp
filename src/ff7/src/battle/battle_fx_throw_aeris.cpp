@@ -330,15 +330,15 @@ void __cdecl BattleFx_ThrowAerisWeaponsStraightTimelineTask(void)
         speed = SqrtToInt(norm) / 6;
         pProjectile = (BattleFxAerisThrowDelta *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowAerisWeaponsStraightProjectileTask);
         *(Int64Pair *)((char *)pProjectile + 4) = *(Int64Pair *)&g_BattleThrowAerisSourcePos;
-        pProjectile->deltaX = speed * g_BattleThrowAerisDeltaVectorX >> 0xC;
-        pProjectile->deltaY = speed * g_BattleThrowAerisDeltaVectorY >> 0xC;
-        pProjectile->deltaZ = speed * g_BattleThrowAerisDeltaVectorZ >> 0xC;
+        pProjectile->deltaX = speed * g_BattleThrowAerisDeltaVectorX >> 12;
+        pProjectile->deltaY = speed * g_BattleThrowAerisDeltaVectorY >> 12;
+        pProjectile->deltaZ = speed * g_BattleThrowAerisDeltaVectorZ >> 12;
     }
     if (task->frameCounter == 6) {
         Battle_PostActorHitOrHurtMessage(g_BattleThrowAerisTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowAerisTargetPos.x), 0x32);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -378,7 +378,7 @@ void __cdecl BattleFx_ThrowAerisWeaponsStraightProjectileTask(void)
     SetRotMatrix(&frame.rotMatrix);
     frame.offsetX.vx = 0;
     frame.offsetX.vy = 0;
-    frame.offsetX.vz = 0x17C;
+    frame.offsetX.vz = 380;
     TransformVectorToInt32(&frame.rotMatrix, &frame.offsetX, &frame.offsetX);
     frame.rotMatrix.t[0] += frame.offsetX.vx;
     frame.rotMatrix.t[1] += frame.offsetX.vy;
@@ -391,14 +391,14 @@ void __cdecl BattleFx_ThrowAerisWeaponsStraightProjectileTask(void)
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.projectile->timer >= 0x16) {
+    if (frame.projectile->timer >= 22) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowAerisWeaponIndex + 0xB, g_BattleThrowAerisLoadedResTable);
-        frame.modelDraw->fadeLevel = frame.projectile->timer - 0x16 << 9;
+        frame.modelDraw->fadeLevel = frame.projectile->timer - 22 << 9;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.projectile->timer >= 0x1E) {
+    if (frame.projectile->timer >= 30) {
         frame.projectile->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -431,13 +431,13 @@ void __cdecl BattleFx_ThrowAerisWeaponsArcTimelineTask(void)
         g_BattleThrowAerisDeltaVectorY = g_BattleThrowAerisTargetPos.y - g_BattleThrowAerisSourcePos.y;
         g_BattleThrowAerisDeltaVectorZ = g_BattleThrowAerisTargetPos.z - g_BattleThrowAerisSourcePos.z;
         norm = NormalizeVectorFixed(&g_BattleThrowAerisDeltaVectorX, &g_BattleThrowAerisDeltaVectorX);
-        speed = (SqrtToInt(norm) << 1) / 0xA;
+        speed = (SqrtToInt(norm) << 1) / 10;
         pProjectile = (BattleFxAerisArcSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowAerisWeaponsArcProjectileTask);
         *(Int64Pair *)((char *)pProjectile + 4) = *(Int64Pair *)&g_BattleThrowAerisSourcePos;
-        pProjectile->arcVelocity = 0xFFF4;
-        pProjectile->velocityX = speed * g_BattleThrowAerisDeltaVectorX >> 0xC;
-        pProjectile->velocityY = speed * g_BattleThrowAerisDeltaVectorY >> 0xC;
-        pProjectile->velocityZ = speed * g_BattleThrowAerisDeltaVectorZ >> 0xC;
+        pProjectile->arcVelocity = 0xFFF4 /* -12 */;
+        pProjectile->velocityX = speed * g_BattleThrowAerisDeltaVectorX >> 12;
+        pProjectile->velocityY = speed * g_BattleThrowAerisDeltaVectorY >> 12;
+        pProjectile->velocityZ = speed * g_BattleThrowAerisDeltaVectorZ >> 12;
         pProjectile->angle = 0;
         pProjectile->angleVelocity = 0x320;
     }
@@ -445,7 +445,7 @@ void __cdecl BattleFx_ThrowAerisWeaponsArcTimelineTask(void)
         Battle_PostActorHitOrHurtMessage(g_BattleThrowAerisTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowAerisTargetPos.x), 0x32);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -501,11 +501,11 @@ void __cdecl BattleFx_ThrowAerisWeaponsArcProjectileTask(void)
     if (frame.projectile->frameCount >= 6) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowAerisWeaponIndex + 0xB, g_BattleThrowAerisLoadedResTable);
-        frame.modelDraw->fadeLevel = (frame.projectile->frameCount - 6) * 0xAA;
+        frame.modelDraw->fadeLevel = (frame.projectile->frameCount - 6) * 170;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.projectile->frameCount >= 0x1E) {
+    if (frame.projectile->frameCount >= 30) {
         frame.projectile->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

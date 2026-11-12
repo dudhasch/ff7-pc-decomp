@@ -48,7 +48,7 @@ int g_YasuiLimitClimhazzardDrawListHead = 0;
 // GLOBAL: FF7 0x00a41a54
 int g_YasuiLimitClimhazzardTargetMask = 0;
 // GLOBAL: FF7 0x00a41a58
-unsigned char g_YasuiLimitClimhazzardTrailPoint1[0x8] = {0};
+unsigned char g_YasuiLimitClimhazzardTrailPoint1[8] = {0};
 
 // GLOBAL: FF7 0x00a41a60
 unsigned char g_YasuiLimitClimhazzardTrailPoint2[8] = {0};
@@ -139,10 +139,10 @@ void __cdecl BattleFx_LimitClimhazzardTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter == 0x24) {
+    if (taskPtr->frameCounter == 36) {
         BattleFx_StartScreenFlashRamp(1);
     }
-    if (taskPtr->frameCounter == 0x25) {
+    if (taskPtr->frameCounter == 37) {
         pRecord = (BattleFxLimitClimhazzardTimeline2 *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitClimhazzardAnimatedSpriteTask);
         Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, (void *)g_BattleActorTransformRecords[g_YasuiLimitClimhazzardSourceActor].auxNode, (PsxMatrix *)g_YasuiLimitClimhazzardTimelineScratch->matrix);
         g_YasuiLimitClimhazzardTimelineScratch->vx = 0;
@@ -152,19 +152,19 @@ void __cdecl BattleFx_LimitClimhazzardTimelineTask(void)
         pRecord->posX = g_YasuiLimitClimhazzardTimelineScratch->vx + g_YasuiLimitClimhazzardTimelineScratch->transX;
         pRecord->posY = g_YasuiLimitClimhazzardTimelineScratch->vy + g_YasuiLimitClimhazzardTimelineScratch->transY;
         pRecord->posZ = g_YasuiLimitClimhazzardTimelineScratch->vz + g_YasuiLimitClimhazzardTimelineScratch->transZ;
-        pRecord->pushLength = 0xFC18;
+        pRecord->pushLength = 0xFC18 /* -1000 */;
         BattleFx_FadeOutScreenFlashRamp(5);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&pRecord->posX), 0x12);
     }
-    if (taskPtr->frameCounter == 0x38) {
+    if (taskPtr->frameCounter == 56) {
         pRecord = (BattleFxLimitClimhazzardTimeline2 *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitClimhazzardBeamTrailEmitterTask);
         pRecord->ownerSlot = 0;
     }
-    if (taskPtr->frameCounter == 0x3B) {
+    if (taskPtr->frameCounter == 59) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[g_YasuiLimitClimhazzardSourceActor].posX), 0x1B);
     }
-    if (taskPtr->frameCounter == 0x4F) {
-        for (i = 0; i < 0xA; i++) {
+    if (taskPtr->frameCounter == 79) {
+        for (i = 0; i < 10; i++) {
             if ((g_YasuiLimitClimhazzardTargetMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
@@ -204,14 +204,14 @@ void __cdecl BattleFx_LimitClimhazzardBeamTrailEmitterTask(void)
         *(Int64Pair *)&g_YasuiLimitClimhazzardTrailScratch->point1BaseX = *(Int64Pair *)&((YasuiLimitClimhazzardTrailPoint1 *)(g_YasuiLimitClimhazzardTrailPoint1))[pEmitter->pointIndex - 1].posX;
         *(Int64Pair *)&g_YasuiLimitClimhazzardTrailScratch->point2BaseX = *(Int64Pair *)&((YasuiLimitClimhazzardTrailPoint1 *)(g_YasuiLimitClimhazzardTrailPoint2))[pEmitter->pointIndex - 1].posX;
         for (i = 1; i <= 4; i++) {
-            ratio = (i << 0xC) / 4;
-            g_YasuiLimitClimhazzardTrailScratch->point1X = g_YasuiLimitClimhazzardTrailScratch->point1DeltaX * ratio + g_YasuiLimitClimhazzardTrailScratch->point1BaseX * (0x1000 - ratio) >> 0xC;
-            g_YasuiLimitClimhazzardTrailScratch->point1Y = g_YasuiLimitClimhazzardTrailScratch->point1DeltaY * ratio + g_YasuiLimitClimhazzardTrailScratch->point1BaseY * (0x1000 - ratio) >> 0xC;
-            g_YasuiLimitClimhazzardTrailScratch->point1Z = g_YasuiLimitClimhazzardTrailScratch->point1DeltaZ * ratio + g_YasuiLimitClimhazzardTrailScratch->point1BaseZ * (0x1000 - ratio) >> 0xC;
-            g_YasuiLimitClimhazzardTrailScratch->point2X = g_YasuiLimitClimhazzardTrailScratch->point2DeltaX * ratio + g_YasuiLimitClimhazzardTrailScratch->point2BaseX * (0x1000 - ratio) >> 0xC;
-            g_YasuiLimitClimhazzardTrailScratch->point2Y = g_YasuiLimitClimhazzardTrailScratch->point2DeltaY * ratio + g_YasuiLimitClimhazzardTrailScratch->point2BaseY * (0x1000 - ratio) >> 0xC;
-            g_YasuiLimitClimhazzardTrailScratch->point2Z = g_YasuiLimitClimhazzardTrailScratch->point2DeltaZ * ratio + g_YasuiLimitClimhazzardTrailScratch->point2BaseZ * (0x1000 - ratio) >> 0xC;
-            BattleFx_LimitClimhazzardOffsetAlongDirection((Vec3sPacked *)&g_YasuiLimitClimhazzardTrailScratch->point1X, (Vec3sPacked *)&g_YasuiLimitClimhazzardTrailScratch->point2X, 0x3E8, (Vec3sPacked *)&g_YasuiLimitClimhazzardTrailScratch->trailOffsetX);
+            ratio = (i << 12) / 4;
+            g_YasuiLimitClimhazzardTrailScratch->point1X = g_YasuiLimitClimhazzardTrailScratch->point1DeltaX * ratio + g_YasuiLimitClimhazzardTrailScratch->point1BaseX * (4096 - ratio) >> 12;
+            g_YasuiLimitClimhazzardTrailScratch->point1Y = g_YasuiLimitClimhazzardTrailScratch->point1DeltaY * ratio + g_YasuiLimitClimhazzardTrailScratch->point1BaseY * (4096 - ratio) >> 12;
+            g_YasuiLimitClimhazzardTrailScratch->point1Z = g_YasuiLimitClimhazzardTrailScratch->point1DeltaZ * ratio + g_YasuiLimitClimhazzardTrailScratch->point1BaseZ * (4096 - ratio) >> 12;
+            g_YasuiLimitClimhazzardTrailScratch->point2X = g_YasuiLimitClimhazzardTrailScratch->point2DeltaX * ratio + g_YasuiLimitClimhazzardTrailScratch->point2BaseX * (4096 - ratio) >> 12;
+            g_YasuiLimitClimhazzardTrailScratch->point2Y = g_YasuiLimitClimhazzardTrailScratch->point2DeltaY * ratio + g_YasuiLimitClimhazzardTrailScratch->point2BaseY * (4096 - ratio) >> 12;
+            g_YasuiLimitClimhazzardTrailScratch->point2Z = g_YasuiLimitClimhazzardTrailScratch->point2DeltaZ * ratio + g_YasuiLimitClimhazzardTrailScratch->point2BaseZ * (4096 - ratio) >> 12;
+            BattleFx_LimitClimhazzardOffsetAlongDirection((Vec3sPacked *)&g_YasuiLimitClimhazzardTrailScratch->point1X, (Vec3sPacked *)&g_YasuiLimitClimhazzardTrailScratch->point2X, 1000, (Vec3sPacked *)&g_YasuiLimitClimhazzardTrailScratch->trailOffsetX);
             ((YasuiLimitClimhazzardTrailPoint1 *)(g_YasuiLimitClimhazzardTrailPoint1))[pEmitter->pointIndex].posX = g_YasuiLimitClimhazzardTrailScratch->point1X + g_YasuiLimitClimhazzardTrailScratch->trailOffsetX;
             ((YasuiLimitClimhazzardTrailPoint1 *)(g_YasuiLimitClimhazzardTrailPoint1))[pEmitter->pointIndex].posY = g_YasuiLimitClimhazzardTrailScratch->point1Y + g_YasuiLimitClimhazzardTrailScratch->trailOffsetY;
             ((YasuiLimitClimhazzardTrailPoint1 *)(g_YasuiLimitClimhazzardTrailPoint1))[pEmitter->pointIndex].posZ = g_YasuiLimitClimhazzardTrailScratch->point1Z + g_YasuiLimitClimhazzardTrailScratch->trailOffsetZ;
@@ -234,7 +234,7 @@ void __cdecl BattleFx_LimitClimhazzardBeamTrailEmitterTask(void)
         (pEmitter->pointIndex)++;
     }
     (pEmitter->frameCount)++;
-    if (pEmitter->frameCount >= 0xF) {
+    if (pEmitter->frameCount >= 15) {
         pEmitter->pointIndex = 0xFFFF;
     }
 }
@@ -251,9 +251,9 @@ void __cdecl BattleFx_LimitClimhazzardOffsetAlongDirection(Vec3sPacked *startPt,
     outVec.vy = endPt->vy - startPt->vy;
     outVec.vz = endPt->vz - startPt->vz;
     NormalizeVectorFixed(&outVec, &outVec);
-    outPt->vx = startPt->vx + (outVec.vx * distanceFixed >> 0xC) - endPt->vx;
-    outPt->vy = startPt->vy + (outVec.vy * distanceFixed >> 0xC) - endPt->vy;
-    outPt->vz = startPt->vz + (outVec.vz * distanceFixed >> 0xC) - endPt->vz;
+    outPt->vx = startPt->vx + (outVec.vx * distanceFixed >> 12) - endPt->vx;
+    outPt->vy = startPt->vy + (outVec.vy * distanceFixed >> 12) - endPt->vy;
+    outPt->vz = startPt->vz + (outVec.vz * distanceFixed >> 12) - endPt->vz;
 }
 
 /*
@@ -273,8 +273,8 @@ void __cdecl BattleFx_LimitClimhazzardShadedQuadTrailTask(void)
     int zDepth;
 
     quad = (BattleFxLimitClimhazzardQuadRecord *)BATTLE_CURRENT_TASK_SLOT;
-    nextRatio = (quad->phase + 1 << 0xC) / 0x28;
-    shadeCur = (quad->phase << 0xC) / 0x28;
+    nextRatio = (quad->phase + 1 << 12) / 40;
+    shadeCur = (quad->phase << 12) / 40;
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
@@ -292,7 +292,7 @@ void __cdecl BattleFx_LimitClimhazzardShadedQuadTrailTask(void)
     }
     if (g_BattleIsPaused == 0) {
         quad->phase += 4;
-        if (quad->phase >= 0x28) {
+        if (quad->phase >= 40) {
             quad->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -309,7 +309,7 @@ void __cdecl BattleFx_LimitClimhazzardAnimatedSpriteTask(void)
     task = (BattleFxLimitClimhazzardSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     (g_YasuiLimitClimhazzardSpriteDrawReq.animBlock) = Gfx_ModelTableGetLoadedRecord(0, g_YasuiLimitClimhazzardResourceContext);
     g_YasuiLimitClimhazzardSpriteDrawReq.drawObj = Gfx_ModelTableGetSpriteObject(0, g_YasuiLimitClimhazzardResourceContext);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800 /* 1.5 */, task->pushLength);
     g_YasuiLimitClimhazzardSpriteDrawReq.frame = task->frame;
     g_YasuiLimitClimhazzardDrawListHead = BattleFx_SubmitSpriteDraw(&g_YasuiLimitClimhazzardSpriteDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitClimhazzardDrawListHead);
     if (g_BattleIsPaused == 0 && (g_YasuiLimitClimhazzardSpriteDrawReq.animBlock) != 0) {

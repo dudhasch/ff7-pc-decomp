@@ -535,7 +535,7 @@ int g_BattleKotrKnight1Radius = 0;
 // BattleFx_KotrBeginEffect). The span runs to the next named definition of the TU; the TU's pieces
 // inside 0xa58cc8..0xa58cd4 are aliases.
 // GLOBAL: FF7 0x00a58cc8
-unsigned char g_BattleSummonKotrActorRepresentative[0xc] = {0};
+unsigned char g_BattleSummonKotrActorRepresentative[12] = {0};
 // GLOBAL: FF7 0x00a58cd4
 unsigned char g_BattleKotrKnight5TimelineTaskInit = 0;
 // GLOBAL: FF7 0x00a58cd8
@@ -577,13 +577,13 @@ unsigned char g_BattleKotrSpinningFadingModelTaskInit = 0;
 // g_BattleSummonKotrActorLiftTasks is indexed by the code as an array. The span runs to the next
 // named definition of the TU; the TU's pieces inside 0xa64168..0xa64190 are aliases.
 // GLOBAL: FF7 0x00a64168
-unsigned char g_BattleSummonKotrActorLiftTasks[0x28] = {0};
+unsigned char g_BattleSummonKotrActorLiftTasks[40] = {0};
 // GLOBAL: FF7 0x00a64190
 BattleFxKotrEasedSpinState *g_BattleSummonKotrEasedSpinState = 0;
 // GLOBAL: FF7 0x00a64194
 BattleFxCameraOrbitState *g_BattleSummonKotrCameraOther = 0;
 // GLOBAL: FF7 0x00a64198
-unsigned char g_BattleSummonKotrAttachLocalPositions[0x4] = {0};
+unsigned char g_BattleSummonKotrAttachLocalPositions[4] = {0};
 unsigned char g_bssPad_00a6419c[4] = {0};
 unsigned char g_bssPad_00a641a0[72] = {0};
 // GLOBAL: FF7 0x00a641e8
@@ -621,7 +621,7 @@ unsigned char g_BattleSummonKotrDiscBufferStorage[65860] = {0};
 unsigned char g_bssPad_00a7436c[4] = {0};
 unsigned char g_BattleSummonKotrModelWorkPool[7864] = {0};
 // GLOBAL: FF7 0x00a76228
-unsigned char g_BattleSummonKotrFragmentPool[0xe800] = {0};
+unsigned char g_BattleSummonKotrFragmentPool[59392] = {0};
 // GLOBAL: FF7 0x00a84a28
 unsigned char g_BattleKotrKnight12TimelineTaskInit = 0;
 // GLOBAL: FF7 0x00a84a2c
@@ -692,7 +692,7 @@ int g_BattleSummonKotrKnightContextSlot = 0;
 struct GfxTableCursor *g_BattleSummonKotrTableCursor = 0;
 unsigned char g_bssPad_00a853cc[4] = {0};
 // GLOBAL: FF7 0x00a853d0
-unsigned char g_BattleSummonKotrBillboardMatrix[0x4] = {0};
+unsigned char g_BattleSummonKotrBillboardMatrix[4] = {0};
 unsigned char g_bssPad_00a853d4[4] = {0};
 // GLOBAL: FF7 0x00a853d8
 short g_BattleSummonKotrBillboardMatrixDiagY = 0;
@@ -793,7 +793,7 @@ void __cdecl BattleFx_SummonLoadResKnightsOfRound(void)
         requestPtr = &requestBuf;
         Gfx_InitResourceRequest(requestPtr);
         requestPtr->groupTag = 0;
-        requestPtr->duration = 0x5DC;
+        requestPtr->duration = 1500;
         // STRING: FF7 0x007f6050
         requestPtr->resourcePath = (char *)BattleFx_BuildResourcePath("SUMMON/KNIGHTS", pathBuf);
         Gfx_LoadModelTableIfAbsent(resourceId, header, requestPtr, &g_BattleSummonKotrTableCursor, sceneCtx);
@@ -811,7 +811,7 @@ void __cdecl BattleFx_KotrFreeThirteenKnightModels(void)
 {
     int i;
 
-    for (i = 0; i < 0xD; i++) {
+    for (i = 0; i < 13; i++) {
         BattleModel_FreeBank((BattleLimitAnimBank *)g_BattleKotrKnightModels[i]);
         g_BattleKotrKnightModels[i] = 0;
     }
@@ -827,7 +827,7 @@ void __cdecl BattleFx_KotrLoadThirteenKnightModels(void)
     KotrLoaderLocals locals;
 
     if (g_BattleKotrKnightModels[0] == 0) {
-        for (locals.index = 0; locals.index < 0xD; locals.index++) {
+        for (locals.index = 0; locals.index < 13; locals.index++) {
             sprintf(
                 locals.path,
                 // STRING: FF7 0x007f6070
@@ -871,16 +871,16 @@ void __cdecl BattleFx_KotrBeginEffect(int targetMask, int actorIdx)
     BattleFx_KotrLoadThirteenKnightModels();
     Battle_GetActorMaskCentroid(g_BattleKotrTargetMask = targetMask, &centroidX.vx);
     if (centroidX.vz < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonKotrEffectAngles[1] = 0x800;
+        g_BattleSummonKotrEffectAngles[1] = 0x800 /* 180 deg */;
     }
     RotMatrix((SVECTOR *)&g_BattleSummonKotrEffectAngles, &g_BattleSummonKotrOffscreenCenter);
     g_BattleSummonKotrOffscreenCenter.centerZ = centroidX.vz;
     g_BattleSummonKotrTargetMask = g_BattleKotrTargetMask;
     g_BattleKotrHandledMask = 0;
-    for (actorIndex = 4; actorIndex < 0xA; actorIndex++) {
+    for (actorIndex = 4; actorIndex < 10; actorIndex++) {
         g_BattleSummonKotrSavedActorDrawFlags[actorIndex] = g_BattleActorRecords[actorIndex].drawFlags;
         if ((g_BattleKotrTargetMask & 1 << actorIndex) != 0 && (g_BattleKotrHandledMask & 1 << actorIndex) == 0) {
-            for (otherIdx = 4; otherIdx < 0xA; otherIdx++) {
+            for (otherIdx = 4; otherIdx < 10; otherIdx++) {
                 if (actorIndex != otherIdx && g_BattleActorRecords[actorIndex].posX == g_BattleActorRecords[otherIdx].posX && g_BattleActorRecords[actorIndex].posZ == g_BattleActorRecords[otherIdx].posZ) {
                     g_BattleSummonKotrActorRepresentative[otherIdx] = actorIndex;
                     g_BattleSummonKotrTargetMask |= (short)(1 << otherIdx);
@@ -902,10 +902,10 @@ void __cdecl BattleFx_KotrBeginEffect(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x00476a38
 void __cdecl BattleFx_KotrResetModuleState(void)
 {
-    ZeroFillMemory32(0x108, &g_BattleSummonKotrKnightContexts);
+    ZeroFillMemory32(264, &g_BattleSummonKotrKnightContexts);
     ZeroFillMemory32(8, &g_BattleSummonKotrEffectAngles);
-    ZeroFillMemory32(0x1E, &g_BattleSummonKotrOffscreenCenter);
-    ZeroFillMemory32(0x1E, &g_BattleSummonKotrTransformState);
+    ZeroFillMemory32(30, &g_BattleSummonKotrOffscreenCenter);
+    ZeroFillMemory32(30, &g_BattleSummonKotrTransformState);
     g_BattleKotrTargetMask = 0;
     g_BattleSummonKotrTargetMask = 0;
     g_BattleKotrHandledMask = 0;
@@ -1059,7 +1059,7 @@ void __cdecl BattleFx_KotrRunCameraScript(void)
                 g_BattleSummonKotrCameraState[1].mode = *camera->scriptPtr;
                 camera->scriptPtr++;
                 g_BattleSummonKotrCameraState->progress = 0;
-                g_BattleSummonKotrCameraState->stepSize = 0x1000 / g_BattleSummonKotrCameraState->stepCount;
+                g_BattleSummonKotrCameraState->stepSize = 4096 / g_BattleSummonKotrCameraState->stepCount;
                 g_BattleSummonKotrCameraState->deltaX = g_BattleSummonKotrCameraState->posX;
                 g_BattleSummonKotrCameraState->deltaY = g_BattleSummonKotrCameraState->posY;
                 g_BattleSummonKotrCameraState->deltaZ = g_BattleSummonKotrCameraState->posZ;
@@ -1078,7 +1078,7 @@ void __cdecl BattleFx_KotrRunCameraScript(void)
                 g_BattleSummonKotrCameraState[1].stepCount = *camera->scriptPtr;
                 camera->scriptPtr++;
                 g_BattleSummonKotrCameraState->progress = 0;
-                g_BattleSummonKotrCameraState->stepSize = 0x1000 / g_BattleSummonKotrCameraState->stepCount;
+                g_BattleSummonKotrCameraState->stepSize = 4096 / g_BattleSummonKotrCameraState->stepCount;
                 g_BattleSummonKotrCameraState->deltaX = g_BattleSummonKotrCameraState->posX;
                 g_BattleSummonKotrCameraState->deltaY = g_BattleSummonKotrCameraState->posY;
                 g_BattleSummonKotrCameraState->deltaZ = g_BattleSummonKotrCameraState->posZ;
@@ -1142,37 +1142,37 @@ void __cdecl BattleFx_KotrRunCameraScript(void)
                 ((BattleFxCameraVec *)displacement)->y = g_BattleSummonKotrCameraOther->posY - g_BattleSummonKotrCameraState->deltaY;
                 ((BattleFxCameraVec *)displacement)->z = g_BattleSummonKotrCameraOther->posZ - g_BattleSummonKotrCameraState->deltaZ;
                 VectorNormalToSVector((int *)displacement, (short *)pOffsetVec);
-                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraOther->posX - (pOffsetVec->vx * g_BattleSummonKotrCameraState->progress >> 0xC);
-                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraOther->posY - (pOffsetVec->vy * g_BattleSummonKotrCameraState->progress >> 0xC);
-                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraOther->posZ - (pOffsetVec->vz * g_BattleSummonKotrCameraState->progress >> 0xC);
+                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraOther->posX - (pOffsetVec->vx * g_BattleSummonKotrCameraState->progress >> 12);
+                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraOther->posY - (pOffsetVec->vy * g_BattleSummonKotrCameraState->progress >> 12);
+                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraOther->posZ - (pOffsetVec->vz * g_BattleSummonKotrCameraState->progress >> 12);
                 break;
             case BATTLE_KOTR_CAMERA_MOVE_EASED:
                 g_BattleSummonKotrCameraState->progress += g_BattleSummonKotrCameraState->stepSize;
                 progress = g_BattleSummonKotrCameraState->progress;
                 progress = BattleFx_ApplySineEasing(progress, g_BattleSummonKotrCameraState[1].mode);
-                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraState->deltaX + (g_BattleSummonKotrCameraState->stepX * progress >> 0xC);
-                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraState->deltaY + (g_BattleSummonKotrCameraState->stepY * progress >> 0xC);
-                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraState->deltaZ + (g_BattleSummonKotrCameraState->stepZ * progress >> 0xC);
+                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraState->deltaX + (g_BattleSummonKotrCameraState->stepX * progress >> 12);
+                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraState->deltaY + (g_BattleSummonKotrCameraState->stepY * progress >> 12);
+                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraState->deltaZ + (g_BattleSummonKotrCameraState->stepZ * progress >> 12);
                 break;
             case BATTLE_KOTR_CAMERA_MOVE_ARC:
                 g_BattleSummonKotrCameraState->progress += g_BattleSummonKotrCameraState->stepSize;
                 progress = g_BattleSummonKotrCameraState->progress;
                 lateral = SinFixed(BattleFx_ApplySineEasing(progress, g_BattleSummonKotrCameraState[1].mode) / 2);
-                lateral = lateral * g_BattleSummonKotrCameraState[1].stepCount >> 0xC;
+                lateral = lateral * g_BattleSummonKotrCameraState[1].stepCount >> 12;
                 progress = BattleFx_ApplySineEasing(progress, g_BattleSummonKotrCameraState[1].mode);
-                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraState->deltaX + (g_BattleSummonKotrCameraState->stepX * progress >> 0xC) - (g_BattleSummonKotrCameraState->stepZ * lateral >> 0xC);
-                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraState->deltaY + (g_BattleSummonKotrCameraState->stepY * progress >> 0xC);
-                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraState->deltaZ + (g_BattleSummonKotrCameraState->stepZ * progress >> 0xC) + (g_BattleSummonKotrCameraState->stepX * lateral >> 0xC);
+                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraState->deltaX + (g_BattleSummonKotrCameraState->stepX * progress >> 12) - (g_BattleSummonKotrCameraState->stepZ * lateral >> 12);
+                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraState->deltaY + (g_BattleSummonKotrCameraState->stepY * progress >> 12);
+                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraState->deltaZ + (g_BattleSummonKotrCameraState->stepZ * progress >> 12) + (g_BattleSummonKotrCameraState->stepX * lateral >> 12);
                 break;
             case BATTLE_KOTR_CAMERA_MOVE_ARC_NEGATED_EASE:
                 g_BattleSummonKotrCameraState->progress += g_BattleSummonKotrCameraState->stepSize;
                 progress = g_BattleSummonKotrCameraState->progress;
                 lateral = SinFixed(BattleFx_ApplySineEasing(progress, -g_BattleSummonKotrCameraState[1].mode) / 2);
-                lateral = lateral * g_BattleSummonKotrCameraState[1].stepCount >> 0xC;
+                lateral = lateral * g_BattleSummonKotrCameraState[1].stepCount >> 12;
                 progress = BattleFx_ApplySineEasing(progress, g_BattleSummonKotrCameraState[1].mode);
-                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraState->deltaX + (g_BattleSummonKotrCameraState->stepX * progress >> 0xC) - (g_BattleSummonKotrCameraState->stepZ * lateral >> 0xC);
-                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraState->deltaY + (g_BattleSummonKotrCameraState->stepY * progress >> 0xC);
-                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraState->deltaZ + (g_BattleSummonKotrCameraState->stepZ * progress >> 0xC) + (g_BattleSummonKotrCameraState->stepX * lateral >> 0xC);
+                g_BattleSummonKotrCameraState->posX = g_BattleSummonKotrCameraState->deltaX + (g_BattleSummonKotrCameraState->stepX * progress >> 12) - (g_BattleSummonKotrCameraState->stepZ * lateral >> 12);
+                g_BattleSummonKotrCameraState->posY = g_BattleSummonKotrCameraState->deltaY + (g_BattleSummonKotrCameraState->stepY * progress >> 12);
+                g_BattleSummonKotrCameraState->posZ = g_BattleSummonKotrCameraState->deltaZ + (g_BattleSummonKotrCameraState->stepZ * progress >> 12) + (g_BattleSummonKotrCameraState->stepX * lateral >> 12);
             }
             (g_BattleSummonKotrCameraState->stepCount)--;
             g_BattleSummonKotrCameraState = (struct BattleFxCameraOrbitState *)&g_BattleSummonKotrScriptStateA;
@@ -1611,8 +1611,8 @@ void __cdecl BattleFx_KotrShakeEnvelopeTask(void)
     }
     relFrame = task->frame;
     if (relFrame < task->attackFrames) {
-        ratio = (relFrame << 0xC) / task->attackFrames;
-        amplitude = task->amplitude * ratio >> 0xC;
+        ratio = (relFrame << 12) / task->attackFrames;
+        amplitude = task->amplitude * ratio >> 12;
     } else {
         relFrame -= task->attackFrames;
         if (relFrame < task->sustainFrames) {
@@ -1620,8 +1620,8 @@ void __cdecl BattleFx_KotrShakeEnvelopeTask(void)
         } else {
             relFrame -= task->sustainFrames;
             if (relFrame < task->releaseFrames) {
-                ratio = (relFrame << 0xC) / task->releaseFrames;
-                amplitude = task->amplitude * (0x1000 - ratio) >> 0xC;
+                ratio = (relFrame << 12) / task->releaseFrames;
+                amplitude = task->amplitude * (0x1000 - ratio) >> 12;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 g_BattleCameraTransform.posY = 0;
@@ -1679,30 +1679,30 @@ void __cdecl BattleFx_KotrRadialDiscMeshTimelineTask(void)
         (pTimelineTask->frameCounter)++;
     } else {
         frameIndex = pTimelineTask->frameCounter;
-        if (frameIndex < 0x28) {
-            if (frameIndex < 0xA) {
-                eased = (frameIndex << 0xC) / 0xA;
+        if (frameIndex < 40) {
+            if (frameIndex < 10) {
+                eased = (frameIndex << 12) / 10;
                 if (g_BattleIsPaused == 0) {
                     eased = BattleFx_ApplySineEasing(eased, 0x2FF);
-                    colorA = (eased * -0x20 >> 0xC) + 0x80;
-                    tintOuter = (eased * -0x60 >> 0xC) + 0x80;
-                    BattleFx_KotrApplyDiscMeshDisplacement(eased * 0x3E8 >> 0xC, colorA, tintOuter);
+                    colorA = (eased * -0x20 >> 12) + 0x80;
+                    tintOuter = (eased * -0x60 >> 12) + 0x80;
+                    BattleFx_KotrApplyDiscMeshDisplacement(eased * 0x3E8 >> 12, colorA, tintOuter);
                 }
             } else {
-                eased = (frameIndex - 0xA << 0xC) / 0x1E;
+                eased = (frameIndex - 0xA << 12) / 30;
                 if (g_BattleIsPaused == 0) {
                     eased = BattleFx_ApplySineEasing(eased, 0);
-                    colorA = (eased * -0x60 >> 0xC) + 0x60;
-                    tintOuter = (eased * -0x20 >> 0xC) + 0x20;
-                    BattleFx_KotrApplyDiscMeshDisplacement((eased * 0x1F4 >> 0xC) + 0x3E8, colorA, tintOuter);
+                    colorA = (eased * -0x60 >> 12) + 0x60;
+                    tintOuter = (eased * -0x20 >> 12) + 0x20;
+                    BattleFx_KotrApplyDiscMeshDisplacement((eased * 0x1F4 >> 12) + 0x3E8, colorA, tintOuter);
                 }
             }
             SetRotMatrix(&g_BattleSummonKotrTransformState);
             SetTransMatrix(&g_BattleSummonKotrTransformState);
             Gfx_SetPsxPrimQuadState(0xF, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonKotrOffscreenSlotIndex));
             RefreshGlobalTransformState();
-            for (row = 0; row < 0x10; row++) {
-                for (column = 0; column < 0x20; column++) {
+            for (row = 0; row < 16; row++) {
+                for (column = 0; column < 32; column++) {
                     cellPtr = &g_BattleSummonKotrDiscBuffer->rows[row].records[column];
                     g_BattleSummonKotrRadialDisc->depth = Gfx_TransformQuadReturnDepth((void *)cellPtr->vertexA, cellPtr->vertexB, cellPtr->vertexC, cellPtr->vertexD, &g_BattleSummonKotrRadialDisc->projectScratch, &g_BattleSummonKotrRadialDisc->flags);
                     if ((g_BattleSummonKotrRadialDisc->flags & 0x60000) == 0) {
@@ -1716,8 +1716,8 @@ void __cdecl BattleFx_KotrRadialDiscMeshTimelineTask(void)
             }
             g_BattleSummonKotrBufferIndex ^= 1;
         } else {
-            frameIndex -= 0x28;
-            if (frameIndex < 0x1E) {
+            frameIndex -= 40;
+            if (frameIndex < 30) {
                 packet = (BattleFxRadialDiscPacket *)Gfx_GetPsxPacketScratchPtr();
                 g_BattleSummonKotrRadialDisc->edgeEnd.vy = 0;
                 g_BattleSummonKotrRadialDisc->edgeStart.vy = 0;
@@ -1727,13 +1727,13 @@ void __cdecl BattleFx_KotrRadialDiscMeshTimelineTask(void)
                 SetRotMatrix(&g_BattleSummonKotrTransformState);
                 SetTransMatrix(&g_BattleSummonKotrTransformState);
                 RefreshGlobalTransformState();
-                for (row = 0; row < 0x20; row++) {
-                    angleStart = (row << 0xC) / 0x20;
-                    angleEnd = ((row + 1) << 0xC) / 0x20;
-                    g_BattleSummonKotrRadialDisc->edgeStart.vx = SinFixed(angleStart) * 0x11D0 >> 0xC;
-                    g_BattleSummonKotrRadialDisc->edgeStart.vz = CosFixed(angleStart) * 0x11D0 >> 0xC;
-                    g_BattleSummonKotrRadialDisc->edgeEnd.vx = SinFixed(angleEnd) * 0x11D0 >> 0xC;
-                    g_BattleSummonKotrRadialDisc->edgeEnd.vz = CosFixed(angleEnd) * 0x11D0 >> 0xC;
+                for (row = 0; row < 32; row++) {
+                    angleStart = (row << 12) / 32;
+                    angleEnd = ((row + 1) << 12) / 32;
+                    g_BattleSummonKotrRadialDisc->edgeStart.vx = SinFixed(angleStart) * 0x11D0 >> 12;
+                    g_BattleSummonKotrRadialDisc->edgeStart.vz = CosFixed(angleStart) * 0x11D0 >> 12;
+                    g_BattleSummonKotrRadialDisc->edgeEnd.vx = SinFixed(angleEnd) * 0x11D0 >> 12;
+                    g_BattleSummonKotrRadialDisc->edgeEnd.vz = CosFixed(angleEnd) * 0x11D0 >> 12;
                     Gfx_TransformTriangleReturnDepthAlt(&g_BattleSummonKotrRadialDisc->center, &g_BattleSummonKotrRadialDisc->edgeStart, &g_BattleSummonKotrRadialDisc->edgeEnd, &g_BattleSummonKotrRadialDisc->projectScratch, &g_BattleSummonKotrRadialDisc->flags);
                     if ((g_BattleSummonKotrRadialDisc->flags & 0x60000) == 0) {
                         packet->tag = 0x4000000;
@@ -1742,11 +1742,11 @@ void __cdecl BattleFx_KotrRadialDiscMeshTimelineTask(void)
                 }
                 g_BattleOverlayDrawListHead = (int)packet;
             } else {
-                frameIndex -= 0xA;
-                if (frameIndex < 0x1E) { /* empty first arm: lib/codegen.h */
+                frameIndex -= 10;
+                if (frameIndex < 30) { /* empty first arm: lib/codegen.h */
                 } else {
-                    frameIndex -= 0x1E;
-                    if (frameIndex < 0x1E) { /* empty first arm: lib/codegen.h */
+                    frameIndex -= 30;
+                    if (frameIndex < 30) { /* empty first arm: lib/codegen.h */
                     } else {
                         pTimelineTask->ownerSlot = BATTLE_TASK_FREE;
                         return;
@@ -1843,17 +1843,17 @@ void __cdecl BattleFx_KotrBuildRadialDiscMesh(void)
     int a1;
     int bankIndex;
 
-    for (ring = 0; ring < 0x10; ring++) {
+    for (ring = 0; ring < 16; ring++) {
         idx = ring * 6;
-        r1 = idx + 6 < 0x60 ? idx + 6 : 0x5F;
-        for (inSegment = 0; inSegment < 0x20; inSegment++) {
+        r1 = idx + 6 < 96 ? idx + 6 : 0x5F;
+        for (inSegment = 0; inSegment < 32; inSegment++) {
             pq = &g_BattleSummonKotrDiscBuffer->rows[ring].records[inSegment];
             pq->vertexA = &g_BattleSummonKotrDiscBuffer->points[ring][inSegment];
-            pq->vertexB = &g_BattleSummonKotrDiscBuffer->points[ring][(inSegment + 1) % 0x20];
+            pq->vertexB = &g_BattleSummonKotrDiscBuffer->points[ring][(inSegment + 1) % 32];
             pq->vertexC = &g_BattleSummonKotrDiscBuffer->points[ring + 1][inSegment];
-            pq->vertexD = &g_BattleSummonKotrDiscBuffer->points[ring + 1][(inSegment + 1) % 0x20];
-            a0 = (inSegment << 12) / 0x20;
-            a1 = ((inSegment + 1) << 12) / 0x20;
+            pq->vertexD = &g_BattleSummonKotrDiscBuffer->points[ring + 1][(inSegment + 1) % 32];
+            a0 = (inSegment << 12) / 32;
+            a1 = ((inSegment + 1) << 12) / 32;
             for (bankIndex = 0; bankIndex < 2; bankIndex++) {
                 pq->quads[bankIndex].tag = 0xC000000;
                 pq->quads[bankIndex].u0 = (idx * SinFixed(a0) >> 12) + 0x60;
@@ -1865,7 +1865,7 @@ void __cdecl BattleFx_KotrBuildRadialDiscMesh(void)
                 pq->quads[bankIndex].u3 = (r1 * SinFixed(a1) >> 12) + 0x60;
                 pq->quads[bankIndex].v3 = (r1 * CosFixed(a1) >> 12) + 0x60;
                 pq->quads[bankIndex].tpage = 0x14D;
-                if (ring < 0xF) {
+                if (ring < 15) {
                     pq->quads[bankIndex].color0 = 0x3C808080;
                     pq->quads[bankIndex].color1 = 0x3C808080;
                     pq->quads[bankIndex].color2 = 0x3C808080;
@@ -1879,10 +1879,10 @@ void __cdecl BattleFx_KotrBuildRadialDiscMesh(void)
             }
         }
     }
-    for (ring = 0; ring < 0x11; ring++) {
-        idx = ring < 0x10 ? ring * 6 * 0x30 : 0x11D0;
-        for (inSegment = 0; inSegment < 0x20; inSegment++) {
-            a0 = (inSegment << 12) / 0x20;
+    for (ring = 0; ring < 17; ring++) {
+        idx = ring < 16 ? ring * 6 * 48 : 4560;
+        for (inSegment = 0; inSegment < 32; inSegment++) {
+            a0 = (inSegment << 12) / 32;
             g_BattleSummonKotrDiscBuffer->points[ring][inSegment].vx = idx * SinFixed(a0) >> 12;
             g_BattleSummonKotrDiscBuffer->points[ring][inSegment].vy = 0;
             g_BattleSummonKotrDiscBuffer->points[ring][inSegment].vz = -idx * CosFixed(a0) >> 12;
@@ -1907,15 +1907,15 @@ void __cdecl BattleFx_KotrApplyDiscMeshDisplacement(int amplitude, int shadeFrom
     int ent;
     int ramp;
 
-    scaleFactor = (amplitude << 0xC) / 0x9C4;
-    for (row = 0; row < 0x10; row++) {
-        ramp = (row << 0xC) / 0xF;
+    scaleFactor = (amplitude << 12) / 2500;
+    for (row = 0; row < 16; row++) {
+        ramp = (row << 12) / 15;
         ramp = BattleFx_ApplySineEasing(ramp, -0x3FF);
-        for (ent = 0; ent < 0x20; ent++) {
-            g_BattleSummonKotrDiscBuffer->points[row][ent].vy = amplitude * (0x1000 - ramp) >> 0xC;
+        for (ent = 0; ent < 32; ent++) {
+            g_BattleSummonKotrDiscBuffer->points[row][ent].vy = amplitude * (4096 - ramp) >> 12;
         }
-        level = shadeFrom + ((shadeTo - shadeFrom) * (scaleFactor * ramp >> 0xC) >> 0xC);
-        g_BattleSummonKotrDiscBuffer->colorWord[row] = level | 0x3C000000 | (level << 8) | (level << 0x10);
+        level = shadeFrom + ((shadeTo - shadeFrom) * (scaleFactor * ramp >> 12) >> 12);
+        g_BattleSummonKotrDiscBuffer->colorWord[row] = level | 0x3C000000 | (level << 8) | (level << 16);
     }
 }
 
@@ -1925,9 +1925,9 @@ void __cdecl BattleFx_KotrApplyDiscMeshDisplacement(int amplitude, int shadeFrom
  * g_BattleKotrSpinModelState (claimed from Gfx_GetPsxScratchpadPtr(0) on first use) and the draw
  * request at g_BattleSummonKotrModelDrawRequest: each frame it rotates the model by
  * frame*0x20 about Y into the block's spin matrix, concatenates g_BattleSummonKotrTransformState, then
- * for the first 0x1E frames scales by a 0..2.0 ramp in g_BattleSummonKotrScaleMatrix and submits model entry 0xF of
+ * for the first 30 frames scales by a 0..2.0 ramp in g_BattleSummonKotrScaleMatrix and submits model entry 0xF of
  * g_BattleSummonKotrTableCursor into the g_BattleCurrentOrderingTable+0x70 bucket at shift 0xC;
- * for the next 0x1C frames (fading via 0x7F571A after frame 0x12) it stores (0x3E80 - frame*0x1F4 %
+ * for the next 28 frames (fading via 0x7F571A after frame 0x12) it stores (0x3E80 - frame*0x1F4 %
  * 0x3E80) as a float at g_BattleKotrTintValue and submits the model three times, each
  * with the tint green channel from that float's raw bits, alternating scalar override (2,
  * 0x3F7B0000) and (1, 0) and subtracting 8000.0 in between, into an uninitialised local bucket
@@ -1954,7 +1954,7 @@ void __cdecl BattleFx_KotrSpinningModelEntry15Task(void)
     g_BattleSummonKotrModelDrawRequest.modelGroup = 0;
     SetDrawColorRGB(0, 0, 0);
     frameIndex = rec->frameCounter;
-    if (frameIndex < 0x1E) {
+    if (frameIndex < 30) {
         g_BattleKotrSpinModelState->rotation.vz = 0;
         g_BattleKotrSpinModelState->rotation.vx = 0;
         g_BattleKotrSpinModelState->rotation.vy = rec->frameCounter << 5;
@@ -1963,17 +1963,17 @@ void __cdecl BattleFx_KotrSpinningModelEntry15Task(void)
         g_BattleKotrSpinModelState->spin.t[1] = 0;
         g_BattleKotrSpinModelState->spin.t[0] = 0;
         MultiplyMatrix(&g_BattleSummonKotrTransformState, &g_BattleKotrSpinModelState->spin, &g_BattleKotrSpinModelState->spin);
-        rampFactor = (frameIndex << 12) / 0x1E;
-        g_BattleSummonKotrScaleMatrix[4] = rampFactor * 0x2000 >> 12;
+        rampFactor = (frameIndex << 12) / 30;
+        g_BattleSummonKotrScaleMatrix[4] = rampFactor * 0x2000 /* 2.0 */ >> 12;
         MultiplyMatrix(&g_BattleKotrSpinModelState->spin, g_BattleSummonKotrScaleMatrix, &g_BattleKotrSpinModelState->scaled);
         SetRotMatrix(&g_BattleKotrSpinModelState->scaled);
         SetTransMatrix(&g_BattleKotrSpinModelState->scaled);
         g_BattleSummonKotrModelDrawRequest.fadeLevel = 0;
-        g_BattleSummonKotrModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0xF, g_BattleSummonKotrTableCursor);
+        g_BattleSummonKotrModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(15, g_BattleSummonKotrTableCursor);
         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonKotrModelDrawRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     } else {
-        frameIndex -= 0x1E;
-        if (frameIndex < 0x1C) {
+        frameIndex -= 30;
+        if (frameIndex < 28) {
             g_BattleKotrSpinModelState->rotation.vz = 0;
             g_BattleKotrSpinModelState->rotation.vx = 0;
             g_BattleKotrSpinModelState->rotation.vy = rec->frameCounter << 5;
@@ -1982,26 +1982,26 @@ void __cdecl BattleFx_KotrSpinningModelEntry15Task(void)
             g_BattleKotrSpinModelState->spin.t[1] = 0;
             g_BattleKotrSpinModelState->spin.t[0] = 0;
             MultiplyMatrix(&g_BattleSummonKotrTransformState, &g_BattleKotrSpinModelState->spin, &g_BattleKotrSpinModelState->spin);
-            if (frameIndex < 0x12) { /* empty first arm: lib/codegen.h */
+            if (frameIndex < 18) { /* empty first arm: lib/codegen.h */
             } else {
-                frameIndex -= 0x12;
-                rampFactor = (frameIndex << 12) / 0xA;
+                frameIndex -= 18;
+                rampFactor = (frameIndex << 12) / 10;
                 g_BattleSummonKotrModelDrawRequest.fadeLevel = rampFactor;
                 SetDrawColorRGB(0, 0, 0);
             }
-            g_BattleKotrTintValue = (float)(0x3E80 - rec->frameCounter * 0x1F4 % 0x3E80);
+            g_BattleKotrTintValue = (float)(0x3E80 - rec->frameCounter * 500 % 16000);
             if (*(float *)((char *)&g_BattleKotrUpdateFragmentSpinShrinkMatricesInit + 4) < 8000.0f) {
                 odd = 0;
             } else {
                 g_BattleKotrTintValue -= 8000.0f;
                 odd = 1;
             }
-            g_BattleSummonKotrScaleMatrix[4] = 0x1000;
+            g_BattleSummonKotrScaleMatrix[4] = 0x1000 /* 1.0 */;
             MultiplyMatrix(&g_BattleKotrSpinModelState->spin, g_BattleSummonKotrScaleMatrix, &g_BattleKotrSpinModelState->scaled);
             SetRotMatrix(&g_BattleKotrSpinModelState->scaled);
             SetTransMatrix(&g_BattleKotrSpinModelState->scaled);
             for (passIndex = 0; passIndex < 3; passIndex++) {
-                g_BattleSummonKotrModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0xF, g_BattleSummonKotrTableCursor);
+                g_BattleSummonKotrModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(15, g_BattleSummonKotrTableCursor);
                 BattleFx_LatchDrawTintRgb(0, *(int *)&g_BattleKotrTintValue, 0);
                 if (odd != 0) {
                     BattleFx_LatchDrawScalarOverride(2, 0x3F7B0000);
@@ -2031,7 +2031,7 @@ void __cdecl BattleFx_KotrSpinningModelEntry15Task(void)
  * random half-circle angle and sine-eased random radius scaled by 0x1200. Sets X/Z from sine/cosine
  * and Y from BattleFx_KotrGetDiscHeightAtRadius(radius), horizontal velocities from narrowed
  * position shifted left six then right twelve, and Y velocity negative random 200 through 299.
- * Writes two final bytes from the parent X/Z shorts mapped with plus 0x1200 times 0xBD divided by
+ * Writes two final bytes from the parent X/Z shorts mapped with plus 4608 times 0xBD divided by
  * 0x2400, then advances count.
  */
 // FUNCTION: FF7 0x00479eaa
@@ -2051,39 +2051,39 @@ void __cdecl BattleFx_KotrEmitFadingOffscreenQuadParticlesTask(void)
         return;
     }
     relCount = pEmitter->index;
-    if (relCount < 0xA) {
+    if (relCount < 10) {
         emission = 0x700;
     } else {
-        relCount -= 0xA;
-        if (relCount < 0x1E) {
-            ratio = (relCount << 0xC) / 0x1E;
-            emission = (0x1000 - ratio) * 0x700 >> 0xC;
+        relCount -= 10;
+        if (relCount < 30) {
+            ratio = (relCount << 12) / 30;
+            emission = (0x1000 - ratio) * 0x700 /* 0.4375 */ >> 12;
         } else {
             pEmitter->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
     g_BattleSummonKotrQuadEmissionTotal += emission;
-    while (emission >= 0x100) {
+    while (emission >= 256) {
         spawned = (BattleFxKotrQuadParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrFadingOffscreenQuadParticleTask);
         spawned->ownerSlot = (rand() & 1) + 1;
         angle = rand() & 0x7FF;
         rad = rand() & 0xFFF;
-        rad = (BattleFx_ApplySineEasing(rad, 0x1FF) << 0xB >> 0xC) + 0x800;
-        rad = rad * 0x1200 >> 0xC;
-        spawned->posX = SinFixed(angle) * rad >> 0xC;
+        rad = (BattleFx_ApplySineEasing(rad, 0x1FF) << 11 >> 12) + 0x800;
+        rad = rad * 0x1200 /* 1.125 */ >> 12;
+        spawned->posX = SinFixed(angle) * rad >> 12;
         spawned->height = BattleFx_KotrGetDiscHeightAtRadius(rad);
-        spawned->posZ = CosFixed(angle) * rad >> 0xC;
-        spawned->velocityX = spawned->posX << 6 >> 0xC;
+        spawned->posZ = CosFixed(angle) * rad >> 12;
+        spawned->velocityX = spawned->posX << 6 >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            speedY = 0x12C;
+            speedY = 300;
         } else {
-            speedY = rand() % 0x64 + 0xC8;
+            speedY = rand() % 100 + 200;
         }
         spawned->velocityY = -speedY;
-        spawned->velocityZ = spawned->posZ << 6 >> 0xC;
-        spawned->texU = (pEmitter->posX + 0x1200) * 0xBD / 0x2400;
-        spawned->texV = (pEmitter->posY + 0x1200) * 0xBD / 0x2400;
+        spawned->velocityZ = spawned->posZ << 6 >> 12;
+        spawned->texU = (pEmitter->posX + 0x1200) * 189 / 9216;
+        spawned->texV = (pEmitter->posY + 0x1200) * 189 / 9216;
         emission -= 0x100;
     }
     (pEmitter->index)++;
@@ -2101,12 +2101,12 @@ int __cdecl BattleFx_KotrGetDiscHeightAtRadius(int radius)
     int lowHeight;
     int highHeight;
 
-    radius = radius / 0x30;
-    if (radius / 6 < 0x10) {
+    radius = radius / 48;
+    if (radius / 6 < 16) {
         lowHeight = g_BattleSummonKotrDiscBuffer->points[radius / 6][0].vy;
         highHeight = g_BattleSummonKotrDiscBuffer->points[radius / 6 + 1][0].vy;
-        fraction = (radius % 6 << 0xC) / 6;
-        return lowHeight + ((highHeight - lowHeight) * fraction >> 0xC);
+        fraction = (radius % 6 << 12) / 6;
+        return lowHeight + ((highHeight - lowHeight) * fraction >> 12);
     } else {
         return 0;
     }
@@ -2150,12 +2150,12 @@ void __cdecl BattleFx_KotrFadingOffscreenQuadParticleTask(void)
     } else {
         rawRelTimer -= 5;
         if (rawRelTimer < 5) {
-            fadeFraction = (rawRelTimer << 0xC) / 5;
-            fadeShade = 0x1000 - fadeFraction << 7 >> 0xC;
-            packetPtr->color0 = fadeShade | 0x2C000000 | fadeShade << 8 | fadeShade << 0x10;
-            packetPtr->color1 = fadeShade | fadeShade << 8 | fadeShade << 0x10;
-            packetPtr->color2 = fadeShade | fadeShade << 8 | fadeShade << 0x10;
-            packetPtr->color3 = fadeShade | fadeShade << 8 | fadeShade << 0x10;
+            fadeFraction = (rawRelTimer << 12) / 5;
+            fadeShade = 0x1000 - fadeFraction << 7 >> 12;
+            packetPtr->color0 = fadeShade | 0x2C000000 | fadeShade << 8 | fadeShade << 16;
+            packetPtr->color1 = fadeShade | fadeShade << 8 | fadeShade << 16;
+            packetPtr->color2 = fadeShade | fadeShade << 8 | fadeShade << 16;
+            packetPtr->color3 = fadeShade | fadeShade << 8 | fadeShade << 16;
         } else {
             pQuadParticle->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -2194,14 +2194,14 @@ void __cdecl BattleFx_KotrFadingOffscreenQuadParticleTask(void)
         pQuadParticle->posX += pQuadParticle->velocityX;
         pQuadParticle->posY += pQuadParticle->velocityY;
         pQuadParticle->posZ += pQuadParticle->velocityZ;
-        pQuadParticle->velocityX = pQuadParticle->velocityX * 0xD00 >> 0xC;
-        pQuadParticle->velocityY = pQuadParticle->velocityY * 0xD00 >> 0xC;
-        pQuadParticle->velocityZ = pQuadParticle->velocityZ * 0xD00 >> 0xC;
+        pQuadParticle->velocityX = pQuadParticle->velocityX * 0xD00 /* 0.8125 */ >> 12;
+        pQuadParticle->velocityY = pQuadParticle->velocityY * 0xD00 /* 0.8125 */ >> 12;
+        pQuadParticle->velocityZ = pQuadParticle->velocityZ * 0xD00 /* 0.8125 */ >> 12;
     }
 }
 
 /*
- * Allocates a slot for BattleFx_KotrActorLiftTask, stores actor in its first word and rand()&0xfff at +0xC, and
+ * Allocates a slot for BattleFx_KotrActorLiftTask, stores actor in its first word and rand()&0xfff at +12, and
  * records its address in the indexed g_BattleSummonKotrActorLiftTasks entry.
  */
 // FUNCTION: FF7 0x0047a4e2
@@ -2274,10 +2274,10 @@ void __cdecl BattleFx_KotrActorLiftTask(void)
         baseY = ((BattleFxKotrActorLift *)(((int *)&g_BattleSummonKotrActorLiftTasks)[g_BattleSummonKotrActorRepresentative[task->actorIndex]]))->relativeHeight;
     }
     relCount = task->frameCount;
-    if (relCount < 0x27) {
+    if (relCount < 39) {
         deltaX = actor->posX - g_BattleSummonKotrOffscreenCenter.centerX;
         distZ = actor->posZ - g_BattleSummonKotrOffscreenCenter.centerZ;
-        ringRadius = SqrtToInt(deltaX * deltaX + distZ * distZ) / 0x30;
+        ringRadius = SqrtToInt(deltaX * deltaX + distZ * distZ) / 48;
         actor->height = task->liftHeight + BattleFx_KotrGetDiscHeightAtRadius(ringRadius);
         if ((task->savedFlags & 0x10) == 0) {
             g_BattleKotrLiftState->angleZ = 0;
@@ -2303,23 +2303,23 @@ void __cdecl BattleFx_KotrActorLiftTask(void)
             g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonKotrKnightEndpointModel, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST, 0, g_BattleOverlayDrawListHead);
         }
     } else {
-        relCount -= 0x27;
-        if (relCount < 0x1E) {
+        relCount -= 39;
+        if (relCount < 30) {
             if (relCount == 0) {
                 task->liftVelocity = 0;
             }
             actor->height += task->liftVelocity;
-            if (actor->height > 0x61A8) {
-                actor->height = 0x61A8;
+            if (actor->height > 25000) {
+                actor->height = 25000;
             }
-            task->liftVelocity += 0x32;
+            task->liftVelocity += 50;
         } else {
-            relCount -= 0x1E;
-            if (relCount < 0x3BB) {
-                actor->height = baseY + (SinFixed(bobPhase + (relCount << 7)) * 0x32 >> 0xC);
+            relCount -= 30;
+            if (relCount < 955) {
+                actor->height = baseY + (SinFixed(bobPhase + (relCount << 7)) * 0x32 >> 12);
             } else {
-                relCount -= 0x3BB;
-                if (relCount < 0x4B) {
+                relCount -= 955;
+                if (relCount < 75) {
                     if (relCount == 0) {
                         actor->height = baseY;
                         actor->flags |= 4;
@@ -2376,7 +2376,7 @@ void __cdecl BattleFx_KotrSpawnKnight(BattleKotrKnight *knightContext, int callb
     knightContext->rotZ = 0;
     knightContext->rotY = 0;
     knightContext->rotX = 0;
-    knightContext->scale = 0x1000;
+    knightContext->scale = 0x1000 /* 1.0 */;
     knightContext->attachIndex = g_BattleKotrKnightAttachIndices[frame.knightIdx];
     knightContext->fadeLevel = 0;
     knightContext->tintColor = g_BattleKotrKnightTints[frame.knightIdx];
@@ -2410,7 +2410,7 @@ void __cdecl BattleFx_KotrInitKnightContextHookNoOp(int reserved, int knightCont
  * = &g_BattleHitLivewireEmitterRecords + (g_BattleActiveTaskSlotIdx << 5) with the knight k =
  * rec->knight: on first use it claims the scratch block at g_BattleSummonKotrKnight1TimelineState
  * from Gfx_GetPsxScratchpadPtr(0); every frame it calls BattleFx_KotrDrawKnightModel(k) (or
- * BattleFx_KotrSpawnKnightEndpointTrail(k, 0x56, ...) on frame 0); unless g_BattleIsPaused is
+ * BattleFx_KotrSpawnKnightEndpointTrail(k, 86, ...) on frame 0); unless g_BattleIsPaused is
  * set it posts the impact records on frame 0x32, then runs three timed phases (0x1E, 0x1A, 0x1E
  * frames) that ease the orbit angle g_BattleSummonKotrKnight1Angle and radius
  * g_BattleKotrKnight1Radius with BattleFx_ApplySineEasing and set k's scale, fadeLevel, rotX and rotZ and the
@@ -2437,80 +2437,80 @@ void __cdecl BattleFx_KotrKnight1TimelineTask(void)
     if (rec->frame != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x56, (char *)&g_BattleSummonKotrKnight1SpinScaleModel + 0x20);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 86, (char *)&g_BattleSummonKotrKnight1SpinScaleModel + 0x20);
     }
     if (g_BattleIsPaused == 0) {
-        if (rec->frame == 0x32) {
+        if (rec->frame == 50) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_AllocateResourceSlot(BattleFx_KotrKnight1SpinScaleModelSetupTask);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         frameIndex = rec->frame;
-        if (frameIndex < 0x1E) {
+        if (frameIndex < 30) {
             if (frameIndex == 0) {
                 pKnight->state = 1;
                 pKnight->offsetX = 0;
                 pKnight->offsetY = -0x1F4;
                 pKnight->offsetZ = 0x2710;
             }
-            ang = (frameIndex << 12) / 0x1E;
+            ang = (frameIndex << 12) / 30;
             easedValue = BattleFx_ApplySineEasing(ang, -0x3D0);
-            g_BattleKotrKnight1Radius = (easedValue * 0 >> 12) + 0xBB8;
-            g_BattleSummonKotrKnight1Angle = easedValue * 0x800 >> 12;
-            pKnight->scale = easedValue * 0x1000 >> 12;
-            pKnight->fadeLevel = 0x1000 - easedValue;
-            g_BattleSummonKotrKnight1TimelineState->scaleY = 0x1000;
-            pKnight->rotZ = (easedValue * -0x400 >> 12) + 0x400;
+            g_BattleKotrKnight1Radius = (easedValue * 0 >> 12) + 3000;
+            g_BattleSummonKotrKnight1Angle = easedValue * 0x800 /* 0.5 */ >> 12;
+            pKnight->scale = easedValue * 0x1000 /* 1.0 */ >> 12;
+            pKnight->fadeLevel = 4096 - easedValue;
+            g_BattleSummonKotrKnight1TimelineState->scaleY = 0x1000 /* 1.0 */;
+            pKnight->rotZ = (easedValue * -0x400 /* 0.25 */ >> 12) + 0x400;
             pKnight->rotX = pKnight->rotZ;
         } else {
-            frameIndex -= 0x1E;
-            if (frameIndex < 0x1A) {
+            frameIndex -= 30;
+            if (frameIndex < 26) {
                 if (frameIndex == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                     pKnight->rotZ = 0;
                     pKnight->rotX = 0;
                 }
-                g_BattleSummonKotrKnight1Angle = 0x800;
-                g_BattleKotrKnight1Radius = 0xBB8;
-                g_BattleSummonKotrKnight1TimelineState->scaleY = 0x1000;
+                g_BattleSummonKotrKnight1Angle = 0x800 /* 180 deg */;
+                g_BattleKotrKnight1Radius = 3000;
+                g_BattleSummonKotrKnight1TimelineState->scaleY = 0x1000 /* 1.0 */;
             } else {
-                frameIndex -= 0x1A;
-                if (frameIndex < 0x1E) {
+                frameIndex -= 26;
+                if (frameIndex < 30) {
                     if (frameIndex == 0) {
                         pKnight->state = 2;
                         pKnight->offsetX = 0 - pKnight->posX;
                         pKnight->offsetY = -0x1F4 - pKnight->posY;
                         pKnight->offsetZ = 0x2710 - pKnight->posZ;
                     }
-                    ang = (frameIndex << 12) / 0x1E;
+                    ang = (frameIndex << 12) / 30;
                     easedValue = BattleFx_ApplySineEasing(ang, -0x1E0);
-                    g_BattleSummonKotrKnight1Angle = (easedValue * 0x800 >> 12) + 0x800;
-                    g_BattleKotrKnight1Radius = (easedValue * 0x1B58 >> 12) + 0xBB8;
-                    pKnight->scale = (easedValue * -0x1000 >> 12) + 0x1000;
+                    g_BattleSummonKotrKnight1Angle = (easedValue * 0x800 /* 0.5 */ >> 12) + 0x800;
+                    g_BattleKotrKnight1Radius = (easedValue * 0x1B58 >> 12) + 3000;
+                    pKnight->scale = (easedValue * -0x1000 /* 1.0 */ >> 12) + 0x1000;
                     pKnight->fadeLevel = easedValue;
-                    g_BattleSummonKotrKnight1TimelineState->scaleY = 0x400;
+                    g_BattleSummonKotrKnight1TimelineState->scaleY = 0x400 /* 0.25 */;
                 } else {
                     rec->ownerSlot = BATTLE_TASK_FREE;
                     return;
                 }
             }
         }
-        g_BattleSummonKotrKnight1TimelineState->rotation.vx = 0xFD00;
+        g_BattleSummonKotrKnight1TimelineState->rotation.vx = 0xFD00 /* 5692.5 deg */;
         g_BattleSummonKotrKnight1TimelineState->rotation.vy = 0xFD80;
-        g_BattleSummonKotrKnight1TimelineState->rotation.vz = 0xFF00;
+        g_BattleSummonKotrKnight1TimelineState->rotation.vz = 0xFF00 /* 5737.5 deg */;
         RotMatrix(&g_BattleSummonKotrKnight1TimelineState->rotation, &g_BattleSummonKotrKnight1TimelineState->matrix);
-        g_BattleSummonKotrKnight1TimelineState->scaleZ = 0x1000;
-        g_BattleSummonKotrKnight1TimelineState->scaleX = 0x1000;
+        g_BattleSummonKotrKnight1TimelineState->scaleZ = 0x1000 /* 1.0 */;
+        g_BattleSummonKotrKnight1TimelineState->scaleX = 0x1000 /* 1.0 */;
         ScaleMatrix(&g_BattleSummonKotrKnight1TimelineState->matrix, &g_BattleSummonKotrKnight1TimelineState->scaleX);
         g_BattleSummonKotrKnight1TimelineState->rotation.vx = CosFixed(g_BattleSummonKotrKnight1Angle) * g_BattleKotrKnight1Radius >> 12;
         g_BattleSummonKotrKnight1TimelineState->rotation.vy = SinFixed(g_BattleSummonKotrKnight1Angle) * g_BattleKotrKnight1Radius >> 12;
         g_BattleSummonKotrKnight1TimelineState->rotation.vz = 0;
         TransformVectorToInt16(&g_BattleSummonKotrKnight1TimelineState->matrix, &g_BattleSummonKotrKnight1TimelineState->rotation, (char *)pKnight + 0x2A);
         pKnight->posX = pKnight->posX + 0;
-        pKnight->posY += -0x1F4;
-        pKnight->posZ += 0x2710;
+        pKnight->posY += -500;
+        pKnight->posZ += 10000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (rec->frame)++;
     }
@@ -2587,11 +2587,11 @@ void __cdecl BattleFx_KotrKnightEndpointTrailTask(void)
     g_BattleSummonKotrEndpointTrail->deltaXNow = (short)g_BattleSummonKotrEndpointTrail->deltaX;
     g_BattleSummonKotrEndpointTrail->deltaYNow = (short)g_BattleSummonKotrEndpointTrail->deltaY;
     g_BattleSummonKotrEndpointTrail->deltaZNow = (short)g_BattleSummonKotrEndpointTrail->deltaZ;
-    radius0 = abs(def->radius0) * pKnightTrail->trailScale >> 0xC;
-    radius1 = abs(def->radius1) * pKnightTrail->trailScale >> 0xC;
+    radius0 = abs(def->radius0) * pKnightTrail->trailScale >> 12;
+    radius1 = abs(def->radius1) * pKnightTrail->trailScale >> 12;
     if (radius0 + radius1 != 0) {
-        ratio0 = abs((radius0 << 0xC) / (radius0 + radius1));
-        width1 = abs((radius1 << 0xC) / (radius0 + radius1));
+        ratio0 = abs((radius0 << 12) / (radius0 + radius1));
+        width1 = abs((radius1 << 12) / (radius0 + radius1));
     } else {
         width1 = 0;
         ratio0 = width1;
@@ -2611,30 +2611,30 @@ void __cdecl BattleFx_KotrKnightEndpointTrailTask(void)
         RefreshGlobalTransformState();
         primitive = (BattleFxKotrRenderStateBlock *)Gfx_GetPsxPacketScratchPtr();
         for (stepIdx = 1; stepIdx <= 8; stepIdx++) {
-            frac = (stepIdx << 0xC) / 8;
-            g_BattleSummonKotrEndpointTrail->endpoint0X = taskPtr->startEndpoint0X + ((g_BattleSummonKotrEndpointTrail->lastDeltaX - taskPtr->startEndpoint0X) * frac >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint0Y = taskPtr->startEndpoint0Y + ((g_BattleSummonKotrEndpointTrail->lastDeltaY - taskPtr->startEndpoint0Y) * frac >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint0Z = taskPtr->startEndpoint0Z + ((g_BattleSummonKotrEndpointTrail->lastDeltaZ - taskPtr->startEndpoint0Z) * frac >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint1X = taskPtr->startEndpoint1X + ((g_BattleSummonKotrEndpointTrail->deltaXNow - taskPtr->startEndpoint1X) * frac >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint1Y = taskPtr->startEndpoint1Y + ((g_BattleSummonKotrEndpointTrail->deltaYNow - taskPtr->startEndpoint1Y) * frac >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint1Z = taskPtr->startEndpoint1Z + ((g_BattleSummonKotrEndpointTrail->deltaZNow - taskPtr->startEndpoint1Z) * frac >> 0xC);
-            g_BattleSummonKotrEndpointTrail->savedEndpoint0X = g_BattleSummonKotrEndpointTrail->endpoint0X * width1 + g_BattleSummonKotrEndpointTrail->endpoint1X * ratio0 >> 0xC;
-            g_BattleSummonKotrEndpointTrail->savedEndpoint0Y = g_BattleSummonKotrEndpointTrail->endpoint0Y * width1 + g_BattleSummonKotrEndpointTrail->endpoint1Y * ratio0 >> 0xC;
-            g_BattleSummonKotrEndpointTrail->savedEndpoint0Z = g_BattleSummonKotrEndpointTrail->endpoint0Z * width1 + g_BattleSummonKotrEndpointTrail->endpoint1Z * ratio0 >> 0xC;
+            frac = (stepIdx << 12) / 8;
+            g_BattleSummonKotrEndpointTrail->endpoint0X = taskPtr->startEndpoint0X + ((g_BattleSummonKotrEndpointTrail->lastDeltaX - taskPtr->startEndpoint0X) * frac >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint0Y = taskPtr->startEndpoint0Y + ((g_BattleSummonKotrEndpointTrail->lastDeltaY - taskPtr->startEndpoint0Y) * frac >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint0Z = taskPtr->startEndpoint0Z + ((g_BattleSummonKotrEndpointTrail->lastDeltaZ - taskPtr->startEndpoint0Z) * frac >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint1X = taskPtr->startEndpoint1X + ((g_BattleSummonKotrEndpointTrail->deltaXNow - taskPtr->startEndpoint1X) * frac >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint1Y = taskPtr->startEndpoint1Y + ((g_BattleSummonKotrEndpointTrail->deltaYNow - taskPtr->startEndpoint1Y) * frac >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint1Z = taskPtr->startEndpoint1Z + ((g_BattleSummonKotrEndpointTrail->deltaZNow - taskPtr->startEndpoint1Z) * frac >> 12);
+            g_BattleSummonKotrEndpointTrail->savedEndpoint0X = g_BattleSummonKotrEndpointTrail->endpoint0X * width1 + g_BattleSummonKotrEndpointTrail->endpoint1X * ratio0 >> 12;
+            g_BattleSummonKotrEndpointTrail->savedEndpoint0Y = g_BattleSummonKotrEndpointTrail->endpoint0Y * width1 + g_BattleSummonKotrEndpointTrail->endpoint1Y * ratio0 >> 12;
+            g_BattleSummonKotrEndpointTrail->savedEndpoint0Z = g_BattleSummonKotrEndpointTrail->endpoint0Z * width1 + g_BattleSummonKotrEndpointTrail->endpoint1Z * ratio0 >> 12;
             g_BattleSummonKotrEndpointTrail->deltaX = g_BattleSummonKotrEndpointTrail->endpoint0X - g_BattleSummonKotrEndpointTrail->savedEndpoint0X;
             g_BattleSummonKotrEndpointTrail->deltaY = g_BattleSummonKotrEndpointTrail->endpoint0Y - g_BattleSummonKotrEndpointTrail->savedEndpoint0Y;
             g_BattleSummonKotrEndpointTrail->deltaZ = g_BattleSummonKotrEndpointTrail->endpoint0Z - g_BattleSummonKotrEndpointTrail->savedEndpoint0Z;
             NormalizeVectorFixed(&g_BattleSummonKotrEndpointTrail->deltaX, &g_BattleSummonKotrEndpointTrail->deltaX);
-            g_BattleSummonKotrEndpointTrail->endpoint0X = g_BattleSummonKotrEndpointTrail->savedEndpoint0X + (g_BattleSummonKotrEndpointTrail->deltaX * radius0 >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint0Y = g_BattleSummonKotrEndpointTrail->savedEndpoint0Y + (g_BattleSummonKotrEndpointTrail->deltaY * radius0 >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint0Z = g_BattleSummonKotrEndpointTrail->savedEndpoint0Z + (g_BattleSummonKotrEndpointTrail->deltaZ * radius0 >> 0xC);
+            g_BattleSummonKotrEndpointTrail->endpoint0X = g_BattleSummonKotrEndpointTrail->savedEndpoint0X + (g_BattleSummonKotrEndpointTrail->deltaX * radius0 >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint0Y = g_BattleSummonKotrEndpointTrail->savedEndpoint0Y + (g_BattleSummonKotrEndpointTrail->deltaY * radius0 >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint0Z = g_BattleSummonKotrEndpointTrail->savedEndpoint0Z + (g_BattleSummonKotrEndpointTrail->deltaZ * radius0 >> 12);
             g_BattleSummonKotrEndpointTrail->deltaX = g_BattleSummonKotrEndpointTrail->endpoint1X - g_BattleSummonKotrEndpointTrail->savedEndpoint0X;
             g_BattleSummonKotrEndpointTrail->deltaY = g_BattleSummonKotrEndpointTrail->endpoint1Y - g_BattleSummonKotrEndpointTrail->savedEndpoint0Y;
             g_BattleSummonKotrEndpointTrail->deltaZ = g_BattleSummonKotrEndpointTrail->endpoint1Z - g_BattleSummonKotrEndpointTrail->savedEndpoint0Z;
             NormalizeVectorFixed(&g_BattleSummonKotrEndpointTrail->deltaX, &g_BattleSummonKotrEndpointTrail->deltaX);
-            g_BattleSummonKotrEndpointTrail->endpoint1X = g_BattleSummonKotrEndpointTrail->savedEndpoint0X + (g_BattleSummonKotrEndpointTrail->deltaX * radius1 >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint1Y = g_BattleSummonKotrEndpointTrail->savedEndpoint0Y + (g_BattleSummonKotrEndpointTrail->deltaY * radius1 >> 0xC);
-            g_BattleSummonKotrEndpointTrail->endpoint1Z = g_BattleSummonKotrEndpointTrail->savedEndpoint0Z + (g_BattleSummonKotrEndpointTrail->deltaZ * radius1 >> 0xC);
+            g_BattleSummonKotrEndpointTrail->endpoint1X = g_BattleSummonKotrEndpointTrail->savedEndpoint0X + (g_BattleSummonKotrEndpointTrail->deltaX * radius1 >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint1Y = g_BattleSummonKotrEndpointTrail->savedEndpoint0Y + (g_BattleSummonKotrEndpointTrail->deltaY * radius1 >> 12);
+            g_BattleSummonKotrEndpointTrail->endpoint1Z = g_BattleSummonKotrEndpointTrail->savedEndpoint0Z + (g_BattleSummonKotrEndpointTrail->deltaZ * radius1 >> 12);
             g_BattleSummonKotrEndpointTrail->depth = Gfx_TransformQuadReturnDepth(&g_BattleSummonKotrEndpointTrail->prevEndpoint0X, (SVECTOR *)&g_BattleSummonKotrEndpointTrail->prevEndpoint1X, (SVECTOR *)&g_BattleSummonKotrEndpointTrail->endpoint0X, (SVECTOR *)&g_BattleSummonKotrEndpointTrail->endpoint1X, &g_BattleSummonKotrEndpointTrail->quadScratch, &g_BattleSummonKotrEndpointTrail->flags);
             if ((g_BattleSummonKotrEndpointTrail->flags & 0x60000) == 0) {
                 primitive->opcode = 0x8000000;
@@ -2740,9 +2740,9 @@ void __cdecl BattleFx_KotrDrawKnightModel(BattleKotrKnight *knight)
         Battle_ComposeMatrixRelativeToCamera(&g_BattleSummonKotrTransformState.m[0][0], &g_BattleSummonKotrKnightLocalPose->pose, &g_BattleSummonKotrKnightLocalPose->pose);
         for (frame.fragIdx = 0; frame.fragIdx < 2; frame.fragIdx++) {
             frame.fragment = (BattleFxKotrKnightFragment *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrPulsingTriangleParticleTask);
-            frame.fragment->posX = g_BattleSummonKotrKnightLocalPose->pose.t[0] + rand() % 0x190 + -0xC8;
-            frame.fragment->posY = g_BattleSummonKotrKnightLocalPose->pose.t[1] + rand() % 0x190 + -0xC8;
-            frame.fragment->posZ = g_BattleSummonKotrKnightLocalPose->pose.t[2] + rand() % 0x190 + -0xC8;
+            frame.fragment->posX = g_BattleSummonKotrKnightLocalPose->pose.t[0] + rand() % 400 + -200;
+            frame.fragment->posY = g_BattleSummonKotrKnightLocalPose->pose.t[1] + rand() % 400 + -200;
+            frame.fragment->posZ = g_BattleSummonKotrKnightLocalPose->pose.t[2] + rand() % 400 + -200;
             frame.fragment->rotY = 0;
             frame.fragment->rotX = 0;
             frame.fragment->randomValue = rand();
@@ -2772,7 +2772,7 @@ void __cdecl BattleFx_KotrPulsingTriangleParticleTask(void)
         g_BattleKotrPulsingTriangleParticleTaskInit |= 1;
         g_BattleKotrTriangleParticle = (BattleFxKotrTriangleParticle *)Gfx_GetPsxScratchpadPtr(0);
     }
-    g_BattleSummonKotrPulseTriangleV2.kotrTriangleOffsetSin = SinFixed((task->frame << 0xC) / 8) * 0x64 >> 0xC;
+    g_BattleSummonKotrPulseTriangleV2.kotrTriangleOffsetSin = SinFixed((task->frame << 12) / 8) * 0x64 >> 12;
     g_BattleSummonKotrPulseTriangleV0.kotrTriangleOffsetNeg = -g_BattleSummonKotrPulseTriangleV2.kotrTriangleOffsetSin;
     prim = (BattleFxKotrPulseTrianglePrim *)Gfx_GetPsxPacketScratchPtr();
     RotMatrix((SVECTOR *)((int)task + 0xC), (int *)g_BattleKotrTriangleParticle);
@@ -2798,9 +2798,9 @@ void __cdecl BattleFx_KotrPulsingTriangleParticleTask(void)
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             if (DEAD_IN_RETAIL != 0) {
-                phaseStep = 0x600;
+                phaseStep = 1536;
             } else {
-                phaseStep = rand() % 0x400 + 0x200;
+                phaseStep = rand() % 1024 + 512;
             }
             task->phase += phaseStep;
         }
@@ -2907,7 +2907,7 @@ void __cdecl BattleFx_KotrSpawnActorBurstSprites(Vec3sPacked *origin)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    for (frame.actor = 0; frame.actor < 0xA; (frame.actor)++) {
+    for (frame.actor = 0; frame.actor < 10; (frame.actor)++) {
         if ((g_BattleKotrTargetMask & 1 << frame.actor) != 0) {
             for (frame.spriteIdx = 0; frame.spriteIdx < 3; (frame.spriteIdx)++) {
                 frame.task = (BattleFxPulseOfLifeSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrActorBurstSpriteTask);
@@ -2961,8 +2961,8 @@ void __cdecl BattleFx_KotrActorBurstSpriteTask(void)
     BattleFxPulseOfLifeSprite *task;
 
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSummonKotrBurstSprite.burstSpriteEntry) = Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSummonKotrTableCursor);
-    g_BattleSummonKotrBurstSprite.summonKotrBurstSpriteResource = Gfx_ModelTableGetSpriteObject(0x11, g_BattleSummonKotrTableCursor);
+    (g_BattleSummonKotrBurstSprite.burstSpriteEntry) = Gfx_ModelTableGetLoadedRecord(17, g_BattleSummonKotrTableCursor);
+    g_BattleSummonKotrBurstSprite.summonKotrBurstSpriteResource = Gfx_ModelTableGetSpriteObject(17, g_BattleSummonKotrTableCursor);
     BattleFx_KotrInstallBillboardMatrix((BattleFxSourcePoint *)((int)task + 4), 0x6000, 0);
     g_BattleSummonKotrBurstSprite.summonKotrBurstSpriteFrame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonKotrBurstSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
@@ -2980,9 +2980,9 @@ void __cdecl BattleFx_KotrActorBurstSpriteTask(void)
         task->posX += task->velocityX;
         task->posY += task->velocityY;
         task->posZ += task->velocityZ;
-        task->velocityX = task->velocityX * 0xF00 >> 0xC;
-        task->velocityY = task->velocityY * 0xF00 >> 0xC;
-        task->velocityZ = task->velocityZ * 0xF00 >> 0xC;
+        task->velocityX = task->velocityX * 0xF00 /* 0.9375 */ >> 12;
+        task->velocityY = task->velocityY * 0xF00 /* 0.9375 */ >> 12;
+        task->velocityZ = task->velocityZ * 0xF00 /* 0.9375 */ >> 12;
     }
 }
 
@@ -2992,7 +2992,7 @@ void __cdecl BattleFx_KotrActorBurstSpriteTask(void)
  * g_BattleSummonKotrBillboardMatrix, loads the matrix at
  * g_BattleSummonKotrTransformState (SetRotMatrix/SetTransMatrix) and RotTransPoint(sourcePoint,
  * &transX, &p) transforms sourcePoint into g_BattleSummonKotrBillboard.transX/transY/transZ. When
- * offset is nonzero it normalizes that vector (NormalizeVectorFixed) and adds unit * offset >> 0xC
+ * offset is nonzero it normalizes that vector (NormalizeVectorFixed) and adds unit * offset >> 12
  * to each component. Then loads the billboard matrix and returns its address.
  */
 // FUNCTION: FF7 0x0047c2e4
@@ -3009,9 +3009,9 @@ int __cdecl BattleFx_KotrInstallBillboardMatrix(BattleFxSourcePoint *sourcePoint
     RotTransPoint((void *)sourcePoint, &g_BattleSummonKotrBillboard.transX, &depth);
     if (offset != 0) {
         NormalizeVectorFixed(&g_BattleSummonKotrBillboard.transX, &vecX);
-        g_BattleSummonKotrBillboard.transX += vecX.vx * offset >> 0xC;
-        g_BattleSummonKotrBillboard.transY += vecX.vy * offset >> 0xC;
-        g_BattleSummonKotrBillboard.transZ += vecX.vz * offset >> 0xC;
+        g_BattleSummonKotrBillboard.transX += vecX.vx * offset >> 12;
+        g_BattleSummonKotrBillboard.transY += vecX.vy * offset >> 12;
+        g_BattleSummonKotrBillboard.transZ += vecX.vz * offset >> 12;
     }
     SetRotMatrix(&g_BattleSummonKotrBillboardMatrix);
     SetTransMatrix(&g_BattleSummonKotrBillboardMatrix);
@@ -3036,7 +3036,7 @@ void __cdecl BattleFx_KotrKnight1SpinScaleModelSetupTask(void)
         return;
     }
     if (taskPtr->frameCounter == 0) {
-        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
             if ((g_BattleKotrTargetMask & 1 << actorIndex) != 0) {
                 BattleFx_KotrGetActorAttachLocalPosition(actorIndex, g_BattleActorRecords[actorIndex].targetBone, (actorIndex * 8 + (char *)&g_BattleSummonKotrAttachLocalPositions));
             }
@@ -3083,7 +3083,7 @@ void __cdecl BattleFx_KotrSpawnEasedSpinScaleModel(void *model, void *record)
  * Acquires retained scratch and reads the task
  * parameter record at 0xC. Computes task count shifted by twelve divided by record duration, then
  * independently applies sine easing for yaw, uniform scale and descriptor. Builds Y rotation from
- * record short 0x10 times its eased fraction, concatenates record rotation at 0x14 and uses task
+ * record short 16 times its eased fraction, concatenates record rotation at 0x14 and uses task
  * XYZ translation. Interpolates scale between record shorts six/eight using easing short 0xA,
  * stores easing with short 0xE in g_BattleSummonKotrEasedSpinScaleDraw.summonKotrEasedSpinScaleTime,
  * multiplies g_BattleSummonKotrTransformState and installs the result. Sets resource pointer from
@@ -3105,11 +3105,11 @@ void __cdecl BattleFx_KotrEasedSpinScaleModelTask(void)
         g_BattleKotrEasedSpinScaleModelTaskInit |= 1;
         g_BattleSummonKotrEasedSpinState = (BattleFxKotrEasedSpinState *)Gfx_GetPsxScratchpadPtr(0);
     }
-    progress = (taskPtr->frame << 0xC) / spinParams->duration;
+    progress = (taskPtr->frame << 12) / spinParams->duration;
     easedValue = BattleFx_ApplySineEasing(progress, spinParams->yawEaseMode);
     g_BattleSummonKotrEasedSpinState->rotZ = 0;
     g_BattleSummonKotrEasedSpinState->rotX = 0;
-    g_BattleSummonKotrEasedSpinState->easedAmplitude = spinParams->amplitude * easedValue >> 0xC;
+    g_BattleSummonKotrEasedSpinState->easedAmplitude = spinParams->amplitude * easedValue >> 12;
     RotMatrix((SVECTOR *)g_BattleSummonKotrEasedSpinState, &g_BattleSummonKotrEasedSpinState->matrix);
     RotMatrix((SVECTOR *)((int)spinParams + 0x14), &g_BattleSummonKotrEasedSpinState->tiltMatrix);
     ConcatMatrixInPlace(&g_BattleSummonKotrEasedSpinState->tiltMatrix, &g_BattleSummonKotrEasedSpinState->matrix);
@@ -3117,7 +3117,7 @@ void __cdecl BattleFx_KotrEasedSpinScaleModelTask(void)
     g_BattleSummonKotrEasedSpinState->matrix.t[1] = taskPtr->posY;
     g_BattleSummonKotrEasedSpinState->matrix.t[2] = taskPtr->posZ;
     easedValue = BattleFx_ApplySineEasing(progress, spinParams->scaleEaseMode);
-    g_BattleSummonKotrEasedSpinState->valueNew = spinParams->startValue + ((spinParams->endValue - spinParams->startValue) * easedValue >> 0xC);
+    g_BattleSummonKotrEasedSpinState->valueNew = spinParams->startValue + ((spinParams->endValue - spinParams->startValue) * easedValue >> 12);
     g_BattleSummonKotrEasedSpinState->valuePrev = g_BattleSummonKotrEasedSpinState->valueNew;
     g_BattleSummonKotrEasedSpinState->valueOld = g_BattleSummonKotrEasedSpinState->valuePrev;
     ScaleMatrix(&g_BattleSummonKotrEasedSpinState->matrix, &g_BattleSummonKotrEasedSpinState->valueOld);
@@ -3169,58 +3169,58 @@ void __cdecl BattleFx_KotrKnight2TimelineTask(void)
     if (taskPtr->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x48, &g_BattleSummonKotrKnight2SpinScaleModel.summonKotrKnight2EndpointPointA);
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x48, &g_BattleSummonKotrKnight2SpinScaleModel.summonKotrKnight2EndpointPointB);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 72, &g_BattleSummonKotrKnight2SpinScaleModel.summonKotrKnight2EndpointPointA);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 72, &g_BattleSummonKotrKnight2SpinScaleModel.summonKotrKnight2EndpointPointB);
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->step == 0x32) {
+        if (taskPtr->step == 50) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_AllocateResourceSlot(BattleFx_KotrKnight2SpinScaleModelSetupTask);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         frameIndex = taskPtr->step;
-        if (frameIndex < 0x38) {
+        if (frameIndex < 56) {
             if (frameIndex == 0) {
                 taskPtr->offsetX = 0;
-                taskPtr->height = 0x1388;
+                taskPtr->height = 5000;
                 taskPtr->offsetZ = 0;
                 pKnight->offsetX = 0x480;
                 pKnight->offsetY = 0x800;
                 pKnight->offsetZ = 0x800;
             }
-            if (frameIndex < 0x28) {
-                progress = (frameIndex << 0xC) / 0x28;
+            if (frameIndex < 40) {
+                progress = (frameIndex << 12) / 40;
                 easedValue = BattleFx_ApplySineEasing(progress, -0x3D0);
-                pKnight->fadeLevel = 0x1000 - easedValue;
+                pKnight->fadeLevel = 4096 - easedValue;
             } else {
                 pKnight->fadeLevel = 0;
             }
-            progress = (frameIndex << 0xC) / 0x38;
+            progress = (frameIndex << 12) / 56;
             easedValue = BattleFx_ApplySineEasing(progress, -0x3D0);
-            pKnight->scale = (easedValue * 0xF00 >> 0xC) + 0x100;
+            pKnight->scale = (easedValue * 0xF00 /* 0.9375 */ >> 12) + 0x100;
             easedValue = BattleFx_ApplySineEasing(progress, -0x3D0);
-            taskPtr->height = (easedValue * -0x2EE0 >> 0xC) + 0x1388;
+            taskPtr->height = (easedValue * -0x2EE0 >> 12) + 5000;
         } else {
-            frameIndex -= 0x38;
-            if (frameIndex < 0x10) {
-                progress = (frameIndex << 0xC) / 0x10;
-                pKnight->fadeLevel = BattleFx_ApplySineEasing(progress, 0x1FF);
-                pKnight->scale = (BattleFx_ApplySineEasing(progress, 0x1FF) * -0x1000 >> 0xC) + 0x1000;
-                taskPtr->height = (BattleFx_ApplySineEasing(progress, 0x1FF) * -0x1F40 >> 0xC) - 0x1B58;
+            frameIndex -= 56;
+            if (frameIndex < 16) {
+                progress = (frameIndex << 12) / 16;
+                pKnight->fadeLevel = BattleFx_ApplySineEasing(progress, 511);
+                pKnight->scale = (BattleFx_ApplySineEasing(progress, 0x1FF) * -0x1000 /* 1.0 */ >> 12) + 0x1000;
+                taskPtr->height = (BattleFx_ApplySineEasing(progress, 511) * -0x1F40 >> 12) - 7000;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
                 return;
             }
         }
-        g_BattleKotrKnight2State->point.vx = 0x380;
-        g_BattleKotrKnight2State->point.vy = 0x800;
-        g_BattleKotrKnight2State->point.vz = 0x800;
+        g_BattleKotrKnight2State->point.vx = 896;
+        g_BattleKotrKnight2State->point.vy = 2048;
+        g_BattleKotrKnight2State->point.vz = 2048;
         RotMatrix(&g_BattleKotrKnight2State->point, &g_BattleKotrKnight2State->matrix);
         TransformVectorToInt16(&g_BattleKotrKnight2State->matrix, (char *)taskPtr + 4, (char *)pKnight + 0x2A);
         pKnight->posX = pKnight->posX;
         pKnight->posY += 0xFE0C;
-        pKnight->posZ += 0x2710;
+        pKnight->posZ += 10000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (taskPtr->step)++;
     }
@@ -3244,7 +3244,7 @@ void __cdecl BattleFx_KotrKnight2SpinScaleModelSetupTask(void)
         return;
     }
     if (taskPtr->frameCounter == 0) {
-        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
             if ((g_BattleKotrTargetMask & 1 << actorIndex) != 0) {
                 BattleFx_KotrGetActorAttachLocalPosition(actorIndex, g_BattleActorRecords[actorIndex].targetBone, (actorIndex * 8 + (char *)&g_BattleSummonKotrAttachLocalPositions));
             }
@@ -3302,54 +3302,54 @@ void __cdecl BattleFx_KotrKnight3TimelineTask(void)
     if (taskPtr->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x44, &g_BattleSummonKotrKnight3EndpointA);
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x44, &g_BattleSummonKotrKnight3EndpointB);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 68, &g_BattleSummonKotrKnight3EndpointA);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 68, &g_BattleSummonKotrKnight3EndpointB);
         pKnight->flags |= 1;
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->step == 0x1A) {
+        if (taskPtr->step == 26) {
             Battle_AllocateResourceSlot(BattleFx_KotrImpactBurstTimelineTask);
         }
         frameIndex = taskPtr->step;
-        if (frameIndex < 0xF) {
+        if (frameIndex < 15) {
             if (frameIndex == 0) {
                 pKnight->state = 1;
                 pKnight->offsetX = 0;
                 pKnight->offsetY = 0xFE0C;
                 pKnight->offsetZ = 0x3A98;
-                pKnight->rotY = 0xFD00;
+                pKnight->rotY = 0xFD00 /* 5692.5 deg */;
             }
-            progress = (frameIndex << 0xC) / 0xF;
+            progress = (frameIndex << 12) / 15;
             progress = BattleFx_ApplySineEasing(progress, 0x1FF);
-            g_BattleSummonKotrKnight3Radius = (progress * -0x7D0 >> 0xC) + 0x1F40;
-            g_BattleKotrKnight3Angle = (progress << 7 >> 0xC) + 0x300;
-            pKnight->scale = progress << 0xC >> 0xC;
-            pKnight->fadeLevel = 0x1000 - progress;
+            g_BattleSummonKotrKnight3Radius = (progress * -0x7D0 >> 12) + 8000;
+            g_BattleKotrKnight3Angle = (progress << 7 >> 12) + 0x300;
+            pKnight->scale = progress << 12 >> 12;
+            pKnight->fadeLevel = 4096 - progress;
         } else {
-            frameIndex -= 0xF;
-            if (frameIndex < 0x1C) {
+            frameIndex -= 15;
+            if (frameIndex < 28) {
                 if (frameIndex == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
                 g_BattleKotrKnight3Angle = 0x380;
-                g_BattleSummonKotrKnight3Radius = 0x1770;
+                g_BattleSummonKotrKnight3Radius = 6000;
             } else {
-                frameIndex -= 0x1C;
-                if (frameIndex < 0x19) {
+                frameIndex -= 28;
+                if (frameIndex < 25) {
                     if (frameIndex == 0) {
                         pKnight->state = 2;
                         pKnight->offsetX = 0 - pKnight->posX;
                         pKnight->offsetY = -0x1F4 - pKnight->posY;
                         pKnight->offsetZ = 0x3A98 - pKnight->posZ;
                     }
-                    progress = (frameIndex << 0xC) / 0x19;
+                    progress = (frameIndex << 12) / 25;
                     easedValue = BattleFx_ApplySineEasing(progress, -0x3C0);
-                    g_BattleKotrKnight3Angle = (easedValue * 0x280 >> 0xC) + 0x380;
-                    g_BattleSummonKotrKnight3Radius = (easedValue * 0xFA0 >> 0xC) + 0x1770;
-                    pKnight->rotY = (easedValue << 0xA >> 0xC) - 0x400;
+                    g_BattleKotrKnight3Angle = (easedValue * 0x280 >> 12) + 0x380;
+                    g_BattleSummonKotrKnight3Radius = (easedValue * 0xFA0 >> 12) + 6000;
+                    pKnight->rotY = (easedValue << 10 >> 12) - 0x400;
                     easedValue = BattleFx_ApplySineEasing(progress, -0x4FF);
-                    pKnight->scale = (easedValue * -0x1000 >> 0xC) + 0x1000;
+                    pKnight->scale = (easedValue * -0x1000 /* 1.0 */ >> 12) + 0x1000;
                     pKnight->fadeLevel = easedValue;
                 } else {
                     taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -3358,16 +3358,16 @@ void __cdecl BattleFx_KotrKnight3TimelineTask(void)
             }
         }
         g_BattleKotrKnight3State->point.vx = 0xFC80;
-        g_BattleKotrKnight3State->point.vy = 0x400;
+        g_BattleKotrKnight3State->point.vy = 1024;
         g_BattleKotrKnight3State->point.vz = 0xFC00;
         RotMatrix(&g_BattleKotrKnight3State->point, &g_BattleKotrKnight3State->matrix);
-        g_BattleKotrKnight3State->point.vx = CosFixed(g_BattleKotrKnight3Angle) * g_BattleSummonKotrKnight3Radius >> 0xC;
-        g_BattleKotrKnight3State->point.vy = SinFixed(g_BattleKotrKnight3Angle) * g_BattleSummonKotrKnight3Radius >> 0xC;
+        g_BattleKotrKnight3State->point.vx = CosFixed(g_BattleKotrKnight3Angle) * g_BattleSummonKotrKnight3Radius >> 12;
+        g_BattleKotrKnight3State->point.vy = SinFixed(g_BattleKotrKnight3Angle) * g_BattleSummonKotrKnight3Radius >> 12;
         g_BattleKotrKnight3State->point.vz = 0;
         TransformVectorToInt16(&g_BattleKotrKnight3State->matrix, &g_BattleKotrKnight3State->point, &g_BattleKotrKnight3State->point.vx);
         pKnight->posX = g_BattleKotrKnight3State->point.vx;
-        pKnight->posY = g_BattleKotrKnight3State->point.vy - 0x1F4;
-        pKnight->posZ = g_BattleKotrKnight3State->point.vz + 0x3A98;
+        pKnight->posY = g_BattleKotrKnight3State->point.vy - 500;
+        pKnight->posZ = g_BattleKotrKnight3State->point.vz + 15000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (taskPtr->step)++;
     }
@@ -3394,7 +3394,7 @@ void __cdecl BattleFx_KotrImpactBurstTimelineTask(void)
     BattleTaskSlot *rec;
     BattleFxKotrImpactBurstSlot *spawned;
     int particleIdx;
-    char rot[0x20];
+    char rot[32];
 
     rec = BATTLE_CURRENT_TASK_SLOT;
     if ((g_BattleKotrImpactBurstTimelineTaskInit & 1) == 0) {
@@ -3405,7 +3405,7 @@ void __cdecl BattleFx_KotrImpactBurstTimelineTask(void)
         return;
     }
     if (rec->frameCounter >= 0 && rec->frameCounter < 5) {
-        Battle3d_GetActorAttachMatrix(3, 0x1E, (PsxMatrix *)rot);
+        Battle3d_GetActorAttachMatrix(3, 30, (PsxMatrix *)rot);
         Battle_ComposeMatrixRelativeToCamera(&g_BattleSummonKotrTransformState.m[0][0], rot, (PsxMatrix *)((((int)g_BattleSummonKotrImpactBurst) + 0x18)));
         g_BattleSummonKotrImpactBurst->posY = 0;
         g_BattleSummonKotrImpactBurst->posX = 0;
@@ -3427,8 +3427,8 @@ void __cdecl BattleFx_KotrImpactBurstTimelineTask(void)
             TransformVectorToInt16((void *)(((int)g_BattleSummonKotrImpactBurst) + 0x18), &g_BattleSummonKotrImpactBurst->offsetX, (char *)spawned + 0xC);
         }
     }
-    if (rec->frameCounter >= 0xF && rec->frameCounter < 0x1B && (rec->frameCounter - 0xF) % 3 == 0) {
-        particleIdx = (rec->frameCounter - 0xF) / 3;
+    if (rec->frameCounter >= 15 && rec->frameCounter < 27 && (rec->frameCounter - 0xF) % 3 == 0) {
+        particleIdx = (rec->frameCounter - 15) / 3;
         spawned = (BattleFxKotrImpactBurstSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrSpinningGrowingModelTask);
         spawned->originX = g_BattleSummonKotrImpactBurstOrigins[particleIdx].originX;
         spawned->originY = g_BattleSummonKotrImpactBurstOrigins[particleIdx].originY;
@@ -3437,16 +3437,16 @@ void __cdecl BattleFx_KotrImpactBurstTimelineTask(void)
         spawned->velocityY = rand() & 0xFFF;
         spawned->velocityZ = rand() & 0xFFF;
     }
-    if (rec->frameCounter == 0xF || rec->frameCounter == 0x14 || rec->frameCounter == 0x19) {
+    if (rec->frameCounter == 15 || rec->frameCounter == 20 || rec->frameCounter == 25) {
         spawned = (BattleFxKotrImpactBurstSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrImpactSpriteRingTask);
-        spawned->velocityX = 0x200;
-        spawned->velocityY = 0x400;
-        spawned->velocityZ = rand() % 0x200 - 0x100;
+        spawned->velocityX = 512;
+        spawned->velocityY = 1024;
+        spawned->velocityZ = rand() % 512 - 256;
     }
-    if (rec->frameCounter == 0x14) {
+    if (rec->frameCounter == 20) {
         BattleFx_KotrPostKnightImpactRecords();
     }
-    if (rec->frameCounter == 0x19) {
+    if (rec->frameCounter == 25) {
         rec->ownerSlot = BATTLE_TASK_FREE;
     }
     (rec->frameCounter)++;
@@ -3463,8 +3463,8 @@ void __cdecl BattleFx_KotrImpactSpriteParticleTask(void)
     BattleFxPulseOfLifeSprite *task;
 
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSummonKotrImpactSpriteParticle.impactSpriteEntry) = Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSummonKotrTableCursor);
-    g_BattleSummonKotrImpactSpriteParticle.summonKotrImpactSpriteResource = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSummonKotrTableCursor);
+    (g_BattleSummonKotrImpactSpriteParticle.impactSpriteEntry) = Gfx_ModelTableGetLoadedRecord(16, g_BattleSummonKotrTableCursor);
+    g_BattleSummonKotrImpactSpriteParticle.summonKotrImpactSpriteResource = Gfx_ModelTableGetSpriteObject(16, g_BattleSummonKotrTableCursor);
     BattleFx_KotrInstallBillboardMatrix((BattleFxSourcePoint *)((int)task + 4), 0x1000, 0);
     g_BattleSummonKotrImpactSpriteParticle.summonKotrImpactSpriteFrame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonKotrImpactSpriteParticle, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
@@ -3509,13 +3509,13 @@ void __cdecl BattleFx_KotrSpinningGrowingModelTask(void)
         g_BattleSummonKotrSpinState = (struct YasuiKotrSpinState *)(Gfx_GetPsxScratchpadPtr(0));
     }
     frameIndex = taskPtr->frame;
-    if (frameIndex < 0xA) {
+    if (frameIndex < 10) {
         g_BattleSummonKotrSpinGrowModel.summonKotrSpinGrowModelFlags = 0x80;
         g_BattleSummonKotrSpinGrowModel.summonKotrSpinGrowModelScale = 0;
     } else {
-        frameIndex -= 0xA;
-        if (frameIndex < 0xA) {
-            progress = (frameIndex << 0xC) / 0xA;
+        frameIndex -= 10;
+        if (frameIndex < 10) {
+            progress = (frameIndex << 12) / 10;
             g_BattleSummonKotrSpinGrowModel.summonKotrSpinGrowModelFlags |= 8;
             g_BattleSummonKotrSpinGrowModel.summonKotrSpinGrowModelScale = progress;
         } else {
@@ -3523,9 +3523,9 @@ void __cdecl BattleFx_KotrSpinningGrowingModelTask(void)
             return;
         }
     }
-    progress = (taskPtr->frame << 0xC) / 0x14;
+    progress = (taskPtr->frame << 12) / 20;
     progress = BattleFx_ApplySineEasing(progress, 0x3FF);
-    g_BattleSummonKotrSpinState->scaleZ = progress << 0xD >> 0xC;
+    g_BattleSummonKotrSpinState->scaleZ = progress << 13 >> 12;
     g_BattleSummonKotrSpinState->scaleY = g_BattleSummonKotrSpinState->scaleZ;
     g_BattleSummonKotrSpinState->scaleX = g_BattleSummonKotrSpinState->scaleY;
     RotMatrix((SVECTOR *)((int)taskPtr + 0xC), &g_BattleSummonKotrSpinState->taskRotation);
@@ -3576,32 +3576,32 @@ void __cdecl BattleFx_KotrImpactSpriteRingTask(void)
         g_BattleKotrImpactSpriteRingTaskInit |= 1;
         g_BattleSummonKotrBillboardPoint = (BattleKotrPointPose *)Gfx_GetPsxScratchpadPtr(0);
     }
-    (g_BattleSummonKotrImpactSpriteRing.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSummonKotrTableCursor);
-    g_BattleSummonKotrImpactSpriteRing.summonKotrImpactRingResource = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSummonKotrTableCursor);
-    easedProgress = (task->frameCounter << 0xC) / 0xF;
+    (g_BattleSummonKotrImpactSpriteRing.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(16, g_BattleSummonKotrTableCursor);
+    g_BattleSummonKotrImpactSpriteRing.summonKotrImpactRingResource = Gfx_ModelTableGetSpriteObject(16, g_BattleSummonKotrTableCursor);
+    easedProgress = (task->frameCounter << 12) / 15;
     easedProgress = BattleFx_ApplySineEasing(easedProgress, 0x3FF);
-    ringRadius = easedProgress * 0x1388 >> 0xC;
+    ringRadius = easedProgress * 0x1388 >> 12;
     g_BattleSummonKotrImpactSpriteRing.summonKotrImpactRingFieldWord = task->frameCounter;
     RotMatrix((SVECTOR *)((int)task + 0xC), &g_BattleSummonKotrBillboardPoint->matrix);
-    for (spriteIdx = 0; spriteIdx < 0x10; spriteIdx++) {
-        g_BattleSummonKotrBillboardPoint->point.vx = ringRadius * SinFixed((spriteIdx << 0xC) / 0x10) >> 0xC;
+    for (spriteIdx = 0; spriteIdx < 16; spriteIdx++) {
+        g_BattleSummonKotrBillboardPoint->point.vx = ringRadius * SinFixed((spriteIdx << 12) / 16) >> 12;
         g_BattleSummonKotrBillboardPoint->point.vy = 0;
-        g_BattleSummonKotrBillboardPoint->point.vz = ringRadius * CosFixed((spriteIdx << 0xC) / 0x10) >> 0xC;
+        g_BattleSummonKotrBillboardPoint->point.vz = ringRadius * CosFixed((spriteIdx << 12) / 16) >> 12;
         TransformVectorToInt16(&g_BattleSummonKotrBillboardPoint->matrix, &g_BattleSummonKotrBillboardPoint->point, &g_BattleSummonKotrBillboardPoint->point.vx);
         billboardMtx = (PsxMatrix *)BattleFx_KotrInstallBillboardMatrix((BattleFxSourcePoint *)&g_BattleSummonKotrBillboardPoint->point, 0x2000, 0);
         if (billboardMtx->t[2] < g_BattleSummonKotrTransformState.t[2]) {
-            billboardMtx->t[2] = g_BattleSummonKotrTransformState.t[2] + (billboardMtx->t[2] - g_BattleSummonKotrTransformState.t[2] << 0xE >> 0xC);
+            billboardMtx->t[2] = g_BattleSummonKotrTransformState.t[2] + (billboardMtx->t[2] - g_BattleSummonKotrTransformState.t[2] << 14 >> 12);
         } else {
-            billboardMtx->t[2] = g_BattleSummonKotrTransformState.t[2] + (billboardMtx->t[2] - g_BattleSummonKotrTransformState.t[2] << 0xE >> 0xC);
+            billboardMtx->t[2] = g_BattleSummonKotrTransformState.t[2] + (billboardMtx->t[2] - g_BattleSummonKotrTransformState.t[2] << 14 >> 12);
         }
-        if (billboardMtx->t[2] > 0 && billboardMtx->t[2] < 0x8000) {
+        if (billboardMtx->t[2] > 0 && billboardMtx->t[2] < 32768) {
             SetTransMatrix(billboardMtx);
             g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonKotrImpactSpriteRing, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
         }
     }
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        if (task->frameCounter >= 0x10) {
+        if (task->frameCounter >= 16) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -3637,53 +3637,53 @@ void __cdecl BattleFx_KotrKnight4TimelineTask(void)
     if (task->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x54, &g_BattleSummonKotrKnight4SpinScaleModel.summonKotrKnight4EndpointPoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 84, &g_BattleSummonKotrKnight4SpinScaleModel.summonKotrKnight4EndpointPoint);
     }
     if (g_BattleIsPaused == 0) {
-        if (task->step == 0x34) {
+        if (task->step == 52) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_CreateBitPatternCallbackTask(g_BattleKotrTargetMask, 0, 0, BattleFx_KotrSpawnKnight4SpinScaleModelPerTarget);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         phaseFrame = task->step;
-        if (phaseFrame < 0x18) {
+        if (phaseFrame < 24) {
             if (phaseFrame == 0) {
                 pKnight->state = 1;
                 pKnight->offsetX = 0;
                 pKnight->offsetY = 0xFC18;
                 pKnight->offsetZ = 0x2710;
             }
-            easedProgress = (phaseFrame << 0xC) / 0x18;
+            easedProgress = (phaseFrame << 12) / 24;
             easedProgress = BattleFx_ApplySineEasing(easedProgress, -0x3D0);
-            g_BattleSummonKotrKnight4Radius = (easedProgress * 0 >> 0xC) + 0xBB8;
-            g_BattleKotrKnight4Angle = easedProgress * -0x800 >> 0xC;
-            pKnight->scale = easedProgress << 0xC >> 0xC;
-            pKnight->fadeLevel = 0x1000 - easedProgress;
+            g_BattleSummonKotrKnight4Radius = (easedProgress * 0 >> 12) + 3000;
+            g_BattleKotrKnight4Angle = easedProgress * -0x800 /* 0.5 */ >> 12;
+            pKnight->scale = easedProgress << 12 >> 12;
+            pKnight->fadeLevel = 4096 - easedProgress;
         } else {
-            phaseFrame -= 0x18;
+            phaseFrame -= 24;
             if (phaseFrame < 6) {
                 if (phaseFrame == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
                 g_BattleKotrKnight4Angle = 0xFFFFF800;
-                g_BattleSummonKotrKnight4Radius = 0xBB8;
+                g_BattleSummonKotrKnight4Radius = 3000;
             } else {
                 phaseFrame -= 6;
-                if (phaseFrame < 0x36) {
+                if (phaseFrame < 54) {
                     if (phaseFrame == 0) {
                         pKnight->state = 2;
                         pKnight->offsetX = 0 - pKnight->posX;
                         pKnight->offsetY = -0x3E8 - pKnight->posY;
                         pKnight->offsetZ = 0x2710 - pKnight->posZ;
                     }
-                    easedProgress = (phaseFrame << 0xC) / 0x36;
+                    easedProgress = (phaseFrame << 12) / 54;
                     easedProgress = BattleFx_ApplySineEasing(easedProgress, -0x3D0);
-                    g_BattleKotrKnight4Angle = (easedProgress * 0 >> 0xC) - 0x800;
-                    g_BattleSummonKotrKnight4Radius = (easedProgress * -0x3A98 >> 0xC) + 0xBB8;
-                    if (phaseFrame > 0x18) {
-                        easedProgress = (phaseFrame - 0x18 << 0xC) / 0x1E;
+                    g_BattleKotrKnight4Angle = (easedProgress * 0 >> 12) - 0x800;
+                    g_BattleSummonKotrKnight4Radius = (easedProgress * -0x3A98 >> 12) + 3000;
+                    if (phaseFrame > 24) {
+                        easedProgress = (phaseFrame - 0x18 << 12) / 30;
                         easedProgress = BattleFx_ApplySineEasing(easedProgress, -0x1FF);
                     }
                 } else {
@@ -3696,20 +3696,20 @@ void __cdecl BattleFx_KotrKnight4TimelineTask(void)
         g_BattleKotrKnight4State->point.vy = 0xFB80;
         g_BattleKotrKnight4State->point.vz = 0;
         RotMatrix(&g_BattleKotrKnight4State->point, &g_BattleKotrKnight4State->matrix);
-        g_BattleKotrKnight4State->point.vx = CosFixed(g_BattleKotrKnight4Angle) * g_BattleSummonKotrKnight4Radius >> 0xC;
-        g_BattleKotrKnight4State->point.vy = SinFixed(g_BattleKotrKnight4Angle) * g_BattleSummonKotrKnight4Radius >> 0xC;
+        g_BattleKotrKnight4State->point.vx = CosFixed(g_BattleKotrKnight4Angle) * g_BattleSummonKotrKnight4Radius >> 12;
+        g_BattleKotrKnight4State->point.vy = SinFixed(g_BattleKotrKnight4Angle) * g_BattleSummonKotrKnight4Radius >> 12;
         g_BattleKotrKnight4State->point.vz = 0;
         TransformVectorToInt16(&g_BattleKotrKnight4State->matrix, &g_BattleKotrKnight4State->point, &g_BattleKotrKnight4State->point.vx);
         pKnight->posX = g_BattleKotrKnight4State->point.vx;
-        pKnight->posY = g_BattleKotrKnight4State->point.vy - 0x3E8;
-        pKnight->posZ = g_BattleKotrKnight4State->point.vz + 0x2710;
+        pKnight->posY = g_BattleKotrKnight4State->point.vy - 1000;
+        pKnight->posZ = g_BattleKotrKnight4State->point.vz + 10000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (task->step)++;
     }
 }
 
 /*
- * Stores Gfx_ModelTableGetRenderObject(0xA,
+ * Stores Gfx_ModelTableGetRenderObject(10,
  * g_BattleSummonKotrTableCursor) in g_BattleSummonKotrKnight4SpinScaleModel, builds a local position with
  * BattleFx_KotrGetActorAttachLocalPosition(actor, byte at g_BattleActorRecords[actor].targetBone, &local),
  * and passes global and position to BattleFx_KotrSpawnEasedSpinScaleModel. 0x1AEC is the stride of
@@ -3720,7 +3720,7 @@ void __cdecl BattleFx_KotrSpawnKnight4SpinScaleModelPerTarget(int actor)
 {
     SVECTOR attachPos;
 
-    (g_BattleSummonKotrKnight4SpinScaleModel.spinScaleModel) = Gfx_ModelTableGetRenderObject(0xA, g_BattleSummonKotrTableCursor);
+    (g_BattleSummonKotrKnight4SpinScaleModel.spinScaleModel) = Gfx_ModelTableGetRenderObject(10, g_BattleSummonKotrTableCursor);
     BattleFx_KotrGetActorAttachLocalPosition(actor, g_BattleActorRecords[actor].targetBone, &attachPos);
     BattleFx_KotrSpawnEasedSpinScaleModel(&g_BattleSummonKotrKnight4SpinScaleModel, &attachPos);
 }
@@ -3755,46 +3755,46 @@ void __cdecl BattleFx_KotrKnight5TimelineTask(void)
     if (taskPtr->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x38, &g_BattleSummonKotrKnight5SpinScaleModel.summonKotrKnight5EndpointPoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 56, &g_BattleSummonKotrKnight5SpinScaleModel.summonKotrKnight5EndpointPoint);
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->step == 0x23) {
+        if (taskPtr->step == 35) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_CreateBitPatternCallbackTask(g_BattleKotrTargetMask, 0, 0, BattleFx_KotrSpawnKnight5SpinScaleModelPerTarget);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         frameIndex = taskPtr->step;
-        if (frameIndex < 0xF) {
+        if (frameIndex < 15) {
             if (frameIndex == 0) {
                 pKnight->offsetY = 0x800;
             }
-            progress = (frameIndex << 0xC) / 0xF;
+            progress = (frameIndex << 12) / 15;
             easedValue = BattleFx_ApplySineEasing(progress, -0x1FF);
-            pKnight->scale = easedValue << 0xC >> 0xC;
-            pKnight->fadeLevel = 0x1000 - progress;
+            pKnight->scale = easedValue << 12 >> 12;
+            pKnight->fadeLevel = 4096 - progress;
             easedValue = BattleFx_ApplySineEasing(progress, 0x1FF);
-            pKnight->posX = (easedValue * 0 >> 0xC) + 0x7D0;
-            pKnight->posY = (easedValue * -0x1388 >> 0xC) + 0x1388;
-            pKnight->posZ = (easedValue * 0 >> 0xC) + 0x1F40;
+            pKnight->posX = (easedValue * 0 >> 12) + 2000;
+            pKnight->posY = (easedValue * -0x1388 >> 12) + 5000;
+            pKnight->posZ = (easedValue * 0 >> 12) + 8000;
         } else {
-            frameIndex -= 0xF;
-            if (frameIndex < 0x29) {
-                progress = (frameIndex << 0xC) / 0x29;
+            frameIndex -= 15;
+            if (frameIndex < 41) {
+                progress = (frameIndex << 12) / 41;
                 easedValue = BattleFx_ApplySineEasing(progress, -0x1FF);
-                pKnight->posX = (easedValue * -0xBB8 >> 0xC) + 0x7D0;
-                pKnight->posY = easedValue * -0x7D0 >> 0xC;
-                pKnight->posZ = (easedValue * 0x2EE0 >> 0xC) + 0x1F40;
-                if (frameIndex < 0x1A) {
+                pKnight->posX = (easedValue * -0xBB8 >> 12) + 2000;
+                pKnight->posY = easedValue * -0x7D0 >> 12;
+                pKnight->posZ = (easedValue * 0x2EE0 >> 12) + 8000;
+                if (frameIndex < 26) {
                     if (frameIndex == 0) {
-                        pKnight->scale = 0x1000;
+                        pKnight->scale = 0x1000 /* 1.0 */;
                         pKnight->fadeLevel = 0;
                     }
                 } else {
-                    frameIndex -= 0x1A;
-                    progress = (frameIndex << 0xC) / 0xF;
+                    frameIndex -= 26;
+                    progress = (frameIndex << 12) / 15;
                     easedValue = BattleFx_ApplySineEasing(progress, -0x1FF);
-                    pKnight->scale = (easedValue * -0x1000 >> 0xC) + 0x1000;
+                    pKnight->scale = (easedValue * -0x1000 /* 1.0 */ >> 12) + 0x1000;
                     pKnight->fadeLevel = easedValue;
                 }
             } else {
@@ -3857,10 +3857,10 @@ void __cdecl BattleFx_KotrKnight6TimelineTask(void)
     if (taskPtr->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x30, &g_BattleSummonKotrKnight6SpinScaleModel.summonKotrKnight6EndpointPoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 48, &g_BattleSummonKotrKnight6SpinScaleModel.summonKotrKnight6EndpointPoint);
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->step == 0xE) {
+        if (taskPtr->step == 14) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_CreateBitPatternCallbackTask(g_BattleKotrTargetMask, 0, 0, BattleFx_KotrSpawnKnight6SpinScaleModelPairPerTarget);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
@@ -3873,17 +3873,17 @@ void __cdecl BattleFx_KotrKnight6TimelineTask(void)
             }
         } else {
             frameIndex -= 7;
-            if (frameIndex < 0x1B) {
+            if (frameIndex < 27) {
                 if (frameIndex == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
             } else {
-                frameIndex -= 0x1B;
-                if (frameIndex < 0xE) {
-                    progress = (frameIndex << 0xC) / 0xE;
+                frameIndex -= 27;
+                if (frameIndex < 14) {
+                    progress = (frameIndex << 12) / 14;
                     easedValue = BattleFx_ApplySineEasing(progress, -0x1FF);
-                    pKnight->scale = (easedValue * -0xFF0 >> 0xC) + 0x1000;
+                    pKnight->scale = (easedValue * -0xFF0 >> 12) + 0x1000;
                     pKnight->fadeLevel = easedValue;
                 } else {
                     taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -3891,26 +3891,26 @@ void __cdecl BattleFx_KotrKnight6TimelineTask(void)
                 }
             }
         }
-        progress = (taskPtr->step << 0xC) / 0x30;
+        progress = (taskPtr->step << 12) / 48;
         easedValue = BattleFx_ApplySineEasing(progress, 0x1C0);
-        g_BattleSummonKotrKnight6TimelineState->point.vx = 0x100;
-        g_BattleSummonKotrKnight6TimelineState->point.vy = 0x100;
+        g_BattleSummonKotrKnight6TimelineState->point.vx = 256;
+        g_BattleSummonKotrKnight6TimelineState->point.vy = 256;
         g_BattleSummonKotrKnight6TimelineState->point.vz = 0;
         RotMatrix(&g_BattleSummonKotrKnight6TimelineState->point, &g_BattleSummonKotrKnight6TimelineState->matrix);
         g_BattleSummonKotrKnight6TimelineState->point.vy = 0;
         g_BattleSummonKotrKnight6TimelineState->point.vx = 0;
-        g_BattleSummonKotrKnight6TimelineState->point.vz = (easedValue * 0x36B0 >> 0xC) - 0x7D0;
+        g_BattleSummonKotrKnight6TimelineState->point.vz = (easedValue * 0x36B0 >> 12) - 2000;
         TransformVectorToInt16(&g_BattleSummonKotrKnight6TimelineState->matrix, &g_BattleSummonKotrKnight6TimelineState->point, &g_BattleSummonKotrKnight6TimelineState->point.vx);
-        pKnight->posX = g_BattleSummonKotrKnight6TimelineState->point.vx - 0x5DC;
+        pKnight->posX = g_BattleSummonKotrKnight6TimelineState->point.vx - 1500;
         pKnight->posY = g_BattleSummonKotrKnight6TimelineState->point.vy;
-        pKnight->posZ = g_BattleSummonKotrKnight6TimelineState->point.vz + 0x2710;
+        pKnight->posZ = g_BattleSummonKotrKnight6TimelineState->point.vz + 10000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (taskPtr->step)++;
     }
 }
 
 /*
- * Takes two field-0xA entries
+ * Takes two field-10 entries
  * from Gfx_ModelTableGetRenderObject(g_BattleSummonKotrTableCursor) into g_BattleKotrKnight6SpinScaleParams
  * and g_BattleSummonKotrKnight6SpinScaleModel, builds one local position with
  * BattleFx_KotrGetActorAttachLocalPosition(actor, byte at g_BattleActorRecords[0].targetBone + actor * 0x1AEC, &local),
@@ -3922,8 +3922,8 @@ void __cdecl BattleFx_KotrSpawnKnight6SpinScaleModelPairPerTarget(int actor)
 {
     SVECTOR attachPos;
 
-    g_BattleKotrKnight6SpinScaleParams.modelGroup = Gfx_ModelTableGetRenderObject(0xA, g_BattleSummonKotrTableCursor);
-    (g_BattleSummonKotrKnight6SpinScaleModel.spinScaleModel) = Gfx_ModelTableGetRenderObject(0xA, g_BattleSummonKotrTableCursor);
+    g_BattleKotrKnight6SpinScaleParams.modelGroup = Gfx_ModelTableGetRenderObject(10, g_BattleSummonKotrTableCursor);
+    (g_BattleSummonKotrKnight6SpinScaleModel.spinScaleModel) = Gfx_ModelTableGetRenderObject(10, g_BattleSummonKotrTableCursor);
     BattleFx_KotrGetActorAttachLocalPosition(actor, g_BattleActorRecords[actor].targetBone, &attachPos);
     BattleFx_KotrSpawnEasedSpinScaleModel(&g_BattleKotrKnight6SpinScaleParams, &attachPos);
     BattleFx_KotrSpawnEasedSpinScaleModel(&g_BattleSummonKotrKnight6SpinScaleModel, &attachPos);
@@ -3964,53 +3964,53 @@ void __cdecl BattleFx_KotrKnight7TimelineTask(void)
     if (task->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x47, &g_BattleSummonKotrKnight7ExpandingModel.summonKotrKnight7EndpointPointA);
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x47, &g_BattleSummonKotrKnight7ExpandingModel.summonKotrKnight7EndpointPointB);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 71, &g_BattleSummonKotrKnight7ExpandingModel.summonKotrKnight7EndpointPointA);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 71, &g_BattleSummonKotrKnight7ExpandingModel.summonKotrKnight7EndpointPointB);
     }
     if (g_BattleIsPaused == 0) {
-        if (task->step == 0x1E) {
+        if (task->step == 30) {
             Battle_AllocateResourceSlot(BattleFx_KotrShrinkExpandModelsTimelineTask);
         }
         phaseFrame = task->step;
-        if (phaseFrame < 0xF) {
+        if (phaseFrame < 15) {
             if (phaseFrame == 0) {
                 pKnight->state = 1;
                 pKnight->offsetX = 0;
                 pKnight->offsetY = 0;
                 pKnight->offsetZ = 0x3A98;
             }
-            ratio = (phaseFrame << 0xC) / 0xF;
+            ratio = (phaseFrame << 12) / 15;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-            theta = easedValue * 0x600 >> 0xC;
-            polarRadius = (easedValue * 0 >> 0xC) + 0x1388;
-            pKnight->rotZ = (ratio << 0xA >> 0xC) - 0x400;
+            theta = easedValue * 0x600 /* 0.375 */ >> 12;
+            polarRadius = (easedValue * 0 >> 12) + 5000;
+            pKnight->rotZ = (ratio << 10 >> 12) - 0x400;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-            pKnight->scale = (easedValue * 0xFF8 >> 0xC) + 8;
-            pKnight->fadeLevel = 0x1000 - easedValue;
+            pKnight->scale = (easedValue * 0xFF8 >> 12) + 8;
+            pKnight->fadeLevel = 4096 - easedValue;
         } else {
-            phaseFrame -= 0xF;
-            if (phaseFrame < 0x1F) {
+            phaseFrame -= 15;
+            if (phaseFrame < 31) {
                 if (phaseFrame == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                     pKnight->rotZ = 0;
                 }
-                if (phaseFrame > 0xF) {
-                    ratio = ((phaseFrame - 0xF) << 0xC) / 0x10;
-                    pKnight->rotY = ratio << 0xB >> 0xC;
-                    pKnight->rotX = ratio * 0x300 >> 0xC;
+                if (phaseFrame > 15) {
+                    ratio = ((phaseFrame - 0xF) << 12) / 16;
+                    pKnight->rotY = ratio << 11 >> 12;
+                    pKnight->rotX = ratio * 0x300 /* 0.1875 */ >> 12;
                 }
-                theta = 0x600;
-                polarRadius = 0x1388;
+                theta = 0x600 /* 135 deg */;
+                polarRadius = 5000;
             } else {
-                phaseFrame -= 0x1F;
-                if (phaseFrame < 0x19) {
-                    ratio = (phaseFrame << 0xC) / 0x19;
+                phaseFrame -= 31;
+                if (phaseFrame < 25) {
+                    ratio = (phaseFrame << 12) / 25;
                     easedValue = BattleFx_ApplySineEasing(ratio, 0x2FF);
-                    theta = (easedValue * 0 >> 0xC) + 0x600;
-                    polarRadius = (easedValue * 0x1388 >> 0xC) + 0x1388;
+                    theta = (easedValue * 0 >> 12) + 0x600;
+                    polarRadius = (easedValue * 0x1388 >> 12) + 5000;
                     easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-                    pKnight->scale = (easedValue * -0xFF8 >> 0xC) + 0x1000;
+                    pKnight->scale = (easedValue * -0xFF8 >> 12) + 0x1000;
                     pKnight->fadeLevel = easedValue;
                 } else {
                     task->ownerSlot = BATTLE_TASK_FREE;
@@ -4019,17 +4019,17 @@ void __cdecl BattleFx_KotrKnight7TimelineTask(void)
             }
         }
         RotMatrix((SVECTOR *)&g_BattleSummonKotrKnight7ExpandingModel.summonKotrKnight7RotationMatrix, &g_BattleKotrKnight7State->matrix);
-        g_BattleKotrKnight7State->posX = CosFixed(theta) * polarRadius >> 0xC;
-        g_BattleKotrKnight7State->posY = SinFixed(theta) * polarRadius >> 0xC;
+        g_BattleKotrKnight7State->posX = CosFixed(theta) * polarRadius >> 12;
+        g_BattleKotrKnight7State->posY = SinFixed(theta) * polarRadius >> 12;
         g_BattleKotrKnight7State->posZ = 0;
-        g_BattleKotrKnight7State->scaleZ = 0x1000;
-        g_BattleKotrKnight7State->scaleX = 0x1000;
-        g_BattleKotrKnight7State->scaleY = 0x800;
+        g_BattleKotrKnight7State->scaleZ = 0x1000 /* 1.0 */;
+        g_BattleKotrKnight7State->scaleX = 0x1000 /* 1.0 */;
+        g_BattleKotrKnight7State->scaleY = 0x800 /* 0.5 */;
         ScaleMatrix(&g_BattleKotrKnight7State->matrix, &g_BattleKotrKnight7State->scaleX);
         TransformVectorToInt16(&g_BattleKotrKnight7State->matrix, (SVECTOR *)g_BattleKotrKnight7State, &g_BattleKotrKnight7State->posX);
         pKnight->posX = g_BattleKotrKnight7State->posX;
         pKnight->posY = g_BattleKotrKnight7State->posY;
-        pKnight->posZ = g_BattleKotrKnight7State->posZ + 0x3A98;
+        pKnight->posZ = g_BattleKotrKnight7State->posZ + 15000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (task->step)++;
     }
@@ -4053,16 +4053,16 @@ void __cdecl BattleFx_KotrShrinkExpandModelsTimelineTask(void)
     if (task->frameCounter == 0) {
         spawned = (BattleFxModelTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrKnight7ShrinkingBillboardModelTask);
     }
-    if (task->frameCounter == 0xA) {
+    if (task->frameCounter == 10) {
         spawned = (BattleFxModelTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrExpandingFadingModelTask);
         spawned->rotZ = 0;
         spawned->rotY = 0;
         spawned->rotX = 0;
     }
-    if (task->frameCounter == 0x14) {
+    if (task->frameCounter == 20) {
         BattleFx_KotrPostKnightImpactRecords();
     }
-    if (task->frameCounter == 0x14) {
+    if (task->frameCounter == 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -4084,16 +4084,16 @@ void __cdecl BattleFx_KotrKnight7ShrinkingBillboardModelTask(void)
 
     task = (BattleFxDualCounterTask *)BATTLE_CURRENT_TASK_SLOT;
     ctr = task->nextIndex;
-    if (ctr < 0xA) {
-        easedValue = (ctr << 0xC) / 0xA;
+    if (ctr < 10) {
+        easedValue = (ctr << 12) / 10;
         easedValue = BattleFx_ApplySineEasing(easedValue, 0x1FF);
-        scale = (easedValue * -0x2F00 >> 0xC) + 0x3000;
+        scale = (easedValue * -0x2F00 /* 2.9375 */ >> 12) + 0x3000;
     } else {
         ctr -= 0xA;
-        if (ctr < 0xA) {
-            easedValue = (ctr << 0xC) / 0xA;
+        if (ctr < 10) {
+            easedValue = (ctr << 12) / 10;
             easedValue = BattleFx_ApplySineEasing(easedValue, 0);
-            scale = (easedValue * -0x100 >> 0xC) + 0x100;
+            scale = (easedValue * -0x100 /* 0.0625 */ >> 12) + 0x100;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -4134,14 +4134,14 @@ void __cdecl BattleFx_KotrExpandingFadingModelTask(void)
         g_BattleSummonKotrKnight7ExpandingModel.summonKotrExpandFadeAlpha = 0;
     }
     elapsed = taskPtr->frame;
-    if (elapsed < 0xA) { /* empty first arm: lib/codegen.h */
+    if (elapsed < 10) { /* empty first arm: lib/codegen.h */
     } else {
-        elapsed -= 0xA;
-        if (elapsed < 0xA) {
+        elapsed -= 10;
+        if (elapsed < 10) {
             if (elapsed == 0) {
                 g_BattleSummonKotrKnight7ExpandingModel.summonKotrExpandFadeFlags |= 8;
             }
-            ramp = (elapsed << 0xC) / 0xA;
+            ramp = (elapsed << 12) / 10;
             g_BattleSummonKotrKnight7ExpandingModel.summonKotrExpandFadeAlpha = ramp;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -4153,9 +4153,9 @@ void __cdecl BattleFx_KotrExpandingFadingModelTask(void)
     } else {
         (g_BattleSummonKotrKnight7ExpandingModel.expandingModelResource) = Gfx_ModelTableGetRenderObject(7, g_BattleSummonKotrTableCursor);
     }
-    ramp = (taskPtr->frame << 0xC) / 0x14;
+    ramp = (taskPtr->frame << 12) / 20;
     ramp = BattleFx_ApplySineEasing(ramp, 0x2F0);
-    g_BattleKotrExpandState->scaleZ = ramp * 0x1400 >> 0xC;
+    g_BattleKotrExpandState->scaleZ = ramp * 0x1400 /* 1.25 */ >> 12;
     g_BattleKotrExpandState->scaleY = g_BattleKotrExpandState->scaleZ;
     g_BattleKotrExpandState->scaleX = g_BattleKotrExpandState->scaleY;
     RotMatrix((SVECTOR *)((int)taskPtr + 0xC), &g_BattleKotrExpandState->matrix);
@@ -4211,45 +4211,45 @@ void __cdecl BattleFx_KotrKnight8TimelineTask(void)
         pKnight->flags |= 1;
     }
     if (task->step == 5) {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x2E, &g_BattleSummonKotrKnight8SpinScaleModel.summonKotrKnight8EndpointPointA);
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x2E, &g_BattleSummonKotrKnight8SpinScaleModel.summonKotrKnight8EndpointPointB);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 46, &g_BattleSummonKotrKnight8SpinScaleModel.summonKotrKnight8EndpointPointA);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 46, &g_BattleSummonKotrKnight8SpinScaleModel.summonKotrKnight8EndpointPointB);
     }
     if (g_BattleIsPaused == 0) {
-        if (task->step == 0x1A) {
+        if (task->step == 26) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_AllocateResourceSlot(BattleFx_KotrKnight8SpinScaleModelSetupTask);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         phaseFrame = task->step;
-        if (phaseFrame < 0x25) {
-            ratio = (task->step << 0xC) / 0x25;
+        if (phaseFrame < 37) {
+            ratio = (task->step << 12) / 37;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x3D0);
-            zDisplacement = (easedValue * -0x3A98 >> 0xC) + 0x2710;
-            if (phaseFrame < 0xC) {
+            zDisplacement = (easedValue * -0x3A98 >> 12) + 10000;
+            if (phaseFrame < 12) {
                 if (phaseFrame == 0) {
                     pKnight->offsetX = 0x200;
                 }
-                ratio = (phaseFrame << 0xC) / 0xC;
+                ratio = (phaseFrame << 12) / 12;
                 easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-                pKnight->scale = easedValue << 0xC >> 0xC;
-                pKnight->fadeLevel = 0x1000 - easedValue;
+                pKnight->scale = easedValue << 12 >> 12;
+                pKnight->fadeLevel = 4096 - easedValue;
             } else {
-                phaseFrame -= 0xC;
-                if (phaseFrame < 0x19 && phaseFrame == 0) {
-                    pKnight->scale = 0x1000;
+                phaseFrame -= 12;
+                if (phaseFrame < 25 && phaseFrame == 0) {
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
             }
         } else {
-            phaseFrame -= 0x25;
-            if (phaseFrame < 0xE) {
-                ratio = (phaseFrame << 0xC) / 0xE;
+            phaseFrame -= 37;
+            if (phaseFrame < 14) {
+                ratio = (phaseFrame << 12) / 14;
                 easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-                pKnight->scale = (easedValue * -0x1000 >> 0xC) + 0x1000;
+                pKnight->scale = (easedValue * -0x1000 /* 1.0 */ >> 12) + 0x1000;
                 pKnight->fadeLevel = easedValue;
                 easedValue = BattleFx_ApplySineEasing(ratio, 0x3FF);
-                zDisplacement = (easedValue * -0x2710 >> 0xC) - 0x1388;
+                zDisplacement = (easedValue * -0x2710 >> 12) - 5000;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -4261,8 +4261,8 @@ void __cdecl BattleFx_KotrKnight8TimelineTask(void)
         g_BattleSummonKotrKnightState->point.vz = zDisplacement;
         TransformVectorToInt16(&g_BattleSummonKotrKnightState->matrix, &g_BattleSummonKotrKnightState->point, &g_BattleSummonKotrKnightState->point.vx);
         pKnight->posX = g_BattleSummonKotrKnightState->point.vx;
-        pKnight->posY = g_BattleSummonKotrKnightState->point.vy - 0x1F4;
-        pKnight->posZ = g_BattleSummonKotrKnightState->point.vz + 0x2710;
+        pKnight->posY = g_BattleSummonKotrKnightState->point.vy - 500;
+        pKnight->posZ = g_BattleSummonKotrKnightState->point.vz + 10000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (task->step)++;
     }
@@ -4286,7 +4286,7 @@ void __cdecl BattleFx_KotrKnight8SpinScaleModelSetupTask(void)
         return;
     }
     if (taskPtr->frameCounter == 0) {
-        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
             if ((g_BattleKotrTargetMask & 1 << actorIndex) != 0) {
                 BattleFx_KotrGetActorAttachLocalPosition(actorIndex, g_BattleActorRecords[actorIndex].targetBone, (actorIndex * 8 + (char *)&g_BattleSummonKotrAttachLocalPositions));
             }
@@ -4351,45 +4351,45 @@ void __cdecl BattleFx_KotrKnight9TimelineTask(void)
     if (task->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x5F, &g_BattleSummonKotrKnight9BillboardModel.kotrKnight9TrailEndpoint);
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x5F, &g_BattleSummonKotrKnight9BillboardModel.kotrKnight9TrailEndpointB);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 95, &g_BattleSummonKotrKnight9BillboardModel.kotrKnight9TrailEndpoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 95, &g_BattleSummonKotrKnight9BillboardModel.kotrKnight9TrailEndpointB);
     }
     if (g_BattleIsPaused == 0) {
-        if (task->step == 0x47) {
+        if (task->step == 71) {
             newTask = (int)BATTLE_NEW_TASK_SLOT(BattleFx_KotrSpawnTumblingModelsAndPulsesTimelineTask);
-            BattleFx_KotrTransformAttachPointToLocal(0x1E, (SVECTOR *)(newTask + 4));
+            BattleFx_KotrTransformAttachPointToLocal(30, (SVECTOR *)(newTask + 4));
         }
         phaseFrame = task->step;
-        if (phaseFrame < 0x28) {
+        if (phaseFrame < 40) {
             if (phaseFrame == 0) {
                 pKnight->state = 1;
                 pKnight->offsetX = 0;
                 pKnight->offsetY = 0;
                 pKnight->offsetZ = 0x4E20;
             }
-            ratio = (phaseFrame << 0xC) / 0x28;
+            ratio = (phaseFrame << 12) / 40;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x3D0);
-            theta = (easedValue * 0x380 >> 0xC) + 0x300;
-            polarRadius = (easedValue * 0x1B58 >> 0xC) + 0x1388;
+            theta = (easedValue * 0x380 >> 12) + 0x300;
+            polarRadius = (easedValue * 0x1B58 >> 12) + 5000;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-            pKnight->scale = (easedValue * 0xFF8 >> 0xC) + 8;
-            pKnight->fadeLevel = 0x1000 - easedValue;
+            pKnight->scale = (easedValue * 0xFF8 >> 12) + 8;
+            pKnight->fadeLevel = 4096 - easedValue;
         } else {
-            phaseFrame -= 0x28;
-            if (phaseFrame < 0x28) {
+            phaseFrame -= 40;
+            if (phaseFrame < 40) {
                 if (phaseFrame == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
                 theta = 0x680;
-                polarRadius = 0x2EE0;
+                polarRadius = 12000;
             } else {
-                phaseFrame -= 0x28;
-                if (phaseFrame < 0xF) {
-                    ratio = (phaseFrame << 0xC) / 0xF;
+                phaseFrame -= 40;
+                if (phaseFrame < 15) {
+                    ratio = (phaseFrame << 12) / 15;
                     easedValue = BattleFx_ApplySineEasing(ratio, 0x2FF);
-                    theta = (easedValue * 0 >> 0xC) + 0x680;
-                    polarRadius = (easedValue * 0x1F40 >> 0xC) + 0x2EE0;
+                    theta = (easedValue * 0 >> 12) + 0x680;
+                    polarRadius = (easedValue * 0x1F40 >> 12) + 12000;
                 } else {
                     task->ownerSlot = BATTLE_TASK_FREE;
                     return;
@@ -4397,19 +4397,19 @@ void __cdecl BattleFx_KotrKnight9TimelineTask(void)
             }
         }
         RotMatrix((SVECTOR *)&g_BattleSummonKotrKnight9BillboardModel.kotrKnight9RotMatrix, &g_BattleKotrKnight9State->matrix);
-        g_BattleKotrKnight9State->posX = CosFixed(theta) * polarRadius >> 0xC;
-        g_BattleKotrKnight9State->posY = SinFixed(theta) * polarRadius >> 0xC;
+        g_BattleKotrKnight9State->posX = CosFixed(theta) * polarRadius >> 12;
+        g_BattleKotrKnight9State->posY = SinFixed(theta) * polarRadius >> 12;
         g_BattleKotrKnight9State->posZ = 0;
-        g_BattleKotrKnight9State->scaleZ = 0x1000;
-        g_BattleKotrKnight9State->scaleX = 0x1000;
-        g_BattleKotrKnight9State->scaleY = 0x800;
+        g_BattleKotrKnight9State->scaleZ = 0x1000 /* 1.0 */;
+        g_BattleKotrKnight9State->scaleX = 0x1000 /* 1.0 */;
+        g_BattleKotrKnight9State->scaleY = 0x800 /* 0.5 */;
         ScaleMatrix(&g_BattleKotrKnight9State->matrix, &g_BattleKotrKnight9State->scaleX);
         TransformVectorToInt16(&g_BattleKotrKnight9State->matrix, (SVECTOR *)g_BattleKotrKnight9State, &g_BattleKotrKnight9State->posX);
         pKnight->posX = g_BattleKotrKnight9State->posX;
         pKnight->posY = g_BattleKotrKnight9State->posY;
-        pKnight->posZ = g_BattleKotrKnight9State->posZ + 0x4E20;
-        if (pKnight->posZ > 0x4E20) {
-            pKnight->rotZ = 0x800;
+        pKnight->posZ = g_BattleKotrKnight9State->posZ + 20000;
+        if (pKnight->posZ > 20000) {
+            pKnight->rotZ = 0x800 /* 180 deg */;
         } else {
             pKnight->rotZ = 0;
         }
@@ -4443,34 +4443,34 @@ void __cdecl BattleFx_KotrSpawnTumblingModelsAndPulsesTimelineTask(void)
     }
     if (task->step == 0) {
         pSpawn = (BattleFxKotrTumblingSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrTumblingShrinkingModelEmitterTask);
-        pSpawn->posA = task->posA << 0xD >> 0xC;
-        pSpawn->posB = task->posB << 0xD >> 0xC;
-        pSpawn->posC = task->posC << 0xD >> 0xC;
-        pSpawn->velA = -pSpawn->posA / 0x1E;
-        pSpawn->velB = -pSpawn->posB / 0x1E;
-        pSpawn->velC = -pSpawn->posC / 0x1E;
+        pSpawn->posA = task->posA << 13 >> 12;
+        pSpawn->posB = task->posB << 13 >> 12;
+        pSpawn->posC = task->posC << 13 >> 12;
+        pSpawn->velA = -pSpawn->posA / 30;
+        pSpawn->velB = -pSpawn->posB / 30;
+        pSpawn->velC = -pSpawn->posC / 30;
     }
-    if (task->step >= 0x1E && task->step < 0x28) {
-        elapsed = task->step - 0x1E;
+    if (task->step >= 30 && task->step < 40) {
+        elapsed = task->step - 30;
         emission = (elapsed << 7 & 0xFF) + 0x80;
-        while (emission >= 0x100) {
+        while (emission >= 256) {
             pSpawn = (BattleFxKotrTumblingSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrKnight9PulsingBillboardModelTask);
-            pSpawn->posA = rand() % 0x1770 - 0xBB8;
+            pSpawn->posA = rand() % 6000 - 3000;
             pSpawn->posB = 0;
-            pSpawn->posC = rand() % 0x1770 - 0xBB8;
+            pSpawn->posC = rand() % 6000 - 3000;
             if (DEAD_IN_RETAIL != 0) {
                 bytes = 0x1000;
             } else {
-                bytes = rand() % 0x800 + 0x800;
+                bytes = rand() % 2048 + 2048;
             }
             pSpawn->amplitude = bytes;
             emission -= 0x100;
         }
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         BattleFx_KotrPostKnightImpactRecords();
     }
-    if (task->step == 0x23) {
+    if (task->step == 35) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -4504,26 +4504,26 @@ void __cdecl BattleFx_KotrTumblingShrinkingModelEmitterTask(void)
         return;
     }
     emitAccum = (task->frameCounter << 8 & 0xFF) + 0x100;
-    while (emitAccum >= 0x100) {
+    while (emitAccum >= 256) {
         pNewTask = (BattleFxKotrShrinkEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrTumblingShrinkingModelTask);
-        g_BattleKotrEmitterState->jitterX = rand() % 0x1F40 - 0xFA0;
+        g_BattleKotrEmitterState->jitterX = rand() % 8000 - 4000;
         g_BattleKotrEmitterState->driftY = 0;
-        g_BattleKotrEmitterState->jitterZ = rand() % 0x1F40 - 0xFA0;
+        g_BattleKotrEmitterState->jitterZ = rand() % 8000 - 4000;
         pNewTask->posX = g_BattleSummonKotrTumblingModel.summonKotrTumbleShrinkBaseX + g_BattleKotrEmitterState->jitterX;
         pNewTask->posY = g_BattleSummonKotrTumblingModel.kotrTumbleBasePosY;
         pNewTask->posZ = g_BattleSummonKotrTumblingModel.kotrTumbleBasePosZ + g_BattleKotrEmitterState->jitterZ;
-        g_BattleKotrEmitterState->jitterX = (g_BattleSummonKotrTumbleXY.kotrTumbleStateX) - g_BattleSummonKotrTumblingModel.summonKotrTumbleShrinkBaseX + (speedScale * 0 >> 0xC);
+        g_BattleKotrEmitterState->jitterX = (g_BattleSummonKotrTumbleXY.kotrTumbleStateX) - g_BattleSummonKotrTumblingModel.summonKotrTumbleShrinkBaseX + (speedScale * 0 >> 12);
         g_BattleKotrEmitterState->driftY = g_BattleSummonKotrTumbleXY.kotrTumbleStateY - g_BattleSummonKotrTumblingModel.kotrTumbleBasePosY;
-        g_BattleKotrEmitterState->jitterZ = g_BattleSummonKotrTumbleStateZ - g_BattleSummonKotrTumblingModel.kotrTumbleBasePosZ + (speedScale * 0 >> 0xC);
+        g_BattleKotrEmitterState->jitterZ = g_BattleSummonKotrTumbleStateZ - g_BattleSummonKotrTumblingModel.kotrTumbleBasePosZ + (speedScale * 0 >> 12);
         if (DEAD_IN_RETAIL != 0) {
             pace = 0x1800;
         } else {
-            pace = rand() % 0x400 + 0x1400;
+            pace = rand() % 1024 + 5120;
         }
         speedScale = pace;
-        pNewTask->offsetX = g_BattleKotrEmitterState->jitterX * speedScale >> 0xC;
-        pNewTask->offsetY = g_BattleKotrEmitterState->driftY * speedScale >> 0xC;
-        pNewTask->offsetZ = g_BattleKotrEmitterState->jitterZ * speedScale >> 0xC;
+        pNewTask->offsetX = g_BattleKotrEmitterState->jitterX * speedScale >> 12;
+        pNewTask->offsetY = g_BattleKotrEmitterState->driftY * speedScale >> 12;
+        pNewTask->offsetZ = g_BattleKotrEmitterState->jitterZ * speedScale >> 12;
         pNewTask->packedAngles = rand() & 0xFFFFFF;
         pNewTask->angleStepX = rand() % 4 - 2;
         pNewTask->angleStepY = rand() % 4 - 2;
@@ -4531,13 +4531,13 @@ void __cdecl BattleFx_KotrTumblingShrinkingModelEmitterTask(void)
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x3000;
         } else {
-            bytes = rand() % 0x1000 + 0x2000;
+            bytes = rand() % 4096 + 8192;
         }
         pNewTask->startSize = bytes;
         emitAccum -= 0x100;
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0xA) {
+    if (task->frameCounter >= 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -4563,17 +4563,17 @@ void __cdecl BattleFx_KotrTumblingShrinkingModelTask(void)
         g_BattleKotrTumblingShrinkingModelTaskInit |= 1;
         g_BattleSummonKotrTumbleShrinkState = (BattleFxKotrTumbleShrinkState *)Gfx_GetPsxScratchpadPtr(0);
     }
-    normalized = (taskPtr->age << 0xC) / 0x1E;
+    normalized = (taskPtr->age << 12) / 30;
     easedValue = BattleFx_ApplySineEasing(normalized, 0x1E0);
     g_BattleSummonKotrTumbleShrinkState->angleX = taskPtr->angleX << 4;
     g_BattleSummonKotrTumbleShrinkState->angleY = taskPtr->angleY << 4;
     g_BattleSummonKotrTumbleShrinkState->angleZ = taskPtr->angleZ << 4;
     RotMatrix((SVECTOR *)g_BattleSummonKotrTumbleShrinkState, &g_BattleSummonKotrTumbleShrinkState->matrix);
-    g_BattleSummonKotrTumbleShrinkState->matrix.t[0] = taskPtr->startX + (taskPtr->deltaX * easedValue >> 0xC);
-    g_BattleSummonKotrTumbleShrinkState->matrix.t[1] = taskPtr->startY + (taskPtr->deltaY * easedValue >> 0xC);
-    g_BattleSummonKotrTumbleShrinkState->matrix.t[2] = taskPtr->startZ + (taskPtr->deltaZ * easedValue >> 0xC);
+    g_BattleSummonKotrTumbleShrinkState->matrix.t[0] = taskPtr->startX + (taskPtr->deltaX * easedValue >> 12);
+    g_BattleSummonKotrTumbleShrinkState->matrix.t[1] = taskPtr->startY + (taskPtr->deltaY * easedValue >> 12);
+    g_BattleSummonKotrTumbleShrinkState->matrix.t[2] = taskPtr->startZ + (taskPtr->deltaZ * easedValue >> 12);
     easedValue = BattleFx_ApplySineEasing(normalized, 0xFFFFFE20);
-    g_BattleSummonKotrTumbleShrinkState->size = taskPtr->startSize * ((easedValue * -0x1000 >> 0xC) + 0x1000) >> 0xC;
+    g_BattleSummonKotrTumbleShrinkState->size = taskPtr->startSize * ((easedValue * -0x1000 /* 1.0 */ >> 12) + 4096) >> 12;
     g_BattleSummonKotrTumbleShrinkState->valuePrev = g_BattleSummonKotrTumbleShrinkState->size;
     g_BattleSummonKotrTumbleShrinkState->valueOld = g_BattleSummonKotrTumbleShrinkState->valuePrev;
     ScaleMatrix(&g_BattleSummonKotrTumbleShrinkState->matrix, &g_BattleSummonKotrTumbleShrinkState->valueOld);
@@ -4584,7 +4584,7 @@ void __cdecl BattleFx_KotrTumblingShrinkingModelTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonKotrTumblingModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (taskPtr->age)++;
-        if (taskPtr->age >= 0x1E) {
+        if (taskPtr->age >= 30) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         } else {
             *(char *)&taskPtr->angleX += taskPtr->angleStepX;
@@ -4611,15 +4611,15 @@ void __cdecl BattleFx_KotrKnight9PulsingBillboardModelTask(void)
     task = (BattleFxKotrPulseBillboardTask *)BATTLE_CURRENT_TASK_SLOT;
     ctr = task->frameCount;
     if (ctr < 5) {
-        easedValue = (ctr << 0xC) / 5;
+        easedValue = (ctr << 12) / 5;
         easedValue = BattleFx_ApplySineEasing(easedValue, 0x1FF);
-        scale = task->amplitude * easedValue >> 0xC;
+        scale = task->amplitude * easedValue >> 12;
     } else {
         ctr -= 5;
         if (ctr < 5) {
-            easedValue = (ctr << 0xC) / 5;
+            easedValue = (ctr << 12) / 5;
             easedValue = BattleFx_ApplySineEasing(easedValue, 0xFFFFFE01);
-            scale = task->amplitude * (0x1000 - easedValue) >> 0xC;
+            scale = task->amplitude * (0x1000 - easedValue) >> 12;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -4670,56 +4670,56 @@ void __cdecl BattleFx_KotrKnight10TimelineTask(void)
     if (task->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x4C, &g_BattleSummonKotrKnight10SpinScaleModel.kotrKnight10TrailEndpoint);
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x4C, &g_BattleSummonKotrKnight10SpinScaleModel.kotrKnight10TrailEndpointB);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 76, &g_BattleSummonKotrKnight10SpinScaleModel.kotrKnight10TrailEndpoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 76, &g_BattleSummonKotrKnight10SpinScaleModel.kotrKnight10TrailEndpointB);
     }
     if (g_BattleIsPaused == 0) {
-        if (task->step == 0x33) {
+        if (task->step == 51) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_CreateBitPatternCallbackTask(g_BattleKotrTargetMask, 0, 0, BattleFx_KotrSpawnKnight10SpinScaleModelPerTarget);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         phaseFrame = task->step;
-        if (phaseFrame < 0x19) {
+        if (phaseFrame < 25) {
             if (phaseFrame == 0) {
                 pKnight->offsetX = 0xFC00;
                 pKnight->offsetY = 0;
                 pKnight->offsetZ = 0x800;
             }
-            ratio = (phaseFrame << 0xC) / 0x19;
+            ratio = (phaseFrame << 12) / 25;
             easedValue = BattleFx_ApplySineEasing(ratio, 0x2F0);
-            theta = (easedValue * 0x600 >> 0xC) + 0x200;
-            polarRadius = (easedValue * -0x3E8 >> 0xC) + 0x1388;
+            theta = (easedValue * 0x600 /* 0.375 */ >> 12) + 0x200;
+            polarRadius = (easedValue * -0x3E8 >> 12) + 5000;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-            pKnight->scale = (easedValue * 0xFF8 >> 0xC) + 8;
-            pKnight->fadeLevel = 0x1000 - easedValue;
+            pKnight->scale = (easedValue * 0xFF8 >> 12) + 8;
+            pKnight->fadeLevel = 4096 - easedValue;
         } else {
-            phaseFrame -= 0x19;
-            if (phaseFrame < 0xA) {
+            phaseFrame -= 25;
+            if (phaseFrame < 10) {
                 if (phaseFrame == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
-                theta = 0x800;
-                polarRadius = 0xFA0;
-                ratio = (phaseFrame << 0xC) / 0xA;
+                theta = 0x800 /* 180 deg */;
+                polarRadius = 4000;
+                ratio = (phaseFrame << 12) / 10;
                 easedValue = BattleFx_ApplySineEasing(ratio, 0x2FF);
-                pKnight->offsetX = (easedValue * -0x400 >> 0xC) - 0x400;
+                pKnight->offsetX = (easedValue * -0x400 /* 0.25 */ >> 12) - 0x400;
             } else {
-                phaseFrame -= 0xA;
-                if (phaseFrame < 0x29) {
+                phaseFrame -= 10;
+                if (phaseFrame < 41) {
                     if (phaseFrame == 0) {
                         pKnight->offsetX = 0xF800;
                     }
-                    ratio = (phaseFrame << 0xC) / 0x29;
+                    ratio = (phaseFrame << 12) / 41;
                     easedValue = BattleFx_ApplySineEasing(ratio, -0x2F0);
-                    theta = (easedValue * 0 >> 0xC) + 0x800;
-                    polarRadius = (easedValue * -0x36B0 >> 0xC) + 0xFA0;
-                    if (phaseFrame > 0x1A) {
-                        ratio = (phaseFrame - 0x1A << 0xC) / 0xF;
+                    theta = (easedValue * 0 >> 12) + 0x800;
+                    polarRadius = (easedValue * -0x36B0 >> 12) + 4000;
+                    if (phaseFrame > 26) {
+                        ratio = (phaseFrame - 0x1A << 12) / 15;
                         easedValue = BattleFx_ApplySineEasing(ratio, -0x1FF);
-                        pKnight->scale = (easedValue * -0xFF8 >> 0xC) + 0x1000;
+                        pKnight->scale = (easedValue * -0xFF8 >> 12) + 0x1000;
                         pKnight->fadeLevel = easedValue;
                     }
                 } else {
@@ -4729,17 +4729,17 @@ void __cdecl BattleFx_KotrKnight10TimelineTask(void)
             }
         }
         RotMatrix((SVECTOR *)&g_BattleSummonKotrKnight10SpinScaleModel.kotrKnight10RotMatrix, &g_BattleKotrKnight10State->matrix);
-        g_BattleKotrKnight10State->posX = CosFixed(theta) * polarRadius >> 0xC;
-        g_BattleKotrKnight10State->posY = SinFixed(theta) * polarRadius >> 0xC;
+        g_BattleKotrKnight10State->posX = CosFixed(theta) * polarRadius >> 12;
+        g_BattleKotrKnight10State->posY = SinFixed(theta) * polarRadius >> 12;
         g_BattleKotrKnight10State->posZ = 0;
-        g_BattleKotrKnight10State->scaleZ = 0x1000;
-        g_BattleKotrKnight10State->scaleX = 0x1000;
-        g_BattleKotrKnight10State->scaleY = 0x1000;
+        g_BattleKotrKnight10State->scaleZ = 0x1000 /* 1.0 */;
+        g_BattleKotrKnight10State->scaleX = 0x1000 /* 1.0 */;
+        g_BattleKotrKnight10State->scaleY = 0x1000 /* 1.0 */;
         ScaleMatrix(&g_BattleKotrKnight10State->matrix, &g_BattleKotrKnight10State->scaleX);
         TransformVectorToInt16(&g_BattleKotrKnight10State->matrix, (SVECTOR *)g_BattleKotrKnight10State, &g_BattleKotrKnight10State->posX);
         pKnight->posX = g_BattleKotrKnight10State->posX;
         pKnight->posY = g_BattleKotrKnight10State->posY;
-        pKnight->posZ = g_BattleKotrKnight10State->posZ + 0x2710;
+        pKnight->posZ = g_BattleKotrKnight10State->posZ + 10000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (task->step)++;
     }
@@ -4792,45 +4792,45 @@ void __cdecl BattleFx_KotrKnight11TimelineTask(void)
     if (taskPtr->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x48, &g_BattleSummonKotrKnight11SpinScaleModel.kotrKnight11TrailEndpoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 72, &g_BattleSummonKotrKnight11SpinScaleModel.kotrKnight11TrailEndpoint);
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->step == 0x38) {
+        if (taskPtr->step == 56) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             BattleFx_KotrBeginKnight11SpinScaleModels();
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         elapsed = taskPtr->step;
-        if (elapsed < 0x12) {
-            normalized = (elapsed << 0xC) / 0x12;
+        if (elapsed < 18) {
+            normalized = (elapsed << 12) / 18;
             easedValue = BattleFx_ApplySineEasing(normalized, 0x3D0);
-            g_BattleKotrKnight11State->vx = easedValue * 0 >> 0xC;
-            g_BattleKotrKnight11State->vy = (easedValue * -0x1770 >> 0xC) + 0x1388;
-            g_BattleKotrKnight11State->vz = (easedValue * 0 >> 0xC) + 0xBB8;
+            g_BattleKotrKnight11State->vx = easedValue * 0 >> 12;
+            g_BattleKotrKnight11State->vy = (easedValue * -0x1770 >> 12) + 5000;
+            g_BattleKotrKnight11State->vz = (easedValue * 0 >> 12) + 3000;
             easedValue = BattleFx_ApplySineEasing(normalized, 0x3D0);
-            pKnight->scale = (easedValue * 0xFF8 >> 0xC) + 8;
-            pKnight->fadeLevel = 0x1000 - easedValue;
+            pKnight->scale = (easedValue * 0xFF8 >> 12) + 8;
+            pKnight->fadeLevel = 4096 - easedValue;
         } else {
-            elapsed -= 0x12;
-            if (elapsed < 0x26) {
+            elapsed -= 18;
+            if (elapsed < 38) {
                 if (elapsed == 0) {
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
                 g_BattleKotrKnight11State->vx = 0;
                 g_BattleKotrKnight11State->vy = 0xFC18;
-                g_BattleKotrKnight11State->vz = 0xBB8;
+                g_BattleKotrKnight11State->vz = 3000;
             } else {
-                elapsed -= 0x26;
-                if (elapsed < 0x10) {
-                    normalized = (elapsed << 0xC) / 0x10;
+                elapsed -= 38;
+                if (elapsed < 16) {
+                    normalized = (elapsed << 12) / 16;
                     easedValue = BattleFx_ApplySineEasing(normalized, -0x3D0);
-                    g_BattleKotrKnight11State->vx = easedValue * 0 >> 0xC;
-                    g_BattleKotrKnight11State->vy = (easedValue * -0x2328 >> 0xC) - 0x3E8;
-                    g_BattleKotrKnight11State->vz = (easedValue * 0 >> 0xC) + 0xBB8;
+                    g_BattleKotrKnight11State->vx = easedValue * 0 >> 12;
+                    g_BattleKotrKnight11State->vy = (easedValue * -0x2328 >> 12) - 1000;
+                    g_BattleKotrKnight11State->vz = (easedValue * 0 >> 12) + 3000;
                     easedValue = BattleFx_ApplySineEasing(normalized, -0x3D0);
-                    pKnight->scale = (easedValue * -0xFF8 >> 0xC) + 0x1000;
+                    pKnight->scale = (easedValue * -0xFF8 >> 12) + 0x1000;
                     pKnight->fadeLevel = easedValue;
                 } else {
                     taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -4840,14 +4840,14 @@ void __cdecl BattleFx_KotrKnight11TimelineTask(void)
         }
         pKnight->posX = g_BattleKotrKnight11State->vx;
         pKnight->posY = g_BattleKotrKnight11State->vy;
-        pKnight->posZ = g_BattleKotrKnight11State->vz + 0x2710;
+        pKnight->posZ = g_BattleKotrKnight11State->vz + 10000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (taskPtr->step)++;
     }
 }
 
 /*
- * Stores Gfx_ModelTableGetRenderObject(0xA,
+ * Stores Gfx_ModelTableGetRenderObject(10,
  * g_BattleSummonKotrTableCursor) in g_BattleSummonKotrKnight11SpinScaleModel, calls
  * BattleFx_KotrSpawnEasedSpinScaleModel with g_BattleSummonKotrKnight11SpinScaleModel and
  * g_BattleSummonKotrKnight11SpinScaleModel.kotrKnight11SpinScaleRecord addresses, and creates a
@@ -4856,7 +4856,7 @@ void __cdecl BattleFx_KotrKnight11TimelineTask(void)
 // FUNCTION: FF7 0x00480291
 void __cdecl BattleFx_KotrBeginKnight11SpinScaleModels(void)
 {
-    (g_BattleSummonKotrKnight11SpinScaleModel.spinScaleModel) = Gfx_ModelTableGetRenderObject(0xA, g_BattleSummonKotrTableCursor);
+    (g_BattleSummonKotrKnight11SpinScaleModel.spinScaleModel) = Gfx_ModelTableGetRenderObject(10, g_BattleSummonKotrTableCursor);
     BattleFx_KotrSpawnEasedSpinScaleModel(&g_BattleSummonKotrKnight11SpinScaleModel, &g_BattleSummonKotrKnight11SpinScaleModel.kotrKnight11SpinScaleRecord);
     Battle_CreateBitPatternCallbackTask(g_BattleKotrTargetMask, 0, 0, BattleFx_KotrSpawnKnight11SpinScaleModelPairPerTarget);
 }
@@ -4917,35 +4917,35 @@ void __cdecl BattleFx_KotrKnight12TimelineTask(void)
     if (task->step != 0) {
         BattleFx_KotrDrawKnightModel(pKnight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 0x47, &g_BattleSummonKotrKnight12ScaleModelPair.kotrKnight12TrailEndpoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(pKnight, 71, &g_BattleSummonKotrKnight12ScaleModelPair.kotrKnight12TrailEndpoint);
     }
     if (g_BattleIsPaused == 0) {
-        if (task->step == 0x38) {
+        if (task->step == 56) {
             BattleFx_KotrSpawnKnightActorBurstSprites(pKnight);
             Battle_CreateBitPatternCallbackTask(g_BattleKotrTargetMask, 0, 0, BattleFx_KotrSpawnKnight12SpinScaleModelPairPerTarget);
             Battle_AllocateResourceSlot(BattleFx_KotrImpactScreenFlashTask);
             BattleFx_KotrPostKnightImpactRecords();
         }
         phaseFrame = task->step;
-        if (phaseFrame < 0x1E) {
+        if (phaseFrame < 30) {
             if (phaseFrame == 0) {
                 pKnight->state = 1;
                 pKnight->offsetX = 0;
                 pKnight->offsetY = 0;
                 pKnight->offsetZ = 0x3A98;
             }
-            ratio = (phaseFrame << 0xC) / 0x1E;
+            ratio = (phaseFrame << 12) / 30;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x2F0);
-            theta = easedValue << 0xB >> 0xC;
-            polarRadius = (easedValue * 0 >> 0xC) + 0x1388;
-            pKnight->rotZ = (easedValue * -0x400 >> 0xC) + 0x400;
+            theta = easedValue << 11 >> 12;
+            polarRadius = (easedValue * 0 >> 12) + 5000;
+            pKnight->rotZ = (easedValue * -0x400 /* 0.25 */ >> 12) + 0x400;
             pKnight->rotX = pKnight->rotZ;
             easedValue = BattleFx_ApplySineEasing(ratio, -0x2F0);
-            pKnight->scale = (easedValue * 0xFF8 >> 0xC) + 8;
-            pKnight->fadeLevel = 0x1000 - easedValue;
+            pKnight->scale = (easedValue * 0xFF8 >> 12) + 8;
+            pKnight->fadeLevel = 4096 - easedValue;
         } else {
-            phaseFrame -= 0x1E;
-            if (phaseFrame < 0xB) {
+            phaseFrame -= 30;
+            if (phaseFrame < 11) {
                 if (phaseFrame == 0) {
                     pKnight->state = 2;
                     pKnight->offsetX = 0 - pKnight->posX;
@@ -4953,18 +4953,18 @@ void __cdecl BattleFx_KotrKnight12TimelineTask(void)
                     pKnight->offsetZ = 0x3A98 - pKnight->posZ;
                     pKnight->rotZ = 0;
                     pKnight->rotX = 0;
-                    pKnight->scale = 0x1000;
+                    pKnight->scale = 0x1000 /* 1.0 */;
                     pKnight->fadeLevel = 0;
                 }
-                theta = 0x800;
-                polarRadius = 0x1388;
+                theta = 0x800 /* 180 deg */;
+                polarRadius = 5000;
             } else {
-                phaseFrame -= 0xB;
-                if (phaseFrame < 0x1E) {
-                    ratio = (phaseFrame << 0xC) / 0x1E;
+                phaseFrame -= 11;
+                if (phaseFrame < 30) {
+                    ratio = (phaseFrame << 12) / 30;
                     easedValue = BattleFx_ApplySineEasing(ratio, -0x3F0);
-                    theta = (easedValue * 0 >> 0xC) + 0x800;
-                    polarRadius = (easedValue * -0x3A98 >> 0xC) + 0x1388;
+                    theta = (easedValue * 0 >> 12) + 0x800;
+                    polarRadius = (easedValue * -0x3A98 >> 12) + 5000;
                 } else {
                     task->ownerSlot = BATTLE_TASK_FREE;
                     return;
@@ -4972,17 +4972,17 @@ void __cdecl BattleFx_KotrKnight12TimelineTask(void)
             }
         }
         RotMatrix((SVECTOR *)&g_BattleSummonKotrKnight12ScaleModelPair.kotrKnight12RotMatrix, &g_BattleSummonKotrKnight12State->matrix);
-        g_BattleSummonKotrKnight12State->posX = CosFixed(theta) * polarRadius >> 0xC;
-        g_BattleSummonKotrKnight12State->posY = SinFixed(theta) * polarRadius >> 0xC;
+        g_BattleSummonKotrKnight12State->posX = CosFixed(theta) * polarRadius >> 12;
+        g_BattleSummonKotrKnight12State->posY = SinFixed(theta) * polarRadius >> 12;
         g_BattleSummonKotrKnight12State->posZ = 0;
-        g_BattleSummonKotrKnight12State->scaleZ = 0x1000;
-        g_BattleSummonKotrKnight12State->scaleX = 0x1000;
-        g_BattleSummonKotrKnight12State->scaleY = 0x800;
+        g_BattleSummonKotrKnight12State->scaleZ = 0x1000 /* 1.0 */;
+        g_BattleSummonKotrKnight12State->scaleX = 0x1000 /* 1.0 */;
+        g_BattleSummonKotrKnight12State->scaleY = 0x800 /* 0.5 */;
         ScaleMatrix(&g_BattleSummonKotrKnight12State->matrix, &g_BattleSummonKotrKnight12State->scaleX);
         TransformVectorToInt16(&g_BattleSummonKotrKnight12State->matrix, (SVECTOR *)g_BattleSummonKotrKnight12State, &g_BattleSummonKotrKnight12State->posX);
         pKnight->posX = g_BattleSummonKotrKnight12State->posX;
         pKnight->posY = g_BattleSummonKotrKnight12State->posY;
-        pKnight->posZ = g_BattleSummonKotrKnight12State->posZ + 0x3A98;
+        pKnight->posZ = g_BattleSummonKotrKnight12State->posZ + 15000;
         BattleFx_KotrBumpKnightContextCounter(pKnight);
         (task->step)++;
     }
@@ -5035,50 +5035,50 @@ void __cdecl BattleFx_KotrKnight13TimelineTask(void)
     if (taskPtr->step != 0) {
         BattleFx_KotrDrawKnightModel(knight);
     } else {
-        BattleFx_KotrSpawnKnightEndpointTrail(knight, 0x78, &g_BattleKotrKnight13TrailEndpoint);
+        BattleFx_KotrSpawnKnightEndpointTrail(knight, 120, &g_BattleKotrKnight13TrailEndpoint);
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->step == 0x6E) {
+        if (taskPtr->step == 110) {
             Battle_AllocateResourceSlot(BattleFx_KotrKnight13StretchingFlashModelTask);
         }
-        if (taskPtr->step == 0x70) {
+        if (taskPtr->step == 112) {
             Battle_CreateBitPatternCallbackTask(g_BattleKotrTargetMask, 0, 0, BattleFx_KotrSpawnKnight13SpinScaleModelPerTarget);
             BattleFx_KotrSpawnKnightActorBurstSprites(knight);
             BattleFx_KotrPostKnightImpactRecords();
         }
         elapsed = taskPtr->step;
-        if (elapsed < 0x30) {
+        if (elapsed < 48) {
             if (elapsed == 0) {
                 knight->posX = 0;
                 knight->posZ = 0xEC78;
                 knight->offsetY = 0x800;
             }
-            eased = (elapsed << 0xC) / 0x30;
+            eased = (elapsed << 12) / 48;
             eased = BattleFx_ApplySineEasing(eased, 0x180);
-            knight->posY = (eased * -0x2EE0 >> 0xC) + 0x2710;
-            knight->fadeLevel = 0x1000 - eased;
+            knight->posY = (eased * -0x2EE0 >> 12) + 10000;
+            knight->fadeLevel = 4096 - eased;
             knight->scale = eased;
         } else {
-            elapsed -= 0x30;
-            if (elapsed < 0x12) {
+            elapsed -= 48;
+            if (elapsed < 18) {
                 if (elapsed == 0) {
                     knight->posY = 0xF830;
                     knight->fadeLevel = 0;
-                    knight->scale = 0x1000;
+                    knight->scale = 0x1000 /* 1.0 */;
                 }
                 if (elapsed == 5) {
                     Battle_AllocateResourceSlot(BattleFx_KotrScalingModelPairTask);
                 }
             } else {
-                elapsed -= 0x12;
-                if (elapsed < 0x36) { /* empty first arm: lib/codegen.h */
+                elapsed -= 18;
+                if (elapsed < 54) { /* empty first arm: lib/codegen.h */
                 } else {
                     taskPtr->ownerSlot = BATTLE_TASK_FREE;
                     return;
                 }
             }
         }
-        if (taskPtr->step < 0x30 || taskPtr->step >= 0x42) {
+        if (taskPtr->step < 48 || taskPtr->step >= 66) {
             BattleFx_KotrBumpKnightContextCounter(knight);
         }
         (taskPtr->step)++;
@@ -5105,25 +5105,25 @@ void __cdecl BattleFx_KotrKnight13StretchingFlashModelTask(void)
     taskPtr = (BattleFxDualCounterTask *)BATTLE_CURRENT_TASK_SLOT;
     elapsed = taskPtr->nextIndex;
     if (elapsed < 4) {
-        eased = (elapsed << 0xC) / 4;
-        g_BattleSummonKotrKnight13MatrixDiagZ[0] = eased << 9 >> 0xC;
+        eased = (elapsed << 12) / 4;
+        g_BattleSummonKotrKnight13MatrixDiagZ[0] = eased << 9 >> 12;
         g_BattleSummonKotrKnight13MatrixDiagY[0] = g_BattleSummonKotrKnight13MatrixDiagZ[0];
         g_BattleSummonKotrKnight13RotMatrix[0] = g_BattleSummonKotrKnight13MatrixDiagY[0];
     } else {
         elapsed -= 4;
         if (elapsed < 4) {
-            g_BattleSummonKotrKnight13MatrixDiagZ[0] = 0x200;
+            g_BattleSummonKotrKnight13MatrixDiagZ[0] = 512;
             g_BattleSummonKotrKnight13MatrixDiagY[0] = g_BattleSummonKotrKnight13MatrixDiagZ[0];
             g_BattleSummonKotrKnight13RotMatrix[0] = g_BattleSummonKotrKnight13MatrixDiagY[0];
         } else {
             elapsed -= 4;
-            if (elapsed < 0xF) {
-                eased = (elapsed << 0xC) / 0xF;
+            if (elapsed < 15) {
+                eased = (elapsed << 12) / 15;
                 eased = BattleFx_ApplySineEasing(eased, 0x3FF);
-                g_BattleSummonKotrKnight13RotMatrix[0] = (eased * 0x1600 >> 0xC) + 0x200;
-                g_BattleSummonKotrKnight13MatrixDiagZ[0] = 0x200;
+                g_BattleSummonKotrKnight13RotMatrix[0] = (eased * 0x1600 /* 1.375 */ >> 12) + 0x200;
+                g_BattleSummonKotrKnight13MatrixDiagZ[0] = 512;
                 g_BattleSummonKotrKnight13MatrixDiagY[0] = g_BattleSummonKotrKnight13MatrixDiagZ[0];
-                if (elapsed == 0xB) {
+                if (elapsed == 11) {
                     BattleFx_StartScreenFlashRamp(4);
                 }
             } else {
@@ -5143,7 +5143,7 @@ void __cdecl BattleFx_KotrKnight13StretchingFlashModelTask(void)
 }
 
 /*
- * Stores Gfx_ModelTableGetRenderObject(0xA,
+ * Stores Gfx_ModelTableGetRenderObject(10,
  * g_BattleSummonKotrTableCursor) in g_BattleKotrKnight13SpinScaleParams, builds a local position with
  * BattleFx_KotrGetActorAttachLocalPosition(actor, byte at g_BattleActorRecords[actor].targetBone, &local),
  * and passes both to BattleFx_KotrSpawnEasedSpinScaleModel.
@@ -5153,7 +5153,7 @@ void __cdecl BattleFx_KotrSpawnKnight13SpinScaleModelPerTarget(int actor)
 {
     SVECTOR val;
 
-    g_BattleKotrKnight13SpinScaleParams.modelGroup = Gfx_ModelTableGetRenderObject(0xA, g_BattleSummonKotrTableCursor);
+    g_BattleKotrKnight13SpinScaleParams.modelGroup = Gfx_ModelTableGetRenderObject(10, g_BattleSummonKotrTableCursor);
     BattleFx_KotrGetActorAttachLocalPosition(actor, g_BattleActorRecords[actor].targetBone, &val);
     BattleFx_KotrSpawnEasedSpinScaleModel(&g_BattleKotrKnight13SpinScaleParams, &val);
 }
@@ -5184,19 +5184,19 @@ void __cdecl BattleFx_KotrScalingModelPairTask(void)
     }
     elapsed = taskPtr->nextIndex;
     if (elapsed < 5) {
-        normalized = (elapsed << 0xC) / 5;
+        normalized = (elapsed << 12) / 5;
         easedValue = BattleFx_ApplySineEasing(normalized, 0x1F0);
-        g_BattleSummonKotrScalingPairMatrixDiagZ = easedValue << 0xA >> 0xC;
+        g_BattleSummonKotrScalingPairMatrixDiagZ = easedValue << 10 >> 12;
         g_BattleSummonKotrScalingPairMatrixDiagY = g_BattleSummonKotrScalingPairMatrixDiagZ;
         g_BattleSummonKotrScalingPairMatrix = g_BattleSummonKotrScalingPairMatrixDiagY;
     } else {
         elapsed -= 5;
-        if (elapsed < 0x14) {
-            normalized = (elapsed << 0xC) / 0x14;
+        if (elapsed < 20) {
+            normalized = (elapsed << 12) / 20;
             easedValue = BattleFx_ApplySineEasing(normalized, 0xFFFFFE10);
-            g_BattleSummonKotrScalingPairMatrix = (easedValue * 0x7C00 >> 0xC) + 0x400;
+            g_BattleSummonKotrScalingPairMatrix = (easedValue * 0x7C00 /* 7.75 */ >> 12) + 0x400;
             easedValue = BattleFx_ApplySineEasing(normalized, 0x4FF);
-            g_BattleSummonKotrScalingPairMatrixDiagY = (easedValue * -0x400 >> 0xC) + 0x400;
+            g_BattleSummonKotrScalingPairMatrixDiagY = (easedValue * -0x400 /* 0.25 */ >> 12) + 1024;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -5275,7 +5275,7 @@ void __cdecl BattleFx_KotrFadingStackedModelLayersTask(void)
     ScaleMatrix((void *)((int)g_BattleSummonKotrLayerFadeState + 0xC), (char *)paramsPtr + 0x14);
     elapsed = taskPtr->layerIndex;
     if (elapsed < paramsPtr->phaseLength0) {
-        normalized = (elapsed << 0xC) / paramsPtr->phaseLength0;
+        normalized = (elapsed << 12) / paramsPtr->phaseLength0;
         SetDrawColorRGB(0, 0, 0);
         Gfx_ShadePsxVertexColor((CVECTOR *)paramsPtr, 0x1000 - normalized, (CVECTOR *)g_BattleSummonKotrLayerFadeState);
     } else {
@@ -5285,7 +5285,7 @@ void __cdecl BattleFx_KotrFadingStackedModelLayersTask(void)
         } else {
             elapsed -= paramsPtr->phaseLength1;
             if (elapsed < paramsPtr->phaseLength2) {
-                normalized = (elapsed << 0xC) / paramsPtr->phaseLength2;
+                normalized = (elapsed << 12) / paramsPtr->phaseLength2;
                 SetDrawColorRGB(0, 0, 0);
                 Gfx_ShadePsxVertexColor((CVECTOR *)paramsPtr, normalized, (CVECTOR *)g_BattleSummonKotrLayerFadeState);
             } else {
@@ -5296,7 +5296,7 @@ void __cdecl BattleFx_KotrFadingStackedModelLayersTask(void)
     }
     g_BattleSummonKotrLayerFadeState->transX = 0;
     g_BattleSummonKotrLayerFadeState->transY = 0;
-    g_BattleSummonKotrLayerFadeState->transZ = 0x100;
+    g_BattleSummonKotrLayerFadeState->transZ = 256;
     SetDrawColorRGB(g_BattleSummonKotrLayerFadeState->colorR, g_BattleSummonKotrLayerFadeState->colorG, g_BattleSummonKotrLayerFadeState->colorB);
     GetGeomOffset(&g_BattleSummonKotrLayerFadeState->offsetX, &g_BattleSummonKotrLayerFadeState->offsetY);
     SetGeomOffset(0xA0, 0x2E);
@@ -5368,7 +5368,7 @@ void __cdecl BattleFx_KotrDrawStackedModelLayers(int matrix, int angle, int angl
     g_BattleKotrStackedRotationZ = frame.angle + angleOffset;
     g_BattleSummonKotrLayerTint = 0.0f;
     frame.geomScreen = GetGeomScreen();
-    SetGeomScreen(0x100);
+    SetGeomScreen(256);
     MultiplyMatrix((void *)matrix, &g_BattleKotrStackedFixedTransform, &frame.matrix);
     SetRotMatrix(&frame.matrix);
     SetTransMatrix(&frame.matrix);
@@ -5457,19 +5457,19 @@ void __cdecl BattleFx_KotrConvergingStreakEmitterTask(void)
         return;
     }
     elapsed = taskPtr->nextIndex;
-    if (elapsed < 0x1E) {
-        normalized = (elapsed << 0xC) / 0x1E;
-        contribution = normalized << 0xA >> 0xC;
+    if (elapsed < 30) {
+        normalized = (elapsed << 12) / 30;
+        contribution = normalized << 10 >> 12;
     } else {
-        elapsed -= 0x1E;
-        if (elapsed < 0x38) {
-            normalized = (elapsed << 0xC) / 0x38;
+        elapsed -= 30;
+        if (elapsed < 56) {
+            normalized = (elapsed << 12) / 56;
             contribution = 0x400;
         } else {
-            elapsed -= 0x38;
-            if (elapsed < 0x25) {
-                normalized = (elapsed << 0xC) / 0x25;
-                contribution = (normalized * -0x400 >> 0xC) + 0x400;
+            elapsed -= 56;
+            if (elapsed < 37) {
+                normalized = (elapsed << 12) / 37;
+                contribution = (normalized * -0x400 /* 0.25 */ >> 12) + 0x400;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -5477,15 +5477,15 @@ void __cdecl BattleFx_KotrConvergingStreakEmitterTask(void)
         }
     }
     g_BattleSummonKotrConvergingStreakEmitAccum += contribution;
-    while (g_BattleSummonKotrConvergingStreakEmitAccum >= 0x100) {
+    while (g_BattleSummonKotrConvergingStreakEmitAccum >= 256) {
         pStreak = (BattleFxKotrConvergingStreakTask *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrConvergingStreakModelTask);
         if (DEAD_IN_RETAIL != 0) {
-            length = 0x1F4;
+            length = 500;
         } else {
-            length = rand() % 0xC8 + 0x12C;
+            length = rand() % 200 + 300;
         }
         pStreak->progress = length;
-        pStreak->frame = -pStreak->progress / 0xA;
+        pStreak->frame = -pStreak->progress / 10;
         pStreak->angle = rand() & 0xFFF;
         g_BattleSummonKotrConvergingStreakEmitAccum -= 0x100;
     }
@@ -5517,14 +5517,14 @@ void __cdecl BattleFx_KotrConvergingStreakModelTask(void)
     g_BattleSummonKotrConvergingStreakState->rotY = 0;
     g_BattleSummonKotrConvergingStreakState->angle = taskPtr->angle;
     RotMatrix((SVECTOR *)g_BattleSummonKotrConvergingStreakState, &g_BattleSummonKotrConvergingStreakState->matrix);
-    eased = (taskPtr->frame << 0xC) / 0xA;
+    eased = (taskPtr->frame << 12) / 10;
     eased = BattleFx_ApplySineEasing(eased, 0x4E0);
-    radius = taskPtr->radius * (0x1000 - eased) >> 0xC;
-    g_BattleSummonKotrConvergingStreakState->matrix.t[0] = 0 - (radius * SinFixed(taskPtr->angle) >> 0xC);
-    g_BattleSummonKotrConvergingStreakState->matrix.t[1] = radius * CosFixed(taskPtr->angle) >> 0xC;
+    radius = taskPtr->radius * (4096 - eased) >> 12;
+    g_BattleSummonKotrConvergingStreakState->matrix.t[0] = 0 - (radius * SinFixed(taskPtr->angle) >> 12);
+    g_BattleSummonKotrConvergingStreakState->matrix.t[1] = radius * CosFixed(taskPtr->angle) >> 12;
     g_BattleSummonKotrConvergingStreakState->matrix.t[2] = 0x200;
     g_BattleSummonKotrConvergingStreakState->scaleX = 0x20;
-    g_BattleSummonKotrConvergingStreakState->scaleY = 0x1000 - eased << 8 >> 0xC;
+    g_BattleSummonKotrConvergingStreakState->scaleY = 0x1000 - eased << 8 >> 12;
     g_BattleSummonKotrConvergingStreakState->scaleZ = 0;
     ScaleMatrix(&g_BattleSummonKotrConvergingStreakState->matrix, &g_BattleSummonKotrConvergingStreakState->scaleX);
     SetRotMatrix(&g_BattleSummonKotrConvergingStreakState->matrix);
@@ -5534,7 +5534,7 @@ void __cdecl BattleFx_KotrConvergingStreakModelTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleKotrConvergingStreakDraw, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST_2, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frame)++;
-        if (taskPtr->frame >= 0xA) {
+        if (taskPtr->frame >= 10) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -5557,10 +5557,10 @@ void __cdecl BattleFx_KotrFadingScrollingPrimitiveSpawnTimeline(void)
     }
     if (task->frameCounter == 0) {
         pSpawn = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrFadingScrollingPrimitiveTask);
-        pSpawn->posX = 0x25;
-        pSpawn->posY = 0x73;
-        pSpawn->posZ = 0x6C;
-    } else if (task->frameCounter == 0x25) {
+        pSpawn->posX = 37;
+        pSpawn->posY = 115;
+        pSpawn->posZ = 108;
+    } else if (task->frameCounter == 37) {
         BattleFx_KotrSpawnStackedModelLayersTask(&g_BattleKotrSpinPairData.layerFade5);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -5586,8 +5586,8 @@ void __cdecl BattleFx_KotrFadingScrollingPrimitiveTask(void)
     taskPtr = (BattleFxKotrFadingPrimitive *)BATTLE_CURRENT_TASK_SLOT;
     elapsed = taskPtr->frameIndex;
     if (elapsed < taskPtr->phase1Frames) {
-        normalized = (elapsed << 0xC) / taskPtr->phase1Frames;
-        g_BattleSummonKotrFadingScrollState.kotrFadeScrollNewest = normalized << 7 >> 0xC;
+        normalized = (elapsed << 12) / taskPtr->phase1Frames;
+        g_BattleSummonKotrFadingScrollState.kotrFadeScrollNewest = normalized << 7 >> 12;
         g_BattleSummonKotrFadingScrollState.kotrFadeScrollMiddle = g_BattleSummonKotrFadingScrollState.kotrFadeScrollNewest;
         g_BattleSummonKotrFadingScrollState.kotrFadeScrollOldest = g_BattleSummonKotrFadingScrollState.kotrFadeScrollMiddle;
     } else {
@@ -5599,8 +5599,8 @@ void __cdecl BattleFx_KotrFadingScrollingPrimitiveTask(void)
         } else {
             elapsed -= taskPtr->phase2Frames;
             if (elapsed < taskPtr->phase3Frames) {
-                normalized = (elapsed << 0xC) / taskPtr->phase3Frames;
-                g_BattleSummonKotrFadingScrollState.kotrFadeScrollNewest = (normalized * -0x80 >> 0xC) + 0x80;
+                normalized = (elapsed << 12) / taskPtr->phase3Frames;
+                g_BattleSummonKotrFadingScrollState.kotrFadeScrollNewest = (normalized * -0x80 >> 12) + 0x80;
                 g_BattleSummonKotrFadingScrollState.kotrFadeScrollMiddle = g_BattleSummonKotrFadingScrollState.kotrFadeScrollNewest;
                 g_BattleSummonKotrFadingScrollState.kotrFadeScrollOldest = g_BattleSummonKotrFadingScrollState.kotrFadeScrollMiddle;
             } else {
@@ -5641,13 +5641,13 @@ int __cdecl BattleFx_DrawPrimitivePairReturningOtArg(BattleFxBzSpriteParams *rec
     packet->clut = record->clut;
     packet->sizeWord = record->packedSize;
     packet->flags |= 2;
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x12, g_BattleSummonKotrTableCursor)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(18, g_BattleSummonKotrTableCursor)));
     Gfx_SetBlendFactorPair(FLOAT_0_999_BITS, FLOAT_ONE_BITS);
     Gfx_DrawPsxPrimitive(packet);
-    ((BattleFxDrawPacket *)packet)->posY = 0x100;
-    ((BattleFxDrawPacket *)packet)->height = 0x4C;
+    ((BattleFxDrawPacket *)packet)->posY = 256;
+    ((BattleFxDrawPacket *)packet)->height = 76;
     packet->flags |= 2;
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x12, g_BattleSummonKotrTableCursor)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(18, g_BattleSummonKotrTableCursor)));
     Gfx_SetBlendFactorPair(FLOAT_0_999_BITS, FLOAT_ONE_BITS);
     Gfx_DrawPsxPrimitive(packet);
     return otArg;
@@ -5672,7 +5672,7 @@ void __cdecl BattleFx_KotrSpawnSpinningModelsAndLayerTask(void)
     layerTask->parameterBlock = (int)&g_BattleKotrSpinModelsParamBlock;
     layerTask->posX = 0;
     layerTask->posY = 0xFFB6;
-    layerTask->posZ = 0x200;
+    layerTask->posZ = 512;
     current->ownerSlot = BATTLE_TASK_FREE;
 }
 
@@ -5702,16 +5702,16 @@ void __cdecl BattleFx_KotrSpinningFadingModelTask(void)
         g_BattleSummonKotrFadeState = (BattleFxKotrFragmentScale *)Gfx_GetPsxScratchpadPtr(0);
     }
     if (fadeRecord->variant == 0) {
-        g_BattleKotrSpinningFadeDrawA.modelGroup = Gfx_ModelTableGetRenderObject(0xC, g_BattleSummonKotrTableCursor);
+        g_BattleKotrSpinningFadeDrawA.modelGroup = Gfx_ModelTableGetRenderObject(12, g_BattleSummonKotrTableCursor);
         g_BattleSummonKotrModelDraw = (BattleFxModelDraw *)&g_BattleKotrSpinningFadeDrawA;
     } else {
-        g_BattleKotrSpinningFadeDrawB.modelGroup = Gfx_ModelTableGetRenderObject(0xE, g_BattleSummonKotrTableCursor);
+        g_BattleKotrSpinningFadeDrawB.modelGroup = Gfx_ModelTableGetRenderObject(14, g_BattleSummonKotrTableCursor);
         g_BattleSummonKotrModelDraw = (BattleFxModelDraw *)&g_BattleKotrSpinningFadeDrawB;
     }
     elapsed = task->frame;
     if (elapsed < fadeRecord->phase0Length) {
-        ratio = (elapsed << 0xC) / fadeRecord->phase0Length;
-        g_BattleSummonKotrModelDraw->fadeLevel = 0x1000 - ratio;
+        ratio = (elapsed << 12) / fadeRecord->phase0Length;
+        g_BattleSummonKotrModelDraw->fadeLevel = 4096 - ratio;
     } else {
         elapsed -= fadeRecord->phase0Length;
         if (elapsed < fadeRecord->phase1Length) {
@@ -5719,7 +5719,7 @@ void __cdecl BattleFx_KotrSpinningFadingModelTask(void)
         } else {
             elapsed -= fadeRecord->phase1Length;
             if (elapsed < fadeRecord->phase2Length) {
-                ratio = (elapsed << 0xC) / fadeRecord->phase2Length;
+                ratio = (elapsed << 12) / fadeRecord->phase2Length;
                 g_BattleSummonKotrModelDraw->fadeLevel = ratio;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
@@ -5728,9 +5728,9 @@ void __cdecl BattleFx_KotrSpinningFadingModelTask(void)
         }
     }
     RotMatrix((SVECTOR *)fadeRecord, &g_BattleSummonKotrFadeState->matrix);
-    g_BattleSummonKotrFadeState->scaleZ = 0x300;
-    g_BattleSummonKotrFadeState->scaleY = 0x300;
-    g_BattleSummonKotrFadeState->scaleX = 0x300;
+    g_BattleSummonKotrFadeState->scaleZ = 0x300 /* 0.1875 */;
+    g_BattleSummonKotrFadeState->scaleY = 0x300 /* 0.1875 */;
+    g_BattleSummonKotrFadeState->scaleX = 0x300 /* 0.1875 */;
     ScaleMatrix(&g_BattleSummonKotrFadeState->matrix, g_BattleSummonKotrFadeState);
     g_BattleSummonKotrFadeState->matrix.t[0] = task->posX;
     g_BattleSummonKotrFadeState->matrix.t[1] = task->posY;
@@ -5775,22 +5775,22 @@ void __cdecl BattleFx_KotrSpinningModelPairTask(void)
         g_BattleKotrSpinState = (BattleFxKotrSpinState *)Gfx_GetPsxScratchpadPtr(0);
     }
     elapsed = taskPtr->spin;
-    if (elapsed < 0x24) {
-        normalized = (elapsed << 0xC) / 0x24;
+    if (elapsed < 36) {
+        normalized = (elapsed << 12) / 36;
         g_BattleKotrSpinPairData.kotrSpinPairAngle = 0x1000 - normalized;
         scale = 0x40;
     } else {
-        elapsed -= 0x24;
-        if (elapsed < 0x167) {
-            normalized = (elapsed << 0xC) / 0x167;
-            scale = (normalized << 4 >> 0xC) + 0x40;
-            wave = (SinFixed((elapsed % 0xF << 0xC) / 0xF) + 0x1000) / 2;
-            weight = (wave * 0x1800 >> 0xC) + 0x800;
-            scale = scale * (((weight - 0x1000) * normalized >> 0xC) + 0x1000) >> 0xC;
-            if (elapsed < 0x149) {
+        elapsed -= 36;
+        if (elapsed < 359) {
+            normalized = (elapsed << 12) / 359;
+            scale = (normalized << 4 >> 12) + 0x40;
+            wave = (SinFixed((elapsed % 15 << 12) / 15) + 0x1000) / 2;
+            weight = (wave * 0x1800 /* 1.5 */ >> 12) + 0x800;
+            scale = scale * (((weight - 0x1000) * normalized >> 12) + 0x1000) >> 12;
+            if (elapsed < 329) {
                 g_BattleKotrSpinPairData.kotrSpinPairAngle = 0;
             } else {
-                normalized = (elapsed - 0x149 << 0xC) / 0x1E;
+                normalized = (elapsed - 0x149 << 12) / 30;
                 g_BattleKotrSpinPairData.kotrSpinPairAngle = normalized;
             }
         } else {
@@ -5812,7 +5812,7 @@ void __cdecl BattleFx_KotrSpinningModelPairTask(void)
     SetRotMatrix(&g_BattleKotrSpinState->matrix);
     SetTransMatrix(&g_BattleKotrSpinState->matrix);
     SetDrawColorRGB(0, 0, 0);
-    (g_BattleKotrSpinPairData.modelGroup) = Gfx_ModelTableGetRenderObject(0xB, g_BattleSummonKotrTableCursor);
+    (g_BattleKotrSpinPairData.modelGroup) = Gfx_ModelTableGetRenderObject(11, g_BattleSummonKotrTableCursor);
     BattleFx_LatchDrawBlendOverride(2, FLOAT_0_997_BITS);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleKotrSpinPairData, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST_2, 0, g_BattleOverlayDrawListHead);
     g_BattleKotrSpinState->spinC = 0;
@@ -5845,7 +5845,7 @@ void __cdecl BattleFx_KotrSpawnSpinningFadingModelTask(void)
     fadeTask->parameterBlock = (int)&g_BattleKotrFadeModelParamBlock;
     fadeTask->posX = 0;
     fadeTask->posY = 0xFFB6;
-    fadeTask->posZ = 0x200;
+    fadeTask->posZ = 512;
     current->ownerSlot = BATTLE_TASK_FREE;
 }
 
@@ -5885,18 +5885,18 @@ void __cdecl BattleFx_KotrRadialStreakEmitterTask(void)
         return;
     }
     elapsed = taskPtr->nextIndex;
-    if (elapsed < 0x39) {
-        normalized = (elapsed << 0xC) / 0x39;
-        contribution = normalized * 0x300 >> 0xC;
+    if (elapsed < 57) {
+        normalized = (elapsed << 12) / 57;
+        contribution = normalized * 0x300 /* 0.1875 */ >> 12;
     } else {
-        elapsed -= 0x39;
-        if (elapsed < 0x84) {
+        elapsed -= 57;
+        if (elapsed < 132) {
             contribution = 0x300;
         } else {
-            elapsed -= 0x84;
-            if (elapsed < 0xF) {
-                normalized = (elapsed << 0xC) / 0xF;
-                contribution = (normalized * -0x300 >> 0xC) + 0x300;
+            elapsed -= 132;
+            if (elapsed < 15) {
+                normalized = (elapsed << 12) / 15;
+                contribution = (normalized * -0x300 /* 0.1875 */ >> 12) + 0x300;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -5904,12 +5904,12 @@ void __cdecl BattleFx_KotrRadialStreakEmitterTask(void)
         }
     }
     g_BattleSummonKotrRadialStreakEmitAccum += contribution;
-    while (g_BattleSummonKotrRadialStreakEmitAccum >= 0x100) {
+    while (g_BattleSummonKotrRadialStreakEmitAccum >= 256) {
         pStreak = (BattleFxRadialStreakTask *)BATTLE_NEW_TASK_SLOT(BattleFx_KotrRadialStreakModelTask);
         if (DEAD_IN_RETAIL != 0) {
-            length = 0x1F4;
+            length = 500;
         } else {
-            length = rand() % 0xC8 + 0x12C;
+            length = rand() % 200 + 300;
         }
         pStreak->contribution = length;
         pStreak->angle = rand() & 0xFFF;
@@ -5921,7 +5921,7 @@ void __cdecl BattleFx_KotrRadialStreakEmitterTask(void)
 /*
  * Acquires retained scratch and builds Z rotation
  * from saved task angle. Applies sine easing 0xFFFFFB20 to task count shifted twelve divided by
- * ten, deriving radius from saved short 0xC times that term. Sets translation to negative radius
+ * ten, deriving radius from saved short 12 times that term. Sets translation to negative radius
  * times sine, radius times cosine and Z 512, with scale X 32, Y eased fraction shifted eight/right
  * twelve and Z zero. Installs the matrix directly, refreshes resource field zero, latches blend
  * override (2,0x3F7F3B64) and submits into g_BattleCurrentOrderingTable plus 0x4064 with shift
@@ -5943,14 +5943,14 @@ void __cdecl BattleFx_KotrRadialStreakModelTask(void)
     g_BattleSummonKotrRadialStreakState->rotY = 0;
     g_BattleSummonKotrRadialStreakState->angle = taskPtr->angle;
     RotMatrix((SVECTOR *)g_BattleSummonKotrRadialStreakState, &g_BattleSummonKotrRadialStreakState->matrix);
-    eased = (taskPtr->frame << 0xC) / 0xA;
+    eased = (taskPtr->frame << 12) / 10;
     eased = BattleFx_ApplySineEasing(eased, 0xFFFFFB20);
-    radius = taskPtr->radius * eased >> 0xC;
-    g_BattleSummonKotrRadialStreakState->matrix.t[0] = 0 - (radius * SinFixed(taskPtr->angle) >> 0xC);
-    g_BattleSummonKotrRadialStreakState->matrix.t[1] = radius * CosFixed(taskPtr->angle) >> 0xC;
+    radius = taskPtr->radius * eased >> 12;
+    g_BattleSummonKotrRadialStreakState->matrix.t[0] = 0 - (radius * SinFixed(taskPtr->angle) >> 12);
+    g_BattleSummonKotrRadialStreakState->matrix.t[1] = radius * CosFixed(taskPtr->angle) >> 12;
     g_BattleSummonKotrRadialStreakState->matrix.t[2] = 0x200;
     g_BattleSummonKotrRadialStreakState->scaleX = 0x20;
-    g_BattleSummonKotrRadialStreakState->scaleY = eased << 8 >> 0xC;
+    g_BattleSummonKotrRadialStreakState->scaleY = eased << 8 >> 12;
     g_BattleSummonKotrRadialStreakState->scaleZ = 0;
     ScaleMatrix(&g_BattleSummonKotrRadialStreakState->matrix, &g_BattleSummonKotrRadialStreakState->scaleX);
     SetRotMatrix(&g_BattleSummonKotrRadialStreakState->matrix);
@@ -5960,7 +5960,7 @@ void __cdecl BattleFx_KotrRadialStreakModelTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleKotrRadialStreakDraw, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST_2, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frame)++;
-        if (taskPtr->frame >= 0xA) {
+        if (taskPtr->frame >= 10) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -5974,7 +5974,7 @@ void __cdecl BattleFx_KotrRadialStreakModelTask(void)
  * scratch bank. Builds Y rotation 0x400 with translation (0,-2000,0), multiplying
  * g_BattleSummonKotrTransformState. First thirty counts call
  * BattleFx_KotrUpdateFragmentSpinShrinkMatrices and set selected primitive colour/command
- * 0x62808080. Next 45 randomize three shorts in each of 0x111 records on entry, call
+ * 0x62808080. Next 45 randomize three shorts in each of 273 records on entry, call
  * BattleFx_KotrUpdateFragmentScatterMatrices with elapsed and 4096, then fade three colour bytes;
  * at elapsed 44 retire but continue drawing. Always sets g_BattleKotrFragmentData, calls
  * BattleFx_KotrDrawPsxFragmentTriangles with current bank plus 0x3FF8 and retained arguments,
@@ -6005,13 +6005,13 @@ void __cdecl BattleFx_KotrFragmentSpinScatterFadeTimelineTask(void)
     if (task->frameCounter == 0) {
         BattleFx_KotrInitFragmentMotionFromNormals((int)&g_BattleSummonKotrFragmentMesh);
     }
-    for (index = 0; index < 0xA; index++) {
+    for (index = 0; index < 10; index++) {
         if ((g_BattleSummonKotrTargetMask & 1 << index) != 0 && (*(unsigned char *)&g_BattleActorRecords[index].drawFlags & 0x80) != 0 && (g_BattleSummonKotrSavedActorDrawFlags[index] & 0x46) == 0) {
-            g_BattleOverlayDrawListHead = BattleFx_KotrReturnOtArgUnchanged(index, g_BattleSummonKotrFragmentRenderBanks + (g_BattleSummonKotrFragmentIndex << 0xE), 0xC, g_BattleOverlayDrawListHead);
+            g_BattleOverlayDrawListHead = BattleFx_KotrReturnOtArgUnchanged(index, g_BattleSummonKotrFragmentRenderBanks + (g_BattleSummonKotrFragmentIndex << 14), 0xC, g_BattleOverlayDrawListHead);
         }
     }
     g_BattleSummonKotrFragmentTimelineState->rotation.vx = 0;
-    g_BattleSummonKotrFragmentTimelineState->rotation.vy = 0x400;
+    g_BattleSummonKotrFragmentTimelineState->rotation.vy = 0x400 /* 90 deg */;
     g_BattleSummonKotrFragmentTimelineState->rotation.vz = 0;
     RotMatrix(&g_BattleSummonKotrFragmentTimelineState->rotation, &g_BattleSummonKotrFragmentTimelineState->matrix);
     g_BattleSummonKotrFragmentTimelineState->matrix.t[2] = 0;
@@ -6019,31 +6019,31 @@ void __cdecl BattleFx_KotrFragmentSpinScatterFadeTimelineTask(void)
     g_BattleSummonKotrFragmentTimelineState->matrix.t[1] = 0xFFFFF830;
     MultiplyMatrix(&g_BattleSummonKotrTransformState, &g_BattleSummonKotrFragmentTimelineState->matrix, &g_BattleSummonKotrFragmentTimelineState->matrix);
     elapsed = task->frameCounter;
-    if (elapsed < 0x1E) {
+    if (elapsed < 30) {
         BattleFx_KotrUpdateFragmentSpinShrinkMatrices(&g_BattleSummonKotrFragmentTimelineState->matrix, task->frameCounter);
         ((BattleFxKotrFragmentPrimCommand *)&g_BattleKotrFragmentData.kotrFragmentPrimCommandWord)[g_BattleSummonKotrFragmentIndex].command = 0x62808080;
     } else {
-        elapsed -= 0x1E;
-        if (elapsed < 0x2D) {
+        elapsed -= 30;
+        if (elapsed < 45) {
             if (elapsed == 0) {
-                for (index = 0; index < 0x111; index++) {
+                for (index = 0; index < 273; index++) {
                     g_BattleKotrFragmentState[index].spinX = rand() % 0x200 - 0x100;
                     g_BattleKotrFragmentState[index].spinY = rand() % 0x200 - 0x100;
                     g_BattleKotrFragmentState[index].spinZ = rand() % 0x200 - 0x100;
                 }
             }
-            ratio = (elapsed << 0xC) / 0x2D;
-            BattleFx_KotrUpdateFragmentScatterMatrices(&g_BattleSummonKotrFragmentTimelineState->matrix, elapsed, 0x1000);
-            ((BattleFxKotrFragmentColorByte1 *)&g_BattleKotrFragmentPrimColorByte2)[g_BattleSummonKotrFragmentIndex].colorLevel = 0x1000 - ratio << 7 >> 0xC;
+            ratio = (elapsed << 12) / 45;
+            BattleFx_KotrUpdateFragmentScatterMatrices(&g_BattleSummonKotrFragmentTimelineState->matrix, elapsed, 0x1000 /* 1.0 */);
+            ((BattleFxKotrFragmentColorByte1 *)&g_BattleKotrFragmentPrimColorByte2)[g_BattleSummonKotrFragmentIndex].colorLevel = 0x1000 - ratio << 7 >> 12;
             ((BattleFxKotrFragmentColorByte1 *)&g_BattleKotrFragmentPrimColorByte1)[g_BattleSummonKotrFragmentIndex].colorLevel = ((BattleFxKotrFragmentColorByte1 *)&g_BattleKotrFragmentPrimColorByte2)[g_BattleSummonKotrFragmentIndex].colorLevel;
             *(char *)&((BattleFxKotrFragmentPrimCommand *)&g_BattleKotrFragmentData.kotrFragmentPrimCommandWord)[g_BattleSummonKotrFragmentIndex].command = ((BattleFxKotrFragmentColorByte1 *)&g_BattleKotrFragmentPrimColorByte1)[g_BattleSummonKotrFragmentIndex].colorLevel;
-            if (elapsed == 0x2C) {
+            if (elapsed == 44) {
                 task->ownerSlot = BATTLE_TASK_FREE;
             }
         }
     }
     (g_BattleKotrFragmentData.meshData) = (int)&g_BattleSummonKotrFragmentMesh;
-    g_BattleOverlayDrawListHead = BattleFx_KotrDrawPsxFragmentTriangles((int *)&g_BattleKotrFragmentData, g_BattleSummonKotrFragmentRenderBanks + (g_BattleSummonKotrFragmentIndex << 0xE) + 0x3FF8, 0, g_BattleOverlayDrawListHead, (int)g_BattleSummonKotrFragmentMatrixBuffer, g_BattleKotrColorWords);
+    g_BattleOverlayDrawListHead = BattleFx_KotrDrawPsxFragmentTriangles((int *)&g_BattleKotrFragmentData, g_BattleSummonKotrFragmentRenderBanks + (g_BattleSummonKotrFragmentIndex << 14) + 0x3FF8, 0, g_BattleOverlayDrawListHead, (int)g_BattleSummonKotrFragmentMatrixBuffer, g_BattleKotrColorWords);
     Gfx_DrawPsxPrimitive((g_BattleSummonKotrFragmentIndex << 4) + (char *)&g_BattleKotrFragmentData.kotrFragmentPrimitiveTable);
     g_BattleSummonKotrFragmentIndex ^= 1;
     if (g_BattleIsPaused == 0) {
@@ -6201,33 +6201,33 @@ void __cdecl BattleFx_KotrInitFragmentMotionFromNormals(int resource)
             frame.edgeB.vy = frame.pointB->vy - frame.pointC->vy;
             frame.edgeB.vz = frame.pointB->vz - frame.pointC->vz;
             CrossProductInt(&frame.edgeA, &frame.edgeB, &frame.normal);
-            while (frame.normal.vx < -0x4000 || frame.normal.vx > 0x4000 || frame.normal.vy < -0x4000 || frame.normal.vy > 0x4000 || frame.normal.vz < -0x4000 || frame.normal.vz > 0x4000) {
+            while (frame.normal.vx < -16384 || frame.normal.vx > 16384 || frame.normal.vy < -16384 || frame.normal.vy > 16384 || frame.normal.vz < -16384 || frame.normal.vz > 16384) {
                 frame.normal.vx >>= 1;
                 frame.normal.vy >>= 1;
                 frame.normal.vz >>= 1;
             }
             NormalizeVectorFixed(&frame.normal.vx, &frame.normal.vx);
             if (DEAD_IN_RETAIL) {
-                frame.speed = 0x5DC;
+                frame.speed = 1500;
             } else {
-                frame.speed = rand() % 0x1F4 + 0x3E8;
+                frame.speed = rand() % 500 + 1000;
             }
             frame.speedCopy = frame.speed;
-            frame.fragment->velocityX = frame.normal.vx * frame.speedCopy >> 0xC;
-            frame.fragment->velocityY = frame.normal.vy * frame.speedCopy >> 0xC;
-            frame.fragment->velocityZ = frame.normal.vz * frame.speedCopy >> 0xC;
-            frame.fragment->delay = 0x19 - (frame.fragment->centroidY + 0x300C) * 0x19 / 0x6018;
+            frame.fragment->velocityX = frame.normal.vx * frame.speedCopy >> 12;
+            frame.fragment->velocityY = frame.normal.vy * frame.speedCopy >> 12;
+            frame.fragment->velocityZ = frame.normal.vz * frame.speedCopy >> 12;
+            frame.fragment->delay = 25 - (frame.fragment->centroidY + 12300) * 25 / 24600;
             frame.fragment->rotX = 0;
             frame.fragment->rotY = 0;
             frame.fragment->rotZ = 0;
-            frame.fragment->rotSpeedX = rand() % 0x10 - 8;
-            frame.fragment->rotSpeedY = rand() % 0x10 - 8;
-            frame.fragment->rotSpeedZ = rand() % 0x10 - 8;
-            frame.fragment->scale = 0x1000;
+            frame.fragment->rotSpeedX = rand() % 16 - 8;
+            frame.fragment->rotSpeedY = rand() % 16 - 8;
+            frame.fragment->rotSpeedZ = rand() % 16 - 8;
+            frame.fragment->scale = 0x1000 /* 1.0 */;
             if (DEAD_IN_RETAIL) {
                 frame.rate = 0x18;
             } else {
-                frame.rate = rand() % 0x14 + 4;
+                frame.rate = rand() % 20 + 4;
             }
             frame.fragment->shrinkRate = (short)frame.rate;
             frame.fragment++;
@@ -6258,7 +6258,7 @@ void __cdecl BattleFx_KotrUpdateFragmentSpinShrinkMatrices(PsxMatrix *parentMatr
     }
     srcRecord = (SVECTOR *)g_BattleKotrFragmentState;
     matrixOut = g_BattleSummonKotrFragmentMatrixBuffer;
-    for (i = 0; i < 0x111; i++) {
+    for (i = 0; i < 273; i++) {
         if (g_BattleIsPaused == 0 && srcRecord->vx >= xMin && srcRecord->vx < xMin + 5) {
             srcRecord[3].vx += srcRecord[4].vx;
             srcRecord[3].vy += srcRecord[4].vy;
@@ -6269,8 +6269,8 @@ void __cdecl BattleFx_KotrUpdateFragmentSpinShrinkMatrices(PsxMatrix *parentMatr
         g_BattleKotrSpinShrinkState->matrix.t[0] = srcRecord[1].vx;
         g_BattleKotrSpinShrinkState->matrix.t[1] = srcRecord[1].vy;
         g_BattleKotrSpinShrinkState->matrix.t[2] = srcRecord[1].vz;
-        g_BattleKotrSpinShrinkState->scaleY = 0x1000;
-        g_BattleKotrSpinShrinkState->scaleX = 0x1000;
+        g_BattleKotrSpinShrinkState->scaleY = 0x1000 /* 1.0 */;
+        g_BattleKotrSpinShrinkState->scaleX = 0x1000 /* 1.0 */;
         g_BattleKotrSpinShrinkState->scaleZ = srcRecord->vy;
         ScaleMatrix(&g_BattleKotrSpinShrinkState->matrix, g_BattleKotrSpinShrinkState);
         MultiplyMatrix(parentMatrix, &g_BattleKotrSpinShrinkState->matrix, matrixOut);
@@ -6281,7 +6281,7 @@ void __cdecl BattleFx_KotrUpdateFragmentSpinShrinkMatrices(PsxMatrix *parentMatr
 
 /*
  * Acquires retained 0xC0 scratch and
- * visits exactly 0x111 records of stride 0x28, writing matching thirty-byte matrices. When
+ * visits exactly 273 records of stride 0x28, writing matching thirty-byte matrices. When
  * unpaused and 25 minus record delay is strictly less than supplied elapsed value, advances
  * centroid XYZ by velocity, damps velocities by 0xF00 shifted twelve with Y minus ten, and adds
  * saved rotation increments. For elapsed since activation below thirty writes equal RGB 255 minus
@@ -6306,21 +6306,21 @@ void __cdecl BattleFx_KotrUpdateFragmentScatterMatrices(PsxMatrix *parentMatrix,
     }
     srcRecord = (SVECTOR *)g_BattleKotrFragmentState;
     matrixOut = g_BattleSummonKotrFragmentMatrixBuffer;
-    for (i = 0; i < 0x111; i++) {
+    for (i = 0; i < 273; i++) {
         if (g_BattleIsPaused == 0 && 0x19 - srcRecord->vx < elapsed) {
             srcRecord[1].vx += srcRecord[2].vx;
             srcRecord[1].vy += srcRecord[2].vy;
             srcRecord[1].vz += srcRecord[2].vz;
-            srcRecord[2].vx = srcRecord[2].vx * 0xF00 >> 0xC;
-            srcRecord[2].vy = (srcRecord[2].vy * 0xF00 >> 0xC) - 0xA;
-            srcRecord[2].vz = srcRecord[2].vz * 0xF00 >> 0xC;
+            srcRecord[2].vx = srcRecord[2].vx * 0xF00 /* 0.9375 */ >> 12;
+            srcRecord[2].vy = (srcRecord[2].vy * 0xF00 /* 0.9375 */ >> 12) - 10;
+            srcRecord[2].vz = srcRecord[2].vz * 0xF00 /* 0.9375 */ >> 12;
             srcRecord[3].vx += srcRecord[4].vx;
             srcRecord[3].vy += srcRecord[4].vy;
             srcRecord[3].vz += srcRecord[4].vz;
             sinceActive = elapsed - (0x19 - srcRecord->vx);
-            if (sinceActive < 0x1E) {
-                color = 0xFF - (sinceActive << 8) / 0x1E;
-                color = color | 0x22000000 | color << 8 | color << 0x10;
+            if (sinceActive < 30) {
+                color = 0xFF - (sinceActive << 8) / 30;
+                color = color | 0x22000000 | color << 8 | color << 16;
             } else {
                 color = 0x22000000;
             }
@@ -6330,7 +6330,7 @@ void __cdecl BattleFx_KotrUpdateFragmentScatterMatrices(PsxMatrix *parentMatrix,
         g_BattleKotrScatterState->matrix.t[0] = srcRecord[1].vx;
         g_BattleKotrScatterState->matrix.t[1] = srcRecord[1].vy;
         g_BattleKotrScatterState->matrix.t[2] = srcRecord[1].vz;
-        g_BattleKotrScatterState->scaledY = srcRecord->vy * scale >> 0xC;
+        g_BattleKotrScatterState->scaledY = srcRecord->vy * scale >> 12;
         g_BattleKotrScatterState->scale = scale;
         g_BattleKotrScatterState->savedScale = scale;
         ScaleMatrix(&g_BattleKotrScatterState->matrix, g_BattleKotrScatterState);

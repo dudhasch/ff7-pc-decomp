@@ -600,7 +600,7 @@ unsigned char g_bssPad_00a40ffc[4] = {0};
 // BattleFx_LimitSatanSlamSetupStage, BattleFx_LimitSatanSlamTimelineTask). The span runs to the next named
 // definition of the TU; the TU's pieces inside 0xa41000..0xa4100c are aliases.
 // GLOBAL: FF7 0x00a41000
-unsigned char g_YasuiLimitSatanSlamSavedActorFlags[0xc] = {0};
+unsigned char g_YasuiLimitSatanSlamSavedActorFlags[12] = {0};
 // GLOBAL: FF7 0x00a4100c
 struct GfxTableCursor *g_YasuiLimitSatanSlamResourceHandle = 0;
 // GLOBAL: FF7 0x00a41010
@@ -701,13 +701,13 @@ void __cdecl BattleFx_LimitSatanSlamSetupStage(void)
     if (g_BattleUiScalingMode != 2) {
         g_YasuiLimitSatanSlamOffscreenViewportPos.offscreenViewportX = *(short *)&g_BattleViewportOriginX;
         g_YasuiLimitSatanSlamOffscreenViewportPos.battleLimitSatanOffscreenViewportY = *(short *)&g_BattleViewportOriginY;
-        (g_YasuiLimitSatanSlamOffscreenViewportSize.viewportWidth) = 0x60;
-        g_YasuiLimitSatanSlamOffscreenViewportSize.battleLimitSatanOffscreenViewportHeight = 0x80;
+        (g_YasuiLimitSatanSlamOffscreenViewportSize.viewportWidth) = 96;
+        g_YasuiLimitSatanSlamOffscreenViewportSize.battleLimitSatanOffscreenViewportHeight = 128;
     } else {
         g_YasuiLimitSatanSlamOffscreenViewportPos.offscreenViewportX = *(short *)&g_BattleViewportOriginX;
         g_YasuiLimitSatanSlamOffscreenViewportPos.battleLimitSatanOffscreenViewportY = *(short *)&g_BattleViewportOriginY;
-        (g_YasuiLimitSatanSlamOffscreenViewportSize.viewportWidth) = 0xC0;
-        g_YasuiLimitSatanSlamOffscreenViewportSize.battleLimitSatanOffscreenViewportHeight = 0x100;
+        (g_YasuiLimitSatanSlamOffscreenViewportSize.viewportWidth) = 192;
+        g_YasuiLimitSatanSlamOffscreenViewportSize.battleLimitSatanOffscreenViewportHeight = 256;
     }
     pStage = (BattleFxSatanSlamStageRecord *)BATTLE_CURRENT_TASK_SLOT;
     pStage->ownerSlot = BATTLE_TASK_FREE;
@@ -715,7 +715,7 @@ void __cdecl BattleFx_LimitSatanSlamSetupStage(void)
     Battle_GetActorMaskCentroid(g_YasuiLimitSatanSlamTargetMask, &pStage->stageOffsetX);
     pStage->posY = 0;
     pStage->stage = SATAN_STAGE_WAIT;
-    pStage->startTimer = 0x16A;
+    pStage->startTimer = 362;
     yaw = g_BattleActorRecords[g_YasuiLimitSatanSlamSourceActor].yaw;
     if (yaw >= 0x400 && yaw < 0xC00) {
         g_YasuiLimitSatanSlamMirrorFlag = 0;
@@ -723,7 +723,7 @@ void __cdecl BattleFx_LimitSatanSlamSetupStage(void)
         g_YasuiLimitSatanSlamMirrorFlag = 1;
     }
     rotAngles[0] = 0;
-    rotAngles[1] = g_YasuiLimitSatanSlamMirrorFlag << 0xB;
+    rotAngles[1] = g_YasuiLimitSatanSlamMirrorFlag << 11;
     rotAngles[2] = 0;
     RotMatrixXYZ(rotAngles, &g_YasuiLimitSatanSlamTransformMatrix);
     g_YasuiLimitSatanSlamTransformMatrix.t[0] = pStage->stageOffsetX;
@@ -798,7 +798,7 @@ int __cdecl BattleFx_LimitSatanSlamBuildTriangleFragmentRecords(BattleFxSatanSla
         g_YasuiLimitSatanSlamFragments[fragmentIdx].posX = centroidX;
         g_YasuiLimitSatanSlamFragments[fragmentIdx].posY = centroidY;
         g_YasuiLimitSatanSlamFragments[fragmentIdx].posZ = sumZ;
-        centroidY += 0x8CE;
+        centroidY += 2254;
         centroidY = centroidY * centroidY / distSq;
         g_YasuiLimitSatanSlamFragments[fragmentIdx].centroidY = centroidY;
         centroidY >>= 1;
@@ -808,17 +808,17 @@ int __cdecl BattleFx_LimitSatanSlamBuildTriangleFragmentRecords(BattleFxSatanSla
         g_YasuiLimitSatanSlamFragments[fragmentIdx].driftX = 0;
         randomFlags = rand();
         if ((randomFlags & 0x800) != 0) {
-            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityX = (randomFlags & 7) * 0xC;
+            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityX = (randomFlags & 7) * 12;
         } else {
-            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityX = -((randomFlags & 7) * 0xC);
+            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityX = -((randomFlags & 7) * 12);
         }
         g_YasuiLimitSatanSlamFragments[fragmentIdx].offsetY = 0;
         if ((randomFlags & 0x204080) != 0) {
-            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityZ = (randomFlags >> 3 & 7) * 0xC;
+            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityZ = (randomFlags >> 3 & 7) * 12;
         } else {
-            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityZ = -((randomFlags >> 3 & 7) * 0xC);
+            g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityZ = -((randomFlags >> 3 & 7) * 12);
         }
-        g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityY = -((centroidY + 0x1C) * ((randomFlags & 7) + 2));
+        g_YasuiLimitSatanSlamFragments[fragmentIdx].velocityY = -((centroidY + 28) * ((randomFlags & 7) + 2));
         fragmentIdx++;
         record++;
     }
@@ -869,7 +869,7 @@ int __cdecl BattleFx_LimitSatanSlamBuildQuadFragmentRecords(BattleFxSatanSlamMes
         g_YasuiLimitSatanSlamFragments[fragCount].posX = posX;
         g_YasuiLimitSatanSlamFragments[fragCount].posY = posY;
         g_YasuiLimitSatanSlamFragments[fragCount].posZ = posZ;
-        posY += 0x8CE;
+        posY += 2254;
         posY = posY * posY / bytesDiv;
         g_YasuiLimitSatanSlamFragments[fragCount].centroidY = posY;
         posY >>= 1;
@@ -879,17 +879,17 @@ int __cdecl BattleFx_LimitSatanSlamBuildQuadFragmentRecords(BattleFxSatanSlamMes
         g_YasuiLimitSatanSlamFragments[fragCount].driftX = 0;
         rnd = rand();
         if ((rnd & 0x800) != 0) {
-            g_YasuiLimitSatanSlamFragments[fragCount].velocityX = (rnd & 7) * 0xC;
+            g_YasuiLimitSatanSlamFragments[fragCount].velocityX = (rnd & 7) * 12;
         } else {
-            g_YasuiLimitSatanSlamFragments[fragCount].velocityX = -((rnd & 7) * 0xC);
+            g_YasuiLimitSatanSlamFragments[fragCount].velocityX = -((rnd & 7) * 12);
         }
         g_YasuiLimitSatanSlamFragments[fragCount].offsetY = 0;
         if ((rnd & 0x204080) != 0) {
-            g_YasuiLimitSatanSlamFragments[fragCount].velocityZ = (rnd >> 3 & 7) * 0xC;
+            g_YasuiLimitSatanSlamFragments[fragCount].velocityZ = (rnd >> 3 & 7) * 12;
         } else {
-            g_YasuiLimitSatanSlamFragments[fragCount].velocityZ = -((rnd >> 3 & 7) * 0xC);
+            g_YasuiLimitSatanSlamFragments[fragCount].velocityZ = -((rnd >> 3 & 7) * 12);
         }
-        g_YasuiLimitSatanSlamFragments[fragCount].velocityY = -((posY + 0x1C) * ((rnd & 7) + 2));
+        g_YasuiLimitSatanSlamFragments[fragCount].velocityY = -((posY + 28) * ((rnd & 7) + 2));
         fragCount++;
         ent++;
     }
@@ -908,12 +908,12 @@ void __cdecl BattleFx_LimitSatanSlamBuildMeshCellGrid(BattleFxSatanSlamMeshSetup
     int base;
 
     g_YasuiLimitSatanSlamCellGridEntryCount = 0;
-    for (rowIdx = 0; rowIdx < 0xE; rowIdx++) {
+    for (rowIdx = 0; rowIdx < 14; rowIdx++) {
         for (colIdx = 0; colIdx < 9; colIdx++) {
             g_YasuiLimitSatanSlamMeshGridCells[rowIdx][colIdx] = 1;
         }
     }
-    for (rowIdx = 0; rowIdx < 0x412; rowIdx++) {
+    for (rowIdx = 0; rowIdx < 1042; rowIdx++) {
         g_YasuiLimitSatanSlamCellGridEntries.entries[rowIdx].cellHead = 1;
     }
     base = meshPtr->workingMeshBlob + 4;
@@ -943,10 +943,10 @@ int __cdecl BattleFx_LimitSatanSlamIndexTrianglesIntoCellGrid(BattleFxLimitSatan
         cellX = cellX / 3;
         cellZ = triState->v0z + triState->v1z + triState->v2z;
         cellZ = cellZ / 3;
-        cellX += 0x888;
-        cellZ += 0xE70;
-        cellX /= 0x200;
-        cellZ /= 0x200;
+        cellX += 2184;
+        cellZ += 3696;
+        cellX /= 512;
+        cellZ /= 512;
         if (g_YasuiLimitSatanSlamMeshGridCells[cellZ][cellX] != 1) {
             g_YasuiLimitSatanSlamCellGridEntries.entries[g_YasuiLimitSatanSlamCellGridEntryCount].cellHead = g_YasuiLimitSatanSlamMeshGridCells[cellZ][cellX];
         }
@@ -980,10 +980,10 @@ int __cdecl BattleFx_LimitSatanSlamIndexQuadsIntoCellGrid(BattleFxLimitSatanSlam
         cellX /= 4;
         cellZ = quadState->v0z + quadState->v1z + quadState->v2z + quadState->v3z;
         cellZ /= 4;
-        cellX += 0x888;
-        cellZ += 0xE70;
-        cellX /= 0x200;
-        cellZ /= 0x200;
+        cellX += 2184;
+        cellZ += 3696;
+        cellX /= 512;
+        cellZ /= 512;
         if (g_YasuiLimitSatanSlamMeshGridCells[cellZ][cellX] != 1) {
             g_YasuiLimitSatanSlamCellGridEntries.entries[g_YasuiLimitSatanSlamCellGridEntryCount].cellHead = g_YasuiLimitSatanSlamMeshGridCells[cellZ][cellX];
         }
@@ -1330,17 +1330,17 @@ void __cdecl BattleFx_LimitSatanSlamQueueStageOffscreenRequests(BattleFxOffscree
     } frame;
 #pragma pack(pop)
 
-    frame.divisorX = 0x17;
-    frame.divisorY = 0x1C;
+    frame.divisorX = 23;
+    frame.divisorY = 28;
     frame.zOffset = 5;
     if (g_YasuiLimitSatanSlamMirrorFlag != 0) {
-        frame.angles[0] = 0x400;
-        frame.angles[1] = 0x800;
+        frame.angles[0] = 0x400 /* 90 deg */;
+        frame.angles[1] = 0x800 /* 180 deg */;
         frame.angles[2] = 0;
         frame.matrix.t[0] = g_YasuiLimitSatanSlamTransformMatrix.t[0] / frame.divisorX;
         frame.matrix.t[1] = -(g_YasuiLimitSatanSlamTransformMatrix.t[2] / frame.divisorY) - frame.zOffset;
     } else {
-        frame.angles[0] = 0x400;
+        frame.angles[0] = 0x400 /* 90 deg */;
         frame.angles[1] = 0;
         frame.angles[2] = 0;
         frame.matrix.t[0] = -(g_YasuiLimitSatanSlamTransformMatrix.t[0] / frame.divisorX);
@@ -1399,7 +1399,7 @@ void __cdecl BattleFx_LimitSatanSlamComputeVertexDeltas(SVECTOR *refPose, SVECTO
 {
     int i;
 
-    for (i = 0; i < 0x135; i++) {
+    for (i = 0; i < 309; i++) {
         deltas[i].deltaX = workVertices[i].vx - refPose[i].vx;
         deltas[i].deltaY = workVertices[i].vy - refPose[i].vy;
         deltas[i].deltaZ = workVertices[i].vz - refPose[i].vz;
@@ -1433,11 +1433,11 @@ void __cdecl BattleFx_LimitSatanSlamTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL) {
-        frame.quadX = g_YasuiLimitSatanSlamMeshTimeStep % 0x200;
+        frame.quadX = g_YasuiLimitSatanSlamMeshTimeStep % 512;
         g_YasuiLimitSatanSlamMeshTimeStep++;
         frame.quadY = 0;
-        frame.quadWidth = 0x100;
-        frame.quadHeight = 0x100;
+        frame.quadWidth = 256;
+        frame.quadHeight = 256;
         frame.quadTexX = 0;
         frame.quadTexY = 0;
         frame.quadRaw0 = 0;
@@ -1450,7 +1450,7 @@ void __cdecl BattleFx_LimitSatanSlamTimelineTask(void)
     frame.state = (BattleFxLimitSatanSlamState *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
     switch (frame.state->stage) {
     case SATAN_STAGE_WAIT:
-        if (frame.state->timer < 0xF) {
+        if (frame.state->timer < 15) {
             break;
         }
         frame.state->stage = SATAN_STAGE_START_MESH;
@@ -1466,9 +1466,9 @@ void __cdecl BattleFx_LimitSatanSlamTimelineTask(void)
         g_YasuiLimitSatanSlamStateFlags &= 0xEFFFFFFF;
         frame.state->startTimer = frame.state->timer;
     }
-    if (frame.state->timer < 0x10) {
+    if (frame.state->timer < 16) {
         frame.level = 0;
-    } else if (frame.state->timer >= 0x10 && frame.state->timer < 0x20) {
+    } else if (frame.state->timer >= 16 && frame.state->timer < 32) {
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2 = 0;
         frame.level = (frame.state->timer - 0x10) << 7;
     } else if (frame.state->timer >= frame.state->startTimer) {
@@ -1476,15 +1476,15 @@ void __cdecl BattleFx_LimitSatanSlamTimelineTask(void)
     } else {
         frame.level = 0x800;
     }
-    if (frame.state->timer == 0x29) {
-        for (frame.actorIdx = 0; frame.actorIdx < 0xA; frame.actorIdx++) {
+    if (frame.state->timer == 41) {
+        for (frame.actorIdx = 0; frame.actorIdx < 10; frame.actorIdx++) {
             if (g_YasuiLimitSatanSlamTargetMask & (1 << frame.actorIdx)) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIdx);
             }
         }
     }
-    if (frame.state->timer == 0x61 && (g_YasuiLimitSatanSlamStateFlags & 0x20000000) == 0) {
-        for (frame.actorIdx = 0; frame.actorIdx < 0xA; frame.actorIdx++) {
+    if (frame.state->timer == 97 && (g_YasuiLimitSatanSlamStateFlags & 0x20000000) == 0) {
+        for (frame.actorIdx = 0; frame.actorIdx < 10; frame.actorIdx++) {
             if (g_YasuiLimitSatanSlamTargetMask & (1 << frame.actorIdx)) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIdx);
             }
@@ -1492,7 +1492,7 @@ void __cdecl BattleFx_LimitSatanSlamTimelineTask(void)
     }
     if (frame.state->timer >= frame.state->startTimer + 8) {
         if ((g_YasuiLimitSatanSlamStateFlags & 0x20000000) == 0) {
-            for (frame.actorIdx = 0; frame.actorIdx < 0xA; frame.actorIdx++) {
+            for (frame.actorIdx = 0; frame.actorIdx < 10; frame.actorIdx++) {
                 g_BattleActorRecords[frame.actorIdx].posY = g_YasuiLimitSatanSlamSavedActorPositions[frame.actorIdx].posY;
                 if ((g_YasuiLimitSatanSlamSavedActorFlags[frame.actorIdx] & 0x10) == 0) {
                     g_BattleActorRecords[frame.actorIdx].drawFlags &= 0xEF;
@@ -1543,8 +1543,8 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
     frame.meshState = (BattleFxLimitSatanSlamMeshState *)Gfx_GetPsxScratchpadPtr(0);
     switch (frame.stageSlot->stage) {
     case SATAN_MESH_STAGE_RISE:
-        frame.rangeStart = frame.stageSlot->index * 0xDB;
-        frame.rangeEnd = (frame.stageSlot->index + 1) * 0xDB;
+        frame.rangeStart = frame.stageSlot->index * 219;
+        frame.rangeEnd = (frame.stageSlot->index + 1) * 219;
         frame.fraction = frame.stageSlot->index << 8;
         if (g_BattleIsPaused != 0) {
             break;
@@ -1552,13 +1552,13 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
         if (frame.stageSlot->index == 0) {
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_YasuiLimitSatanSlamTargetMask), 0x14C);
         }
-        if (frame.stageSlot->index < 0x10) {
+        if (frame.stageSlot->index < 16) {
             break;
         }
         frame.stageSlot->stage = SATAN_MESH_STAGE_HOLD;
         frame.stageSlot->index = 0;
     case SATAN_MESH_STAGE_HOLD:
-        frame.rangeEnd = 0xDB6;
+        frame.rangeEnd = 3510;
         frame.rangeStart = frame.rangeEnd;
         frame.fraction = 0x1000;
         if (g_BattleIsPaused != 0) {
@@ -1570,11 +1570,11 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
             frame.stageTask->scaleStep = 0xE49;
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_YasuiLimitSatanSlamTargetMask), 0x189);
         }
-        if (frame.stageSlot->index == 0x15) {
+        if (frame.stageSlot->index == 21) {
             g_YasuiLimitSatanSlamStateFlags |= 0x40000040;
             (frame.stageSlot->index)++;
         }
-        if (frame.stageSlot->index < 0x20) {
+        if (frame.stageSlot->index < 32) {
             break;
         }
         if ((g_YasuiLimitSatanSlamStateFlags & 0x20000000) != 0) {
@@ -1585,7 +1585,7 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
         frame.stageSlot->index = 0;
         break;
     case SATAN_MESH_STAGE_DEFORM:
-        frame.rangeEnd = 0xDB6;
+        frame.rangeEnd = 3510;
         frame.rangeStart = frame.rangeEnd;
         frame.fraction = 0x1000;
         if (g_BattleIsPaused != 0) {
@@ -1596,14 +1596,14 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
         }
         frame.deltaScale = frame.stageSlot->index << 8;
         BattleFx_LimitSatanSlamCopyMeshPoseVertices(&g_YasuiLimitSatanSlamSourceMeshAndPoseBlob.poseVertexBuffer);
-        BattleFx_LimitSatanSlamAddScaledVertexDeltas((struct SVECTOR *)&g_YasuiLimitSatanSlamWorkingMeshBlob.battleLimitSatanPoseVertexBuffer, (struct BattleFxShatterMeshDelta *)&g_YasuiLimitSatanSlamVertexDeltas, 0x135, frame.deltaScale);
-        if (frame.stageSlot->index < 0x10) {
+        BattleFx_LimitSatanSlamAddScaledVertexDeltas((struct SVECTOR *)&g_YasuiLimitSatanSlamWorkingMeshBlob.battleLimitSatanPoseVertexBuffer, (struct BattleFxShatterMeshDelta *)&g_YasuiLimitSatanSlamVertexDeltas, 309, frame.deltaScale);
+        if (frame.stageSlot->index < 16) {
             break;
         }
         frame.stageSlot->stage = SATAN_MESH_STAGE_PARTICLES;
         frame.stageSlot->index = 0;
     case SATAN_MESH_STAGE_PARTICLES:
-        frame.rangeEnd = 0xDB6;
+        frame.rangeEnd = 3510;
         frame.rangeStart = frame.rangeEnd;
         frame.fraction = 0x1000;
         if (g_BattleIsPaused != 0) {
@@ -1615,15 +1615,15 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
         if (frame.stageSlot->index == 6) {
             frame.stageTask = (BattleFxSatanSlamStageTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSatanSlamSpawnTrailedParticlesTask);
         }
-        if (frame.stageSlot->index < 0x46) {
+        if (frame.stageSlot->index < 70) {
             break;
         }
         frame.stageSlot->stage = SATAN_MESH_STAGE_SHATTER;
         frame.stageSlot->index = 0;
         break;
     case SATAN_MESH_STAGE_SHATTER:
-        frame.rangeStart = 0xDB6;
-        frame.rangeEnd = 0xDB6 - (frame.stageSlot->index + 1) * 0x6D;
+        frame.rangeStart = 3510;
+        frame.rangeEnd = 3510 - (frame.stageSlot->index + 1) * 109;
         if (frame.rangeEnd < 0) {
             frame.rangeEnd = 0;
         }
@@ -1633,7 +1633,7 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
         if (frame.stageSlot->index == 1) {
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_YasuiLimitSatanSlamTargetMask), 0x152);
         }
-        if (frame.stageSlot->index <= 0x20) {
+        if (frame.stageSlot->index <= 32) {
             break;
         }
         frame.stageSlot->stage = SATAN_MESH_STAGE_CLEAR;
@@ -1659,7 +1659,7 @@ void __cdecl BattleFx_LimitSatanSlamStageMeshTimelineTask(void)
         g_YasuiLimitSatanSlamStateFlags |= 0x10000000;
     }
     frame.matrix = g_YasuiLimitSatanSlamTransformMatrix;
-    frame.vectors.scale[2] = 0x1000;
+    frame.vectors.scale[2] = 0x1000 /* 1.0 */;
     frame.vectors.scale[0] = frame.vectors.scale[2];
     frame.vectors.scale[1] = frame.rangeStart;
     ScaleMatrix(&frame.matrix, &frame.vectors.scale[0]);
@@ -1703,9 +1703,9 @@ void __cdecl BattleFx_LimitSatanSlamAddScaledVertexDeltas(SVECTOR *target, Battl
     int i;
 
     for (i = 0; i < count; i++) {
-        target[i].vx += (short)(deltas[i].deltaX * factor >> 0xC);
-        target[i].vy += (short)(deltas[i].deltaY * factor >> 0xC);
-        target[i].vz += (short)(deltas[i].deltaZ * factor >> 0xC);
+        target[i].vx += (short)(deltas[i].deltaX * factor >> 12);
+        target[i].vy += (short)(deltas[i].deltaY * factor >> 12);
+        target[i].vz += (short)(deltas[i].deltaZ * factor >> 12);
     }
 }
 
@@ -1880,11 +1880,11 @@ int __cdecl BattleFx_LimitSatanSlamDrawPsxTexturedFragmentTriangles(BattleFxLimi
 
     fragCount = *(int *)fragBlob & 0xFFFF;
     fragIndex = meshState->fragmentIndex;
-    zShift = 0xE - meshState->otShift;
+    zShift = 14 - meshState->otShift;
     fragPointer = (YasuiSatanSlamTriangleRecord *)((int)fragBlob + 4);
     primPtr = (YasuiSatanSlamTriPrim *)Gfx_GetPsxPacketScratchPtr();
     for (idx = 0; idx < fragCount; idx++, fragIndex++, fragPointer++) {
-        if (g_YasuiLimitSatanSlamFragments[fragIndex].timer >= 0xC) {
+        if (g_YasuiLimitSatanSlamFragments[fragIndex].timer >= 12) {
             continue;
         }
         meshState->delta = *(SVECTOR *)&g_YasuiLimitSatanSlamFragments[fragIndex];
@@ -1928,7 +1928,7 @@ int __cdecl BattleFx_LimitSatanSlamDrawPsxTexturedFragmentTriangles(BattleFxLimi
         }
         Gfx_PsxStoreClearFlag(&meshState->flags);
         if ((meshState->flags & 0x60000) != 0) {
-            g_YasuiLimitSatanSlamFragments[fragIndex].timer = 0xC;
+            g_YasuiLimitSatanSlamFragments[fragIndex].timer = 12;
             continue;
         }
         primPtr->color1 = fragPointer->color1;
@@ -1971,11 +1971,11 @@ int __cdecl BattleFx_LimitSatanSlamDrawPsxTexturedFragmentQuads(BattleFxLimitSat
 
     numFragments = *(int *)fragmentBlock;
     fragmentIndex = meshState->fragmentIndex;
-    phaseLimit = 0xE - meshState->otShift;
+    phaseLimit = 14 - meshState->otShift;
     record = (BattleFxSatanSlamQuadRecord *)((int)fragmentBlock + 4);
     primitive = (BattleFxSatanSlamTexturedQuadPrim *)Gfx_GetPsxPacketScratchPtr();
     for (i = 0; i < numFragments; i++, fragmentIndex++, record++) {
-        if (g_YasuiLimitSatanSlamFragments[fragmentIndex].timer >= 0xC) {
+        if (g_YasuiLimitSatanSlamFragments[fragmentIndex].timer >= 12) {
             continue;
         }
         meshState->delta = *(SVECTOR *)&g_YasuiLimitSatanSlamFragments[fragmentIndex];
@@ -2023,7 +2023,7 @@ int __cdecl BattleFx_LimitSatanSlamDrawPsxTexturedFragmentQuads(BattleFxLimitSat
         }
         Gfx_PsxStoreClearFlag(&meshState->flags);
         if ((meshState->flags & 0x60000) != 0) {
-            g_YasuiLimitSatanSlamFragments[fragmentIndex].timer = 0xC;
+            g_YasuiLimitSatanSlamFragments[fragmentIndex].timer = 12;
             continue;
         }
         primitive->color1 = record->color1;
@@ -2101,7 +2101,7 @@ void __cdecl BattleFx_LimitSatanSlamSpawnTrailedParticlesTask(void)
             TransformVectorToInt32(&g_YasuiLimitSatanSlamTransformMatrix, frame.direction, &g_YasuiLimitSatanSlamParticleRecords[frame.particleIdx].velocityX);
             g_YasuiLimitSatanSlamParticleRecords[frame.particleIdx].steerThetaLimit = g_YasuiLimitSatanSlamParticleSpawnTable[frame.spawnIdx].steerThetaLimit;
             g_YasuiLimitSatanSlamParticleRecords[frame.particleIdx].distanceLimit = g_YasuiLimitSatanSlamParticleSpawnTable[frame.spawnIdx].distanceLimit;
-            g_YasuiLimitSatanSlamParticleRecords[frame.particleIdx].arriveDistance = 0x4B0;
+            g_YasuiLimitSatanSlamParticleRecords[frame.particleIdx].arriveDistance = 1200;
             TransformVectorToInt32(&g_YasuiLimitSatanSlamTransformMatrix, (int *)&g_YasuiLimitSatanSlamInitialParticleVelocity, &g_YasuiLimitSatanSlamParticleRecords[frame.particleIdx].launchDirX);
             g_YasuiLimitSatanSlamTrailPoints[frame.particleIdx][0] = *(Int64Pair *)&g_YasuiLimitSatanSlamParticleRecords[frame.particleIdx].posX;
             BattleFx_LimitSatanSlamPushTrailPoint(&g_YasuiLimitSatanSlamTrailRingBuffers[frame.particleIdx], (int)g_YasuiLimitSatanSlamTrailPoints[frame.particleIdx]);
@@ -2245,10 +2245,10 @@ void __cdecl BattleFx_LimitSatanSlamTrailedParticleTask(void)
             frame.direction.direction[1] = 0;
             frame.direction.direction[2] = frame.position.position[2] - frame.particle->posZ;
             NormalizeVectorFixed(&frame.direction.direction[0], &frame.direction.direction[0]);
-            frame.tmpStep = 0x4B0;
-            frame.particle->trailX = frame.particle->posX + (frame.tmpStep * frame.direction.direction[0] >> 0xC);
+            frame.tmpStep = 1200;
+            frame.particle->trailX = frame.particle->posX + (frame.tmpStep * frame.direction.direction[0] >> 12);
             frame.particle->trailY = frame.particle->posY;
-            frame.particle->trailZ = frame.particle->posZ + (frame.tmpStep * frame.direction.direction[2] >> 0xC);
+            frame.particle->trailZ = frame.particle->posZ + (frame.tmpStep * frame.direction.direction[2] >> 12);
             frame.particle->steerThetaLimit = g_YasuiLimitSatanSlamParticleSpawnTable[frame.trailTask->recordIndex].retargetThetaLimit;
             frame.particle->flags |= 0x40000000;
             frame.trailTask->state = 1;
@@ -2275,13 +2275,13 @@ void __cdecl BattleFx_LimitSatanSlamTrailedParticleTask(void)
     frame.modelDraw->uvScroll = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.trailTask->frame >= 0x2B) {
-        frame.ringIndex = frame.trailTask->frame - 0x2B;
-        frame.modelDraw->fadeLevel = frame.ringIndex * 0x155;
-        frame.spriteFrameIndex = 0x40 - frame.ringIndex * 5;
+    if (frame.trailTask->frame >= 43) {
+        frame.ringIndex = frame.trailTask->frame - 43;
+        frame.modelDraw->fadeLevel = frame.ringIndex * 341;
+        frame.spriteFrameIndex = 64 - frame.ringIndex * 5;
     } else {
         frame.modelDraw->fadeLevel = 0;
-        frame.spriteFrameIndex = 0x40;
+        frame.spriteFrameIndex = 64;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
@@ -2298,7 +2298,7 @@ void __cdecl BattleFx_LimitSatanSlamTrailedParticleTask(void)
         BattleFx_InstallBillboardMatrix((void *)frame.trailRing->points[frame.ringIndex], *(short *)&frame.billboardScale, -(frame.billboardScale >> 4));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_YasuiLimitSatanSlamSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     }
-    if (frame.trailTask->frame >= 0x37) {
+    if (frame.trailTask->frame >= 55) {
         frame.trailTask->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -2346,9 +2346,9 @@ void __cdecl BattleFx_LimitSatanSlamSteerParticleTowardTarget(YasuiLimitSatanSla
     Gte_BuildAxisAngleMatrix(theta, &matrix, &dirVec);
     TransformVectorToInt32(&matrix, &particle->velocityX, &particle->velocityX);
     *(Int64Pair *)&particle->prevX = *(Int64Pair *)&particle->posX;
-    particle->posX += (short)(distance * particle->velocityX >> 0xC);
-    particle->posY += (short)(distance * particle->velocityY >> 0xC);
-    particle->posZ += (short)(distance * particle->velocityZ >> 0xC);
+    particle->posX += (short)(distance * particle->velocityX >> 12);
+    particle->posY += (short)(distance * particle->velocityY >> 12);
+    particle->posZ += (short)(distance * particle->velocityZ >> 12);
     if ((particle->flags & 0x10000000) != 0) {
         turnAngle = ComputeAngleBetweenVectors(&particle->launchDir, &particle->velocity, &dirVec);
         Gte_BuildAxisAngleMatrix(turnAngle, &particle->orientation, &dirVec);
@@ -2419,13 +2419,13 @@ void __cdecl BattleFx_LimitSatanSlamMirroredBurstModelsTask(void)
     frame.pointB[2] += g_BattleCameraTransform.translation[2];
     frame.offset = -(frame.burst->position >> 3);
     NormalizeVectorFixed(frame.pointA, frame.direction);
-    frame.pointA[0] += frame.offset * frame.direction[0] >> 0xC;
-    frame.pointA[1] += frame.offset * frame.direction[1] >> 0xC;
-    frame.pointA[2] += frame.offset * frame.direction[2] >> 0xC;
+    frame.pointA[0] += frame.offset * frame.direction[0] >> 12;
+    frame.pointA[1] += frame.offset * frame.direction[1] >> 12;
+    frame.pointA[2] += frame.offset * frame.direction[2] >> 12;
     NormalizeVectorFixed(frame.pointB, frame.direction);
-    frame.pointB[0] += frame.offset * frame.direction[0] >> 0xC;
-    frame.pointB[1] += frame.offset * frame.direction[1] >> 0xC;
-    frame.pointB[2] += frame.offset * frame.direction[2] >> 0xC;
+    frame.pointB[0] += frame.offset * frame.direction[0] >> 12;
+    frame.pointB[1] += frame.offset * frame.direction[1] >> 12;
+    frame.pointB[2] += frame.offset * frame.direction[2] >> 12;
     SetRotMatrix(&frame.matrix);
     frame.state = (BattleFxLimitSatanSlamBurstState *)Gfx_GetPsxScratchpadPtr(0);
     frame.state->tableField = Gfx_ModelTableGetRenderObject(1, g_YasuiLimitSatanSlamResourceHandle);
@@ -2447,7 +2447,7 @@ void __cdecl BattleFx_LimitSatanSlamMirroredBurstModelsTask(void)
     frame.matrixPad = frame.pointB[3];
     SetTransMatrix(&frame.matrix);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.state, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.burst->step >= 0xC) {
+    if (frame.burst->step >= 12) {
         frame.burst->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -2469,7 +2469,7 @@ void __cdecl BattleFx_LimitSatanSlamCopyMeshPoseVertices(void *src)
     Int64Pair *destination;
 
     destination = (Int64Pair *)&g_YasuiLimitSatanSlamWorkingMeshBlob.battleLimitSatanPoseVertexBuffer;
-    for (i = 0; i < 0x135; i++) {
+    for (i = 0; i < 309; i++) {
         destination[i] = ((Int64Pair *)src)[i];
     }
 }
@@ -2490,24 +2490,24 @@ void __cdecl BattleFx_LimitSatanSlamSetActorHeightsFromMesh(BattleFxLimitSatanSl
     meshState->meshBlob = (int)&g_YasuiLimitSatanSlamWorkingMeshBlob;
     meshState->drawMode = g_YasuiLimitSatanSlamMirrorFlag;
     if (g_YasuiLimitSatanSlamMirrorFlag != 0) {
-        minX = g_YasuiLimitSatanSlamTransformMatrix.t[0] - 0x888;
-        workXMax = g_YasuiLimitSatanSlamTransformMatrix.t[0] + 0x888;
-        minZ = g_YasuiLimitSatanSlamTransformMatrix.t[2] - 0xD58;
-        maxHeight = g_YasuiLimitSatanSlamTransformMatrix.t[2] + 0xE70;
+        minX = g_YasuiLimitSatanSlamTransformMatrix.t[0] - 2184;
+        workXMax = g_YasuiLimitSatanSlamTransformMatrix.t[0] + 2184;
+        minZ = g_YasuiLimitSatanSlamTransformMatrix.t[2] - 3416;
+        maxHeight = g_YasuiLimitSatanSlamTransformMatrix.t[2] + 3696;
     } else {
-        minX = g_YasuiLimitSatanSlamTransformMatrix.t[0] - 0x888;
-        workXMax = g_YasuiLimitSatanSlamTransformMatrix.t[0] + 0x888;
-        minZ = g_YasuiLimitSatanSlamTransformMatrix.t[2] - 0xE70;
-        maxHeight = g_YasuiLimitSatanSlamTransformMatrix.t[2] + 0xD58;
+        minX = g_YasuiLimitSatanSlamTransformMatrix.t[0] - 2184;
+        workXMax = g_YasuiLimitSatanSlamTransformMatrix.t[0] + 2184;
+        minZ = g_YasuiLimitSatanSlamTransformMatrix.t[2] - 3696;
+        maxHeight = g_YasuiLimitSatanSlamTransformMatrix.t[2] + 3416;
     }
-    for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    for (actorIdx = 0; actorIdx < 10; actorIdx++) {
         surfaceRec = (BattleFxSatanSlamActorSurface *)&g_BattleActorRecords[actorIdx].posX;
         if (surfaceRec->posX >= minX && surfaceRec->posX <= workXMax && surfaceRec->posZ >= minZ && surfaceRec->posZ <= maxHeight) {
             BattleFx_LimitSatanSlamFindMeshSurfaceNearPoint(meshState, surfaceRec);
             if (meshState->hitCount != 0) {
                 meshState->height = g_YasuiLimitSatanSlamSavedActorPositions[actorIdx].posY;
                 heightDelta = (short)Gte_PlaneHeightDelta((Vec3sPacked *)&meshState->surfaceIndex, (Vec3sPacked *)&meshState->hitX, (BattlePlaneNormal *)&meshState->normalX);
-                heightDelta = heightDelta * heightScale >> 0xC;
+                heightDelta = heightDelta * heightScale >> 12;
                 g_BattleActorRecords[actorIdx].posY = g_YasuiLimitSatanSlamSavedActorPositions[actorIdx].posY - heightDelta;
                 if (heightDelta != 0) {
                     g_BattleActorRecords[actorIdx].drawFlags |= 0x10;
@@ -2557,8 +2557,8 @@ void __cdecl BattleFx_LimitSatanSlamFindMeshSurfaceNearPoint(BattleFxLimitSatanS
     meshState->surfaceIndex = colIndex8;
     meshState->height = surface->height;
     meshState->gridY = gridY;
-    colIndex8 += 0x888;
-    gridY += 0xE70;
+    colIndex8 += 2184;
+    gridY += 3696;
     colIndex8 = colIndex8 / 512;
     gridY = gridY / 512;
     curMinCol = colIndex8 - 1;
@@ -2590,8 +2590,8 @@ void __cdecl BattleFx_LimitSatanSlamFindMeshSurfaceNearPoint(BattleFxLimitSatanS
     if (rowMin < 0) {
         rowLo = 0;
     } else {
-        if (rowMin > 0xD) {
-            rowTemp = 0xD;
+        if (rowMin > 13) {
+            rowTemp = 13;
         } else {
             rowTemp = rowMin;
         }
@@ -2601,7 +2601,7 @@ void __cdecl BattleFx_LimitSatanSlamFindMeshSurfaceNearPoint(BattleFxLimitSatanS
     if (rowLast < 0) {
         rowHi = 0;
     } else {
-        if (rowLast > 0xD) {
+        if (rowLast > 13) {
             rowHiTemp = 0xD;
         } else {
             rowHiTemp = rowLast;

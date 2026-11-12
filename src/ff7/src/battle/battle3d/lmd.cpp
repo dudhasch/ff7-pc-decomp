@@ -148,7 +148,7 @@ void __cdecl Lmd_DestroyTextureAtlas(Battle3dLmdFaceData *atlas)
     if (atlas != 0) {
         DestroyList(atlas->slotList);
         // STRING: FF7 0x008ffc78
-        GameHeapFree(atlas, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0xfa);
+        GameHeapFree(atlas, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 250);
     }
 }
 
@@ -161,7 +161,7 @@ void *__cdecl Lmd_CreateTextureAtlas(int owner, void *timObject)
     Battle3dLmdFaceData *atlas;
 
     // STRING: FF7 0x008ffc9c
-    atlas = (struct Battle3dLmdFaceData *)GameHeapAlloc(1, 0x1618, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x102);
+    atlas = (struct Battle3dLmdFaceData *)GameHeapAlloc(1, 5656, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 258);
     if (atlas != 0) {
         atlas->faceKind = owner;
         atlas->slotList = CreateList(0);
@@ -261,7 +261,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
         vtxCount = (unsigned int)vertexBlockSize >> 3;
         readPtr += 4;
         // STRING: FF7 0x008ffcc0
-        pVertBase = (Battle3dLmdFloatVec *)GameHeapAllocRaw(vtxCount * 0xC, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x165);
+        pVertBase = (Battle3dLmdFloatVec *)GameHeapAllocRaw(vtxCount * 0xC, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 357);
         pVertOut = (BattleFxHellBomberEndVertex *)pVertBase;
         if (pVertBase != 0) {
             vertSrcPtr = (Vec3sPacked *)readPtr;
@@ -294,7 +294,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                     sizingPosition += blockFaces << 4;
                     break;
                 case BATTLE3D_LMD_LOAD_VERTEX_COLORED:
-                    sizingPosition += blockFaces * 0x14;
+                    sizingPosition += blockFaces * 20;
                 }
                 break;
             case BATTLE3D_LMD_BLOCK_TEXTURED_QUADS:
@@ -302,28 +302,28 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                 sizingPosition += 4;
                 switch (desc->loadKind) {
                 case BATTLE3D_LMD_LOAD_UNCOLORED:
-                    sizingPosition += blockFaces * 0x14;
+                    sizingPosition += blockFaces * 20;
                     break;
                 case BATTLE3D_LMD_LOAD_VERTEX_COLORED:
-                    sizingPosition += blockFaces * 0x18;
+                    sizingPosition += blockFaces * 24;
                 }
                 break;
             case BATTLE3D_LMD_BLOCK_GOURAUD_TRIANGLES:
                 blockFaces = *(int *)sizingPosition;
                 sizingPosition += 4;
-                sizingPosition += blockFaces * 0x14;
+                sizingPosition += blockFaces * 20;
                 break;
             case BATTLE3D_LMD_BLOCK_GOURAUD_QUADS:
                 blockFaces = *(int *)sizingPosition;
                 sizingPosition += 4;
-                sizingPosition += blockFaces * 0x18;
+                sizingPosition += blockFaces * 24;
             }
             totalFaces += blockFaces;
         }
         faceCap = totalFaces;
         if (totalFaces > 0 && faceCap > 0) {
             // STRING: FF7 0x008ffce4
-            polyBasePtr = (Battle3dPolygonData *)GameHeapAlloc(totalFaces, 0x38, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x1C3);
+            polyBasePtr = (Battle3dPolygonData *)GameHeapAlloc(totalFaces, 56, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 451);
             curPoly = (Battle3dPolygonData *)polyBasePtr;
             if (totalFaces > faceCap) {
                 allocCnt = totalFaces;
@@ -331,7 +331,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                 allocCnt = faceCap;
             }
             // STRING: FF7 0x008ffd08
-            recordArray = (Battle3dLmdPart *)GameHeapAlloc(allocCnt, 0x58, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x1CF);
+            recordArray = (Battle3dLmdPart *)GameHeapAlloc(allocCnt, 88, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 463);
             recCursor = (Battle3dPolygonRecord *)recordArray;
             if (polyBasePtr != 0 && recordArray != 0) {
                 decodePos = readPtr;
@@ -499,7 +499,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                                 curPoly++;
                                 triPointer++;
                             }
-                            decodePos += groupCnt * 0x14;
+                            decodePos += groupCnt * 20;
                         }
                         break;
                     case BATTLE3D_LMD_BLOCK_TEXTURED_QUADS:
@@ -637,7 +637,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                                 curPoly++;
                                 quadPtrPtr++;
                             }
-                            decodePos += groupCnt * 0x14;
+                            decodePos += groupCnt * 20;
                             break;
                         case BATTLE3D_LMD_LOAD_VERTEX_COLORED:
                             groupCnt = *(int *)decodePos;
@@ -692,7 +692,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                                 curPoly++;
                                 tintQuadPtr++;
                             }
-                            decodePos += groupCnt * 0x18;
+                            decodePos += groupCnt * 24;
                         }
                         break;
                     case BATTLE3D_LMD_BLOCK_GOURAUD_TRIANGLES:
@@ -740,7 +740,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                             curPoly++;
                             gTriPtr++;
                         }
-                        decodePos += groupCnt * 0x14;
+                        decodePos += groupCnt * 20;
                         break;
                     case BATTLE3D_LMD_BLOCK_GOURAUD_QUADS:
                         groupCnt = *(int *)decodePos;
@@ -792,7 +792,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                             curPoly++;
                             gouraudQuadPtr++;
                         }
-                        decodePos += groupCnt * 0x18;
+                        decodePos += groupCnt * 24;
                     }
                 }
                 goodFlag = 0;
@@ -831,7 +831,7 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
                                 ListAppendValue(packedKey, faceData->slotList);
                                 ListFindIndexByValue(&foundIndex, ListCompareEqual, packedKey, faceData->slotList);
                             }
-                            if (foundIndex >= 0 && foundIndex < 0x64) {
+                            if (foundIndex >= 0 && foundIndex < 100) {
                                 atlasSlot = &faceData->slots[foundIndex];
                                 if (atlasSlot->state == 0) {
                                     atlasSlot->uMinBits = recCursor->u0.bits;
@@ -963,13 +963,13 @@ int __cdecl Battle_BuildPolygonDataFromLmd(Battle3dPartyLoadDesc *desc, int coun
         }
     }
     // STRING: FF7 0x008ffd60
-    GameHeapFree((void *)recordArray, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x5AF);
+    GameHeapFree((void *)recordArray, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1455);
     // STRING: FF7 0x008ffd84
-    GameHeapFree((void *)polyBasePtr, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x5B0);
+    GameHeapFree((void *)polyBasePtr, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1456);
     // STRING: FF7 0x008ffda8
-    GameHeapFree((void *)tmpBlock, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x5B1);
+    GameHeapFree((void *)tmpBlock, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1457);
     // STRING: FF7 0x008ffdcc
-    GameHeapFree((void *)pVertBase, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x5B2);
+    GameHeapFree((void *)pVertBase, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1458);
     if (goodFlag != 0) {
         Pfile_Free(pArrays);
         pArrays = 0;
@@ -1122,7 +1122,7 @@ void __cdecl Lmd_BuildSlotTexture(int sliceIndex, Battle3dLmdTextureSlot *slot, 
         }
     }
     pagesAcross = tpageDeltaX8 / widthPerPage;
-    localPageStepY = yDelta / 0x100;
+    localPageStepY = yDelta / 256;
     originU = pagesAcross * 256.0f + slot->atlasU;
     originV = localPageStepY * 256.0f + slot->atlasV;
     alignedU = rectangleWidth;
@@ -1251,7 +1251,7 @@ void __cdecl Lmd_DebugLoadSwordTest(void)
             Lmd_DestroyTextureAtlas(pAtlas);
         }
         // STRING: FF7 0x008fff88
-        GameHeapFree((void *)fileData, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x784);
+        GameHeapFree((void *)fileData, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1924);
     }
 }
 
@@ -1290,17 +1290,17 @@ int __cdecl BattleModel_BuildRsdSubstitute(Battle3dPartyLoadDesc *loadDesc, int 
 
     failed = 1;
     // STRING: FF7 0x008fffac
-    rsd = (PolygonRsdRecord *)GameHeapAlloc(1, 0x24, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x7A0);
+    rsd = (PolygonRsdRecord *)GameHeapAlloc(1, 36, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1952);
     if (rsd != 0) {
         loadDesc->subCount = count;
         rsd->count = count;
         if (rsd->count > 0) {
             // STRING: FF7 0x008fffd0
-            rsd->block = (int)GameHeapAlloc(rsd->count, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x7AC);
+            rsd->block = (int)GameHeapAlloc(rsd->count, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1964);
             // STRING: FF7 0x008ffff4
-            rsd->texRecordTable = (int)GameHeapAlloc(rsd->count, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x7AD);
+            rsd->texRecordTable = (int)GameHeapAlloc(rsd->count, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1965);
             // STRING: FF7 0x00900018
-            rsd->textures = (int)GameHeapAlloc(rsd->count, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x7AE);
+            rsd->textures = (int)GameHeapAlloc(rsd->count, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1966);
             if (rsd->block != 0 && rsd->texRecordTable != 0 && rsd->textures != 0) {
                 savedVal = loader->sourceMode;
                 loader->sourceMode = 0;
@@ -1319,7 +1319,7 @@ int __cdecl BattleModel_BuildRsdSubstitute(Battle3dPartyLoadDesc *loadDesc, int 
         }
         rsd->meshCount = 1;
         // STRING: FF7 0x0090003c
-        rsd->meshes = (int)GameHeapAlloc(rsd->meshCount, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x7CE);
+        rsd->meshes = (int)GameHeapAlloc(rsd->meshCount, 4, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 1998);
         if (rsd->meshes != 0) {
             *(int *)rsd->meshes = (int)polyArrays;
             failed = 0;
@@ -1327,7 +1327,7 @@ int __cdecl BattleModel_BuildRsdSubstitute(Battle3dPartyLoadDesc *loadDesc, int 
     }
     if (failed != 0) {
         // STRING: FF7 0x00900060
-        GameHeapFree((void *)rsd, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 0x7D8);
+        GameHeapFree((void *)rsd, "C:\\FF7\\src\\battle\\battle3d\\lmd.cpp", 2008);
         rsd = 0;
     }
     return (int)rsd;

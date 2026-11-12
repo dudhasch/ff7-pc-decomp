@@ -127,11 +127,11 @@ void __cdecl BattleFx_SpecialBadMouthInitFragmentMotion(void)
     int p, q;
     short r;
 
-    for (r = 0; r < 0x80; r++) {
+    for (r = 0; r < 128; r++) {
         ((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[r].posX = 0;
         ((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[r].posY = 0;
         ((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[r].fallPosition = 0;
-        BattleFx_MakeRandomConeVector(0xFFFFFF6A, 0x32, (void *)(r * 8 + (int)&g_BattleSpecialBadMouthFragmentState1));
+        BattleFx_MakeRandomConeVector(0xFFFFFF6A, 50, (void *)(r * 8 + (int)&g_BattleSpecialBadMouthFragmentState1));
     }
 }
 
@@ -167,44 +167,44 @@ void __cdecl BattleFx_SpecialBadMouthTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step < 0xF && taskPtr->step % 3 == 0) {
+    if (taskPtr->step < 15 && taskPtr->step % 3 == 0) {
         spawned = (BattleFxBadMouthParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBadMouthSpinModelTask);
         spawned->posX = taskPtr->startX;
         spawned->posY = taskPtr->startY;
         spawned->posZ = taskPtr->startZ;
-        spawned->velocityX = (taskPtr->endX - taskPtr->startX) / 0x14;
-        spawned->velocityY = (taskPtr->endY - taskPtr->startY) / 0x14;
-        spawned->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 0x14;
+        spawned->velocityX = (taskPtr->endX - taskPtr->startX) / 20;
+        spawned->velocityY = (taskPtr->endY - taskPtr->startY) / 20;
+        spawned->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 20;
         spawned->orbitAngle = 0;
         spawned->orbitRadius = 0;
-        spawned->scale = 0x400;
+        spawned->scale = 0x400 /* 0.25 */;
         spawned->spinPhase = 0;
         spawned->modelIndex = taskPtr->step / 3;
         spawned = (BattleFxBadMouthParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialBadMouthRisingAnimatedSpriteTask)];
-        spawned->posX = taskPtr->startX + rand() % 0x190 + -0xC8;
-        spawned->posY = taskPtr->startY + rand() % 0x190 + -0xC8;
-        spawned->posZ = taskPtr->startZ + rand() % 0x190 + -0xC8;
+        spawned->posX = taskPtr->startX + rand() % 400 + -200;
+        spawned->posY = taskPtr->startY + rand() % 400 + -200;
+        spawned->posZ = taskPtr->startZ + rand() % 400 + -200;
     }
-    if (taskPtr->step == 0x32) {
+    if (taskPtr->step == 50) {
         spawned = (BattleFxBadMouthParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBadMouthGrowingModelTask);
         spawned->posX = taskPtr->endX;
         spawned->posY = taskPtr->endY;
         spawned->posZ = taskPtr->endZ;
     }
-    if (taskPtr->step == 0x32) {
+    if (taskPtr->step == 50) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
     }
-    if (taskPtr->step > 0x28 && taskPtr->step < 0x30) {
+    if (taskPtr->step > 40 && taskPtr->step < 48) {
         for (i9 = 0; i9 < 2; i9++) {
             spawned = (BattleFxBadMouthParticle *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialBadMouthFixedAnimatedSpriteTask)];
             Battle_GetBoneWorldPos(taskPtr->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, (short *)&spawned->posX);
-            spawned->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            spawned->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            spawned->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            spawned->posX += (short)(rand() % 1000 - 500);
+            spawned->posY += (short)(rand() % 1000 - 500);
+            spawned->posZ += (short)(rand() % 1000 - 500);
         }
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x50) {
+    if (taskPtr->step == 80) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -220,7 +220,7 @@ void __cdecl BattleFx_SpecialBadMouthFixedAnimatedSpriteTask(void)
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
     (g_BattleSpecialBadMouthColor1.spriteResource) = Gfx_ModelTableGetLoadedRecord(7, g_BattleSpecialBadMouthLoadedResTable);
     g_BattleSpecialBadMouthColor1.drawObj = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1000 /* 1.0 */, 0);
     g_BattleSpecialBadMouthColor1.frame = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialBadMouthColor1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && (g_BattleSpecialBadMouthColor1.spriteResource) != 0) {
@@ -242,11 +242,11 @@ void __cdecl BattleFx_SpecialBadMouthRisingAnimatedSpriteTask(void)
     task = (BattleFxSatelliteBeamBlackPuff *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
     (g_BattleSpecialBadMouthColor2.spriteResource) = Gfx_ModelTableGetLoadedRecord(6, g_BattleSpecialBadMouthLoadedResTable);
     g_BattleSpecialBadMouthColor2.drawObj = Gfx_ModelTableGetSpriteObject(6, g_BattleSpecialBadMouthLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800 /* 1.5 */, 0);
     g_BattleSpecialBadMouthColor2.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialBadMouthColor2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
-        task->posY -= 0x14;
+        task->posY -= 20;
         if ((g_BattleSpecialBadMouthColor2.spriteResource) != 0) {
             (task->frame)++;
             if (task->frame >= *(int *)((char *)*(int *)(g_BattleSpecialBadMouthColor2.spriteResource) + 4)) {
@@ -293,7 +293,7 @@ void __cdecl BattleFx_SpecialBadMouthGrowingModelTask(void)
         return;
     }
     (frame.growSlot->growStep)++;
-    if (frame.growSlot->growStep == 0x14) {
+    if (frame.growSlot->growStep == 20) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -320,8 +320,8 @@ void __cdecl BattleFx_SpecialBadMouthSpinModelTask(void)
 #pragma pack(pop)
 
     frame.spinSlot = (BattleFxBadMouthSpinModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.orbitX = SinFixed(frame.spinSlot->angle) * frame.spinSlot->radius >> 0xC;
-    frame.orbitZ = CosFixed(frame.spinSlot->angle) * frame.spinSlot->radius >> 0xC;
+    frame.orbitX = SinFixed(frame.spinSlot->angle) * frame.spinSlot->radius >> 12;
+    frame.orbitZ = CosFixed(frame.spinSlot->angle) * frame.spinSlot->radius >> 12;
     frame.spinPhase.vx = frame.spinSlot->spinPhase;
     frame.spinPhase.vy = frame.spinSlot->angle;
     frame.spinPhase.vz = 0;
@@ -342,29 +342,29 @@ void __cdecl BattleFx_SpecialBadMouthSpinModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.spinSlot->frameCounter < 0x14) {
+    if (frame.spinSlot->frameCounter < 20) {
         frame.spinSlot->posX += frame.spinSlot->velocityX;
         frame.spinSlot->posY += frame.spinSlot->velocityY;
         frame.spinSlot->posZ += frame.spinSlot->velocityZ;
         frame.spinSlot->spinAngle += 0xC0;
-        frame.spinSlot->radius = SinFixed(frame.spinSlot->frameCounter * 0x3C) * 0x3E8 >> 0xC;
+        frame.spinSlot->radius = SinFixed(frame.spinSlot->frameCounter * 0x3C) * 0x3E8 >> 12;
         frame.spinSlot->spinPhase += 0xBE;
     }
-    if (frame.spinSlot->frameCounter >= 0x14 && frame.spinSlot->frameCounter <= 0x28) {
+    if (frame.spinSlot->frameCounter >= 20 && frame.spinSlot->frameCounter <= 40) {
         frame.spinSlot->radius -= 0x1E;
     }
-    if (frame.spinSlot->frameCounter == 0x28 && frame.spinSlot->modelIndex == 4) {
+    if (frame.spinSlot->frameCounter == 40 && frame.spinSlot->modelIndex == 4) {
         frame.fragSlot = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBadMouthFragmentedModelTask);
         frame.fragSlot->posX = frame.spinSlot->posX;
         frame.fragSlot->posY = frame.spinSlot->posY;
         frame.fragSlot->posZ = frame.spinSlot->posZ;
-        frame.fragSlot->posY += 0xC8;
+        frame.fragSlot->posY += 200;
         g_BattleSpecialBadMouthFragmentSpawnedFlag = 1;
     }
     if (g_BattleSpecialBadMouthFragmentSpawnedFlag == 1) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
-    frame.spinSlot->angle += 0x100;
+    frame.spinSlot->angle += 0x100 /* 22.5 deg */;
     (frame.spinSlot->frameCounter)++;
 }
 
@@ -398,14 +398,14 @@ void __cdecl BattleFx_SpecialBadMouthFragmentedModelTask(void)
     frame.stepAngle.vz = 0;
     frame.stepAngle.vy = frame.stepAngle.vz;
     RotMatrix(&frame.stepAngle, &frame.stepMatrix);
-    g_BattleSpecialBadMouthModelReq2.brightness = frame.fragSlot->step * 0xC8;
+    g_BattleSpecialBadMouthModelReq2.brightness = frame.fragSlot->step * 200;
     g_BattleSpecialBadMouthDrawListHead = BattleFx_SpecialBadMouthDrawFragmentedModel(&g_BattleSpecialBadMouthModelReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, (BattleFxBadMouthDrawPrim *)g_BattleSpecialBadMouthDrawListHead, (struct Vec3sPacked *)&(((BattleSpecialSpiderWebLineRecords *)&g_BattleSpecialBadMouthFragmentState2)->recordBase), &frame.drawMatrix, (struct BattleFxOffsetTriMeshDesc *)&frame.stepMatrix);
     if (g_BattleIsPaused != 0) {
         return;
     }
     BattleFx_SpecialBadMouthStepBouncingFragments();
     (frame.fragSlot->step)++;
-    if (frame.fragSlot->step == 0x14) {
+    if (frame.fragSlot->step == 20) {
         frame.fragSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -546,11 +546,11 @@ void __cdecl BattleFx_SpecialBadMouthStepBouncingFragments(void)
 {
     short i;
 
-    for (i = 0; i < 0x80; i++) {
+    for (i = 0; i < 128; i++) {
         ((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[i].fallPosition += ((BattleFxBadMouthFragmentVelocity *)&g_BattleSpecialBadMouthFragmentState1)[i].fallVelocity;
         ((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[i].posY += ((BattleFxBadMouthFragmentVelocity *)&g_BattleSpecialBadMouthFragmentState1)[i].velocityY;
         ((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[i].posX += ((BattleFxBadMouthFragmentVelocity *)&g_BattleSpecialBadMouthFragmentState1)[i].velocityX;
-        ((BattleFxBadMouthFragmentVelocity *)&g_BattleSpecialBadMouthFragmentState1)[i].velocityY += 0x14;
+        ((BattleFxBadMouthFragmentVelocity *)&g_BattleSpecialBadMouthFragmentState1)[i].velocityY += 20;
         if (((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[i].posY > 0) {
             ((BattleFxBadMouthFragmentOffset *)&g_BattleSpecialBadMouthFragmentState2)[i].posY = 0;
             ((BattleFxBadMouthFragmentVelocity *)&g_BattleSpecialBadMouthFragmentState1)[i].velocityY = -((BattleFxBadMouthFragmentVelocity *)&g_BattleSpecialBadMouthFragmentState1)[i].velocityY;

@@ -227,7 +227,7 @@ void __cdecl BattleFx_SpecialBeginRadiantBreath(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0x10);
+    Battle_StartFixedPointRamp(0x1000, 16);
     Battle_PlaySfxPannedToActor(0x173, -1, 0x40);
 }
 
@@ -263,16 +263,16 @@ void __cdecl BattleFx_SpecialRadiantBreathTimelineTask(void)
     }
     if (pCurrent->frameCounter >= 0 && pCurrent->frameCounter < 8) {
         tl = (BattleFxRadiantBreathTimelineState *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialRadiantBreathFrameTableSpriteTask)];
-        tl->offsetX = rand() % 0x1770 - 0xBB8;
+        tl->offsetX = rand() % 6000 - 3000;
         tl->offsetY = 0;
-        tl->offsetZ = rand() % 0x1770 - 0xBB8;
+        tl->offsetZ = rand() % 6000 - 3000;
         tl->variant = rand() % 2;
         burstPtr = (BattleFxRadiantBreathGroundSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRadiantBreathGroundBurstTask);
         burstPtr->offsetX = tl->offsetX;
         burstPtr->offsetY = 0;
         burstPtr->offsetZ = tl->offsetZ;
     }
-    if (pCurrent->frameCounter == 0x14) {
+    if (pCurrent->frameCounter == 20) {
         tl = (BattleFxRadiantBreathTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRadiantBreathGrowingModelSparksTask);
         tl->offsetX = 0;
         tl->offsetY = 0xFB50;
@@ -283,21 +283,21 @@ void __cdecl BattleFx_SpecialRadiantBreathTimelineTask(void)
         tl->offsetZ = 0;
         Battle_PlaySfxPannedToActor(0x164, -1, 0x40);
     }
-    if (pCurrent->frameCounter == 0x20) {
+    if (pCurrent->frameCounter == 32) {
         Battle_AllocateResourceSlot(BattleFx_SpecialRadiantBreathIntensityRampTask);
     }
-    if (pCurrent->frameCounter == 0x30) {
-        Battle_StartFixedPointRamp(0, 0x10);
+    if (pCurrent->frameCounter == 48) {
+        Battle_StartFixedPointRamp(0, 16);
     }
-    if (pCurrent->frameCounter == 0x3C) {
-        for (actorIndex8 = 0; actorIndex8 < 0xA; actorIndex8++) {
+    if (pCurrent->frameCounter == 60) {
+        for (actorIndex8 = 0; actorIndex8 < 10; actorIndex8++) {
             if ((g_BattleSpecRadiantBreathTargetMask & 1 << actorIndex8) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIndex8);
             }
         }
     }
     (pCurrent->frameCounter)++;
-    if (pCurrent->frameCounter == 0x46) {
+    if (pCurrent->frameCounter == 70) {
         pCurrent->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -317,14 +317,14 @@ void __cdecl BattleFx_SpecialRadiantBreathIntensityRampTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x10) {
+    if (task->frameCounter < 16) {
         g_BattleSpecRadiantBreathIntensity += 0xF;
     }
-    if (task->frameCounter > 0x10) {
+    if (task->frameCounter > 16) {
         g_BattleSpecRadiantBreathIntensity -= 0xF;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x20) {
+    if (task->frameCounter == 32) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -348,7 +348,7 @@ void __cdecl BattleFx_SpecialRadiantBreathGroundBurstTask(void)
 #pragma pack(pop)
 
     frame.burstSlot = (BattleFxOilTargetModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.burstSlot->frameCounter < 0x14) {
+    if (frame.burstSlot->frameCounter < 20) {
         frame.burstState = 8;
     } else {
         frame.burstState = 0x1C - frame.burstSlot->frameCounter;
@@ -369,19 +369,19 @@ void __cdecl BattleFx_SpecialRadiantBreathGroundBurstTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     g_BattleSpecRadiantBreathTransformData1.groundModel.fadeLevel = g_BattleSpecRadiantBreathGroundFade << 4;
-    g_BattleSpecRadiantBreathTransformData1.groundModel.modelGroup = Gfx_ModelTableGetRenderObject(0xF, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathTransformData1.groundModel.modelGroup = Gfx_ModelTableGetRenderObject(15, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecRadiantBreathTransformData1.groundModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
-    g_BattleSpecRadiantBreathTransformData1.groundModel.modelGroup = Gfx_ModelTableGetRenderObject(0x10, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathTransformData1.groundModel.modelGroup = Gfx_ModelTableGetRenderObject(16, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecRadiantBreathTransformData1.groundModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
-    BattleFx_InstallBillboardMatrix((void *)((int)frame.burstSlot + 4), ((frame.burstSlot->frameCounter % 2) << 0xA) + 0x1000, 0);
-    g_BattleSpecRadiantBreathTransformData1.groundSprite.drawObj = Gfx_ModelTableGetSpriteObject(0x14, g_BattleSpecRadiantBreathLoadedResTable);
-    g_BattleSpecRadiantBreathTransformData1.groundSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x14, g_BattleSpecRadiantBreathLoadedResTable);
+    BattleFx_InstallBillboardMatrix((void *)((int)frame.burstSlot + 4), ((frame.burstSlot->frameCounter % 2) << 10) + 0x1000, 0);
+    g_BattleSpecRadiantBreathTransformData1.groundSprite.drawObj = Gfx_ModelTableGetSpriteObject(20, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathTransformData1.groundSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(20, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecRadiantBreathTransformData1.groundSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.burstSlot->frameCounter)++;
-    if (frame.burstSlot->frameCounter == 0x1C) {
+    if (frame.burstSlot->frameCounter == 28) {
         frame.burstSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -398,14 +398,14 @@ void __cdecl BattleFx_SpecialRadiantBreathFrameTableSpriteTask(void)
     BattleFxRadiantBreathFrameSprite *task;
 
     task = (BattleFxRadiantBreathFrameSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecRadiantBreathTransformData1.frameSprite.frame = g_BattleSpecRadiantBreathParam1[task->frameIndex];
     g_BattleSpecRadiantBreathTransformData1.frameSprite.drawObj = Gfx_ModelTableGetSpriteObject(g_BattleSpecRadiantBreathAnimData2[task->animIndex], g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathTransformData1.frameSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_BattleSpecRadiantBreathAnimData2[task->animIndex], g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecRadiantBreathTransformData1.frameSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->frameIndex)++;
-        if (task->frameIndex == 0x1C) {
+        if (task->frameIndex == 28) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -434,7 +434,7 @@ void __cdecl BattleFx_SpecialRadiantBreathGrowingModelSparksTask(void)
     frame.angleX.vx = frame.angleX.vz;
     frame.angleX.vy = 0;
     RotMatrixXYZ(&frame.angleX, &frame.sparkMatrix);
-    g_BattleSpecRadiantBreathSparkScaleZ = frame.sparksSlot->frameCounter << 0xA;
+    g_BattleSpecRadiantBreathSparkScaleZ = frame.sparksSlot->frameCounter << 10;
     g_BattleSpecRadiantBreathSparkScaleY = g_BattleSpecRadiantBreathSparkScaleZ;
     g_BattleSpecRadiantBreathSparkScaleX = g_BattleSpecRadiantBreathSparkScaleY;
     ScaleMatrix(&frame.sparkMatrix, &g_BattleSpecRadiantBreathSparkScaleX);
@@ -453,32 +453,32 @@ void __cdecl BattleFx_SpecialRadiantBreathGrowingModelSparksTask(void)
     g_BattleSpecRadiantBreathTransformData2.flags = 0x28;
     g_BattleSpecRadiantBreathTransformData2.alpha = g_BattleSpecRadiantBreathSparkFade << 3;
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecRadiantBreathTransformData2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
-    BattleFx_InstallBillboardMatrix((void *)((int)frame.sparksSlot + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)frame.sparksSlot + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecRadiantBreathSpriteRequest2.req2Byte2 = g_BattleSpecRadiantBreathSparkFade << 3;
     g_BattleSpecRadiantBreathSpriteRequest2.req2Byte1 = g_BattleSpecRadiantBreathSpriteRequest2.req2Byte2;
     (g_BattleSpecRadiantBreathSpriteRequest2.red) = g_BattleSpecRadiantBreathSpriteRequest2.req2Byte1;
-    g_BattleSpecRadiantBreathAnimData4.drawObj = Gfx_ModelTableGetSpriteObject(0x13, g_BattleSpecRadiantBreathLoadedResTable);
-    g_BattleSpecRadiantBreathAnimData4.record24 = Gfx_ModelTableGetLoadedRecord(0x13, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathAnimData4.drawObj = Gfx_ModelTableGetSpriteObject(19, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathAnimData4.record24 = Gfx_ModelTableGetLoadedRecord(19, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecRadiantBreathAnimData4.record24, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.sparksSlot->frameCounter < 0xC) {
+    if (frame.sparksSlot->frameCounter < 12) {
         frame.spriteSlot = (BattleFxRadiantBreathAnimatedSpriteSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialRadiantBreathAnimatedSpriteTask)];
         frame.spriteSlot->posX = frame.sparksSlot->growthX;
         frame.spriteSlot->posY = frame.sparksSlot->growthY;
         frame.spriteSlot->posZ = frame.sparksSlot->growthZ;
         frame.spriteSlot->rotOrVelY = 0;
         frame.spriteSlot->rotOrVelX = 0;
-        frame.spriteSlot->rotOrVelZ = g_BattleSpecRadiantBreathAnimData5[frame.sparksSlot->frameCounter] * 0x154 + rand() % 0xC8 + -0x64;
+        frame.spriteSlot->rotOrVelZ = g_BattleSpecRadiantBreathAnimData5[frame.sparksSlot->frameCounter] * 340 + rand() % 200 + -100;
         frame.spriteSlot->animIndex = (rand() % 2);
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x20 - ((frame.sparksSlot->frameCounter % 2) << 6));
-    if (frame.sparksSlot->frameCounter > 0xE) {
+    g_BattleCameraFocalPoint.focalPointY += (short)(32 - ((frame.sparksSlot->frameCounter % 2) << 6));
+    if (frame.sparksSlot->frameCounter > 14) {
         g_BattleSpecRadiantBreathSparkFade--;
     }
     (frame.sparksSlot->frameCounter)++;
-    if (frame.sparksSlot->frameCounter == 0x1E) {
+    if (frame.sparksSlot->frameCounter == 30) {
         frame.sparksSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -566,7 +566,7 @@ void __cdecl BattleFx_SpecialRadiantBreathExpandingShellsTask(void)
     SetRotMatrix(&frame.shellMatrix);
     SetTransMatrix(&frame.shellMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecRadiantBreathSpriteRequest4.fadeLevel = 0x80 - frame.shellSlot->frameCounter * 6;
+    g_BattleSpecRadiantBreathSpriteRequest4.fadeLevel = 128 - frame.shellSlot->frameCounter * 6;
     g_BattleSpecRadiantBreathSpriteRequest4.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecRadiantBreathSpriteRequest4.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
     RotMatrixXYZ((short *)&g_BattleSpecRadiantBreathShellAngles, &frame.rotMatrix);
@@ -580,26 +580,26 @@ void __cdecl BattleFx_SpecialRadiantBreathExpandingShellsTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.shellMatrix);
     SetRotMatrix(&frame.shellMatrix);
     SetTransMatrix(&frame.shellMatrix);
-    g_BattleSpecRadiantBreathSpriteRequest4.fadeLevel = 0x80 - frame.shellSlot->frameCounter * 6;
+    g_BattleSpecRadiantBreathSpriteRequest4.fadeLevel = 128 - frame.shellSlot->frameCounter * 6;
     g_BattleSpecRadiantBreathSpriteRequest4.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecRadiantBreathSpriteRequest4.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.radius = frame.shellSlot->frameCounter * 0xF0;
+    frame.radius = frame.shellSlot->frameCounter * 240;
     frame.spawnSlot = (BattleFxRadiantBreathExpandingShellsSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRadiantBreathRisingFadeSpriteTask);
     for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
         frame.angle = (rand() % 4096);
-        frame.spawnSlot->offsetX = CosFixed(frame.angle) * frame.radius >> 0xC;
-        frame.spawnSlot->offsetZ = SinFixed(frame.angle) * frame.radius >> 0xC;
+        frame.spawnSlot->offsetX = CosFixed(frame.angle) * frame.radius >> 12;
+        frame.spawnSlot->offsetZ = SinFixed(frame.angle) * frame.radius >> 12;
         frame.spawnSlot->offsetY = 0;
         frame.spawnSlot->variant = rand() % 7;
     }
     if ((frame.shellSlot->frameCounter % 2) == 0) {
         frame.spawnSlot = (BattleFxRadiantBreathExpandingShellsSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRadiantBreathRisingSpinModelTask);
         frame.angle = (rand() % 4096);
-        frame.spawnSlot->offsetX = CosFixed(frame.angle) * frame.radius >> 0xC;
-        frame.spawnSlot->offsetZ = SinFixed(frame.angle) * frame.radius >> 0xC;
+        frame.spawnSlot->offsetX = CosFixed(frame.angle) * frame.radius >> 12;
+        frame.spawnSlot->offsetZ = SinFixed(frame.angle) * frame.radius >> 12;
         frame.spawnSlot->offsetY = 0;
         frame.spawnSlot->variant = (rand() % 4);
         frame.spawnSlot->angle = (rand() % 4096);
@@ -607,12 +607,12 @@ void __cdecl BattleFx_SpecialRadiantBreathExpandingShellsTask(void)
     for (frame.spawnIndex = 0; frame.spawnIndex < 3; frame.spawnIndex++) {
         frame.spawnSlot = (BattleFxRadiantBreathExpandingShellsSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRadiantBreathLargeAnimatedSpriteTask);
         frame.angle = (rand() % 4096);
-        frame.spawnSlot->offsetX = CosFixed(frame.angle) * frame.radius >> 0xC;
-        frame.spawnSlot->offsetZ = SinFixed(frame.angle) * frame.radius >> 0xC;
+        frame.spawnSlot->offsetX = CosFixed(frame.angle) * frame.radius >> 12;
+        frame.spawnSlot->offsetZ = SinFixed(frame.angle) * frame.radius >> 12;
         frame.spawnSlot->offsetY = 0;
     }
     (frame.shellSlot->frameCounter)++;
-    if (frame.shellSlot->frameCounter == 0x14) {
+    if (frame.shellSlot->frameCounter == 20) {
         frame.shellSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -631,10 +631,10 @@ void __cdecl BattleFx_SpecialRadiantBreathLargeAnimatedSpriteTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000 /* 3.0 */, 0);
     g_BattleSpecRadiantBreathSpriteRequest3.sprite.frame = task->frameCounter;
-    g_BattleSpecRadiantBreathSpriteRequest3.sprite.drawObj = Gfx_ModelTableGetSpriteObject(0x12, g_BattleSpecRadiantBreathLoadedResTable);
-    g_BattleSpecRadiantBreathSpriteRequest3.sprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x12, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathSpriteRequest3.sprite.drawObj = Gfx_ModelTableGetSpriteObject(18, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathSpriteRequest3.sprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(18, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecRadiantBreathSpriteRequest3.sprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
@@ -666,7 +666,7 @@ void __cdecl BattleFx_SpecialRadiantBreathRisingSpinModelTask(void)
     frame.angleX.vx = frame.angleX.vy;
     frame.angleX.vz = frame.spinSlot->spinAngle;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecRadiantBreathSpinScaleZ = 0x1000;
+    g_BattleSpecRadiantBreathSpinScaleZ = 0x1000 /* 1.0 */;
     g_BattleSpecRadiantBreathSpinScaleY = g_BattleSpecRadiantBreathSpinScaleZ;
     g_BattleSpecRadiantBreathSpinScaleX = g_BattleSpecRadiantBreathSpinScaleY;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecRadiantBreathSpinScaleX);
@@ -676,16 +676,16 @@ void __cdecl BattleFx_SpecialRadiantBreathRisingSpinModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.spinMatrix);
     SetRotMatrix(&frame.spinMatrix);
     SetTransMatrix(&frame.spinMatrix);
-    g_BattleSpecRadiantBreathSpriteRequest3.fadeLevel = 0x80 - (frame.spinSlot->frameCounter << 3);
+    g_BattleSpecRadiantBreathSpriteRequest3.fadeLevel = 128 - (frame.spinSlot->frameCounter << 3);
     g_BattleSpecRadiantBreathSpriteRequest3.modelGroup = Gfx_ModelTableGetRenderObject(g_BattleSpecRadiantBreathAnimData6[frame.spinSlot->animIndex], g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecRadiantBreathSpriteRequest3.modelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
     frame.spinSlot->posY -= 0x190;
-    frame.spinSlot->spinAngle += 0x100;
+    frame.spinSlot->spinAngle += 0x100 /* 22.5 deg */;
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0xF) {
+    if (frame.spinSlot->frameCounter == 15) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -705,20 +705,20 @@ void __cdecl BattleFx_SpecialRadiantBreathRisingFadeSpriteTask(void)
     BattleFxHeatWaveRisingFadeSprite *task;
 
     task = (BattleFxHeatWaveRisingFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecRadiantBreathSpriteRequest4.frameIndex = task->variant;
     g_BattleSpecRadiantBreathSpriteRequest4.blue = 0x80 - (task->fadeStep << 3);
     g_BattleSpecRadiantBreathSpriteRequest4.green = g_BattleSpecRadiantBreathSpriteRequest4.blue;
     g_BattleSpecRadiantBreathSpriteRequest4.red = g_BattleSpecRadiantBreathSpriteRequest4.green;
-    g_BattleSpecRadiantBreathAnimData7.drawObj = Gfx_ModelTableGetSpriteObject(0x11, g_BattleSpecRadiantBreathLoadedResTable);
-    g_BattleSpecRadiantBreathAnimData7.risingFadeRecord = Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathAnimData7.drawObj = Gfx_ModelTableGetSpriteObject(17, g_BattleSpecRadiantBreathLoadedResTable);
+    g_BattleSpecRadiantBreathAnimData7.risingFadeRecord = Gfx_ModelTableGetLoadedRecord(17, g_BattleSpecRadiantBreathLoadedResTable);
     g_BattleSpecRadiantBreathDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecRadiantBreathAnimData7.risingFadeRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecRadiantBreathDrawHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY -= 0x12C;
+    task->posY -= 300;
     (task->fadeStep)++;
-    if (task->fadeStep == 0xF) {
+    if (task->fadeStep == 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

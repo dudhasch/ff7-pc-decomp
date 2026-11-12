@@ -111,16 +111,16 @@ void __cdecl BattleFx_BlueL5DeathScreenIntensityTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        intensity = task->step * 0x140;
+        intensity = task->step * 320;
     } else if (g_BattleBlueL5DeathActiveCount <= 0) {
         if (task->startStep == 0) {
             task->startStep = task->step;
         }
-        intensity = 0xA00 - (task->step - task->startStep) * 0x140;
+        intensity = 0xA00 - (task->step - task->startStep) * 320;
     } else {
         intensity = 0xA00;
     }
-    if (task->step >= 0x35) {
+    if (task->step >= 53) {
         intensity = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -142,12 +142,12 @@ void __cdecl BattleFx_BlueSpawnL5DeathPerTarget(int actor)
     fadingSprite = (BattleFxL5DeathFadingSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueL5DeathFadingSpriteTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)fadingSprite->pos);
     scale = 0x384;
-    scaledVal = scale << 0xC;
-    fadingSprite->scale = scaledVal / 0x1F4;
+    scaledVal = scale << 12;
+    fadingSprite->scale = scaledVal / 500;
     fadingSprite->targetIndex = actor;
     rampRotationTask = (BattleFxDethRampSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueL5DeathRampRotationModelTask);
     *(Int64Pair *)rampRotationTask->pos = *(Int64Pair *)fadingSprite->pos;
-    rampRotationTask->scale = scaledVal / 0x2D5;
+    rampRotationTask->scale = scaledVal / 725;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(fadingSprite->pos), 0xAA);
 }
 
@@ -178,17 +178,17 @@ void __cdecl BattleFx_BlueL5DeathRampRotationModelTask(void)
     drawBlock->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleBlueL5DeathLoadedResTable);
     drawBlock->flags = 0x88;
     drawBlock->uvScroll = 0;
-    drawBlock->fadeLevel = 0x800;
+    drawBlock->fadeLevel = 2048;
     drawBlock->stateFlags = 0;
     drawBlock->texturePageBits = 0;
     if (slotPtr->timer < 8) {
-        drawBlock->fadeLevel = 0x1000 - (slotPtr->timer << 8);
-    } else if (slotPtr->timer >= 0x25) {
-        drawBlock->fadeLevel += (short)(slotPtr->timer - 0x25 << 8);
+        drawBlock->fadeLevel = 4096 - (slotPtr->timer << 8);
+    } else if (slotPtr->timer >= 37) {
+        drawBlock->fadeLevel += (short)(slotPtr->timer - 37 << 8);
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)drawBlock, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (slotPtr->timer >= 0x2D) {
+    if (slotPtr->timer >= 45) {
         slotPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -208,7 +208,7 @@ void __cdecl BattleFx_BlueL5DeathFadingSpriteTask(void)
     g_BattleBlueL5DeathSpriteColor.lv5DethSpriteFrameWord = pSprite->frame & 7;
     if (pSprite->frame < 8) {
         colorByte = pSprite->frame << 4;
-    } else if (pSprite->frame >= 0x25) {
+    } else if (pSprite->frame >= 37) {
         colorByte = 0x80 - (pSprite->frame - 0x25 << 4);
     } else {
         colorByte = 0x80;
@@ -220,14 +220,14 @@ void __cdecl BattleFx_BlueL5DeathFadingSpriteTask(void)
     g_BattleBlueL5DeathResourceTable[8] = Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueL5DeathLoadedResTable);
     g_BattleBlueL5DeathResourceTable[9] = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueL5DeathLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueL5DeathResourceTable[8], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (pSprite->frame >= 0x2D) {
+    if (pSprite->frame >= 45) {
         g_BattleBlueL5DeathActiveCount--;
         pSprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pSprite->frame == 0x23) {
+    if (pSprite->frame == 35) {
         Battle_PostActorHitOrHurtMessage(pSprite->recordType);
     }
     (pSprite->frame)++;

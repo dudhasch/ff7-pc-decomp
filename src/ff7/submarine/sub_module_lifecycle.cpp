@@ -981,14 +981,14 @@ void __cdecl Submarine_SelectSubmarineDataBlocks(char levelId)
         Submarine_CopyObjectRecordTable((struct SubmarineObjectRecord *)&g_SubmarineLevel0Record.actors);
     }
     paramTwo = g_SubmarineWorkingLevelParams[2];
-    if (paramTwo < 0 || paramTwo > 0xF) {
+    if (paramTwo < 0 || paramTwo > 15) {
         paramTwo = 0;
     }
     paramTwo <<= 6;
-    paramTwo <<= 0xC;
+    paramTwo <<= 12;
     g_SubmarineWorkingLevelParams[2] = paramTwo;
     paramOne = g_SubmarineWorkingLevelParams[1];
-    if (paramOne < 0 || paramOne > 0xF) {
+    if (paramOne < 0 || paramOne > 15) {
         paramOne = 0;
     }
     g_SubmarineWorkingLevelParams[1] = paramOne;
@@ -1076,7 +1076,7 @@ void __cdecl Submarine_StartStateLerp16(void)
     g_SubmarineRecordInterpTargetD = target;
     g_SubmarineRecordInterpDeltaD = target - current;
     g_SubmarineRecordInterpFraction = 0;
-    g_SubmarineRecordInterpStep = 0x10;
+    g_SubmarineRecordInterpStep = 16;
     g_SubmarineRecordInterpActive = 1;
 }
 
@@ -1220,7 +1220,7 @@ void __cdecl Submarine_InitStateAndTables(void)
                         g_SubmarineHudValueQuad1Timer = 0;
                         g_SubmarineHudValueQuad3Timer = 0;
                         g_SubmarineHudParams.screenShakeTimer = 0;
-                        g_SubmarineHudRange.pitch = 0x400;
+                        g_SubmarineHudRange.pitch = 0x400 /* 90 deg */;
                         g_SubmarineHudRange.max = 0x3e8;
                         g_SubmarineHudOffset = 512;
                         g_SubmarineHudOrigin = -128;

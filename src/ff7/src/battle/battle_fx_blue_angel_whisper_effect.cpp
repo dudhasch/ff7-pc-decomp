@@ -185,10 +185,10 @@ void __cdecl BattleFx_BlueAngelWhisperQuadSpritesSetupTask(void)
     if (frame.targetCount == 1) {
         Battle_GetBoneWorldPos(frame.actorIdx, g_BattleActorRecords[frame.actorIdx].targetBone, (short *)&frame.spawnSlot->posX);
         Battle_GetBoneWorldPos(frame.actorIdx, g_BattleActorRecords[frame.actorIdx].altBone, (short *)&frame.altBonePos);
-        frame.spawnSlot->posY = frame.altBoneY - 0x1C0;
-        frame.spriteSize = g_BattleActorRecords[frame.actorIdx].radius + 0xE0;
-        if (frame.spriteSize > 0x3B6) {
-            frame.spriteSize = 0x3B6;
+        frame.spawnSlot->posY = frame.altBoneY - 448;
+        frame.spriteSize = g_BattleActorRecords[frame.actorIdx].radius + 224;
+        if (frame.spriteSize > 950) {
+            frame.spriteSize = 950;
         }
         frame.aleizSlot = (BattleAngelWhisperTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperSpawnDescendingQuadSpritesTask);
         frame.aleizSlot->pos = *(Int64Pair *)&frame.spawnSlot->posX;
@@ -197,14 +197,14 @@ void __cdecl BattleFx_BlueAngelWhisperQuadSpritesSetupTask(void)
     } else {
         Battle_GetActorMaskCentroid(g_BattleBlueAngelWhisperTargetMask, (short *)&frame.spawnSlot->posX);
         frame.spawnSlot->posY = 0xF9E0;
-        frame.spriteSize = 0xA80;
+        frame.spriteSize = 2688;
         frame.aleizSlot = (BattleAngelWhisperTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperSpawnArcingQuadSpritesTask);
         frame.aleizSlot->pos = *(Int64Pair *)&frame.spawnSlot->posX;
         frame.aleizSlot->spreadRadius = *(short *)&frame.spriteSize;
     }
-    frame.spawnSlot->posY -= 0x2A0;
+    frame.spawnSlot->posY -= 672;
     frame.spawnSlot->yaw = g_BattleActorRecords[g_BattleBlueAngelWhisperOriginActor].yaw + 0x800 & 0xFFF;
-    frame.spawnSlot->heightStep = 0x2A;
+    frame.spawnSlot->heightStep = 42;
 }
 
 /*
@@ -222,23 +222,23 @@ void __cdecl BattleFx_BlueAngelWhisperQuadSpritesTimelineTask(void)
         ringRecord = (BattleFxAngelWhisperRingRecord *)Battle_AllocSceneMessage(1);
         ringRecord->pos = task->pos;
         ringRecord->yaw = task->param;
-    } else if (task->step == 0x20) {
+    } else if (task->step == 32) {
         Battle_AllocSceneMessage(2);
     }
-    if (task->step > 1 && task->step < 0x11) {
+    if (task->step > 1 && task->step < 17) {
         g_BattleActorRecords[3].posY += task->counterDelta;
     }
-    if (task->step > 0x20 && task->step < 0x30) {
+    if (task->step > 32 && task->step < 48) {
         g_BattleActorRecords[3].posY -= task->counterDelta;
     }
-    if (task->step == 0x28) {
-        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    if (task->step == 40) {
+        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
             if ((g_BattleBlueAngelWhisperTargetMask & 1 << actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIndex);
             }
         }
     }
-    if (task->step >= 0x2D) {
+    if (task->step >= 45) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -247,7 +247,7 @@ void __cdecl BattleFx_BlueAngelWhisperQuadSpritesTimelineTask(void)
 // Without a pause check, at counters eighteen through twenty-one emits sixteen BattleFx_BlueAngelWhisperArcingQuadSpriteTask slots
 // copying eight position bytes. Normalizes a random XZ direction through adjacent int locals,
 // chooses the radius from the spawner plus zero through 447, stores X/Z displacement divided by sixteen, Y
-// velocity minus 250 through 309, scale 0x22AA times random 0xA00 through 0x15FF shifted twelve,
+// velocity minus 250 through 309, scale 8874 times random 0xA00 through 0x15FF shifted twelve,
 // and acceleration minus Y divided by twenty-four. Retires at forty-five or above and always
 // advances.
 // FUNCTION: FF7 0x00564844
@@ -261,28 +261,28 @@ void __cdecl BattleFx_BlueAngelWhisperSpawnArcingQuadSpritesTask(void)
     BattleFxAngelWhisperArcingQuad *arcQuad;
 
     spawner = (BattleFxAngelWhisperArcSprite *)BATTLE_CURRENT_TASK_SLOT;
-    if (spawner->frame >= 0x12 && spawner->frame <= 0x15) {
+    if (spawner->frame >= 18 && spawner->frame <= 21) {
         baseScale = 0x22AA;
-        for (emitIdx = 0; emitIdx < 0x10; emitIdx++) {
+        for (emitIdx = 0; emitIdx < 16; emitIdx++) {
             arcQuad = (BattleFxAngelWhisperArcingQuad *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperArcingQuadSpriteTask);
             *(Int64Pair *)&arcQuad->originX = spawner->pos;
-            nx.vx = rand() % 0x1000 - 0x800;
+            nx.vx = rand() % 4096 - 2048;
             nx.vy = 0;
-            nx.vz = rand() % 0x1000 - 0x800;
+            nx.vz = rand() % 4096 - 2048;
             NormalizeVectorFixed(&nx, &nx);
-            radius = spawner->radius + rand() % 0x1C0;
-            arcQuad->targetX = arcQuad->originX + (radius * nx.vx >> 0xC);
+            radius = spawner->radius + rand() % 448;
+            arcQuad->targetX = arcQuad->originX + (radius * nx.vx >> 12);
             arcQuad->velocity = 0;
-            arcQuad->targetY = arcQuad->originY + (radius * nx.vz >> 0xC);
-            arcQuad->targetX = (arcQuad->targetX - arcQuad->originX) / 0x10;
-            arcQuad->velocity = -(rand() % 0x3C + 0xFA);
-            arcQuad->targetY = (arcQuad->targetY - arcQuad->originY) / 0x10;
-            radius = rand() % 0xC00 + 0xA00;
-            arcQuad->scale = baseScale * radius >> 0xC;
-            arcQuad->arcStep = -arcQuad->arcHeight / 0x18;
+            arcQuad->targetY = arcQuad->originY + (radius * nx.vz >> 12);
+            arcQuad->targetX = (arcQuad->targetX - arcQuad->originX) / 16;
+            arcQuad->velocity = -(rand() % 60 + 250);
+            arcQuad->targetY = (arcQuad->targetY - arcQuad->originY) / 16;
+            radius = rand() % 3072 + 2560;
+            arcQuad->scale = baseScale * radius >> 12;
+            arcQuad->arcStep = -arcQuad->arcHeight / 24;
         }
     }
-    if (spawner->frame >= 0x2D) {
+    if (spawner->frame >= 45) {
         spawner->ownerSlot = BATTLE_TASK_FREE;
     }
     (spawner->frame)++;
@@ -308,7 +308,7 @@ void __cdecl BattleFx_BlueAngelWhisperArcingQuadSpriteTask(void)
     g_BattleBlueAngelWhisperSpriteDrawReq1.arcDrawObject = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
     BattleFx_InstallBillboardMatrix(&task->posA, (short)task->angle, -(task->angle >> 4));
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleBlueAngelWhisperSpriteDrawReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frame >= 0xE) {
+    if (task->frame >= 14) {
         task->endFlag = 0xFFFF;
     }
     if (task->posB > 0) {
@@ -328,7 +328,7 @@ void __cdecl BattleFx_BlueAngelWhisperArcingQuadSpriteTask(void)
 // Spawns descending quad sprites from a blue Aleiz spawner while its step is from 0x12 to 0x1C.
 // Each such step allocates two quad tasks scattered around baseX, baseY and baseZ, using
 // spreadRange and spreadOffset, with posY set near baseY minus 0x12C. Each task gets its scale from
-// 0x22AA times a random factor, and a spread from spreadOffset divided by 6 plus a random amount.
+// 8874 times a random factor, and a spread from spreadOffset divided by 6 plus a random amount.
 // From step 0x2D on the spawner is killed (ownerSlot 0xFFFF), and step increments on every call.
 // FUNCTION: FF7 0x00564b8f
 void __cdecl BattleFx_BlueAngelWhisperSpawnDescendingQuadSpritesTask(void)
@@ -338,19 +338,19 @@ void __cdecl BattleFx_BlueAngelWhisperSpawnDescendingQuadSpritesTask(void)
     BattleFxBlueAngelWhisperSpawner *task;
 
     task = (BattleFxBlueAngelWhisperSpawner *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->step >= 0x12 && task->step <= 0x1C) {
-        size = 0x22AA;
+    if (task->step >= 18 && task->step <= 28) {
+        size = 8874;
         for (idx = 0; idx < 2; idx++) {
             sprite = (BattleFxDescendingQuadSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperDescendingQuadSpriteTask);
             scaleRand = rand() % 0xC00 + 0xA00;
             sprite->posX = task->baseX + rand() % task->spreadRange - task->spreadOffset;
-            sprite->posY = task->baseY + rand() % 0x64 + -0x12C;
+            sprite->posY = task->baseY + rand() % 100 + -300;
             sprite->posZ = task->baseZ + rand() % task->spreadRange - task->spreadOffset;
-            sprite->scale = size * scaleRand >> 0xC;
-            sprite->spread = task->spreadOffset / 6 + rand() % 0x64;
+            sprite->scale = size * scaleRand >> 12;
+            sprite->spread = task->spreadOffset / 6 + rand() % 100;
         }
     }
-    if (task->step >= 0x2D) {
+    if (task->step >= 45) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -376,7 +376,7 @@ void __cdecl BattleFx_BlueAngelWhisperDescendingQuadSpriteTask(void)
     g_BattleBlueAngelWhisperSpriteDrawReq2.descentDrawObject = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
     BattleFx_InstallBillboardMatrix(&task->posX, (short)task->scale, -(task->scale >> 4));
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleBlueAngelWhisperSpriteDrawReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frameCount >= 0xA) {
+    if (task->frameCount >= 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -412,7 +412,7 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeSetupTask(void)
     BattleFxBlueAngelWhisperTaskSlot *task;
 
     actorIdx = 0;
-    for (r = 0; actorIdx < 0xA; actorIdx++) {
+    for (r = 0; actorIdx < 10; actorIdx++) {
         if ((g_BattleBlueAngelWhisperTargetMask & 1 << actorIdx) != 0) {
             r++;
             if (r == 1) {
@@ -427,7 +427,7 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeSetupTask(void)
             task = (BattleFxBlueAngelWhisperTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperActorFadeVariantTimelineTask);
             Battle_GetBoneWorldPos(g_BattleBlueAngelWhisperStepCount, g_BattleActorRecords[g_BattleBlueAngelWhisperStepCount].targetBone, (short *)((int)task + 4));
             task->posY = g_BattleActorRecords[g_BattleBlueAngelWhisperStepCount].posY;
-            task->posY -= 0xA00;
+            task->posY -= 2560;
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleBlueAngelWhisperTargetMask), 0x1A7);
         } else {
             task = (BattleFxBlueAngelWhisperTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperActorFadeTimelineTask);
@@ -436,14 +436,14 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeSetupTask(void)
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleBlueAngelWhisperTargetMask), 0x1A7);
         }
         task->yaw = g_BattleActorRecords[g_BattleBlueAngelWhisperStepCount].yaw;
-        task->duration = 0x2BC;
+        task->duration = 700;
         task->isActive = 0;
     } else {
         task = (BattleFxBlueAngelWhisperTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperActorFadeTimelineTask);
         Battle_GetActorMaskCentroid(g_BattleBlueAngelWhisperTargetMask, (short *)((int)task + 4));
         task->posY = g_BattleActorRecords[g_BattleBlueAngelWhisperOriginActor].posY;
         task->yaw = g_BattleActorRecords[g_BattleBlueAngelWhisperOriginActor].yaw;
-        task->duration = 0x578;
+        task->duration = 1400;
         task->isActive = 1;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleBlueAngelWhisperTargetMask), 0x1A7);
     }
@@ -471,7 +471,7 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeTask(void)
     }
     task = BATTLE_CURRENT_TASK_SLOT;
     if (task->frameCounter == 0) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             g_BattleBlueAngelWhisperSavedTints[actorIdx].tintPhase = g_BattleActorRecords[actorIdx].tintPhase;
             g_BattleBlueAngelWhisperSavedTints[actorIdx].tintPulse = g_BattleActorRecords[actorIdx].tintPulse;
             g_BattleBlueAngelWhisperSavedTints[actorIdx].tintR = g_BattleActorRecords[actorIdx].tintR;
@@ -484,41 +484,41 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeTask(void)
             g_BattleActorRecords[actorIdx].tintR = 0;
         }
     }
-    if (task->frameCounter < 0xA) {
-        localTintValue = task->frameCounter * 0x199;
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (task->frameCounter < 10) {
+        localTintValue = task->frameCounter * 409;
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             g_BattleActorRecords[actorIdx].tintPhase = localTintValue;
         }
-    } else if (task->frameCounter >= 0x43) {
+    } else if (task->frameCounter >= 67) {
         localTintValue = 0x1000 - (task->frameCounter - 0x43 << 9);
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleBlueAngelWhisperTargetMask & 1 << actorIdx) != 0) {
                 continue;
             }
             g_BattleActorRecords[actorIdx].tintPhase = localTintValue;
         }
     }
-    if (task->frameCounter >= 0x26 && task->frameCounter <= 0x38) {
-        localTintValue = 0x1000 - (task->frameCounter - 0x26) * 0xE3;
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (task->frameCounter >= 38 && task->frameCounter <= 56) {
+        localTintValue = 0x1000 - (task->frameCounter - 0x26) * 227;
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleBlueAngelWhisperTargetMask & 1 << actorIdx) != 0) {
                 g_BattleActorRecords[actorIdx].tintPhase = localTintValue;
             }
         }
     }
-    if (task->frameCounter < 0xA) {
+    if (task->frameCounter < 10) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        p = task->frameCounter * 0x199;
-    } else if (task->frameCounter >= 0x43) {
+        p = task->frameCounter * 409;
+    } else if (task->frameCounter >= 67) {
         p = 0x1000 - (task->frameCounter - 0x43 << 9);
     } else {
         p = 0x1000;
     }
     g_BattleFxTimelineState.startValue = p;
-    if (task->frameCounter >= 0x4B) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (task->frameCounter >= 75) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             g_BattleActorRecords[actorIdx].drawFlags &= 0xFE;
             g_BattleActorRecords[actorIdx].tintPhase = g_BattleBlueAngelWhisperSavedTints[actorIdx].tintPhase;
             g_BattleActorRecords[actorIdx].tintPulse = *(char *)&g_BattleBlueAngelWhisperSavedTints[actorIdx].tintPulse;
@@ -546,10 +546,10 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeTimelineTask(void)
         return;
     }
     task = (BattleFxBlueAngelWhisperRecordA *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->step >= 0xA && task->step <= 0x20) {
+    if (task->step >= 10 && task->step <= 32) {
         i8 = task->step % 3;
         if (i8 == 0) {
-            i8 = (task->elapsed << 0xC) / 0x2BC;
+            i8 = (task->elapsed << 12) / 700;
             pRecord = (BattleFxAngelWhisperRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperExpandingFadeModelTask);
             *(Int64Pair *)&pRecord->posX = task->pos;
             pRecord->baseScale = 0x800;
@@ -559,7 +559,7 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeTimelineTask(void)
             pRecord->accel = pRecord->velocity / 8;
         }
     }
-    if (task->step >= 0x18 && task->step <= 0x26) {
+    if (task->step >= 24 && task->step <= 38) {
         halfRange = task->elapsed;
         doubleRange = halfRange << 1;
         numSprites = task->isMultiTarget + 4;
@@ -567,29 +567,29 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeTimelineTask(void)
             pRecord = (BattleFxAngelWhisperRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperRisingFadeSpriteTask);
             *(Int64Pair *)&pRecord->posX = task->pos;
             pRecord->posX += (short)(rand() % doubleRange - halfRange);
-            pRecord->posY += (short)-(rand() % 0xE9);
+            pRecord->posY += (short)-(rand() % 233);
             pRecord->posZ += (short)(rand() % doubleRange - halfRange);
             pRecord->scale = 0x555;
-            bytesRand = rand() % 0xC00 + 0x800;
-            pRecord->scale = pRecord->scale * bytesRand >> 0xC;
+            bytesRand = rand() % 3072 + 2048;
+            pRecord->scale = pRecord->scale * bytesRand >> 12;
             pRecord->scaleStep = pRecord->scale >> 4;
-            pRecord->velocity = -(rand() % 0x78 + 0x64);
+            pRecord->velocity = -(rand() % 120 + 100);
         }
     }
-    if (task->step == 0x1C) {
+    if (task->step == 28) {
         pRecord = (BattleFxAngelWhisperRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperRingRecordTimelineTask);
         *(Int64Pair *)&pRecord->posX = task->pos;
         pRecord->baseScale = task->baseScale;
-        pRecord->accel = 0xFFB0;
+        pRecord->accel = 0xFFB0 /* -80 */;
     }
-    if (task->step == 0x3C) {
-        for (i8 = 0; i8 < 0xA; i8++) {
+    if (task->step == 60) {
+        for (i8 = 0; i8 < 10; i8++) {
             if ((g_BattleBlueAngelWhisperTargetMask & 1 << i8) != 0) {
                 Battle_PostActorHitOrHurtMessage(i8);
             }
         }
     }
-    if (task->step >= 0x4B) {
+    if (task->step >= 75) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -616,15 +616,15 @@ void __cdecl BattleFx_BlueAngelWhisperRingRecordTimelineTask(void)
         innerRecord = (BattleFxAngelWhisperRingRecord *)Battle_AllocSceneMessage(1);
         innerRecord->pos = task->pos;
         innerRecord->yaw = task->yaw;
-    } else if (task->step == 0x1A) {
+    } else if (task->step == 26) {
         Battle_AllocSceneMessage(2);
     }
-    if (task->step > 1 && task->step < 0x10) {
+    if (task->step > 1 && task->step < 16) {
         g_BattleActorRecords[3].posY += (short)(task->velocityY >> 1);
-    } else if (task->step >= 0x10) {
+    } else if (task->step >= 16) {
         g_BattleActorRecords[3].posY += task->velocityY;
     }
-    if (task->step >= 0x2A) {
+    if (task->step >= 42) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -652,7 +652,7 @@ void __cdecl BattleFx_BlueAngelWhisperRisingFadeSpriteTask(void)
     g_BattleBlueAngelWhisperSpriteDrawReq2.risingFadeRecord = Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueAngelWhisperLoadedRes);
     g_BattleBlueAngelWhisperSpriteDrawReq2.risingFadeObject = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueAngelWhisperLoadedRes);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueAngelWhisperSpriteDrawReq2.risingFadeRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (sprite->timer >= 0x10) {
+    if (sprite->timer >= 16) {
         sprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -704,12 +704,12 @@ void __cdecl BattleFx_BlueAngelWhisperExpandingFadeModelTask(void)
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.fadeSlot->frameCounter >= 2) {
-        frame.modelDraw->fadeLevel = 0x80 - (frame.fadeSlot->frameCounter - 2 << 4);
+        frame.modelDraw->fadeLevel = 128 - (frame.fadeSlot->frameCounter - 2 << 4);
     } else {
-        frame.modelDraw->fadeLevel = 0x80;
+        frame.modelDraw->fadeLevel = 128;
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.fadeSlot->frameCounter >= 0xA) {
+    if (frame.fadeSlot->frameCounter >= 10) {
         frame.fadeSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -738,10 +738,10 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeVariantTimelineTask(void)
         return;
     }
     task = (BattleFxBlueAngelWhisperRecordB *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->step >= 0xA && task->step <= 0x20) {
+    if (task->step >= 10 && task->step <= 32) {
         i8 = task->step % 3;
         if (i8 == 0) {
-            i8 = (task->elapsed << 0xC) / 0x2BC;
+            i8 = (task->elapsed << 12) / 700;
             pRecord = (BattleFxBlueAngelWhisperRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperExpandingFadeModelTask);
             *(Int64Pair *)&pRecord->jitterA = task->pos;
             pRecord->startValue = 0;
@@ -751,7 +751,7 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeVariantTimelineTask(void)
             pRecord->delay = pRecord->duration / 8;
         }
     }
-    if (task->step >= 0x18 && task->step <= 0x26) {
+    if (task->step >= 24 && task->step <= 38) {
         halfRange = task->elapsed;
         doubleRange = halfRange << 1;
         numSprites = task->isMultiTarget + 4;
@@ -759,30 +759,30 @@ void __cdecl BattleFx_BlueAngelWhisperActorFadeVariantTimelineTask(void)
             pRecord = (BattleFxBlueAngelWhisperRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperRisingFadeSpriteTask);
             *(Int64Pair *)&pRecord->jitterA = task->pos;
             pRecord->jitterA += (short)(rand() % doubleRange - halfRange);
-            pRecord->velocity += (short)(rand() % 0xE9 + 0x64);
+            pRecord->velocity += (short)(rand() % 233 + 100);
             pRecord->jitterB += (short)(rand() % doubleRange - halfRange);
             pRecord->amplitude = 0x555;
-            bytesRand = rand() % 0xC00 + 0x800;
-            pRecord->amplitude = pRecord->amplitude * bytesRand >> 0xC;
+            bytesRand = rand() % 3072 + 2048;
+            pRecord->amplitude = pRecord->amplitude * bytesRand >> 12;
             pRecord->spread = pRecord->amplitude >> 4;
-            pRecord->duration = rand() % 0x64 + 0x5A;
+            pRecord->duration = rand() % 100 + 90;
         }
     }
-    if (task->step == 0x1C) {
+    if (task->step == 28) {
         pRecord = (BattleFxBlueAngelWhisperRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueAngelWhisperRingRecordTimelineTask);
         *(Int64Pair *)&pRecord->jitterA = task->pos;
-        pRecord->velocity += 0x200;
+        pRecord->velocity += 512;
         pRecord->startValue = task->startValue;
-        pRecord->delay = 0x3C;
+        pRecord->delay = 60;
     }
-    if (task->step == 0x3C) {
-        for (i8 = 0; i8 < 0xA; i8++) {
+    if (task->step == 60) {
+        for (i8 = 0; i8 < 10; i8++) {
             if ((g_BattleBlueAngelWhisperTargetMask & 1 << i8) != 0) {
                 Battle_PostActorHitOrHurtMessage(i8);
             }
         }
     }
-    if (task->step >= 0x4B) {
+    if (task->step >= 75) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;

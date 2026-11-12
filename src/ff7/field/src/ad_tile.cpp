@@ -88,21 +88,21 @@ int __cdecl Field_AllocTileRecords(void)
 {
     unsigned short i;
     g_FieldSplashHeightBias = 0;
-    for (i = 0; i < 0x2a; i++) {
+    for (i = 0; i < 42; i++) {
         // STRING: FF7 0x00907c34
-        g_FieldLayers[i] = (FieldLayer *)GameHeapAlloc(1, 0x1c, "C:\\FF7\\field\\src\\ad_tile.cpp", 0x5c);
+        g_FieldLayers[i] = (FieldLayer *)GameHeapAlloc(1, 28, "C:\\FF7\\field\\src\\ad_tile.cpp", 92);
         if (g_FieldLayers[i] == 0) {
             return 0;
         }
         g_FieldLayers[i]->pixels = 0;
         if (g_FieldTileStateDc4 == 0) {
-            if (i < 0x1a) {
+            if (i < 26) {
                 // STRING: FF7 0x00907c54
-                g_FieldLayers[i]->pixels = (unsigned char *)GameHeapAlloc(0x10000, 1, "C:\\FF7\\field\\src\\ad_tile.cpp", 0x64);
+                g_FieldLayers[i]->pixels = (unsigned char *)GameHeapAlloc(65536, 1, "C:\\FF7\\field\\src\\ad_tile.cpp", 100);
                 g_FieldLayers[i]->bytesPerPixel = 1;
             } else {
                 // STRING: FF7 0x00907c74
-                g_FieldLayers[i]->pixels = (unsigned char *)GameHeapAlloc(0x10000, 2, "C:\\FF7\\field\\src\\ad_tile.cpp", 0x69);
+                g_FieldLayers[i]->pixels = (unsigned char *)GameHeapAlloc(65536, 2, "C:\\FF7\\field\\src\\ad_tile.cpp", 105);
                 g_FieldLayers[i]->bytesPerPixel = 2;
             }
             if (g_FieldLayers[i]->pixels == 0) {
@@ -127,15 +127,15 @@ void __cdecl Field_FreeTileRecords(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0x2a; i++) {
+    for (i = 0; i < 42; i++) {
         if (g_FieldLayers[i] != 0) {
             if (g_FieldLayers[i]->pixels != 0) {
                 // STRING: FF7 0x00907c94
-                GameHeapFree(g_FieldLayers[i]->pixels, "C:\\FF7\\field\\src\\ad_tile.cpp", 0x83);
+                GameHeapFree(g_FieldLayers[i]->pixels, "C:\\FF7\\field\\src\\ad_tile.cpp", 131);
                 g_FieldLayers[i]->pixels = 0;
             }
             // STRING: FF7 0x00907cb4
-            GameHeapFree(g_FieldLayers[i], "C:\\FF7\\field\\src\\ad_tile.cpp", 0x86);
+            GameHeapFree(g_FieldLayers[i], "C:\\FF7\\field\\src\\ad_tile.cpp", 134);
             g_FieldLayers[i] = 0;
         }
     }
@@ -172,11 +172,11 @@ void __cdecl Field_FreeTileTextures(void)
                 g_FieldLayers[layerIndex]->enabled = 0;
             } else if (g_FieldLayers[layerIndex]->pixels != 0) {
                 // STRING: FF7 0x00907cd4
-                GameHeapFree(g_FieldLayers[layerIndex]->pixels, "C:\\FF7\\field\\src\\ad_tile.cpp", 0xB1);
+                GameHeapFree(g_FieldLayers[layerIndex]->pixels, "C:\\FF7\\field\\src\\ad_tile.cpp", 177);
                 g_FieldLayers[layerIndex]->pixels = 0;
             }
             // STRING: FF7 0x00907cf4
-            GameHeapFree(g_FieldLayers[layerIndex], "C:\\FF7\\field\\src\\ad_tile.cpp", 0xB6);
+            GameHeapFree(g_FieldLayers[layerIndex], "C:\\FF7\\field\\src\\ad_tile.cpp", 182);
             g_FieldLayers[layerIndex] = 0;
         }
     }
@@ -204,7 +204,7 @@ int __cdecl Field_DumpPaletteTextFile(int count)
     }
     Field_FileWrite(filePtr,
                          // STRING: FF7 0x00907d20
-                         "Palette Data\n", 0x10);
+                         "Palette Data\n", 16);
     for (paletteIndex = 0; paletteIndex < count; paletteIndex++) {
         sprintf(textBuf,
                 // STRING: FF7 0x00907d30
@@ -265,9 +265,9 @@ void __cdecl Field_InitTileTextureFormat(GfxTexHeader *tex)
     tex->minBitsPerPixel = 0x10;
     tex->maxBitsPerPixel = 0x20;
     tex->modeFlag = 1;
-    format->width = 0x100;
-    format->height = 0x100;
-    format->pitch = 0x200;
+    format->width = 256;
+    format->height = 256;
+    format->pitch = 0x200 /* 45 deg */;
     format->palettized = 0;
 }
 
@@ -313,9 +313,9 @@ void __cdecl Field_InitTileIndexedTexture(GfxTexHeader *tex)
     tex->entriesPerPalette = 0x100;
     tex->bitsPerPixel = 8;
     tex->maxBitsPerPixel = 0x20;
-    format->width = 0x100;
-    format->height = 0x100;
-    format->pitch = 0x200;
+    format->width = 256;
+    format->height = 256;
+    format->pitch = 0x200 /* 45 deg */;
     format->palettized = 1;
     format->indexBits = 8;
     format->indexedTo8 = 0;
@@ -323,17 +323,17 @@ void __cdecl Field_InitTileIndexedTexture(GfxTexHeader *tex)
     format->entriesPerPalette = 0x100;
     format->palette = (struct PolygonTimColor *)GameHeapAllocRaw(format->paletteEntryCount << 2,
                                             // STRING: FF7 0x00907d4c
-                                            "C:\\FF7\\field\\src\\ad_tile.cpp", 0x140);
+                                            "C:\\FF7\\field\\src\\ad_tile.cpp", 320);
     *(void **)&tex->colorLookup = GameHeapAllocRaw(g_FieldPaletteGridHeight + 2,
                                                       // STRING: FF7 0x00907d6c
-                                                      "C:\\FF7\\field\\src\\ad_tile.cpp", 0x142);
+                                                      "C:\\FF7\\field\\src\\ad_tile.cpp", 322);
     for (rowIndex = 0; rowIndex < g_FieldPaletteGridHeight; rowIndex++) {
         ((unsigned char *)tex->colorLookup)[rowIndex] = g_FieldPaletteFlags[rowIndex];
     }
     ((unsigned char *)tex->colorLookup)[g_FieldPaletteGridHeight] = 1;
     ((unsigned char *)tex->colorLookup)[g_FieldPaletteGridHeight + 1] = 1;
     for (rowIndex = 0; rowIndex < g_FieldPaletteGridHeight; rowIndex++) {
-        for (entIndex = 0; entIndex < 0x100; entIndex++) {
+        for (entIndex = 0; entIndex < 256; entIndex++) {
             format->tilePalette[(rowIndex << 8) + entIndex].red = g_FieldPaletteGridBuffer[rowIndex * g_FieldPaletteGridStride + entIndex].pixelFlagA;
             format->tilePalette[(rowIndex << 8) + entIndex].green = g_FieldPaletteGridBuffer[rowIndex * g_FieldPaletteGridStride + entIndex].pixelFlagB;
             format->tilePalette[(rowIndex << 8) + entIndex].blue = g_FieldPaletteGridBuffer[rowIndex * g_FieldPaletteGridStride + entIndex].pixelFlagC;
@@ -342,14 +342,14 @@ void __cdecl Field_InitTileIndexedTexture(GfxTexHeader *tex)
     }
     for (rowIndex = 0; rowIndex < 2; rowIndex++) {
         if (rowIndex == 0) {
-            for (entIndex = 0; entIndex < 0x100; entIndex++) {
+            for (entIndex = 0; entIndex < 256; entIndex++) {
                 format->tilePalette[((g_FieldPaletteGridHeight + rowIndex) << 8) + entIndex].red = 0;
                 format->tilePalette[((g_FieldPaletteGridHeight + rowIndex) << 8) + entIndex].green = 0;
                 format->tilePalette[((g_FieldPaletteGridHeight + rowIndex) << 8) + entIndex].blue = 0;
                 format->tilePalette[((g_FieldPaletteGridHeight + rowIndex) << 8) + entIndex].alpha = 0xff;
             }
         } else {
-            for (entIndex = 0; entIndex < 0x100; entIndex++) {
+            for (entIndex = 0; entIndex < 256; entIndex++) {
                 format->tilePalette[((g_FieldPaletteGridHeight + rowIndex) << 8) + entIndex].red = 0xff;
                 format->tilePalette[((g_FieldPaletteGridHeight + rowIndex) << 8) + entIndex].green = 0xff;
                 format->tilePalette[((g_FieldPaletteGridHeight + rowIndex) << 8) + entIndex].blue = 0xff;
@@ -375,7 +375,7 @@ void __cdecl Field_InvalidateTexturePageBatches(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0x2A; i++) {
+    for (i = 0; i < 42; i++) {
         if (g_FieldLayers[i]->enabled != 0) {
             InvalidateBatchGeneration(g_FieldLayers[i]->batch);
             Gfx_EmptyRenderObjectBatch(g_FieldLayers[i]->renderObject);
@@ -519,8 +519,8 @@ int __cdecl Field_DrawBackgroundLayer2DoubledQuads(short cameraX, short cameraY)
         if (g_FieldLayer2Tiles[tileIdx].inUse != 0 && g_FieldLayer2Tiles[tileIdx].sampled == 0) {
             g_FieldLayer2Tiles[tileIdx].active = 1;
             g_FieldLayer2Tiles[tileIdx].sampled = 1;
-            posX = g_FieldLayer2Tiles[tileIdx].tileX + 0xA0 - cameraX << 1;
-            top = (g_FieldLayer2Tiles[tileIdx].spanY + 0x78 - cameraY) * 2 + 0x10;
+            posX = g_FieldLayer2Tiles[tileIdx].tileX + 160 - cameraX << 1;
+            top = (g_FieldLayer2Tiles[tileIdx].spanY + 120 - cameraY) * 2 + 16;
             Field_EmitBatchNodeTexturedQuad(((FieldLayer *)g_FieldLayers[g_FieldLayer2Tiles[tileIdx].texPage])->batchNode, (float)posX, (float)top, g_FieldLayer2Tiles[tileIdx].depthZ, g_FieldLayer2Tiles[tileIdx].texU, g_FieldLayer2Tiles[tileIdx].texV, texU, texV, g_FieldLayer2Tiles[tileIdx].paletteRow, 32.0f, 32.0f, ((FieldLayer *)g_FieldLayers[g_FieldLayer2Tiles[tileIdx].texPage])->bytesPerPixel);
             ((FieldLayer *)g_FieldLayers[g_FieldLayer2Tiles[tileIdx].texPage])->built = 1;
         }
@@ -551,7 +551,7 @@ int __cdecl Field_DrawBackgroundLayer2(short cameraX, short cameraY)
     texU = 0.0625f;
     texV = 0.0625f;
     xBase = (0x140 - cameraX) * g_FieldDisplayScaleFactor;
-    yOrigin = (0xE0 - cameraY) * g_FieldDisplayScaleFactor;
+    yOrigin = (224 - cameraY) * g_FieldDisplayScaleFactor;
     if (g_FieldBgOriginOffsetY > 0 && cameraY <= 8) {
         yOrigin -= (short)(g_FieldBgOriginOffsetY * g_FieldDisplayScaleFactor);
     }
@@ -595,7 +595,7 @@ int __cdecl Field_DrawBackgroundLayer1(short cameraX, short cameraY)
     texU = 0.0625f;
     texV = 0.0625f;
     xBase = (0x140 - cameraX) * g_FieldDisplayScaleFactor;
-    yOrigin = (0xE0 - cameraY) * g_FieldDisplayScaleFactor;
+    yOrigin = (224 - cameraY) * g_FieldDisplayScaleFactor;
     if (g_FieldBgOriginOffsetY > 0 && cameraY <= 6) {
         yOrigin -= (short)(g_FieldBgOriginOffsetY * g_FieldDisplayScaleFactor);
     }
@@ -684,8 +684,8 @@ int __cdecl Field_DrawBackgroundLayer3(short cameraX, short cameraY)
         texU = 0.125f;
         texV = 0.125f;
         xBase = (0x140 - cameraX) * g_FieldDisplayScaleFactor;
-        yOrigin = (0xE0 - cameraY) * g_FieldDisplayScaleFactor;
-        if (g_FieldActorState.state.layer2Depth >= 0xFFF) {
+        yOrigin = (224 - cameraY) * g_FieldDisplayScaleFactor;
+        if (g_FieldActorState.state.layer2Depth >= 4095) {
             zDepth = 0.9998f;
         } else {
             zDepth = Field_ComputeTileDepthZ(g_FieldCameraTransform, g_FieldActorState.state.layer2Depth, 0, 0);

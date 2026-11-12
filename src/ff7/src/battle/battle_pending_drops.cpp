@@ -41,7 +41,7 @@ void __cdecl Battle_ResetPendingDrops(void)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_BattlePendingDropRecords[i].actor = 0xFFFF;
         g_BattlePendingDropRecords[i].itemId = 0xFFFF;
     }
@@ -56,7 +56,7 @@ void __cdecl Battle_ClearPendingDropRecord(short actor, short item)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         if (g_BattlePendingDropRecords[i].actor == actor && g_BattlePendingDropRecords[i].itemId == item) {
             g_BattlePendingDropRecords[i].actor = 0xFFFF;
             g_BattlePendingDropRecords[i].itemId = 0xFFFF;
@@ -74,7 +74,7 @@ void __cdecl Battle_ClaimPendingDropRecord(short actor, short item)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         if (g_BattlePendingDropRecords[i].itemId == -1) {
             g_BattlePendingDropRecords[i].actor = actor;
             g_BattlePendingDropRecords[i].itemId = item;
@@ -93,7 +93,7 @@ void __cdecl Battle_ReleasePendingDrops(short actor)
     int idx;
     short item;
 
-    for (idx = 0; idx < 0x10; idx++) {
+    for (idx = 0; idx < 16; idx++) {
         item = g_BattlePendingDropRecords[idx].itemId;
         if (item != -1 && g_BattlePendingDropRecords[idx].actor == actor) {
             ((short *)&g_BattleDropRing)[g_BattleDropRingHead] = item;
@@ -125,10 +125,10 @@ void __cdecl Battle_CollectDropsToInventory(void)
         emptySlot = 0xFFFFFFFF;
         if (itemId < 0x180) {
             rowCount = 0;
-            for (invSlot = 0; invSlot < 0x140; invSlot++) {
+            for (invSlot = 0; invSlot < 320; invSlot++) {
                 pRecord = (BattleInventoryItemRecord *)(invSlot * 6 + (char *)g_BattleItemListBlock.slots);
                 if (pRecord->itemId == itemId) {
-                    if (pRecord->quantity < 0x63) {
+                    if (pRecord->quantity < 99) {
                         (*(char *)&pRecord->quantity)++;
                     }
                     break;
@@ -189,7 +189,7 @@ short __cdecl Battle_PickRandomThrowableWeapon(void)
 
     frame.result = 0xFFFF;
     frame.throwableCount = 0;
-    for (frame.slotIndex = 0; frame.slotIndex < 0x140; frame.slotIndex++) {
+    for (frame.slotIndex = 0; frame.slotIndex < 320; frame.slotIndex++) {
         frame.entryItemId = *(unsigned short *)((char *)g_BattleItemListBlock.slots + frame.slotIndex * 6);
         frame.entryFlags = *(unsigned char *)((char *)&g_BattleItemListBlock.slots[0].flags + frame.slotIndex * 6);
         if (frame.entryItemId != 0xFFFF && (frame.entryFlags & 9) == 0) {
@@ -200,7 +200,7 @@ short __cdecl Battle_PickRandomThrowableWeapon(void)
     if (frame.throwableCount != 0) {
         frame.pickIndex = Battle_RandBelow(frame.throwableCount) & 0xFF;
         *(short *)&frame.pickedItem = frame.throwableIds[frame.pickIndex];
-        if ((frame.pickedItem & 0xFFFF) >= 0x80 && (frame.pickedItem & 0xFFFF) < 0x100) {
+        if ((frame.pickedItem & 0xFFFF) >= 128 && (frame.pickedItem & 0xFFFF) < 256) {
             Battle_PostEvent(BATTLE_EVENT_QUEUE_ATB, 0, BATTLE_ATB_EVENT_CONSUME_ITEM, frame.pickedItem & 0xFFFF);
             frame.result = *(short *)&frame.pickedItem;
         }

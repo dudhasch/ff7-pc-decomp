@@ -109,7 +109,7 @@ int __cdecl DI_InputInit(void *context)
 {
     if (CheckDirectDrawResult(DirectInputCreateA(*(HINSTANCE *)((char *)context + 0x58), 0x300, (LPDIRECTINPUTA *)&g_pDirectInput, 0),
                               // STRING: FF7 0x007c0e84
-                              "C:\\lib\\src\\input\\input.cpp", 0xF) != 0) {
+                              "C:\\lib\\src\\input\\input.cpp", 15) != 0) {
         if (DI_KeyboardCreate(context) != 0)
             DI_KeyboardAcquire();
         if (DI_MouseCreate(context) != 0)
@@ -189,7 +189,7 @@ int __cdecl DI_MouseAcquire(void)
     if (g_InputMouse.device != 0 && g_InputMouse.acquired == 0) {
         g_InputMouse.acquired = CheckDirectDrawResult(g_InputMouse.device->Acquire(),
                                              // STRING: FF7 0x007c0f2c
-                                             "C:\\lib\\src\\input\\input.cpp", 0x54);
+                                             "C:\\lib\\src\\input\\input.cpp", 84);
     }
     return g_InputMouse.acquired;
 }
@@ -224,7 +224,7 @@ int __cdecl DI_MouseGetState(void)
             if (DI_MouseAcquire() != 0) {
                 if (CheckDirectDrawResult(g_InputMouse.device->GetDeviceState(0x10, &g_InputMouse.state),
                                           // STRING: FF7 0x007c0f48
-                                          "C:\\lib\\src\\input\\input.cpp", 0x72) != 0)
+                                          "C:\\lib\\src\\input\\input.cpp", 114) != 0)
                     return (int)&g_InputMouse.state;
             }
         }
@@ -378,7 +378,7 @@ int __cdecl DI_KeyboardAcquire(void)
     if (g_InputKeyboard.device != 0 && g_InputKeyboard.acquired == 0) {
         g_InputKeyboard.acquired = CheckDirectDrawResult(g_InputKeyboard.device->Acquire(),
                                              // STRING: FF7 0x007c0ff0
-                                             "C:\\lib\\src\\input\\input.cpp", 0x100);
+                                             "C:\\lib\\src\\input\\input.cpp", 256);
     }
     return g_InputKeyboard.acquired;
 }
@@ -413,7 +413,7 @@ unsigned char *__cdecl DI_KeyboardGetState(void)
             if (DI_KeyboardAcquire() != 0) {
                 if (CheckDirectDrawResult(g_InputKeyboard.device->GetDeviceState(0x100, g_InputKeyboard.state),
                                           // STRING: FF7 0x007c100c
-                                          "C:\\lib\\src\\input\\input.cpp", 0x129) != 0)
+                                          "C:\\lib\\src\\input\\input.cpp", 297) != 0)
                     return g_InputKeyboard.state;
             }
         }

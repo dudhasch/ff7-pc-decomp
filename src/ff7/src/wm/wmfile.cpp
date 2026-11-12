@@ -33,7 +33,7 @@ struct PolygonAnimation;
  * definitions. World_LoadTerrainTextures indexes a page-name table by page number and hands the
  * element to Gfx_CreateRenderObject as the file name. */
 // GLOBAL: FF7 0x00969ce8
-char *g_WorldTexturePageNamesOverworld[0x11a] = {
+char *g_WorldTexturePageNamesOverworld[282] = {
     "pond.tim", "riv_m2.tim", "was_gs.tim", "wpcltr.tim",
     "wpcltr2.tim", "bzdun.tim", "bone.tim", "bone2.tim",
     "bornwd.tim", "bridge.tim", "bridge2.tim", "cave.tim",
@@ -107,7 +107,7 @@ char *g_WorldTexturePageNamesOverworld[0x11a] = {
     "wood_d.tim", "wtrk.tim"
 };
 // GLOBAL: FF7 0x0096a150
-char *g_WorldTextureAnimFrameNames[0x6c] = {
+char *g_WorldTextureAnimFrameNames[108] = {
     "wa1.tim", "wa2.tim", "wa3.tim", "wa4.tim",
     "wa5.tim", "wa6.tim", "wa7.tim", "wa8.tim",
     "we1.tim", "we2.tim", "we3.tim", "we4.tim",
@@ -148,7 +148,7 @@ char *g_WorldTexturePageNamesSnow[4] = {
 // The (u, v) origin of each texture page, parallel to the page-name tables above; the terrain
 // geometry reads them through g_WorldTextureAuxTable.
 // GLOBAL: FF7 0x0096a330
-WorldTextureOrigin g_WorldTextureOriginsOverworld[0x11a] = {
+WorldTextureOrigin g_WorldTextureOriginsOverworld[282] = {
     {0x0, 0x160}, {0x80, 0x40}, {0x40, 0xc0}, {0x0, 0x100},
     {0xa0, 0x40}, {0xc0, 0xc0}, {0xe0, 0x180}, {0xe0, 0x1a0},
     {0xa0, 0x140}, {0xc0, 0x0}, {0xe0, 0x0}, {0xe0, 0x1c0},
@@ -232,7 +232,7 @@ WorldTextureOrigin g_WorldTextureOriginsSnow[4] = {
 };
 // The animation file names the model records point into: one run per model, animCount long.
 // GLOBAL: FF7 0x0096a7c8
-char *g_WorldAnimFileNames[0x52] = {
+char *g_WorldAnimFileNames[82] = {
     "AAE.a", 0, "AGE.a", "AHA.a",
     "AHB.a", "AHC.a", "AHD.a", "AHE.a",
     "AIE.a", 0, "ASC.a", "ASD.a",
@@ -444,17 +444,17 @@ WorldModelDef g_WorldLeaderModelCid = {"cid", "/ata.hrc", 10, 0x200, &g_WorldAni
 // GLOBAL: FF7 0x0096b414
 int g_WorldCurrentTextureSetId = (-1);
 // GLOBAL: FF7 0x0096b418
-short g_WorldAnimTexturePages[0x16] = {53, 56, 57, 58, 61, 67, 129, 188, 192, 196, 205, 206, 208, 234, 235, 236, 253, 257, 264, 265, 275, 276};
+short g_WorldAnimTexturePages[22] = {53, 56, 57, 58, 61, 67, 129, 188, 192, 196, 205, 206, 208, 234, 235, 236, 253, 257, 264, 265, 275, 276};
 // GLOBAL: FF7 0x0096b448
-short g_WorldAnimGroupPageOrder[0x16] = {264, 275, 265, 276, 67, 257, 129, 236, 196, 56, 205, 235, 188, 57, 206, 234, 253, 58, 208, 53, 61, 192};
+short g_WorldAnimGroupPageOrder[22] = {264, 275, 265, 276, 67, 257, 129, 236, 196, 56, 205, 235, 188, 57, 206, 234, 253, 58, 208, 53, 61, 192};
 // GLOBAL: FF7 0x00e2bbd0
 WorldModelDef * g_WorldStageModelTable = 0;
 // GLOBAL: FF7 0x00e2bbd4
 int g_WorldLoadedStageModelCount = 0;
-// World_LoadTerrainTextures writes one entry per texture page (up to 0x11A entries, followed by
+// World_LoadTerrainTextures writes one entry per texture page (up to 282 entries, followed by
 // 920 bytes of unreferenced .bss slack before the next global).
 // GLOBAL: FF7 0x00e2bbd8
-GfxRenderObject *g_WorldTexturePageRenderObjects[0x11A] = {0};
+GfxRenderObject *g_WorldTexturePageRenderObjects[282] = {0};
 unsigned char g_bssPad_00e2c040[920] = {0};
 // GLOBAL: FF7 0x00e2c3d8
 GfxRenderObject *g_WorldRadarRenderObject = 0;
@@ -501,7 +501,7 @@ unsigned char g_bssPad_00e2c42c[4] = {0};
 // GLOBAL: FF7 0x00e2c430
 WorldModelRecord g_WorldLeaderModels[3] = {0};
 // GLOBAL: FF7 0x00e2c658
-void * g_WorldTerrainAnimFrameRenderObjects[0x6c] = {0};
+void * g_WorldTerrainAnimFrameRenderObjects[108] = {0};
 // GLOBAL: FF7 0x00e2c808
 WorldModelRecord g_WorldStageModels[13] = {0};
 // GLOBAL: FF7 0x00e2d160
@@ -554,7 +554,7 @@ int __cdecl World_IsAnimatedTexturePage(unsigned int page)
 {
     int i;
 
-    for (i = 0; i < 0x16; i++) {
+    for (i = 0; i < 22; i++) {
         if (g_WorldAnimTexturePages[i] == page) {
             return 1;
         }
@@ -626,13 +626,13 @@ int __cdecl World_ReadLooseFileBlock(int fileName, int offset, int size, void *b
 void __cdecl World_LoadStageModels(int stageId)
 {
     /* Local names are chosen for their stack slots; see World_LoadLeaderModel. */
-    char spec[0xC8];
-    char model[0x100];
+    char spec[200];
+    char model[256];
     struct GfxEngineContext *host;
-    char head[0x100];
+    char head[256];
     void *anim;
     int entryIndex;
-    char afile[0xC8];
+    char afile[200];
     int motionIdx;
     void *body;
     int mode;
@@ -776,13 +776,13 @@ void __cdecl World_LoadStageModels(int stageId)
 void __cdecl World_LoadLeaderModel(int modelId)
 {
     /* Local names are chosen for their stack slots: VC5 orders them by a hash of the name. */
-    char spec[0xC8];
-    char model[0x100];
+    char spec[200];
+    char model[256];
     struct GfxEngineContext *host;
-    char head[0x100];
+    char head[256];
     void *anim;
     int entryIndex;
-    char afile[0xC8];
+    char afile[200];
     int motionIdx;
     void *body;
     int mode;
@@ -1230,7 +1230,7 @@ void __cdecl World_ReleaseStageTextures(void)
         }
     }
     if (g_WorldTexturePageCount == 0x11A) {
-        for (i = 0; i < 0x6C; i++) {
+        for (i = 0; i < 108; i++) {
             if (g_WorldTerrainAnimFrameRenderObjects[i] != 0) {
                 DestroyRenderObjectAndClear(&g_WorldTerrainAnimFrameRenderObjects[i]);
             }

@@ -30,7 +30,7 @@ void __cdecl Battle_FreeLimitAnims(BattleLimitAnimBank *bank)
         }
         bank->entryCount = 0;
         // STRING: FF7 0x008ffa50
-        GameHeapFree(bank->entryPtrs, "C:\\FF7\\src\\battle\\battle3d\\limitbrk.cpp", 0x2D);
+        GameHeapFree(bank->entryPtrs, "C:\\FF7\\src\\battle\\battle3d\\limitbrk.cpp", 45);
         bank->entryPtrs = 0;
     }
 }
@@ -62,14 +62,14 @@ void __cdecl Battle_ConvertLimitAnimsLegacy(int unused, Battle3dPartyLoadDesc *b
     int e6;
     unsigned int *dz;
     unsigned int dj;
-    char cn[0xC8];
+    char cn[200];
     int br;
     int bb;
     void *b2;
-    char av[0xC8];
+    char av[200];
     int af;
     void *a6;
-    char p[0xCC];
+    char p[204];
 
     e6 = 0;
     Battle_PushDataDirectory((int *)p);
@@ -83,7 +83,7 @@ void __cdecl Battle_ConvertLimitAnimsLegacy(int unused, Battle3dPartyLoadDesc *b
         f2 = *dz;
         dz++;
         ev = dz;
-        if (f2 < 0x10) {
+        if (f2 < 16) {
             // STRING: FF7 0x008ffa84
             sprintf(av, "ERROR: %s TOTAL LIMIT DATA %d < 16 \n", cn, f2);
             Gfx_DebugPrint(av);
@@ -96,7 +96,7 @@ void __cdecl Battle_ConvertLimitAnimsLegacy(int unused, Battle3dPartyLoadDesc *b
             }
             bank->entryCount = hj + i6;
             // STRING: FF7 0x008ffaac
-            bank->entryPtrs = GameHeapAlloc(bank->entryCount, 4, "C:\\FF7\\src\\battle\\battle3d\\limitbrk.cpp", 0x76);
+            bank->entryPtrs = GameHeapAlloc(bank->entryCount, 4, "C:\\FF7\\src\\battle\\battle3d\\limitbrk.cpp", 118);
             if (bank->entryPtrs != 0) {
                 if (battleLoadDesc->secondCount != 0) {
                     iv = (int)BattleModel_OpenAnimFileWithHeader(0, bank->entryCount, cn);
@@ -145,7 +145,7 @@ void __cdecl Battle_ConvertLimitAnimsLegacy(int unused, Battle3dPartyLoadDesc *b
             }
         }
         // STRING: FF7 0x008ffad4
-        GameHeapFree(b2, "C:\\FF7\\src\\battle\\battle3d\\limitbrk.cpp", 0xD7);
+        GameHeapFree(b2, "C:\\FF7\\src\\battle\\battle3d\\limitbrk.cpp", 215);
     }
     Battle_PopDataDirectory((int *)p);
 }

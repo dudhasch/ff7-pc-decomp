@@ -2598,7 +2598,7 @@ typedef struct BattleSpecialEnergySiphonSpriteReq2 {
 } BattleSpecialEnergySiphonSpriteReq2;
 
 /* --- battle_fx_special_magma --- */
-/* Magma special timeline task: its timer runs to 0x50 frames, allocating a typed record at 0x3C. */
+/* Magma special timeline task: its timer runs to 80 frames, allocating a typed record at 0x3C. */
 typedef struct BattleFxMagmaTimeline {
     short ownerSlot;
     short timer;

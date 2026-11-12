@@ -78,7 +78,7 @@ GameHeapTracker *__cdecl CreateGameHeapTracker(void)
 {
     GameHeapTracker *rec;
 
-    rec = (GameHeapTracker *)(GameHeapAlloc(1, 8, Mem_TrackerFileName(), 0x28));
+    rec = (GameHeapTracker *)(GameHeapAlloc(1, 8, Mem_TrackerFileName(), 40));
     if (rec != 0) {
         rec->enabled = 1;
     }
@@ -199,7 +199,7 @@ void *__cdecl GameHeapAllocRaw(int size, char *file, int line)
             if (g_MemHeapTracker->listHead == 0) {
                 g_MemHeapTracker->listHead = (int)CreateListCrtHeap((ListFreeValueFn)FreeGameHeapTrackRecord);
             }
-            record = (MemHeapBlock *)malloc(0x18);
+            record = (MemHeapBlock *)malloc(24);
             entry = record;
             if (entry != 0) {
                 rawBase = result;
@@ -211,7 +211,7 @@ void *__cdecl GameHeapAllocRaw(int size, char *file, int line)
                 entry->allocBase = result;
                 hdr = rawBase;
                 footerPtr = rawBase + entry->count * entry->elementSize + 0x10;
-                for (k = 0; k < 0x10; k++) {
+                for (k = 0; k < 16; k++) {
                     *(char *)(hdr + k) = k + 0x4D;
                     *(char *)(footerPtr + k) = k + 0x4D;
                 }
@@ -266,14 +266,14 @@ void *__cdecl GameHeapAlloc(int count, int size, char *file, int line)
     int k;
 
     if (g_MemHeapTracker != 0 && g_MemHeapTracker->enabled != 0) {
-        totalSize = count * size + 0x20;
+        totalSize = count * size + 32;
         result = (int)malloc(totalSize);
         if (result != 0) {
             ZeroFillMemory32(totalSize, (void *)(result));
             if (g_MemHeapTracker->listHead == 0) {
                 g_MemHeapTracker->listHead = (int)CreateListCrtHeap((ListFreeValueFn)FreeGameHeapTrackRecord);
             }
-            record = (MemHeapBlock *)malloc(0x18);
+            record = (MemHeapBlock *)malloc(24);
             entry = record;
             if (entry != 0) {
                 rawBase = result;
@@ -285,7 +285,7 @@ void *__cdecl GameHeapAlloc(int count, int size, char *file, int line)
                 entry->allocBase = result;
                 hdr = rawBase;
                 footerPtr = rawBase + entry->count * entry->elementSize + 0x10;
-                for (k = 0; k < 0x10; k++) {
+                for (k = 0; k < 16; k++) {
                     *(char *)(hdr + k) = k + 0x4D;
                     *(char *)(footerPtr + k) = k + 0x4D;
                 }
@@ -447,7 +447,7 @@ void *__cdecl GameHeapMemDup(int size, void *source)
 {
     void *result;
     // STRING: FF7 0x0090aa14
-    result = GameHeapAllocRaw(size, "C:\\lib\\src\\mem\\mem.cpp", 0x18A);
+    result = GameHeapAllocRaw(size, "C:\\lib\\src\\mem\\mem.cpp", 394);
     if (result != 0) {
         memcpy(result, source, size);
     }

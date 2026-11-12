@@ -18,15 +18,15 @@ extern "C" {
 
 #pragma intrinsic(strcpy, memcpy)
 // GLOBAL: FF7 0x00e38938
-WorldProjectedVertexEntry g_WorldProjectedVertices[0x80] = {0};
+WorldProjectedVertexEntry g_WorldProjectedVertices[128] = {0};
 // GLOBAL: FF7 0x00e38f38
-WorldTransformedVertexEntry g_WorldTransformedVertices[0x80] = {0};
+WorldTransformedVertexEntry g_WorldTransformedVertices[128] = {0};
 // GLOBAL: FF7 0x00e39738
 GfxMatrix4x4 g_WorldScreenMatrix = {0};
 // GLOBAL: FF7 0x00e39778
 float g_WorldMeshRotationMatrix[16] = {0};
 // GLOBAL: FF7 0x00e397b8
-int g_WorldMeshClipBits[0x7e] = {0};
+int g_WorldMeshClipBits[126] = {0};
 unsigned char g_bssPad_00e399b0[8] = {0};
 // clang-format on
 
@@ -95,7 +95,7 @@ void __cdecl World_UploadMeshVertices(short *meshVerts, int fadeScale)
         depth = World_RoundFloatToInt(g_WorldProjectedVertices[vertexIdx - 1].depth);
         lastX = World_RoundFloatToInt(clip[0] / clip[3]);
         depth >>= 2;
-    } while (vertexIdx < 0x7A);
+    } while (vertexIdx < 122);
 }
 
 /*
@@ -134,7 +134,7 @@ void __cdecl World_ProjectMeshVertices(void)
     TransformPointByMatrix4x4(&g_WorldScreenMatrix, &g_WorldMeshVertices[vertIndex], &g_WorldTransformedVertices[vertIndex]);
     TransformPointByMatrix4x4(&g_WorldScreenMatrix, &g_WorldMeshVertices[vertIndex + 1], &g_WorldTransformedVertices[vertIndex + 1]);
     TransformPointByMatrix4x4(&g_WorldScreenMatrix, &g_WorldMeshVertices[vertIndex + 2], &g_WorldTransformedVertices[vertIndex + 2]);
-    tripleCnt = 0x29;
+    tripleCnt = 41;
     for (vertIndex = 3; tripleCnt > 0; tripleCnt--, vertIndex += 3) {
         TransformPointByMatrix4x4(&g_WorldScreenMatrix, &g_WorldMeshVertices[vertIndex], &g_WorldTransformedVertices[vertIndex]);
         TransformPointByMatrix4x4(&g_WorldScreenMatrix, &g_WorldMeshVertices[vertIndex + 1], &g_WorldTransformedVertices[vertIndex + 1]);
@@ -323,7 +323,7 @@ void __cdecl World_SubmitTerrainChunkTriangles(WorldTerrainTriangle *first, Worl
             s.light[s.index2].g = ((WorldFloatColor *)g_WorldScratchColorBuffer)[s.row - 4].g;
             s.light[s.index2].r = ((WorldFloatColor *)g_WorldScratchColorBuffer)[s.row - 0].r;
             s.light[s.index2].a = 255.0f;
-            s.distance -= 0x3c0;
+            s.distance -= 960;
             if (s.distance <= 0)
                 goto fog_done;
             s.palette = 255;

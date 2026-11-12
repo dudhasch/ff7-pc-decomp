@@ -299,7 +299,7 @@ void __cdecl BattleFx_LimitDragonDiveTimelineTask(void)
         SfxLoadIntoBuffer(0x15A, 0);
         SfxLoadIntoBuffer(0xFA, 0);
     }
-    if (frame.timeline->frame == 0x36) {
+    if (frame.timeline->frame == 54) {
         Battle_PlaySfxPannedToActor(0x30, (short)frame.timeline->slotIndex, 0);
     }
     if (g_BattleLimitDragonDiveImpactIndex < 6 && frame.timeline->frame == (&g_BattleLimitDragonDiveModelDrawRequest.impactFrames)[g_BattleLimitDragonDiveImpactIndex]) {
@@ -313,16 +313,16 @@ void __cdecl BattleFx_LimitDragonDiveTimelineTask(void)
         frame.targetZ = g_BattleActorRecords[frame.targetActor].posZ;
         frame.angle = ArcTangentFixed(frame.targetX - frame.timeline->posA, frame.targetZ - frame.timeline->posC) + 0x800;
         frame.impactSlot->yaw = frame.angle;
-        frame.radius = g_BattleActorRecords[frame.targetActor].radius + 0xDAC;
-        frame.targetX += (short)(SinFixed(frame.angle) * frame.radius >> 0xC);
+        frame.radius = g_BattleActorRecords[frame.targetActor].radius + 3500;
+        frame.targetX += (short)(SinFixed(frame.angle) * frame.radius >> 12);
         frame.impactSlot->posX = frame.targetX;
         frame.impactSlot->posY = 0;
-        frame.targetZ += (short)(CosFixed(frame.angle) * frame.radius >> 0xC);
+        frame.targetZ += (short)(CosFixed(frame.angle) * frame.radius >> 12);
         frame.impactSlot->posZ = frame.targetZ;
         g_BattleLimitDragonDiveImpactIndex++;
     }
     (frame.timeline->frame)++;
-    if (frame.timeline->frame == 0xF0) {
+    if (frame.timeline->frame == 240) {
         g_BattleActorRecords[frame.timeline->slotIndex].posX = frame.timeline->posA;
         g_BattleActorRecords[frame.timeline->slotIndex].posY = frame.timeline->posB;
         g_BattleActorRecords[frame.timeline->slotIndex].posZ = frame.timeline->posC;
@@ -357,7 +357,7 @@ void __cdecl BattleFx_LimitDragonDiveImpactTask(void)
         ring->targetActorIndex = taskPtr->targetActorIndex;
         ring->impactIndex = taskPtr->impactIndex;
         taskPtr->unusedWord = 0xFF2E;
-        BattleFx_HitMarkSpawnScriptAtActorBone(taskPtr->targetActorIndex, 0x23, 0x1000);
+        BattleFx_HitMarkSpawnScriptAtActorBone(taskPtr->targetActorIndex, 0x23, 0x1000 /* 1.0 */);
         Battle_PlaySfxPannedToActor(0x15A, (short)taskPtr->actorIndex, 0);
     }
     if (taskPtr->phase == 0xF) {
@@ -365,9 +365,9 @@ void __cdecl BattleFx_LimitDragonDiveImpactTask(void)
         child->posX = g_BattleActorRecords[taskPtr->targetActorIndex].posX;
         child->posY = g_BattleActorRecords[taskPtr->targetActorIndex].posY;
         child->posZ = g_BattleActorRecords[taskPtr->targetActorIndex].posZ;
-        child->velocityX = 0x7D0;
-        child->velocityY = 0x7D0;
-        child->velocityZ = 0x7D0;
+        child->velocityX = 2000;
+        child->velocityY = 2000;
+        child->velocityZ = 2000;
         child = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDragonDiveScreenFlashTask);
         Battle_PlaySfxPannedToActor(0xFA, (short)taskPtr->actorIndex, 0);
     }
@@ -399,14 +399,14 @@ void __cdecl BattleFx_LimitDragonDiveScreenFlashTask(void)
         g_BattleLimitDragonDiveFlashRed += 0x18;
         g_BattleLimitDragonDiveFlashIntensity += 0x18;
     }
-    if (task->frameCounter >= 5 && task->frameCounter < 0xA) {
+    if (task->frameCounter >= 5 && task->frameCounter < 10) {
         g_BattleLimitDragonDiveFlashRed -= 0x18;
     }
-    if (task->frameCounter >= 0xA) {
+    if (task->frameCounter >= 10) {
         g_BattleLimitDragonDiveFlashIntensity -= 0x18;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0xF) {
+    if (task->frameCounter == 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -453,7 +453,7 @@ void __cdecl BattleFx_LimitDragonDiveScalingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.scalingSlot->frameCount < 0xA) {
+    if (frame.scalingSlot->frameCount < 10) {
         if (frame.scalingSlot->frameCount < 5) {
             g_BattleLimitDragonDiveImpactFrame = frame.scalingSlot->frameCount + 1;
             if ((g_BattleLimitDragonDiveModelDrawRequest.resource) != 0) {
@@ -463,20 +463,20 @@ void __cdecl BattleFx_LimitDragonDiveScalingModelTask(void)
             frame.scalingSlot->scaleY += 0x190;
         }
     }
-    if (frame.scalingSlot->frameCount >= 0xA) {
+    if (frame.scalingSlot->frameCount >= 10) {
         frame.scalingSlot->scaleX -= 0x190;
         frame.scalingSlot->scaleZ -= 0x190;
         frame.scalingSlot->scaleY += 0xC8;
     } else {
         frame.spriteRecord = (BattleFxDragonDiveSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDragonDiveVerticalMovingSpriteTask);
         frame.angle = (rand() % 4096);
-        frame.spriteRecord->posX = frame.scalingSlot->posX + (SinFixed(frame.angle) * 0x5DC >> 0xC);
-        frame.spriteRecord->posZ = frame.scalingSlot->posZ + (CosFixed(frame.angle) * 0x5DC >> 0xC);
-        frame.spriteRecord->posY = -rand() % 0x3E8;
+        frame.spriteRecord->posX = frame.scalingSlot->posX + (SinFixed(frame.angle) * 0x5DC >> 12);
+        frame.spriteRecord->posZ = frame.scalingSlot->posZ + (CosFixed(frame.angle) * 0x5DC >> 12);
+        frame.spriteRecord->posY = -rand() % 1000;
         frame.spriteRecord->velocityY = 0xFE70;
     }
     (frame.scalingSlot->frameCount)++;
-    if (frame.scalingSlot->frameCount == 0xF) {
+    if (frame.scalingSlot->frameCount == 15) {
         frame.scalingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -495,7 +495,7 @@ void __cdecl BattleFx_LimitDragonDiveVerticalMovingSpriteTask(void)
     task = (BattleFxDragonDiveVerticalSprite *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleLimitDragonDiveSpriteRequest.handle) = Gfx_ModelTableGetLoadedRecord(1, g_BattleLimitDragonDiveLoadedResTable);
     g_BattleLimitDragonDiveSpriteRequest.res = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x4000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x4000 /* 4.0 */, 0);
     g_BattleLimitDragonDiveSpriteRequest.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitDragonDiveSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {

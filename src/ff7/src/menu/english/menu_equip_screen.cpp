@@ -50,9 +50,9 @@ EnglishWindowFrame *g_MenuEquipRectPtr = 0;
 int g_MenuEquipCharIndex = 0;
 unsigned char g_bssPad_00dca4a8[280] = {0};
 // GLOBAL: FF7 0x00dca5c0
-int g_MenuEquipCursor0[0xe] = {0};
+int g_MenuEquipCursor0[14] = {0};
 // GLOBAL: FF7 0x00dca5f8
-int g_MenuEquipCursor1[0xe] = {0};
+int g_MenuEquipCursor1[14] = {0};
 unsigned char g_bssPad_00dca630[112] = {0};
 // GLOBAL: FF7 0x00dca6a0
 int g_MenuEquipSelectedSlot = 0;
@@ -78,7 +78,7 @@ void __cdecl Menu_EquipScreenInit(int arg)
     g_MenuEquipCharIndex = g_MenuPartyMemberIndex;
     MenuCursor_Init((MenuCursor *)g_MenuEquipCursor0, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0,
                     0);
-    MenuCursor_Init((MenuCursor *)g_MenuEquipCursor1, 0, 0, 1, 8, 0, 0, 1, 0x10, 0, 0, 0, 0,
+    MenuCursor_Init((MenuCursor *)g_MenuEquipCursor1, 0, 0, 1, 8, 0, 0, 1, 16, 0, 0, 0, 0,
                     0, 1);
     if (g_MenuIsSmallViewport320x240 != 1) {
         g_MenuEquipRectPtr = g_MenuEquipWindowRects2x;
@@ -531,17 +531,17 @@ void __cdecl Menu_DrawEquipMateriaSlotRow2x(int x, int y, unsigned char *slots)
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0) {
             if (slots[i] > 4) {
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x80, 0x30, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x80, 0x30, 16, 16, 1, 0, 0,
                                      0.201f);
             } else {
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x70, 0x20, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x70, 0x20, 16, 16, 1, 0, 0,
                                      0.201f);
             }
         }
     }
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0 && (slots[i] == 3 || slots[i] == 7)) {
-            Menu_DrawAtlasQuad2x(x + i * 0x1c - 0xc, y, 0x70, 0x30, 0x10, 0x10, 1,
+            Menu_DrawAtlasQuad2x(x + i * 28 - 0xc, y, 0x70, 0x30, 16, 16, 1,
                                  0, 0, 0.2f);
         }
     }
@@ -564,17 +564,17 @@ void __cdecl Menu_DrawEquipMateriaSlotRow1x(int x, int y, unsigned char *slots)
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0) {
             if (slots[i] > 4) {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x80, 0x30, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 128, 48, 16, 16, 1, 0, 0,
                                      0.201f);
             } else {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x70, 0x20, 0x10, 0x10, 1, 0, 0,
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 112, 32, 16, 16, 1, 0, 0,
                                      0.201f);
             }
         }
     }
     for (i = 0; i < 8; i++) {
         if (slots[i] != 0 && (slots[i] == 3 || slots[i] == 7)) {
-            Menu_DrawAtlasQuad1x(x + i * 0xe - 7, y, 0x70, 0x30, 0x10, 0x10, 1,
+            Menu_DrawAtlasQuad1x(x + i * 14 - 7, y, 112, 48, 16, 16, 1,
                                  0, 0, 0.2f);
         }
     }
@@ -617,7 +617,7 @@ void __cdecl Menu_DrawEquipStatRows(int baseX, int baseY)
                           0.2f);
     }
     for (i = 0; i < 7; i++) {
-        DrawIconGlyph16_2x(baseX + 0xc2, baseY + i * 0x1a, 0xda, 5, 0.2f);
+        DrawIconGlyph16_2x(baseX + 0xc2, baseY + i * 26, 0xda, 5, 0.2f);
     }
     atk = g_KernelWeaponDataArray[gSavemap.chars[g_CharIdToSaveSlot[who]].weapon].attackBonusByte;
     atk2 = atk;
@@ -756,7 +756,7 @@ void __cdecl Menu_DrawEquipStatRows1x(int baseX, int baseY)
                              0.2f);
     }
     for (i = 0; i < 7; i++) {
-        DrawIconGlyph16_1x(baseX + 0x62, baseY + i * 0xd, 0xda, 5, 0.2f);
+        DrawIconGlyph16_1x(baseX + 0x62, baseY + i * 13, 0xda, 5, 0.2f);
     }
     atk = g_KernelWeaponDataArray[gSavemap.chars[g_CharIdToSaveSlot[who]].weapon].attackBonusByte;
     atk2 = atk;
@@ -876,7 +876,7 @@ void __cdecl Menu_BuildEquipCandidateList(int equipType)
     switch (equipType) {
     case EQUIP_WEAPON:
         cnt = slot = 0;
-        for (; slot < 0x140; slot++) {
+        for (; slot < 320; slot++) {
             if (((unsigned short *)gSavemapItems)[slot] == MENU_ITEM_SLOT_EMPTY) {
                 continue;
             }
@@ -893,7 +893,7 @@ void __cdecl Menu_BuildEquipCandidateList(int equipType)
         break;
     case EQUIP_ARMOR:
         cnt = slot = 0;
-        for (; slot < 0x140; slot++) {
+        for (; slot < 320; slot++) {
             if (((unsigned short *)gSavemapItems)[slot] == MENU_ITEM_SLOT_EMPTY) {
                 continue;
             }
@@ -910,7 +910,7 @@ void __cdecl Menu_BuildEquipCandidateList(int equipType)
         break;
     case EQUIP_ACCESSORY:
         cnt = slot = 0;
-        for (; slot < 0x140; slot++) {
+        for (; slot < 320; slot++) {
             if (((unsigned short *)gSavemapItems)[slot] == MENU_ITEM_SLOT_EMPTY) {
                 continue;
             }
@@ -927,7 +927,7 @@ void __cdecl Menu_BuildEquipCandidateList(int equipType)
         break;
     }
     g_MenuEquipCandidateCount = cnt;
-    for (; cnt < 0x30; cnt++) {
+    for (; cnt < 48; cnt++) {
         g_MenuEquipBuffer[cnt] = 0xff;
     }
 }

@@ -967,9 +967,9 @@ void __cdecl Submarine_ComputeRecordPitchYaw(void)
     do {
         if ((frame.modelData->flags & 3) == 0) { /* empty first arm: lib/codegen.h */
         } else {
-            frame.relRecord->offset.x = (frame.modelData->timedKey->waypointX - frame.modelData->posX) >> 0xC;
-            frame.relRecord->offset.y = (frame.modelData->timedKey->waypointY - frame.modelData->posY) >> 0xC;
-            frame.relRecord->offset.z = (frame.modelData->timedKey->waypointZ - frame.modelData->posZ) >> 0xC;
+            frame.relRecord->offset.x = (frame.modelData->timedKey->waypointX - frame.modelData->posX) >> 12;
+            frame.relRecord->offset.y = (frame.modelData->timedKey->waypointY - frame.modelData->posY) >> 12;
+            frame.relRecord->offset.z = (frame.modelData->timedKey->waypointZ - frame.modelData->posZ) >> 12;
             Submarine_NormalizeVectorInPlace(&frame.relRecord->offset);
             frame.direction.vx = frame.relRecord->offset.x;
             frame.direction.vy = frame.relRecord->offset.y;
@@ -1015,11 +1015,11 @@ void __cdecl Submarine_ComputeRecordPitchYaw(void)
                 frame.horizontal = 0;
             }
             if (frame.leadingBits < 0x18) {
-                frame.horizontal >>= 0x18 - frame.leadingBits;
+                frame.horizontal >>= 24 - frame.leadingBits;
             } else {
                 frame.horizontal <<= frame.leadingBits - 0x18;
             }
-            frame.horizontal = g_SubmarineModelIndicesA[frame.horizontal - 64] << frame.scaleShift >> 0xC;
+            frame.horizontal = g_SubmarineModelIndicesA[frame.horizontal - 64] << frame.scaleShift >> 12;
             frame.modelData->angleC = -Submarine_Atan2Fixed(frame.relRecord->offset.y, frame.horizontal);
             frame.modelData->angleD = -Submarine_Atan2Fixed(frame.relRecord->side.z, frame.relRecord->side.x);
             frame.modelData->angleE = 0;
@@ -1111,7 +1111,7 @@ int __cdecl Submarine_NormalizeVectorInPlace(SubmarineVec3Int *vector)
         totalSq = 0;
     }
     if (signFlags < 0x18) {
-        totalSq >>= 0x18 - signFlags;
+        totalSq >>= 24 - signFlags;
     } else {
         totalSq <<= signFlags - 0x18;
     }
@@ -1120,7 +1120,7 @@ int __cdecl Submarine_NormalizeVectorInPlace(SubmarineVec3Int *vector)
     xSquared = vx * reciprocal;
     ySquared = vecY * reciprocal;
     dstZPow = zComp * reciprocal;
-    totalSq = totalSq << expBits >> 0xC;
+    totalSq = totalSq << expBits >> 12;
     vx = xSquared;
     vecY = ySquared;
     zComp = dstZPow;
@@ -1133,7 +1133,7 @@ int __cdecl Submarine_NormalizeVectorInPlace(SubmarineVec3Int *vector)
 // Updates twelve 0x70-byte submarine records. Active records turn pitch and heading toward their
 // wrapped targets by signed steps of 4 and 8, recompute a fixed-point direction, move using
 // current speed and approach target speed. Out-of-bounds movement clears motion bit 1 and sets bit
-// 2, skipping all later processing for that record. Bit 0x20 records descend toward terrain, alter
+// 2, skipping all later processing for that record. Bit 32 records descend toward terrain, alter
 // angles and position, then clear themselves and update counters. Computes waypoint distance,
 // camera-relative distance, normalized direction and threshold flags through lookup tables;
 // follows the next waypoint when close. Nonpositive health enters the terrain descent state.
@@ -1227,10 +1227,10 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             frame.currentAngle = frame.record->angleA + 0x1000 & 0xFFF;
             frame.angleDelta = frame.targetAngle - frame.currentAngle;
             if (frame.angleDelta > 0x800) {
-                frame.angleDelta -= 0x1000;
+                frame.angleDelta -= 0x1000 /* 360 deg */;
             }
             if (frame.angleDelta < (-2048)) {
-                frame.angleDelta += 0x1000;
+                frame.angleDelta += 0x1000 /* 360 deg */;
             }
             if (frame.angleDelta > 0) {
                 frame.angleDelta = 4;
@@ -1239,20 +1239,20 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             }
             frame.currentAngle += frame.angleDelta;
             if (frame.currentAngle > 0x800) {
-                frame.currentAngle -= 0x1000;
+                frame.currentAngle -= 0x1000 /* 360 deg */;
             }
             if (frame.currentAngle < (-2048)) {
-                frame.currentAngle += 0x1000;
+                frame.currentAngle += 0x1000 /* 360 deg */;
             }
             frame.record->angleA = (short)frame.currentAngle;
             frame.targetAngle = frame.record->angleD + 0x1000 & 0xFFF;
             frame.currentAngle = frame.record->angleB + 0x1000 & 0xFFF;
             frame.angleDelta = frame.targetAngle - frame.currentAngle;
             if (frame.angleDelta > 0x800) {
-                frame.angleDelta -= 0x1000;
+                frame.angleDelta -= 0x1000 /* 360 deg */;
             }
             if (frame.angleDelta < (-2048)) {
-                frame.angleDelta += 0x1000;
+                frame.angleDelta += 0x1000 /* 360 deg */;
             }
             if (frame.angleDelta > 0) {
                 frame.angleDelta = 8;
@@ -1261,26 +1261,26 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             }
             frame.currentAngle += frame.angleDelta;
             if (frame.currentAngle > 0x800) {
-                frame.currentAngle -= 0x1000;
+                frame.currentAngle -= 0x1000 /* 360 deg */;
             }
             if (frame.currentAngle < (-2048)) {
-                frame.currentAngle += 0x1000;
+                frame.currentAngle += 0x1000 /* 360 deg */;
             }
             frame.record->angleB = (short)frame.currentAngle;
             frame.sinA = SinFixed(frame.record->angleA + 0x1000 & 0xFFF);
             frame.cosA = CosFixed(frame.record->angleA + 0x1000 & 0xFFF);
             frame.sinB = SinFixed(frame.record->angleB + 0x1000 & 0xFFF);
             frame.cosB = CosFixed(frame.record->angleB + 0x1000 & 0xFFF);
-            frame.record->velocityX = frame.cosA * frame.sinB >> 0xC;
+            frame.record->velocityX = frame.cosA * frame.sinB >> 12;
             frame.record->velocityY = -frame.sinA;
-            frame.record->velocityZ = frame.cosA * frame.cosB >> 0xC;
+            frame.record->velocityZ = frame.cosA * frame.cosB >> 12;
         }
         if ((frame.record->flags & 1) != 0) {
             frame.speed = frame.record->speed;
-            frame.nextPosX = frame.record->posX + (frame.record->velocityX * frame.speed >> 0xC);
-            frame.nextPosY = frame.record->posY + (frame.record->velocityY * frame.speed >> 0xC);
-            frame.nextPosZ = frame.record->posZ + (frame.record->velocityZ * frame.speed >> 0xC);
-            if (frame.nextPosX < (-8388608) || (frame.nextPosX > 0x800000 || (frame.nextPosY < 0 || (frame.nextPosY > 0x400000 || (frame.nextPosZ < (-8388608) || frame.nextPosZ > 0x800000))))) {
+            frame.nextPosX = frame.record->posX + (frame.record->velocityX * frame.speed >> 12);
+            frame.nextPosY = frame.record->posY + (frame.record->velocityY * frame.speed >> 12);
+            frame.nextPosZ = frame.record->posZ + (frame.record->velocityZ * frame.speed >> 12);
+            if (frame.nextPosX < (-8388608) || (frame.nextPosX > 8388608 || (frame.nextPosY < 0 || (frame.nextPosY > 4194304 || (frame.nextPosZ < (-8388608) || frame.nextPosZ > 8388608))))) {
                 frame.record->flags = frame.record->flags & 0xFFFFFFFE | 2;
                 continue;
             }
@@ -1298,10 +1298,10 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             frame.speed += frame.speedDelta;
             frame.record->speed = frame.speed;
         } else if ((frame.record->flags & 0x20) != 0) {
-            frame.gridCell = ((0x800 - (frame.record->posZ >> 0xC)) / 64 << 6) + ((frame.record->posX >> 0xC) + 0x800) / 64;
-            frame.terrainHeight = g_SubmarineGridCellTable[frame.gridCell].height << 0xC;
+            frame.gridCell = ((0x800 - (frame.record->posZ >> 12)) / 64 << 6) + ((frame.record->posX >> 12) + 0x800) / 64;
+            frame.terrainHeight = g_SubmarineGridCellTable[frame.gridCell].height << 12;
             if (frame.record->posY < frame.terrainHeight) {
-                frame.record->posY += 0x800;
+                frame.record->posY += 2048;
                 if (frame.record->angleA > (-768)) {
                     frame.record->angleA -= 4;
                 }
@@ -1317,9 +1317,9 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             }
         }
         if ((frame.record->flags & 1) != 0) {
-            frame.waypointDx = frame.record->timedKey->waypointX - frame.record->posX >> 0xC;
-            frame.waypointDy = frame.record->timedKey->waypointY - frame.record->posY >> 0xC;
-            frame.waypointDz = frame.record->timedKey->waypointZ - frame.record->posZ >> 0xC;
+            frame.waypointDx = frame.record->timedKey->waypointX - frame.record->posX >> 12;
+            frame.waypointDy = frame.record->timedKey->waypointY - frame.record->posY >> 12;
+            frame.waypointDz = frame.record->timedKey->waypointZ - frame.record->posZ >> 12;
             frame.vecX = frame.waypointDx;
             frame.vecY = frame.waypointDy;
             frame.vecZ = frame.waypointDz;
@@ -1338,17 +1338,17 @@ void __cdecl Submarine_UpdateObjectRecords(void)
                 frame.distance = 0;
             }
             if (frame.leadingBits < 0x18) {
-                frame.distance >>= 0x18 - frame.leadingBits;
+                frame.distance >>= 24 - frame.leadingBits;
             } else {
                 frame.distance <<= frame.leadingBits - 0x18;
             }
-            frame.distance = g_SubmarineModelIndicesA[frame.distance - 64] << frame.scaleShift >> 0xC;
+            frame.distance = g_SubmarineModelIndicesA[frame.distance - 64] << frame.scaleShift >> 12;
             frame.record->elapsed = frame.distance;
         }
         if ((frame.record->flags & 3) != 0) {
-            frame.playerDx = frame.record->posX - g_SubmarineState.player.posX >> 0xC;
-            frame.playerDy = frame.record->posY - g_SubmarineState.player.posY >> 0xC;
-            frame.playerDz = frame.record->posZ - g_SubmarineState.player.posZ >> 0xC;
+            frame.playerDx = frame.record->posX - g_SubmarineState.player.posX >> 12;
+            frame.playerDy = frame.record->posY - g_SubmarineState.player.posY >> 12;
+            frame.playerDz = frame.record->posZ - g_SubmarineState.player.posZ >> 12;
             frame.vecX = frame.playerDx;
             frame.vecY = frame.playerDy;
             frame.vecZ = frame.playerDz;
@@ -1373,7 +1373,7 @@ void __cdecl Submarine_UpdateObjectRecords(void)
                 frame.playerDistance = 0;
             }
             if (frame.playerLeadingBits < 0x18) {
-                frame.playerDistance >>= 0x18 - frame.playerLeadingBits;
+                frame.playerDistance >>= 24 - frame.playerLeadingBits;
             } else {
                 frame.playerDistance <<= frame.playerLeadingBits - 0x18;
             }
@@ -1382,7 +1382,7 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             frame.product.value.vx = frame.vecX * frame.normScale;
             frame.product.value.vy = frame.vecY * frame.normScale;
             frame.product.value.vz = frame.vecZ * frame.normScale;
-            frame.record->magnitude = frame.playerDistance << frame.playerScaleShift >> 0xC;
+            frame.record->magnitude = frame.playerDistance << frame.playerScaleShift >> 12;
             frame.dirX = frame.product.value.vx;
             frame.dirY = frame.product.value.vy;
             frame.dirZ = frame.product.value.vz;
@@ -1401,7 +1401,7 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             frame.directionX = g_SubmarineState.directionX;
             frame.directionY = g_SubmarineState.directionY;
             frame.directionZ = g_SubmarineState.directionZ;
-            frame.product.value.vx = frame.dirShortX * frame.directionX + frame.dirShortY * frame.directionY + frame.dirShortZ * frame.directionZ >> 0xC;
+            frame.product.value.vx = frame.dirShortX * frame.directionX + frame.dirShortY * frame.directionY + frame.dirShortZ * frame.directionZ >> 12;
             frame.basisX = g_SubmarineState.rightBasisX;
             frame.rightBasisY = g_SubmarineState.rightBasisY;
             frame.rightBasisZ = g_SubmarineState.rightBasisZ;
@@ -1409,7 +1409,7 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             frame.velocityY = frame.record->velocityY;
             frame.velocityZ = frame.record->velocityZ;
             frame.dotResult = frame.product.value.vx;
-            frame.product.value.vx = frame.dirShortX * frame.basisX + frame.dirShortY * frame.rightBasisY + frame.dirShortZ * frame.rightBasisZ >> 0xC;
+            frame.product.value.vx = frame.dirShortX * frame.basisX + frame.dirShortY * frame.rightBasisY + frame.dirShortZ * frame.rightBasisZ >> 12;
             if (frame.dotResult < g_SubmarinePitchThresholdLow) {
                 frame.record->flags &= 0xFFFFFFFB;
             } else {
@@ -1417,7 +1417,7 @@ void __cdecl Submarine_UpdateObjectRecords(void)
             }
             frame.record->dotResultA = frame.dotResult;
             frame.dotResult = frame.product.value.vx;
-            frame.product.value.vy = frame.negDirShortX * frame.velocityX + frame.negDirShortY * frame.velocityY + frame.negDirShortZ * frame.velocityZ >> 0xC;
+            frame.product.value.vy = frame.negDirShortX * frame.velocityX + frame.negDirShortY * frame.velocityY + frame.negDirShortZ * frame.velocityZ >> 12;
             frame.record->dotResultB = frame.dotResult;
             frame.dotResult = frame.product.value.vy;
             if (frame.dotResult < g_SubmarinePitchThresholdHigh) {
@@ -1445,16 +1445,16 @@ void __cdecl Submarine_UpdateObjectRecords(void)
                     frame.slotIndex = 0;
                     do {
                         if (frame.record->effectSlots[frame.slotIndex] == SUBMARINE_LAUNCHER_READY) {
-                            frame.flightIndex = 0x10;
+                            frame.flightIndex = 16;
                             do {
                                 if (g_SubmarineFlightRecords[frame.flightIndex].state == SUBMARINE_FLIGHT_IDLE) {
-                                    if (frame.record->magnitude < 0x200) {
+                                    if (frame.record->magnitude < 512) {
                                         g_SubmarineFlightRecords[frame.flightIndex].posX = frame.record->posX;
                                         g_SubmarineFlightRecords[frame.flightIndex].posY = frame.record->posY;
                                         g_SubmarineFlightRecords[frame.flightIndex].posZ = frame.record->posZ;
-                                        g_SubmarineFlightRecords[frame.flightIndex].shortPosX = frame.record->posX >> 0xC;
-                                        g_SubmarineFlightRecords[frame.flightIndex].shortPosY = frame.record->posY >> 0xC;
-                                        g_SubmarineFlightRecords[frame.flightIndex].shortPosZ = frame.record->posZ >> 0xC;
+                                        g_SubmarineFlightRecords[frame.flightIndex].shortPosX = frame.record->posX >> 12;
+                                        g_SubmarineFlightRecords[frame.flightIndex].shortPosY = frame.record->posY >> 12;
+                                        g_SubmarineFlightRecords[frame.flightIndex].shortPosZ = frame.record->posZ >> 12;
                                         g_SubmarineFlightRecords[frame.flightIndex].targetX = g_SubmarineState.player.posX;
                                         g_SubmarineFlightRecords[frame.flightIndex].targetY = g_SubmarineState.player.posY;
                                         g_SubmarineFlightRecords[frame.flightIndex].targetZ = g_SubmarineState.player.posZ;
@@ -1462,7 +1462,7 @@ void __cdecl Submarine_UpdateObjectRecords(void)
                                         g_SubmarineFlightRecords[frame.flightIndex].angleB = frame.record->angleB;
                                         g_SubmarineFlightRecords[frame.flightIndex].heightOffset = frame.record->heightOffset;
                                         g_SubmarineFlightRecords[frame.flightIndex].speed = g_SubmarineWorkingLevelStep / 2;
-                                        g_SubmarineFlightRecords[frame.flightIndex].stepsLeft = 0x30;
+                                        g_SubmarineFlightRecords[frame.flightIndex].stepsLeft = 48;
                                         g_SubmarineFlightRecords[frame.flightIndex].state = SUBMARINE_FLIGHT_HOMING;
                                         g_SubmarineFlightRecords[frame.flightIndex].target = (int)&g_SubmarineState.player;
                                         g_SubmarineFlightRecords[frame.flightIndex].timer = g_SubmarineTorpedoInitialSpeed;
@@ -1486,7 +1486,7 @@ void __cdecl Submarine_UpdateObjectRecords(void)
                                     break;
                                 }
                                 frame.flightIndex++;
-                            } while (frame.flightIndex < 0x20);
+                            } while (frame.flightIndex < 32);
                             break;
                         }
                         frame.slotIndex++;
@@ -1500,24 +1500,24 @@ void __cdecl Submarine_UpdateObjectRecords(void)
                             switch ((unsigned int)frame.record->state) {
                             case SUBMARINE_CONTACT_NONE:
                                 frame.record->state = SUBMARINE_CONTACT_NEW;
-                                frame.record->frameCount = 0x3C;
+                                frame.record->frameCount = 60;
                                 break;
                             case SUBMARINE_CONTACT_LOST:
                                 frame.record->state = SUBMARINE_CONTACT_TRACKED;
-                                frame.record->frameCount = 0x2D;
+                                frame.record->frameCount = 45;
                                 break;
                             case SUBMARINE_CONTACT_TRACKED:
                                 frame.record->state = SUBMARINE_CONTACT_TRACKED;
-                                frame.record->frameCount = 0x2D;
+                                frame.record->frameCount = 45;
                                 break;
                             case SUBMARINE_CONTACT_LOCKED:
-                                frame.record->frameCount = 0x2D;
+                                frame.record->frameCount = 45;
                             }
                         } else {
                             switch ((unsigned int)frame.record->state) {
                             case SUBMARINE_CONTACT_NEW:
                                 frame.record->state = SUBMARINE_CONTACT_LOST;
-                                frame.record->frameCount = 0x2D;
+                                frame.record->frameCount = 45;
                             case SUBMARINE_CONTACT_NONE:;
                             }
                         }
@@ -1532,11 +1532,11 @@ void __cdecl Submarine_UpdateObjectRecords(void)
                     switch ((unsigned int)frame.record->state) {
                     case SUBMARINE_CONTACT_LOCKED:
                         frame.record->state = SUBMARINE_CONTACT_TRACKED;
-                        frame.record->frameCount = 0x2D;
+                        frame.record->frameCount = 45;
                         break;
                     case SUBMARINE_CONTACT_TRACKED:
                         frame.record->state = SUBMARINE_CONTACT_LOST;
-                        frame.record->frameCount = 0x2D;
+                        frame.record->frameCount = 45;
                         break;
                     case SUBMARINE_CONTACT_NEW:
                     case SUBMARINE_CONTACT_LOST:
@@ -1588,7 +1588,7 @@ void __cdecl Submarine_UpdateActiveFlagRecord(void)
             }
             if ((rec->flags & 4) == 0) {
                 rec->state = SUBMARINE_CONTACT_LOST;
-                rec->frameCount = 0x2d;
+                rec->frameCount = 45;
                 break;
             }
             return;
@@ -1611,7 +1611,7 @@ void __cdecl Submarine_UpdateActiveFlagRecord(void)
     } while ((unsigned int)rec < (unsigned int)&g_SubmarineLevel0Map);
     if (bestPtr != 0) {
         bestPtr->state = SUBMARINE_CONTACT_LOCKED;
-        bestPtr->frameCount = 0x2d;
+        bestPtr->frameCount = 45;
     }
 }
 
@@ -1678,11 +1678,11 @@ void __cdecl Submarine_FillRouteRecordTable(SubmarineRouteRecord *outRecords, in
     case SUBMARINE_LEVEL_STORY:
         level5Cursor = (SubmarineRouteNode *)&g_SubmarineLevel5RouteTable;
         do {
-            outRecords->posX = level5Cursor->x << 6 << 0xC;
-            outRecords->posY = level5Cursor->y << 6 << 0xC;
-            outRecords->posZ = level5Cursor->z << 6 << 0xC;
+            outRecords->posX = level5Cursor->x << 6 << 12;
+            outRecords->posY = level5Cursor->y << 6 << 12;
+            outRecords->posZ = level5Cursor->z << 6 << 12;
             idx = level5Cursor->index;
-            if (idx < 0 || idx > 0x80) {
+            if (idx < 0 || idx > 128) {
                 idx = 0;
             }
             outRecords->nextKey = (SubmarineTimedEffectKey *)g_SubmarineWorkingLevelRouteTable[idx];
@@ -1693,11 +1693,11 @@ void __cdecl Submarine_FillRouteRecordTable(SubmarineRouteRecord *outRecords, in
     case SUBMARINE_LEVEL_1:
         workCur = (SubmarineRouteNode *)&g_SubmarineLevel4RouteTable;
         do {
-            outRecords->posX = workCur->x << 6 << 0xC;
-            outRecords->posY = workCur->y << 6 << 0xC;
-            outRecords->posZ = workCur->z << 6 << 0xC;
+            outRecords->posX = workCur->x << 6 << 12;
+            outRecords->posY = workCur->y << 6 << 12;
+            outRecords->posZ = workCur->z << 6 << 12;
             idx = workCur->index;
-            if (idx < 0 || idx > 0x80) {
+            if (idx < 0 || idx > 128) {
                 idx = 0;
             }
             outRecords->nextKey = (SubmarineTimedEffectKey *)g_SubmarineWorkingLevelRouteTable[idx];
@@ -1708,11 +1708,11 @@ void __cdecl Submarine_FillRouteRecordTable(SubmarineRouteRecord *outRecords, in
     case SUBMARINE_LEVEL_2:
         level3Cursor = (SubmarineRouteNode *)&g_SubmarineLevel3RouteTable;
         do {
-            outRecords->posX = level3Cursor->x << 6 << 0xC;
-            outRecords->posY = level3Cursor->y << 6 << 0xC;
-            outRecords->posZ = level3Cursor->z << 6 << 0xC;
+            outRecords->posX = level3Cursor->x << 6 << 12;
+            outRecords->posY = level3Cursor->y << 6 << 12;
+            outRecords->posZ = level3Cursor->z << 6 << 12;
             idx = level3Cursor->index;
-            if (idx < 0 || idx > 0x80) {
+            if (idx < 0 || idx > 128) {
                 idx = 0;
             }
             outRecords->nextKey = (SubmarineTimedEffectKey *)g_SubmarineWorkingLevelRouteTable[idx];
@@ -1723,11 +1723,11 @@ void __cdecl Submarine_FillRouteRecordTable(SubmarineRouteRecord *outRecords, in
     case SUBMARINE_LEVEL_3:
         cursorD = (SubmarineRouteNode *)&g_SubmarineLevel2RouteTable;
         do {
-            outRecords->posX = cursorD->x << 6 << 0xC;
-            outRecords->posY = cursorD->y << 6 << 0xC;
-            outRecords->posZ = cursorD->z << 6 << 0xC;
+            outRecords->posX = cursorD->x << 6 << 12;
+            outRecords->posY = cursorD->y << 6 << 12;
+            outRecords->posZ = cursorD->z << 6 << 12;
             idx = cursorD->index;
-            if (idx < 0 || idx > 0x80) {
+            if (idx < 0 || idx > 128) {
                 idx = 0;
             }
             outRecords->nextKey = (SubmarineTimedEffectKey *)g_SubmarineWorkingLevelRouteTable[idx];
@@ -1738,11 +1738,11 @@ void __cdecl Submarine_FillRouteRecordTable(SubmarineRouteRecord *outRecords, in
     case SUBMARINE_LEVEL_4:
         srcE = (SubmarineRouteNode *)&g_SubmarineLevel1RouteTable;
         do {
-            outRecords->posX = srcE->x << 6 << 0xC;
-            outRecords->posY = srcE->y << 6 << 0xC;
-            outRecords->posZ = srcE->z << 6 << 0xC;
+            outRecords->posX = srcE->x << 6 << 12;
+            outRecords->posY = srcE->y << 6 << 12;
+            outRecords->posZ = srcE->z << 6 << 12;
             idx = srcE->index;
-            if (idx < 0 || idx > 0x80) {
+            if (idx < 0 || idx > 128) {
                 idx = 0;
             }
             outRecords->nextKey = (SubmarineTimedEffectKey *)g_SubmarineWorkingLevelRouteTable[idx];
@@ -1753,11 +1753,11 @@ void __cdecl Submarine_FillRouteRecordTable(SubmarineRouteRecord *outRecords, in
     case SUBMARINE_LEVEL_5:
         level0Cursor = (SubmarineRouteNode *)&g_SubmarineLevel0RouteTable;
         do {
-            outRecords->posX = level0Cursor->x << 6 << 0xC;
-            outRecords->posY = level0Cursor->y << 6 << 0xC;
-            outRecords->posZ = level0Cursor->z << 6 << 0xC;
+            outRecords->posX = level0Cursor->x << 6 << 12;
+            outRecords->posY = level0Cursor->y << 6 << 12;
+            outRecords->posZ = level0Cursor->z << 6 << 12;
             idx = level0Cursor->index;
-            if (idx < 0 || idx > 0x80) {
+            if (idx < 0 || idx > 128) {
                 idx = 0;
             }
             outRecords->nextKey = (SubmarineTimedEffectKey *)g_SubmarineWorkingLevelRouteTable[idx];
@@ -1789,9 +1789,9 @@ void __cdecl Submarine_CopyObjectRecordTable(SubmarineObjectRecord *objectRecord
     index = 0;
     dst = (SubmarineContactRecord *)&g_SubmarineModelVertexData;
     do {
-        dst->posX = objectRecords->posX << 6 << 0xC;
-        dst->posY = objectRecords->posY << 6 << 0xC;
-        dst->posZ = objectRecords->posZ << 6 << 0xC;
+        dst->posX = objectRecords->posX << 6 << 12;
+        dst->posY = objectRecords->posY << 6 << 12;
+        dst->posZ = objectRecords->posZ << 6 << 12;
         dst->slotWeight = objectRecords->slotWeight;
         dst->angleA = objectRecords->angleA;
         dst->angleB = objectRecords->angleB;
@@ -2031,7 +2031,7 @@ void __cdecl Submarine_BuildProjectedStripBatches(void)
                 } else {
                     GtePsxMatrixToFloat4x4Transposed(GetInstalledRotMatrixPtr(), frame.rotMatrix);
                     ComposeWithScreenMatrix(frame.rotMatrix, frame.screenMatrix);
-                    frame.sliceTop = 0x400;
+                    frame.sliceTop = 1024;
                     frame.recordY = frame.record->posY >> 12;
                     frame.baseX = frame.record->posX >> 12;
                     frame.points[2].x = (float)frame.baseX;
@@ -2059,7 +2059,7 @@ void __cdecl Submarine_BuildProjectedStripBatches(void)
                     }
                     while ((unsigned int)frame.sliceTop > (unsigned int)frame.recordY) {
                         frame.points[0].y = (float)(unsigned int)frame.sliceTop;
-                        frame.sliceTop -= 0x40;
+                        frame.sliceTop -= 64;
                         if ((unsigned int)frame.sliceTop <= (unsigned int)frame.recordY)
                             frame.sliceTop = frame.recordY;
                         frame.points[2].y = (float)(unsigned int)frame.sliceTop;

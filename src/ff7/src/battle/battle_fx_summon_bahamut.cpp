@@ -284,7 +284,7 @@ PsxMatrix g_BattleSummonBahamutComposedMatrix = {0};
 // Camera-script operand table: negative operand -k reads element k of the shorts based at
 // g_BattleSummonBahamutCameraScriptTable + 6 across the contiguous .bss span.
 // GLOBAL: FF7 0x00aaf9d0
-unsigned char g_BattleSummonBahamutCameraScriptTable[0x8] = {0};
+unsigned char g_BattleSummonBahamutCameraScriptTable[8] = {0};
 
 unsigned char g_bssPad_00aaf9d8[20] = {0};
 // GLOBAL: FF7 0x00aaf9ec
@@ -439,7 +439,7 @@ void __cdecl BattleFx_SummonBeginBahamut(int targetMask, int actorIdx)
     Battle_GetActorMaskCentroid(g_BattleSummonBahamutCameraParam1 = targetMask, &centerX.vx);
     if (centerX.vz < g_BattleActorRecords[actorIdx].posZ) {
         g_BattleSummonBahamutTransformMatrix.t[2] = centerX.vz + 0x2710;
-        g_BattleSummonBahamutRotation[1] = 0x800;
+        g_BattleSummonBahamutRotation[1] = 0x800 /* 180 deg */;
     } else {
         g_BattleSummonBahamutTransformMatrix.t[2] = centerX.vz - 0x2710;
     }
@@ -794,7 +794,7 @@ void __cdecl BattleFx_SummonBahamutTimelineTask(void)
     blockPointer = Gfx_GetPsxScratchpadPtr(0);
     scratchPtr = blockPointer + 8;
     stage = taskSlot->frameCounter;
-    if (stage < 0xA) {
+    if (stage < 10) {
         if (stage == 0) {
             g_BattleFxTimelineState.channel2 = 0;
             g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
@@ -805,8 +805,8 @@ void __cdecl BattleFx_SummonBahamutTimelineTask(void)
             g_BattleStageHideFlags |= 7;
         }
     } else {
-        stage -= 0xA;
-        if (stage < 0x2D) {
+        stage -= 10;
+        if (stage < 45) {
             if (stage == 0) {
                 pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutSpawnFadingBillboardSpritesTask);
                 pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutCounterRotatingModelPairTask);
@@ -815,50 +815,50 @@ void __cdecl BattleFx_SummonBahamutTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            stage -= 0x2D;
-            if (stage < 0x1E) { /* empty first arm: lib/codegen.h */
+            stage -= 45;
+            if (stage < 30) { /* empty first arm: lib/codegen.h */
             } else {
-                stage -= 0x1E;
-                if (stage < 0xA) {
+                stage -= 30;
+                if (stage < 10) {
                     if (stage == 0) {
                         pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutRotatingModelPairTask);
                     }
                 } else {
-                    stage -= 0xA;
-                    if (stage < 0x3C) {
-                        if (stage == 0x32) {
+                    stage -= 10;
+                    if (stage < 60) {
+                        if (stage == 50) {
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                         }
                     } else {
-                        stage -= 0x3C;
-                        if (stage < 0x37) {
+                        stage -= 60;
+                        if (stage < 55) {
                             if (stage == 0) {
                                 g_BattleStageHideFlags &= 0xF8;
-                                Battle_StartFixedPointRamp(0x800, 0x37);
+                                Battle_StartFixedPointRamp(0x800, 55);
                                 g_BattleFxTimelineState.red = 0;
                                 g_BattleFxTimelineState.channel1 = 0;
                                 g_BattleFxTimelineState.channel2 = 0;
                             }
                         } else {
-                            stage -= 0x37;
-                            if (stage < 0x23) { /* empty first arm: lib/codegen.h */
+                            stage -= 55;
+                            if (stage < 35) { /* empty first arm: lib/codegen.h */
                             } else {
-                                stage -= 0x23;
-                                if (stage < 0x28) {
-                                    if (stage == 0xA) {
+                                stage -= 35;
+                                if (stage < 40) {
+                                    if (stage == 10) {
                                         pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutBlackGrowingModelTask);
                                     }
                                     if (stage == 5) {
                                         pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutSpawnStreakLinesTask);
                                     }
-                                    if (stage == 0xA) {
+                                    if (stage == 10) {
                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                         Sfx_ReleaseCachedBuffer(0x27C, 0);
                                         Sfx_ReleaseCachedBuffer(0x27D, 0);
                                         Sfx_ReleaseCachedBuffer(0x27E, 0);
                                     }
                                 } else {
-                                    stage -= 0x28;
+                                    stage -= 40;
                                     if (stage < 5) {
                                         if (stage == 0) {
                                             pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutExtendingBeamTask);
@@ -868,31 +868,31 @@ void __cdecl BattleFx_SummonBahamutTimelineTask(void)
                                         }
                                     } else {
                                         stage -= 5;
-                                        if (stage < 0xF) { /* empty first arm: lib/codegen.h */
+                                        if (stage < 15) { /* empty first arm: lib/codegen.h */
                                         } else {
-                                            stage -= 0xF;
-                                            if (stage < 0xA) { /* empty first arm: lib/codegen.h */
+                                            stage -= 15;
+                                            if (stage < 10) { /* empty first arm: lib/codegen.h */
                                             } else {
-                                                stage -= 0xA;
-                                                if (stage < 0xF) {
+                                                stage -= 10;
+                                                if (stage < 15) {
                                                     if (stage == 0) {
                                                         pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutSpawnAnimatedSpritesTask);
-                                                        BattleFx_SummonBahamutSpawnShakeEnvelope(0x64, 0, 0xF, 0x1E);
+                                                        BattleFx_SummonBahamutSpawnShakeEnvelope(0x64, 0, 15, 0x1E);
                                                     }
-                                                    if (stage < 0xA && stage % 2 == 0) {
+                                                    if (stage < 10 && stage % 2 == 0) {
                                                         pSpawn = (BattleFxBahamutSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutSpinningExpandingModelTask);
-                                                        pSpawn->spawnX = rand() % 0x1770 - 0xBB8;
-                                                        pSpawn->spawnY = rand() % 0x1388 - 0x1388;
-                                                        pSpawn->spawnZ = rand() % 0x1770 + 0x1B58;
+                                                        pSpawn->spawnX = rand() % 6000 - 3000;
+                                                        pSpawn->spawnY = rand() % 5000 - 5000;
+                                                        pSpawn->spawnZ = rand() % 6000 + 7000;
                                                         pSpawn->angleX = rand() & 0xFFF;
                                                         pSpawn->angleY = rand() & 0xFFF;
                                                         pSpawn->angleZ = rand() & 0xFFF;
-                                                        pSpawn->targetValue = rand() % 0x80 + 0x100;
+                                                        pSpawn->targetValue = rand() % 128 + 256;
                                                         pSpawn->curValue = pSpawn->targetValue;
                                                         expanding = (BattleFxBahamutTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutExpandingModelTask);
                                                         *(Int64Pair *)((char *)expanding + 4) = *(Int64Pair *)((char *)pSpawn + 4);
                                                         *(Int64Pair *)((char *)expanding + 0xC) = *(Int64Pair *)((char *)pSpawn + 0xC);
-                                                        expanding->targetValue = rand() % 0x200 + 0x400;
+                                                        expanding->targetValue = rand() % 512 + 1024;
                                                         expanding->curValue = expanding->targetValue;
                                                         expanding = (BattleFxBahamutTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutBillboardGrowingModelTask);
                                                         *(Int64Pair *)((char *)expanding + 4) = *(Int64Pair *)((char *)pSpawn + 4);
@@ -905,10 +905,10 @@ void __cdecl BattleFx_SummonBahamutTimelineTask(void)
                                                         Sfx_ReleaseCachedBuffer(0x281, 1);
                                                     }
                                                 } else {
-                                                    stage -= 0xF;
-                                                    if (stage < 0x1E) {
+                                                    stage -= 15;
+                                                    if (stage < 30) {
                                                         if (stage == 0) {
-                                                            for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+                                                            for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                                                                 if ((g_BattleSummonBahamutCameraParam1 & 1 << actorIndex) != 0) {
                                                                     Battle_PostActorHitOrHurtMessage(actorIndex);
                                                                 }
@@ -975,8 +975,8 @@ void __cdecl BattleFx_SummonBahamutShakeEnvelopeTask(void)
     }
     local.frame = local.p->frameCount;
     if (local.frame < local.p->riseFrames) {
-        local.ratio = (local.frame << 0xC) / local.p->riseFrames;
-        local.value = local.p->amplitude * local.ratio >> 0xC;
+        local.ratio = (local.frame << 12) / local.p->riseFrames;
+        local.value = local.p->amplitude * local.ratio >> 12;
     } else {
         local.frame -= local.p->riseFrames;
         if (local.frame < local.p->holdFrames) {
@@ -984,8 +984,8 @@ void __cdecl BattleFx_SummonBahamutShakeEnvelopeTask(void)
         } else {
             local.frame -= local.p->holdFrames;
             if (local.frame < local.p->fallFrames) {
-                local.ratio = (local.frame << 0xC) / local.p->fallFrames;
-                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 0xC;
+                local.ratio = (local.frame << 12) / local.p->fallFrames;
+                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 12;
             } else {
                 local.p->ownerSlot = 0xFFFF;
                 g_BattleCameraTransform.posY = 0;
@@ -1022,9 +1022,9 @@ void __cdecl BattleFx_SummonBahamutSpawnFadingBillboardSpritesTask(void)
     SetTransMatrix(&g_BattleSummonBahamutTransformMatrix);
     for (spriteIndex = 0; spriteIndex < 2; spriteIndex++) {
         pSprite = (BattleFxBahamutAnimatedSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutFadingBillboardSpriteTask);
-        pPoint->vx = rand() % 0x7D0 - 0x3E8;
+        pPoint->vx = rand() % 2000 - 1000;
         pPoint->vy = 0xB1E0;
-        pPoint->vz = rand() % 0x7D0 - 0x3E8;
+        pPoint->vz = rand() % 2000 - 1000;
         RotTransPoint(pPoint, (int *)worldPosition, (void *)flagOut);
         pSprite->posX = worldPosition->posX;
         pSprite->posY = worldPosition->posY;
@@ -1032,7 +1032,7 @@ void __cdecl BattleFx_SummonBahamutSpawnFadingBillboardSpritesTask(void)
         pSprite->scale = rand() % 0x1000 + 0x1000;
     }
     (taskPtr->step)++;
-    if (taskPtr->step >= 0x29) {
+    if (taskPtr->step >= 41) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1059,7 +1059,7 @@ void __cdecl BattleFx_SummonBahamutFadingBillboardSpriteTask(void)
     } else {
         stage -= 4;
         if (stage < 4) {
-            g_pBattleSummonBahamutFade->fadeCurrent = stage * -0x80 / 4 + 0x80;
+            g_pBattleSummonBahamutFade->fadeCurrent = stage * -128 / 4 + 128;
             g_pBattleSummonBahamutFade->fadePrev = g_pBattleSummonBahamutFade->fadeCurrent;
             g_pBattleSummonBahamutFade->fadeOld = g_pBattleSummonBahamutFade->fadePrev;
         } else {
@@ -1119,20 +1119,20 @@ void __cdecl BattleFx_SummonBahamutCounterRotatingModelPairTask(void)
     if (REG_ALLOC_HINT) {
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0xA) {
-        g_BattleSummonBahamutModelDrawRequest1.head.fadeLevel = 0x1000;
+    if (stage < 10) {
+        g_BattleSummonBahamutModelDrawRequest1.head.fadeLevel = 4096;
     } else {
-        stage -= 0xA;
-        if (stage < 0x19) {
-            g_BattleSummonBahamutModelDrawRequest1.head.fadeLevel = stage * -0x1000 / 0x19 + 0x1000;
+        stage -= 10;
+        if (stage < 25) {
+            g_BattleSummonBahamutModelDrawRequest1.head.fadeLevel = stage * -4096 / 25 + 4096;
         } else {
-            stage -= 0x19;
-            if (stage < 0x32) {
+            stage -= 25;
+            if (stage < 50) {
                 g_BattleSummonBahamutModelDrawRequest1.head.fadeLevel = 0;
             } else {
-                stage -= 0x32;
-                if (stage < 0x3C) {
-                    g_BattleSummonBahamutModelDrawRequest1.head.fadeLevel = (stage << 0xC) / 0x3C;
+                stage -= 50;
+                if (stage < 60) {
+                    g_BattleSummonBahamutModelDrawRequest1.head.fadeLevel = (stage << 12) / 60;
                 } else {
                     taskPtr->ownerSlot = BATTLE_TASK_FREE;
                     return;
@@ -1145,9 +1145,9 @@ void __cdecl BattleFx_SummonBahamutCounterRotatingModelPairTask(void)
     rotMatrix->first.t[2] = 0;
     g_BattleSummonBahamutScaleVector.angleY = taskPtr->frameCounter << 4;
     RotMatrix((SVECTOR *)&g_BattleSummonBahamutScaleVector, (void *)rotMatrix);
-    scaling->scaleZ = 0x2000;
-    scaling->scaleY = 0x2000;
-    scaling->scaleX = 0x2000;
+    scaling->scaleZ = 0x2000 /* 2.0 */;
+    scaling->scaleY = 0x2000 /* 2.0 */;
+    scaling->scaleX = 0x2000 /* 2.0 */;
     ScaleMatrix(rotMatrix, scaling);
     MultiplyMatrix(&g_BattleSummonBahamutTransformMatrix, rotMatrix, composed);
     MultiplyMatrix((void *)g_BattleCameraTransform.matrix, composed, composed);
@@ -1159,9 +1159,9 @@ void __cdecl BattleFx_SummonBahamutCounterRotatingModelPairTask(void)
     rotMatrix->first.t[1] = 0xFFFFB1E0;
     g_BattleSummonBahamutScaleVector.angleY = taskPtr->frameCounter * -0x10;
     RotMatrix((SVECTOR *)&g_BattleSummonBahamutScaleVector, (void *)rotMatrix);
-    scaling->scaleZ = 0x2000;
-    scaling->scaleY = 0x2000;
-    scaling->scaleX = 0x2000;
+    scaling->scaleZ = 0x2000 /* 2.0 */;
+    scaling->scaleY = 0x2000 /* 2.0 */;
+    scaling->scaleX = 0x2000 /* 2.0 */;
     ScaleMatrix(rotMatrix, scaling);
     MultiplyMatrix(&g_BattleSummonBahamutComposedMatrix, rotMatrix, composed);
     SetRotMatrix(composed);
@@ -1170,10 +1170,10 @@ void __cdecl BattleFx_SummonBahamutCounterRotatingModelPairTask(void)
     g_BattleSummonBahamutDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonBahamutModelDrawRequest1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonBahamutDrawHandle);
     if (g_BattleIsPaused == 0) {
         stage = taskPtr->frameCounter;
-        if (stage < 0x23) { /* empty first arm: lib/codegen.h */
+        if (stage < 35) { /* empty first arm: lib/codegen.h */
         } else {
-            stage -= 0x23;
-            if (stage < 0x1E) {
+            stage -= 35;
+            if (stage < 30) {
                 g_BattleSummonBahamutBlendTimer = stage + 1;
                 if (g_BattleSummonBahamutModelDrawRequest1.head.modelGroup != 0) {
                     Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_SummonBahamutBlendPolygonSetVertices, *(int *)((char *)g_BattleSummonBahamutModelDrawRequest1.head.modelGroup + 4));
@@ -1206,17 +1206,17 @@ void __cdecl BattleFx_SummonBahamutBillboardGrowingModelTask(void)
     } else {
         stage -= 4;
         if (stage < 4) {
-            scale = 0x1800;
-            g_BattleSummonBahamutModelDrawRequest1.fadeLevel2 = (stage << 0xC) / 4;
+            scale = 0x1800 /* 1.5 */;
+            g_BattleSummonBahamutModelDrawRequest1.fadeLevel2 = (stage << 12) / 4;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    scale = scale * task->scale >> 0xC;
+    scale = scale * task->scale >> 12;
     BattleFx_SummonBahamutInstallBillboardMatrix((BattleFxBillboardVector *)((int)task + 4), scale, 0);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSummonBahamutModelDrawRequest1.modelGroup2 = Gfx_ModelTableGetRenderObject(0x1B, g_BattleSummonBahamutLoadedResTable);
+    g_BattleSummonBahamutModelDrawRequest1.modelGroup2 = Gfx_ModelTableGetRenderObject(27, g_BattleSummonBahamutLoadedResTable);
     g_BattleSummonBahamutDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonBahamutModelDrawRequest1.modelGroup2, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleSummonBahamutDrawHandle);
     if (g_BattleIsPaused == 0) {
         (task->frameCount)++;
@@ -1228,7 +1228,7 @@ void __cdecl BattleFx_SummonBahamutBillboardGrowingModelTask(void)
 // g_BattleSummonBahamutComposedMatrix (SetRotMatrix/SetTransMatrix) and
 // RotTransPoint(vector, &g_BattleSummonBahamutBillboardWorkingBlob.x, &p) transforms vector into
 // the three ints x, y and z of the blob. When distance is nonzero it normalizes that vector
-// (NormalizeVectorFixed) and adds unit * distance >> 0xC to each component. Then loads the matrix
+// (NormalizeVectorFixed) and adds unit * distance >> 12 to each component. Then loads the matrix
 // at g_BattleSummonBahamutUnused and returns its address.
 // FUNCTION: FF7 0x0049993f
 int __cdecl BattleFx_SummonBahamutInstallBillboardMatrix(BattleFxBillboardVector *vector, short value, int distance)
@@ -1244,9 +1244,9 @@ int __cdecl BattleFx_SummonBahamutInstallBillboardMatrix(BattleFxBillboardVector
     RotTransPoint((void *)vector, &g_BattleSummonBahamutBillboardWorkingBlob.x, &result);
     if (distance != 0) {
         NormalizeVectorFixed(&g_BattleSummonBahamutBillboardWorkingBlob.x, &normal);
-        g_BattleSummonBahamutBillboardWorkingBlob.x += normal.vx * distance >> 0xC;
-        g_BattleSummonBahamutBillboardWorkingBlob.y += normal.vy * distance >> 0xC;
-        g_BattleSummonBahamutBillboardWorkingBlob.z += normal.vz * distance >> 0xC;
+        g_BattleSummonBahamutBillboardWorkingBlob.x += normal.vx * distance >> 12;
+        g_BattleSummonBahamutBillboardWorkingBlob.y += normal.vy * distance >> 12;
+        g_BattleSummonBahamutBillboardWorkingBlob.z += normal.vz * distance >> 12;
     }
     SetRotMatrix(&g_BattleSummonBahamutUnused);
     SetTransMatrix(&g_BattleSummonBahamutUnused);
@@ -1271,12 +1271,12 @@ void __cdecl BattleFx_SummonBahamutExpandingModelTask(void)
     matrix = (BattleFxBahamutMatrixScaleBlock *)Gfx_GetPsxScratchpadPtr(0);
     scalePtr = &matrix->scale;
     stage = task->frame;
-    if (stage < 0xA) {
+    if (stage < 10) {
         g_BattleSummonBahamutModelDrawRequest2.fadeLevel = 0;
     } else {
-        stage -= 0xA;
+        stage -= 10;
         if (stage < 5) {
-            g_BattleSummonBahamutModelDrawRequest2.fadeLevel = (stage << 0xC) / 5;
+            g_BattleSummonBahamutModelDrawRequest2.fadeLevel = (stage << 12) / 5;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1295,11 +1295,11 @@ void __cdecl BattleFx_SummonBahamutExpandingModelTask(void)
     SetRotMatrix(matrix);
     SetTransMatrix(matrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSummonBahamutModelDrawRequest2.modelGroup = Gfx_ModelTableGetRenderObject(0x1A, g_BattleSummonBahamutLoadedResTable);
+    g_BattleSummonBahamutModelDrawRequest2.modelGroup = Gfx_ModelTableGetRenderObject(26, g_BattleSummonBahamutLoadedResTable);
     g_BattleSummonBahamutDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonBahamutModelDrawRequest2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonBahamutDrawHandle);
     if (g_BattleIsPaused == 0) {
         task->scale += task->scaleStep;
-        task->scaleStep = task->scaleStep * 0xF00 >> 0xC;
+        task->scaleStep = task->scaleStep * 0xF00 /* 0.9375 */ >> 12;
         (task->frame)++;
     }
 }
@@ -1341,14 +1341,14 @@ void __cdecl BattleFx_SummonBahamutSpinningExpandingModelTask(void)
         g_BattleSummonBahamutSpinningScratch = (BattleFxBahamutExpandState *)Gfx_GetPsxScratchpadPtr(0);
     }
     stage = task->frameCount;
-    if (stage < 0xF) {
+    if (stage < 15) {
         SetDrawColorRGB(0xFF, 0x80, 0);
-        g_BattleSummonBahamutModelDrawRequest3.fadeLevel = stage * -0x1000 / 0xF + 0x1000;
+        g_BattleSummonBahamutModelDrawRequest3.fadeLevel = stage * -4096 / 15 + 4096;
     } else {
-        stage -= 0xF;
-        if (stage < 0xA) {
+        stage -= 15;
+        if (stage < 10) {
             SetDrawColorRGB(0, 0, 0);
-            g_BattleSummonBahamutModelDrawRequest3.fadeLevel = (stage << 0xC) / 0xA;
+            g_BattleSummonBahamutModelDrawRequest3.fadeLevel = (stage << 12) / 10;
         } else {
             task->step = 0xFFFF;
             return;
@@ -1369,7 +1369,7 @@ void __cdecl BattleFx_SummonBahamutSpinningExpandingModelTask(void)
     g_BattleSummonBahamutDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonBahamutModelDrawRequest3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonBahamutDrawHandle);
     if (g_BattleIsPaused == 0) {
         task->expandAmount += task->expandSpeed;
-        task->expandSpeed = task->expandSpeed * 0xF00 >> 0xC;
+        task->expandSpeed = task->expandSpeed * 0xF00 /* 0.9375 */ >> 12;
         task->spinAngle += 0x40;
         (task->frameCount)++;
     }
@@ -1399,13 +1399,13 @@ void __cdecl BattleFx_SummonBahamutSpawnAnimatedSpritesTask(void)
     flagsAddr = (int)outPos + 0x10;
     SetRotMatrix(&g_BattleSummonBahamutTransformMatrix);
     SetTransMatrix(&g_BattleSummonBahamutTransformMatrix);
-    emitCount = (pTaskSlot->spawnIndex << 9 & 0xFF) + 0x200;
-    while (emitCount >= 0x100) {
-        emitCount -= 0x100;
+    emitCount = (pTaskSlot->spawnIndex << 9 & 0xFF) + 512;
+    while (emitCount >= 256) {
+        emitCount -= 256;
         pSprite = (BattleFxBahamutAnimatedSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutAnimatedSpriteTask);
-        hdr->offsetX = rand() % 0x1F40 - 0xFA0;
-        hdr->offsetY = rand() % 0xFA0 - 0xFA0;
-        hdr->offsetZ = rand() % 0x2710 + 0x1388;
+        hdr->offsetX = rand() % 8000 - 4000;
+        hdr->offsetY = rand() % 4000 - 4000;
+        hdr->offsetZ = rand() % 10000 + 5000;
         RotTransPoint(hdr, (int *)outPos, (void *)flagsAddr);
         pSprite->posX = outPos->posX;
         pSprite->posY = outPos->posY;
@@ -1413,7 +1413,7 @@ void __cdecl BattleFx_SummonBahamutSpawnAnimatedSpritesTask(void)
         pSprite->scale = rand() % 0x3800 + 0x3000;
     }
     (pTaskSlot->spawnIndex)++;
-    if (pTaskSlot->spawnIndex >= 0xF) {
+    if (pTaskSlot->spawnIndex >= 15) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1435,7 +1435,7 @@ void __cdecl BattleFx_SummonBahamutAnimatedSpriteTask(void)
     g_BattleSummonBahamutDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSummonBahamutSpriteDrawRequest1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonBahamutDrawHandle);
     if (g_BattleIsPaused == 0) {
         (task->frameIndex)++;
-        if (task->frameIndex >= 0x10) {
+        if (task->frameIndex >= 16) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -1454,11 +1454,11 @@ void __cdecl BattleFx_SummonBahamutBlackGrowingModelTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     stage = task->frameCounter;
-    if (stage < 0x19) {
-        scale = stage * 0x180 / 0x19;
+    if (stage < 25) {
+        scale = stage * 0x180 / 25;
         g_BattleSummonBahamutModelDrawRequest4.fadeLevel = 0;
     } else {
-        stage -= 0x19;
+        stage -= 25;
         if (stage < 5) {
             scale = 0x180;
             g_BattleSummonBahamutModelDrawRequest4.fadeLevel = 0;
@@ -1466,7 +1466,7 @@ void __cdecl BattleFx_SummonBahamutBlackGrowingModelTask(void)
             stage -= 5;
             if (stage < 5) {
                 scale = stage * 0xE80 / 5 + 0x180;
-                g_BattleSummonBahamutModelDrawRequest4.fadeLevel = (stage << 0xC) / 5;
+                g_BattleSummonBahamutModelDrawRequest4.fadeLevel = (stage << 12) / 5;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -1501,13 +1501,13 @@ void __cdecl BattleFx_SummonBahamutSpawnStreakLinesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    emitAmount = (spawnerPtr->spawnIndex << 0xA & 0xFF) + 0x400;
-    while (emitAmount >= 0x100) {
+    emitAmount = (spawnerPtr->spawnIndex << 0xA & 0xFF) + 1024;
+    while (emitAmount >= 256) {
         streak = (BattleFxStreakLineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonBahamutStreakLineTask);
         streak->angle = rand() & 0xFFF;
-        streak->angleY = 0xFC00;
+        streak->angleY = 0xFC00 /* 5670 deg */;
         if (DEAD_IN_RETAIL != 0) {
-            rollZ = 0x400;
+            rollZ = 0x400 /* 90 deg */;
         } else {
             rollZ = (rand() % 0x800) - 0x400;
         }
@@ -1515,14 +1515,14 @@ void __cdecl BattleFx_SummonBahamutSpawnStreakLinesTask(void)
         if (DEAD_IN_RETAIL != 0) {
             startValue = 0x1F4;
         } else {
-            startValue = rand() % -500 + 0x3E8;
+            startValue = rand() % -500 + 1000;
         }
         streak->startTime = startValue;
-        streak->timeStep = -streak->startTime / 0xA;
-        emitAmount -= 0x100;
+        streak->timeStep = -streak->startTime / 10;
+        emitAmount -= 256;
     }
     (spawnerPtr->spawnIndex)++;
-    if (spawnerPtr->spawnIndex >= 0x1E) {
+    if (spawnerPtr->spawnIndex >= 30) {
         spawnerPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1559,12 +1559,12 @@ void __cdecl BattleFx_SummonBahamutStreakLineTask(void)
     SetTransMatrix((void *)((int)g_BattleSummonBahamutScratchVector + 0x10));
     RefreshGlobalTransformState();
     packet = (BattleFxGreatGospelRenderStateBlock *)g_BattleSummonBahamutDrawHandle;
-    easedFraction = (pStreak->frameCount << 0xC) / 0xA;
+    easedFraction = (pStreak->frameCount << 12) / 10;
     easedFraction = BattleFx_BahamutApplyCameraEasing(easedFraction, 0x1FF);
     g_BattleSummonBahamutScratchVector->x = pStreak->posX;
     g_BattleSummonBahamutScratchVector->baseY = 0;
     g_BattleSummonBahamutScratchVector->baseZ = 0;
-    g_BattleSummonBahamutScratchVector->endX = pStreak->posX + ((0x1000 - easedFraction) * 0x1F4 >> 0xC);
+    g_BattleSummonBahamutScratchVector->endX = pStreak->posX + ((4096 - easedFraction) * 0x1F4 >> 12);
     g_BattleSummonBahamutScratchVector->z = 0;
     g_BattleSummonBahamutScratchVector->y = 0;
     g_BattleSummonBahamutScratchVector->depth = Gfx_TransformTriangleReturnDepthAlt(g_BattleSummonBahamutScratchVector, (SVECTOR *)((int)g_BattleSummonBahamutScratchVector + 8), (SVECTOR *)((int)g_BattleSummonBahamutScratchVector + 8), (char *)g_BattleSummonBahamutScratchVector + 0x34, (char *)g_BattleSummonBahamutScratchVector + 0x38);
@@ -1576,7 +1576,7 @@ void __cdecl BattleFx_SummonBahamutStreakLineTask(void)
     }
     if (g_BattleIsPaused == 0) {
         (pStreak->frameCount)++;
-        if (pStreak->frameCount >= 0xA) {
+        if (pStreak->frameCount >= 10) {
             pStreak->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -1605,8 +1605,8 @@ void __cdecl BattleFx_SummonBahamutRotatingModelPairTask(void)
 
     pair = (BattleFxBahamutRotatingPair *)BATTLE_CURRENT_TASK_SLOT;
     matrix = (struct BattleFxShardTransformBatch *)Gfx_GetPsxScratchpadPtr(0);
-    fraction = (pair->frameIndex << 0xC) / 0x37;
-    heightScale = (g_BattleActorRecords[3].posY + 0x6B6C << 0xC) / 0x7D0;
+    fraction = (pair->frameIndex << 12) / 55;
+    heightScale = (g_BattleActorRecords[3].posY + 0x6B6C << 12) / 2000;
     if (heightScale <= 0x7FFF) {
         clampedScale = heightScale;
     } else {
@@ -1617,7 +1617,7 @@ void __cdecl BattleFx_SummonBahamutRotatingModelPairTask(void)
     RotMatrix((SVECTOR *)&g_BattleSummonBahamutCentroid, (void *)matrix);
     ScaleMatrix(matrix, &g_BattleSummonBahamutModelDrawRequest6.scale);
     matrix->posX = g_BattleActorRecords[3].posX;
-    matrix->posY = g_BattleActorRecords[3].posY + 0x7D0;
+    matrix->posY = g_BattleActorRecords[3].posY + 2000;
     matrix->posZ = g_BattleActorRecords[3].posZ;
     MultiplyMatrix((void *)g_BattleCameraTransform.matrix, matrix, matrix);
     SetRotMatrix((void *)matrix);
@@ -1629,16 +1629,16 @@ void __cdecl BattleFx_SummonBahamutRotatingModelPairTask(void)
     ConcatMatrixPreservingTranslation(&g_BattleSummonBahamutComposedMatrix, &g_BattleSummonBahamutModelDrawRequest6.matrix, matrix);
     SetRotMatrix((void *)matrix);
     if (g_BattleSummonBahamutTargetActorIdx != 0) {
-        g_BattleSummonBahamutModelDrawRequest6.head.fadeLevel = fraction + (fraction * 0 >> 0xC);
+        g_BattleSummonBahamutModelDrawRequest6.head.fadeLevel = fraction + (fraction * 0 >> 12);
     } else {
-        g_BattleSummonBahamutModelDrawRequest6.head.fadeLevel = fraction + (0x1000 - fraction << 8 >> 0xC);
+        g_BattleSummonBahamutModelDrawRequest6.head.fadeLevel = fraction + (4096 - fraction << 8 >> 12);
     }
     g_BattleSummonBahamutTargetActorIdx ^= 1;
     g_BattleSummonBahamutModelDrawRequest6.head.modelGroup = Gfx_ModelTableGetRenderObject(4, g_BattleSummonBahamutLoadedResTable);
     g_BattleSummonBahamutDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonBahamutModelDrawRequest6, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonBahamutDrawHandle);
     if (g_BattleIsPaused == 0) {
         (pair->frameIndex)++;
-        if (pair->frameIndex >= 0x37) {
+        if (pair->frameIndex >= 55) {
             pair->ownerSlot = BATTLE_TASK_FREE;
         }
         pair->angle += pair->angleStep;
@@ -1682,9 +1682,9 @@ void __cdecl BattleFx_SummonBahamutExtendingBeamTask(void)
         RotMatrix((SVECTOR *)g_BattleSummonBahamutBeamScratch, g_BattleSummonBahamutBeamTransformMatrix);
     }
     stage = beam->step;
-    if (stage < 0x1E) {
-        fraction = (stage << 0xC) / 0x1E;
-        len = fraction * 0x3A98 >> 0xC;
+    if (stage < 30) {
+        fraction = (stage << 12) / 30;
+        len = fraction * 0x3A98 >> 12;
         travel = len;
         g_BattleSummonBahamutModelDrawRequest7.extendAmount = 0;
         g_BattleSummonBahamutModelDrawRequest7.prevExtendAmount = g_BattleSummonBahamutModelDrawRequest7.extendAmount;
@@ -1694,11 +1694,11 @@ void __cdecl BattleFx_SummonBahamutExtendingBeamTask(void)
             child->posZ = travel;
         }
     } else {
-        stage -= 0x1E;
+        stage -= 30;
         if (stage < 5) {
-            fraction = (stage << 0xC) / 5;
+            fraction = (stage << 12) / 5;
             travel = 0x3A98;
-            len = (fraction * -0x3A98 >> 0xC) + 0x3A98;
+            len = (fraction * -0x3A98 >> 12) + 15000;
             g_BattleSummonBahamutModelDrawRequest7.extendAmount = fraction;
             g_BattleSummonBahamutModelDrawRequest7.prevExtendAmount = g_BattleSummonBahamutModelDrawRequest7.extendAmount;
             if (g_BattleIsPaused == 0 && stage == 0) {
@@ -1710,7 +1710,7 @@ void __cdecl BattleFx_SummonBahamutExtendingBeamTask(void)
                 child->posX = g_BattleSummonBahamutBeamScratch->offsetX + *(int *)((char *)g_BattleSummonBahamutBeamScratch + 0x1A);
                 child->posY = g_BattleSummonBahamutBeamScratch->offsetY + *(int *)((char *)g_BattleSummonBahamutBeamScratch + 0x1E);
                 child->posZ = g_BattleSummonBahamutBeamScratch->offsetZ + *(int *)((char *)g_BattleSummonBahamutBeamScratch + 0x22);
-                child->scale = 0x2000;
+                child->scale = 0x2000 /* 2.0 */;
             }
         } else {
             beam->ownerSlot = BATTLE_TASK_FREE;
@@ -1730,7 +1730,7 @@ void __cdecl BattleFx_SummonBahamutExtendingBeamTask(void)
     g_BattleSummonBahamutBeamScratch->transY = 0;
     g_BattleSummonBahamutBeamScratch->transZ = -travel;
     MultiplyMatrix((void *)((int)g_BattleSummonBahamutBeamScratch + 8), (void *)((int)g_BattleSummonBahamutBeamScratch + 0x26), (void *)((int)g_BattleSummonBahamutBeamScratch + 0x26));
-    scaleRaw = (len << 0xC) / 0x708;
+    scaleRaw = (len << 12) / 1800;
     if (scaleRaw < 0x7FFF) {
         clampedScale = scaleRaw;
     } else {
@@ -1744,7 +1744,7 @@ void __cdecl BattleFx_SummonBahamutExtendingBeamTask(void)
     g_BattleSummonBahamutDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)(((char *)&g_BattleSummonBahamutModelDrawRequest7 + 0x40)), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonBahamutDrawHandle);
     if (g_BattleIsPaused == 0) {
         (beam->step)++;
-        beam->length += 0x80;
+        beam->length += 128;
     }
 }
 
@@ -1774,7 +1774,7 @@ void __cdecl BattleFx_SummonBahamutBeamEasedScaleModelTask(void)
     } else {
         stage -= 5;
         if (stage < 5) {
-            g_BattleSummonBahamutModelDrawRequest7.fadeLevel = (stage << 0xC) / 5;
+            g_BattleSummonBahamutModelDrawRequest7.fadeLevel = (stage << 12) / 5;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1783,9 +1783,9 @@ void __cdecl BattleFx_SummonBahamutBeamEasedScaleModelTask(void)
     MultiplyMatrix(&g_BattleSummonBahamutComposedMatrix, taskPtr->transformMatrix, (void *)((*(int *)&g_BattleSummonBahamutCameraScriptTable) + 0x18));
     (*(int *)((char *)&g_BattleSummonBahamutModelDrawRequest7 + 0x2a)) = -taskPtr->travel;
     MultiplyMatrix((void *)((*(int *)&g_BattleSummonBahamutCameraScriptTable) + 0x18), (char *)&g_BattleSummonBahamutModelDrawRequest7 + 0x10, (void *)((*(int *)&g_BattleSummonBahamutCameraScriptTable) + 0x18));
-    eased = (taskPtr->frameIndex << 0xC) / 0xA;
+    eased = (taskPtr->frameIndex << 12) / 10;
     eased = BattleFx_BahamutApplyCameraEasing(eased, 0x3FF);
-    ((BattleFxBahamutCameraDelay *)(*(int *)&g_BattleSummonBahamutCameraScriptTable))->newSample = eased * 0x1200 >> 0xC;
+    ((BattleFxBahamutCameraDelay *)(*(int *)&g_BattleSummonBahamutCameraScriptTable))->newSample = eased * 0x1200 /* 1.125 */ >> 12;
     ((BattleFxBahamutCameraDelay *)(*(int *)&g_BattleSummonBahamutCameraScriptTable))->midSample = ((BattleFxBahamutCameraDelay *)(*(int *)&g_BattleSummonBahamutCameraScriptTable))->newSample;
     ((BattleFxBahamutCameraDelay *)(*(int *)&g_BattleSummonBahamutCameraScriptTable))->oldSample = ((BattleFxBahamutCameraDelay *)(*(int *)&g_BattleSummonBahamutCameraScriptTable))->midSample;
     ScaleMatrix((void *)((*(int *)&g_BattleSummonBahamutCameraScriptTable) + 0x18), (void *)(*(int *)&g_BattleSummonBahamutCameraScriptTable));
@@ -1827,10 +1827,10 @@ void __cdecl BattleFx_SummonBahamutActorDescentTask(void)
         return;
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0x54) { /* empty first arm: lib/codegen.h */
+    if (stage < 84) { /* empty first arm: lib/codegen.h */
     } else {
-        stage -= 0x54;
-        if (stage < 0x3C) {
+        stage -= 84;
+        if (stage < 60) {
             if (stage == 0) {
                 lightRig = (BattleFxLightRigSlot *)Battle_AllocSceneMessage(1);
                 TransformVectorToInt16((void *)&g_BattleSummonBahamutTransformMatrix, &g_BattleSummonBahamutDefaultPosition, (void *)g_BattleSummonBahamutTempVector);
@@ -1838,24 +1838,24 @@ void __cdecl BattleFx_SummonBahamutActorDescentTask(void)
                 lightRig->posY = g_BattleSummonBahamutTempVector->vy + g_BattleSummonBahamutTransformMatrix.t[1];
                 lightRig->posZ = g_BattleSummonBahamutTempVector->vz + g_BattleSummonBahamutTransformMatrix.t[2];
                 lightRig->rotationY = g_BattleSummonBahamutRotation[1] + 0x800;
-                pActor->fadeStep = 0xC00;
+                pActor->fadeStep = 3072;
             }
-            easedFraction = (stage << 0xC) / 0x3C;
+            easedFraction = (stage << 12) / 60;
             easedFraction = BattleFx_BahamutApplyCameraEasing(easedFraction, 0x280);
-            g_BattleSummonBahamutDefaultPosition[1] = (easedFraction * 0x5BCC >> 0xC) - 0x6B6C;
+            g_BattleSummonBahamutDefaultPosition[1] = (easedFraction * 0x5BCC >> 12) - 27500;
         } else {
-            stage -= 0x3C;
-            if (stage < 0x41) {
-                easedFraction = (stage << 0xC) / 0x41;
+            stage -= 60;
+            if (stage < 65) {
+                easedFraction = (stage << 12) / 65;
                 easedFraction = BattleFx_BahamutApplyCameraEasing(easedFraction, 0xFFFFFE01);
-                g_BattleSummonBahamutDefaultPosition[1] = (easedFraction * -0xBB8 >> 0xC) - 0xFA0;
+                g_BattleSummonBahamutDefaultPosition[1] = (easedFraction * -0xBB8 >> 12) - 4000;
             } else {
-                stage -= 0x41;
-                if (stage < 0x69) {
+                stage -= 65;
+                if (stage < 105) {
                     if (stage == 0) {
-                        g_BattleSummonBahamutDefaultPosition[1] = 0xE4A8;
+                        g_BattleSummonBahamutDefaultPosition[1] = 0xE4A8 /* -7000 */;
                     }
-                    if (stage == 0x68) {
+                    if (stage == 104) {
                         Battle_AllocSceneMessage(2);
                         taskPtr->ownerSlot = BATTLE_TASK_FREE;
                     }

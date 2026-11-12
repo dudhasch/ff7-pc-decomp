@@ -71,7 +71,7 @@ unsigned char g_BattleSpecAvalancheKoNames[9] = "KO-2.TIM";
 
 // clang-format off
 // GLOBAL: FF7 0x00b5ddd8
-short g_BattleSpecAvalancheFaceActiveFlags[0x80] = {0};
+short g_BattleSpecAvalancheFaceActiveFlags[128] = {0};
 // GLOBAL: FF7 0x00b5ded8
 unsigned char g_BattleSpecAvalancheFaceIndex[16] = {0};
 unsigned char g_bssPad_00b5dee8[1016] = {0};
@@ -87,7 +87,7 @@ int g_BattleSpecAvalancheDrawListHead = 0;
 // GLOBAL: FF7 0x00b5e2f4
 short g_BattleSpecAvalancheTargetMask = 0;
 // GLOBAL: FF7 0x00b5e2f8
-short g_BattleSpecAvalancheFaceOrder[0x80] = {0};
+short g_BattleSpecAvalancheFaceOrder[128] = {0};
 // GLOBAL: FF7 0x00b5e3f8
 struct GfxTableCursor *g_BattleSpecAvalancheLoadedResTable = 0;
 unsigned char g_bssPad_00b5e3fc[4] = {0};
@@ -132,9 +132,9 @@ void __cdecl BattleFx_SpecialEnterAvalanche(int targetMask, int actorIdx)
     *&g_BattleSpecAvalancheMeshWorking = *&g_BattleSpecAvalancheMeshSource;
     BattleFx_SpecialLoadResAvalanche();
     g_BattleSpecAvalancheDirectionSign = 1;
-    g_BattleSpecAvalancheScale = 0x2000;
+    g_BattleSpecAvalancheScale = 0x2000 /* 2.0 */;
     g_BattleSpecAvalancheScaleY = 0;
-    g_BattleSpecAvalancheScaleZ = 0x5000;
+    g_BattleSpecAvalancheScaleZ = 0x5000 /* 5.0 */;
     (*(short *)&g_BattleSpecAvalancheFaceIndex) = 0;
     BattleFx_SpecialBeginAvalanche(targetMask, actorIdx);
 }
@@ -173,7 +173,7 @@ void __cdecl BattleFx_SpecialAvalancheSortFaceOrder(void)
     int table;
     short pass, faceIndex;
 
-    for (pass = 0; pass < 0x24; pass++) {
+    for (pass = 0; pass < 36; pass++) {
         g_BattleSpecAvalancheFaceActiveFlags[pass] = 0;
         *(short *)(((char *)&g_BattleSpecAvalancheFaceIndex + 12) + pass * 8) = 0;
         *(short *)(((char *)&g_BattleSpecAvalancheFaceIndex + 10) + pass * 8) = 0;
@@ -182,9 +182,9 @@ void __cdecl BattleFx_SpecialAvalancheSortFaceOrder(void)
     meshAddress = (int)((char *)&g_BattleSpecAvalancheMeshWorking + 0x4);
     table = meshAddress + (*(int *)&g_BattleSpecAvalancheMeshWorking);
     table += 4;
-    for (pass = 0; pass < 0x24; pass++) {
+    for (pass = 0; pass < 36; pass++) {
         maxDepth = 0x8000;
-        for (faceIndex = 0; faceIndex < 0x24; faceIndex++) {
+        for (faceIndex = 0; faceIndex < 36; faceIndex++) {
             if (g_BattleSpecAvalancheFaceActiveFlags[faceIndex] == 0) {
                 facePointer = meshAddress + *(short *)((char *)table + (faceIndex << 3) * 2);
                 if (*(short *)((char *)facePointer + 2) > maxDepth) {
@@ -196,7 +196,7 @@ void __cdecl BattleFx_SpecialAvalancheSortFaceOrder(void)
         g_BattleSpecAvalancheFaceOrder[pass] = chosen;
         g_BattleSpecAvalancheFaceActiveFlags[chosen] = 1;
     }
-    for (pass = 0; pass < 0x24; pass++) {
+    for (pass = 0; pass < 36; pass++) {
         g_BattleSpecAvalancheFaceActiveFlags[pass] = 0;
     }
 }
@@ -239,21 +239,21 @@ void __cdecl BattleFx_SpecialAvalancheTimelineTask(void)
         sprite->offsetX = 0;
         sprite->offsetZ = g_BattleSpecAvalancheDirectionSign * 0xFFFFE000;
         sprite->offsetY = 0;
-        sprite->directionOffset = g_BattleSpecAvalancheDirectionSign * 0x3E8;
+        sprite->directionOffset = g_BattleSpecAvalancheDirectionSign * 1000;
     }
-    if (pCur->timelineStep > 0x56 && pCur->timelineStep < 0x5E) {
-        for (i9 = 0; i9 < 0xA; i9++) {
+    if (pCur->timelineStep > 86 && pCur->timelineStep < 94) {
+        for (i9 = 0; i9 < 10; i9++) {
             if ((g_BattleSpecAvalancheTargetMask & 1 << i9) != 0) {
                 sprite = (BattleFxAvalancheTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAvalancheStaticAnimatedSpriteTask);
                 Battle_GetBoneWorldPos(i9, g_BattleActorRecords[i9].targetBone, &sprite->offsetX);
-                sprite->offsetX += (short)(rand() % 0x258 - 0x12C);
-                sprite->offsetY += (short)(rand() % 0x258 - 0x12C);
-                sprite->offsetZ += (short)(rand() % 0x258 - 0x12C);
+                sprite->offsetX += (short)(rand() % 600 - 300);
+                sprite->offsetY += (short)(rand() % 600 - 300);
+                sprite->offsetZ += (short)(rand() % 600 - 300);
             }
         }
     }
-    if (pCur->timelineStep == 0x28) {
-        for (i9 = 0; i9 < 0xA; i9++) {
+    if (pCur->timelineStep == 40) {
+        for (i9 = 0; i9 < 10; i9++) {
             if ((g_BattleSpecAvalancheTargetMask & 1 << i9) != 0) {
                 sprite = (BattleFxAvalancheTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAvalanchePerTargetFaceOffsetModelTask);
                 Battle_GetBoneWorldPos(i9, g_BattleActorRecords[i9].targetBone, &sprite->offsetX);
@@ -262,15 +262,15 @@ void __cdecl BattleFx_SpecialAvalancheTimelineTask(void)
         Battle_AllocateResourceSlot(BattleFx_SpecialAvalancheStaggeredFaceOffsetTask);
         Battle_PlaySfxPannedToActor(0x189, -1, 0x40);
     }
-    if (pCur->timelineStep == 0x5A) {
-        for (i9 = 0; i9 < 0xA; i9++) {
+    if (pCur->timelineStep == 90) {
+        for (i9 = 0; i9 < 10; i9++) {
             if ((g_BattleSpecAvalancheTargetMask & 1 << i9) != 0) {
                 Battle_PostActorHitOrHurtMessage(i9);
             }
         }
     }
     (pCur->timelineStep)++;
-    if (pCur->timelineStep == 0x64) {
+    if (pCur->timelineStep == 100) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -290,11 +290,11 @@ void __cdecl BattleFx_SpecialAvalancheStaggeredFaceOffsetTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter == 0x1E) {
+    if (taskPtr->frameCounter == 30) {
         Battle_PlaySfxPannedToActor(0x18A, -1, 0x40);
     }
-    if (taskPtr->frameCounter >= 0x1E) {
-        if ((*(short *)&g_BattleSpecAvalancheFaceIndex) != 0x24) {
+    if (taskPtr->frameCounter >= 30) {
+        if ((*(short *)&g_BattleSpecAvalancheFaceIndex) != 36) {
             for (i = 0; i < 2; i++, (*(short *)&g_BattleSpecAvalancheFaceIndex)++) {
                 g_BattleSpecAvalancheFaceActiveFlags[g_BattleSpecAvalancheFaceOrder[(*(short *)&g_BattleSpecAvalancheFaceIndex)]] = 1;
             }
@@ -302,17 +302,17 @@ void __cdecl BattleFx_SpecialAvalancheStaggeredFaceOffsetTask(void)
         meshAddress = (int)((char *)&g_BattleSpecAvalancheMeshWorking + 0x4);
         table = meshAddress + (*(int *)&g_BattleSpecAvalancheMeshWorking);
         table += 4;
-        for (i = 0; i < 0x24; i++) {
+        for (i = 0; i < 36; i++) {
             if (g_BattleSpecAvalancheFaceActiveFlags[i] == 1) {
-                *(short *)(((char *)&g_BattleSpecAvalancheFaceIndex + 10) + i * 8) += 0x28;
+                *(short *)(((char *)&g_BattleSpecAvalancheFaceIndex + 10) + i * 8) += 40;
                 if (*(short *)((char *)table + (i << 3) * 2 + 6) != 0) {
-                    *(short *)((char *)table + (i << 3) * 2 + 6) -= 0x10;
+                    *(short *)((char *)table + (i << 3) * 2 + 6) -= 16;
                 }
             }
         }
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x3C) {
+    if (taskPtr->frameCounter == 60) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -354,16 +354,16 @@ void __cdecl BattleFx_SpecialAvalanchePerTargetFaceOffsetModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.faceSlot->frameCounter >= 0x1E && frame.faceSlot->frameCounter < 0x30) {
-        frame.step = frame.faceSlot->frameCounter - 0x1E;
+    if (frame.faceSlot->frameCounter >= 30 && frame.faceSlot->frameCounter < 48) {
+        frame.step = frame.faceSlot->frameCounter - 30;
         frame.driftSlot = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAvalancheYDriftAnimatedSpriteTask);
         frame.angle = (rand() % 4096);
-        frame.driftSlot->posX = frame.faceSlot->centerX + (SinFixed(frame.angle) * 0x2BC >> 0xC);
-        frame.driftSlot->posZ = frame.faceSlot->centerZ + (CosFixed(frame.angle) * 0x2BC >> 0xC);
-        frame.driftSlot->posY = -frame.step * 0x5A + rand() % 0x190 + -0xC8;
+        frame.driftSlot->posX = frame.faceSlot->centerX + (SinFixed(frame.angle) * 0x2BC >> 12);
+        frame.driftSlot->posZ = frame.faceSlot->centerZ + (CosFixed(frame.angle) * 0x2BC >> 12);
+        frame.driftSlot->posY = -frame.step * 90 + rand() % 400 + -200;
     }
     (frame.faceSlot->frameCounter)++;
-    if (frame.faceSlot->frameCounter == 0x3C) {
+    if (frame.faceSlot->frameCounter == 60) {
         frame.faceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -508,13 +508,13 @@ void __cdecl BattleFx_SpecialAvalancheYDriftAnimatedSpriteTask(void)
     task = (BattleAvalancheYDriftSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecAvalancheSpriteReq1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecAvalancheLoadedResTable);
     (g_BattleSpecAvalancheSpriteReq1.drawObj) = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x2000 /* 2.0 */, 0);
     (g_BattleSpecAvalancheSpriteReq1.frame) = task->frameIndex;
     g_BattleSpecAvalancheDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecAvalancheSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecAvalancheDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY += 0x50;
+    task->posY += 80;
     if (g_BattleSpecAvalancheSpriteReq1.spriteGroup != 0) {
         (task->frameIndex)++;
         if (task->frameIndex >= g_BattleSpecAvalancheSpriteReq1.spriteGroup->header->frameCount) {
@@ -534,7 +534,7 @@ void __cdecl BattleFx_SpecialAvalancheStaticAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecAvalancheSpriteReq2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecAvalancheLoadedResTable);
     (g_BattleSpecAvalancheSpriteReq2.drawObj) = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecAvalancheLoadedResTable);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x1800 /* 1.5 */, 0);
     (g_BattleSpecAvalancheSpriteReq2.frame) = task->frameCounter;
     g_BattleSpecAvalancheDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecAvalancheSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecAvalancheDrawListHead);
     if (g_BattleIsPaused != 0) {
@@ -579,14 +579,14 @@ void __cdecl BattleFx_SpecialAvalancheGrowingModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.modelMatrix, &frame.modelMatrix);
     SetRotMatrix(&frame.modelMatrix);
     SetTransMatrix(&frame.modelMatrix);
-    if (frame.growingSlot->frameCounter < 0x2A) {
-        frame.fadeLevel = 0x80;
+    if (frame.growingSlot->frameCounter < 42) {
+        frame.fadeLevel = 128;
     } else {
-        frame.fadeLevel = 0x32 - frame.growingSlot->frameCounter << 4;
+        frame.fadeLevel = 50 - frame.growingSlot->frameCounter << 4;
     }
     (((BattleFxModelDraw *)&g_BattleSpecAvalancheModelReq)->fadeLevel) = *(short *)&frame.fadeLevel;
     (((BattleFxModelDraw *)&g_BattleSpecAvalancheModelReq)->flags) = (((BattleFxModelDraw *)&g_BattleSpecAvalancheModelReq)->fadeLevel) - 0x80 != 0 ? 8 : 0;
-    if ((((BattleFxModelDraw *)&g_BattleSpecAvalancheModelReq)->fadeLevel) == 0x80) {
+    if ((((BattleFxModelDraw *)&g_BattleSpecAvalancheModelReq)->fadeLevel) == 128) {
         ((BattleFxModelDraw *)&g_BattleSpecAvalancheModelReq)->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecAvalancheLoadedResTable);
     } else {
         ((BattleFxModelDraw *)&g_BattleSpecAvalancheModelReq)->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecAvalancheLoadedResTable);
@@ -597,19 +597,19 @@ void __cdecl BattleFx_SpecialAvalancheGrowingModelTask(void)
     }
     g_BattleSpecAvalancheScale += 0x12C;
     g_BattleSpecAvalancheScaleY += 0x190;
-    if (frame.growingSlot->frameCounter < 0xF) {
+    if (frame.growingSlot->frameCounter < 15) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 6; frame.spawnIndex++) {
             frame.growSlot = (BattleFxAvalancheGrowSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAvalancheYZDriftAnimatedSpriteTask);
-            frame.growSlot->posX = (rand() % 16384) - 0x2000;
+            frame.growSlot->posX = (rand() % 16384) - 8192;
             frame.growSlot->posZ = frame.growingSlot->posZ;
             frame.growSlot->posY = 0;
         }
     }
     frame.growingSlot->posZ += frame.growingSlot->velocity;
-    frame.growingSlot->velocity -= (short)(g_BattleSpecAvalancheDirectionSign * 0xF);
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x40 - ((frame.growingSlot->frameCounter % 2) << 7));
+    frame.growingSlot->velocity -= (short)(g_BattleSpecAvalancheDirectionSign * 15);
+    g_BattleCameraFocalPoint.focalPointY += (short)(64 - ((frame.growingSlot->frameCounter % 2) << 7));
     (frame.growingSlot->frameCounter)++;
-    if (frame.growingSlot->frameCounter == 0x32) {
+    if (frame.growingSlot->frameCounter == 50) {
         frame.growingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -637,14 +637,14 @@ void __cdecl BattleFx_SpecialAvalancheYZDriftAnimatedSpriteTask(void)
     task = (BattleFxAvalancheDriftSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecAvalancheSpriteReq3.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecAvalancheLoadedResTable);
     (g_BattleSpecAvalancheSpriteReq3.drawObj) = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecAvalancheLoadedResTable);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x3000 /* 3.0 */, 0);
     (g_BattleSpecAvalancheSpriteReq3.frame) = task->frameIndex;
     g_BattleSpecAvalancheDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecAvalancheSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecAvalancheDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY -= 0x64;
-    task->posZ += (short)(g_BattleSpecAvalancheDirectionSign * 0x384);
+    task->posY -= 100;
+    task->posZ += (short)(g_BattleSpecAvalancheDirectionSign * 900);
     if (g_BattleSpecAvalancheSpriteReq3.spriteGroup != 0) {
         (task->frameIndex)++;
         if (task->frameIndex >= g_BattleSpecAvalancheSpriteReq3.spriteGroup->header->frameCount) {

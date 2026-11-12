@@ -313,7 +313,7 @@ void __cdecl BattleFx_SummonBeginChocoMog(int targetMask, int actorIdx)
     g_BattleSummonChocoMogTransformMatrix2.t[0] = g_BattleSummonChocoMogTransformMatrix2.t[1];
     g_BattleSummonChocoMogTransformMatrix2.t[2] = centroid.vz;
     if (centroid.vz < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonChocoMogAngles.angleY = 0x800;
+        g_BattleSummonChocoMogAngles.angleY = 0x800 /* 180 deg */;
     }
     RotMatrix(&g_BattleSummonChocoMogAngles, &g_BattleSummonChocoMogTransformMatrix2);
     Battle_AllocateResourceSlot(BattleFx_SummonChocoMogTimelineTask);
@@ -479,17 +479,17 @@ void __cdecl BattleFx_ChocoMogRunCameraScript(void)
                 ofs->offsetY = g_BattleSummonChocoMogCameraOther->position.y - g_BattleSummonChocoMogCameraTrack->base.y;
                 ofs->offsetZ = g_BattleSummonChocoMogCameraOther->position.z - g_BattleSummonChocoMogCameraTrack->base.z;
                 VectorNormalToSVector((int *)ofs, (short *)delta);
-                g_BattleSummonChocoMogCameraTrack->position.x = g_BattleSummonChocoMogCameraOther->position.x - (delta->x * g_BattleSummonChocoMogCameraTrack->distance >> 0xC);
-                g_BattleSummonChocoMogCameraTrack->position.y = g_BattleSummonChocoMogCameraOther->position.y - (delta->y * g_BattleSummonChocoMogCameraTrack->distance >> 0xC);
-                g_BattleSummonChocoMogCameraTrack->position.z = g_BattleSummonChocoMogCameraOther->position.z - (delta->z * g_BattleSummonChocoMogCameraTrack->distance >> 0xC);
+                g_BattleSummonChocoMogCameraTrack->position.x = g_BattleSummonChocoMogCameraOther->position.x - (delta->x * g_BattleSummonChocoMogCameraTrack->distance >> 12);
+                g_BattleSummonChocoMogCameraTrack->position.y = g_BattleSummonChocoMogCameraOther->position.y - (delta->y * g_BattleSummonChocoMogCameraTrack->distance >> 12);
+                g_BattleSummonChocoMogCameraTrack->position.z = g_BattleSummonChocoMogCameraOther->position.z - (delta->z * g_BattleSummonChocoMogCameraTrack->distance >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_BattleSummonChocoMogCameraTrack->distance += g_BattleSummonChocoMogCameraTrack->delta;
                 distance = g_BattleSummonChocoMogCameraTrack->distance;
                 distance = SinFixed(SinFixed(distance / 4) / 4);
-                g_BattleSummonChocoMogCameraTrack->position.x = g_BattleSummonChocoMogCameraTrack->base.x + (g_BattleSummonChocoMogCameraTrack->velocity.x * distance >> 0xC);
-                g_BattleSummonChocoMogCameraTrack->position.y = g_BattleSummonChocoMogCameraTrack->base.y + (g_BattleSummonChocoMogCameraTrack->velocity.y * distance >> 0xC);
-                g_BattleSummonChocoMogCameraTrack->position.z = g_BattleSummonChocoMogCameraTrack->base.z + (g_BattleSummonChocoMogCameraTrack->velocity.z * distance >> 0xC);
+                g_BattleSummonChocoMogCameraTrack->position.x = g_BattleSummonChocoMogCameraTrack->base.x + (g_BattleSummonChocoMogCameraTrack->velocity.x * distance >> 12);
+                g_BattleSummonChocoMogCameraTrack->position.y = g_BattleSummonChocoMogCameraTrack->base.y + (g_BattleSummonChocoMogCameraTrack->velocity.y * distance >> 12);
+                g_BattleSummonChocoMogCameraTrack->position.z = g_BattleSummonChocoMogCameraTrack->base.z + (g_BattleSummonChocoMogCameraTrack->velocity.z * distance >> 12);
             }
             (g_BattleSummonChocoMogCameraTrack->frames)--;
             g_BattleSummonChocoMogCameraTrack = &g_BattleSummonChocoMogCameraFocus;
@@ -585,12 +585,12 @@ void __cdecl BattleFx_SummonChocoMogTimelineTask(void)
             pRecord = (BattleFxRingWaveSlot *)Battle_AllocSceneMessage(1);
             pRecord->flags = 0;
             pRecord->lifetime = 0;
-            pRecord->transZ = g_BattleSummonChocoMogTransformMatrix2.t[2] - 0x3A98;
+            pRecord->transZ = g_BattleSummonChocoMogTransformMatrix2.t[2] - 15000;
             pRecord->angleY = g_BattleSummonChocoMogAngles.angleY + 0x800;
         }
     } else {
         frame -= 5;
-        if (frame < 0x14) {
+        if (frame < 20) {
             if (frame == 0) {
                 pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonChocoMogSpawnAnimatedSpritesTask);
                 Battle_AllocateResourceSlot(BattleFx_SummonChocoMogMoveCameraTask);
@@ -599,14 +599,14 @@ void __cdecl BattleFx_SummonChocoMogTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            frame -= 0x14;
-            if (frame < 0x14) { /* empty first arm: lib/codegen.h */
+            frame -= 20;
+            if (frame < 20) { /* empty first arm: lib/codegen.h */
             } else {
-                frame -= 0x14;
-                if (frame < 0x14) { /* empty first arm: lib/codegen.h */
+                frame -= 20;
+                if (frame < 20) { /* empty first arm: lib/codegen.h */
                 } else {
-                    frame -= 0x14;
-                    if (frame < 0x14) {
+                    frame -= 20;
+                    if (frame < 20) {
                         if (frame == 0) {
                             pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonChocoMogPulsingSpriteTask);
                             pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonChocoMogSpawnRisingSpritesTask);
@@ -615,27 +615,27 @@ void __cdecl BattleFx_SummonChocoMogTimelineTask(void)
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                         }
                     } else {
-                        frame -= 0x14;
-                        if (frame < 0x19) {
+                        frame -= 20;
+                        if (frame < 25) {
                             if (frame == 0) {
                                 pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonChocoMogOrbitingSpritesTask);
-                                pSubtask->posX = 0x32;
+                                pSubtask->posX = 50;
                                 pSubtask->posY = 0xFE0C;
                                 pSubtask->posZ = 0xEC78;
                                 pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonChocoMogBoneSpritePairTask);
                             }
                         } else {
-                            frame -= 0x19;
+                            frame -= 25;
                             if (frame < 5) { /* empty first arm: lib/codegen.h */
                             } else {
                                 frame -= 5;
-                                if (frame < 0x14) {
-                                    if (frame == 0x12) {
+                                if (frame < 20) {
+                                    if (frame == 18) {
                                         pRecord = (BattleFxRingWaveSlot *)Battle_AllocSceneMessage(2);
                                     }
                                 } else {
-                                    frame -= 0x14;
-                                    if (frame < 0xF) {
+                                    frame -= 20;
+                                    if (frame < 15) {
                                         if (frame == 0) {
                                             for (targetIndex = 0; targetIndex < 0xA; targetIndex++) {
                                                 if ((g_BattleSummonChocoMogBattleTargetMask & 1 << targetIndex) != 0) {
@@ -690,27 +690,27 @@ void __cdecl BattleFx_SummonChocoMogSpawnAnimatedSpritesTask(void)
         if (DEAD_IN_RETAIL != 0) {
             pick = 0xC8;
         } else {
-            pick = rand() % 0x64 + 0x64;
+            pick = rand() % 100 + 100;
         }
         speed = pick;
         heading = rand() & 0x7FF;
-        sprite->velocity.vx = CosFixed(heading) * speed >> 0xC;
+        sprite->velocity.vx = CosFixed(heading) * speed >> 12;
         if (DEAD_IN_RETAIL != 0) {
             liftPick = 0x32;
         } else {
-            liftPick = rand() % 0x1E + 0x14;
+            liftPick = rand() % 30 + 20;
         }
         sprite->velocity.vy = -liftPick;
-        sprite->velocity.vz = -SinFixed(heading) * speed >> 0xC;
+        sprite->velocity.vz = -SinFixed(heading) * speed >> 12;
         if (DEAD_IN_RETAIL != 0) {
             bytesPick = 0x1800;
         } else {
-            bytesPick = rand() % 0x800 + 0x1000;
+            bytesPick = rand() % 2048 + 4096;
         }
         sprite->scale = bytesPick;
     }
     (pCurrent->frameCounter)++;
-    if (pCurrent->frameCounter >= 0x3C) {
+    if (pCurrent->frameCounter >= 60) {
         pCurrent->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -736,14 +736,14 @@ void __cdecl BattleFx_SummonChocoMogAnimatedSpriteTask(void)
     g_BattleOverlayDrawListHead = (int)BattleFx_SubmitSpriteDraw(&g_BattleSummonChocoMogSpriteConfig, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->step)++;
-        if (task->step >= 0x10) {
+        if (task->step >= 16) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             task->pos.vx += task->velocity.vx;
             task->pos.vy += task->velocity.vy;
             task->pos.vz += task->velocity.vz;
-            task->velocity.vx = task->velocity.vx * 0xE00 >> 0xC;
-            task->velocity.vz = task->velocity.vz * 0xE00 >> 0xC;
+            task->velocity.vx = task->velocity.vx * 0xE00 /* 0.875 */ >> 12;
+            task->velocity.vz = task->velocity.vz * 0xE00 /* 0.875 */ >> 12;
         }
     }
 }
@@ -768,9 +768,9 @@ int __cdecl BattleFx_SummonChocoMogInstallSpriteMatrix(Vec3sPacked *vector, shor
     RotTransPoint(vector, g_BattleSummonChocoMogBillboardMatrix.t, &flags);
     if (offset != 0) {
         NormalizeVectorFixed(g_BattleSummonChocoMogBillboardMatrix.t, unit);
-        g_BattleSummonChocoMogBillboardMatrix.t[0] += unit[0] * offset >> 0xC;
-        g_BattleSummonChocoMogBillboardMatrix.t[1] += unit[1] * offset >> 0xC;
-        g_BattleSummonChocoMogBillboardMatrix.t[2] += unit[2] * offset >> 0xC;
+        g_BattleSummonChocoMogBillboardMatrix.t[0] += unit[0] * offset >> 12;
+        g_BattleSummonChocoMogBillboardMatrix.t[1] += unit[1] * offset >> 12;
+        g_BattleSummonChocoMogBillboardMatrix.t[2] += unit[2] * offset >> 12;
     }
     SetRotMatrix(&g_BattleSummonChocoMogBillboardMatrix);
     SetTransMatrix(&g_BattleSummonChocoMogBillboardMatrix);
@@ -788,10 +788,10 @@ void __cdecl BattleFx_SummonChocoMogPulsingSpriteTask(void)
     BattleFxPhaseControllerTask *task;
 
     task = (BattleFxPhaseControllerTask *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSummonChocoMogModelDrawRequest.quad.quadState = Gfx_ModelTableGetSpriteObject(0x12, g_BattleSummonChocoMogSpriteTable);
+    g_BattleSummonChocoMogModelDrawRequest.quad.quadState = Gfx_ModelTableGetSpriteObject(18, g_BattleSummonChocoMogSpriteTable);
     cycle = task->frameCount % 7;
     if (cycle < 3) {
-        g_BattleSummonChocoMogTransformMatrix.pulseScale = (cycle << 0xC) / 3 + 0x1000;
+        g_BattleSummonChocoMogTransformMatrix.pulseScale = (cycle << 12) / 3 + 0x1000;
         g_BattleSummonChocoMogScaleFixed12 = g_BattleSummonChocoMogTransformMatrix.pulseScale;
     } else {
         cycle -= 3;
@@ -804,7 +804,7 @@ void __cdecl BattleFx_SummonChocoMogPulsingSpriteTask(void)
     g_BattleOverlayDrawListHead = (int)BattleFx_SubmitSpriteQuadDraw(&g_BattleSummonChocoMogModelDrawRequest.quad, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->frameCount)++;
-        if (task->frameCount >= 0x14) {
+        if (task->frameCount >= 20) {
             task->stage = BATTLE_TASK_FREE;
         }
     }
@@ -833,19 +833,19 @@ void __cdecl BattleFx_SummonChocoMogMoveCameraTask(void)
         return;
     }
     frame = task->frameCounter;
-    if (frame < 0x3C) {
-        g_BattleSummonChocoMogOriginZ = frame * 0x3A98 / 0x3C - 0x3A98;
+    if (frame < 60) {
+        g_BattleSummonChocoMogOriginZ = frame * 15000 / 60 - 15000;
     } else {
-        frame -= 0x3C;
-        if (frame < 0x14) {
-            if (frame == 0x13) {
-                g_BattleActorRecords[3].yaw += 0x400;
+        frame -= 60;
+        if (frame < 20) {
+            if (frame == 19) {
+                g_BattleActorRecords[3].yaw += 0x400 /* 90 deg */;
                 g_BattleSummonChocoMogOriginZ = 0xEC78;
                 g_BattleSummonChocoMogEffectDescriptor.moveX = 0xFD12;
             }
         } else {
-            frame -= 0x14;
-            if (frame < 0x32) { /* empty first arm: lib/codegen.h */
+            frame -= 20;
+            if (frame < 50) { /* empty first arm: lib/codegen.h */
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -877,20 +877,20 @@ void __cdecl BattleFx_SummonChocoMogOrbitingSpritesTask(void)
         g_BattleSummonChocoMogOrbitInitFlag |= 1;
         g_BattleSummonChocoMogOrbitPoint = (Vec3sPacked *)Gfx_GetPsxScratchpadPtr(0);
     }
-    g_BattleSummonChocoMogTransformMatrix.orbitSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSummonChocoMogSpriteTable);
-    g_BattleSummonChocoMogTransformMatrix.orbitSprite.drawObj = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSummonChocoMogSpriteTable);
+    g_BattleSummonChocoMogTransformMatrix.orbitSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(16, g_BattleSummonChocoMogSpriteTable);
+    g_BattleSummonChocoMogTransformMatrix.orbitSprite.drawObj = Gfx_ModelTableGetSpriteObject(16, g_BattleSummonChocoMogSpriteTable);
     angle = task->phase;
     for (spriteIdx = 0; spriteIdx < 4; spriteIdx++) {
-        g_BattleSummonChocoMogOrbitPoint->vx = task->centerX + (SinFixed(angle) * 0x96 >> 0xC);
+        g_BattleSummonChocoMogOrbitPoint->vx = task->centerX + (SinFixed(angle) * 0x96 >> 12);
         g_BattleSummonChocoMogOrbitPoint->vy = task->centerY;
-        g_BattleSummonChocoMogOrbitPoint->vz = task->centerZ + (CosFixed(angle) * 0x96 >> 0xC);
-        BattleFx_SummonChocoMogInstallSpriteMatrix(g_BattleSummonChocoMogOrbitPoint, 0x500, 0);
+        g_BattleSummonChocoMogOrbitPoint->vz = task->centerZ + (CosFixed(angle) * 0x96 >> 12);
+        BattleFx_SummonChocoMogInstallSpriteMatrix(g_BattleSummonChocoMogOrbitPoint, 0x500 /* 0.3125 */, 0);
         g_BattleOverlayDrawListHead = (int)BattleFx_SubmitSpriteDraw(&g_BattleSummonChocoMogTransformMatrix.orbitSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
-        angle += 0x400;
+        angle += 0x400 /* 90 deg */;
     }
     if (g_BattleIsPaused == 0) {
         (task->frameCount)++;
-        if (task->frameCount >= 0x23) {
+        if (task->frameCount >= 35) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             task->phase += 0x40;
@@ -919,35 +919,35 @@ void __cdecl BattleFx_SummonChocoMogSpawnRisingSpritesTask(void)
     for (spriteIndex = 0; spriteIndex < 3; spriteIndex++) {
         sprite = (BattleFxChocoMogRisingSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonChocoMogRisingSpriteTask);
         if (DEAD_IN_RETAIL != 0) {
-            xValue = 0x7D0;
+            xValue = 2000;
         } else {
-            xValue = rand() % 0xFA0 - 0x7D0;
+            xValue = rand() % 4000 - 2000;
         }
         sprite->pos.vx = xValue;
         sprite->pos.vy = 0;
         if (DEAD_IN_RETAIL != 0) {
             zPick = 0;
         } else {
-            zPick = rand() % 0xBB8 - 0xBB8;
+            zPick = rand() % 3000 - 3000;
         }
         sprite->pos.vz = zPick;
         sprite->velocity.vx = 0;
         if (DEAD_IN_RETAIL != 0) {
             liftPick = 0x32;
         } else {
-            liftPick = rand() % 0x1E + 0x14;
+            liftPick = rand() % 30 + 20;
         }
         sprite->velocity.vy = -liftPick;
         sprite->velocity.vz = 0;
         if (DEAD_IN_RETAIL != 0) {
             bytesPick = 0x3000;
         } else {
-            bytesPick = rand() % 0x2000 + 0x1000;
+            bytesPick = rand() % 8192 + 4096;
         }
         sprite->scale = bytesPick;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0x32) {
+    if (taskPtr->frameCounter >= 50) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -972,7 +972,7 @@ void __cdecl BattleFx_SummonChocoMogRisingSpriteTask(void)
     g_BattleOverlayDrawListHead = (int)BattleFx_SubmitSpriteDraw(&g_BattleSummonChocoMogTransformMatrix.riseSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->stepIndex)++;
-        if (task->stepIndex >= 0x10) {
+        if (task->stepIndex >= 16) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             task->pos.vy += task->velocity.vy;
@@ -1001,9 +1001,9 @@ void __cdecl BattleFx_SummonChocoMogBoneSpritePairTask(void)
     if (g_BattleActorRecords[3].model != 0) {
         BattleFx_SummonChocoMogTakeModelPartPointers((PolygonModel *)g_BattleActorRecords[3].model->modelParts);
     }
-    g_BattleSummonChocoMogSpriteRequest.sprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSummonChocoMogSpriteTable);
-    g_BattleSummonChocoMogSpriteRequest.sprite.drawObj = Gfx_ModelTableGetSpriteObject(0x11, g_BattleSummonChocoMogSpriteTable);
-    Battle3d_GetActorAttachMatrix(3, 0xD, &matrix);
+    g_BattleSummonChocoMogSpriteRequest.sprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(17, g_BattleSummonChocoMogSpriteTable);
+    g_BattleSummonChocoMogSpriteRequest.sprite.drawObj = Gfx_ModelTableGetSpriteObject(17, g_BattleSummonChocoMogSpriteTable);
+    Battle3d_GetActorAttachMatrix(3, 13, &matrix);
     SetRotMatrix(&matrix);
     SetTransMatrix(&matrix);
     RotTransPoint(&g_BattleSummonChocoMogAttachPoint1, g_BattleSummonChocoMogVectorConfig.matrix.t, &projScratch);
@@ -1017,7 +1017,7 @@ void __cdecl BattleFx_SummonChocoMogBoneSpritePairTask(void)
     g_BattleOverlayDrawListHead = (int)BattleFx_SubmitSpriteDraw(&g_BattleSummonChocoMogSpriteRequest.sprite, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (pCurrent->frameCount)++;
-        if (pCurrent->frameCount >= 0x32) {
+        if (pCurrent->frameCount >= 50) {
             pCurrent->stage = BATTLE_TASK_FREE;
         }
     }

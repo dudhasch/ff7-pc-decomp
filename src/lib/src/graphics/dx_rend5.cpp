@@ -56,7 +56,7 @@ int __cdecl D3DQueryIDirect3D2(int context)
     result = 0;
     if (context != 0 && ((GfxEngineContext *)context)->useDirect3D5 != 0 && ((GfxEngineContext *)context)->direct3D != 0) {
         // STRING: FF7 0x00912c90
-        if (CheckDirectDrawResult((*(D3DQueryUnknown **)&((GfxEngineContext *)context)->direct3D)->query(IID_IDirect3D2, (void **)&((GfxEngineContext *)context)->direct3D2), "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x121)) {
+        if (CheckDirectDrawResult((*(D3DQueryUnknown **)&((GfxEngineContext *)context)->direct3D)->query(IID_IDirect3D2, (void **)&((GfxEngineContext *)context)->direct3D2), "C:\\lib\\src\\graphics\\dx_rend5.cpp", 289)) {
             iface = ((GfxEngineContext *)context)->direct3D2;
             if (iface != 0) {
                 result = 1;
@@ -94,7 +94,7 @@ int __cdecl D3D5SetRenderTargetAndViewport(int setTarget, int setViewport, int s
             flags = 0;
             if (setTarget != 0) {
                 // STRING: FF7 0x00912cb4
-                if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(detachSlot))->SetRenderTarget(surface, flags), "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x142) != 0) { /* empty first arm: lib/codegen.h */
+                if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(detachSlot))->SetRenderTarget(surface, flags), "C:\\lib\\src\\graphics\\dx_rend5.cpp", 322) != 0) { /* empty first arm: lib/codegen.h */
                 } else {
                     ok = 0;
                 }
@@ -102,7 +102,7 @@ int __cdecl D3D5SetRenderTargetAndViewport(int setTarget, int setViewport, int s
             if (setViewport != 0) {
                 ok = 0;
                 // STRING: FF7 0x00912cd8
-                if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(detachSlot))->SetCurrentViewport(viewport), "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x14F) != 0) {
+                if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(detachSlot))->SetCurrentViewport(viewport), "C:\\lib\\src\\graphics\\dx_rend5.cpp", 335) != 0) {
                     ok = 1;
                 }
             }
@@ -118,7 +118,7 @@ int __cdecl D3D5SetRenderTargetAndViewport(int setTarget, int setViewport, int s
 void __cdecl D3D5InitBatch(GfxD3d5BatchHeader *batch)
 {
     if (batch != 0) {
-        ZeroFillMemory32(0x28, batch);
+        ZeroFillMemory32(40, batch);
         batch->primType = 4;
         batch->flags = 8;
     }
@@ -132,11 +132,11 @@ void __cdecl D3D5FreeBatch(GfxD3d5BatchState *batch)
 {
     if (batch != 0) {
         // STRING: FF7 0x00912cfc
-        GameHeapFree((void *)batch->vertices, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x16D);
+        GameHeapFree((void *)batch->vertices, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 365);
         // STRING: FF7 0x00912d20
-        GameHeapFree((void *)batch->indices, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x16E);
+        GameHeapFree((void *)batch->indices, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 366);
         // STRING: FF7 0x00912d44
-        GameHeapFree(batch, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x16F);
+        GameHeapFree(batch, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 367);
     }
 }
 
@@ -149,7 +149,7 @@ int __cdecl D3D5AllocBatch(void)
     GfxRenderBatch *rec;
 
     // STRING: FF7 0x00912d68
-    rec = (GfxRenderBatch *)((int)GameHeapAllocRaw(0x28, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x177));
+    rec = (GfxRenderBatch *)((int)GameHeapAllocRaw(40, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 375));
     if (rec != 0) {
         D3D5InitBatch((struct GfxD3d5BatchHeader *)rec);
     }
@@ -224,12 +224,12 @@ int __cdecl D3D5CompileGroupBatch(int groupIndex, PolygonFileArrays *batchState)
                 }
                 result->maxIndex = maxIdx;
                 // STRING: FF7 0x00912d8c
-                result->vertices = (int)GameHeapAlloc(result->maxIndex + 1, result->vertexStride, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x1D6);
+                result->vertices = (int)GameHeapAlloc(result->maxIndex + 1, result->vertexStride, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 470);
                 verts = result->vertices;
                 result->vertexOut = verts + 0x1F & 0xFFFFFFE0;
                 result->indexCount = faceCount * 3;
                 // STRING: FF7 0x00912db0
-                result->indices = (short *)GameHeapAlloc(result->indexCount, 2, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x1E2);
+                result->indices = (short *)GameHeapAlloc(result->indexCount, 2, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 482);
                 if (result->vertexOut != 0 && result->indices != 0) {
                     D3D5BuildVertexArray((struct GfxTlVertex *)result->vertexOut, colorSrc, (struct GfxVertexGroup *)ent, batchState);
                     idxPos = 0;
@@ -425,7 +425,7 @@ int __cdecl D3D5AllocBatchArray(GfxPolySetBatchArray *polySet)
     ok = 0;
     if (polySet != 0) {
         // STRING: FF7 0x00912dd4
-        polySet->batchArray = (int *)GameHeapAlloc(polySet->batchCount, 4, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x219);
+        polySet->batchArray = (int *)GameHeapAlloc(polySet->batchCount, 4, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 537);
         if (polySet->batchArray != 0) {
             ok = 1;
         }
@@ -933,7 +933,7 @@ void __cdecl D3D5DrawGroupListPass(int passKind, int groupHead, struct GfxEngine
                                                             break;
                                                         default:
                                                             // STRING: FF7 0x00912df8
-                                                            CheckDirectDrawResult(drawStatus, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x5C8);
+                                                            CheckDirectDrawResult(drawStatus, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 1480);
                                                             drawStatus = 0;
                                                         }
                                                     } while (drawStatus != 0);
@@ -986,7 +986,7 @@ void __cdecl D3D5DrawGroupListPass(int passKind, int groupHead, struct GfxEngine
                                                             break;
                                                         default:
                                                             // STRING: FF7 0x00912e1c
-                                                            CheckDirectDrawResult(workStatus, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x64F);
+                                                            CheckDirectDrawResult(workStatus, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 1615);
                                                             workStatus = 0;
                                                         }
                                                     } while (workStatus != 0);
@@ -1018,7 +1018,7 @@ void __cdecl D3D5DrawGroupListPass(int passKind, int groupHead, struct GfxEngine
                                         break;
                                     default:
                                         // STRING: FF7 0x00912e40
-                                        CheckDirectDrawResult(drawResult, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 0x6C8);
+                                        CheckDirectDrawResult(drawResult, "C:\\lib\\src\\graphics\\dx_rend5.cpp", 1736);
                                         drawResult = 0;
                                     }
                                 } while (drawResult != 0);

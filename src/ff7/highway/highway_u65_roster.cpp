@@ -478,12 +478,12 @@ void HighwayRoster::loadModels()
     frame.context = GetMinigameDirForHighway();
     ChangeDirectorySaving(frame.context, frame.directory);
     for (frame.index = 0; frame.index < g_HighwayModelCount; frame.index++) {
-        if (frame.index == 0xA3 || frame.index == 0xA5 || frame.index == 0xA7 || frame.index == 0xAE) {
+        if (frame.index == 163 || frame.index == 165 || frame.index == 167 || frame.index == 174) {
             frame.options.scale = 9.0f;
         } else {
             frame.options.scale = 2.0f;
         }
-        if (frame.index == 0x99 || frame.index == 0x9A || frame.index == 0x9B || frame.index == 0x94 || frame.index == 0x95 || frame.index == 0x96 || frame.index == 0x97 || frame.index == 0xAA || frame.index == 0xAB || frame.index == 0xAC) {
+        if (frame.index == 153 || frame.index == 154 || frame.index == 155 || frame.index == 148 || frame.index == 149 || frame.index == 150 || frame.index == 151 || frame.index == 170 || frame.index == 171 || frame.index == 172) {
             Pfile_SetLoadOptionsBlendMode(BLEND_ADDITIVE, &frame.options);
         } else {
             Pfile_SetLoadOptionsBlendMode(frame.blend, &frame.options);

@@ -45,9 +45,9 @@ int __cdecl BattleModel_DecodeAnimFrame(Battle3dAnimAngles *animFrame, int boneC
     shift = stream->shift;
     stream = (BattleModelAnimBank *)((char *)stream + 5);
     if (bitIndex == 0) {
-        animFrame->accumA = BattleModel_ReadSignedBits(stream, &bitIndex, 0x10);
-        animFrame->accumB = BattleModel_ReadSignedBits(stream, &bitIndex, 0x10);
-        animFrame->accumC = BattleModel_ReadSignedBits(stream, &bitIndex, 0x10);
+        animFrame->accumA = BattleModel_ReadSignedBits(stream, &bitIndex, 16);
+        animFrame->accumB = BattleModel_ReadSignedBits(stream, &bitIndex, 16);
+        animFrame->accumC = BattleModel_ReadSignedBits(stream, &bitIndex, 16);
         floatA = (float)animFrame->accumA / 1.0f;
         fB = (float)animFrame->accumB / 1.0f;
         floatC = (float)animFrame->accumC / 1.0f;
@@ -55,9 +55,9 @@ int __cdecl BattleModel_DecodeAnimFrame(Battle3dAnimAngles *animFrame, int boneC
         animFrame->decodedB = fB;
         animFrame->decodedC = floatC;
         for (index = 0; index < count; index++) {
-            animFrame[index].deltaX = BattleModel_ReadSignedBits(stream, &bitIndex, 0xC - shift) << shift;
-            animFrame[index].deltaY = BattleModel_ReadSignedBits(stream, &bitIndex, 0xC - shift) << shift;
-            animFrame[index].deltaZ = BattleModel_ReadSignedBits(stream, &bitIndex, 0xC - shift) << shift;
+            animFrame[index].deltaX = BattleModel_ReadSignedBits(stream, &bitIndex, 12 - shift) << shift;
+            animFrame[index].deltaY = BattleModel_ReadSignedBits(stream, &bitIndex, 12 - shift) << shift;
+            animFrame[index].deltaZ = BattleModel_ReadSignedBits(stream, &bitIndex, 12 - shift) << shift;
             if (animFrame[index].deltaX < 0) {
                 angleX = animFrame[index].deltaX + 0x1000;
             } else {
@@ -163,8 +163,8 @@ int __cdecl BattleModel_ReadSignedBits(BattleModelAnimBank *stream, int *bitPos,
         }
         (*bitPos)++;
     }
-    value <<= 0x20 - count;
-    value >>= 0x20 - count;
+    value <<= 32 - count;
+    value >>= 32 - count;
     return value;
 }
 
@@ -354,7 +354,7 @@ void __cdecl BattleModel_ConvertKnight07AmpToIdleAnim(void)
             Anim_Free((PolygonAnimBuffers *)animationPtr);
         }
         // STRING: FF7 0x009000a8
-        GameHeapFree((void *)pAmpFile, "C:\\FF7\\src\\battle\\battle3d\\amptoanm.cpp", 0x1FD);
+        GameHeapFree((void *)pAmpFile, "C:\\FF7\\src\\battle\\battle3d\\amptoanm.cpp", 509);
     }
 }
 
@@ -364,7 +364,7 @@ void __cdecl BattleModel_ConvertKnight07AmpToIdleAnim(void)
 // FUNCTION: FF7 0x005e81ff
 void *BattleModel_OpenAnimFileWithHeader(int animSubIndex, int headerValue, char *modelName)
 {
-    char fileName[0xC8];
+    char fileName[200];
     int header;
     int fileHandle;
 
@@ -409,7 +409,7 @@ void __cdecl Battle_WriteAnimDumpRecord(unsigned int frameCount, unsigned int bo
         headerValue = boneCount;
         frameCountCopy = frameCount;
         sizeCopy = size;
-        WriteFileData(0xC, &headerValue, (struct FileHandle *)fileHandle);
+        WriteFileData(12, &headerValue, (struct FileHandle *)fileHandle);
         WriteFileData(size, buffer, (struct FileHandle *)fileHandle);
     }
 }
@@ -420,7 +420,7 @@ void __cdecl Battle_WriteAnimDumpRecord(unsigned int frameCount, unsigned int bo
 // FUNCTION: FF7 0x005e82de
 void __cdecl BattleModel_LoadAnimBank(int negateRootY, int animSubIndex, void *animArray, void *fileCtx, char *modelName)
 {
-    char pathName[0xC8];
+    char pathName[200];
     BattleModelAnimBank *bankHeader;
     BattleModelAnimBank *bankData;
     BattleModelAnimBank *body;
@@ -443,7 +443,7 @@ void __cdecl BattleModel_LoadAnimBank(int negateRootY, int animSubIndex, void *a
             pReadPtr = (int *)((char *)pReadPtr + entryHeader[2]);
         }
         // STRING: FF7 0x009000d0
-        GameHeapFree((int *)bankData, "C:\\FF7\\src\\battle\\battle3d\\amptoanm.cpp", 0x253);
+        GameHeapFree((int *)bankData, "C:\\FF7\\src\\battle\\battle3d\\amptoanm.cpp", 595);
     }
 }
 
@@ -453,7 +453,7 @@ void __cdecl BattleModel_LoadAnimBank(int negateRootY, int animSubIndex, void *a
 // FUNCTION: FF7 0x005e840d
 void *BattleModel_LoadSingleAnimation(int negateRootY, int animSubIndex, void *fileCtx, char *modelName)
 {
-    char pathName[0xC8];
+    char pathName[200];
     BattleModelAnimBank *bankData;
     void *animationPtr;
     int *body;
@@ -469,7 +469,7 @@ void *BattleModel_LoadSingleAnimation(int negateRootY, int animSubIndex, void *f
         body += 3;
         animationPtr = (void *)BattleModel_DecodeAnimation(negateRootY, entryHeader[0], entryHeader[1], (BattleModelAnimBank *)body);
         // STRING: FF7 0x009000f8
-        GameHeapFree((int *)bankData, "C:\\FF7\\src\\battle\\battle3d\\amptoanm.cpp", 0x270);
+        GameHeapFree((int *)bankData, "C:\\FF7\\src\\battle\\battle3d\\amptoanm.cpp", 624);
     }
     return animationPtr;
 }

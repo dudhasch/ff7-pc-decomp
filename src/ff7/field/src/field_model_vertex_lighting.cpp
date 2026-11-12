@@ -391,21 +391,21 @@ void __cdecl Field_AddColorBiasToVertexColor(short blueBias, short greenBias, sh
     red = vertexColor->colorR + redBias;
     if (blue < 0) {
         vertexColor->colorB = 0;
-    } else if (blue > 0xFF) {
+    } else if (blue > 255) {
         vertexColor->colorB = 0xFF;
     } else {
         vertexColor->colorB = blue;
     }
     if (green < 0) {
         vertexColor->colorG = 0;
-    } else if (green > 0xFF) {
+    } else if (green > 255) {
         vertexColor->colorG = 0xFF;
     } else {
         vertexColor->colorG = green;
     }
     if (red < 0) {
         vertexColor->colorR = 0;
-    } else if (red > 0xFF) {
+    } else if (red > 255) {
         vertexColor->colorR = 0xFF;
     } else {
         vertexColor->colorR = red;
@@ -666,7 +666,7 @@ void __cdecl Field_ApplyModelDiffuseSelectorEffect(FieldModelInstance *model, sh
                                                     blue += 0x1E;
                                                 }
                                                 if (-frame.depthValue < (float)scale * frame.lightScale && frame.suppressed == 0) {
-                                                    Field_AddBgraColorSaturated(red << 0x10, green << 8, blue, (int)frame.groupEntry + 0x14, (int)frame.diffuseEffect + 0x10);
+                                                    Field_AddBgraColorSaturated(red << 16, green << 8, blue, (int)frame.groupEntry + 0x14, (int)frame.diffuseEffect + 0x10);
                                                 }
                                             }
                                             frame.diffuseEffect++;

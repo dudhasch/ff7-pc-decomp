@@ -54,7 +54,7 @@ void __cdecl Battle_CreateEffectTrailTask(int actorIndex, int attachIndex, int y
     BattleFxEffectTrail *task;
 
     task = (BattleFxEffectTrail *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(Battle_EffectTrailTaskHandler)];
-    task->alpha = (unsigned int)colorRgba >> 0x18;
+    task->alpha = (unsigned int)colorRgba >> 24;
     task->actorIndex = actorIndex;
     task->attachIndex = attachIndex;
     task->yOffset = -yOffset;

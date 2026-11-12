@@ -325,7 +325,7 @@ void __cdecl BattleFx_MagicLoadResQuake2(void)
     int resultDefRecs;
 
     if (g_pBattle3dScene != 0 && g_BattleMagicQuake2LoadedResTable == 0) {
-        defCount = 0xB;
+        defCount = 11;
         resultDefRecs = (int)&g_BattleMagicQuake2ResourceDefs;
         context = (GfxModelTableBank *)(g_pBattle3dScene->modelTableBank);
         resourceRequest = &requestData;
@@ -371,7 +371,7 @@ void __cdecl BattleFx_MagicQuake2SelectTimelineTask(void)
     int firstTarget;
 
     idx = 0;
-    for (targetCount = 0; idx < 0xA; idx++) {
+    for (targetCount = 0; idx < 10; idx++) {
         if ((g_BattleMagicQuake2TargetMask & 1 << idx) != 0) {
             targetCount++;
             if (targetCount == 1) {
@@ -386,16 +386,16 @@ void __cdecl BattleFx_MagicQuake2SelectTimelineTask(void)
         task->phase = 0;
         Battle_GetBoneWorldPos(firstTarget, g_BattleActorRecords[firstTarget].targetBone, &task->posX);
         task->originY = 0;
-        task->size = g_BattleActorRecords[firstTarget].radius + 0xE0;
-        if (task->size > 0x76C) {
-            task->size = 0x76C;
+        task->size = g_BattleActorRecords[firstTarget].radius + 224;
+        if (task->size > 1900) {
+            task->size = 1900;
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_BattleMagicQuake2TargetMask), 0x40);
     } else {
         task = (BattleFxQuake2SelectTask *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2MultiTargetTimelineTask);
         task->phase = 0;
         Battle_GetActorMaskCentroid(g_BattleMagicQuake2TargetMask, &task->posX);
-        task->size = 0x460;
+        task->size = 1120;
         shards = (BattleFxQuake2ShardBurst *)Gfx_GetPsxScratchpadPtr(0);
         shards->meshPayload = (int)&g_BattleMagicQuake2MeshBurstPayload;
         BattleFx_MagicQuake2BuildShardRecords(shards);
@@ -477,7 +477,7 @@ int __cdecl BattleFx_MagicQuake2BuildTriangleShardRecords(BattleFxQuake2ShardBur
         } else {
             g_BattleMagicQuake2ShardRecords[shardIndex].rotationSpeedZ = -((rnd >> 3 & 7) << 4);
         }
-        g_BattleMagicQuake2ShardRecords[shardIndex].fallSpeed = (0x1C - sumY) * ((rnd & 1) + 3);
+        g_BattleMagicQuake2ShardRecords[shardIndex].fallSpeed = (28 - sumY) * ((rnd & 1) + 3);
         shardIndex++;
         recordPtr += 2;
     }
@@ -547,7 +547,7 @@ int __cdecl BattleFx_MagicQuake2BuildQuadShardRecords(BattleFxQuake2ShardBurst *
         } else {
             g_BattleMagicQuake2ShardRecords[dstIndex].rotationSpeedZ = -((rnd >> 3 & 7) << 4);
         }
-        g_BattleMagicQuake2ShardRecords[dstIndex].fallSpeed = (0x1C - sumY) * ((rnd & 1) + 3);
+        g_BattleMagicQuake2ShardRecords[dstIndex].fallSpeed = (28 - sumY) * ((rnd & 1) + 3);
         dstIndex++;
         recordPtr = (BattleFxQuake2ShardRecord *)((char *)recordPtr + 0x14);
     }
@@ -576,14 +576,14 @@ void __cdecl BattleFx_MagicQuake2MultiTargetTimelineTask(void)
         }
         (task->phase)++;
         record = (BattleFxQuake2TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2FadingModelTask);
-        record->fadeStart = 0x17;
+        record->fadeStart = 23;
         *(Int64Pair *)&record->posX = *(Int64Pair *)&task->posX;
         record->spinAngleY = 0;
-        record->baseAngleY = 0x100;
+        record->baseAngleY = 0x100 /* 22.5 deg */;
         record->size = task->size << 1;
         record->sizeStep = 0;
         record->fadeLevel = 0;
-        record->fadeStep = 0xBA;
+        record->fadeStep = 186;
         record->isActive = 1;
         break;
     case 1:
@@ -592,50 +592,50 @@ void __cdecl BattleFx_MagicQuake2MultiTargetTimelineTask(void)
         }
         (task->phase)++;
         record = (BattleFxQuake2TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2FadingModelTask);
-        record->fadeStart = 0x19;
+        record->fadeStart = 25;
         *(Int64Pair *)&record->posX = *(Int64Pair *)&task->posX;
         record->spinAngleY = 0;
-        record->baseAngleY = 0x900;
+        record->baseAngleY = 0x900 /* 202.5 deg */;
         record->size = task->size << 1;
         record->sizeStep = 0;
         record->fadeLevel = 0;
-        record->fadeStep = 0xC3;
+        record->fadeStep = 195;
         record->isActive = 1;
         break;
     case 2:
-        if (task->frameCount < 0xA) {
+        if (task->frameCount < 10) {
             break;
         }
         (task->phase)++;
         record = (BattleFxQuake2TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2FadingModelTask);
-        record->fadeStart = 0x1A;
+        record->fadeStart = 26;
         *(Int64Pair *)&record->posX = *(Int64Pair *)&task->posX;
         record->spinAngleY = 0;
-        record->baseAngleY = 0x100;
+        record->baseAngleY = 0x100 /* 22.5 deg */;
         record->size = task->size;
         record->sizeStep = 0;
         record->fadeLevel = 0;
-        record->fadeStep = 0x111;
+        record->fadeStep = 273;
         record->isActive = 1;
         break;
     case 3:
-        if (task->frameCount < 0xE) {
+        if (task->frameCount < 14) {
             break;
         }
         (task->phase)++;
         record = (BattleFxQuake2TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2FadingModelTask);
-        record->fadeStart = 0x1B;
+        record->fadeStart = 27;
         *(Int64Pair *)&record->posX = *(Int64Pair *)&task->posX;
         record->spinAngleY = 0;
-        record->baseAngleY = 0x900;
+        record->baseAngleY = 0x900 /* 202.5 deg */;
         record->size = task->size;
         record->sizeStep = 0;
         record->fadeLevel = 0;
-        record->fadeStep = 0x13B;
+        record->fadeStep = 315;
         record->isActive = 1;
         break;
     case 4:
-        if (task->frameCount < 0x14) {
+        if (task->frameCount < 20) {
             break;
         }
         (task->phase)++;
@@ -645,7 +645,7 @@ void __cdecl BattleFx_MagicQuake2MultiTargetTimelineTask(void)
         record->posZ = task->posZ + task->size - (task->size >> 2);
         break;
     case 5:
-        if (task->frameCount < 0x1A) {
+        if (task->frameCount < 26) {
             break;
         }
         (task->phase)++;
@@ -655,7 +655,7 @@ void __cdecl BattleFx_MagicQuake2MultiTargetTimelineTask(void)
         record->posZ = task->posZ + task->size - (task->size >> 3);
         break;
     case 6:
-        if (task->frameCount < 0x1E) {
+        if (task->frameCount < 30) {
             break;
         }
         (task->phase)++;
@@ -669,7 +669,7 @@ void __cdecl BattleFx_MagicQuake2MultiTargetTimelineTask(void)
         record = (BattleFxQuake2TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2ShardBurstTask);
         *(Int64Pair *)&record->posX = *(Int64Pair *)&task->posX;
         record->size = 0;
-        record->sizeStep = (task->size + 0x380) / 0x18;
+        record->sizeStep = (task->size + 896) / 24;
     default:
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -708,7 +708,7 @@ void __cdecl BattleFx_MagicQuake2ShardBurstTask(void)
         frame.matrix.t[0] = frame.slot->posX;
         frame.matrix.t[1] = frame.slot->posY;
         frame.matrix.t[2] = frame.slot->posZ;
-        frame.scale = (frame.slot->size << 12) / 0x76c;
+        frame.scale = (frame.slot->size << 12) / 1900;
         frame.scale = frame.scale < 0 ? 0 : frame.scale > 0x1000 ? 0x1000
                                                                  : frame.scale;
         if (frame.slot->frame < 24 && g_BattleIsPaused == 0)
@@ -724,7 +724,7 @@ void __cdecl BattleFx_MagicQuake2ShardBurstTask(void)
         frame.packet->modelGroup = Gfx_ModelTableGetRenderObject(8, g_BattleMagicQuake2LoadedResTable);
         frame.packet->flags = 0;
         frame.packet->uvScroll = 0;
-        frame.packet->fadeLevel = 0x80;
+        frame.packet->fadeLevel = 128;
         frame.packet->stateFlags = 0;
         frame.packet->texturePageBits = 0;
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.packet, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 12, g_BattleFxActiveDrawListPtr);
@@ -763,8 +763,8 @@ void __cdecl BattleFx_MagicQuake2ShardBurstTask(void)
                 frame.output->position = frame.slot->posY - rand() % (frame.slot->size >> 3);
                 frame.output->posZ = frame.slot->posZ + rand() % (frame.scale * 2) - frame.scale;
                 frame.output->fadeWord = ((frame.choice + frame.shardIndex) & 3) << 5;
-                frame.output->heightOffset = (rand() % 4) * 0x555 + 0x800;
-                frame.output->velocity = frame.output->fadeWord + frame.slot->frame * 2 - 0x180;
+                frame.output->heightOffset = (rand() % 4) * 1365 + 2048;
+                frame.output->velocity = frame.output->fadeWord + frame.slot->frame * 2 - 384;
                 frame.output->acceleration = rand() % 12 + frame.slot->frame + 12;
                 frame.output->fadeWord += 0x80;
             }
@@ -815,7 +815,7 @@ int __cdecl BattleFx_MagicQuake2DrawShardTriangles(BattleFxQuake2Shard *shard, v
     primPointer = (BattleFxShardTriPrim *)(shard->primitive);
     for (counter = 0; counter < numTris; counter++, index++, recordPointer++) {
         if (g_BattleMagicQuake2ShardRecords[index].fadeCounter >= 7) {
-            fadeOffset = (g_BattleMagicQuake2ShardRecords[index].fadeCounter - 7) * 0x60606;
+            fadeOffset = (g_BattleMagicQuake2ShardRecords[index].fadeCounter - 7) * 394758;
             if (fadeOffset > 0x808080) {
                 continue;
             }
@@ -897,15 +897,15 @@ int __cdecl BattleFx_MagicQuake2BuildRotationMatrix(BattleFxEulerAngles16 *angle
     sx = BattleFx_MagicQuake2LookupSine(angles->angleX);
     sy = -BattleFx_MagicQuake2LookupSine(angles->angleY);
     sz = BattleFx_MagicQuake2LookupSine(angles->angleZ);
-    matrix->m00 = cz * cy >> 0xC;
-    matrix->m10 = (sz * cx >> 0xC) - ((cz * sy >> 0xC) * sx >> 0xC);
-    matrix->m20 = (sz * sx >> 0xC) + ((cz * sy >> 0xC) * cx >> 0xC);
-    matrix->m01 = -sz * cy >> 0xC;
-    matrix->m11 = (cz * cx >> 0xC) + ((sz * sy >> 0xC) * sx >> 0xC);
-    matrix->m21 = (cz * sx >> 0xC) - ((sz * sy >> 0xC) * cx >> 0xC);
+    matrix->m00 = cz * cy >> 12;
+    matrix->m10 = (sz * cx >> 12) - ((cz * sy >> 12) * sx >> 12);
+    matrix->m20 = (sz * sx >> 12) + ((cz * sy >> 12) * cx >> 12);
+    matrix->m01 = -sz * cy >> 12;
+    matrix->m11 = (cz * cx >> 12) + ((sz * sy >> 12) * sx >> 12);
+    matrix->m21 = (cz * sx >> 12) - ((sz * sy >> 12) * cx >> 12);
     matrix->m02 = -sy;
-    matrix->m12 = -cy * sx >> 0xC;
-    matrix->m22 = cy * cx >> 0xC;
+    matrix->m12 = -cy * sx >> 12;
+    matrix->m22 = cy * cx >> 12;
     return (int)matrix;
 }
 
@@ -994,7 +994,7 @@ int __cdecl BattleFx_MagicQuake2DrawShardQuads(BattleFxQuake2Shard *shard, void 
     primPointer = (BattleFxShardQuadPrim *)(shard->primitive);
     for (counter = 0; counter < numQuads; counter++, index++, recordPointer++) {
         if (g_BattleMagicQuake2ShardRecords[index].fadeCounter >= 7) {
-            fadeOffset = (g_BattleMagicQuake2ShardRecords[index].fadeCounter - 7) * 0x60606;
+            fadeOffset = (g_BattleMagicQuake2ShardRecords[index].fadeCounter - 7) * 394758;
             if (fadeOffset > 0x808080) {
                 continue;
             }
@@ -1082,7 +1082,7 @@ void __cdecl BattleFx_MagicQuake2FadingQuadParticleTask(void)
     SetTransMatrix((char *)&g_BattleMagicQuake2ModelConfig + 16);
     if (particle->step > 3) {
         color = 0x2E808080;
-        color -= (particle->step - 4) * 0x202020;
+        color -= (particle->step - 4) * 2105376;
         (*(int *)&g_BattleMagicQuake2ModelConfig) = color;
         (((BattleMagicQuake2QuadConfig *)&g_BattleMagicQuake2ModelConfig)->resourceEntry) = Gfx_ModelTableGetSpriteObject(3, g_BattleMagicQuake2LoadedResTable);
     } else {
@@ -1133,9 +1133,9 @@ void __cdecl BattleFx_MagicQuake2ShrinkingSquareTask(void)
     frame.modelMatrix.t[0] = frame.squareTask->posX;
     frame.modelMatrix.t[1] = frame.squareTask->posY;
     frame.modelMatrix.t[2] = frame.squareTask->posZ;
-    frame.shrinkScale = 0x1000;
+    frame.shrinkScale = 0x1000 /* 1.0 */;
     if (frame.squareTask->step >= 1) {
-        frame.shrinkScale -= frame.squareTask->step - 1 << 0xB;
+        frame.shrinkScale -= frame.squareTask->step - 1 << 11;
     }
     frame.scaleVec.vx = frame.shrinkScale;
     frame.scaleVec.vy = frame.shrinkScale;
@@ -1148,14 +1148,14 @@ void __cdecl BattleFx_MagicQuake2ShrinkingSquareTask(void)
     frame.shrinkPacket = (BattleFxGroundTilePacket *)Gfx_GetPsxPacketScratchPtr();
     frame.shardAx.vx = 0xF600;
     frame.shardAx.vy = 0;
-    frame.shardAx.vz = 0xA00;
-    frame.stripBx.vx = 0xA00;
+    frame.shardAx.vz = 2560;
+    frame.stripBx.vx = 2560;
     frame.stripBx.vy = 0;
-    frame.stripBx.vz = 0xA00;
+    frame.stripBx.vz = 2560;
     frame.shardCx.vx = 0xF600;
     frame.shardCx.vy = 0;
     frame.shardCx.vz = 0xF600;
-    frame.stripDx.vx = 0xA00;
+    frame.stripDx.vx = 2560;
     frame.stripDx.vy = 0;
     frame.stripDx.vz = 0xF600;
     Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(1, g_BattleMagicQuake2LoadedResTable)));
@@ -1206,7 +1206,7 @@ void __cdecl BattleFx_MagicQuake2FadingModelTask(void)
     frame.modelMatrix.t[0] = frame.fadeSlot->posX;
     frame.modelMatrix.t[1] = frame.fadeSlot->posY;
     frame.modelMatrix.t[2] = frame.fadeSlot->posZ;
-    frame.fadeScale = (frame.fadeSlot->modelSize << 0xC) / 0x9C4;
+    frame.fadeScale = (frame.fadeSlot->modelSize << 12) / 2500;
     frame.scaleVec.vx = frame.fadeScale;
     frame.scaleVec.vy = frame.fadeSlot->fadeLevel;
     frame.scaleVec.vz = frame.fadeScale;
@@ -1217,7 +1217,7 @@ void __cdecl BattleFx_MagicQuake2FadingModelTask(void)
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.fadeSlot->altModelEnabled != 0) {
@@ -1242,8 +1242,8 @@ void __cdecl BattleFx_MagicQuake2FadingModelTask(void)
     }
     frame.fadeSlot->spinAngleY -= 0x20;
     frame.fadeSlot->fadeLevel += frame.fadeSlot->fadeStep;
-    if (frame.fadeSlot->fadeLevel > 0x1000) {
-        frame.fadeSlot->fadeLevel = 0x1000;
+    if (frame.fadeSlot->fadeLevel > 4096) {
+        frame.fadeSlot->fadeLevel = 4096;
     }
     (frame.fadeSlot->timer)++;
 }
@@ -1269,10 +1269,10 @@ void __cdecl BattleFx_MagicQuake2SingleTargetTimelineTask(void)
         }
         (task->phase)++;
         pChild = (BattleFxMagicQuake2Timeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2FadingModelTask);
-        pChild->frameCount = 0x17;
+        pChild->frameCount = 23;
         *(Int64Pair *)&pChild->posX = *(Int64Pair *)&task->posX;
         pChild->spinAngle = 0;
-        pChild->scale = 0x100;
+        pChild->scale = 0x100 /* 0.0625 */;
         pChild->progress = task->progress;
         pChild->stepSize = 0;
         pChild->fadeLevel = 0;
@@ -1285,10 +1285,10 @@ void __cdecl BattleFx_MagicQuake2SingleTargetTimelineTask(void)
         }
         (task->phase)++;
         pChild = (BattleFxMagicQuake2Timeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicQuake2FadingModelTask);
-        pChild->frameCount = 0x1A;
+        pChild->frameCount = 26;
         *(Int64Pair *)&pChild->posX = *(Int64Pair *)&task->posX;
         pChild->spinAngle = 0;
-        pChild->scale = 0x900;
+        pChild->scale = 0x900 /* 0.5625 */;
         pChild->progress = task->progress;
         pChild->stepSize = 0;
         pChild->fadeLevel = 0;
@@ -1296,7 +1296,7 @@ void __cdecl BattleFx_MagicQuake2SingleTargetTimelineTask(void)
         pChild->clearedWord = 0;
         break;
     case 2:
-        if (task->stage < 0x12) {
+        if (task->stage < 18) {
             break;
         }
         (task->phase)++;
@@ -1340,7 +1340,7 @@ void __cdecl BattleFx_MagicQuake2GrowShrinkModelTask(void)
     frame.modelMatrix.t[0] = frame.growModel->posX;
     frame.modelMatrix.t[1] = frame.growModel->posY;
     frame.modelMatrix.t[2] = frame.growModel->posZ;
-    frame.growScale = (frame.growModel->scale << 0xC) / 0x76C;
+    frame.growScale = (frame.growModel->scale << 12) / 1900;
     if (frame.growScale < 0) {
         frame.clampedScale = 0;
     } else {
@@ -1359,7 +1359,7 @@ void __cdecl BattleFx_MagicQuake2GrowShrinkModelTask(void)
     if (g_BattleIsPaused == 0) {
         if (frame.growModel->phase < 6) {
             frame.growModel->scale += frame.growModel->scaleStep;
-        } else if (frame.growModel->phase >= 0x12) {
+        } else if (frame.growModel->phase >= 18) {
             frame.growModel->scale -= frame.growModel->scaleStep;
         }
     }
@@ -1369,12 +1369,12 @@ void __cdecl BattleFx_MagicQuake2GrowShrinkModelTask(void)
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(8, g_BattleMagicQuake2LoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.growModel->phase >= 0x18) {
+    if (frame.growModel->phase >= 24) {
         frame.growModel->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused == 0) {

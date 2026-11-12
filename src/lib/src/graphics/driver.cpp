@@ -16,7 +16,7 @@ void __cdecl GfxFreeDriverOps(GfxDriverOps *driverOps)
 {
     if (driverOps != 0) {
         // STRING: FF7 0x009132b0
-        GameHeapFree(driverOps, "C:\\lib\\src\\graphics\\driver.cpp", 0xA);
+        GameHeapFree(driverOps, "C:\\lib\\src\\graphics\\driver.cpp", 10);
     }
 }
 
@@ -29,7 +29,7 @@ GfxDriverOps *__cdecl GfxAllocDriverOps(void)
     GfxDriverOps *ops;
 
     // STRING: FF7 0x009132d0
-    ops = (GfxDriverOps *)GameHeapAlloc(1, 0xF0, "C:\\lib\\src\\graphics\\driver.cpp", 0x12);
+    ops = (GfxDriverOps *)GameHeapAlloc(1, 240, "C:\\lib\\src\\graphics\\driver.cpp", 18);
     return ops;
 }
 } /* extern "C" */

@@ -115,13 +115,13 @@ void __cdecl BattleFx_MagicSpawnToadPerTarget(int actor)
     timelineSlot = (BattleFxToadTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicToadTimelineTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)((char *)timelineSlot + 4));
     depth = g_BattleActorRecords[actor].radius + 0xE0;
-    if (depth > 0x4F2) {
+    if (depth > 1266) {
         depth = 0x4F2;
     }
     timelineSlot->depth = depth;
     timelineSlot->jitterRange = timelineSlot->depth << 1;
     timelineSlot->riseRange = -(timelineSlot->posY << 1);
-    timelineSlot->scale = (depth << 0xC) / 0x1C2;
+    timelineSlot->scale = (depth << 12) / 450;
     timelineSlot->targetIndex = actor;
 }
 
@@ -146,7 +146,7 @@ void __cdecl BattleFx_MagicToadTimelineTask(void)
         return;
     }
     task = (BattleFxToadTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->frameCount > 1 && task->frameCount < 0x1C) {
+    if (task->frameCount > 1 && task->frameCount < 28) {
         ringIndex = g_BattleMagicToadParticleCount;
         pNewTask = BATTLE_NEW_TASK_SLOT(BattleFx_MagicToadAnimatedSpritesTask);
         ((BattleFxBerserkFadeSprite *)pNewTask)->ringIndex = ringIndex;
@@ -155,18 +155,18 @@ void __cdecl BattleFx_MagicToadTimelineTask(void)
             *(short *)((char *)((int *)&g_BattleMagicToadBillboardPoints) + ringIndex * 8) = task->baseX + rand() % task->jitterRange - task->jitterOffset;
             *(short *)((char *)&g_BattleMagicToadBillboardPoints.pointRise + ringIndex * 8) = -(rand() % task->riseRange);
             *(short *)((char *)&g_BattleMagicToadBillboardPointJitter + ringIndex * 8) = task->baseY + rand() % task->jitterRange - task->jitterOffset;
-            *(short *)((char *)&g_BattleMagicToadBillboardPoints.scale + ringIndex * 8) = task->scale * scaleJitter >> 0xC;
+            *(short *)((char *)&g_BattleMagicToadBillboardPoints.scale + ringIndex * 8) = task->scale * scaleJitter >> 12;
             ringIndex++;
-            if (ringIndex >= 0x1BC) {
+            if (ringIndex >= 444) {
                 ringIndex = 0;
             }
         }
         g_BattleMagicToadParticleCount = ringIndex;
     }
-    if (task->frameCount == 0xC) {
+    if (task->frameCount == 12) {
         Battle_PostActorHitOrHurtMessage(task->recordType);
     }
-    if (task->frameCount >= 0x28) {
+    if (task->frameCount >= 40) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCount)++;
@@ -192,11 +192,11 @@ void __cdecl BattleFx_MagicToadAnimatedSpritesTask(void)
         BattleFx_InstallBillboardMatrix((void *)(ringIndex * 8 + (int)&g_BattleMagicToadBillboardPoints), (short)((BattleMagicToadSpriteEntry *)&g_BattleMagicToadBillboardPoints.scale)[ringIndex].scale, -(((BattleMagicToadSpriteEntry *)&g_BattleMagicToadBillboardPoints.scale)[ringIndex].scale >> 2));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&TOAD_SPRITE_REQ->spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         ringIndex++;
-        if (ringIndex >= 0x1BC) {
+        if (ringIndex >= 444) {
             ringIndex = 0;
         }
     }
-    if (task->frame >= 0xB) {
+    if (task->frame >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

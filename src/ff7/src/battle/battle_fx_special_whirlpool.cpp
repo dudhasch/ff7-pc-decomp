@@ -127,7 +127,7 @@ void __cdecl BattleFx_SpecialEnterWhirlpool(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x0058ae64
 void __cdecl BattleFx_SpecialRegisterWhirlpoolPerTargetCallback(int actorIndex, int secondIndex)
 {
-    Battle_CreateBitPatternCallbackTask(actorIndex, secondIndex, 0x5A, BattleFx_SpecialSpawnWhirlpoolPerTarget);
+    Battle_CreateBitPatternCallbackTask(actorIndex, secondIndex, 90, BattleFx_SpecialSpawnWhirlpoolPerTarget);
 }
 
 /*
@@ -139,15 +139,15 @@ void __cdecl BattleFx_SpecialSpawnWhirlpoolPerTarget(int actor, int secondIndex)
     int i;
     BattleFxWhirlpoolTimeline *task;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         WHIRLPOOL_SPIRAL_TRAILS[i].step = 0xFFFF;
     }
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         g_BattleSpecWhirlpoolParticleRecords[i].step = 0xFFFF;
     }
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &g_BattleSpecWhirlpoolCenterPos.vx);
     g_BattleSpecWhirlpoolCenterPos.vy = 0;
-    g_BattleSpecWhirlpoolFadeScale = 0x1000;
+    g_BattleSpecWhirlpoolFadeScale = 0x1000 /* 1.0 */;
     task = (BattleFxWhirlpoolTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWhirlpoolTimelineTask);
     task->actorIndex = actor;
     task->secondIndex = secondIndex;
@@ -177,7 +177,7 @@ void __cdecl BattleFx_SpecialWhirlpoolTimelineTask(void)
         g_BattleSpecWhirlpoolGrowingModelTask = (BattleFxWhirlpoolGrowingTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWhirlpoolGrowingModelTask);
         *(Int64Pair *)&g_BattleSpecWhirlpoolGrowingModelTask->posX = *(Int64Pair *)&g_BattleSpecWhirlpoolCenterPos;
     }
-    if (task->timelineStep == 0x22) {
+    if (task->timelineStep == 34) {
         Battle_PostActorHitOrHurtMessage(task->recordType);
     }
     if (task->timelineStep == 0) {
@@ -188,11 +188,11 @@ void __cdecl BattleFx_SpecialWhirlpoolTimelineTask(void)
     }
     stage = task->timelineStep - 4;
     if (stage >= 0) {
-        if (stage < 0x1E) {
+        if (stage < 30) {
             if (stage % 5 == 0) {
                 pTrail = (BattleFxSpecialWhirlpoolSpiralTrail *)BattleFx_SpecialWhirlpoolClaimSecondaryParticleRecord();
                 if (pTrail != 0) {
-                    pTrail->radius = rand() % 0x3E8 + 0x1388;
+                    pTrail->radius = rand() % 1000 + 5000;
                     pTrail->height = 0;
                     pTrail->angle = rand() & 0xFFF;
                 }
@@ -200,23 +200,23 @@ void __cdecl BattleFx_SpecialWhirlpoolTimelineTask(void)
             if (stage % 1 == 0) {
                 particle = (BattleFxSpecialWhirlpoolSpiralTrail *)BattleFx_SpecialWhirlpoolClaimSpiralTrailParticleRecord();
                 if (particle != 0) {
-                    particle->radius = rand() % 0x3E8 + 0x1388;
+                    particle->radius = rand() % 1000 + 5000;
                     particle->height = 0;
                     particle->angle = rand() & 0xFFF;
                     particle->step = 0;
                 }
             }
         } else {
-            stage -= 0x1E;
-            if (stage < 0xF) {
-                g_BattleSpecWhirlpoolFadeScale = stage * -0x1000 / 0xF + 0x1000;
+            stage -= 30;
+            if (stage < 15) {
+                g_BattleSpecWhirlpoolFadeScale = stage * -0x1000 / 15 + 0x1000;
             } else {
                 g_BattleSpecWhirlpoolTrailArrayTask->ownerSlot = BATTLE_TASK_FREE;
                 g_BattleSpecWhirlpoolSecondaryArrayTask->ownerSlot = BATTLE_TASK_FREE;
             }
         }
     }
-    if (task->timelineStep == 0x31) {
+    if (task->timelineStep == 49) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->timelineStep)++;
@@ -230,7 +230,7 @@ int __cdecl BattleFx_SpecialWhirlpoolClaimSpiralTrailParticleRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (WHIRLPOOL_SPIRAL_TRAILS[i].step == -1) {
             WHIRLPOOL_SPIRAL_TRAILS[i].step = 0;
             WHIRLPOOL_SPIRAL_TRAILS[i].index = 0;
@@ -249,7 +249,7 @@ int __cdecl BattleFx_SpecialWhirlpoolClaimSecondaryParticleRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         if (g_BattleSpecWhirlpoolParticleRecords[i].step == -1) {
             g_BattleSpecWhirlpoolParticleRecords[i].step = 0;
             g_BattleSpecWhirlpoolParticleRecords[i].index = 0;
@@ -272,7 +272,7 @@ void __cdecl BattleFx_SpecialWhirlpoolSpiralTrailParticleArrayTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     liveCount = 0;
-    for (particleIndex = 0; particleIndex < 0x64; particleIndex++) {
+    for (particleIndex = 0; particleIndex < 100; particleIndex++) {
         if (WHIRLPOOL_SPIRAL_TRAILS[particleIndex].step != -1) {
             BattleFx_SpecialWhirlpoolUpdateSpiralTrailParticle(&WHIRLPOOL_SPIRAL_TRAILS[particleIndex]);
             liveCount++;
@@ -305,15 +305,15 @@ void __cdecl BattleFx_SpecialWhirlpoolUpdateSpiralTrailParticle(BattleFxSpecialW
     if (g_BattleIsPaused == 0) {
         for (idx = 0; idx < 3; idx++) {
             trail->angle += (short)(0x25000 / trail->radius);
-            trail->height -= (short)(0x3A98 / (trail->radius - 0x12C));
-            if (trail->height >> 3 > -0x6E) {
+            trail->height -= (short)(15000 / (trail->radius - 300));
+            if (trail->height >> 3 > -110) {
                 delta = trail->height >> 4;
             } else {
                 delta = 0xFFFFFF92;
             }
-            trail->radius -= (short)(delta + 0x64);
-            if (trail->radius < 0x190) {
-                trail->radius = 0x190;
+            trail->radius -= (short)(delta + 100);
+            if (trail->radius < 400) {
+                trail->radius = 400;
             }
             scratch->vx = trail->radius;
             scratch->vy = trail->height;
@@ -337,8 +337,8 @@ void __cdecl BattleFx_SpecialWhirlpoolUpdateSpiralTrailParticle(BattleFxSpecialW
     numberSegments = limit;
     cursor = trail->outIndex - numberSegments & 7;
     for (idx = 1; idx < numberSegments; idx++) {
-        BattleFx_InstallBillboardMatrix(&trail->points[cursor].x, 0x1000, 0);
-        g_BattleSpecWhirlpoolColor.blue = (idx << 7) / 5 * g_BattleSpecWhirlpoolFadeScale >> 0xC;
+        BattleFx_InstallBillboardMatrix(&trail->points[cursor].x, 0x1000 /* 1.0 */, 0);
+        g_BattleSpecWhirlpoolColor.blue = (idx << 7) / 5 * g_BattleSpecWhirlpoolFadeScale >> 12;
         g_BattleSpecWhirlpoolColor.green = g_BattleSpecWhirlpoolColor.blue;
         (g_BattleSpecWhirlpoolColor.red) = g_BattleSpecWhirlpoolColor.green;
         g_BattleSpecWhirlpoolDrawListHandle = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleSpecWhirlpoolConfig, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecWhirlpoolDrawListHandle);
@@ -346,7 +346,7 @@ void __cdecl BattleFx_SpecialWhirlpoolUpdateSpiralTrailParticle(BattleFxSpecialW
     }
     if (g_BattleIsPaused == 0) {
         (trail->index)++;
-        if (trail->index > 0x32) {
+        if (trail->index > 50) {
             trail->step = BATTLE_TASK_FREE;
         }
     }
@@ -364,7 +364,7 @@ void __cdecl BattleFx_SpecialWhirlpoolSecondaryParticleArrayTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     liveCount = 0;
-    for (particleIndex = 0; particleIndex < 0x64; particleIndex++) {
+    for (particleIndex = 0; particleIndex < 100; particleIndex++) {
         if (g_BattleSpecWhirlpoolParticleRecords[particleIndex].step != -1) {
             BattleFx_SpecialWhirlpoolUpdateSecondaryParticle(&g_BattleSpecWhirlpoolParticleRecords[particleIndex]);
             liveCount++;
@@ -414,15 +414,15 @@ void __cdecl BattleFx_SpecialWhirlpoolUpdateSecondaryParticle(BattleFxSpecialWhi
     if (g_BattleIsPaused == 0) {
         for (index = 0; index < 3; index++) {
             particle->angle += (short)(0x25000 / particle->radius);
-            particle->height -= (short)(0x3A98 / (particle->radius - 0x12C));
-            if (particle->height >> 3 > -0x6E) {
+            particle->height -= (short)(15000 / (particle->radius - 300));
+            if (particle->height >> 3 > -110) {
                 decay = particle->height >> 4;
             } else {
                 decay = 0xFFFFFF92;
             }
-            particle->radius -= (short)(decay + 0x64);
-            if (particle->radius < 0x190) {
-                particle->radius = 0x190;
+            particle->radius -= (short)(decay + 100);
+            if (particle->radius < 400) {
+                particle->radius = 400;
             }
             pScratchPoint->vx = particle->radius;
             pScratchPoint->vy = particle->height;
@@ -452,15 +452,15 @@ void __cdecl BattleFx_SpecialWhirlpoolUpdateSecondaryParticle(BattleFxSpecialWhi
         buffer = (BattleFxGouraudQuadPacket *)g_BattleSpecWhirlpoolDrawListHandle;
         vertA->vx = particle->points[curIndex].x;
         quadA->vx = vertA->vx;
-        quadA->vy = particle->points[curIndex].y - 0x19;
-        vertA->vy = particle->points[curIndex].y + 0x19;
+        quadA->vy = particle->points[curIndex].y - 25;
+        vertA->vy = particle->points[curIndex].y + 25;
         vertA->vz = particle->points[curIndex].z;
         quadA->vz = vertA->vz;
         nextSeq = curIndex + 1 & 7;
         pVertexB->vx = particle->points[nextSeq].x;
         quadBuf->corner0X = pVertexB->vx;
-        quadBuf->corner0Y = particle->points[nextSeq].y - 0x19;
-        pVertexB->vy = particle->points[nextSeq].y + 0x19;
+        quadBuf->corner0Y = particle->points[nextSeq].y - 25;
+        pVertexB->vy = particle->points[nextSeq].y + 25;
         pVertexB->vz = particle->points[nextSeq].z;
         quadBuf->depth = pVertexB->vz;
         zDepth = Gfx_TransformQuadReturnDepth(quadA, (SVECTOR *)vertA, (SVECTOR *)quadBuf, (SVECTOR *)pVertexB, &ignored, &clipFlags);
@@ -471,7 +471,7 @@ void __cdecl BattleFx_SpecialWhirlpoolUpdateSecondaryParticle(BattleFxSpecialWhi
             if (index == segments - 1) {
                 color = 0x3A000000;
             } else {
-                color += g_BattleSpecWhirlpoolFadeScale << 4 >> 0xC << 0x10 | g_BattleSpecWhirlpoolFadeScale << 4 >> 0xC << 8 | g_BattleSpecWhirlpoolFadeScale << 4 >> 0xC;
+                color += g_BattleSpecWhirlpoolFadeScale << 4 >> 12 << 0x10 | g_BattleSpecWhirlpoolFadeScale << 4 >> 12 << 8 | g_BattleSpecWhirlpoolFadeScale << 4 >> 12;
             }
             buffer->color3 = color;
             buffer->color2 = color;
@@ -481,7 +481,7 @@ void __cdecl BattleFx_SpecialWhirlpoolUpdateSecondaryParticle(BattleFxSpecialWhi
     }
     if (g_BattleIsPaused == 0) {
         (particle->index)++;
-        if (particle->index > 0x32) {
+        if (particle->index > 50) {
             particle->step = BATTLE_TASK_FREE;
         }
     }
@@ -502,25 +502,25 @@ void __cdecl BattleFx_SpecialWhirlpoolGrowingModelTask(void)
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     pScaleState = (BattleFxWhirlpoolScaleState *)((char *)matrix + 0x1E);
     stage = task->step;
-    if (stage < 0xF) {
-        g_BattleSpecWhirlpoolParticleConfig.scale = (stage << 7) / 0xF;
-        pScaleState->scaleTo = stage * 0x1500 / 0xF;
+    if (stage < 15) {
+        g_BattleSpecWhirlpoolParticleConfig.scale = (stage << 7) / 15;
+        pScaleState->scaleTo = stage * 0x1500 / 15;
         pScaleState->scaleFrom = pScaleState->scaleTo;
-        pScaleState->scale = stage * 0 / 0xF + 0x1500;
+        pScaleState->scale = stage * 0 / 15 + 0x1500;
     } else {
-        stage -= 0xF;
+        stage -= 15;
         if (stage < 0) {
             g_BattleSpecWhirlpoolParticleConfig.scale = 0x80;
-            pScaleState->scaleTo = 0x1500;
-            pScaleState->scaleFrom = 0x1500;
-            pScaleState->scale = 0x1500;
+            pScaleState->scaleTo = 0x1500 /* 1.3125 */;
+            pScaleState->scaleFrom = 0x1500 /* 1.3125 */;
+            pScaleState->scale = 0x1500 /* 1.3125 */;
         } else {
             stage = stage;
-            if (stage < 0x1E) {
-                g_BattleSpecWhirlpoolParticleConfig.scale = stage * -0x80 / 0x1E + 0x80;
-                pScaleState->scaleTo = (stage << 0xC) / 0x1E + 0x1500;
+            if (stage < 30) {
+                g_BattleSpecWhirlpoolParticleConfig.scale = stage * -0x80 / 30 + 0x80;
+                pScaleState->scaleTo = (stage << 12) / 30 + 0x1500;
                 pScaleState->scaleFrom = pScaleState->scaleTo;
-                pScaleState->scale = (stage << 0xC) / 0x1E + 0x1500;
+                pScaleState->scale = (stage << 12) / 30 + 0x1500;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;

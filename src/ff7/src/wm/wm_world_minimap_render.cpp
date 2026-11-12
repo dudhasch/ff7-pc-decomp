@@ -67,7 +67,7 @@ void __cdecl World_DrawMiniMap(short angle)
     int by;
     int marker;
     short base[8];
-    char matrix[0x20];
+    char matrix[32];
     GfxTlVertex *node0;
     GfxTlVertex *n0;
     GfxTlVertex *node1;
@@ -76,8 +76,8 @@ void __cdecl World_DrawMiniMap(short angle)
         g_WorldMiniMapScale = g_WorldMiniMapMode == 1 && World_GetMapVariant() == 0
                            ? g_WorldDisplayScale * 0x18
                            : g_WorldDisplayScale * 8;
-        bx = g_WorldDisplayScale * 0x13C - g_WorldMiniMapScale * 0xB;
-        by = g_WorldDisplayScale * 0xDC - g_WorldMiniMapScale * 8;
+        bx = g_WorldDisplayScale * 316 - g_WorldMiniMapScale * 11;
+        by = g_WorldDisplayScale * 220 - g_WorldMiniMapScale * 8;
         d0 = World_GetRenderBufferIndex();
         mid = WorldEntity_GetPlayerModelId();
         for (marker = 0; marker < 6; marker++) {
@@ -138,7 +138,7 @@ void __cdecl World_DrawMiniMap(short angle)
             }
         }
         if (g_WorldMiniMapScale == g_WorldDisplayScale * 8) {
-            World_DrawMiniMapBackdropSmall(bx + g_WorldViewportX, by + g_WorldViewportY, g_WorldDisplayScale * 0x48, g_WorldDisplayScale * 0x38);
+            World_DrawMiniMapBackdropSmall(bx + g_WorldViewportX, by + g_WorldViewportY, g_WorldDisplayScale * 72, g_WorldDisplayScale * 56);
         } else {
             World_DrawMiniMapBackdropLarge(bx + g_WorldViewportX, by + g_WorldViewportY, g_WorldMiniMapScale * 9, g_WorldMiniMapScale * 7);
         }

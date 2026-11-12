@@ -20,11 +20,11 @@ static __inline void NanntokaRenderPool(int arg1, int arg2, int *index, int r, i
     Vector16 t;
     float y;
     float z;
-    for (*index = 0; *index < 0x12C; (*index)++) {
+    for (*index = 0; *index < 300; (*index)++) {
         if (*(short *)((char *)&g_BattleBluePandorasBoxFragmentAge + (*index) * 0x14) == 0) {
             continue;
         }
-        if (*(short *)((char *)&g_BattleBluePandorasBoxFragmentAge + (*index) * 0x14) < 0xA) {
+        if (*(short *)((char *)&g_BattleBluePandorasBoxFragmentAge + (*index) * 0x14) < 10) {
             if (g_BattleIsPaused == 0) {
                 *(short *)((char *)&g_BattleBluePandorasBoxFragmentRecords + (*index) * 0x14) += *(short *)((char *)((char *)&g_BattleBluePandorasBoxFragmentAge + 2) + (*index) * 0x14);
                 *(short *)((char *)&g_BattleBluePandorasBoxFragmentPosY + (*index) * 0x14) += *(short *)((char *)&g_BattleBluePandorasBoxFragmentVelocityY + (*index) * 0x14);
@@ -41,9 +41,9 @@ static __inline void NanntokaRenderPool(int arg1, int arg2, int *index, int r, i
         Gfx_TransformPendingVertexSlot0();
         Gfx_ReadVertexSlotVector(0, p);
         (*step) = *(short *)((char *)&g_BattleBluePandorasBoxFragmentStep + (*index) * 0x14);
-        *(short *)((char *)arg1 + 0x18) = *(short *)((char *)arg1 + 0x10) + ((*step) * *(int *)((char *)arg1 + 0x220) >> 0xC);
-        *(short *)((char *)arg1 + 0x1A) = *(short *)((char *)arg1 + 0x12) + ((*step) * *(int *)((char *)arg1 + 0x224) >> 0xC);
-        *(short *)((char *)arg1 + 0x1C) = *(short *)((char *)arg1 + 0x14) + ((*step) * *(int *)((char *)arg1 + 0x228) >> 0xC);
+        *(short *)((char *)arg1 + 0x18) = *(short *)((char *)arg1 + 0x10) + ((*step) * *(int *)((char *)arg1 + 0x220) >> 12);
+        *(short *)((char *)arg1 + 0x1A) = *(short *)((char *)arg1 + 0x12) + ((*step) * *(int *)((char *)arg1 + 0x224) >> 12);
+        *(short *)((char *)arg1 + 0x1C) = *(short *)((char *)arg1 + 0x14) + ((*step) * *(int *)((char *)arg1 + 0x228) >> 12);
         Gfx_PsxStoreClearFlag((int *)(arg1 + 0xC));
         if (p->w > 0.0f) {
             z = p->x / p->w;

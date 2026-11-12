@@ -148,23 +148,23 @@ void __cdecl BattleFx_SpecialWarCryTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.taskSlot->frameCounter < 0xA && (frame.taskSlot->frameCounter % 1) == 0) {
+    if (frame.taskSlot->frameCounter < 10 && (frame.taskSlot->frameCounter % 1) == 0) {
         frame.spawnSlot = (BattleFxWeaponEmeraldBeamSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWarCryGrowingOrientedModelTask);
         frame.spawnSlot->posX = frame.taskSlot->posX;
         frame.spawnSlot->posY = frame.taskSlot->posY;
         frame.spawnSlot->posZ = frame.taskSlot->posZ;
-        frame.spawnSlot->velocityX = (frame.taskSlot->targetX - frame.taskSlot->posX) / 0x14;
-        frame.spawnSlot->velocityY = (frame.taskSlot->targetY - frame.taskSlot->posY) / 0x14;
-        frame.spawnSlot->velocityZ = (frame.taskSlot->targetZ - frame.taskSlot->posZ) / 0x14;
-        frame.spawnSlot->scale = 0x800;
+        frame.spawnSlot->velocityX = (frame.taskSlot->targetX - frame.taskSlot->posX) / 20;
+        frame.spawnSlot->velocityY = (frame.taskSlot->targetY - frame.taskSlot->posY) / 20;
+        frame.spawnSlot->velocityZ = (frame.taskSlot->targetZ - frame.taskSlot->posZ) / 20;
+        frame.spawnSlot->scale = 0x800 /* 0.5 */;
     }
-    if (frame.taskSlot->frameCounter == 0x14) {
+    if (frame.taskSlot->frameCounter == 20) {
         frame.spawnSlot = (BattleFxWeaponEmeraldBeamSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWarCryExpandingModelTask);
         frame.spawnSlot->posX = frame.taskSlot->targetX;
         frame.spawnSlot->posY = frame.taskSlot->targetY;
         frame.spawnSlot->posZ = frame.taskSlot->targetZ;
     }
-    if (frame.taskSlot->frameCounter >= 0x14 && frame.taskSlot->frameCounter < 0x1C) {
+    if (frame.taskSlot->frameCounter >= 20 && frame.taskSlot->frameCounter < 28) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxWeaponEmeraldBeamSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWarCryDriftingFadeSpriteTask);
             frame.spawnSlot->posX = frame.taskSlot->targetX;
@@ -172,7 +172,7 @@ void __cdecl BattleFx_SpecialWarCryTimelineTask(void)
             frame.spawnSlot->posZ = frame.taskSlot->targetZ;
             frame.pointX.vx = 0;
             frame.pointX.vy = 0;
-            frame.pointX.vz = 0xA0;
+            frame.pointX.vz = 160;
             frame.angleX.vx = (rand() % 4096);
             frame.angleX.vy = (rand() % 4096);
             frame.angleX.vz = 0;
@@ -183,11 +183,11 @@ void __cdecl BattleFx_SpecialWarCryTimelineTask(void)
             SetRotMatrix(&frame.rotMatrix);
             SetTransMatrix(&frame.rotMatrix);
             RotTransPointToInt16(&frame.pointX, &frame.spawnSlot->velocityX, &frame.rotTransOut);
-            frame.spawnSlot->scale = ((rand() % 4) << 0xA) + 0x1000;
+            frame.spawnSlot->scale = ((rand() % 4) << 10) + 0x1000;
         }
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x28) {
+    if (frame.taskSlot->frameCounter == 40) {
         frame.ringRecord = (short *)Battle_AllocSceneMessage(4);
         *frame.ringRecord = frame.taskSlot->targetIndex;
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
@@ -207,7 +207,7 @@ void __cdecl BattleFx_SpecialWarCryDriftingFadeSpriteTask(void)
 
     task = (BattleFxBillboardSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     BattleFx_InstallBillboardMatrix(&task->posX, (short)task->scale, 0);
-    g_BattleSpecWarCrySpriteReq1.blue = 0x80 - task->frame * 0xA;
+    g_BattleSpecWarCrySpriteReq1.blue = 0x80 - task->frame * 10;
     g_BattleSpecWarCrySpriteReq1.green = g_BattleSpecWarCrySpriteReq1.blue;
     g_BattleSpecWarCrySpriteReq1.red = g_BattleSpecWarCrySpriteReq1.green;
     g_BattleSpecWarCryResourceModelRows[15] = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecWarCryLoadedResTable);
@@ -220,7 +220,7 @@ void __cdecl BattleFx_SpecialWarCryDriftingFadeSpriteTask(void)
     task->posY += task->velocityY;
     task->posZ += task->velocityZ;
     (task->frame)++;
-    if (task->frame == 0xC) {
+    if (task->frame == 12) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -269,7 +269,7 @@ void __cdecl BattleFx_SpecialWarCryGrowingOrientedModelTask(void)
     frame.taskSlot->posZ += frame.taskSlot->velocityZ;
     frame.taskSlot->angle += 0x190;
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x14) {
+    if (frame.taskSlot->frameCounter == 20) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -317,7 +317,7 @@ void __cdecl BattleFx_SpecialWarCryExpandingModelTask(void)
         return;
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0xF) {
+    if (frame.taskSlot->frameCounter == 15) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

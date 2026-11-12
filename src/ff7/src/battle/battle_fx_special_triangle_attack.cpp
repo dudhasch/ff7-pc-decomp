@@ -229,7 +229,7 @@ void __cdecl BattleFx_SpecialLoadResTriangleAttack(void)
     int resourceTable;
 
     if (g_pBattle3dScene != 0 && g_BattleSpecialTriangleAttackLoadedRes == 0) {
-        resourceCount = 0x15;
+        resourceCount = 21;
         resourceTable = (int)&g_BattleSpecialTriangleAttackResourceDefs;
         stageSceneHandle = (GfxModelTableBank *)(g_pBattle3dScene->modelTableBank);
         reqPtrPtr = &requestObj;
@@ -302,12 +302,12 @@ void __cdecl BattleFx_SpecialTriangleAttackTimelineTask(void)
         curTrack->prevY = 0xFDA8;
         curTrack->prevZ = 0xF95C;
         curTrack->stepX = (a->targetX - curTrack->prevX) / 5;
-        curTrack->stepY = (-0x7D0 - curTrack->prevY) / 5;
+        curTrack->stepY = (-2000 - curTrack->prevY) / 5;
         curTrack->stepZ = (a->targetZ - curTrack->prevZ) / 5;
-        curTrack->scale = 0x6000;
+        curTrack->scale = 0x6000 /* 6.0 */;
         curTrack->spinPhase = 0;
     }
-    if (a->frame == 0x26) {
+    if (a->frame == 38) {
         curTrack = (BattleFxTriangleAttackTrack *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTriangleAttackCounterSpinModelsTask);
         curTrack->prevX = a->targetX;
         curTrack->prevY = a->targetY;
@@ -319,41 +319,41 @@ void __cdecl BattleFx_SpecialTriangleAttackTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0x20;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
     }
-    if (a->frame == 0x3C) {
+    if (a->frame == 60) {
         curTrack = (BattleFxTriangleAttackTrack *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTriangleAttackGrowingModelTask);
         curTrack->prevX = a->targetX;
         curTrack->prevY = a->targetY;
         curTrack->prevZ = a->targetZ;
     }
-    if (a->frame == 0x3F) {
+    if (a->frame == 63) {
         Battle_PostActorHitOrHurtMessage(a->actorIndex);
         Battle_PlaySfxPannedToActor(0x95, (short)a->actorIndex, 0);
     }
-    if (a->frame > 0x3A && a->frame < 0x3F) {
+    if (a->frame > 58 && a->frame < 63) {
         curTrack = (BattleFxTriangleAttackTrack *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTriangleAttackVariantSpriteTask);
         curTrack->prevX = a->targetX;
         curTrack->prevY = a->targetY;
         curTrack->prevZ = a->targetZ;
-        curTrack->prevX += (short)(rand() % 0x258 - 0x12C);
-        curTrack->prevY += (short)(rand() % 0x258 - 0x12C);
-        curTrack->prevZ += (short)(rand() % 0x258 - 0x12C);
+        curTrack->prevX += (short)(rand() % 600 - 300);
+        curTrack->prevY += (short)(rand() % 600 - 300);
+        curTrack->prevZ += (short)(rand() % 600 - 300);
         curTrack->variant = rand() % 4;
         for (burstIndex = 0; burstIndex < 2; burstIndex++) {
             curTrack = (BattleFxTriangleAttackTrack *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialTriangleAttackVariantSpriteTask);
             curTrack->prevX = a->targetX;
             curTrack->prevY = a->targetY;
             curTrack->prevZ = a->targetZ;
-            curTrack->prevX += (short)(rand() % 0x640 - 0x320);
-            curTrack->prevY += (short)(rand() % 0x640 - 0x320);
-            curTrack->prevZ += (short)(rand() % 0x640 - 0x320);
+            curTrack->prevX += (short)(rand() % 1600 - 800);
+            curTrack->prevY += (short)(rand() % 1600 - 800);
+            curTrack->prevZ += (short)(rand() % 1600 - 800);
             curTrack->variant = 4;
         }
     }
     (a->frame)++;
-    if (a->frame == 0x50) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (a->frame == 80) {
+        Battle_StartFixedPointRamp(0, 10);
         a->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -418,7 +418,7 @@ void __cdecl BattleFx_SpecialTriangleAttackGrowingModelTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(frame.growSlot->data, frame.combinedMatrix.t, &frame.depth);
-    frame.combinedMatrix.m[2][2] = frame.growSlot->frameCounter * 0x258 + 0x800;
+    frame.combinedMatrix.m[2][2] = frame.growSlot->frameCounter * 600 + 0x800;
     frame.combinedMatrix.m[1][1] = frame.combinedMatrix.m[2][2];
     frame.combinedMatrix.m[0][0] = frame.combinedMatrix.m[1][1];
     RotMatrix((SVECTOR *)&g_BattleSpecialTriangleAttackRotAngles1, &frame.rotMatrix);
@@ -432,7 +432,7 @@ void __cdecl BattleFx_SpecialTriangleAttackGrowingModelTask(void)
         return;
     }
     (frame.growSlot->frameCounter)++;
-    if (frame.growSlot->frameCounter == 0x10) {
+    if (frame.growSlot->frameCounter == 16) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -461,7 +461,7 @@ void __cdecl BattleFx_SpecialTriangleAttackSpinModelsTask(void)
     frame.spinSlot = (BattleFxTriangleAttackSpinModelsSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecialTriangleAttackModelReq3.model) = Gfx_ModelTableGetRenderObject(6, g_BattleSpecialTriangleAttackLoadedRes);
     (g_BattleSpecialTriangleAttackModelReq4.model) = Gfx_ModelTableGetRenderObject(7, g_BattleSpecialTriangleAttackLoadedRes);
-    if (frame.spinSlot->frameCounter >= 0xF || (frame.spinSlot->frameCounter % 2) == 0) {
+    if (frame.spinSlot->frameCounter >= 15 || (frame.spinSlot->frameCounter % 2) == 0) {
         frame.spinAngleX.vx = frame.spinSlot->spinPhase;
         frame.spinAngleX.vy = frame.spinSlot->spinPhase + 0x800;
         frame.spinAngleX.vz = 0;
@@ -508,26 +508,26 @@ void __cdecl BattleFx_SpecialTriangleAttackSpinModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.spinSlot->frameCounter < 0xF) {
+    if (frame.spinSlot->frameCounter < 15) {
         g_BattleSpecialTriangleAttackAlphaParam1 += 8;
     }
-    if (frame.spinSlot->frameCounter >= 0xF && frame.spinSlot->frameCounter < 0x14) {
+    if (frame.spinSlot->frameCounter >= 15 && frame.spinSlot->frameCounter < 20) {
         frame.spinSlot->spinX += frame.spinSlot->spinVelocityX;
         frame.spinSlot->spinY += frame.spinSlot->spinVelocityY;
         frame.spinSlot->spinZ += frame.spinSlot->spinVelocityZ;
         frame.spinSlot->spinPhase += 0x80;
     }
-    if (frame.spinSlot->frameCounter >= 0x14 && frame.spinSlot->frameCounter < 0x19) {
+    if (frame.spinSlot->frameCounter >= 20 && frame.spinSlot->frameCounter < 25) {
         frame.spinSlot->spinPhase += 0x80;
     }
-    if (frame.spinSlot->frameCounter >= 0x19) {
-        frame.spinSlot->spinPhase += 0x100;
+    if (frame.spinSlot->frameCounter >= 25) {
+        frame.spinSlot->spinPhase += 0x100 /* 22.5 deg */;
         frame.spinSlot->timeLeft -= 0x7D0;
         frame.spinSlot->spinY += 0x50;
         g_BattleSpecialTriangleAttackAlphaParam1 -= 4;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x28) {
+    if (frame.spinSlot->frameCounter == 40) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -553,7 +553,7 @@ void __cdecl BattleFx_SpecialTriangleAttackCounterSpinModelsTask(void)
     frame.angleX.vz = 0;
     frame.angleX.vx = frame.angleX.vz;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecialTriangleAttackScale = 0x3000;
+    g_BattleSpecialTriangleAttackScale = 0x3000 /* 3.0 */;
     (*(int *)&g_BattleSpecialTriangleAttackRotAngles2) = g_BattleSpecialTriangleAttackScale;
     ScaleMatrix(&frame.rotMatrix, (int *)&g_BattleSpecialTriangleAttackRotAngles2);
     frame.rotMatrix.t[0] = frame.slot->posX;
@@ -569,7 +569,7 @@ void __cdecl BattleFx_SpecialTriangleAttackCounterSpinModelsTask(void)
     frame.angleX.vz = 0;
     frame.angleX.vx = frame.angleX.vz;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-    g_BattleSpecialTriangleAttackScale = 0x5000;
+    g_BattleSpecialTriangleAttackScale = 0x5000 /* 5.0 */;
     (*(int *)&g_BattleSpecialTriangleAttackRotAngles2) = g_BattleSpecialTriangleAttackScale;
     ScaleMatrix(&frame.rotMatrix, (int *)&g_BattleSpecialTriangleAttackRotAngles2);
     frame.rotMatrix.t[0] = frame.slot->posX;
@@ -585,11 +585,11 @@ void __cdecl BattleFx_SpecialTriangleAttackCounterSpinModelsTask(void)
     if (frame.slot->frameCounter < 8) {
         g_BattleSpecialTriangleAttackAlphaParam2++;
     }
-    if (frame.slot->frameCounter > 0xC) {
+    if (frame.slot->frameCounter > 12) {
         g_BattleSpecialTriangleAttackAlphaParam2--;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x14) {
+    if (frame.slot->frameCounter == 20) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -604,15 +604,15 @@ void __cdecl BattleFx_SpecialTriangleAttackPulsingSpriteSpawnTask(void)
     BattleFxTriangleAttackPulseSprite *pulse;
 
     pulse = (BattleFxTriangleAttackPulseSprite *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSpecialTriangleAttackSpriteReq3.sprite) = Gfx_ModelTableGetLoadedRecord(0x14, g_BattleSpecialTriangleAttackLoadedRes);
-    g_BattleSpecialTriangleAttackSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0x14, g_BattleSpecialTriangleAttackLoadedRes);
-    BattleFx_InstallBillboardMatrix(&pulse->posX, SinFixed(pulse->pulsePhase * 0x66) << 0xE >> 0xC, 0);
+    (g_BattleSpecialTriangleAttackSpriteReq3.sprite) = Gfx_ModelTableGetLoadedRecord(20, g_BattleSpecialTriangleAttackLoadedRes);
+    g_BattleSpecialTriangleAttackSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(20, g_BattleSpecialTriangleAttackLoadedRes);
+    BattleFx_InstallBillboardMatrix(&pulse->posX, SinFixed(pulse->pulsePhase * 0x66) << 14 >> 12, 0);
     g_BattleSpecialTriangleAttackSpriteReq3.pulseShort12 = pulse->pulsePhase % 2;
     g_BattleSpecialTriangleAttackDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialTriangleAttackSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialTriangleAttackDrawListHandle);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pulse->pulsePhase < 0xC) {
+    if (pulse->pulsePhase < 12) {
         pRotated = (BattleFxTriangleAttackPulseSprite *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialTriangleAttackRotatedSpriteTask)];
         pRotated->posX = pulse->posX;
         pRotated->posY = pulse->posY;
@@ -655,7 +655,7 @@ void __cdecl BattleFx_SpecialTriangleAttackRotatedSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.slot->posX, frame.rotMatrix.t, &frame.projectedDepth);
-    frame.rotMatrix.m[2][2] = 0x3000;
+    frame.rotMatrix.m[2][2] = 0x3000 /* 1080 deg */;
     frame.rotMatrix.m[1][1] = frame.rotMatrix.m[2][2];
     frame.rotMatrix.m[0][0] = frame.rotMatrix.m[1][1];
     RotMatrix((SVECTOR *)&frame.slot->angleX, &frame.slotRotMatrix);

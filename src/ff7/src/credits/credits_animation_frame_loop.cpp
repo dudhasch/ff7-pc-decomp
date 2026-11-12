@@ -789,13 +789,13 @@ void __cdecl Credits_InitAnimationRecords(void)
     pairGroup = 0;
     zero = 0;
     if (g_CreditsSmallViewport != 1) {
-        for (recordIndex = 0; recordIndex < 0x3C; recordIndex++) {
+        for (recordIndex = 0; recordIndex < 60; recordIndex++) {
             if (((recordIndex % 4) == 0 & recordIndex != 0) != 0) {
                 pairGroup++;
             }
             g_CreditsAnimationRecords[recordIndex].pairIndexA = pairGroup;
             g_CreditsAnimationRecords[recordIndex].pairIndexB = pairGroup;
-            if (recordIndex == 0x36 || (recordIndex == 0x3A || recordIndex == 0x3B)) {
+            if (recordIndex == 54 || (recordIndex == 58 || recordIndex == 59)) {
                 (g_CreditsAnimationRecords[recordIndex].pairIndexA)++;
                 (g_CreditsAnimationRecords[recordIndex].pairIndexB)++;
             }
@@ -811,7 +811,7 @@ void __cdecl Credits_InitAnimationRecords(void)
                 g_CreditsAnimationRecords[recordIndex].target4 = g_CreditsAnimationRecords[recordIndex].positionY;
                 g_CreditsAnimationRecords[recordIndex].targetC = g_CreditsAnimationRecords[recordIndex].currentC;
             } else {
-                if ((recordIndex % 4) == 1 || recordIndex == 0x27) {
+                if ((recordIndex % 4) == 1 || recordIndex == 39) {
                     g_CreditsAnimationRecords[recordIndex].threshold = -(abs(g_CreditsAnimationRecords[recordIndex].positionY - g_CreditsActiveAnimationPointer[recordIndex].end1 * g_CreditsLayoutScale));
                 } else {
                     g_CreditsAnimationRecords[recordIndex].threshold = abs(g_CreditsAnimationRecords[recordIndex].positionY - g_CreditsActiveAnimationPointer[recordIndex].end1 * g_CreditsLayoutScale);
@@ -822,14 +822,14 @@ void __cdecl Credits_InitAnimationRecords(void)
                 g_CreditsAnimationRecords[recordIndex].target8 = g_CreditsAnimationRecords[recordIndex].current8;
                 g_CreditsAnimationRecords[recordIndex].targetC = g_CreditsActiveAnimationPointer[recordIndex].end3 * g_CreditsLayoutScale;
             }
-            if (recordIndex > 0x25 && recordIndex < 0x28) {
-                endIndex = (recordIndex == 0x27) + 4;
+            if (recordIndex > 37 && recordIndex < 40) {
+                endIndex = (recordIndex == 39) + 4;
                 g_CreditsAnimationRecords[recordIndex].velocity0 = g_CreditsEndVelocity0[endIndex];
                 g_CreditsAnimationRecords[recordIndex].velocity8 = g_CreditsEndVelocity8[endIndex];
                 g_CreditsAnimationRecords[recordIndex].velocity4 = g_CreditsEndVelocity4[endIndex];
                 g_CreditsAnimationRecords[recordIndex].velocityC = g_CreditsEndVelocityC[endIndex];
                 g_CreditsAnimationRecords[recordIndex].uCoordBits = 0;
-                if (recordIndex == 0x27) {
+                if (recordIndex == 39) {
                     colorBits = 0x3F0D0000;
                 } else {
                     colorBits = 0x3ECC0000;
@@ -839,9 +839,9 @@ void __cdecl Credits_InitAnimationRecords(void)
                 g_CreditsAnimationRecords[recordIndex].texHeightBits = 0x3E1C0000;
                 g_CreditsAnimationRecords[recordIndex].shade = 0x27;
                 g_CreditsAnimationRecords[recordIndex].mode = g_CreditsEndModes[endIndex];
-                g_CreditsAnimationRecords[recordIndex].flag = recordIndex == 0x27;
+                g_CreditsAnimationRecords[recordIndex].flag = recordIndex == 39;
             } else {
-                if (recordIndex != 0x25 && recordIndex != 0x38 && recordIndex != 0x39 && recordIndex != 0x3A) {
+                if (recordIndex != 37 && recordIndex != 56 && recordIndex != 57 && recordIndex != 58) {
                     preset = 0;
                 } else {
                     preset = 1;
@@ -854,19 +854,19 @@ void __cdecl Credits_InitAnimationRecords(void)
                 g_CreditsAnimationRecords[recordIndex].uCoordBits = 0;
                 g_CreditsAnimationRecords[recordIndex].vBaseBits = g_CreditsEndVBaseBitsQuarter[(recordIndex % 4)];
                 g_CreditsAnimationRecords[recordIndex].texWidthBits = FLOAT_ONE_BITS;
-                if (recordIndex == 0x36) {
+                if (recordIndex == 54) {
                     g_CreditsAnimationRecords[recordIndex].vBaseBits = 0;
                 }
-                if (recordIndex == 0x38) {
+                if (recordIndex == 56) {
                     g_CreditsAnimationRecords[recordIndex].vBaseBits = FLOAT_HALF_BITS;
                 }
-                if (recordIndex == 0x39) {
+                if (recordIndex == 57) {
                     g_CreditsAnimationRecords[recordIndex].vBaseBits = 0x3F380000;
                 }
-                if (recordIndex == 0x3A) {
+                if (recordIndex == 58) {
                     g_CreditsAnimationRecords[recordIndex].vBaseBits = FLOAT_HALF_BITS;
                 }
-                if (recordIndex == 0x3B) {
+                if (recordIndex == 59) {
                     g_CreditsAnimationRecords[recordIndex].vBaseBits = FLOAT_0_25_BITS;
                 }
                 if (special != 0) {
@@ -895,13 +895,13 @@ void __cdecl Credits_InitAnimationRecords(void)
         }
     } else {
         g_CreditsLayoutScale = 1;
-        for (recordIndex = 0; recordIndex < 0x3C; recordIndex++) {
+        for (recordIndex = 0; recordIndex < 60; recordIndex++) {
             if (((recordIndex % 8) == 0 & recordIndex != 0) != 0) {
                 pairGroup++;
             }
             g_CreditsAnimationRecords[recordIndex].pairIndexA = pairGroup;
             g_CreditsAnimationRecords[recordIndex].pairIndexB = pairGroup;
-            if (recordIndex == 0x36) {
+            if (recordIndex == 54) {
                 (g_CreditsAnimationRecords[recordIndex].pairIndexA)++;
                 (g_CreditsAnimationRecords[recordIndex].pairIndexB)++;
             }
@@ -917,7 +917,7 @@ void __cdecl Credits_InitAnimationRecords(void)
                 g_CreditsAnimationRecords[recordIndex].target4 = g_CreditsAnimationRecords[recordIndex].positionY;
                 g_CreditsAnimationRecords[recordIndex].targetC = g_CreditsAnimationRecords[recordIndex].currentC;
             } else {
-                if ((recordIndex % 4) == 1 || recordIndex == 0x27) {
+                if ((recordIndex % 4) == 1 || recordIndex == 39) {
                     g_CreditsAnimationRecords[recordIndex].threshold = -(abs(g_CreditsAnimationRecords[recordIndex].positionY - g_CreditsActiveAnimationPointer[recordIndex].end1 * g_CreditsLayoutScale));
                 } else {
                     g_CreditsAnimationRecords[recordIndex].threshold = abs(g_CreditsAnimationRecords[recordIndex].positionY - g_CreditsActiveAnimationPointer[recordIndex].end1 * g_CreditsLayoutScale);
@@ -928,21 +928,21 @@ void __cdecl Credits_InitAnimationRecords(void)
                 g_CreditsAnimationRecords[recordIndex].target8 = g_CreditsAnimationRecords[recordIndex].current8;
                 g_CreditsAnimationRecords[recordIndex].targetC = g_CreditsActiveAnimationPointer[recordIndex].end3 * g_CreditsLayoutScale;
             }
-            if (recordIndex > 0x25 && recordIndex < 0x28) {
-                tailSlot = (recordIndex == 0x27) + 4;
+            if (recordIndex > 37 && recordIndex < 40) {
+                tailSlot = (recordIndex == 39) + 4;
                 g_CreditsAnimationRecords[recordIndex].velocity0 = g_CreditsEndVelocity0[tailSlot] >> 1;
                 g_CreditsAnimationRecords[recordIndex].velocity8 = g_CreditsEndVelocity8[tailSlot] >> 1;
                 g_CreditsAnimationRecords[recordIndex].velocity4 = g_CreditsEndVelocity4[tailSlot] >> 1;
                 g_CreditsAnimationRecords[recordIndex].velocityC = g_CreditsEndVelocityC[tailSlot] >> 1;
                 g_CreditsAnimationRecords[recordIndex].uCoordBits = 0;
-                g_CreditsAnimationRecords[recordIndex].vBase = (recordIndex == 0x27) ? 0.859375f : 0.7265625f;
+                g_CreditsAnimationRecords[recordIndex].vBase = (recordIndex == 39) ? 0.859375f : 0.7265625f;
                 g_CreditsAnimationRecords[recordIndex].texWidthBits = FLOAT_ONE_BITS;
                 g_CreditsAnimationRecords[recordIndex].texHeightBits = 0x3DB00000;
                 g_CreditsAnimationRecords[recordIndex].shade = 0x16;
                 g_CreditsAnimationRecords[recordIndex].mode = g_CreditsEndModes[tailSlot];
-                g_CreditsAnimationRecords[recordIndex].flag = recordIndex == 0x27;
+                g_CreditsAnimationRecords[recordIndex].flag = recordIndex == 39;
             } else {
-                tailFlag = recordIndex == 0x25 || recordIndex == 0x36 || recordIndex == 0x38 || recordIndex == 0x39 || recordIndex == 0x3A;
+                tailFlag = recordIndex == 37 || recordIndex == 54 || recordIndex == 56 || recordIndex == 57 || recordIndex == 58;
                 g_CreditsAnimationRecords[recordIndex].velocity0 = g_CreditsEndVelocity0[(recordIndex % 8)] >> 1;
                 g_CreditsAnimationRecords[recordIndex].velocity8 = g_CreditsEndVelocity8[(recordIndex % 8)] >> 1;
                 g_CreditsAnimationRecords[recordIndex].velocity4 = g_CreditsEndVelocity4[(recordIndex % 8)] >> 1;
@@ -950,7 +950,7 @@ void __cdecl Credits_InitAnimationRecords(void)
                 g_CreditsAnimationRecords[recordIndex].uCoordBits = 0;
                 g_CreditsAnimationRecords[recordIndex].vBaseBits = g_CreditsEndVBaseBitsEighth[(recordIndex % 8)];
                 g_CreditsAnimationRecords[recordIndex].texWidthBits = FLOAT_ONE_BITS;
-                if (recordIndex == 0x3B) {
+                if (recordIndex == 59) {
                     g_CreditsAnimationRecords[recordIndex].vBaseBits = FLOAT_0_625_BITS;
                 }
                 if (tailFlag != 0) {
@@ -1079,12 +1079,12 @@ void __cdecl Credits_TickSequenceState(void)
         SoundDispatchCommand(SOUND_MUSIC_PLAY, 0x5F, 0, 0, 0, 0, 0, 0, 0);
         Credits_BusyWaitTicks(3000.0);
         Credits_SetFadeOverlayRect(g_CreditsViewportX, g_CreditsViewportY, g_CreditsViewportWidth, g_CreditsViewportHeight);
-        Credits_StartFadeOverlayFromOpaque(0xA);
+        Credits_StartFadeOverlayFromOpaque(10);
         g_CreditsSequenceState = CREDITS_SEQ_ROLL;
         g_CreditsTextDisplayTimer = 0;
         break;
     case CREDITS_SEQ_ROLL:
-        if (g_CreditsTotalTickCounter >= 0x1D) {
+        if (g_CreditsTotalTickCounter >= 29) {
             Credits_OpenMovie(2);
             g_CreditsSequenceState = CREDITS_SEQ_LOGO_MOVIE;
             g_CreditsTextDisplayTimer = 1;
@@ -1122,7 +1122,7 @@ void __cdecl Credits_TickSequenceState(void)
         if (g_CreditsSmallViewport != 1) {
             Credits_DrawLogoWithAlpha2x(0xFF);
             if (g_CreditsFrameElapsedFraction > g_CreditsScaledTickDuration) {
-                Credits_SetFadeOverlayRect(0xA0, 0x198, 0x140, 0x20);
+                Credits_SetFadeOverlayRect(160, 408, 320, 32);
                 Credits_DrawLogoStrip2x();
                 Credits_StartFadeOverlayFromOpaque(4);
                 g_CreditsSequenceState = CREDITS_SEQ_LOGO_STRIP;
@@ -1132,7 +1132,7 @@ void __cdecl Credits_TickSequenceState(void)
         } else {
             Credits_DrawLogoWithAlpha1x(0xFF);
             if (g_CreditsFrameElapsedFraction > g_CreditsScaledTickDuration) {
-                Credits_SetFadeOverlayRect(g_CreditsViewportX + 0x50, g_CreditsViewportY + 0xCC, 0xA0, 0x10);
+                Credits_SetFadeOverlayRect(g_CreditsViewportX + 0x50, g_CreditsViewportY + 0xCC, 160, 16);
                 Credits_DrawLogoStrip1x();
                 Credits_StartFadeOverlayFromOpaque(4);
                 g_CreditsSequenceState = CREDITS_SEQ_LOGO_STRIP;
@@ -1474,14 +1474,14 @@ void __cdecl Credits_ModuleFrame(struct GfxEngineContext *renderContext)
         g_CreditsFadeStepOffset -= g_CreditsScaleShift;
         if (g_CreditsFadeStepOffset <= -g_CreditsFrameDurationTarget) {
             g_CreditsFadeStepOffset = 0;
-            if (g_CreditsSelectedSectionIndex != 0x210) {
+            if (g_CreditsSelectedSectionIndex != 528) {
                 g_CreditsSelectedSectionIndex++;
             } else {
                 uiShift = GetUiScalingMode() != MAIN_GRAPHICS_MODE_640X480;
                 g_CreditsTextPhase = CREDITS_TEXT_PHASE_AFTER_ROLL;
                 g_CreditsMoviePlaybackDone = 0;
-                g_CreditsViewportY -= 0x3E >> uiShift;
-                g_CreditsViewportHeight = 0x1E0 >> uiShift;
+                g_CreditsViewportY -= 62 >> uiShift;
+                g_CreditsViewportHeight = 480 >> uiShift;
                 Credits_InitParticleRecords();
                 Credits_SetFrameDurationDivisor(0, 0x40240000);
                 SoundDispatchCommand(SOUND_MUSIC_VOLUME_TRANS, 0x3C, 0, 0, 0, 0, 0, 0, 0);
@@ -1533,7 +1533,7 @@ void __cdecl Credits_EmitRenderPasses(struct GfxEngineContext *renderContext)
         Gfx_SetScenePassCall(1, (struct GfxEngineContext *)(renderContext));
         Gfx_SetRenderStateCall(RENDER_STATE_LINEAR_FILTER, 0, (struct GfxEngineContext *)(renderContext));
         if (g_CreditsSmallViewport != 1) {
-            for (i = 0; i < 0x10; i++) {
+            for (i = 0; i < 16; i++) {
                 Gfx_EmitPrimitiveBatchList((void *)(g_CreditsQuadBatchListsB[i]), renderContext);
                 Gfx_EmitPrimitiveBatchList((void *)(g_CreditsQuadBatchListsA[i]), renderContext);
             }

@@ -28,7 +28,7 @@ typedef struct {
 
 // clang-format off
 // GLOBAL: FF7 0x00919608
-unsigned char g_GlTextureFormatTemplates[0x30] = {
+unsigned char g_GlTextureFormatTemplates[48] = {
     0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00,
     0xff, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0xff
@@ -181,7 +181,7 @@ void __cdecl Gl_PixelFormatFromPfd(GlPixelFormatDescriptor *pfd, GfxPixelFormat 
 {
     int bitCount;
 
-    ZeroFillMemory32(0x80, format);
+    ZeroFillMemory32(128, format);
     if (pfd->pixelType == 0) {
         bitCount = pfd->redBits + pfd->greenBits + pfd->blueBits + pfd->alphaBits;
         PixelFormatSetRgbMasks(bitCount, (1 << pfd->redBits) - 1 << pfd->redShift, (1 << pfd->greenBits) - 1 << pfd->greenShift, (1 << pfd->blueBits) - 1 << pfd->blueShift, (1 << pfd->alphaBits) - 1 << pfd->alphaShift, format);
@@ -560,7 +560,7 @@ int __cdecl Gl_OpsLoadTexture(GfxTextureSurface *texture, GfxTexHeader *convertP
                     storage = convertParams->storage;
                 } else {
                     // STRING: FF7 0x009196a0
-                    storage = (int)GameHeapAlloc(convDescPtr->width * convDescPtr->height * pTexDesc->bytesPerPixel, 1, "C:\\lib\\src\\graphics\\gl\\gl.cpp", 0x29F);
+                    storage = (int)GameHeapAlloc(convDescPtr->width * convDescPtr->height * pTexDesc->bytesPerPixel, 1, "C:\\lib\\src\\graphics\\gl\\gl.cpp", 671);
                 }
                 if (storage != 0) {
                     pTexDesc->pitch = convDescPtr->width * pTexDesc->bytesPerPixel;

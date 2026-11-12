@@ -199,19 +199,19 @@ void __cdecl Battle_RefreshPendingCommandAvailability(int actorIdx, int selector
             break;
         case BATTLE_MENU_LIST_MAGIC:
             g_BattleState.actors[actorIdx].dirtyFlags &= ~BATTLE_ACTOR_MAGIC_UNAVAILABLE;
-            if (Battle_UpdateSpellMenuAvailability(actorIdx, val, 0, 0x38) != 0) {
+            if (Battle_UpdateSpellMenuAvailability(actorIdx, val, 0, 56) != 0) {
                 g_BattleState.actors[actorIdx].dirtyFlags |= BATTLE_ACTOR_MAGIC_UNAVAILABLE;
             }
             break;
         case BATTLE_MENU_LIST_SUMMON:
             g_BattleState.actors[actorIdx].dirtyFlags &= ~BATTLE_ACTOR_SUMMON_UNAVAILABLE;
-            if (Battle_UpdateSpellMenuAvailability(actorIdx, val, 0x38, 0x10) != 0) {
+            if (Battle_UpdateSpellMenuAvailability(actorIdx, val, 0x38, 16) != 0) {
                 g_BattleState.actors[actorIdx].dirtyFlags |= BATTLE_ACTOR_SUMMON_UNAVAILABLE;
             }
             break;
         case BATTLE_MENU_LIST_ENEMY_SKILL:
             g_BattleState.actors[actorIdx].dirtyFlags &= ~BATTLE_ACTOR_ENEMY_SKILL_UNAVAILABLE;
-            if (Battle_UpdateSpellMenuAvailability(actorIdx, val, 0x48, 0x18) != 0) {
+            if (Battle_UpdateSpellMenuAvailability(actorIdx, val, 0x48, 24) != 0) {
                 g_BattleState.actors[actorIdx].dirtyFlags |= BATTLE_ACTOR_ENEMY_SKILL_UNAVAILABLE;
             }
         }
@@ -308,7 +308,7 @@ void __cdecl Battle_UpdateCommandAvailability(int actorIdx, int statusMask)
         commandSlots->targetFlags = g_BattleFrogCommandSlots[actorIdx].targetFlags;
         commandSlots->supportFlags = g_BattleFrogCommandSlots[actorIdx].param;
     }
-    for (entryIndex = 1; entryIndex < 0x10; entryIndex++) {
+    for (entryIndex = 1; entryIndex < 16; entryIndex++) {
         commandId = commandSlots[entryIndex].commandId;
         if (commandId != 0xFF) {
             menuFlags = commandSlots[entryIndex].menuFlags;

@@ -30,12 +30,12 @@ extern "C" {
 // FUNCTION: FF7 0x0077cf40
 short __cdecl Mini_ChocoboHeadingFromXZ(short dx, short dz)
 {
-    if (dx > 0xFFF) {
+    if (dx > 4095) {
         return 0x400;
     } else if (dx < (-4095)) {
         return 0xC00;
     } else {
-        dx = (int)dx + 0x1000;
+        dx = (int)dx + 4096;
         dx &= 0x1FFF;
         if (dz > 0) {
             return g_ChocoboArcTanTable[dx] + 0x400 & 0xFFF;

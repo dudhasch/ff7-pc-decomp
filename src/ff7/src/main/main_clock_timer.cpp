@@ -87,7 +87,7 @@ void __stdcall Savemap_ClockTick(unsigned int timer, unsigned int message, unsig
     EnterCriticalSection((CRITICAL_SECTION *)&g_Savemap_ClockTimerData[1]);
     g_Savemap_ClockTickCount++;
     if ((g_BattleIsPaused == 0 && g_GamePauseLatch == 0) || 0) {
-        gSavemap.millisecondCounter += 0x444;
+        gSavemap.millisecondCounter += 1092;
         if ((unsigned int)gSavemap.millisecondCounter >> 16) {
             gSavemap.seconds++;
             gSavemap.millisecondCounter &= 0xffff;

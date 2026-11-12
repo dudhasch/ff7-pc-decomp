@@ -141,7 +141,7 @@ void __cdecl BattleFx_SpecialBeginWaterball(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0xC00, 0xA);
+    Battle_StartFixedPointRamp(0xC00, 10);
 }
 
 /*
@@ -170,9 +170,9 @@ void __cdecl BattleFx_SpecialSpawnWaterballPerTarget(int actor, int sourceIndex)
     frame.diffX.vy = frame.targetX.vy - frame.particle->posY;
     frame.diffX.vz = frame.targetX.vz - frame.particle->posZ;
     NormalizeVectorFixed(&frame.diffX, &frame.normX);
-    frame.particle->deltaX = frame.normX.vx * 0x3E8 >> 0xC;
-    frame.particle->deltaY = frame.normX.vy * 0x3E8 >> 0xC;
-    frame.particle->deltaZ = frame.normX.vz * 0x3E8 >> 0xC;
+    frame.particle->deltaX = frame.normX.vx * 0x3E8 >> 12;
+    frame.particle->deltaY = frame.normX.vy * 0x3E8 >> 12;
+    frame.particle->deltaZ = frame.normX.vz * 0x3E8 >> 12;
     if (frame.particle->deltaZ == 0) {
         frame.spawnTimer = 1;
     } else {
@@ -233,32 +233,32 @@ void __cdecl BattleFx_SpecialWaterballTimelineTask(void)
             spawn->deltaY = trackPtr->velocityY;
             spawn->deltaZ = trackPtr->velocityZ;
             spawn->stage = (5 - trackPtr->frame << 3) - baseParticleIdx;
-            spawn->phase = rand() % 0x1000;
+            spawn->phase = rand() % 4096;
             spawn->variant = rand() % 2;
-            spawn->timer = spawn->stage * 0x14 + rand() % 0xC8;
+            spawn->timer = spawn->stage * 20 + rand() % 200;
             spawn->step = baseParticleIdx;
         }
     }
-    if (trackPtr->frame == 0x37) {
+    if (trackPtr->frame == 55) {
         Battle_PostActorHitOrHurtMessage(trackPtr->boneIndex);
     }
-    if (trackPtr->frame >= 0xA && trackPtr->frame < 0x12) {
+    if (trackPtr->frame >= 10 && trackPtr->frame < 18) {
         theta = (trackPtr->frame - 0xA << 9) - 0x400;
         spawn = (BattleFxWaterballParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWaterballTargetAnimatedSpriteTask);
         Battle_GetBoneWorldPos(trackPtr->boneIndex, g_BattleActorRecords[trackPtr->boneIndex].targetBone, &spawn->posX);
-        spawn->posX += (short)(CosFixed(theta) * 0x258 >> 0xC);
-        spawn->posY += (short)(SinFixed(theta) * 0x258 >> 0xC);
+        spawn->posX += (short)(CosFixed(theta) * 0x258 >> 12);
+        spawn->posY += (short)(SinFixed(theta) * 0x258 >> 12);
         spawn->stage = 1;
     }
-    if (trackPtr->frame == 0xF) {
+    if (trackPtr->frame == 15) {
         spawn = (BattleFxWaterballParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWaterballSpinModelTask);
         Battle_GetBoneWorldPos(trackPtr->boneIndex, g_BattleActorRecords[trackPtr->boneIndex].targetBone, &spawn->posX);
         spawn->posY = 0;
         Battle_PlaySfxPannedToActor(0x1BE, (short)trackPtr->boneIndex, 0);
     }
     (trackPtr->frame)++;
-    if (trackPtr->frame == 0x46) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (trackPtr->frame == 70) {
+        Battle_StartFixedPointRamp(0, 10);
         trackPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -276,7 +276,7 @@ void __cdecl BattleFx_SpecialWaterballTargetAnimatedSpriteTask(void)
     taskPtr = (BattleFxSewerTsunamiAnimSprite *)BATTLE_CURRENT_TASK_SLOT;
     rowSel[0] = 4;
     rowSel[1] = 5;
-    BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(&taskPtr->posX, 0x3000 /* 3.0 */, 0);
     g_BattleSpecWaterballSpriteRequest1.frame = taskPtr->frame;
     g_BattleSpecWaterballSpriteRequest1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(rowSel[taskPtr->variant], g_BattleSpecWaterballLoadedResTable);
     if (taskPtr->variant != 1) {
@@ -307,7 +307,7 @@ void __cdecl BattleFx_SpecialWaterballAnimatedSpriteTask(void)
     task = (BattleFxSewerTsunamiAnimSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecWaterballSpriteRequest2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecWaterballLoadedResTable);
     g_BattleSpecWaterballSpriteRequest2.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecWaterballLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecWaterballSpriteRequest2.frame = task->frame;
     g_BattleSpecWaterballTaskPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecWaterballSpriteRequest2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecWaterballTaskPtr);
     if (g_BattleIsPaused != 0) {
@@ -359,14 +359,14 @@ void __cdecl BattleFx_SpecialWaterballSpinModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.spinSlot->frameCounter < 0x25) {
+    if (frame.spinSlot->frameCounter < 37) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxWaterballSpinModelSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWaterballDriftingAnimatedSpriteTask);
             frame.spawnSlot->posX = frame.spinSlot->posX;
             frame.spawnSlot->posY = frame.spinSlot->posY;
             frame.spawnSlot->posZ = frame.spinSlot->posZ;
-            frame.spawnSlot->offsetX = SinFixed(frame.spinSlot->frameCounter * 0xC0 + (frame.spawnIndex << 0xB)) * 0x46 >> 0xC;
-            frame.spawnSlot->offsetZ = CosFixed(frame.spinSlot->frameCounter * 0xC0 + (frame.spawnIndex << 0xB)) * 0x46 >> 0xC;
+            frame.spawnSlot->offsetX = SinFixed(frame.spinSlot->frameCounter * 192 + (frame.spawnIndex << 11)) * 0x46 >> 12;
+            frame.spawnSlot->offsetZ = CosFixed(frame.spinSlot->frameCounter * 192 + (frame.spawnIndex << 11)) * 0x46 >> 12;
             frame.spawnSlot->offsetY = 0xFF4C;
         }
         frame.spawnSlot = (BattleFxWaterballSpinModelSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWaterballSpiralSpriteTask);
@@ -382,19 +382,19 @@ void __cdecl BattleFx_SpecialWaterballSpinModelTask(void)
             frame.spawnSlot->posY = frame.spinSlot->posY;
             frame.spawnSlot->posZ = frame.spinSlot->posZ;
             frame.randAngle = (rand() % 4096);
-            frame.spawnSlot->offsetX = SinFixed(frame.randAngle) * 0x78 >> 0xC;
-            frame.spawnSlot->offsetZ = CosFixed(frame.randAngle) * 0x78 >> 0xC;
-            frame.spawnSlot->offsetY = 0xFFFFFF9C - rand() % 0x64;
+            frame.spawnSlot->offsetX = SinFixed(frame.randAngle) * 0x78 >> 12;
+            frame.spawnSlot->offsetZ = CosFixed(frame.randAngle) * 0x78 >> 12;
+            frame.spawnSlot->offsetY = 0xFFFFFF9C - rand() % 100;
         }
     }
-    if (frame.spinSlot->frameCounter < 0x10) {
+    if (frame.spinSlot->frameCounter < 16) {
         g_BattleSpecWaterballActiveCount++;
     }
-    if (frame.spinSlot->frameCounter > 0x1D) {
+    if (frame.spinSlot->frameCounter > 29) {
         g_BattleSpecWaterballActiveCount--;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x2D) {
+    if (frame.spinSlot->frameCounter == 45) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -411,7 +411,7 @@ void __cdecl BattleFx_SpecialWaterballDriftingAnimatedSpriteTask(void)
     task = (BattleFxEnergyOrbDriftSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecWaterballSpriteRequest3.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecWaterballLoadedResTable);
     g_BattleSpecWaterballSpriteRequest3.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecWaterballLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecWaterballSpriteRequest3.frame = task->frameIndex;
     g_BattleSpecWaterballTaskPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecWaterballSpriteRequest3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecWaterballTaskPtr);
     if (g_BattleIsPaused != 0) {
@@ -448,21 +448,21 @@ void __cdecl BattleFx_SpecialWaterballSpiralSpriteTask(void)
     frame.spiralSlot = (BattleFxWaterballSpiralSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.resSelect[0] = 7;
     frame.resSelect[1] = 9;
-    frame.posX.vx = frame.spiralSlot->centerX + (SinFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 0xC);
-    frame.posX.vz = frame.spiralSlot->centerZ + (CosFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 0xC);
+    frame.posX.vx = frame.spiralSlot->centerX + (SinFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 12);
+    frame.posX.vz = frame.spiralSlot->centerZ + (CosFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 12);
     frame.posX.vy = frame.spiralSlot->posY;
-    BattleFx_InstallBillboardMatrix(&frame.posX, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.posX, 0x1000 /* 1.0 */, 0);
     g_BattleSpecWaterballSpriteRequest4.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(frame.resSelect[frame.spiralSlot->spriteIndex], g_BattleSpecWaterballLoadedResTable);
     g_BattleSpecWaterballSpriteRequest4.drawObj = Gfx_ModelTableGetSpriteObject(frame.resSelect[frame.spiralSlot->spriteIndex], g_BattleSpecWaterballLoadedResTable);
     g_BattleSpecWaterballTaskPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecWaterballSpriteRequest4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecWaterballTaskPtr);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.spiralSlot->posY -= 0xC8;
-    frame.spiralSlot->angle += 0x100;
-    frame.spiralSlot->radius += 0x64;
+    frame.spiralSlot->posY -= 200;
+    frame.spiralSlot->angle += 0x100 /* 22.5 deg */;
+    frame.spiralSlot->radius += 100;
     (frame.spiralSlot->frameCounter)++;
-    if (frame.spiralSlot->frameCounter == 0x10) {
+    if (frame.spiralSlot->frameCounter == 16) {
         frame.spiralSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -481,13 +481,13 @@ void __cdecl BattleFx_SpecialWaterballFallingFadeSpriteTask(void)
     dropPtr = (BattleFxLivewireDotSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecWaterballSpriteRequest5.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(9, g_BattleSpecWaterballLoadedResTable);
     g_BattleSpecWaterballSpriteRequest5.drawObj = Gfx_ModelTableGetSpriteObject(9, g_BattleSpecWaterballLoadedResTable);
-    if (dropPtr->step < 0xC) {
+    if (dropPtr->step < 12) {
         fadeStep = 8;
     } else {
-        fadeStep = 0x14 - dropPtr->step;
+        fadeStep = 20 - dropPtr->step;
     }
     shadeByte = fadeStep;
-    BattleFx_InstallBillboardMatrix(&dropPtr->posX, 0x800, 0);
+    BattleFx_InstallBillboardMatrix(&dropPtr->posX, 0x800 /* 0.5 */, 0);
     g_BattleSpecWaterballSpriteRequest5.colorB = shadeByte << 4;
     g_BattleSpecWaterballSpriteRequest5.colorG = g_BattleSpecWaterballSpriteRequest5.colorB;
     g_BattleSpecWaterballSpriteRequest5.colorR = g_BattleSpecWaterballSpriteRequest5.colorG;
@@ -498,9 +498,9 @@ void __cdecl BattleFx_SpecialWaterballFallingFadeSpriteTask(void)
     dropPtr->posX += dropPtr->velocityX;
     dropPtr->posY += dropPtr->velocityY;
     dropPtr->posZ += dropPtr->velocityZ;
-    dropPtr->velocityY += 0xA;
+    dropPtr->velocityY += 10;
     (dropPtr->step)++;
-    if (dropPtr->step == 0x14) {
+    if (dropPtr->step == 20) {
         dropPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -533,15 +533,15 @@ void __cdecl BattleFx_SpecialWaterballProjectileSpriteTask(void)
         if (pCurrent->spawnIndex == 0) {
             hitSprite = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWaterballTargetAnimatedSpriteTask);
             Battle_GetBoneWorldPos(g_BattleSpecWaterballStep, g_BattleActorRecords[g_BattleSpecWaterballStep].targetBone, &hitSprite->posX);
-            hitSprite->posX += (short)(rand() % 0x320 - 0x190);
-            hitSprite->posY += (short)(rand() % 0x320 - 0x190);
-            hitSprite->posZ += (short)(rand() % 0x320 - 0x190);
+            hitSprite->posX += (short)(rand() % 800 - 400);
+            hitSprite->posY += (short)(rand() % 800 - 400);
+            hitSprite->posZ += (short)(rand() % 800 - 400);
             hitSprite->variant = 0;
         }
         pCurrent->ownerSlot = BATTLE_TASK_FREE;
     }
     (pCurrent->step)++;
-    if (pCurrent->step == 0x14) {
+    if (pCurrent->step == 20) {
         pCurrent->ownerSlot = BATTLE_TASK_FREE;
     }
 }

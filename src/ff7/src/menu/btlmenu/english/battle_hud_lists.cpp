@@ -113,11 +113,11 @@ unsigned char g_BtlSquareData3[8] = {
 //   "Time x30 damage.", "Down 5 levels.", "Down 10 levels.", "1/2 HP.", "1/2 MP.", "1/2 HP&MP.",
 //   "Zero MP.", "Yesss! No handicapp!", "HP restored."
 // GLOBAL: FF7 0x0091ead0
-unsigned char g_BtlSquareHandicapTexts[0x458] = {0x01, 0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x02, 0x02, 0x02, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x02, 0x02, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x02, 0x02, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x02, 0x00, 0x02, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x02, 0x00, 0x02, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x09, 0x08, 0x09, 0x09, 0x08, 0x00, 0x0d, 0x0a, 0x0b, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x0c, 0x2b, 0x45, 0x45, 0x50, 0x00, 0x47, 0x4f, 0x49, 0x4e, 0x07, 0x1f, 0xff, 0x00, 0x00, 0x00, 0x00, 0x2f, 0x46, 0x00, 0x43, 0x4f, 0x55, 0x52, 0x53, 0x45, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2e, 0x4f, 0x00, 0x57, 0x41, 0x59, 0x01, 0xff, 0x00, 0x23, 0x55, 0x52, 0x52, 0x45, 0x4e, 0x54, 0x00, 0x22, 0x41, 0x54, 0x54, 0x4c, 0x45, 0x00, 0x30, 0x4f, 0x49, 0x4e, 0x54, 0x53, 0xff, 0x33, 0x4c, 0x4f, 0x54, 0x00, 0x53, 0x54, 0x41, 0x52, 0x54, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x27, 0x32, 0x25, 0x21, 0x34, 0x01, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x41, 0x52, 0x4e, 0x45, 0x44, 0x00, 0x22, 0x41, 0x54, 0x54, 0x4c, 0x45, 0x00, 0x30, 0x4f, 0x49, 0x4e, 0x54, 0x53, 0xff, 0x00, 0x34, 0x48, 0x45, 0x4e, 0x0c, 0x00, 0x47, 0x4f, 0x00, 0x46, 0x4f, 0x52, 0x00, 0x49, 0x54, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x41, 0x47, 0x49, 0x43, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x55, 0x4d, 0x4d, 0x4f, 0x4e, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x55, 0x50, 0x50, 0x4f, 0x52, 0x54, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x4e, 0x44, 0x45, 0x50, 0x45, 0x4e, 0x44, 0x45, 0x4e, 0x54, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x23, 0x4f, 0x4d, 0x4d, 0x41, 0x4e, 0x44, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x4c, 0x4c, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x43, 0x43, 0x45, 0x53, 0x53, 0x4f, 0x52, 0x59, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x54, 0x45, 0x4d, 0x00, 0x43, 0x4f, 0x4d, 0x4d, 0x41, 0x4e, 0x44, 0x00, 0x49, 0x53, 0x00, 0x53, 0x45, 0x41, 0x4c, 0x45, 0x44, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x52, 0x4d, 0x4f, 0x52, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x45, 0x41, 0x50, 0x4f, 0x4e, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x53, 0x50, 0x45, 0x45, 0x44, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x41, 0x43, 0x43, 0x55, 0x52, 0x41, 0x43, 0x59, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x49, 0x4e, 0x49, 0x4d, 0x55, 0x4d, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x4f, 0x49, 0x53, 0x4f, 0x4e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0x4f, 0x41, 0x44, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0x49, 0x4d, 0x45, 0x00, 0x58, 0x13, 0x10, 0x00, 0x44, 0x41, 0x4d, 0x41, 0x47, 0x45, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x4f, 0x57, 0x4e, 0x00, 0x15, 0x00, 0x4c, 0x45, 0x56, 0x45, 0x4c, 0x53, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x4f, 0x57, 0x4e, 0x00, 0x11, 0x10, 0x00, 0x4c, 0x45, 0x56, 0x45, 0x4c, 0x53, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x28, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x2d, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x28, 0x30, 0x06, 0x2d, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x45, 0x52, 0x4f, 0x00, 0x2d, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x39, 0x45, 0x53, 0x53, 0x53, 0x01, 0x00, 0x2e, 0x4f, 0x00, 0x48, 0x41, 0x4e, 0x44, 0x49, 0x43, 0x41, 0x50, 0x50, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x30, 0x00, 0x52, 0x45, 0x53, 0x54, 0x4f, 0x52, 0x45, 0x44, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char g_BtlSquareHandicapTexts[1112] = {0x01, 0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x02, 0x02, 0x02, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x02, 0x02, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x02, 0x02, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x02, 0x00, 0x02, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x02, 0x00, 0x02, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x09, 0x08, 0x09, 0x09, 0x08, 0x00, 0x0d, 0x0a, 0x0b, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x0c, 0x2b, 0x45, 0x45, 0x50, 0x00, 0x47, 0x4f, 0x49, 0x4e, 0x07, 0x1f, 0xff, 0x00, 0x00, 0x00, 0x00, 0x2f, 0x46, 0x00, 0x43, 0x4f, 0x55, 0x52, 0x53, 0x45, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2e, 0x4f, 0x00, 0x57, 0x41, 0x59, 0x01, 0xff, 0x00, 0x23, 0x55, 0x52, 0x52, 0x45, 0x4e, 0x54, 0x00, 0x22, 0x41, 0x54, 0x54, 0x4c, 0x45, 0x00, 0x30, 0x4f, 0x49, 0x4e, 0x54, 0x53, 0xff, 0x33, 0x4c, 0x4f, 0x54, 0x00, 0x53, 0x54, 0x41, 0x52, 0x54, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x27, 0x32, 0x25, 0x21, 0x34, 0x01, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x41, 0x52, 0x4e, 0x45, 0x44, 0x00, 0x22, 0x41, 0x54, 0x54, 0x4c, 0x45, 0x00, 0x30, 0x4f, 0x49, 0x4e, 0x54, 0x53, 0xff, 0x00, 0x34, 0x48, 0x45, 0x4e, 0x0c, 0x00, 0x47, 0x4f, 0x00, 0x46, 0x4f, 0x52, 0x00, 0x49, 0x54, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x41, 0x47, 0x49, 0x43, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x55, 0x4d, 0x4d, 0x4f, 0x4e, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x55, 0x50, 0x50, 0x4f, 0x52, 0x54, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x4e, 0x44, 0x45, 0x50, 0x45, 0x4e, 0x44, 0x45, 0x4e, 0x54, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x23, 0x4f, 0x4d, 0x4d, 0x41, 0x4e, 0x44, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x4c, 0x4c, 0x00, 0x2d, 0x41, 0x54, 0x45, 0x52, 0x49, 0x41, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x43, 0x43, 0x45, 0x53, 0x53, 0x4f, 0x52, 0x59, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x54, 0x45, 0x4d, 0x00, 0x43, 0x4f, 0x4d, 0x4d, 0x41, 0x4e, 0x44, 0x00, 0x49, 0x53, 0x00, 0x53, 0x45, 0x41, 0x4c, 0x45, 0x44, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x52, 0x4d, 0x4f, 0x52, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x45, 0x41, 0x50, 0x4f, 0x4e, 0x00, 0x49, 0x53, 0x00, 0x42, 0x52, 0x4f, 0x4b, 0x45, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x53, 0x50, 0x45, 0x45, 0x44, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x41, 0x43, 0x43, 0x55, 0x52, 0x41, 0x43, 0x59, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x49, 0x4e, 0x49, 0x4d, 0x55, 0x4d, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x4f, 0x49, 0x53, 0x4f, 0x4e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0x4f, 0x41, 0x44, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0x49, 0x4d, 0x45, 0x00, 0x58, 0x13, 0x10, 0x00, 0x44, 0x41, 0x4d, 0x41, 0x47, 0x45, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x4f, 0x57, 0x4e, 0x00, 0x15, 0x00, 0x4c, 0x45, 0x56, 0x45, 0x4c, 0x53, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x4f, 0x57, 0x4e, 0x00, 0x11, 0x10, 0x00, 0x4c, 0x45, 0x56, 0x45, 0x4c, 0x53, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x28, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x2d, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x0f, 0x12, 0x00, 0x28, 0x30, 0x06, 0x2d, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x45, 0x52, 0x4f, 0x00, 0x2d, 0x30, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x39, 0x45, 0x53, 0x53, 0x53, 0x01, 0x00, 0x2e, 0x4f, 0x00, 0x48, 0x41, 0x4e, 0x44, 0x49, 0x43, 0x41, 0x50, 0x50, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x30, 0x00, 0x52, 0x45, 0x53, 0x54, 0x4f, 0x52, 0x45, 0x44, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 // Three encoded strings, 0x22 bytes each, 0x00 for space and 0xFF to end: "Worried about the other members?",
 // "Yeah, a little", "Not really". Battle_DrawWorriedChoiceLines1x/2x draw them by row.
 // GLOBAL: FF7 0x0091ef28
-unsigned char g_BtlSquareHandicapTbl[3][0x22] = {
+unsigned char g_BtlSquareHandicapTbl[3][34] = {
     {0x37, 0x4f, 0x52, 0x52, 0x49, 0x45, 0x44, 0x00, 0x41, 0x42, 0x4f, 0x55, 0x54, 0x00, 0x54, 0x48, 0x45, 0x00, 0x4f, 0x54, 0x48, 0x45, 0x52, 0x00, 0x4d, 0x45, 0x4d, 0x42, 0x45, 0x52, 0x53, 0x1f, 0xff, 0x00},
     {0x39, 0x45, 0x41, 0x48, 0x0c, 0x00, 0x41, 0x00, 0x4c, 0x49, 0x54, 0x54, 0x4c, 0x45, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     {0x2e, 0x4f, 0x54, 0x00, 0x52, 0x45, 0x41, 0x4c, 0x4c, 0x59, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
@@ -128,7 +128,7 @@ unsigned char g_bssPad_00dc3904[4] = {0};
 // GLOBAL: FF7 0x00dc3908
 int g_BtlGaugeHpHigh[10] = {0};
 // GLOBAL: FF7 0x00dc3930
-unsigned char g_BtlGaugeHpDir[0x10] = {0};
+unsigned char g_BtlGaugeHpDir[16] = {0};
 unsigned char g_bssPad_00dc3940[256] = {0};
 // GLOBAL: FF7 0x00dc3a40
 short g_BtlGaugeUnusedSlotWordsA[10] = {0};
@@ -139,7 +139,7 @@ unsigned char g_bssPad_00dc3a64[4] = {0};
 // GLOBAL: FF7 0x00dc3a68
 int g_BtlGaugeMpLow[10] = {0};
 // GLOBAL: FF7 0x00dc3a90
-unsigned char g_BtlGaugeMpDir[0x10] = {0};
+unsigned char g_BtlGaugeMpDir[16] = {0};
 // GLOBAL: FF7 0x00dc3aa0
 int g_BtlGaugeHpValues[10] = {0};
 // GLOBAL: FF7 0x00dc3ac8
@@ -152,7 +152,7 @@ int g_BtlGaugeMpValues[10] = {0};
 BtlGaugeReelState g_BtlGaugeReelState = {0};
 unsigned char g_bssPad_00dc3afc[4] = {0};
 // GLOBAL: FF7 0x00dc3b00
-int g_BtlGaugeAnimStates[0x16] = {0};
+int g_BtlGaugeAnimStates[22] = {0};
 // GLOBAL: FF7 0x00dc3b58
 short g_BtlGaugeUnusedSlotWordsB[10] = {0};
 // GLOBAL: FF7 0x00dc3b6c
@@ -221,7 +221,7 @@ int __cdecl Menu_GetCharZeroHpRatio(void)
 
     for (i = 0; i < 3; i++) {
         if (gSavemap.party[i] == PARTY_CHAR_CLOUD) {
-            ratio = g_MenuPartyStats[i].hp * 0xffff /
+            ratio = g_MenuPartyStats[i].hp * 65535 /
                     g_MenuPartyStats[i].maxHp;
             return ratio;
         }
@@ -241,9 +241,9 @@ void __cdecl Battle_DrawPartyMemberHpMpGauges2x(short slot)
     struct MenuPartyStats *stats;
 
     stats = g_MenuPartyStats;
-    bar.x = 0x120;
-    bar.y = (short)(slot * 0x20 + 0x16c);
-    bar.width = 0x78;
+    bar.x = 288;
+    bar.y = (short)(slot * 32 + 364);
+    bar.width = 120;
     bar.height = 2;
     bar.low = (short)(g_BtlGaugeHpLow[slot] >> 8);
     bar.high = (short)(g_BtlGaugeHpHigh[slot] >> 8);
@@ -251,9 +251,9 @@ void __cdecl Battle_DrawPartyMemberHpMpGauges2x(short slot)
     bar.direction = g_BtlGaugeHpDir[slot];
     bar.colour = 0x800080ff;
     Menu_DrawResourceGauge2x((MenuGauge *)&bar, 0.6f);
-    bar.x = 0x19e;
-    bar.y = (short)(slot * 0x20 + 0x16c);
-    bar.width = 0x3c;
+    bar.x = 414;
+    bar.y = (short)(slot * 32 + 364);
+    bar.width = 60;
     bar.height = 2;
     bar.low = (short)(g_BtlGaugeMpLow[slot] >> 8);
     bar.high = (short)(g_BtlGaugeMpHigh[slot] >> 8);
@@ -274,9 +274,9 @@ void __cdecl Battle_DrawPartyMemberHpMpGauges1x(short slot)
     struct MenuPartyStats *stats;
 
     stats = g_MenuPartyStats;
-    bar.x = 0x90;
-    bar.y = (short)(slot * 0x10 + 0xb6);
-    bar.width = 0x3c;
+    bar.x = 144;
+    bar.y = (short)(slot * 16 + 182);
+    bar.width = 60;
     bar.height = 1;
     bar.low = (short)(g_BtlGaugeHpLow[slot] >> 8);
     bar.high = (short)(g_BtlGaugeHpHigh[slot] >> 8);
@@ -284,9 +284,9 @@ void __cdecl Battle_DrawPartyMemberHpMpGauges1x(short slot)
     bar.direction = g_BtlGaugeHpDir[slot];
     bar.colour = 0x800080ff;
     Menu_DrawResourceGauge1x((MenuGauge *)&bar, 0.6f);
-    bar.x = 0xcf;
-    bar.y = (short)(slot * 0x10 + 0xb6);
-    bar.width = 0x1e;
+    bar.x = 207;
+    bar.y = (short)(slot * 16 + 182);
+    bar.width = 30;
     bar.height = 1;
     bar.low = (short)(g_BtlGaugeMpLow[slot] >> 8);
     bar.high = (short)(g_BtlGaugeMpHigh[slot] >> 8);
@@ -326,7 +326,7 @@ void __cdecl Battle_StepPartyHpMpGaugeDisplay(void)
         g_BtlGaugeSeeded = 1;
     }
     g_PartyGaugeAnimPos += g_BtlGaugePulseStep;
-    if (g_PartyGaugeAnimPos > 0xB0) {
+    if (g_PartyGaugeAnimPos > 176) {
         g_BtlGaugePulseStep = 0 - g_BtlGaugePulseStep;
     }
     if (g_PartyGaugeAnimPos < 0) {
@@ -339,7 +339,7 @@ void __cdecl Battle_StepPartyHpMpGaugeDisplay(void)
         }
         t = stats[member].hp << 8;
         if (g_BtlGaugeHpValues[member] > t) {
-            g_BtlGaugeHpValues[member] -= (stats[member].maxHp << 8) / 0xF0;
+            g_BtlGaugeHpValues[member] -= (stats[member].maxHp << 8) / 240;
             if (g_BtlGaugeHpValues[member] < t) {
                 g_BtlGaugeHpValues[member] = stats[member].hp << 8;
             }
@@ -347,7 +347,7 @@ void __cdecl Battle_StepPartyHpMpGaugeDisplay(void)
             g_BtlGaugeHpHigh[member] = g_BtlGaugeHpValues[member];
             g_BtlGaugeHpDir[member] = 2;
         } else if (g_BtlGaugeHpValues[member] < t) {
-            g_BtlGaugeHpValues[member] += (stats[member].maxHp << 8) / 0xF0;
+            g_BtlGaugeHpValues[member] += (stats[member].maxHp << 8) / 240;
             if (g_BtlGaugeHpValues[member] > t) {
                 g_BtlGaugeHpValues[member] = stats[member].hp << 8;
             }
@@ -361,7 +361,7 @@ void __cdecl Battle_StepPartyHpMpGaugeDisplay(void)
         }
         t = stats[member].mp << 8;
         if (g_BtlGaugeMpValues[member] > t) {
-            g_BtlGaugeMpValues[member] -= (stats[member].maxMp << 8) / 0xF0;
+            g_BtlGaugeMpValues[member] -= (stats[member].maxMp << 8) / 240;
             if (g_BtlGaugeMpValues[member] < t) {
                 g_BtlGaugeMpValues[member] = stats[member].mp << 8;
             }
@@ -369,7 +369,7 @@ void __cdecl Battle_StepPartyHpMpGaugeDisplay(void)
             g_BtlGaugeMpHigh[member] = g_BtlGaugeMpValues[member];
             g_BtlGaugeMpDir[member] = 2;
         } else if (g_BtlGaugeMpValues[member] < t) {
-            g_BtlGaugeMpValues[member] += (stats[member].maxMp << 8) / 0xF0;
+            g_BtlGaugeMpValues[member] += (stats[member].maxMp << 8) / 240;
             if (g_BtlGaugeMpValues[member] > t) {
                 g_BtlGaugeMpValues[member] = stats[member].mp << 8;
             }
@@ -391,7 +391,7 @@ void __cdecl Battle_StepPartyHpMpGaugeDisplay(void)
 // FUNCTION: FF7 0x006dcff8
 void __cdecl Battle_DrawStatusNameLabel2x(int y, int statusBitIndex)
 {
-    Menu_DrawFixedPitchString2x(0xB0, y, (unsigned char *)(statusBitIndex * 0xA + (int)&g_BtlStatusNameTable), 3, 0);
+    Menu_DrawFixedPitchString2x(176, y, (unsigned char *)(statusBitIndex * 0xA + (int)&g_BtlStatusNameTable), 3, 0);
 }
 
 /*
@@ -400,7 +400,7 @@ void __cdecl Battle_DrawStatusNameLabel2x(int y, int statusBitIndex)
 // FUNCTION: FF7 0x006dd01e
 void __cdecl Battle_DrawStatusNameLabel1x(int y, int statusBitIndex)
 {
-    Menu_DrawFixedPitchString1x(0x58, y, (unsigned char *)(statusBitIndex * 0xA + (int)&g_BtlStatusNameTable), 3, 0);
+    Menu_DrawFixedPitchString1x(88, y, (unsigned char *)(statusBitIndex * 0xA + (int)&g_BtlStatusNameTable), 3, 0);
 }
 
 /*
@@ -431,15 +431,15 @@ void Battle_DrawPartyStatusOverview2x(void)
 
     v.stats = g_MenuPartyStats;
     if (*(unsigned short *)&g_BattleAtbFrozen != 0) {
-        Menu_DrawAtlasQuad2x(0x22e, 0x152, 0x60, 8, 0x18, 5, 1, 0, 0, 0.6f);
+        Menu_DrawAtlasQuad2x(558, 338, 0x60, 8, 24, 5, 1, 0, 0, 0.6f);
     } else {
-        Menu_DrawAtlasQuad2x(0x22e, 0x152, 0x70, 0, 0x18, 5, 1, 0, 0, 0.6f);
+        Menu_DrawAtlasQuad2x(558, 338, 0x70, 0, 24, 5, 1, 0, 0, 0.6f);
     }
-    Menu_DrawAtlasQuad2x(0x1c, 0x152, 0x80, 0x10, 0x1a, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad2x(0x120, 0x152, 0x50, 0, 0x10, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad2x(0x1a4, 0x152, 0x60, 0, 0x10, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad2x(0x1e0, 0x152, 0x38, 0, 0x18, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad2x(0xba, 0x152, 0x38, 8, 0x26, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad2x(28, 338, 0x80, 0x10, 26, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad2x(288, 338, 0x50, 0, 16, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad2x(420, 338, 0x60, 0, 16, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad2x(480, 338, 0x38, 0, 24, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad2x(186, 338, 0x38, 8, 38, 5, 1, 0, 0, 0.6f);
     if (((short)Battle_GetWindowState(BATTLE_MENU_ITEM_LIST) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_MAGIC_LIST) != 2 &&
          (short)Battle_GetWindowState(BATTLE_MENU_ENEMY_SKILL_LIST) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_SUMMON_LIST) != 2 &&
          (short)Battle_GetWindowState(BATTLE_MENU_TIFA_SLOTS) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_CAIT_SITH_SLOTS) != 2) ||
@@ -455,7 +455,7 @@ void Battle_DrawPartyStatusOverview2x(void)
                  g_BattlePartyStatusIconMasks[v.i] != 0)) {
                 do {
                     g_BattleHudStatusIconCycles[v.i]++;
-                    g_BattleHudStatusIconCycles[v.i] %= 0x1b;
+                    g_BattleHudStatusIconCycles[v.i] %= 27;
                 } while ((((unsigned int *)&g_BattlePartyStatusIconMasks)[v.i] &
                           (1 << g_BattleHudStatusIconCycles[v.i])) == 0);
             }
@@ -473,32 +473,32 @@ void Battle_DrawPartyStatusOverview2x(void)
                 }
             } else {
                 if ((short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) == 2 && g_BtlActiveActor == v.i && (short)Battle_GetWindowState(BATTLE_MENU_LIMIT_LIST) != 2) {
-                    Menu_DrawEncodedString2x(0x1c, v.i * 0x20 + 0x15c,
+                    Menu_DrawEncodedString2x(28, v.i * 0x20 + 0x15c,
                                       (unsigned char *)&gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[v.i]]].name,
                                       ((g_BtlMenuFrameCounter >> 3) & 1) ? 0 : 7, 0.601f);
                 } else {
-                    Menu_DrawEncodedString2x(0x1c, v.i * 0x20 + 0x15c,
+                    Menu_DrawEncodedString2x(28, v.i * 0x20 + 0x15c,
                                       (unsigned char *)&gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[v.i]]].name,
                                       ((v.flag ? -1 : 0) & 5U) + 2, 0.601f);
                 }
             }
             if ((unsigned short)v.stats[v.i].atbGauge == 0xffff) {
                 if ((short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) == 2 && g_BtlActiveActor == v.i) {
-                    Menu_DrawGaugeBar2x(0x230, v.i * 0x20 + 0x160,
-                                        (unsigned short)v.stats[v.i].atbGauge / 0x400, 12,
+                    Menu_DrawGaugeBar2x(560, v.i * 32 + 0x160,
+                                        (unsigned short)v.stats[v.i].atbGauge / 1024, 12,
                                         (g_PartyGaugeAnimPos << 16) | ((g_PartyGaugeAnimPos / 2) << 8), 0.6f);
                 } else {
-                    Menu_DrawGaugeBar2x(0x230, v.i * 0x20 + 0x160,
-                                        (unsigned short)v.stats[v.i].atbGauge / 0x400, 12,
+                    Menu_DrawGaugeBar2x(560, v.i * 32 + 0x160,
+                                        (unsigned short)v.stats[v.i].atbGauge / 1024, 12,
                                         0x80808020, 0.6f);
                 }
             } else {
                 v.colour = 0x80108040;
-                Menu_DrawGaugeBar2x(0x230, v.i * 0x20 + 0x160,
-                                    (unsigned short)v.stats[v.i].atbGauge / 0x400, 12,
+                Menu_DrawGaugeBar2x(560, v.i * 32 + 0x160,
+                                    (unsigned short)v.stats[v.i].atbGauge / 1024, 12,
                                     v.colour, 0.6f);
             }
-            Menu_DrawAtlasQuad2x(0x22a, v.i * 0x20 + 0x15e, 0x10, 0, 0x28, 10, 1, 0, 0, 0.6f);
+            Menu_DrawAtlasQuad2x(554, v.i * 32 + 0x15e, 0x10, 0, 40, 10, 1, 0, 0, 0.6f);
             if (g_BattleScene.readyActorMask & (1 << v.i)) {
                 v.colour = g_BtlGaugeStatusColors[(g_BtlMenuFrameCounter >> 1) & 7];
             } else if (g_BattlePartyStatusIconMasks[v.i] & BATTLE_STATUS_SADNESS) {
@@ -508,43 +508,43 @@ void Battle_DrawPartyStatusOverview2x(void)
             } else {
                 v.colour = 0x80802050;
             }
-            Menu_DrawGaugeBar2x(0x1e2, v.i * 0x20 + 0x160,
-                                v.stats[v.i].limitGauge / 0x400, 12, v.colour, 0.6f);
-            Menu_DrawAtlasQuad2x(0x1dc, v.i * 0x20 + 0x15e, 0x10, 0, 0x28, 10, 1, 0, 0, 0.6f);
+            Menu_DrawGaugeBar2x(482, v.i * 32 + 0x160,
+                                v.stats[v.i].limitGauge / 1024, 12, v.colour, 0.6f);
+            Menu_DrawAtlasQuad2x(476, v.i * 32 + 0x15e, 0x10, 0, 40, 10, 1, 0, 0, 0.6f);
             if ((short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) != 2 || Input_GetHeld(INPUT_SQUARE) != 0) {
-                Menu_DrawGaugeBar2x(0xc4, v.i * 0x20 + 0x15e,
+                Menu_DrawGaugeBar2x(196, v.i * 32 + 0x15e,
                                     (unsigned short)v.stats[v.i].barrierGauge >> 2, 8, 0x80800000, 0.6f);
-                Menu_DrawGaugeBar2x(0xc4, v.i * 0x20 + 0x168,
+                Menu_DrawGaugeBar2x(196, v.i * 32 + 0x168,
                                     (unsigned short)v.stats[v.i].mBarrierGauge >> 2, 8, 0x80804000, 0.6f);
-                Menu_DrawAtlasQuad2x(0xbe, v.i * 0x20 + 0x15c, 0xa0, 0x10, 0x26, 12, 1, 0, 0, 0.6f);
+                Menu_DrawAtlasQuad2x(190, v.i * 32 + 0x15c, 0xa0, 0x10, 38, 12, 1, 0, 0, 0.6f);
             }
             if (v.stats[g_BtlActiveActor].commandColumns < 2 ||
                 (short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) != 2 || Input_GetHeld(INPUT_SQUARE) != 0) {
                 if (v.flag != 0) {
-                    Menu_DrawDecimalNumber2x(0x120, v.i * 0x20 + 0x15c, g_BtlGaugeHpValues[v.i] >> 8, 4,
+                    Menu_DrawDecimalNumber2x(288, v.i * 32 + 0x15c, g_BtlGaugeHpValues[v.i] >> 8, 4,
                                       ((g_BtlGaugeHpValues[v.i] >> 8) >
                                        v.stats[v.i].maxHp / 4) +
                                           6,
                                       0.6f);
                 } else {
-                    Menu_DrawDecimalNumber2x(0x120, v.i * 0x20 + 0x15c, g_BtlGaugeHpValues[v.i] >> 8, 4, 2, 0.6f);
+                    Menu_DrawDecimalNumber2x(288, v.i * 32 + 0x15c, g_BtlGaugeHpValues[v.i] >> 8, 4, 2, 0.6f);
                 }
-                Menu_DrawAtlasQuad2x(0x158, v.i * 0x20 + 0x15c, 0xd8, 0, 4, 8, 1, 0, 0, 0.6f);
+                Menu_DrawAtlasQuad2x(344, v.i * 32 + 0x15c, 0xd8, 0, 4, 8, 1, 0, 0, 0.6f);
             }
             if (v.stats[g_BtlActiveActor].commandColumns < 3 ||
                 (short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) != 2 || Input_GetHeld(INPUT_SQUARE) != 0) {
-                Menu_DrawDecimalNumber2x(0x160, v.i * 0x20 + 0x15c,
+                Menu_DrawDecimalNumber2x(352, v.i * 0x20 + 0x15c,
                                   v.stats[v.i].maxHp, 4,
                                   ((v.flag ? -1 : 0) & 5U) + 2, 0.6f);
             }
             if (v.flag != 0) {
-                Menu_DrawDecimalNumber2x(0x1a0, v.i * 0x20 + 0x15c, g_BtlGaugeMpValues[v.i] >> 8, 4,
+                Menu_DrawDecimalNumber2x(416, v.i * 32 + 0x15c, g_BtlGaugeMpValues[v.i] >> 8, 4,
                                   ((g_BtlGaugeMpValues[v.i] >> 8) >
                                    v.stats[v.i].maxMp / 4) +
                                       6,
                                   0.6f);
             } else {
-                Menu_DrawDecimalNumber2x(0x1a0, v.i * 0x20 + 0x15c, g_BtlGaugeMpValues[v.i] >> 8, 4, 2, 0.6f);
+                Menu_DrawDecimalNumber2x(416, v.i * 32 + 0x15c, g_BtlGaugeMpValues[v.i] >> 8, 4, 2, 0.6f);
             }
         }
     }
@@ -578,15 +578,15 @@ void Battle_DrawPartyStatusOverview1x(void)
 
     v.stats = g_MenuPartyStats;
     if (*(unsigned short *)&g_BattleAtbFrozen != 0) {
-        Menu_DrawAtlasQuad1x(0x117, 0xa9, 0x60, 8, 0x18, 5, 1, 0, 0, 0.6f);
+        Menu_DrawAtlasQuad1x(279, 169, 96, 8, 24, 5, 1, 0, 0, 0.6f);
     } else {
-        Menu_DrawAtlasQuad1x(0x117, 0xa9, 0x70, 0, 0x18, 5, 1, 0, 0, 0.6f);
+        Menu_DrawAtlasQuad1x(279, 169, 112, 0, 24, 5, 1, 0, 0, 0.6f);
     }
-    Menu_DrawAtlasQuad1x(0xe, 0xa9, 0x80, 0x10, 0x1a, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad1x(0x90, 0xa9, 0x50, 0, 0x10, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad1x(0xd2, 0xa9, 0x60, 0, 0x10, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad1x(0xf0, 0xa9, 0x38, 0, 0x18, 5, 1, 0, 0, 0.6f);
-    Menu_DrawAtlasQuad1x(0x5d, 0xa9, 0x38, 8, 0x26, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad1x(14, 169, 128, 16, 26, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad1x(144, 169, 80, 0, 16, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad1x(210, 169, 96, 0, 16, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad1x(240, 169, 56, 0, 24, 5, 1, 0, 0, 0.6f);
+    Menu_DrawAtlasQuad1x(93, 169, 56, 8, 38, 5, 1, 0, 0, 0.6f);
     if (((short)Battle_GetWindowState(BATTLE_MENU_ITEM_LIST) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_MAGIC_LIST) != 2 &&
          (short)Battle_GetWindowState(BATTLE_MENU_ENEMY_SKILL_LIST) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_SUMMON_LIST) != 2 &&
          (short)Battle_GetWindowState(BATTLE_MENU_TIFA_SLOTS) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_CAIT_SITH_SLOTS) != 2) ||
@@ -602,7 +602,7 @@ void Battle_DrawPartyStatusOverview1x(void)
                  g_BattlePartyStatusIconMasks[v.i] != 0)) {
                 do {
                     g_BattleHudStatusIconCycles[v.i]++;
-                    g_BattleHudStatusIconCycles[v.i] %= 0x1b;
+                    g_BattleHudStatusIconCycles[v.i] %= 27;
                 } while ((((unsigned int *)&g_BattlePartyStatusIconMasks)[v.i] &
                           (1 << g_BattleHudStatusIconCycles[v.i])) == 0);
             }
@@ -620,32 +620,32 @@ void Battle_DrawPartyStatusOverview1x(void)
                 }
             } else {
                 if ((short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) == 2 && g_BtlActiveActor == v.i && (short)Battle_GetWindowState(BATTLE_MENU_LIMIT_LIST) != 2) {
-                    Menu_DrawEncodedString1x(0xe, v.i * 0x10 + 0xae,
+                    Menu_DrawEncodedString1x(14, v.i * 0x10 + 0xae,
                                          (unsigned char *)&gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[v.i]]].name,
                                          ((g_BtlMenuFrameCounter >> 3) & 1) ? 0 : 7, 0.601f);
                 } else {
-                    Menu_DrawEncodedString1x(0xe, v.i * 0x10 + 0xae,
+                    Menu_DrawEncodedString1x(14, v.i * 0x10 + 0xae,
                                          (unsigned char *)&gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[v.i]]].name,
                                          ((v.flag ? -1 : 0) & 5U) + 2, 0.601f);
                 }
             }
             if ((unsigned short)v.stats[v.i].atbGauge == 0xffff) {
                 if ((short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) == 2 && g_BtlActiveActor == v.i) {
-                    Menu_DrawGaugeBar1x(0x118, v.i * 0x10 + 0xb0,
-                                        (unsigned short)v.stats[v.i].atbGauge / 0x800, 6,
+                    Menu_DrawGaugeBar1x(280, v.i * 16 + 0xb0,
+                                        (unsigned short)v.stats[v.i].atbGauge / 2048, 6,
                                         (g_PartyGaugeAnimPos << 16) | ((g_PartyGaugeAnimPos / 2) << 8), 0.6f);
                 } else {
-                    Menu_DrawGaugeBar1x(0x118, v.i * 0x10 + 0xb0,
-                                        (unsigned short)v.stats[v.i].atbGauge / 0x800, 6,
+                    Menu_DrawGaugeBar1x(280, v.i * 16 + 0xb0,
+                                        (unsigned short)v.stats[v.i].atbGauge / 2048, 6,
                                         0x80808020, 0.6f);
                 }
             } else {
                 v.colour = 0x80108040;
-                Menu_DrawGaugeBar1x(0x118, v.i * 0x10 + 0xb0,
-                                    (unsigned short)v.stats[v.i].atbGauge / 0x800, 6,
+                Menu_DrawGaugeBar1x(280, v.i * 16 + 0xb0,
+                                    (unsigned short)v.stats[v.i].atbGauge / 2048, 6,
                                     v.colour, 0.6f);
             }
-            Menu_DrawAtlasQuad1x(0x115, v.i * 0x10 + 0xaf, 0x10, 0, 0x28, 10, 1, 0, 0, 0.6f);
+            Menu_DrawAtlasQuad1x(277, v.i * 16 + 0xaf, 16, 0, 40, 10, 1, 0, 0, 0.6f);
             if (g_BattleScene.readyActorMask & (1 << v.i)) {
                 v.colour = g_BtlGaugeStatusColors[(g_BtlMenuFrameCounter >> 1) & 7];
             } else if (g_BattlePartyStatusIconMasks[v.i] & BATTLE_STATUS_SADNESS) {
@@ -655,43 +655,43 @@ void Battle_DrawPartyStatusOverview1x(void)
             } else {
                 v.colour = 0x80802050;
             }
-            Menu_DrawGaugeBar1x(0xf1, v.i * 0x10 + 0xb0,
-                                v.stats[v.i].limitGauge / 0x800, 6, v.colour, 0.6f);
-            Menu_DrawAtlasQuad1x(0xee, v.i * 0x10 + 0xaf, 0x10, 0, 0x28, 10, 1, 0, 0, 0.6f);
+            Menu_DrawGaugeBar1x(241, v.i * 16 + 0xb0,
+                                v.stats[v.i].limitGauge / 2048, 6, v.colour, 0.6f);
+            Menu_DrawAtlasQuad1x(238, v.i * 16 + 0xaf, 16, 0, 40, 10, 1, 0, 0, 0.6f);
             if ((short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) != 2 || Input_GetHeld(INPUT_SQUARE) != 0) {
-                Menu_DrawGaugeBar1x(0x62, v.i * 0x10 + 0xaf,
+                Menu_DrawGaugeBar1x(98, v.i * 16 + 0xaf,
                                     (unsigned short)v.stats[v.i].barrierGauge >> 3, 4, 0x80800000, 0.6f);
-                Menu_DrawGaugeBar1x(0x62, v.i * 0x10 + 0xb4,
+                Menu_DrawGaugeBar1x(98, v.i * 16 + 0xb4,
                                     (unsigned short)v.stats[v.i].mBarrierGauge >> 3, 4, 0x80804000, 0.6f);
-                Menu_DrawAtlasQuad1x(0x5f, v.i * 0x10 + 0xae, 0xa0, 0x10, 0x26, 12, 1, 0, 0, 0.6f);
+                Menu_DrawAtlasQuad1x(95, v.i * 16 + 0xae, 160, 16, 38, 12, 1, 0, 0, 0.6f);
             }
             if (v.stats[g_BtlActiveActor].commandColumns < 2 ||
                 (short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) != 2 || Input_GetHeld(INPUT_SQUARE) != 0) {
                 if (v.flag != 0) {
-                    Menu_DrawDecimalNumber1x(0x90, v.i * 0x10 + 0xae, g_BtlGaugeHpValues[v.i] >> 8, 4,
+                    Menu_DrawDecimalNumber1x(144, v.i * 16 + 0xae, g_BtlGaugeHpValues[v.i] >> 8, 4,
                                         ((g_BtlGaugeHpValues[v.i] >> 8) >
                                          v.stats[v.i].maxHp / 4) +
                                             6,
                                         0.6f);
                 } else {
-                    Menu_DrawDecimalNumber1x(0x90, v.i * 0x10 + 0xae, g_BtlGaugeHpValues[v.i] >> 8, 4, 2, 0.6f);
+                    Menu_DrawDecimalNumber1x(144, v.i * 16 + 0xae, g_BtlGaugeHpValues[v.i] >> 8, 4, 2, 0.6f);
                 }
-                Menu_DrawAtlasQuad1x(0xac, v.i * 0x10 + 0xae, 0xd8, 0, 4, 8, 1, 0, 0, 0.6f);
+                Menu_DrawAtlasQuad1x(172, v.i * 16 + 0xae, 216, 0, 4, 8, 1, 0, 0, 0.6f);
             }
             if (v.stats[g_BtlActiveActor].commandColumns < 3 ||
                 (short)Battle_GetWindowState(BATTLE_MENU_COMMAND_MENU) != 2 || Input_GetHeld(INPUT_SQUARE) != 0) {
-                Menu_DrawDecimalNumber1x(0xb0, v.i * 0x10 + 0xae,
+                Menu_DrawDecimalNumber1x(176, v.i * 0x10 + 0xae,
                                     v.stats[v.i].maxHp, 4,
                                     ((v.flag ? -1 : 0) & 5U) + 2, 0.6f);
             }
             if (v.flag != 0) {
-                Menu_DrawDecimalNumber1x(0xd0, v.i * 0x10 + 0xae, g_BtlGaugeMpValues[v.i] >> 8, 4,
+                Menu_DrawDecimalNumber1x(208, v.i * 16 + 0xae, g_BtlGaugeMpValues[v.i] >> 8, 4,
                                     ((g_BtlGaugeMpValues[v.i] >> 8) >
                                      v.stats[v.i].maxMp / 4) +
                                         6,
                                     0.6f);
             } else {
-                Menu_DrawDecimalNumber1x(0xd0, v.i * 0x10 + 0xae, g_BtlGaugeMpValues[v.i] >> 8, 4, 2, 0.6f);
+                Menu_DrawDecimalNumber1x(208, v.i * 16 + 0xae, g_BtlGaugeMpValues[v.i] >> 8, 4, 2, 0.6f);
             }
         }
     }
@@ -721,13 +721,13 @@ void __cdecl Battle_DrawActorCommandGrid2x(unsigned char *unused)
         (short)Battle_GetWindowState(BATTLE_MENU_TIFA_SLOTS) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_CAIT_SITH_SLOTS) != 2) {
         for (group8 = 0; group8 < p[g_BtlActiveActor].commandColumns; group8++) {
             for (w = 0; w < 4; w++) {
-                xPos8 = group8 * 0x58 + (group8 != 0 ? 0x10 : 0) + 0x9C;
+                xPos8 = group8 * 88 + (group8 != 0 ? 16 : 0) + 156;
                 subEntryIndex = group8 * 4 + w;
                 if (p[g_BtlActiveActor].commands[subEntryIndex].commandId != 0xFF) {
                     palette = (p[g_BtlActiveActor].commands[subEntryIndex].menuFlags & BATTLE_MENU_SLOT_GREYED) ? 0 : 7;
                     if (p[g_BtlActiveActor].commands[subEntryIndex].commandId == 0x14) {
                         pName = (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, p[g_BtlActiveActor].commands[subEntryIndex].commandId, 8);
-                        for (t = 0; t < 0x20; t++) {
+                        for (t = 0; t < 32; t++) {
                             if (pName[t] == 0xFF) {
                                 break;
                             }
@@ -751,8 +751,8 @@ void __cdecl Battle_DrawActorCommandGrid2x(unsigned char *unused)
                             (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, p[g_BtlActiveActor].commands[subEntryIndex].commandId, 8));
                     }
                     if (p[g_BtlActiveActor].commands[subEntryIndex].menuFlags & BATTLE_MENU_SLOT_MULTI_ARROW) {
-                        Menu_DrawAtlasQuad2x(group8 * 0x58 + (group8 != 0 ? 0x10 : 0) + tempTextWidth + 0x98,
-                                             w * 0x18 + 0x162, 0x80, 8, 8, 8, 2, 0, 0, 0.501f);
+                        Menu_DrawAtlasQuad2x(group8 * 88 + (group8 != 0 ? 0x10 : 0) + tempTextWidth + 0x98,
+                                             w * 24 + 0x162, 0x80, 8, 8, 8, 2, 0, 0, 0.501f);
                     }
                 }
             }
@@ -784,13 +784,13 @@ void __cdecl Battle_DrawActorCommandGrid1x(unsigned char *unused)
         (short)Battle_GetWindowState(BATTLE_MENU_TIFA_SLOTS) != 2 && (short)Battle_GetWindowState(BATTLE_MENU_CAIT_SITH_SLOTS) != 2) {
         for (group8 = 0; group8 < p[g_BtlActiveActor].commandColumns; group8++) {
             for (w = 0; w < 4; w++) {
-                xPos8 = group8 * 0x2C + (group8 != 0 ? 8 : 0) + 0x4E;
+                xPos8 = group8 * 44 + (group8 != 0 ? 8 : 0) + 78;
                 subEntryIndex = group8 * 4 + w;
                 if (p[g_BtlActiveActor].commands[subEntryIndex].commandId != 0xFF) {
                     palette = (p[g_BtlActiveActor].commands[subEntryIndex].menuFlags & BATTLE_MENU_SLOT_GREYED) ? 0 : 7;
                     if (p[g_BtlActiveActor].commands[subEntryIndex].commandId == 0x14) {
                         pName = (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, p[g_BtlActiveActor].commands[subEntryIndex].commandId, 8);
-                        for (t = 0; t < 0x20; t++) {
+                        for (t = 0; t < 32; t++) {
                             if (pName[t] == 0xFF) {
                                 break;
                             }
@@ -817,8 +817,8 @@ void __cdecl Battle_DrawActorCommandGrid1x(unsigned char *unused)
                             (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, p[g_BtlActiveActor].commands[subEntryIndex].commandId, 8));
                     }
                     if (p[g_BtlActiveActor].commands[subEntryIndex].menuFlags & BATTLE_MENU_SLOT_MULTI_ARROW) {
-                        Menu_DrawAtlasQuad1x(group8 * 0x2C + (group8 != 0 ? 8 : 0) + tempTextWidth + 0x4C,
-                                             w * 0xC + 0xB1, 0x80, 8, 8, 8, 2, 0, 0, 0.501f);
+                        Menu_DrawAtlasQuad1x(group8 * 44 + (group8 != 0 ? 8 : 0) + tempTextWidth + 0x4C,
+                                             w * 12 + 0xB1, 128, 8, 8, 8, 2, 0, 0, 0.501f);
                     }
                 }
             }
@@ -874,11 +874,11 @@ void Menu_DrawBattleItemList2x(void)
             color = (entry[index * 6 + 4] & BATTLE_MENU_ITEM_NO_THROW) ? 0 : 7;
         }
         if (*(unsigned short *)&entry[index * 6] != MENU_ITEM_SLOT_EMPTY) {
-            Menu_DrawItemTypeIcon2x(0x5e, scrollOfs + listPosition * 0x20 + 0x164,
+            Menu_DrawItemTypeIcon2x(94, scrollOfs + listPosition * 0x20 + 0x164,
                                     *(unsigned short *)&entry[index * 6], 0, 0.401f);
-            DrawIconGlyph16_2x(0x16e, scrollOfs + listPosition * 0x20 + 0x16c, 0xd5,
+            DrawIconGlyph16_2x(366, scrollOfs + listPosition * 32 + 0x16c, 0xd5,
                             color, 0.401f);
-            Menu_DrawDecimalNumber2x(0x17a, scrollOfs + listPosition * 0x20 + 0x16c,
+            Menu_DrawDecimalNumber2x(378, scrollOfs + listPosition * 32 + 0x16c,
                               entry[index * 6 + 2], 2, color, 0.401f);
         }
     }
@@ -891,7 +891,7 @@ void Menu_DrawBattleItemList2x(void)
         }
         if (*(unsigned short *)&entry[index * 6] != MENU_ITEM_SLOT_EMPTY) {
             Menu_DrawEncodedString2x(
-                0x82, scrollOfs + listPosition * 0x20 + 0x168,
+                130, scrollOfs + listPosition * 0x20 + 0x168,
                 (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM,
                                     *(unsigned short *)&entry[index * 6], 8),
                 color, 0.401f);
@@ -943,9 +943,9 @@ void __cdecl Menu_DrawItemTypeIcon2x(int screenX, int screenY, int code,
     } else {
         tile = 0xb;
     }
-    u = (tile & 1) * 0x10 + 0x60;
-    v = tile / 2 * 0x10 + 0x70;
-    Menu_DrawAtlasQuad2x(screenX, screenY, u, v, 0x10, 0x10, 1, 0, 0, z);
+    u = (tile & 1) * 16 + 0x60;
+    v = tile / 2 * 16 + 0x70;
+    Menu_DrawAtlasQuad2x(screenX, screenY, u, v, 16, 16, 1, 0, 0, z);
 }
 
 /*
@@ -996,11 +996,11 @@ void Menu_DrawBattleItemList1x(void)
             color = (entry[index * 6 + 4] & BATTLE_MENU_ITEM_NO_THROW) ? 0 : 7;
         }
         if (*(unsigned short *)&entry[index * 6] != MENU_ITEM_SLOT_EMPTY) {
-            Menu_DrawItemTypeIcon1x(0x2f, scrollOfs + listPosition * 0x10 + 0xb2,
+            Menu_DrawItemTypeIcon1x(47, scrollOfs + listPosition * 0x10 + 0xb2,
                                     *(unsigned short *)&entry[index * 6], 0, 0.401f);
-            DrawIconGlyph16_1x(0xb7, scrollOfs + listPosition * 0x10 + 0xb6, 0xd5,
+            DrawIconGlyph16_1x(183, scrollOfs + listPosition * 16 + 0xb6, 0xd5,
                                color, 0.401f);
-            Menu_DrawDecimalNumber1x(0xbd, scrollOfs + listPosition * 0x10 + 0xb6,
+            Menu_DrawDecimalNumber1x(189, scrollOfs + listPosition * 16 + 0xb6,
                                 entry[index * 6 + 2], 2, color, 0.401f);
         }
     }
@@ -1013,7 +1013,7 @@ void Menu_DrawBattleItemList1x(void)
         }
         if (*(unsigned short *)&entry[index * 6] != MENU_ITEM_SLOT_EMPTY) {
             Menu_DrawEncodedString1x(
-                0x41, scrollOfs + listPosition * 0x10 + 0xb4,
+                65, scrollOfs + listPosition * 0x10 + 0xb4,
                 (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM,
                                     *(unsigned short *)&entry[index * 6], 8),
                 color, 0.401f);
@@ -1063,9 +1063,9 @@ void __cdecl Menu_DrawItemTypeIcon1x(int screenX, int screenY, int code,
     } else {
         tile = 0xb;
     }
-    u = (tile & 1) * 0x10 + 0x60;
-    v = tile / 2 * 0x10 + 0x70;
-    Menu_DrawAtlasQuad1x(screenX, screenY, u, v, 0x10, 0x10, 1, 0, 0, z);
+    u = (tile & 1) * 16 + 0x60;
+    v = tile / 2 * 16 + 0x70;
+    Menu_DrawAtlasQuad1x(screenX, screenY, u, v, 16, 16, 1, 0, 0, z);
 }
 
 /*
@@ -1090,11 +1090,11 @@ void __cdecl Menu_DrawBattleLimitList2x(void)
     }
     limitList = g_MenuPartyStats[g_BtlActivePartyMember].limitAttacks;
     for (limitSlot = 0; limitSlot < g_BtlMenuLimitRowCount; limitSlot++) {
-        Menu_DrawEncodedString2x(0xB0, limitSlot * 0x1E + 0x170, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_LIMIT, limitList[limitSlot], 8), 7, 0.301f);
+        Menu_DrawEncodedString2x(176, limitSlot * 0x1E + 0x170, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_LIMIT, limitList[limitSlot], 8), 7, 0.301f);
     }
-    Menu_DrawAtlasQuad2x(0xAA, 0x164, 0x38, 0, 0x18, 6, 1, 0, 0, 0.301f);
-    Menu_DrawAtlasQuad2x(0xE4, 0x164, 0xC8, 0x18, 0x1A, 6, 1, 0, 0, 0.301f);
-    Menu_DrawAtlasQuad2x(0x118, 0x160, g_BtlLimitMenuTables.limitLevelAtlasTable[gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_BtlActivePartyMember]]].limitLevel], 0x10, 8, 8, 1, 0, 0, 0.301f);
+    Menu_DrawAtlasQuad2x(170, 356, 0x38, 0, 24, 6, 1, 0, 0, 0.301f);
+    Menu_DrawAtlasQuad2x(228, 356, 0xC8, 0x18, 26, 6, 1, 0, 0, 0.301f);
+    Menu_DrawAtlasQuad2x(280, 352, g_BtlLimitMenuTables.limitLevelAtlasTable[gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_BtlActivePartyMember]]].limitLevel], 0x10, 8, 8, 1, 0, 0, 0.301f);
     if (Menu_IsTextSubsystemReady() != 0) {
         if (AcquireBatchNode(1, g_MenuBattleLimitGraphicsObject) != 0) {
             vertA = (GfxTlVertex *)(g_MenuBattleLimitGraphicsObject->vertexCursor);
@@ -1151,11 +1151,11 @@ void __cdecl Menu_DrawBattleLimitList1x(void)
     }
     limitList = g_MenuPartyStats[g_BtlActivePartyMember].limitAttacks;
     for (limitSlot = 0; limitSlot < g_BtlMenuLimitRowCount; limitSlot++) {
-        Menu_DrawEncodedString1x(0x58, limitSlot * 0xF + 0xB8, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_LIMIT, limitList[limitSlot], 8), 7, 0.301f);
+        Menu_DrawEncodedString1x(88, limitSlot * 0xF + 0xB8, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_LIMIT, limitList[limitSlot], 8), 7, 0.301f);
     }
-    Menu_DrawAtlasQuad1x(0x55, 0xB2, 0x38, 0, 0x18, 6, 1, 0, 0, 0.301f);
-    Menu_DrawAtlasQuad1x(0x72, 0xB2, 0xC8, 0x18, 0x1A, 6, 1, 0, 0, 0.301f);
-    Menu_DrawAtlasQuad1x(0x8C, 0xB0, g_BtlLimitMenuTables.limitLevelAtlasTable[gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_BtlActivePartyMember]]].limitLevel], 0x10, 8, 8, 1, 0, 0, 0.301f);
+    Menu_DrawAtlasQuad1x(85, 178, 56, 0, 24, 6, 1, 0, 0, 0.301f);
+    Menu_DrawAtlasQuad1x(114, 178, 200, 24, 26, 6, 1, 0, 0, 0.301f);
+    Menu_DrawAtlasQuad1x(140, 176, g_BtlLimitMenuTables.limitLevelAtlasTable[gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[g_BtlActivePartyMember]]].limitLevel], 16, 8, 8, 1, 0, 0, 0.301f);
     if (Menu_IsTextSubsystemReady() != 0) {
         if (AcquireBatchNode(1, g_MenuBattleLimitGraphicsObject) != 0) {
             vertA = (GfxTlVertex *)(g_MenuBattleLimitGraphicsObject->vertexCursor);
@@ -1248,13 +1248,13 @@ void Menu_DrawBattleMagicList2x(void)
         for (lines = 0; lines < 3; lines++) {
             if (entry[lines + top + item * 3].attackId != 0xff &&
                 (entry[lines + top + item * 3].menuFlags & BATTLE_MENU_SLOT_MULTI_ARROW) != 0) {
-                Menu_DrawAtlasQuad2x(lines * 0x9c + 0x92,
-                                     yoff + item * 0x20 + 0x16c,
+                Menu_DrawAtlasQuad2x(lines * 156 + 0x92,
+                                     yoff + item * 32 + 0x16c,
                                      0x80, 8, 8, 8, 2, 0, 0, 0.401f);
             }
         }
     }
-    Menu_DrawBattleAbilityCostPanel2x(0x210, 0x15c, BATTLE_ABILITY_LIST_MAGIC);
+    Menu_DrawBattleAbilityCostPanel2x(528, 348, BATTLE_ABILITY_LIST_MAGIC);
     Battle_EndWindowTextDrawNoOp(BATTLE_MENU_MAGIC_LIST);
 }
 
@@ -1272,7 +1272,7 @@ void Menu_DrawBattleAbilityCostPanel2x(int x, int y, int layout)
     BattleAbilitySlot *entry;
     int index;
 
-    Menu_DrawAtlasQuad2x(x + 6, y, 0, 0x10, 0x28, 0x10,
+    Menu_DrawAtlasQuad2x(x + 6, y, 0, 0x10, 40, 16,
                          1, 0, 0, 0.401f);
     switch (layout) {
     case BATTLE_ABILITY_LIST_MAGIC:
@@ -1311,7 +1311,7 @@ void Menu_DrawBattleAbilityCostPanel2x(int x, int y, int layout)
                                       entry[index].quadraCount, 2, 7, 0.401f);
                 } else {
                     Menu_DrawAtlasQuad2x(x + 0x26, y + 0x3c,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         0x90, 0x60, 16, 8, 6, 0, 0,
                                          0.401f);
                 }
                 Menu_DrawAtlasQuad2x(x + 0x46, y + 0x3c,
@@ -1323,7 +1323,7 @@ void Menu_DrawBattleAbilityCostPanel2x(int x, int y, int layout)
                                       entry[index].allCount, 2, 7, 0.401f);
                 } else {
                     Menu_DrawAtlasQuad2x(x + 0x26, y + 0x54,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         0x90, 0x60, 16, 8, 6, 0, 0,
                                          0.401f);
                 }
                 Menu_DrawAtlasQuad2x(x + 0x46, y + 0x54,
@@ -1399,13 +1399,13 @@ void Menu_DrawBattleMagicList1x(void)
         for (lines = 0; lines < 3; lines++) {
             if (entry[lines + top + item * 3].attackId != 0xff &&
                 (entry[lines + top + item * 3].menuFlags & BATTLE_MENU_SLOT_MULTI_ARROW) != 0) {
-                Menu_DrawAtlasQuad1x(lines * 0x4e + 0x49,
-                                     yoff + item * 0x10 + 0xb6,
-                                     0x80, 8, 8, 8, 2, 0, 0, 0.401f);
+                Menu_DrawAtlasQuad1x(lines * 78 + 0x49,
+                                     yoff + item * 16 + 0xb6,
+                                     128, 8, 8, 8, 2, 0, 0, 0.401f);
             }
         }
     }
-    Menu_DrawBattleAbilityCostPanel1x(0x108, 0xae, BATTLE_ABILITY_LIST_MAGIC);
+    Menu_DrawBattleAbilityCostPanel1x(264, 174, BATTLE_ABILITY_LIST_MAGIC);
     Battle_EndWindowTextDrawNoOp(BATTLE_MENU_MAGIC_LIST);
 }
 
@@ -1422,7 +1422,7 @@ void Menu_DrawBattleAbilityCostPanel1x(int x, int y, int layout)
     BattleAbilitySlot *entry;
     int index;
 
-    Menu_DrawAtlasQuad1x(x + 3, y, 0, 0x10, 0x28, 0x10,
+    Menu_DrawAtlasQuad1x(x + 3, y, 0, 16, 40, 16,
                          1, 0, 0, 0.401f);
     switch (layout) {
     case BATTLE_ABILITY_LIST_MAGIC:
@@ -1461,11 +1461,11 @@ void Menu_DrawBattleAbilityCostPanel1x(int x, int y, int layout)
                                       entry[index].quadraCount, 2, 7, 0.401f);
                 } else {
                     Menu_DrawAtlasQuad1x(x + 0x13, y + 0x1e,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         144, 96, 16, 8, 6, 0, 0,
                                          0.401f);
                 }
                 Menu_DrawAtlasQuad1x(x + 0x23, y + 0x1e,
-                                     0x78, 8, 8, 8, 7, 0, 0, 0.401f);
+                                     120, 8, 8, 8, 7, 0, 0, 0.401f);
             }
             if (entry[index].allCount != 0) {
                 if (entry[index].allCount != 0xff) {
@@ -1474,11 +1474,11 @@ void Menu_DrawBattleAbilityCostPanel1x(int x, int y, int layout)
                                         0.401f);
                 } else {
                     Menu_DrawAtlasQuad1x(x + 0x13, y + 0x2a,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         144, 96, 16, 8, 6, 0, 0,
                                          0.401f);
                 }
                 Menu_DrawAtlasQuad1x(x + 0x23, y + 0x2a,
-                                     0x78, 8, 8, 8, 7, 0, 0, 0.401f);
+                                     120, 8, 8, 8, 7, 0, 0, 0.401f);
             }
         }
         Menu_DrawDecimalNumber1x(x, y + 0x12,
@@ -1488,7 +1488,7 @@ void Menu_DrawBattleAbilityCostPanel1x(int x, int y, int layout)
         x + 0x19, y + 0x12,
         g_MenuPartyStats[g_BtlActiveActor].mp,
         3, 7, 0.401f);
-    Menu_DrawAtlasQuad1x(x + 0x15, y + 0x12, 0xd8, 0, 4, 8,
+    Menu_DrawAtlasQuad1x(x + 0x15, y + 0x12, 216, 0, 4, 8,
                          1, 0, 0, 0.401f);
 }
 
@@ -1532,12 +1532,12 @@ void __cdecl Menu_DrawBattleSummonList2x(void)
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_SUMMON_LIST);
     for (item = 0; item < limit; item++) {
         if (entry[top + item].attackId != 0xff) {
-            Menu_DrawEncodedString2x(0x70, yoff + item * 0x20 + 0x168,
+            Menu_DrawEncodedString2x(112, yoff + item * 0x20 + 0x168,
                               (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_SUMMON, entry[top + item].attackId, 8),
                               (entry[top + item].menuFlags & BATTLE_MENU_SLOT_GREYED) ? 0 : 7, 0.401f);
         }
     }
-    Menu_DrawBattleAbilityCostPanel2x(0x210, 0x15c, BATTLE_ABILITY_LIST_SUMMON);
+    Menu_DrawBattleAbilityCostPanel2x(528, 348, BATTLE_ABILITY_LIST_SUMMON);
     Battle_EndWindowTextDrawNoOp(BATTLE_MENU_SUMMON_LIST);
 }
 
@@ -1582,12 +1582,12 @@ void __cdecl Menu_DrawBattleSummonList1x(void)
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_SUMMON_LIST);
     for (item = 0; item < limit; item++) {
         if (entry[top + item].attackId != 0xff) {
-            Menu_DrawEncodedString1x(0x38, yoff + item * 0x10 + 0xb4,
+            Menu_DrawEncodedString1x(56, yoff + item * 0x10 + 0xb4,
                                  (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_SUMMON, entry[top + item].attackId, 8),
                                  (entry[top + item].menuFlags & BATTLE_MENU_SLOT_GREYED) ? 0 : 7, 0.401f);
         }
     }
-    Menu_DrawBattleAbilityCostPanel1x(0x108, 0xae, BATTLE_ABILITY_LIST_SUMMON);
+    Menu_DrawBattleAbilityCostPanel1x(264, 174, BATTLE_ABILITY_LIST_SUMMON);
     Battle_EndWindowTextDrawNoOp(BATTLE_MENU_SUMMON_LIST);
 }
 
@@ -1645,7 +1645,7 @@ void __cdecl Menu_DrawBattleEnemySkillList2x(void)
             }
         }
     }
-    Menu_DrawBattleAbilityCostPanel2x(0x210, 0x15c, BATTLE_ABILITY_LIST_ENEMY_SKILL);
+    Menu_DrawBattleAbilityCostPanel2x(528, 348, BATTLE_ABILITY_LIST_ENEMY_SKILL);
     Battle_EndWindowTextDrawNoOp(BATTLE_MENU_ENEMY_SKILL_LIST);
 }
 
@@ -1702,7 +1702,7 @@ void __cdecl Menu_DrawBattleEnemySkillList1x(void)
             }
         }
     }
-    Menu_DrawBattleAbilityCostPanel1x(0x108, 0xae, BATTLE_ABILITY_LIST_ENEMY_SKILL);
+    Menu_DrawBattleAbilityCostPanel1x(264, 174, BATTLE_ABILITY_LIST_ENEMY_SKILL);
     Battle_EndWindowTextDrawNoOp(BATTLE_MENU_ENEMY_SKILL_LIST);
 }
 
@@ -1727,15 +1727,15 @@ void __cdecl Battle_DrawGilAmountPrompt2x(void)
     GfxTlVertex *vertexC;
     int quadTop;
 
-    Menu_DrawEncodedString2x(0x78, 0x168, (unsigned char *)g_BtlSquareGilPromptText, 7, 0.401f);
-    Menu_DrawEncodedString2x(0x90, 0x182, (unsigned char *)&g_BtlSquareGilText, 5, 0.401f);
-    Menu_DrawEncodedString2x(0x90, 0x194, (unsigned char *)&g_BtlSquareAfterText, 5, 0.401f);
-    Menu_DrawEncodedString2x(0x90, 0x1B2, (unsigned char *)g_BtlSquareGilOnHandText, 5, 0.401f);
-    Menu_DrawDecimalNumber2x(0x108, 0x186, (int)g_BtlMenuGilAmount, 0xA, 7, 0.401f);
-    Menu_DrawDecimalNumber2x(0x108, 0x19E, gSavemap.gil - (int)g_BtlMenuGilAmount, 0xA, 7, 0.401f);
-    Menu_DrawDecimalNumber2x(0x108, 0x1B6, gSavemap.gil, 0xA, 7, 0.401f);
-    quadLeft = 0x6A;
-    quadTop = 0x162;
+    Menu_DrawEncodedString2x(120, 360, (unsigned char *)g_BtlSquareGilPromptText, 7, 0.401f);
+    Menu_DrawEncodedString2x(144, 386, (unsigned char *)&g_BtlSquareGilText, 5, 0.401f);
+    Menu_DrawEncodedString2x(144, 404, (unsigned char *)&g_BtlSquareAfterText, 5, 0.401f);
+    Menu_DrawEncodedString2x(144, 434, (unsigned char *)g_BtlSquareGilOnHandText, 5, 0.401f);
+    Menu_DrawDecimalNumber2x(264, 390, (int)g_BtlMenuGilAmount, 10, 7, 0.401f);
+    Menu_DrawDecimalNumber2x(264, 414, gSavemap.gil - (int)g_BtlMenuGilAmount, 10, 7, 0.401f);
+    Menu_DrawDecimalNumber2x(264, 438, gSavemap.gil, 10, 7, 0.401f);
+    quadLeft = 106;
+    quadTop = 354;
     if (Menu_IsTextSubsystemReady() != 0) {
         if (AcquireBatchNode(1, g_BtlMenuRenderObjZeni) != 0) {
             uOffset = (float)((g_BtlMenuFrameCounter << 1 & 0x3F) + 3) * 0.015625f;
@@ -1802,15 +1802,15 @@ void __cdecl Battle_DrawGilAmountPrompt1x(void)
     GfxTlVertex *vertexC;
     int quadTop;
 
-    Menu_DrawEncodedString1x(0x3C, 0xB4, (unsigned char *)g_BtlSquareGilPromptText, 7, 0.401f);
-    Menu_DrawEncodedString1x(0x48, 0xC1, (unsigned char *)&g_BtlSquareGilText, 5, 0.401f);
-    Menu_DrawEncodedString1x(0x48, 0xCA, (unsigned char *)&g_BtlSquareAfterText, 5, 0.401f);
-    Menu_DrawEncodedString1x(0x48, 0xD9, (unsigned char *)g_BtlSquareGilOnHandText, 5, 0.401f);
-    Menu_DrawDecimalNumber1x(0x84, 0xC3, (int)g_BtlMenuGilAmount, 0xA, 7, 0.401f);
-    Menu_DrawDecimalNumber1x(0x84, 0xCF, gSavemap.gil - (int)g_BtlMenuGilAmount, 0xA, 7, 0.401f);
-    Menu_DrawDecimalNumber1x(0x84, 0xDB, gSavemap.gil, 0xA, 7, 0.401f);
-    quadLeft = g_MenuViewportX + 0x35;
-    quadTop = g_MenuViewportY + 0xB1;
+    Menu_DrawEncodedString1x(60, 180, (unsigned char *)g_BtlSquareGilPromptText, 7, 0.401f);
+    Menu_DrawEncodedString1x(72, 193, (unsigned char *)&g_BtlSquareGilText, 5, 0.401f);
+    Menu_DrawEncodedString1x(72, 202, (unsigned char *)&g_BtlSquareAfterText, 5, 0.401f);
+    Menu_DrawEncodedString1x(72, 217, (unsigned char *)g_BtlSquareGilOnHandText, 5, 0.401f);
+    Menu_DrawDecimalNumber1x(132, 195, (int)g_BtlMenuGilAmount, 0xA, 7, 0.401f);
+    Menu_DrawDecimalNumber1x(132, 207, gSavemap.gil - (int)g_BtlMenuGilAmount, 0xA, 7, 0.401f);
+    Menu_DrawDecimalNumber1x(132, 219, gSavemap.gil, 0xA, 7, 0.401f);
+    quadLeft = g_MenuViewportX + 53;
+    quadTop = g_MenuViewportY + 177;
     if (Menu_IsTextSubsystemReady() != 0) {
         if (AcquireBatchNode(1, g_BtlMenuRenderObjZeni) != 0) {
             uOffset = (float)((g_BtlMenuFrameCounter << 1 & 0x3F) + 3) * 0.015625f;
@@ -1882,7 +1882,7 @@ void __cdecl Battle_DrawPartyHudRows2x(void)
         }
         v.flag = (g_BattleScene.actors[v.i].statusFlags & BATTLE_SCENE_ACTOR_KO) == 0;
         Menu_DrawEncodedString2x(
-            0xb0, v.i * 0x20 + 0x174,
+            176, v.i * 0x20 + 0x174,
             (unsigned char *)&gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[v.i]]].name,
             ((v.flag ? -1 : 0) & 5U) + 2, 0.301f);
     }
@@ -1895,26 +1895,26 @@ void __cdecl Battle_DrawPartyHudRows2x(void)
         case BATTLE_USE_CONDITION_HP:
             if (v.flag != 0) {
                 Menu_DrawDecimalNumber2x(
-                    0x196, v.i * 0x20 + 0x178,
+                    406, v.i * 32 + 0x178,
                     g_BtlGaugeHpValues[v.i] >> 8, 4,
                     ((g_BtlGaugeHpValues[v.i] >> 8) >
                      v.stats[v.i].maxHp / 4) +
                         6,
                     0.301f);
             } else {
-                Menu_DrawDecimalNumber2x(0x196, v.i * 0x20 + 0x178,
+                Menu_DrawDecimalNumber2x(406, v.i * 32 + 0x178,
                                   g_BtlGaugeHpValues[v.i] >> 8, 4, 2,
                                   0.301f);
             }
-            Menu_DrawAtlasQuad2x(0x1ce, v.i * 0x20 + 0x178, 0xd8, 0, 4, 8,
+            Menu_DrawAtlasQuad2x(462, v.i * 32 + 0x178, 0xd8, 0, 4, 8,
                                  1, 0, 0, 0.301f);
             Menu_DrawDecimalNumber2x(
-                0x1d6, v.i * 0x20 + 0x178,
+                470, v.i * 0x20 + 0x178,
                 v.stats[v.i].maxHp, 4,
                 (((v.flag != 0) ? -1 : 0) & 5U) + 2, 0.301f);
-            v.bar.x = 0x196;
-            v.bar.y = (short)(v.i * 0x20 + 0x188);
-            v.bar.width = 0x78;
+            v.bar.x = 406;
+            v.bar.y = (short)(v.i * 32 + 392);
+            v.bar.width = 120;
             v.bar.height = 2;
             v.bar.low = (short)(g_BtlGaugeHpLow[v.i] >> 8);
             v.bar.high = (short)(g_BtlGaugeHpHigh[v.i] >> 8);
@@ -1926,26 +1926,26 @@ void __cdecl Battle_DrawPartyHudRows2x(void)
         case BATTLE_USE_CONDITION_MP:
             if (v.flag != 0) {
                 Menu_DrawDecimalNumber2x(
-                    0x196, v.i * 0x20 + 0x178,
+                    406, v.i * 32 + 0x178,
                     g_BtlGaugeMpValues[v.i] >> 8, 4,
                     ((g_BtlGaugeMpValues[v.i] >> 8) >
                      v.stats[v.i].maxMp / 4) +
                         6,
                     0.301f);
             } else {
-                Menu_DrawDecimalNumber2x(0x196, v.i * 0x20 + 0x178,
+                Menu_DrawDecimalNumber2x(406, v.i * 32 + 0x178,
                                   g_BtlGaugeMpValues[v.i] >> 8, 4, 2,
                                   0.301f);
             }
-            Menu_DrawAtlasQuad2x(0x1ce, v.i * 0x20 + 0x178, 0xd8, 0, 4, 8,
+            Menu_DrawAtlasQuad2x(462, v.i * 32 + 0x178, 0xd8, 0, 4, 8,
                                  1, 0, 0, 0.301f);
             Menu_DrawDecimalNumber2x(
-                0x1d6, v.i * 0x20 + 0x178,
+                470, v.i * 0x20 + 0x178,
                 v.stats[v.i].maxMp, 4,
                 (((v.flag != 0) ? -1 : 0) & 5U) + 2, 0.301f);
-            v.bar.x = 0x196;
-            v.bar.y = (short)(v.i * 0x20 + 0x188);
-            v.bar.width = 0x78;
+            v.bar.x = 406;
+            v.bar.y = (short)(v.i * 32 + 392);
+            v.bar.width = 120;
             v.bar.height = 2;
             v.bar.low = (short)(g_BtlGaugeMpLow[v.i] >> 8);
             v.bar.high = (short)(g_BtlGaugeMpHigh[v.i] >> 8);
@@ -1963,13 +1963,13 @@ void __cdecl Battle_DrawPartyHudRows2x(void)
                  g_BattlePartyStatusIconMasks[v.i] != 0)) {
                 do {
                     g_BattleHudStatusIconCycles[v.i]++;
-                    g_BattleHudStatusIconCycles[v.i] %= 0x1b;
+                    g_BattleHudStatusIconCycles[v.i] %= 27;
                 } while ((((unsigned int *)&g_BattlePartyStatusIconMasks)[v.i] &
                           (1 << g_BattleHudStatusIconCycles[v.i])) == 0);
             }
             if (g_BattlePartyStatusIconMasks[v.i] != 0) {
                 Menu_DrawEncodedString2x(
-                    0x16c, v.i * 0x20 + 0x174,
+                    364, v.i * 0x20 + 0x174,
                     (unsigned char *)&g_BtlStatusNameTable +
                         g_BattleHudStatusIconCycles[v.i] * 10,
                     3, 0.301f);
@@ -1977,19 +1977,19 @@ void __cdecl Battle_DrawPartyHudRows2x(void)
             break;
         }
     }
-    Menu_DrawAtlasQuad2x(0xac, 0x16a, 0x80, 0x10, 0x1a, 5, 1, 0, 0,
+    Menu_DrawAtlasQuad2x(172, 362, 0x80, 0x10, 26, 5, 1, 0, 0,
                          0.301f);
     switch (g_BattleSelectedUseCondition) {
     case BATTLE_USE_CONDITION_HP:
-        Menu_DrawAtlasQuad2x(0x19e, 0x16a, 0x50, 0, 0x10, 5, 1, 0, 0,
+        Menu_DrawAtlasQuad2x(414, 362, 0x50, 0, 16, 5, 1, 0, 0,
                              0.301f);
         break;
     case BATTLE_USE_CONDITION_MP:
-        Menu_DrawAtlasQuad2x(0x19e, 0x16a, 0x60, 0, 0x10, 5, 1, 0, 0,
+        Menu_DrawAtlasQuad2x(414, 362, 0x60, 0, 16, 5, 1, 0, 0,
                              0.301f);
         break;
     case BATTLE_USE_CONDITION_STATUS:
-        Menu_DrawAtlasQuad2x(0x164, 0x16a, 0x80, 0x18, 0x20, 5, 1, 0, 0,
+        Menu_DrawAtlasQuad2x(356, 362, 0x80, 0x18, 32, 5, 1, 0, 0,
                              0.301f);
         break;
     }
@@ -2020,7 +2020,7 @@ void __cdecl Battle_DrawPartyHudRows1x(void)
         }
         v.flag = (g_BattleScene.actors[v.i].statusFlags & BATTLE_SCENE_ACTOR_KO) == 0;
         Menu_DrawEncodedString1x(
-            0x58, v.i * 0x10 + 0xba,
+            88, v.i * 0x10 + 0xba,
             (unsigned char *)&gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[v.i]]].name,
             ((v.flag ? -1 : 0) & 5U) + 2, 0.301f);
     }
@@ -2033,26 +2033,26 @@ void __cdecl Battle_DrawPartyHudRows1x(void)
         case BATTLE_USE_CONDITION_HP:
             if (v.flag != 0) {
                 Menu_DrawDecimalNumber1x(
-                    0xcb, v.i * 0x10 + 0xbc,
+                    203, v.i * 16 + 0xbc,
                     g_BtlGaugeHpValues[v.i] >> 8, 4,
                     ((g_BtlGaugeHpValues[v.i] >> 8) >
                      v.stats[v.i].maxHp / 4) +
                         6,
                     0.301f);
             } else {
-                Menu_DrawDecimalNumber1x(0xcb, v.i * 0x10 + 0xbc,
+                Menu_DrawDecimalNumber1x(203, v.i * 16 + 0xbc,
                                     g_BtlGaugeHpValues[v.i] >> 8, 4, 2,
                                     0.301f);
             }
-            Menu_DrawAtlasQuad1x(0xe7, v.i * 0x10 + 0xbc, 0xd8, 0, 4, 8, 1,
+            Menu_DrawAtlasQuad1x(231, v.i * 16 + 0xbc, 216, 0, 4, 8, 1,
                                  0, 0, 0.301f);
             Menu_DrawDecimalNumber1x(
-                0xeb, v.i * 0x10 + 0xbc,
+                235, v.i * 0x10 + 0xbc,
                 v.stats[v.i].maxHp, 4,
                 ((v.flag ? -1 : 0) & 5U) + 2, 0.301f);
-            v.bar.x = 0xcb;
-            v.bar.y = (short)(v.i * 0x10 + 0xc4);
-            v.bar.width = 0x3c;
+            v.bar.x = 203;
+            v.bar.y = (short)(v.i * 16 + 196);
+            v.bar.width = 60;
             v.bar.height = 1;
             v.bar.low = (short)(g_BtlGaugeHpLow[v.i] >> 8);
             v.bar.high = (short)(g_BtlGaugeHpHigh[v.i] >> 8);
@@ -2064,26 +2064,26 @@ void __cdecl Battle_DrawPartyHudRows1x(void)
         case BATTLE_USE_CONDITION_MP:
             if (v.flag != 0) {
                 Menu_DrawDecimalNumber1x(
-                    0xcb, v.i * 0x10 + 0xbc,
+                    203, v.i * 16 + 0xbc,
                     g_BtlGaugeMpValues[v.i] >> 8, 4,
                     ((g_BtlGaugeMpValues[v.i] >> 8) >
                      v.stats[v.i].maxMp / 4) +
                         6,
                     0.301f);
             } else {
-                Menu_DrawDecimalNumber1x(0xcb, v.i * 0x10 + 0xbc,
+                Menu_DrawDecimalNumber1x(203, v.i * 16 + 0xbc,
                                     g_BtlGaugeMpValues[v.i] >> 8, 4, 2,
                                     0.301f);
             }
-            Menu_DrawAtlasQuad1x(0xe7, v.i * 0x10 + 0xbc, 0xd8, 0, 4, 8, 1,
+            Menu_DrawAtlasQuad1x(231, v.i * 16 + 0xbc, 216, 0, 4, 8, 1,
                                  0, 0, 0.301f);
             Menu_DrawDecimalNumber1x(
-                0xeb, v.i * 0x10 + 0xbc,
+                235, v.i * 0x10 + 0xbc,
                 v.stats[v.i].maxMp, 4,
                 ((v.flag ? -1 : 0) & 5U) + 2, 0.301f);
-            v.bar.x = 0xcb;
-            v.bar.y = (short)(v.i * 0x10 + 0xc4);
-            v.bar.width = 0x3c;
+            v.bar.x = 203;
+            v.bar.y = (short)(v.i * 16 + 196);
+            v.bar.width = 60;
             v.bar.height = 1;
             v.bar.low = (short)(g_BtlGaugeMpLow[v.i] >> 8);
             v.bar.high = (short)(g_BtlGaugeMpHigh[v.i] >> 8);
@@ -2101,13 +2101,13 @@ void __cdecl Battle_DrawPartyHudRows1x(void)
                  g_BattlePartyStatusIconMasks[v.i] != 0)) {
                 do {
                     g_BattleHudStatusIconCycles[v.i]++;
-                    g_BattleHudStatusIconCycles[v.i] %= 0x1b;
+                    g_BattleHudStatusIconCycles[v.i] %= 27;
                 } while ((((unsigned int *)&g_BattlePartyStatusIconMasks)[v.i] &
                           (1 << g_BattleHudStatusIconCycles[v.i])) == 0);
             }
             if (g_BattlePartyStatusIconMasks[v.i] != 0) {
                 Menu_DrawEncodedString1x(
-                    0xb6, v.i * 0x10 + 0xba,
+                    182, v.i * 0x10 + 0xba,
                     (unsigned char *)&g_BtlStatusNameTable +
                         g_BattleHudStatusIconCycles[v.i] * 10,
                     3, 0.301f);
@@ -2115,19 +2115,19 @@ void __cdecl Battle_DrawPartyHudRows1x(void)
             break;
         }
     }
-    Menu_DrawAtlasQuad1x(0x56, 0xb5, 0x80, 0x10, 0x1a, 5, 1, 0, 0,
+    Menu_DrawAtlasQuad1x(86, 181, 128, 16, 26, 5, 1, 0, 0,
                          0.301f);
     switch (g_BattleSelectedUseCondition) {
     case BATTLE_USE_CONDITION_HP:
-        Menu_DrawAtlasQuad1x(0xcf, 0xb5, 0x50, 0, 0x10, 5, 1, 0, 0,
+        Menu_DrawAtlasQuad1x(207, 181, 80, 0, 16, 5, 1, 0, 0,
                              0.301f);
         break;
     case BATTLE_USE_CONDITION_MP:
-        Menu_DrawAtlasQuad1x(0xcf, 0xb5, 0x60, 0, 0x10, 5, 1, 0, 0,
+        Menu_DrawAtlasQuad1x(207, 181, 96, 0, 16, 5, 1, 0, 0,
                              0.301f);
         break;
     case BATTLE_USE_CONDITION_STATUS:
-        Menu_DrawAtlasQuad1x(0xb2, 0xb5, 0x80, 0x18, 0x20, 5, 1, 0, 0,
+        Menu_DrawAtlasQuad1x(178, 181, 128, 24, 32, 5, 1, 0, 0,
                              0.301f);
         break;
     }
@@ -2162,7 +2162,7 @@ void Battle_DrawControlledEnemyActionList2x(void)
     }
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_MANIP_ACTION_LIST);
     for (i = 0; i < num; i++) {
-        Menu_DrawEncodedString2x(0x74, ypos + i * 0x20 + 0x160,
+        Menu_DrawEncodedString2x(116, ypos + i * 0x20 + 0x160,
                           (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ENEMY_ATTACK, tab[(list[5] + i) * 6], 8),
                           7, 0.501f);
     }
@@ -2199,7 +2199,7 @@ void Battle_DrawControlledEnemyActionList1x(void)
     }
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_MANIP_ACTION_LIST);
     for (i = 0; i < num; i++) {
-        Menu_DrawEncodedString1x(0x3a, ypos + i * 0x10 + 0xb0,
+        Menu_DrawEncodedString1x(58, ypos + i * 0x10 + 0xb0,
                              (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ENEMY_ATTACK, tab[(list[5] + i) * 6],
                                                  8),
                              7, 0.501f);
@@ -2263,7 +2263,7 @@ void Menu_DrawCaitReelPanel2x(void)
     } s; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_CAIT_SITH_SLOTS);
-    Menu_DrawTifaReelFadeBands2x(0xD8, 0x162, 0xC0, 100);
+    Menu_DrawTifaReelFadeBands2x(216, 354, 192, 100);
     for (s.reelIdx = 0; s.reelIdx < 3; s.reelIdx++) {
         if (g_BtlGaugePartySlots[s.reelIdx] == 0) {
             g_BtlReelPositions[s.reelIdx]++;
@@ -2310,8 +2310,8 @@ void Menu_DrawCaitReelPanel2x(void)
                    (g_BtlReelPositions[s.reelIdx] & (g_BtlSquareData3[g_BtlReelSpeedIndex] - 1));
         s.digit = (g_BtlReelPositions[s.reelIdx] >> (g_BtlReelSpeedIndex + 1)) & 0xF;
         for (s.rowIdx = 0; s.rowIdx < 3; s.rowIdx++) {
-            s.drawX = s.reelIdx * 0x40 + 0xD8;
-            s.drawY = s.offset + 0x104 + s.rowIdx * 0x60;
+            s.drawX = s.reelIdx * 64 + 216;
+            s.drawY = s.offset + 260 + s.rowIdx * 96;
             s.arg3 = *(unsigned short *)&g_BtlSquareData2[0x60 + (s.reelIdx << 5) +
                                                       g_BtlSquareData1[(s.reelIdx << 4) + ((s.rowIdx - s.digit) & 0xF)] * 4];
             s.arg4 = *(unsigned short *)&g_BtlSquareData2[0x62 + (s.reelIdx << 5) +
@@ -2402,7 +2402,7 @@ void Menu_DrawCaitReelPanel1x(void)
     } s; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_CAIT_SITH_SLOTS);
-    Menu_DrawTifaReelFadeBands1x(0x6C, 0xB1, 0x60, 50);
+    Menu_DrawTifaReelFadeBands1x(108, 177, 96, 50);
     for (s.reelIdx = 0; s.reelIdx < 3; s.reelIdx++) {
         if (g_BtlGaugePartySlots[s.reelIdx] == 0) {
             g_BtlReelPositions[s.reelIdx]++;
@@ -2647,7 +2647,7 @@ void __cdecl Menu_TifaReelArmAndBuildLimitList(void)
         g_BtlGaugePartySlots[i] = 0;
     }
     g_BtlReelStopIndex = 0;
-    g_BtlReelCountdown = 0xa;
+    g_BtlReelCountdown = 10;
     g_BtlReelSpeedIndex = 2;
     switch (gSavemap.chars[2].limitLevel) {
     case CHAR_LIMIT_LEVEL_1:
@@ -2660,7 +2660,7 @@ void __cdecl Menu_TifaReelArmAndBuildLimitList(void)
         limit = 9;
         break;
     case CHAR_LIMIT_LEVEL_4:
-        limit = 0xa;
+        limit = 10;
         break;
     }
     for (g_TifaReelCount = i = 0; i < limit; i++) {
@@ -2705,9 +2705,9 @@ void __cdecl Menu_DrawTifaReelPanel2x(void)
     int u;
     int panelLeft;
 
-    panelLeft = 0x140 - (g_TifaReelCount * 0x40) / 2;
+    panelLeft = 320 - (g_TifaReelCount * 64) / 2;
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_TIFA_SLOTS);
-    Menu_DrawTifaReelFadeBands2x(panelLeft, 0x162, g_TifaReelCount << 6, 0x64);
+    Menu_DrawTifaReelFadeBands2x(panelLeft, 354, g_TifaReelCount << 6, 100);
     for (reel = 0; reel < g_TifaReelCount; reel++) {
         for (srcTileIndex = 0; srcTileIndex < 5; srcTileIndex++) {
             switch (g_BtlSquareHandicapTexts[(g_TifaReelEntryIndex[reel] << 4) +
@@ -2724,14 +2724,14 @@ void __cdecl Menu_DrawTifaReelPanel2x(void)
             }
             if (g_BtlGaugePartySlots[reel] != 0) {
                 Menu_DrawAtlasQuad2x(
-                    panelLeft + reel * 0x40,
-                    srcTileIndex * 0x20 + 0x144 + (g_BtlReelPositions[reel] & 3) * 8,
-                    tileV, 0x40, 0x20, 0x10, 0xb, 0, 0, 0.401f);
+                    panelLeft + reel * 64,
+                    srcTileIndex * 32 + 0x144 + (g_BtlReelPositions[reel] & 3) * 8,
+                    tileV, 0x40, 32, 16, 0xb, 0, 0, 0.401f);
             } else {
                 Menu_DrawAtlasQuad2x(
-                    panelLeft + reel * 0x40,
-                    srcTileIndex * 0x20 + 0x144 + (g_BtlReelPositions[reel] & 7) * 4,
-                    tileV, 0x40, 0x20, 0x10, 0xb, 0, 0, 0.401f);
+                    panelLeft + reel * 64,
+                    srcTileIndex * 32 + 0x144 + (g_BtlReelPositions[reel] & 7) * 4,
+                    tileV, 0x40, 32, 16, 0xb, 0, 0, 0.401f);
             }
         }
     }
@@ -2776,9 +2776,9 @@ void __cdecl Menu_DrawTifaReelPanel1x(void)
     int u;
     int panelLeft;
 
-    panelLeft = 0xa0 - (g_TifaReelCount * 0x20) / 2;
+    panelLeft = 160 - (g_TifaReelCount * 32) / 2;
     Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_TIFA_SLOTS);
-    Menu_DrawTifaReelFadeBands1x(panelLeft, 0xb1, g_TifaReelCount << 5, 0x32);
+    Menu_DrawTifaReelFadeBands1x(panelLeft, 177, g_TifaReelCount << 5, 50);
     for (reel = 0; reel < g_TifaReelCount; reel++) {
         for (srcTileIndex = 0; srcTileIndex < 5; srcTileIndex++) {
             switch (g_BtlSquareHandicapTexts[(g_TifaReelEntryIndex[reel] << 4) +
@@ -2795,14 +2795,14 @@ void __cdecl Menu_DrawTifaReelPanel1x(void)
             }
             if (g_BtlGaugePartySlots[reel] != 0) {
                 Menu_DrawAtlasQuad1x(
-                    panelLeft + reel * 0x20,
-                    srcTileIndex * 0x10 + 0xa2 + (g_BtlReelPositions[reel] & 3) * 4,
-                    tileV, 0x40, 0x20, 0x10, 0xb, 0, 0, 0.401f);
+                    panelLeft + reel * 32,
+                    srcTileIndex * 16 + 0xa2 + (g_BtlReelPositions[reel] & 3) * 4,
+                    tileV, 64, 32, 16, 0xb, 0, 0, 0.401f);
             } else {
                 Menu_DrawAtlasQuad1x(
-                    panelLeft + reel * 0x20,
-                    srcTileIndex * 0x10 + 0xa2 + (g_BtlReelPositions[reel] & 7) * 2,
-                    tileV, 0x40, 0x20, 0x10, 0xb, 0, 0, 0.401f);
+                    panelLeft + reel * 32,
+                    srcTileIndex * 16 + 0xa2 + (g_BtlReelPositions[reel] & 7) * 2,
+                    tileV, 64, 32, 16, 0xb, 0, 0, 0.401f);
             }
         }
     }
@@ -2904,7 +2904,7 @@ void __cdecl Mini_SlotLoadReelSymbols(void)
                 base[g_BtlMenuSlotSeed * 7 * 3 + n * 7 + g_BtlMenuSlotIndex];
         }
     } else {
-        for (n = 0; n < 0x15; n++) {
+        for (n = 0; n < 21; n++) {
             g_BtlGaugeAnimStates[n] = 0;
         }
     }
@@ -2948,29 +2948,29 @@ void __cdecl Mini_DrawSlotScreen(void)
     switch (g_BtlMenuSlotScreenState) {
     case BATTLE_SLOT_SCREEN_CHOOSE:
         gSavemap.slotIndex = g_BtlMenuSlotIndex + 1;
-        Menu_DrawEncodedString2x(0x20, 0x16C, &g_BtlSquareHandicapTexts[0xb8], 7, 0.401f);
-        Menu_DrawEncodedString2x(0x5C, 0x194, &g_BtlSquareHandicapTexts[0xc8], 7, 0.401f);
+        Menu_DrawEncodedString2x(32, 364, &g_BtlSquareHandicapTexts[0xb8], 7, 0.401f);
+        Menu_DrawEncodedString2x(92, 404, &g_BtlSquareHandicapTexts[0xc8], 7, 0.401f);
         packedSum = gSavemap.slotTotalByte0 + (gSavemap.slotTotalByte1 << 8) +
-            (gSavemap.slotTotalByte2 << 0x10) + (gSavemap.slotTotalByte3 << 0x18);
-        Menu_DrawEncodedString2x(0x160, 0x174, &g_BtlSquareHandicapTexts[0xe0], 5, 0.401f);
-        Menu_DrawDecimalNumber2x(0x1E0, 0x194, packedSum, 10, 7, 0.401f);
+            (gSavemap.slotTotalByte2 << 16) + (gSavemap.slotTotalByte3 << 24);
+        Menu_DrawEncodedString2x(352, 372, &g_BtlSquareHandicapTexts[0xe0], 5, 0.401f);
+        Menu_DrawDecimalNumber2x(480, 404, packedSum, 10, 7, 0.401f);
         break;
     case BATTLE_SLOT_SCREEN_SPINNING:
         z = g_BtlMenuSlotIndex + 1;
-        subPanelLeft = 0x140 - z * 0x40 / 2;
+        subPanelLeft = 320 - z * 64 / 2;
         Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_ARENA_SLOT);
-        Menu_DrawTifaReelFadeBands2x(subPanelLeft, 0x162, z * 0x40, 0x64);
+        Menu_DrawTifaReelFadeBands2x(subPanelLeft, 354, z * 64, 100);
         for (reelIndexStep = 0; reelIndexStep < z; reelIndexStep++) {
             for (iconIdx = 0; iconIdx < 4; iconIdx++) {
                 faceIndex = g_BtlGaugeAnimStates[reelIndexStep * 3 +
                                  abs((iconIdx - 1 - g_TifaReelScrollSteps[reelIndexStep] / 8) % 3)] >>
-                    0x18;
+                    24;
                 atlasU = faceIndex % 5;
                 atlasV = faceIndex / 5;
                 atlasU <<= 6;
                 atlasV <<= 6;
-                iconY = iconIdx * 0x40 + (g_TifaReelScrollSteps[reelIndexStep] & 7) * 8 + 0xF4;
-                reelX = subPanelLeft + reelIndexStep * 0x40;
+                iconY = iconIdx * 64 + (g_TifaReelScrollSteps[reelIndexStep] & 7) * 8 + 244;
+                reelX = subPanelLeft + reelIndexStep * 64;
                 Mini_DrawSlotReelIcon2x(reelX, iconY, atlasU, atlasV, g_BtlSquareHandicapTexts[0xa0 + faceIndex]);
             }
         }
@@ -2993,22 +2993,22 @@ void __cdecl Mini_DrawSlotScreen(void)
         break;
     case BATTLE_SLOT_SCREEN_START_PROMPT:
         msgWidth = Menu_MeasureEncodedString2x(&g_BtlSquareHandicapTexts[0xf6]);
-        Menu_DrawEncodedString2x(0x140 - msgWidth / 2, 0x188, &g_BtlSquareHandicapTexts[0xf6],
+        Menu_DrawEncodedString2x(0x140 - msgWidth / 2, 392, &g_BtlSquareHandicapTexts[0xf6],
                           g_BtlMenuFrameCounter & 7, 0.401f);
         break;
     case BATTLE_SLOT_SCREEN_RESULT:
-        Menu_DrawEncodedString2x(0x112, 0x194, &g_BtlSquareHandicapTexts[0x138], 7, 0.401f);
-        Menu_DrawEncodedString2x(0xAA, 0x174,
+        Menu_DrawEncodedString2x(274, 404, &g_BtlSquareHandicapTexts[0x138], 7, 0.401f);
+        Menu_DrawEncodedString2x(170, 372,
                           &g_BtlSquareHandicapTexts[0x138] +
                               ((g_BtlGaugeAnimStates[g_BtlMenuSlotIndex * 3 +
                                              abs((1 - g_TifaReelScrollSteps[g_BtlMenuSlotIndex] / 8) % 3)] >>
-                                0x18) +
+                                24) +
                                1) *
                                   0x20,
                           g_BtlMenuFrameCounter & 7, 0.401f);
         break;
     case BATTLE_SLOT_SCREEN_INTRO:
-        Menu_DrawEncodedString2x(0x140 - Menu_MeasureEncodedString2x(&g_BtlSquareHandicapTexts[0x10c]) / 2, 0x174,
+        Menu_DrawEncodedString2x(0x140 - Menu_MeasureEncodedString2x(&g_BtlSquareHandicapTexts[0x10c]) / 2, 372,
                           &g_BtlSquareHandicapTexts[0x10c], g_BtlMenuFrameCounter & 7, 0.401f);
         break;
     }
@@ -3050,18 +3050,18 @@ void Mini_DrawSlotScreen1x(void)
     switch (g_BtlMenuSlotScreenState) {
     case BATTLE_SLOT_SCREEN_CHOOSE:
         gSavemap.slotIndex = g_BtlMenuSlotIndex + 1;
-        Menu_DrawEncodedString1x(0x10, 0xb6, &g_BtlSquareHandicapTexts[0xb8], 7, 0.401f);
-        Menu_DrawEncodedString1x(0x2e, 0xca, &g_BtlSquareHandicapTexts[0xc8], 7, 0.401f);
+        Menu_DrawEncodedString1x(16, 182, &g_BtlSquareHandicapTexts[0xb8], 7, 0.401f);
+        Menu_DrawEncodedString1x(46, 202, &g_BtlSquareHandicapTexts[0xc8], 7, 0.401f);
         v.total = gSavemap.slotTotalByte0 + (gSavemap.slotTotalByte1 << 8) +
                   (gSavemap.slotTotalByte2 << 16) + (gSavemap.slotTotalByte3 << 24);
-        Menu_DrawEncodedString1x(0xb0, 0xba, &g_BtlSquareHandicapTexts[0xe0], 5, 0.401f);
-        Menu_DrawDecimalNumber1x(0xf0, 0xca, v.total, 10, 7, 0.401f);
+        Menu_DrawEncodedString1x(176, 186, &g_BtlSquareHandicapTexts[0xe0], 5, 0.401f);
+        Menu_DrawDecimalNumber1x(240, 202, v.total, 10, 7, 0.401f);
         break;
     case BATTLE_SLOT_SCREEN_SPINNING:
         v.reels = g_BtlMenuSlotIndex + 1;
-        v.left = 0xa0 - v.reels * 0x20 / 2;
+        v.left = 160 - v.reels * 32 / 2;
         Battle_BeginWindowTextDrawNoOp(BATTLE_MENU_ARENA_SLOT);
-        Menu_DrawTifaReelFadeBands1x(v.left, 0xb1, v.reels * 0x20, 0x32);
+        Menu_DrawTifaReelFadeBands1x(v.left, 177, v.reels * 32, 50);
         if (Menu_IsTextSubsystemReady() && AcquireBatchNode(v.reels * 4, g_BtlMenuRenderObjColo)) {
             for (v.reel = 0; v.reel < v.reels; v.reel++) {
                 for (v.row = 0; v.row < 4; v.row++) {
@@ -3072,8 +3072,8 @@ void Mini_DrawSlotScreen1x(void)
                     v.sourceY = v.icon / 5;
                     v.sourceX <<= 5;
                     v.sourceY <<= 5;
-                    v.drawY = v.row * 0x20 + (g_TifaReelScrollSteps[v.reel] & 7) * 4 + 0x7a;
-                    v.drawX = v.left + v.reel * 0x20;
+                    v.drawY = v.row * 32 + (g_TifaReelScrollSteps[v.reel] & 7) * 4 + 122;
+                    v.drawX = v.left + v.reel * 32;
                     v.texU = (float)v.sourceX * 0.00390625f;
                     v.texV = (float)v.sourceY * 0.00390625f;
                     v.du = v.dv = 0.125f;
@@ -3140,16 +3140,16 @@ void Mini_DrawSlotScreen1x(void)
         break;
     case BATTLE_SLOT_SCREEN_START_PROMPT:
         v.width = Menu_MeasureEncodedString1x(&g_BtlSquareHandicapTexts[0xf6]);
-        Menu_DrawEncodedString1x(0xa0 - v.width / 2, 0xc4, &g_BtlSquareHandicapTexts[0xf6], g_BtlMenuFrameCounter & 7, 0.401f);
+        Menu_DrawEncodedString1x(0xa0 - v.width / 2, 196, &g_BtlSquareHandicapTexts[0xf6], g_BtlMenuFrameCounter & 7, 0.401f);
         break;
     case BATTLE_SLOT_SCREEN_RESULT:
-        Menu_DrawEncodedString1x(0x89, 0xca, &g_BtlSquareHandicapTexts[0x138], 7, 0.401f);
-        Menu_DrawEncodedString1x(0x55, 0xba, &g_BtlSquareHandicapTexts[0x138] + ((g_BtlGaugeAnimStates[g_BtlMenuSlotIndex * 3 + abs((1 - g_TifaReelScrollSteps[g_BtlMenuSlotIndex] / 8) % 3)] >> 24) + 1) * 0x20,
+        Menu_DrawEncodedString1x(137, 202, &g_BtlSquareHandicapTexts[0x138], 7, 0.401f);
+        Menu_DrawEncodedString1x(85, 186, &g_BtlSquareHandicapTexts[0x138] + ((g_BtlGaugeAnimStates[g_BtlMenuSlotIndex * 3 + abs((1 - g_TifaReelScrollSteps[g_BtlMenuSlotIndex] / 8) % 3)] >> 24) + 1) * 0x20,
                              g_BtlMenuFrameCounter & 7, 0.401f);
         break;
     case BATTLE_SLOT_SCREEN_INTRO:
         Menu_DrawEncodedString1x(0xa0 - Menu_MeasureEncodedString1x(&g_BtlSquareHandicapTexts[0x10c]) / 2,
-                             0xba, &g_BtlSquareHandicapTexts[0x10c], g_BtlMenuFrameCounter & 7, 0.401f);
+                             186, &g_BtlSquareHandicapTexts[0x10c], g_BtlMenuFrameCounter & 7, 0.401f);
         break;
     }
 }
@@ -3186,18 +3186,18 @@ void __cdecl Mini_ApplySlotPenalty(void)
 
     which = g_BtlMenuSlotIndex - 1;
     points = gSavemap.slotTotalByte0 + (gSavemap.slotTotalByte1 << 8) +
-             (gSavemap.slotTotalByte2 << 0x10) + (gSavemap.slotTotalByte3 << 0x18);
+             (gSavemap.slotTotalByte2 << 16) + (gSavemap.slotTotalByte3 << 24);
     points = points +
              (g_BtlGaugeAnimStates[which * 3 +
                            abs((1 - g_TifaReelScrollSteps[which] / 8) % 3)] &
               0xffffff);
     gSavemap.slotTotalByte0 = points & 0xff;
     gSavemap.slotTotalByte1 = (points >> 8) & 0xff;
-    gSavemap.slotTotalByte2 = (points >> 0x10) & 0xff;
-    gSavemap.slotTotalByte3 = (points >> 0x18) & 0xff;
+    gSavemap.slotTotalByte2 = (points >> 16) & 0xff;
+    gSavemap.slotTotalByte3 = (points >> 24) & 0xff;
     effect = g_BtlGaugeAnimStates[which * 3 +
                           abs((1 - g_TifaReelScrollSteps[which] / 8) % 3)] >>
-             0x18;
+             24;
     id = Party_GetLastFilledSlotCharId();
     slot = Party_GetLastFilledSlotIndex();
     g_BtlHandicapFlags = 0;
@@ -3220,7 +3220,7 @@ void __cdecl Mini_ApplySlotPenalty(void)
         break;
     case BATTLE_SQUARE_HANDICAP_TIME_X30_DAMAGE:
         gSavemap.chars[id].hp -=
-            Menu_PlaytimeToHoursDigits(gSavemap.seconds) * 0x1e;
+            Menu_PlaytimeToHoursDigits(gSavemap.seconds) * 30;
         break;
     case BATTLE_SQUARE_HANDICAP_DOWN_5_LEVELS:
         gSavemap.chars[id].level -= 5;
@@ -3258,10 +3258,10 @@ void __cdecl Mini_ApplySlotPenalty(void)
         g_BtlHandicapFlags |= BATTLE_SQUARE_HANDICAP_FLAG_TOAD;
         break;
     }
-    if (gSavemap.chars[id].level > 0x64 || gSavemap.chars[id].level == 0) {
+    if (gSavemap.chars[id].level > 100 || gSavemap.chars[id].level == 0) {
         gSavemap.chars[id].level = 1;
     }
-    if (gSavemap.chars[id].hp > 0x270f ||
+    if (gSavemap.chars[id].hp > 9999 ||
         gSavemap.chars[id].hp == 0) {
         gSavemap.chars[id].hp = 1;
     }
@@ -3270,7 +3270,7 @@ void __cdecl Mini_ApplySlotPenalty(void)
     for (i = 0; i < g_BtlMenuSlotIndex; i++) {
         effect = g_BtlGaugeAnimStates[i * 3 +
                               abs((1 - g_TifaReelScrollSteps[i] / 8) % 3)] >>
-                 0x18;
+                 24;
         switch (effect) {
         case BATTLE_SQUARE_HANDICAP_SEAL_ITEM_COMMAND:
             g_BtlHandicapFlags |= BATTLE_SQUARE_HANDICAP_FLAG_ITEM_SEALED;
@@ -3444,9 +3444,9 @@ int __cdecl Battle_MeasureWorriedSecondChoice1x(void)
 // FUNCTION: FF7 0x006e4b3c
 void __cdecl Battle_DrawWorriedChoiceLines2x(void)
 {
-    Menu_DrawEncodedString2x(0x20, 0x16C, g_BtlSquareHandicapTbl[0], 7, 0.401f);
-    Menu_DrawEncodedString2x(0x58, 0x194, g_BtlSquareHandicapTbl[1], 7, 0.401f);
-    Menu_DrawEncodedString2x(Battle_MeasureWorriedSecondChoice2x() + 0x98, 0x194, g_BtlSquareHandicapTbl[2], 7, 0.401f);
+    Menu_DrawEncodedString2x(32, 364, g_BtlSquareHandicapTbl[0], 7, 0.401f);
+    Menu_DrawEncodedString2x(88, 404, g_BtlSquareHandicapTbl[1], 7, 0.401f);
+    Menu_DrawEncodedString2x(Battle_MeasureWorriedSecondChoice2x() + 0x98, 404, g_BtlSquareHandicapTbl[2], 7, 0.401f);
 }
 
 /*
@@ -3457,9 +3457,9 @@ void __cdecl Battle_DrawWorriedChoiceLines2x(void)
 // FUNCTION: FF7 0x006e4b9b
 void __cdecl Battle_DrawWorriedChoiceLines1x(void)
 {
-    Menu_DrawEncodedString1x(0x10, 0xB6, g_BtlSquareHandicapTbl[0], 7, 0.401f);
-    Menu_DrawEncodedString1x(0x2C, 0xCA, g_BtlSquareHandicapTbl[1], 7, 0.401f);
-    Menu_DrawEncodedString1x(Battle_MeasureWorriedSecondChoice1x() + 0x4C, 0xCA, g_BtlSquareHandicapTbl[2], 7, 0.401f);
+    Menu_DrawEncodedString1x(16, 182, g_BtlSquareHandicapTbl[0], 7, 0.401f);
+    Menu_DrawEncodedString1x(44, 202, g_BtlSquareHandicapTbl[1], 7, 0.401f);
+    Menu_DrawEncodedString1x(Battle_MeasureWorriedSecondChoice1x() + 0x4C, 202, g_BtlSquareHandicapTbl[2], 7, 0.401f);
 }
 
 /*
@@ -3490,7 +3490,7 @@ void __cdecl Menu_DrawCaitReelSymbol2x(int posX, int posY, int atlasX, int atlas
     if (Menu_IsTextSubsystemReady() == 0) {
         return;
     }
-    if (atlasY < 0xC0) {
+    if (atlasY < 192) {
         if (AcquireBatchNode(1, g_BtlMenuRenderObjKetcy2a) != 0) {
             uFrom = atlasX * 0.00390625f;
             textureV = atlasY * 0.00390625f;
@@ -3654,7 +3654,7 @@ void __cdecl Mini_DrawSlotReelIcon2x(int posX, int posY, int atlasX, int atlasY,
     if (Menu_IsTextSubsystemReady() == 0) {
         return;
     }
-    if (atlasX < 0x100 && atlasY < 0x100) {
+    if (atlasX < 256 && atlasY < 256) {
         if (AcquireBatchNode(1, g_BtlMenuRenderObjColoa) != 0) {
             uOriginF = atlasX * 0.00390625f;
             textureV = atlasY * 0.00390625f;
@@ -3699,9 +3699,9 @@ void __cdecl Mini_DrawSlotReelIcon2x(int posX, int posY, int atlasX, int atlasY,
             *(char *)g_BtlMenuRenderObjColoa->colorIndex = paletteSel;
             g_BtlMenuRenderObjColoa->paletteIndex = paletteSel;
         }
-    } else if (atlasX > 0xFF && atlasY < 0x100) {
+    } else if (atlasX > 255 && atlasY < 256) {
         if (AcquireBatchNode(1, g_BtlMenuRenderObjColob) != 0) {
-            atlasX -= 0x100;
+            atlasX -= 256;
             textureV = atlasY * 0.00390625f;
             uExtent = 1.0f;
             vSize = 0.25f;
@@ -3746,7 +3746,7 @@ void __cdecl Mini_DrawSlotReelIcon2x(int posX, int posY, int atlasX, int atlasY,
             g_BtlMenuRenderObjColob->paletteIndex = paletteSel;
         }
     } else if (AcquireBatchNode(1, g_BtlMenuRenderObjColoc) != 0) {
-        atlasY -= 0x100;
+        atlasY -= 256;
         uOriginF = atlasX * 0.00390625f;
         uExtent = 0.25f;
         vSize = 1.0f;
@@ -3804,7 +3804,7 @@ void __cdecl Battle_ResetHudGaugeAndReelState(void)
 
     g_BtlSelectedSpellAllCount = 0;
     g_BtlSelectedSpellQuadraLinks = 0;
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         g_BtlGaugeHpLow[i] = 0;
         g_BtlGaugeMpLow[i] = 0;
         g_BtlGaugeHpHigh[i] = 0;

@@ -49,7 +49,7 @@ void __cdecl Battle_InitEnemyCombatants(void)
         g_BattleState.enemyInitCount[slot] = 0;
     }
     for (slot = 0; slot < 6; slot++) {
-        for (inner = 0; inner < 0x20; inner++) {
+        for (inner = 0; inner < 32; inner++) {
             *(int *)&gBattleAiGlobals.actorVars[slot + 4][inner * 4] = 0;
         }
     }
@@ -63,7 +63,7 @@ void __cdecl Battle_InitEnemyCombatants(void)
         recPtr->status = 0;
         recPtr->idlePose = 0xFF;
         g_BattleState.enemyInitSlotId[slot][0] = 0xFF;
-        for (inner = 0; inner < 0x10; inner++) {
+        for (inner = 0; inner < 16; inner++) {
             *(char *)((char *)((int)pActor + inner) + 0x10) = 0;
         }
         for (inner = 0; inner < 8; inner++) {
@@ -127,7 +127,7 @@ void __cdecl Battle_InitEnemyCombatants(void)
                 slotRecord->targetFlags = 0;
                 slotRecord->state = 3;
                 if (attackId != 0xFFFF) {
-                    for (scanIdx = 0; scanIdx < 0x20; scanIdx++) {
+                    for (scanIdx = 0; scanIdx < 32; scanIdx++) {
                         if (g_BattleState.attackIds[scanIdx] == attackId) {
                             aimBits = g_BattleState.attackEntries[scanIdx * 0x1C + 12];
                             if (aimBits != 0) {
@@ -141,7 +141,7 @@ void __cdecl Battle_InitEnemyCombatants(void)
                     }
                 }
             }
-            for (inner = attackSlots; inner < 0x10; inner++) {
+            for (inner = attackSlots; inner < 16; inner++) {
                 pSpareEntry = &g_BattleItemListBlock.enemyActions[slot][inner];
                 pSpareEntry->attackIndex = 0xFF;
                 pSpareEntry->actionKind = 0;

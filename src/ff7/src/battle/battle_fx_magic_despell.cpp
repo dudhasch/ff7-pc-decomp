@@ -247,28 +247,28 @@ void __cdecl BattleFx_MagicSpawnDespellPerTarget(int actor)
 
     pDethperTgt = (BattleFxDespellTarget *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDespellTimelineTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &pDethperTgt->pos.posX);
-    zDepth = g_BattleActorRecords[actor].radius + 0xE0;
-    if (zDepth > 0x4F2) {
-        zDepth = 0x4F2;
+    zDepth = g_BattleActorRecords[actor].radius + 224;
+    if (zDepth > 1266) {
+        zDepth = 1266;
     }
-    range = 0x1F4;
-    scaleFixed = range << 0xC;
+    range = 500;
+    scaleFixed = range << 12;
     pDethperTgt->angle = 0;
     pDethperTgt->angleSpeed = 0x30;
     pDethperTgt->zDepth = zDepth;
-    pDethperTgt->scale = scaleFixed / 0x7D0;
+    pDethperTgt->scale = scaleFixed / 2000;
     pDethperTgt->targetIndex = actor;
     pDethperTgt->targetCount = g_BattleMagicDespellTargetCount;
     g_BattleMagicDespellTargetCount++;
     cameraSlot = (BattleDespellCameraSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDespellCameraOffsetFadeModelTask);
     cameraSlot->pos = pDethperTgt->pos;
     cameraSlot->zDepth = pDethperTgt->zDepth;
-    cameraSlot->scale = scaleFixed / 0x2A3;
+    cameraSlot->scale = scaleFixed / 675;
     cameraSlot = (BattleDespellCameraSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDespellSpawnCameraFacingModelsTask);
     cameraSlot->pos = pDethperTgt->pos;
     cameraSlot->zDepth = pDethperTgt->zDepth;
     cameraSlot->range = range;
-    cameraSlot->scale = scaleFixed / 0x76C;
+    cameraSlot->scale = scaleFixed / 1900;
     cameraSlot->stage = 0;
     mesh = (BattleFxDespellMesh *)Gfx_GetPsxScratchpadPtr(0);
     mesh->meshData = &g_BattleMagicDespellEffectData;
@@ -326,9 +326,9 @@ int * __cdecl BattleFx_MagicDespellComputeTriangleNormals(BattleFxDespellMesh *m
         ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[fragSlot].face[frameFaceIndex].posX = 0;
         CrossProductFixed12(&mesh->edge1, &mesh->edge2, (VECTOR *)&mesh->normalX);
         NormalizeVectorFixed((VECTOR *)&mesh->normalX, (VECTOR *)&mesh->normalX);
-        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[fragSlot].face[frameFaceIndex].stepX = mesh->normalX * 0x180 >> 0xC;
-        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[fragSlot].face[frameFaceIndex].stepY = mesh->normalY * 0x180 >> 0xC;
-        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[fragSlot].face[frameFaceIndex].stepZ = mesh->normalZ * 0x180 >> 0xC;
+        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[fragSlot].face[frameFaceIndex].stepX = mesh->normalX * 0x180 >> 12;
+        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[fragSlot].face[frameFaceIndex].stepY = mesh->normalY * 0x180 >> 12;
+        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[fragSlot].face[frameFaceIndex].stepZ = mesh->normalZ * 0x180 >> 12;
         frameFaceIndex++;
         triHead++;
     }
@@ -370,9 +370,9 @@ int * __cdecl BattleFx_MagicDespellComputeQuadNormals(BattleFxDespellMesh *mesh,
         ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[bufPage].face[normNum].posX = 0;
         CrossProductFixed12(&mesh->edge1, &mesh->edge2, (VECTOR *)&mesh->normalX);
         NormalizeVectorFixed((VECTOR *)&mesh->normalX, (VECTOR *)&mesh->normalX);
-        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[bufPage].face[normNum].stepX = mesh->normalX * 0x180 >> 0xC;
-        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[bufPage].face[normNum].stepY = mesh->normalY * 0x180 >> 0xC;
-        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[bufPage].face[normNum].stepZ = mesh->normalZ * 0x180 >> 0xC;
+        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[bufPage].face[normNum].stepX = mesh->normalX * 0x180 >> 12;
+        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[bufPage].face[normNum].stepY = mesh->normalY * 0x180 >> 12;
+        ((BattleFxDespellFragmentPage *)g_BattleMagicDespellFragmentBuffer)[bufPage].face[normNum].stepZ = mesh->normalZ * 0x180 >> 12;
         normNum++;
         curQuad++;
     }
@@ -429,12 +429,12 @@ void __cdecl BattleFx_MagicDespellTimelineTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    if (frame.slot->frameCounter < 0x21) {
+    if (frame.slot->frameCounter < 33) {
         frame.drawModel = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
         frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleMagicDespellLoadedResTable);
         frame.drawModel->flags = 8;
         frame.drawModel->uvScroll = 0;
-        frame.drawModel->fadeLevel = 0x80;
+        frame.drawModel->fadeLevel = 128;
         frame.drawModel->stateFlags = 0x20;
         frame.drawModel->texturePageBits = 0;
         if (frame.slot->frameCounter < 8) {
@@ -453,19 +453,19 @@ void __cdecl BattleFx_MagicDespellTimelineTask(void)
         frame.timelineRecord->pageSlot = frame.slot->fragmentSlot;
         g_BattleFxActiveDrawListPtr = BattleFx_MagicDespellDrawPsxFragmentStream(frame.timelineRecord, frame.slot->frameCounter - 0x21);
     }
-    if (frame.slot->frameCounter >= 0x35) {
+    if (frame.slot->frameCounter >= 53) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter == 0x2C) {
+    if (frame.slot->frameCounter == 44) {
         Battle_PostActorHitOrHurtMessage(frame.slot->actorIndex);
     }
-    if (frame.slot->frameCounter == 0x1F) {
+    if (frame.slot->frameCounter == 31) {
         BattleFx_StartScreenFlashRamp(1);
     }
-    if (frame.slot->frameCounter == 0x20) {
+    if (frame.slot->frameCounter == 32) {
         BattleFx_FadeOutScreenFlashRamp(4);
     }
     frame.slot->angle += frame.slot->angleSpeed;
@@ -504,7 +504,7 @@ int * __cdecl BattleFx_MagicDespellDrawPsxTexturedFragmentTriangles(BattleFxDesp
     pageSlot = fragment->pageSlot;
     scaleShift = 0xE - fragment->scaleShift;
     if (shade >= 4) {
-        auxColor = (shade - 4) * 0xA0A0A;
+        auxColor = (shade - 4) * 657930;
         if (auxColor > 0x808080) {
             auxColor = 0x808080;
         }
@@ -567,7 +567,7 @@ int * __cdecl BattleFx_MagicDespellDrawPsxTexturedFragmentQuads(BattleFxDespellF
     x = fragment->pageSlot;
     depthLevel = 0xE - fragment->scaleShift;
     if (fadeLevel >= 4) {
-        auxColor = (fadeLevel - 4) * 0xA0A0A;
+        auxColor = (fadeLevel - 4) * 657930;
         if (auxColor > 0x808080) {
             auxColor = 0x808080;
         }
@@ -664,15 +664,15 @@ void __cdecl BattleFx_MagicDespellCameraOffsetFadeModelTask(void)
     frame.drawModel->texturePageBits = 0;
     if (frame.slot->frameCounter < 8) {
         frame.drawModel->fadeLevel = 8 - frame.slot->frameCounter << 9;
-    } else if (frame.slot->frameCounter >= 0x2B) {
-        frame.drawModel->fadeLevel = frame.slot->frameCounter - 0x2B << 9;
+    } else if (frame.slot->frameCounter >= 43) {
+        frame.drawModel->fadeLevel = frame.slot->frameCounter - 43 << 9;
     }
-    if (frame.drawModel->fadeLevel > 0x1000) {
-        frame.drawModel->fadeLevel = 0x1000;
+    if (frame.drawModel->fadeLevel > 4096) {
+        frame.drawModel->fadeLevel = 4096;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0x33) {
+    if (frame.slot->frameCounter >= 51) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -695,13 +695,13 @@ void __cdecl BattleFx_MagicDespellSpawnCameraFacingModelsTask(void)
     if (task->frameCount == g_BattleMagicDespellFrameThresholds[task->stage] && task->stage < 4) {
         pChild = (BattleFxMagicDespellModelState *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDespellDrawCameraFacingModelTask);
         pChild->pos = task->pos;
-        pChild->angle = task->stage << 0xA;
+        pChild->angle = task->stage << 10;
         pChild->angleSpeed = 0x80;
         pChild->offsetZ = task->zDepth;
         pChild->size = (task->size >> 1) + (task->size >> 2);
         pChild->scale = task->scale;
         pChild->tiltSpeed = task->size >> 3;
-        pChild->duration = 0x18 - g_BattleMagicDespellFrameThresholds[task->stage] + 0x1A;
+        pChild->duration = 24 - g_BattleMagicDespellFrameThresholds[task->stage] + 26;
         pChild->stage = task->stage;
         (task->stage)++;
     }
@@ -764,7 +764,7 @@ void __cdecl BattleFx_MagicDespellDrawCameraFacingModelTask(void)
     frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleMagicDespellLoadedResTable);
     frame.drawModel->flags = 8;
     frame.drawModel->uvScroll = 0;
-    frame.drawModel->fadeLevel = 0x80;
+    frame.drawModel->fadeLevel = 128;
     frame.drawModel->stateFlags = 0x20;
     frame.drawModel->texturePageBits = 0;
     if (frame.slot->frameCounter < 8) {

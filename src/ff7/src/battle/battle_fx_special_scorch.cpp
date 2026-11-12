@@ -215,14 +215,14 @@ void __cdecl BattleFx_SpecialBeginScorch(int targetMask, int actorIdx)
     frame.dirX.vz = frame.toCentroidX.vz;
     Gte_BuildLookBasisFromDirection(&frame.toCentroidX.vx, (short *)&g_BattleSpecialScorchDrawListHandle);
     NormalizeVectorFixed(&frame.dirX, &frame.dirX);
-    frame.particle->velocityX = frame.dirX.vx * 0x258 >> 0xC;
-    frame.particle->velocityY = frame.dirX.vy * 0x258 >> 0xC;
-    frame.particle->velocityZ = frame.dirX.vz * 0x258 >> 0xC;
+    frame.particle->velocityX = frame.dirX.vx * 0x258 >> 12;
+    frame.particle->velocityY = frame.dirX.vy * 0x258 >> 12;
+    frame.particle->velocityZ = frame.dirX.vz * 0x258 >> 12;
     frame.particle->actorIdx = actorIdx;
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0x10);
+    Battle_StartFixedPointRamp(0x1000, 16);
 }
 
 /*
@@ -265,7 +265,7 @@ void __cdecl BattleFx_SpecialScorchTimelineTask(void)
         frame.effectSlot->posZ = frame.timeline->posZ;
         Battle_PlaySfxPannedToActor(0x174, (short)frame.timeline->level, 0x40);
     }
-    if (frame.timeline->timer == 0x14) {
+    if (frame.timeline->timer == 20) {
         frame.effectSlot = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialScorchStretchingModelsTask);
         frame.effectSlot->posX = frame.timeline->posX;
         frame.effectSlot->posY = frame.timeline->posY;
@@ -279,18 +279,18 @@ void __cdecl BattleFx_SpecialScorchTimelineTask(void)
         frame.effectSlot->velocityZ = frame.timeline->velocityZ;
         Battle_PlaySfxPannedToActor(0x176, (short)frame.timeline->level, 0x40);
     }
-    if (frame.timeline->timer == 0x14) {
+    if (frame.timeline->timer == 20) {
         Battle_AllocateResourceSlot(BattleFx_SpecialScorchScreenFlashTask);
     }
-    if (frame.timeline->timer == 0x36) {
-        Battle_StartFixedPointRamp(0, 0x10);
+    if (frame.timeline->timer == 54) {
+        Battle_StartFixedPointRamp(0, 16);
     }
-    if (frame.timeline->timer > 0x24 && frame.timeline->timer < 0x2C) {
-        for (frame.actorIdx = 0; frame.actorIdx < 0xA; frame.actorIdx++) {
+    if (frame.timeline->timer > 36 && frame.timeline->timer < 44) {
+        for (frame.actorIdx = 0; frame.actorIdx < 10; frame.actorIdx++) {
             if ((g_BattleSpecialScorchFlashIntensity & 1 << frame.actorIdx) != 0) {
                 frame.effectSlot = (BattleFxSpecialEnergyOrbSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialScorchDriftingAnimatedSpriteTask)];
                 Battle_GetBoneWorldPos(frame.actorIdx, g_BattleActorRecords[frame.actorIdx].targetBone, (short *)((int)frame.effectSlot + 4));
-                frame.offsetX.vy = 0x50;
+                frame.offsetX.vy = 80;
                 frame.offsetX.vz = 0;
                 frame.offsetX.vx = frame.offsetX.vz;
                 frame.rotX.vx = (rand() % 4096);
@@ -306,19 +306,19 @@ void __cdecl BattleFx_SpecialScorchTimelineTask(void)
             }
         }
     }
-    if (frame.timeline->timer == 0x28) {
-        for (frame.actorIdx = 0; frame.actorIdx < 0xA; frame.actorIdx++) {
+    if (frame.timeline->timer == 40) {
+        for (frame.actorIdx = 0; frame.actorIdx < 10; frame.actorIdx++) {
             if ((g_BattleSpecialScorchFlashIntensity & 1 << frame.actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIdx);
             }
         }
         Battle_PlaySfxPannedToActor(0xFA, -1, 0x40);
     }
-    if (frame.timeline->timer > 0x14) {
-        g_BattleCameraFocalPoint.focalPointY += (short)(0x10 - ((frame.timeline->timer % 2) << 5));
+    if (frame.timeline->timer > 20) {
+        g_BattleCameraFocalPoint.focalPointY += (short)(16 - ((frame.timeline->timer % 2) << 5));
     }
     (frame.timeline->timer)++;
-    if (frame.timeline->timer == 0x46) {
+    if (frame.timeline->timer == 70) {
         frame.timeline->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -339,14 +339,14 @@ void __cdecl BattleFx_SpecialScorchScreenFlashTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x10) {
+    if (task->frameCounter < 16) {
         g_BattleSpecialScorchRandomAngle += 0xF;
     }
-    if (task->frameCounter > 0x22) {
+    if (task->frameCounter > 34) {
         g_BattleSpecialScorchRandomAngle -= 0xF;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x32) {
+    if (task->frameCounter == 50) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -391,7 +391,7 @@ void __cdecl BattleFx_SpecialScorchGrowingModelTask(void)
         return;
     }
     (frame.task->step)++;
-    if (frame.task->step == 0x14) {
+    if (frame.task->step == 20) {
         frame.task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -413,9 +413,9 @@ void __cdecl BattleFx_SpecialScorchDriftingAnimatedSpriteTask(void)
     BattleFxPulseOfLifeSprite *task;
 
     task = (BattleFxPulseOfLifeSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    (g_BattleSpecialScorchParamVector2.animTable) = Gfx_ModelTableGetLoadedRecord(0xE, g_BattleSpecialScorchModelToggle);
-    g_BattleSpecialScorchParamVector2.drawObj = Gfx_ModelTableGetSpriteObject(0xE, g_BattleSpecialScorchModelToggle);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x4000, 0);
+    (g_BattleSpecialScorchParamVector2.animTable) = Gfx_ModelTableGetLoadedRecord(14, g_BattleSpecialScorchModelToggle);
+    g_BattleSpecialScorchParamVector2.drawObj = Gfx_ModelTableGetSpriteObject(14, g_BattleSpecialScorchModelToggle);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x4000 /* 4.0 */, 0);
     g_BattleSpecialScorchParamVector2.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecialScorchParamVector2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
@@ -449,15 +449,15 @@ void __cdecl BattleFx_SpecialScorchPulsingSpriteTask(void)
     BattleEnergyOrbPulsingSprite *sprite;
 
     sprite = (BattleEnergyOrbPulsingSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialScorchModelReqMoto.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecialScorchModelToggle);
-    g_BattleSpecialScorchModelReqMoto.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecialScorchModelToggle);
-    pulse = (SinFixed(sprite->frameIndex * 0x33) << 7) >> 0xC;
+    g_BattleSpecialScorchModelReqMoto.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecialScorchModelToggle);
+    g_BattleSpecialScorchModelReqMoto.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecialScorchModelToggle);
+    pulse = (SinFixed(sprite->frameIndex * 51) << 7) >> 12;
     BattleFx_InstallBillboardMatrix(&sprite->billboardMatrix, (pulse << 7) + 0x1000, 0);
     g_BattleSpecialScorchModelReqMoto.frame = sprite->frameIndex % 2;
     g_BattleSpecialScorchLoadedResTable = BattleFx_SubmitSpriteDraw(&g_BattleSpecialScorchModelReqMoto, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialScorchLoadedResTable);
     if (g_BattleIsPaused == 0) {
         (sprite->frameIndex)++;
-        if (sprite->frameIndex == 0x28) {
+        if (sprite->frameIndex == 40) {
             sprite->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -497,7 +497,7 @@ void __cdecl BattleFx_SpecialScorchStretchingModelsTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecialScorchModelReqIsi.fadeLevel = 0x1000 - (g_BattleSpecialScorchLifetimeCounter << 8);
+    g_BattleSpecialScorchModelReqIsi.fadeLevel = 4096 - (g_BattleSpecialScorchLifetimeCounter << 8);
     g_BattleSpecialScorchModelReqIsi.modelDraw = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialScorchModelToggle);
     g_BattleSpecialScorchLoadedResTable = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialScorchModelReqIsi.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialScorchLoadedResTable);
     g_BattleSpecialScorchModelReqIsi.modelDraw = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialScorchModelToggle);
@@ -505,11 +505,11 @@ void __cdecl BattleFx_SpecialScorchStretchingModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.task->frameCount > 0xC) {
+    if (frame.task->frameCount > 12) {
         g_BattleSpecialScorchLifetimeCounter--;
     }
     (frame.task->frameCount)++;
-    if (frame.task->frameCount == 0x14) {
+    if (frame.task->frameCount == 20) {
         frame.task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -536,8 +536,8 @@ void __cdecl BattleFx_SpecialScorchProjectileTask(void)
 #pragma pack(pop)
 
     frame.projectile = (BattleFxEnergyOrbProjectile *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialScorchVectorTrajectory.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecialScorchModelToggle);
-    g_BattleSpecialScorchVectorTrajectory.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecialScorchModelToggle);
+    g_BattleSpecialScorchVectorTrajectory.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecialScorchModelToggle);
+    g_BattleSpecialScorchVectorTrajectory.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecialScorchModelToggle);
     RotMatrix((SVECTOR *)&g_BattleSpecialScorchRotationTrajectory, &frame.modelMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialScorchDrawListHandle, &frame.modelMatrix, &frame.modelMatrix);
     ScaleMatrix(&frame.modelMatrix, g_BattleSpecialScorchScaleTrajectory);
@@ -554,8 +554,8 @@ void __cdecl BattleFx_SpecialScorchProjectileTask(void)
     g_BattleSpecialScorchLoadedResTable = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialScorchVectorTrajectory.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialScorchLoadedResTable);
     g_BattleSpecialScorchVectorTrajectory.modelDraw = Gfx_ModelTableGetRenderObject(4, g_BattleSpecialScorchModelToggle);
     g_BattleSpecialScorchLoadedResTable = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialScorchVectorTrajectory.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialScorchLoadedResTable);
-    BattleFx_InstallBillboardMatrix((char *)frame.projectile + 4, 0x4000, 0);
-    g_BattleSpecialScorchColor2.colorB = g_BattleSpecialScorchScaleCounter * 0x14;
+    BattleFx_InstallBillboardMatrix((char *)frame.projectile + 4, 0x4000 /* 4.0 */, 0);
+    g_BattleSpecialScorchColor2.colorB = g_BattleSpecialScorchScaleCounter * 20;
     g_BattleSpecialScorchColor2.colorG = g_BattleSpecialScorchColor2.colorB;
     g_BattleSpecialScorchColor2.colorR = g_BattleSpecialScorchColor2.colorG;
     g_BattleSpecialScorchColor2.frame = (frame.projectile->frameCount % 2);
@@ -578,23 +578,23 @@ void __cdecl BattleFx_SpecialScorchProjectileTask(void)
         frame.spawnedSlot->posZ = frame.projectile->posZ;
         frame.spawnedSlot->posY = 0;
         g_BattleSpecialScorchTargetMask = (rand() % 4096);
-        frame.spawnedSlot->velocityX = CosFixed(g_BattleSpecialScorchTargetMask) * 0x78 >> 0xC;
-        frame.spawnedSlot->velocityZ = SinFixed(g_BattleSpecialScorchTargetMask) * 0x78 >> 0xC;
-        frame.spawnedSlot->velocityY = -rand() % 0x12C - 0x32;
+        frame.spawnedSlot->velocityX = CosFixed(g_BattleSpecialScorchTargetMask) * 0x78 >> 12;
+        frame.spawnedSlot->velocityZ = SinFixed(g_BattleSpecialScorchTargetMask) * 0x78 >> 12;
+        frame.spawnedSlot->velocityY = -rand() % 300 - 50;
         frame.spawnedSlot->variant = rand() % 7;
         if (frame.projectile->frameCount % 3 == 0) {
             frame.spawnedSlot = (BattleFxEnergyOrbProjectile *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialScorchFallingFadeModelTask);
-            frame.spawnedSlot->posX = frame.projectile->posX + rand() % 0xFA0 + -0x7D0;
-            frame.spawnedSlot->posZ = frame.projectile->posZ + rand() % 0xFA0 + -0x7D0;
+            frame.spawnedSlot->posX = frame.projectile->posX + rand() % 4000 + -2000;
+            frame.spawnedSlot->posZ = frame.projectile->posZ + rand() % 4000 + -2000;
             frame.spawnedSlot->posY = 0;
             frame.spawnedSlot->variant = (rand() % 4);
         }
     }
-    if (frame.projectile->frameCount > 0xC) {
+    if (frame.projectile->frameCount > 12) {
         g_BattleSpecialScorchScaleCounter--;
     }
     (frame.projectile->frameCount)++;
-    if (frame.projectile->frameCount == 0x14) {
+    if (frame.projectile->frameCount == 20) {
         frame.projectile->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -624,14 +624,14 @@ void __cdecl BattleFx_SpecialScorchBouncingSpriteTask(void)
 #pragma pack(pop)
 
     frame.sprite = (BattleFxScorchBounceSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSpecialScorchBasisMatrix.spriteRecord = Gfx_ModelTableGetLoadedRecord(0xD, g_BattleSpecialScorchModelToggle);
-    g_BattleSpecialScorchBasisMatrix.spriteObject = Gfx_ModelTableGetSpriteObject(0xD, g_BattleSpecialScorchModelToggle);
+    g_BattleSpecialScorchBasisMatrix.spriteRecord = Gfx_ModelTableGetLoadedRecord(13, g_BattleSpecialScorchModelToggle);
+    g_BattleSpecialScorchBasisMatrix.spriteObject = Gfx_ModelTableGetSpriteObject(13, g_BattleSpecialScorchModelToggle);
     for (frame.rowIdx = 0; frame.rowIdx < 3; frame.rowIdx++) {
         frame.spriteMatrix.m[2][frame.rowIdx] = 0;
         frame.spriteMatrix.m[1][frame.rowIdx] = 0;
         frame.spriteMatrix.m[0][frame.rowIdx] = 0;
     }
-    if (frame.sprite->frameCount < 0xC) {
+    if (frame.sprite->frameCount < 12) {
         frame.shade = 8;
     } else {
         frame.shade = 0x14 - frame.sprite->frameCount;
@@ -666,10 +666,10 @@ void __cdecl BattleFx_SpecialScorchBouncingSpriteTask(void)
         frame.sprite->posY = 0;
         frame.sprite->velocityY *= -1;
     }
-    frame.sprite->velocityY += 0x14;
-    frame.sprite->angle += 0x200;
+    frame.sprite->velocityY += 20;
+    frame.sprite->angle += 0x200 /* 45 deg */;
     (frame.sprite->frameCount)++;
-    if (frame.sprite->frameCount == 0x14) {
+    if (frame.sprite->frameCount == 20) {
         frame.sprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -705,16 +705,16 @@ void __cdecl BattleFx_SpecialScorchFallingFadeModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    g_BattleSpecialScorchVector1.fadeLevel = 0x80 - frame.task->frame * 6;
+    g_BattleSpecialScorchVector1.fadeLevel = 128 - frame.task->frame * 6;
     g_BattleSpecialScorchVector1.modelDraw = Gfx_ModelTableGetRenderObject(g_BattleSpecialScorchModelConfig[frame.task->modelIndex], g_BattleSpecialScorchModelToggle);
     g_BattleSpecialScorchLoadedResTable = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialScorchVector1.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialScorchLoadedResTable);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.task->posY -= 0xC8;
-    frame.task->angleZ += 0x100;
+    frame.task->posY -= 200;
+    frame.task->angleZ += 0x100 /* 22.5 deg */;
     (frame.task->frame)++;
-    if (frame.task->frame == 0x14) {
+    if (frame.task->frame == 20) {
         frame.task->slotTag = 0xFFFF;
     }
 }
@@ -755,14 +755,14 @@ void __cdecl BattleFx_SpecialScorchTrailModelTask(void)
         SetRotMatrix(&frame.drawMatrix);
         SetTransMatrix(&frame.drawMatrix);
         SetDrawColorRGB(0, 0, 0);
-        g_BattleSpecialScorchParamVector1.alpha = frame.trailModel->frameCount * 0xC8;
+        g_BattleSpecialScorchParamVector1.alpha = frame.trailModel->frameCount * 200;
         g_BattleSpecialScorchLoadedResTable = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialScorchParamVector1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialScorchLoadedResTable);
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
     (frame.trailModel->frameCount)++;
-    if (frame.trailModel->frameCount == 0x14) {
+    if (frame.trailModel->frameCount == 20) {
         frame.trailModel->ownerSlot = BATTLE_TASK_FREE;
     }
 }

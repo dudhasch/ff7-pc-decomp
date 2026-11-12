@@ -497,7 +497,7 @@ void __cdecl Pfile_ParsePlyAndMat(int texPage, int textured, float scale, Polygo
     tokenIndex = 4;
     pointData = 0;
     if (pointCount > 0) {
-        pointData = (PolygonTranslation *)GameHeapAllocRaw(pointCount * 0xC, PlytopdLit_SourcePath_1(), 0x1C4);
+        pointData = (PolygonTranslation *)GameHeapAllocRaw(pointCount * 0xC, PlytopdLit_SourcePath_1(), 452);
         destinationPoint = pointData;
         if (pointData != 0) {
             for (stepIdx = 0; stepIdx < pointCount; stepIdx++) {
@@ -516,7 +516,7 @@ void __cdecl Pfile_ParsePlyAndMat(int texPage, int textured, float scale, Polygo
     }
     verticesPtr = 0;
     if (numVerts > 0) {
-        verticesPtr = (PolygonTranslation *)GameHeapAllocRaw(numVerts * 0xC, PlytopdLit_SourcePath_2(), 0x1E0);
+        verticesPtr = (PolygonTranslation *)GameHeapAllocRaw(numVerts * 0xC, PlytopdLit_SourcePath_2(), 480);
         vertCursor = verticesPtr;
         if (verticesPtr != 0) {
             for (stepIdx = 0; stepIdx < numVerts; stepIdx++) {
@@ -535,7 +535,7 @@ void __cdecl Pfile_ParsePlyAndMat(int texPage, int textured, float scale, Polygo
     }
     pMatStates = 0;
     if (matCnt > 0) {
-        pMatStates = (PolygonPlyMatState *)GameHeapAlloc(matCnt, 0x38, PlytopdLit_SourcePath_3(), 0x1FC);
+        pMatStates = (PolygonPlyMatState *)GameHeapAlloc(matCnt, 56, PlytopdLit_SourcePath_3(), 508);
         matPosition = pMatStates;
         if (pMatStates != 0) {
             for (stepIdx = 0; stepIdx < matCnt; stepIdx++) {
@@ -631,7 +631,7 @@ void __cdecl Pfile_ParsePlyAndMat(int texPage, int textured, float scale, Polygo
         } else {
             maxCount = faceCount;
         }
-        entries = (PolygonPlyEntry *)GameHeapAlloc(maxCount, 0x58, PlytopdLit_SourcePath_4(), 0x297);
+        entries = (PolygonPlyEntry *)GameHeapAlloc(maxCount, 88, PlytopdLit_SourcePath_4(), 663);
         curEntry = entries;
         if (entries != 0) {
             for (entryIndex = 0; entryIndex < faceCount; entryIndex++) {
@@ -658,7 +658,7 @@ void __cdecl Pfile_ParsePlyAndMat(int texPage, int textured, float scale, Polygo
                         numFaceVerts = 1;
                     }
                 }
-                indexList8 = (int)GameHeapAlloc(numFaceVerts, 4, PlytopdLit_SourcePath_5(), 0x2CB);
+                indexList8 = (int)GameHeapAlloc(numFaceVerts, 4, PlytopdLit_SourcePath_5(), 715);
                 if (indexList8 != 0) {
                     switch (formKind) {
                     case PFILE_MAT_FACES_LIST:
@@ -823,7 +823,7 @@ void __cdecl Pfile_ParsePlyAndMat(int texPage, int textured, float scale, Polygo
                     for (stepIdx = 1; stepIdx < numFaceVerts - 1; stepIdx++) {
                         entries[((int *)indexList8)[stepIdx]] = *curEntry;
                     }
-                    GameHeapFree((void *)indexList8, PlytopdLit_SourcePath_6(), 0x410);
+                    GameHeapFree((void *)indexList8, PlytopdLit_SourcePath_6(), 1040);
                 }
             }
         }
@@ -836,10 +836,10 @@ void __cdecl Pfile_ParsePlyAndMat(int texPage, int textured, float scale, Polygo
             vertexPtr++;
         }
     }
-    GameHeapFree(entries, PlytopdLit_SourcePath_7(), 0x42A);
-    GameHeapFree(pMatStates, PlytopdLit_SourcePath_8(), 0x42B);
-    GameHeapFree(verticesPtr, PlytopdLit_SourcePath_9(), 0x42C);
-    GameHeapFree(pointData, PlytopdLit_SourcePath_10(), 0x42D);
+    GameHeapFree(entries, PlytopdLit_SourcePath_7(), 1066);
+    GameHeapFree(pMatStates, PlytopdLit_SourcePath_8(), 1067);
+    GameHeapFree(verticesPtr, PlytopdLit_SourcePath_9(), 1068);
+    GameHeapFree(pointData, PlytopdLit_SourcePath_10(), 1069);
 }
 
 /*
@@ -881,7 +881,7 @@ int __cdecl Anim_GetFrameDataSize(PolygonAnimation *animation)
 
     size = 0;
     if (animation != 0) {
-        size = animation->frameCount * (animation->boneCount * 0xC + 0x18);
+        size = animation->frameCount * (animation->boneCount * 12 + 24);
     }
     return size;
 }
@@ -894,11 +894,11 @@ void __cdecl Anim_Free(PolygonAnimBuffers *anim)
 {
     if (anim != 0) {
         if (anim->ownsBlock != 0) {
-            GameHeapFree((void *)anim->block, PlytopdLit_SourcePath_11(), 0x46F);
+            GameHeapFree((void *)anim->block, PlytopdLit_SourcePath_11(), 1135);
         }
-        GameHeapFree((void *)anim->frameTable, PlytopdLit_SourcePath_12(), 0x472);
-        GameHeapFree((void *)anim->frameData, PlytopdLit_SourcePath_13(), 0x473);
-        GameHeapFree(anim, PlytopdLit_SourcePath_14(), 0x474);
+        GameHeapFree((void *)anim->frameTable, PlytopdLit_SourcePath_12(), 1138);
+        GameHeapFree((void *)anim->frameData, PlytopdLit_SourcePath_13(), 1139);
+        GameHeapFree(anim, PlytopdLit_SourcePath_14(), 1140);
     }
 }
 
@@ -914,16 +914,16 @@ int __cdecl Anim_Create(int frameCount, int boneCount, int flags)
     PolygonAnimFrameEntry *tablePtr;
     int keyFrame;
 
-    anim = (PolygonAnimation *)(GameHeapAlloc(1, 0x24, PlytopdLit_SourcePath_15(), 0x47C));
+    anim = (PolygonAnimation *)(GameHeapAlloc(1, 36, PlytopdLit_SourcePath_15(), 1148));
     if (anim != 0) {
         anim->isLoaded = 1;
         anim->frameCount = frameCount;
         anim->boneCount = boneCount;
         anim->flags = flags;
         frameDataSize = Anim_GetFrameDataSize(anim);
-        anim->frameData = (int)GameHeapAlloc(1, frameDataSize, PlytopdLit_SourcePath_16(), 0x488);
+        anim->frameData = (int)GameHeapAlloc(1, frameDataSize, PlytopdLit_SourcePath_16(), 1160);
         if (anim->frameData != 0) {
-            anim->frameTable = (PolygonAnimFrameEntry *)GameHeapAlloc(anim->frameCount, 8, PlytopdLit_SourcePath_17(), 0x48C);
+            anim->frameTable = (PolygonAnimFrameEntry *)GameHeapAlloc(anim->frameCount, 8, PlytopdLit_SourcePath_17(), 1164);
             if (anim->frameTable != 0) {
                 dataPointer = anim->frameData;
                 tablePtr = anim->frameTable;
@@ -931,7 +931,7 @@ int __cdecl Anim_Create(int frameCount, int boneCount, int flags)
                     tablePtr->rootPose = (PolygonAnimRootPose *)dataPointer;
                     dataPointer += 0x18;
                     tablePtr->boneChannels = (PolygonBoneVector *)dataPointer;
-                    dataPointer += anim->boneCount * 0xC;
+                    dataPointer += anim->boneCount * 12;
                     tablePtr++;
                 }
             }
@@ -1024,7 +1024,7 @@ int __cdecl Anim_LoadBinary(FileOpenRequest *fileRequest, int openFlags)
     anim = 0;
     handle = (int)OpenFileEx(fileRequest, (const char *)openFlags);
     if (handle != 0) {
-        anim = (PolygonAnimation *)ReadFileIntoNewBuffer(0x24, 1, (FileHandle *)handle);
+        anim = (PolygonAnimation *)ReadFileIntoNewBuffer(36, 1, (FileHandle *)handle);
         if (anim != 0 && anim->isLoaded == 1) {
             anim->ownsBlock = 0;
             anim->block = 0;
@@ -1034,7 +1034,7 @@ int __cdecl Anim_LoadBinary(FileOpenRequest *fileRequest, int openFlags)
                 anim->frameData = ReadFileIntoNewBuffer(frameDataBytes, 1, (FileHandle *)handle);
                 if (anim->frameData != 0) {
                     anim->frameTable = (PolygonAnimFrameEntry *)GameHeapAlloc(anim->frameCount, 8,
-                                                               PlytopdLit_SourcePath_18(), 0x4FB);
+                                                               PlytopdLit_SourcePath_18(), 1275);
                     if (anim->frameTable != 0) {
                         dataPtr = anim->frameData;
                         entryPointer = anim->frameTable;
@@ -1042,7 +1042,7 @@ int __cdecl Anim_LoadBinary(FileOpenRequest *fileRequest, int openFlags)
                             entryPointer->rootPose = (PolygonAnimRootPose *)dataPtr;
                             dataPtr += 0x18;
                             entryPointer->boneChannels = (PolygonBoneVector *)dataPtr;
-                            dataPtr += anim->boneCount * 0xC;
+                            dataPtr += anim->boneCount * 12;
                             entryPointer++;
                         }
                         loaded = 1;
@@ -1086,7 +1086,7 @@ int __cdecl Anim_WriteBinary(PolygonAnimation *anim, int path)
             if (Anim_GetFrameDataSize(anim) > 0) {
                 fileHandle = OpenFileSimple(FILE_OPEN_CREATE, (void *)path);
                 if (fileHandle != 0) {
-                    if (WriteFileData(0x24, anim, (FileHandle *)fileHandle) != 0) {
+                    if (WriteFileData(36, anim, (FileHandle *)fileHandle) != 0) {
                         if (WriteFileData(Anim_GetFrameDataSize(anim), (const void *)anim->frameData, (FileHandle *)fileHandle) != 0) {
                             result = 1;
                         }
@@ -1128,7 +1128,7 @@ int __cdecl AnimText_LookupKeyword(int tokenIndex, PolygonTokenFile *tokenFile)
     int index;
 
     keywordIdx = 0;
-    for (index = 1; index < 0x10; index++) {
+    for (index = 1; index < 16; index++) {
         if (strcmp(g_AnimTextKeywords[index],
                    tokenFile->tokens[tokenIndex]) == 0) {
             keywordIdx = index;
@@ -1183,7 +1183,7 @@ int __cdecl Anim_CompileTextToBinary(int fileName, int outputFile)
     int ac;
     int ad;
     float ba;
-    char au[0xC8];
+    char au[200];
     int ae;
 
     aa = 0;
@@ -1370,7 +1370,7 @@ int __cdecl Anim_CompileTextToBinary(int fileName, int outputFile)
             }
             FreeTokenFile(tokens);
         } else {
-            char al[0xC8];
+            char al[200];
             sprintf(al,
                     // STRING: FF7 0x00910f28
                     "ERROR: COULD NOT LOAD ANIMATION FILE %s\n", fileName);
@@ -1393,11 +1393,11 @@ void __cdecl Skel_FreeStringArray(int count, int strings)
     if (strings != 0) {
         for (index = 0; index < count; index++) {
             // STRING: FF7 0x00910f54
-            GameHeapFree((void *)((int *)strings)[index], "C:\\lib\\src\\polygon\\plytopd.cpp", 0x6ED);
+            GameHeapFree((void *)((int *)strings)[index], "C:\\lib\\src\\polygon\\plytopd.cpp", 1773);
             ((int *)strings)[index] = 0;
         }
         // STRING: FF7 0x00910f74
-        GameHeapFree((void *)strings, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x6F1);
+        GameHeapFree((void *)strings, "C:\\lib\\src\\polygon\\plytopd.cpp", 1777);
     }
 }
 
@@ -1427,20 +1427,20 @@ void __cdecl Skel_Free(PolygonSkelHierarchy *skel)
                         modelEntry++;
                     }
                     // STRING: FF7 0x00910f94
-                    GameHeapFree((void *)part->modelEntries, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x717);
+                    GameHeapFree((void *)part->modelEntries, "C:\\lib\\src\\polygon\\plytopd.cpp", 1815);
                 }
                 Skel_FreeStringArray(part->childCount, part->childTable);
                 // STRING: FF7 0x00910fb4
-                GameHeapFree(part->parentName, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x71B);
+                GameHeapFree(part->parentName, "C:\\lib\\src\\polygon\\plytopd.cpp", 1819);
                 // STRING: FF7 0x00910fd4
-                GameHeapFree((void *)part->name, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x71C);
+                GameHeapFree((void *)part->name, "C:\\lib\\src\\polygon\\plytopd.cpp", 1820);
                 part++;
             }
             // STRING: FF7 0x00910ff4
-            GameHeapFree((void *)skel->parts, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x721);
+            GameHeapFree((void *)skel->parts, "C:\\lib\\src\\polygon\\plytopd.cpp", 1825);
         }
         // STRING: FF7 0x00911014
-        GameHeapFree(skel, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x724);
+        GameHeapFree(skel, "C:\\lib\\src\\polygon\\plytopd.cpp", 1828);
     }
 }
 
@@ -1455,13 +1455,13 @@ int __cdecl Skel_Create(int partCount)
 
     error = 1;
     // STRING: FF7 0x00911034
-    skel = (PolygonSkelHierarchy *)GameHeapAlloc(1, 0xA8, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x72E);
+    skel = (PolygonSkelHierarchy *)GameHeapAlloc(1, 168, "C:\\lib\\src\\polygon\\plytopd.cpp", 1838);
     if (skel != 0) {
         skel->initFlag = 1;
         skel->drawEnabled = 1;
         skel->partCount = partCount;
         // STRING: FF7 0x00911054
-        skel->parts = (int)GameHeapAlloc(partCount, 0x1C, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x737);
+        skel->parts = (int)GameHeapAlloc(partCount, 28, "C:\\lib\\src\\polygon\\plytopd.cpp", 1847);
         if (skel->parts != 0) {
             error = 0;
         }
@@ -1501,7 +1501,7 @@ int __cdecl Skel_LoadHrc(int fileContext, int pushDirectory, int fileName)
     int lexToken;
     PolygonSkelHierarchy *pSkel;
     int errorState;
-    char dirStatus[0xC8];
+    char dirStatus[200];
     PolygonSkelBone *partPointer;
     int tokenIdx;
     int aa;
@@ -1569,11 +1569,11 @@ int __cdecl Skel_LoadHrc(int fileContext, int pushDirectory, int fileName)
                             partPointer->modelEntries = (int)GameHeapAlloc(
                                 partPointer->childCount, 8,
                                 // STRING: FF7 0x00911074
-                                "C:\\lib\\src\\polygon\\plytopd.cpp", 0x7BC);
+                                "C:\\lib\\src\\polygon\\plytopd.cpp", 1980);
                             partPointer->childTable = (int)GameHeapAlloc(
                                 partPointer->childCount, 4,
                                 // STRING: FF7 0x00911094
-                                "C:\\lib\\src\\polygon\\plytopd.cpp", 0x7BD);
+                                "C:\\lib\\src\\polygon\\plytopd.cpp", 1981);
                             if (partPointer->modelEntries != 0 &&
                                 partPointer->childTable != 0) {
                                 for (aa = 0; aa < partPointer->childCount; aa++) {
@@ -1744,7 +1744,7 @@ void __cdecl Pfile_ApplyBlendModeToHundreds(PolygonBlendSource *blendSource, Pol
 
     if (blendSource != 0 && model != 0) {
         for (hundredIdx = 0; hundredIdx < model->hundredCount; hundredIdx++) {
-            hundred = model->hundreds + hundredIdx * 0x64;
+            hundred = model->hundreds + hundredIdx * 100;
             if (hundred != 0) {
                 Pfile_SetHundredBlendMode(1, blendSource->blendMode, (PolygonHundredState *)hundred);
             }
@@ -1812,9 +1812,9 @@ void __cdecl Skel_BuildHierarchyAndLoadParts(int dirName, PolygonSkelHierarchy *
     int pushResult;
     PolygonSkelBone *part;
     int entry;
-    char message[0xC8];
+    char message[200];
     int isRootPart;
-    char dirStatus[0xC8];
+    char dirStatus[200];
     int partIndex;
     PolygonRsdModel *handle;
     PolygonSkelModelEntry *modelEntry;
@@ -1982,7 +1982,7 @@ void __cdecl Pfile_FreeRsdMeshes(PolygonRsdRecord *rsd)
                 Pfile_DestroyTim((PolygonTim *)(((int *)(rsd->texRecordTable))[index]));
             }
             // STRING: FF7 0x00911118
-            GameHeapFree((void *)rsd->texRecordTable, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x9CF);
+            GameHeapFree((void *)rsd->texRecordTable, "C:\\lib\\src\\polygon\\plytopd.cpp", 2511);
         }
         rsd->texRecordTable = 0;
     }
@@ -2004,32 +2004,32 @@ void __cdecl Pfile_FreeRsdRecord(PolygonRsdRecord *rsd)
                 Pfile_Free((PolygonFileArrays *)(((int *)(rsd->meshes))[meshIndex]));
             }
             // STRING: FF7 0x00911138
-            GameHeapFree((void *)rsd->meshes, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x9E5);
+            GameHeapFree((void *)rsd->meshes, "C:\\lib\\src\\polygon\\plytopd.cpp", 2533);
         }
         if (rsd->textures != 0) {
             for (idx = 0; idx < rsd->count; idx++) {
                 Gfx_ReleaseCachedTexture(((int *)(rsd->textures))[idx]);
             }
             // STRING: FF7 0x00911158
-            GameHeapFree((void *)rsd->textures, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x9EF);
+            GameHeapFree((void *)rsd->textures, "C:\\lib\\src\\polygon\\plytopd.cpp", 2543);
         }
         Pfile_FreeRsdMeshes(rsd);
         if (rsd->block != 0) {
             for (idx = 0; idx < rsd->count; idx++) {
                 // STRING: FF7 0x00911178
-                GameHeapFree((void *)((int *)(rsd->block))[idx], "C:\\lib\\src\\polygon\\plytopd.cpp", 0x9F8);
+                GameHeapFree((void *)((int *)(rsd->block))[idx], "C:\\lib\\src\\polygon\\plytopd.cpp", 2552);
             }
             // STRING: FF7 0x00911198
-            GameHeapFree((void *)rsd->block, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x9FB);
+            GameHeapFree((void *)rsd->block, "C:\\lib\\src\\polygon\\plytopd.cpp", 2555);
         }
         // STRING: FF7 0x009111b8
-        GameHeapFree((void *)rsd->matFileName, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x9FE);
+        GameHeapFree((void *)rsd->matFileName, "C:\\lib\\src\\polygon\\plytopd.cpp", 2558);
         // STRING: FF7 0x009111d8
-        GameHeapFree((void *)rsd->plyFileName, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x9FF);
+        GameHeapFree((void *)rsd->plyFileName, "C:\\lib\\src\\polygon\\plytopd.cpp", 2559);
         // STRING: FF7 0x009111f8
-        GameHeapFree((void *)rsd->fileName, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xA00);
+        GameHeapFree((void *)rsd->fileName, "C:\\lib\\src\\polygon\\plytopd.cpp", 2560);
         // STRING: FF7 0x00911218
-        GameHeapFree(rsd, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xA02);
+        GameHeapFree(rsd, "C:\\lib\\src\\polygon\\plytopd.cpp", 2562);
     }
 }
 
@@ -2041,7 +2041,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
 {
     int failed;
     PolygonRsdRecord *rsd;
-    char errorMsg[0xC8];
+    char errorMsg[200];
     int position;
     int textureIndex;
     int token;
@@ -2052,7 +2052,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
 
     failed = 1;
     // STRING: FF7 0x00911238
-    rsd = (PolygonRsdRecord *)GameHeapAlloc(1, 0x24, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xA0D);
+    rsd = (PolygonRsdRecord *)GameHeapAlloc(1, 36, "C:\\lib\\src\\polygon\\plytopd.cpp", 2573);
     if (rsd != 0) {
         failed = 0;
         tokenPosition = 0;
@@ -2061,7 +2061,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
             tokenPosition++;
             token = (int)TokenAsString(tokenPosition, tokenFile);
             if (*(char *)token != 0) {
-                position = FindCharIndexInString(0x3D, (char *)token);
+                position = FindCharIndexInString(61, (char *)token);
                 if (position >= 0) {
                     rsd->fileName = (int)GameHeapStrDup((char *)(token + position + 1));
                 }
@@ -2069,7 +2069,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
             tokenPosition++;
             token = (int)TokenAsString(tokenPosition, tokenFile);
             if (*(char *)token != 0) {
-                position = FindCharIndexInString(0x3D, (char *)token);
+                position = FindCharIndexInString(61, (char *)token);
                 if (position >= 0) {
                     rsd->plyFileName = (int)GameHeapStrDup((char *)(token + position + 1));
                 }
@@ -2077,7 +2077,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
             tokenPosition++;
             token = (int)TokenAsString(tokenPosition, tokenFile);
             if (*(char *)token != 0) {
-                position = FindCharIndexInString(0x3D, (char *)token);
+                position = FindCharIndexInString(61, (char *)token);
                 if (position >= 0) {
                     rsd->matFileName = (int)GameHeapStrDup((char *)(token + position + 1));
                 }
@@ -2085,7 +2085,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
             tokenPosition++;
             token = (int)TokenAsString(tokenPosition, tokenFile);
             if (*(char *)token != 0) {
-                position = FindCharIndexInString(0x3D, (char *)token);
+                position = FindCharIndexInString(61, (char *)token);
                 if (position >= 0) {
                     rsd->count = atoi((const char *)(token + position + 1));
                 }
@@ -2095,28 +2095,28 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
                 rsd->block = (int)GameHeapAlloc(rsd->count, 4,
                                                            // STRING: FF7 0x00911258
                                                            "C:\\lib\\src\\polygon\\plytopd.cpp",
-                                                           0xA53);
+                                                           2643);
                 rsd->texRecordTable = (int)GameHeapAlloc(rsd->count, 4,
                                                            // STRING: FF7 0x00911278
                                                            "C:\\lib\\src\\polygon\\plytopd.cpp",
-                                                           0xA54);
+                                                           2644);
                 rsd->textures = (int)GameHeapAlloc(rsd->count, 4,
                                                            // STRING: FF7 0x00911298
                                                            "C:\\lib\\src\\polygon\\plytopd.cpp",
-                                                           0xA55);
+                                                           2645);
                 if (rsd->block != 0 && rsd->texRecordTable != 0 && rsd->textures != 0) {
                     for (textureIndex = 0; textureIndex < rsd->count; textureIndex++) {
                         token = (int)TokenAsString(tokenPosition, tokenFile);
                         if (*(char *)token != 0) {
-                            position = FindCharIndexInString(0x3D, (char *)token);
+                            position = FindCharIndexInString(61, (char *)token);
                             if (position >= 0) {
                                 textureName = token + position + 1;
-                                position = FindCharIndexInString(0x5D, (char *)token);
+                                position = FindCharIndexInString(93, (char *)token);
                                 if (position >= 0) {
                                     *(char *)(token + position) = 0;
                                 }
                                 texNum = 0;
-                                position = FindCharIndexInString(0x5B, (char *)token);
+                                position = FindCharIndexInString(91, (char *)token);
                                 if (position >= 0) {
                                     texNum = atoi((const char *)(token + position + 1));
                                 }
@@ -2146,7 +2146,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
             rsd->meshCount = 1;
             rsd->meshes = (int)GameHeapAlloc(rsd->meshCount, 4,
                                                        // STRING: FF7 0x00911314
-                                                       "C:\\lib\\src\\polygon\\plytopd.cpp", 0xA95);
+                                                       "C:\\lib\\src\\polygon\\plytopd.cpp", 2709);
             FreeTokenFile(tokenFile);
         } else {
             failed = 1;
@@ -2154,7 +2154,7 @@ int __cdecl Pfile_ParseRsdFile(void *fileBuffer, int fileName)
     }
     if (failed != 0) {
         // STRING: FF7 0x00911334
-        GameHeapFree(rsd, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xAA1);
+        GameHeapFree(rsd, "C:\\lib\\src\\polygon\\plytopd.cpp", 2721);
         rsd = 0;
     }
     return (int)rsd;
@@ -2169,7 +2169,7 @@ void __cdecl Pfile_FreeTexturePairRecord(PolygonTexturePair *pair)
     if (pair != 0) {
         Pfile_DestroyTim((PolygonTim *)(pair->tim));
         Gfx_ReleaseCachedTexture(pair->cachedTexture);
-        ZeroFillMemory32(0xC, pair);
+        ZeroFillMemory32(12, pair);
     }
 }
 
@@ -2182,7 +2182,7 @@ DxTextureResult __cdecl Pfile_LoadRsdTexture(PfileLoadOptions *options, char *fi
     char pathBuf[0xC8];
     int texPath;
     GfxTexHeader *tex;
-    char baseName[0xC8];
+    char baseName[200];
     PolygonTim *timPtrPtr;
     int error;
     DxTextureResult loadRes;
@@ -2198,7 +2198,7 @@ DxTextureResult __cdecl Pfile_LoadRsdTexture(PfileLoadOptions *options, char *fi
                 "%s.%s", baseName,
                 PlytopdLit_Tex());
     }
-    ZeroFillMemory32(0xC, &loadRes);
+    ZeroFillMemory32(12, &loadRes);
     error = 0;
     if (options->sourceMode != 0) {
         tex = 0;
@@ -2600,9 +2600,9 @@ void __cdecl Pfile_BuildGroupsFromFaces(int flags, void *pointData, int normalDa
                             }
                             ab++;
                             // STRING: FF7 0x009113a8
-                            ad = (int *)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xD3B);
+                            ad = (int *)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 3387);
                             // STRING: FF7 0x009113c8
-                            ae = (int **)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xD3C);
+                            ae = (int **)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 3388);
                             if (ad != 0 && ae != 0) {
                                 for (ac = 0; ac < z; ac++) {
                                     u = aa[ac];
@@ -2613,7 +2613,7 @@ void __cdecl Pfile_BuildGroupsFromFaces(int flags, void *pointData, int normalDa
                                     ae[ac] = (int *)GameHeapAlloc(
                                         ad[ac], 4,
                                         // STRING: FF7 0x009113e8
-                                        "C:\\lib\\src\\polygon\\plytopd.cpp", 0xD4C);
+                                        "C:\\lib\\src\\polygon\\plytopd.cpp", 3404);
                                     ad[ac] = 0;
                                 }
                                 for (ac = 0; ac < z; ac++) {
@@ -2624,13 +2624,13 @@ void __cdecl Pfile_BuildGroupsFromFaces(int flags, void *pointData, int normalDa
                                 }
                             }
                             // STRING: FF7 0x00911408
-                            GameHeapFree(aa, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xD5C);
+                            GameHeapFree(aa, "C:\\lib\\src\\polygon\\plytopd.cpp", 3420);
                         } else {
                             ab = 1;
                             // STRING: FF7 0x00911428
-                            ad = (int *)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xD62);
+                            ad = (int *)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 3426);
                             // STRING: FF7 0x00911448
-                            ae = (int **)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xD63);
+                            ae = (int **)GameHeapAlloc(ab, 4, "C:\\lib\\src\\polygon\\plytopd.cpp", 3427);
                             if (ad != 0 && ae != 0) {
                                 *ad = z;
                                 *ae = aa;
@@ -2695,13 +2695,13 @@ void __cdecl Pfile_BuildGroupsFromFaces(int flags, void *pointData, int normalDa
                             for (ac = 0; ac < ab; ac++) {
                                 GameHeapFree(ae[ac],
                                              // STRING: FF7 0x00911468
-                                             "C:\\lib\\src\\polygon\\plytopd.cpp", 0xDE1);
+                                             "C:\\lib\\src\\polygon\\plytopd.cpp", 3553);
                             }
                         }
                         // STRING: FF7 0x00911488
-                        GameHeapFree(ad, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xDE5);
+                        GameHeapFree(ad, "C:\\lib\\src\\polygon\\plytopd.cpp", 3557);
                         // STRING: FF7 0x009114a8
-                        GameHeapFree(ae, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xDE6);
+                        GameHeapFree(ae, "C:\\lib\\src\\polygon\\plytopd.cpp", 3558);
                     }
                 }
             }
@@ -2715,7 +2715,7 @@ void __cdecl Pfile_BuildGroupsFromFaces(int flags, void *pointData, int normalDa
     }
     DestroyList(p);
     // STRING: FF7 0x009114c8
-    GameHeapFree((void *)s, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xDF8);
+    GameHeapFree((void *)s, "C:\\lib\\src\\polygon\\plytopd.cpp", 3576);
 
 #undef p
 #undef q
@@ -2752,7 +2752,7 @@ void __cdecl Pfile_BuildGroupsFromFaces(int flags, void *pointData, int normalDa
 // FUNCTION: FF7 0x00695945
 void __cdecl AnimPlacement_Init(PolygonAnimPlacement *placement)
 {
-    ZeroFillMemory32(0x74, placement);
+    ZeroFillMemory32(116, placement);
     placement->flags = 0;
     placement->offsetX = 0;
     placement->offsetY = 0;
@@ -2781,7 +2781,7 @@ void __cdecl AnimPlayer_Destroy(PolygonAnimPlayer *player)
             Skel_Free((PolygonSkelHierarchy *)(player->skeleton));
         }
         // STRING: FF7 0x009114e8
-        GameHeapFree(player, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xE21);
+        GameHeapFree(player, "C:\\lib\\src\\polygon\\plytopd.cpp", 3617);
     }
 }
 
@@ -2801,7 +2801,7 @@ int __cdecl AnimPlayer_Create(int frameCount, PolygonSkeletonLoadSpec *loadInfo,
     PolygonAnimPlayer *player;
 
     // STRING: FF7 0x00911508
-    player = (PolygonAnimPlayer *)GameHeapAlloc(1, 0xE4, "C:\\lib\\src\\polygon\\plytopd.cpp", 0xE29);
+    player = (PolygonAnimPlayer *)GameHeapAlloc(1, 228, "C:\\lib\\src\\polygon\\plytopd.cpp", 3625);
     if (player != 0) {
         player->isActive = 1;
         player->startFrame = 0;
@@ -2949,10 +2949,10 @@ void __cdecl AnimPlayer_SelectAnimation(int time, int delta, int bake, AnimPlaye
     PolygonAnimSequence *pSequenceInfo;
     int frameName;
     PolygonAnimation *pLoaded;
-    char baseName[0xC8];
-    char outPath[0xC8];
+    char baseName[200];
+    char outPath[200];
     int dirChanged;
-    char prevDir[0xC8];
+    char prevDir[200];
 
     if (player != 0) {
         pSequenceInfo = (PolygonAnimSequence *)player->animation;
@@ -3205,18 +3205,18 @@ void __cdecl AnimGroupEntry_Destroy(PolygonAnimGroupEntry *entry)
     if (entry != 0) {
         AnimPlayer_Destroy((PolygonAnimPlayer *)entry->animPlayer);
         // STRING: FF7 0x00911530
-        GameHeapFree((void *)entry->name, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1001);
+        GameHeapFree((void *)entry->name, "C:\\lib\\src\\polygon\\plytopd.cpp", 4097);
         // STRING: FF7 0x00911550
-        GameHeapFree((void *)entry->block, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1002);
+        GameHeapFree((void *)entry->block, "C:\\lib\\src\\polygon\\plytopd.cpp", 4098);
         // STRING: FF7 0x00911570
-        GameHeapFree((void *)entry->directory, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1003);
+        GameHeapFree((void *)entry->directory, "C:\\lib\\src\\polygon\\plytopd.cpp", 4099);
         // STRING: FF7 0x00911590
-        GameHeapFree((void *)entry->extension, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1004);
+        GameHeapFree((void *)entry->extension, "C:\\lib\\src\\polygon\\plytopd.cpp", 4100);
         // STRING: FF7 0x009115b0
-        GameHeapFree((void *)entry->entries, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1005);
+        GameHeapFree((void *)entry->entries, "C:\\lib\\src\\polygon\\plytopd.cpp", 4101);
         FreeDirectoryListing((FileDirectoryListing *)(entry->directoryListing));
         // STRING: FF7 0x009115d0
-        GameHeapFree(entry, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1008);
+        GameHeapFree(entry, "C:\\lib\\src\\polygon\\plytopd.cpp", 4104);
     }
 }
 
@@ -3229,7 +3229,7 @@ int __cdecl AnimGroupEntry_Create(void)
     PolygonAnimGroupEntry *rec;
 
     // STRING: FF7 0x009115f0
-    rec = (PolygonAnimGroupEntry *)GameHeapAlloc(1, 0x24, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1010);
+    rec = (PolygonAnimGroupEntry *)GameHeapAlloc(1, 36, "C:\\lib\\src\\polygon\\plytopd.cpp", 4112);
     return (int)rec;
 }
 
@@ -3247,10 +3247,10 @@ void __cdecl AnimGroup_Destroy(PolygonAnimGroup *group)
                 AnimGroupEntry_Destroy(group->entries[index]);
             }
             // STRING: FF7 0x00911610
-            GameHeapFree(group->entries, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1028);
+            GameHeapFree(group->entries, "C:\\lib\\src\\polygon\\plytopd.cpp", 4136);
         }
         // STRING: FF7 0x00911630
-        GameHeapFree(group, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x102B);
+        GameHeapFree(group, "C:\\lib\\src\\polygon\\plytopd.cpp", 4139);
     }
 }
 
@@ -3265,7 +3265,7 @@ int __cdecl AnimGroup_LoadFromTextFile(int fileName)
     int tokenPos;
     PolygonAnimGroupEntry *entry;
     int i;
-    char name[0xC8];
+    char name[200];
     FileDirectoryListing *listingPointer;
 
     group = 0;
@@ -3273,13 +3273,13 @@ int __cdecl AnimGroup_LoadFromTextFile(int fileName)
     if (tokens != 0) {
         tokenPos = 0;
         // STRING: FF7 0x00911650
-        group = (PolygonAnimGroupText *)GameHeapAlloc(1, 0xC, "C:\\lib\\src\\polygon\\plytopd.cpp", 0x103C);
+        group = (PolygonAnimGroupText *)GameHeapAlloc(1, 12, "C:\\lib\\src\\polygon\\plytopd.cpp", 4156);
         if (group != 0) {
             group->count = tokens->tokenCount / 5;
             if (group->count > 0) {
                 group->entries = (PolygonAnimGroupEntry ** )GameHeapAlloc(group->count, 4,
                                                         // STRING: FF7 0x00911670
-                                                        "C:\\lib\\src\\polygon\\plytopd.cpp", 0x1042);
+                                                        "C:\\lib\\src\\polygon\\plytopd.cpp", 4162);
                 if (group->entries != 0) {
                     for (i = 0; i < group->count; i++) {
                         entry = (PolygonAnimGroupEntry *)AnimGroupEntry_Create();
@@ -3305,7 +3305,7 @@ int __cdecl AnimGroup_LoadFromTextFile(int fileName)
                                     entry->entries = (int)GameHeapAlloc(listingPointer->entryCount, 4,
                                                                                // STRING: FF7 0x00911698
                                                                                "C:\\lib\\src\\polygon\\plytopd.cpp",
-                                                                               0x1066);
+                                                                               4198);
                                     entry->directoryListing = (int)listingPointer;
                                     SortDirectoryListingNames(listingPointer);
                                     FillDirectoryEntryPointerArray(entry->entries, listingPointer);
@@ -3351,7 +3351,7 @@ void __cdecl AnimGroup_FormatCurrentEntryStatusLine(int isClosed, int xPos, int 
     PolygonAnimPlayer *q;
     PolygonAnimGroupEntry *r;
     int s;
-    char t[0xc8];
+    char t[200];
     char *u;
     char v;
     int w;

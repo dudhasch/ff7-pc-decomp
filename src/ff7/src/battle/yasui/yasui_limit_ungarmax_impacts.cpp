@@ -218,7 +218,7 @@ void __cdecl BattleFx_LimitUngarmaxSpawnImpactEffects(int targetActor)
     child = (YasuiLimitUngarmaxImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitUngarmaxAnimatedSpriteTask);
     child->pos = g_YasuiLimitUngarmaxBonePosScratch->pos;
     child->pushLength = -actorRadius;
-    for (sparkIdx = 0; sparkIdx < 0xF; sparkIdx++) {
+    for (sparkIdx = 0; sparkIdx < 15; sparkIdx++) {
         child = (YasuiLimitUngarmaxImpactSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitUngarmaxFadingPointParticleTask);
         child->pos = g_YasuiLimitUngarmaxBonePosScratch->pos;
         child->color.r = 0xFF;
@@ -226,18 +226,18 @@ void __cdecl BattleFx_LimitUngarmaxSpawnImpactEffects(int targetActor)
         child->color.b = 0;
         child->color.cd = 0x62;
         g_YasuiLimitUngarmaxBonePosScratch->dir.vx = rand() & 0xFFF;
-        g_YasuiLimitUngarmaxBonePosScratch->dir.vy = g_BattleActorRecords[g_YasuiLimitUngarmaxTargetActor].yaw - 0x400;
+        g_YasuiLimitUngarmaxBonePosScratch->dir.vy = g_BattleActorRecords[g_YasuiLimitUngarmaxTargetActor].yaw - 1024;
         if (DEAD_IN_RETAIL != 0) {
-            pitch = 0x400;
+            pitch = 0x400 /* 90 deg */;
         } else {
             pitch = rand() % 0x100 + 0x300;
         }
         g_YasuiLimitUngarmaxBonePosScratch->dir.vz = pitch;
         RotMatrix(&g_YasuiLimitUngarmaxBonePosScratch->dir, &g_YasuiLimitUngarmaxBonePosScratch->matrix);
         if (DEAD_IN_RETAIL != 0) {
-            velocity = 0x1F4;
+            velocity = 500;
         } else {
-            velocity = rand() % 0xC8 + 0x12C;
+            velocity = rand() % 200 + 300;
         }
         g_YasuiLimitUngarmaxBonePosScratch->dir.vx = velocity;
         g_YasuiLimitUngarmaxBonePosScratch->dir.vy = 0;
@@ -256,7 +256,7 @@ void __cdecl BattleFx_LimitUngarmaxBillboardModelTask(void)
 
     task = (YasuiLimitUngarmaxImpactSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiLimitUngarmaxDrawReqPool.modelRes = Gfx_ModelTableGetRenderObject(0, g_YasuiLimitUngarmaxResourceContext);
-    BattleFx_InstallBillboardMatrix(&task->pos.vx, 0x800, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->pos.vx, 0x800 /* 0.5 */, task->pushLength);
     g_YasuiLimitUngarmaxDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitUngarmaxDrawReqPool, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitUngarmaxDrawListHead);
     if (g_BattleIsPaused == 0) {
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -274,7 +274,7 @@ void __cdecl BattleFx_LimitUngarmaxAnimatedSpriteTask(void)
     task = (YasuiLimitUngarmaxImpactSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiLimitUngarmaxDrawReqPool.spriteDrawReqObject = Gfx_ModelTableGetLoadedRecord(3, g_YasuiLimitUngarmaxResourceContext);
     g_YasuiLimitUngarmaxDrawReqPool.drawObj = Gfx_ModelTableGetSpriteObject(3, g_YasuiLimitUngarmaxResourceContext);
-    BattleFx_InstallBillboardMatrix(&task->pos.vx, 0x2000, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->pos.vx, 0x2000 /* 2.0 */, task->pushLength);
     g_YasuiLimitUngarmaxDrawReqPool.spriteDrawReqFrame = task->frameCount;
     g_YasuiLimitUngarmaxDrawListHead = BattleFx_SubmitSpriteDraw(&g_YasuiLimitUngarmaxDrawReqPool.spriteDrawReqObject, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitUngarmaxDrawListHead);
     if (g_BattleIsPaused == 0 && g_YasuiLimitUngarmaxDrawReqPool.spriteDrawReqObject != 0) {
@@ -323,9 +323,9 @@ void __cdecl BattleFx_LimitUngarmaxFadingPointParticleTask(void)
             task->pos.vx += task->velocityX;
             task->pos.vy += task->velocityY;
             task->pos.vz += task->velocityZ;
-            task->velocityX = task->velocityX * 0xE00 >> 12;
-            task->velocityY = (task->velocityY * 0xE00 >> 12) + 10;
-            task->velocityZ = task->velocityZ * 0xE00 >> 12;
+            task->velocityX = task->velocityX * 0xE00 /* 0.875 */ >> 12;
+            task->velocityY = (task->velocityY * 0xE00 /* 0.875 */ >> 12) + 10;
+            task->velocityZ = task->velocityZ * 0xE00 /* 0.875 */ >> 12;
         }
     }
 }

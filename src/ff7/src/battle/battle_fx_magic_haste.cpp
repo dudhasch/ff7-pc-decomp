@@ -147,7 +147,7 @@ void __cdecl BattleFx_MagicHasteSpawnOrbitingPairsTask(void)
     int tilt;
 
     i = 0;
-    for (targetCount8 = 0; i < 0xA; i++) {
+    for (targetCount8 = 0; i < 10; i++) {
         if ((g_BattleMagicHasteVertexDeltaBuffer & 1 << i) != 0) {
             targetCount8++;
             if (targetCount8 == 1) {
@@ -161,21 +161,21 @@ void __cdecl BattleFx_MagicHasteSpawnOrbitingPairsTask(void)
     pOrbit = (BattleFxMagicHasteOrbitingPair *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicHasteOrbitingModelPairTask);
     if (targetCount8 == 1) {
         Battle_GetBoneWorldPos(firstTarget, g_BattleActorRecords[firstTarget].targetBone, (short *)((char *)pOrbit + 4));
-        pOrbit->orbitRadius = g_BattleActorRecords[firstTarget].radius + 0xE0;
-        if (pOrbit->orbitRadius > 0x76C) {
-            pOrbit->orbitRadius = 0x76C;
+        pOrbit->orbitRadius = g_BattleActorRecords[firstTarget].radius + 224;
+        if (pOrbit->orbitRadius > 1900) {
+            pOrbit->orbitRadius = 1900;
         }
     } else {
         Battle_GetActorMaskCentroid(g_BattleMagicHasteVertexDeltaBuffer, (short *)((char *)pOrbit + 4));
         pOrbit->posY = 0xFC80;
-        pOrbit->orbitRadius = 0x540;
+        pOrbit->orbitRadius = 1344;
     }
     pOrbit->rotX = 0;
     pOrbit->rotZ = 0;
     pOrbit->tiltYOffset = 0;
     pOrbit->rotYOffset = 0;
     pOrbit->orbitAngle = 0;
-    pOrbit->angle = 0x400;
+    pOrbit->angle = 0x400 /* 90 deg */;
     tiltSeed = 0x100;
     if (tiltSeed < 0x20) {
         tilt = 0x20;
@@ -190,7 +190,7 @@ void __cdecl BattleFx_MagicHasteSpawnOrbitingPairsTask(void)
     pairPtr->spinZ = 0;
     pairPtr->orbitSpin = 0;
     pairPtr->spinY = 0;
-    pairPtr->orbitAngle = 0x400;
+    pairPtr->orbitAngle = 0x400 /* 90 deg */;
     pairPtr->orbitRadius = pOrbit->orbitRadius;
     pairPtr->angle = pOrbit->angle;
     pairPtr->tilt = pOrbit->tilt;
@@ -201,7 +201,7 @@ void __cdecl BattleFx_MagicHasteSpawnOrbitingPairsTask(void)
     pairPtr->spinZ = 0;
     pairPtr->orbitSpin = 0;
     pairPtr->spinY = 0;
-    pairPtr->orbitAngle = 0x800;
+    pairPtr->orbitAngle = 0x800 /* 180 deg */;
     pairPtr->orbitRadius = pOrbit->orbitRadius;
     pairPtr->angle = pOrbit->angle;
     pairPtr->tilt = pOrbit->tilt;
@@ -212,7 +212,7 @@ void __cdecl BattleFx_MagicHasteSpawnOrbitingPairsTask(void)
     pairPtr->spinZ = 0;
     pairPtr->orbitSpin = 0;
     pairPtr->spinY = 0;
-    pairPtr->orbitAngle = 0xC00;
+    pairPtr->orbitAngle = 0xC00 /* 270 deg */;
     pairPtr->orbitRadius = pOrbit->orbitRadius;
     pairPtr->angle = pOrbit->angle;
     pairPtr->tilt = pOrbit->tilt;
@@ -273,7 +273,7 @@ void __cdecl BattleFx_MagicHasteOrbitingModelPairTask(void)
     ApplyMatrixToSVectorInt32(&frame.workMatrix, &frame.offsetX, &frame.posX);
     frame.tmpAngle = frame.pairRecord->frame * 3;
     if (frame.tmpAngle > 0x3C) {
-        frame.stepCount = 0x3C;
+        frame.stepCount = 60;
     } else {
         frame.stepCount = frame.tmpAngle;
     }
@@ -285,7 +285,7 @@ void __cdecl BattleFx_MagicHasteOrbitingModelPairTask(void)
     frame.goalX.x += frame.pairRecord->velocityX;
     frame.goalX.y += frame.pairRecord->velocityY;
     frame.goalX.z += frame.pairRecord->velocityZ;
-    if (frame.pairRecord->state == 0 && frame.pairRecord->frame >= 0x14) {
+    if (frame.pairRecord->state == 0 && frame.pairRecord->frame >= 20) {
         frame.dirX.vx = frame.pairRecord->velocityX - frame.posX.x;
         frame.dirX.vy = 0;
         frame.dirX.vz = frame.pairRecord->velocityZ - frame.posX.z;
@@ -312,14 +312,14 @@ void __cdecl BattleFx_MagicHasteOrbitingModelPairTask(void)
     if (frame.pairRecord->state != 0) {
         switch (frame.pairRecord->state) {
         case BATTLE_HASTE_ORBIT_TILT_2:
-            frame.tiltX.vx = 0x40;
+            frame.tiltX.vx = 64;
             frame.tiltX.vy = 0xFFB0;
             frame.tiltX.vz = 0;
             frame.blendDivisor = 0x10;
             break;
         case BATTLE_HASTE_ORBIT_TILT_3:
-            frame.tiltX.vx = 0x20;
-            frame.tiltX.vy = 0x40;
+            frame.tiltX.vx = 32;
+            frame.tiltX.vy = 64;
             frame.tiltX.vz = 0;
             frame.blendDivisor = 0xC;
             break;
@@ -331,7 +331,7 @@ void __cdecl BattleFx_MagicHasteOrbitingModelPairTask(void)
             break;
         case BATTLE_HASTE_ORBIT_TILT_1:
             frame.tiltX.vx = 0xFFB0;
-            frame.tiltX.vy = 0x60;
+            frame.tiltX.vy = 96;
             frame.tiltX.vz = 0;
             frame.blendDivisor = 0x15;
         }
@@ -376,25 +376,25 @@ void __cdecl BattleFx_MagicHasteOrbitingModelPairTask(void)
     SetTransMatrix(&frame.workMatrix);
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicHasteLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.pairRecord->frame >= 0x29) {
+    if (frame.pairRecord->frame >= 41) {
         frame.pairRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.pairRecord->spinY -= 0x100;
+    frame.pairRecord->spinY -= 0x100 /* 22.5 deg */;
     frame.pairRecord->spinZ += 0x180;
     if (frame.pairRecord->state != 0) {
         frame.pairRecord->spinY += 0x180;
         frame.pairRecord->spinX += 0x40;
     }
     if (frame.pairRecord->state == 0) {
-        frame.pairRecord->orbitSpin -= 0x100;
+        frame.pairRecord->orbitSpin -= 0x100 /* 22.5 deg */;
     }
-    if (frame.pairRecord->frame < 0x14) {
+    if (frame.pairRecord->frame < 20) {
         frame.pairRecord->angle += frame.pairRecord->angleStep;
     }
-    if (frame.pairRecord->frame < 0x14 || frame.pairRecord->state != 0) {
+    if (frame.pairRecord->frame < 20 || frame.pairRecord->state != 0) {
         (frame.pairRecord->frame)++;
     }
 }
@@ -417,20 +417,20 @@ void __cdecl BattleFx_MagicHasteMorphModelVerticesTask(void)
     if (task->step < 7) {
         if (task->step == 1) {
             task->morphWeight = 0;
-            task->weightStep = 0x2AA;
+            task->weightStep = 682;
             BattleFx_MagicHasteBuildMeshVertexDeltas(g_BattleMagicHasteMeshModel1, g_BattleMagicHasteMeshModel2, g_BattleMagicHasteTargetMeshPtr);
         }
         resultA = Gfx_ModelTableGetRenderObject(1, g_BattleMagicHasteLoadedResTable);
         if (resultA != 0) {
             *(int *)&g_BattleMagicHasteWeight2 = FLOAT_ONE_BITS;
-            g_BattleMagicHasteWeight1 = (float)(task->morphWeight / 0x1000);
+            g_BattleMagicHasteWeight1 = (float)(task->morphWeight / 4096);
             g_BattleMagicHasteVertexBuffer = (int)g_BattleMagicHasteTargetMeshPtr;
             Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_MagicHasteBlendPolygonSetVertices, *(int *)((char *)resultA + 4));
         }
     } else {
         if (task->step == 7) {
             task->morphWeight = 0;
-            task->weightStep = 0x333;
+            task->weightStep = 819;
             BattleFx_MagicHasteBuildMeshVertexDeltas(g_BattleMagicHasteMeshModel2, g_BattleMagicHasteMeshModel3, g_BattleMagicHasteTargetMeshPtr);
         }
         resultB = Gfx_ModelTableGetRenderObject(1, g_BattleMagicHasteLoadedResTable);
@@ -440,13 +440,13 @@ void __cdecl BattleFx_MagicHasteMorphModelVerticesTask(void)
             g_BattleMagicHasteVertexBuffer = (int)&g_BattleMagicHasteMeshModel2;
             Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_MagicHasteBlendPolygonSetVertices, *(int *)((char *)resultB + 4));
             *(int *)&g_BattleMagicHasteWeight2 = FLOAT_ONE_BITS;
-            g_BattleMagicHasteWeight1 = (float)(task->morphWeight / 0x1000);
+            g_BattleMagicHasteWeight1 = (float)(task->morphWeight / 4096);
             g_BattleMagicHasteVertexBuffer = (int)g_BattleMagicHasteTargetMeshPtr;
             Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_MagicHasteBlendPolygonSetVertices, *(int *)((char *)resultB + 4));
         }
     }
-    if (task->step == 0x14) {
-        for (i = 0; i < 0xA; i++) {
+    if (task->step == 20) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicHasteVertexDeltaBuffer & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
@@ -454,7 +454,7 @@ void __cdecl BattleFx_MagicHasteMorphModelVerticesTask(void)
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     task->morphWeight += task->weightStep;
-    if (task->morphWeight > 0x1000) {
+    if (task->morphWeight > 4096) {
         task->morphWeight = 0x1000;
     }
     (task->step)++;
@@ -468,7 +468,7 @@ void __cdecl BattleFx_MagicHasteBuildMeshVertexDeltas(SVECTOR *poseA, SVECTOR *p
 {
     int i;
 
-    for (i = 0; i < 0x82; i++) {
+    for (i = 0; i < 130; i++) {
         deltas[i].vx = poseB[i].vx - poseA[i].vx;
         deltas[i].vy = poseB[i].vy - poseA[i].vy;
         deltas[i].vz = poseB[i].vz - poseA[i].vz;

@@ -328,7 +328,7 @@ void __cdecl BattleFx_SummonLoadResKjata(void)
 // FUNCTION: FF7 0x004f9891
 int __cdecl BattleFx_SummonEnterKjata(int targetMask, int actorIdx)
 {
-    memcpy((void *)&(g_BattleSummonKjataVertexData1.triangleOffset), (void *)&g_BattleSummonKjataVertexData2, 0x1624);
+    memcpy((void *)&(g_BattleSummonKjataVertexData1.triangleOffset), (void *)&g_BattleSummonKjataVertexData2, 5668);
     g_BattleSummonKjataLightMatrix.t[2] = 0;
     g_BattleSummonKjataLightMatrix.t[1] = g_BattleSummonKjataLightMatrix.t[2];
     g_BattleSummonKjataLightMatrix.t[0] = g_BattleSummonKjataLightMatrix.t[1];
@@ -363,7 +363,7 @@ void __cdecl BattleFx_SummonBeginKjata(int targetMask, int actorIdx)
 
     Battle_GetActorMaskCentroid(g_BattleSummonKjataActorIdx = targetMask, centroid);
     if (centroid[2] < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonKjataCameraTable.vy = 0x800;
+        g_BattleSummonKjataCameraTable.vy = 2048;
     }
     RotMatrix(&g_BattleSummonKjataCameraTable, &g_BattleSummonKjataLightMatrix);
     g_BattleSummonKjataLightMatrix.t[2] = centroid[2];
@@ -709,7 +709,7 @@ void __cdecl BattleFx_SummonKjataTimelineTask(void)
         }
     } else {
         frameCount -= 5;
-        if (frameCount < 0xA) {
+        if (frameCount < 10) {
             if (frameCount == 0) {
                 pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataSpawnBranchingTrailsTask);
                 pSubtask->ownerSlot = 0xA;
@@ -720,44 +720,44 @@ void __cdecl BattleFx_SummonKjataTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
             }
         } else {
-            frameCount -= 0xA;
-            if (frameCount < 0x23) {
+            frameCount -= 10;
+            if (frameCount < 35) {
                 if (frameCount == 0) {
                     Battle_AllocateResourceSlot(BattleFx_SummonKjataComputeTriangleNormalsTask);
                 }
             } else {
-                frameCount -= 0x23;
-                if (frameCount < 0x1E) {
-                    if (frameCount == 0xF) {
+                frameCount -= 35;
+                if (frameCount < 30) {
+                    if (frameCount == 15) {
                         BattleFx_SummonKjataSpawnColorFade(&g_BattleSummonKjataLightFactor, 5);
                         pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataFragmentedMeshTask);
                     }
                 } else {
-                    frameCount -= 0x1E;
-                    if (frameCount < 0x14) {
-                        if (frameCount == 0xA) {
+                    frameCount -= 30;
+                    if (frameCount < 20) {
+                        if (frameCount == 10) {
                             pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataSpawnBlackModelsTask);
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
                         }
-                        if (frameCount == 0xF) {
+                        if (frameCount == 15) {
                             pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataBlackModelExpandingTask);
                             pSubtask->posX = 0;
                             pSubtask->posY = 0xFC18;
                             pSubtask->posZ = 0;
                         }
                     } else {
-                        frameCount -= 0x14;
-                        if (frameCount < 0x14) { /* empty first arm: lib/codegen.h */
+                        frameCount -= 20;
+                        if (frameCount < 20) { /* empty first arm: lib/codegen.h */
                         } else {
-                            frameCount -= 0x14;
-                            if (frameCount < 0xF) {
+                            frameCount -= 20;
+                            if (frameCount < 15) {
                                 if (frameCount == 0) {
                                     BattleFx_SummonKjataSpawnColorFade(&g_BattleSummonKjataLightIntensity, 5);
                                     pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataFragmentSpritesTask);
                                 }
                             } else {
-                                frameCount -= 0xF;
-                                if (frameCount < 0x1E) {
+                                frameCount -= 15;
+                                if (frameCount < 30) {
                                     if (frameCount == 0) {
                                         pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataBlackModel1ScalingFadeTask);
                                         pSubtask->posZ = 0;
@@ -770,8 +770,8 @@ void __cdecl BattleFx_SummonKjataTimelineTask(void)
                                         pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataSpawnScalingFadeModelsTask);
                                     }
                                 } else {
-                                    frameCount -= 0x1E;
-                                    if (frameCount < 0x19) {
+                                    frameCount -= 30;
+                                    if (frameCount < 25) {
                                         if (frameCount == 0) {
                                             BattleFx_SummonKjataSpawnColorFade(&g_BattleSummonKjataLoadedResTable2, 5);
                                             BattleFx_SummonKjataClearParticleSpriteRecords();
@@ -785,23 +785,23 @@ void __cdecl BattleFx_SummonKjataTimelineTask(void)
                                             pRecord->phase = 4;
                                             pRecord->normalData = (int)&g_BattleSummonKjataNormalData1;
                                         }
-                                        if (frameCount == 0xF) {
+                                        if (frameCount == 15) {
                                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                             Sfx_ReleaseCachedBuffer(0x26F, 1);
                                             Sfx_ReleaseCachedBuffer(0x270, 1);
                                             Sfx_ReleaseCachedBuffer(0x271, 1);
                                         }
                                     } else {
-                                        frameCount -= 0x19;
-                                        if (frameCount < 0x19) { /* empty first arm: lib/codegen.h */
+                                        frameCount -= 25;
+                                        if (frameCount < 25) { /* empty first arm: lib/codegen.h */
                                         } else {
-                                            frameCount -= 0x19;
-                                            if (frameCount < 0xF) {
+                                            frameCount -= 25;
+                                            if (frameCount < 15) {
                                                 if (frameCount == 0) {
                                                     pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataCounterRotatingModelsTask);
                                                     pSubtask = (BattleFxKjataTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataSpawnScalingModelsTask);
                                                 }
-                                                if (frameCount == 0xE) {
+                                                if (frameCount == 14) {
                                                     pRecord = (BattleFxKjataTimelineRecord *)Battle_AllocSceneMessage(1);
                                                     SetRotMatrix(&g_BattleSummonKjataLightMatrix);
                                                     SetTransMatrix(&g_BattleSummonKjataLightMatrix);
@@ -810,23 +810,23 @@ void __cdecl BattleFx_SummonKjataTimelineTask(void)
                                                     pRecord->posY = g_BattleSummonKjataPosition->posY;
                                                     pRecord->posZ = g_BattleSummonKjataPosition->posZ;
                                                     pRecord->phase = g_BattleSummonKjataCameraTable.vy + 0x800;
-                                                    g_BattleActorRecords[3].scale = 0xD00;
+                                                    g_BattleActorRecords[3].scale = 0xD00 /* 0.8125 */;
                                                 }
                                             } else {
-                                                frameCount -= 0xF;
-                                                if (frameCount < 0x1E) {
+                                                frameCount -= 15;
+                                                if (frameCount < 30) {
                                                     if (frameCount == 0) {
-                                                        Battle_StartFixedPointRamp(0, 0xA);
+                                                        Battle_StartFixedPointRamp(0, 10);
                                                     }
                                                 } else {
-                                                    frameCount -= 0x1E;
-                                                    if (frameCount < 0x2D) {
+                                                    frameCount -= 30;
+                                                    if (frameCount < 45) {
                                                         if (frameCount == 0) {
                                                             Battle_AllocateResourceSlot(BattleFx_SummonKjataRingGridWaveTask);
                                                             Battle_CreateBitPatternCallbackTask(BATTLE_ACTOR_MASK_ENEMIES, 0, 0, BattleFx_SummonSpawnKjataWaveHeightPerTarget);
                                                         }
                                                         if (frameCount == 8) {
-                                                            BattleFx_SummonBeginKjataJitterEnvelope(0x78, 0, 0x14, 0xA);
+                                                            BattleFx_SummonBeginKjataJitterEnvelope(0x78, 0, 20, 10);
                                                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 3);
                                                             Sfx_ReleaseCachedBuffer(0x272, 0);
                                                             Sfx_ReleaseCachedBuffer(0x273, 0);
@@ -845,8 +845,8 @@ void __cdecl BattleFx_SummonKjataTimelineTask(void)
             }
         }
     }
-    frameCount -= 0x2D;
-    if (frameCount < 0x1E) {
+    frameCount -= 45;
+    if (frameCount < 30) {
         if (frameCount == 0) {
             for (targetIndex = 0; targetIndex < 0xA; targetIndex++) {
                 if ((g_BattleSummonKjataActorIdx & 1 << targetIndex) != 0) {
@@ -854,7 +854,7 @@ void __cdecl BattleFx_SummonKjataTimelineTask(void)
                 }
             }
         }
-        if (frameCount == 0x1C) {
+        if (frameCount == 28) {
             pRecord = (BattleFxKjataTimelineRecord *)Battle_AllocSceneMessage(2);
         }
     } else {
@@ -887,7 +887,7 @@ void __cdecl BattleFx_SummonKjataSpawnColorFade(void *valuePtr, int duration)
     entry->colorChannel2 = g_BattleFxTimelineState.channel2;
     *(Int32Value *)((char *)entry + 8) = *(Int32Value *)valuePtr;
     entry->fadeProgress = 0;
-    entry->fadeStep = 0x1000 / duration;
+    entry->fadeStep = 4096 / duration;
 }
 
 // When unpaused adds fadeStep to fadeProgress, clamps it at 0x1000 and retires the slot there. Sets
@@ -904,8 +904,8 @@ void __cdecl BattleFx_SummonKjataColorFadeTask(void)
         return;
     }
     p->fadeProgress += p->fadeStep;
-    if (p->fadeProgress >= 0x1000) {
-        p->fadeProgress = 0x1000;
+    if (p->fadeProgress >= 4096) {
+        p->fadeProgress = 4096;
         p->ownerSlot = BATTLE_TASK_FREE;
     }
     SetDrawColorRGB(p->colorR,
@@ -945,13 +945,13 @@ void __cdecl BattleFx_SummonKjataSpawnBranchingTrailsTask(void)
             if (DEAD_IN_RETAIL != 0) {
                 choice = 0x320;
             } else {
-                choice = rand() % 0x2BC + 0x64;
+                choice = rand() % 700 + 100;
             }
             speed = choice;
-            particle->velocityX = speed * SinFixed(g_BattleSummonKjataSpawnAngle) >> 0xC;
-            particle->velocityY = 0x3E8;
-            particle->velocityZ = speed * CosFixed(g_BattleSummonKjataSpawnAngle) >> 0xC;
-            particle->branchTimer = 0xA;
+            particle->velocityX = speed * SinFixed(g_BattleSummonKjataSpawnAngle) >> 12;
+            particle->velocityY = 1000;
+            particle->velocityZ = speed * CosFixed(g_BattleSummonKjataSpawnAngle) >> 12;
+            particle->branchTimer = 10;
             (taskPtr->timer)--;
             if (taskPtr->timer == 0) {
                 taskPtr->timer = 0xFFFF;
@@ -994,7 +994,7 @@ void __cdecl BattleFx_SummonKjataBranchingTrailTask(void)
     curNode = &g_BattleSummonKjataNodeData[g_BattleSummonKjataTrailNodeCount];
     if (pTaskSlot->age == 0) {
         curNode->branchIndex = 0;
-        curNode->randomSeed = (rand() & 0xF) + 0x10;
+        curNode->randomSeed = (rand() & 0xF) + 16;
         curNode->resIndex = *(char *)&g_BattleSummonKjataLoadedResIndex;
         curNode->savedPosX = pTaskSlot->posX;
         curNode->savedPosY = pTaskSlot->posY;
@@ -1002,15 +1002,15 @@ void __cdecl BattleFx_SummonKjataBranchingTrailTask(void)
         curNode->swayOffset = 0;
         curNode->posZ = 0;
         if (DEAD_IN_RETAIL != 0) {
-            rootX = 0x1F4;
+            rootX = 500;
         } else {
-            rootX = rand() % 0x1F4;
+            rootX = rand() % 500;
         }
         curNode->posX = rootX;
         if (DEAD_IN_RETAIL != 0) {
-            rootY = 0x5DC;
+            rootY = 1500;
         } else {
-            rootY = rand() % 0x12C + 0x4B0;
+            rootY = rand() % 300 + 1200;
         }
         curNode->posY = rootY;
         curNode->flags = 0;
@@ -1028,8 +1028,8 @@ void __cdecl BattleFx_SummonKjataBranchingTrailTask(void)
         pTaskSlot->posX += pTaskSlot->velocityX;
         pTaskSlot->posY += pTaskSlot->velocityY;
         pTaskSlot->posZ += pTaskSlot->velocityZ;
-        pTaskSlot->velocityX = pTaskSlot->velocityX * 0xE00 >> 0xC;
-        pTaskSlot->velocityZ = pTaskSlot->velocityZ * 0xE00 >> 0xC;
+        pTaskSlot->velocityX = pTaskSlot->velocityX * 0xE00 /* 0.875 */ >> 12;
+        pTaskSlot->velocityZ = pTaskSlot->velocityZ * 0xE00 /* 0.875 */ >> 12;
         curNode->branchIndex = *(char *)&pTaskSlot->branchIndex;
         curNode->randomSeed = (rand() & 0xF) | 0x10;
         curNode->savedPosX = pTaskSlot->posX;
@@ -1038,15 +1038,15 @@ void __cdecl BattleFx_SummonKjataBranchingTrailTask(void)
         curNode->swayOffset = 0;
         curNode->posZ = 0;
         if (DEAD_IN_RETAIL != 0) {
-            calcStepX = 0x1F4;
+            calcStepX = 500;
         } else {
-            calcStepX = rand() % 0x1F4;
+            calcStepX = rand() % 500;
         }
         curNode->posX = calcStepX;
         if (DEAD_IN_RETAIL != 0) {
-            extentY = 0x5DC;
+            extentY = 1500;
         } else {
-            extentY = rand() % 0x12C + 0x4B0;
+            extentY = rand() % 300 + 1200;
         }
         curNode->posY = extentY;
         curNode->flags = 0;
@@ -1054,13 +1054,13 @@ void __cdecl BattleFx_SummonKjataBranchingTrailTask(void)
         pTaskSlot->branchIndex = *(short *)&g_BattleSummonKjataTrailNodeCount;
         g_BattleSummonKjataTrailNodeCount++;
         (pTaskSlot->age)++;
-        if (pTaskSlot->age >= 0xE) {
+        if (pTaskSlot->age >= 14) {
             pTaskSlot->branchIndex = 0xFFFF;
             return;
         }
         (pTaskSlot->timer)--;
         if (pTaskSlot->timer == 0) {
-            if (pTaskSlot->age == 0xA) {
+            if (pTaskSlot->age == 10) {
                 curNode->randomSeed &= 0xF;
                 curNode->flags = 0x80;
             }
@@ -1077,7 +1077,7 @@ void __cdecl BattleFx_SummonKjataBranchingTrailTask(void)
             g_BattleSummonKjataDeltaVector[1].vx = 0;
             g_BattleSummonKjataDeltaVector[1].vy = 0;
             if (DEAD_IN_RETAIL != 0) {
-                swingAngle = 0x200;
+                swingAngle = 0x200 /* 45 deg */;
             } else {
                 swingAngle = rand() % 0x180 + 0x80;
             }
@@ -1114,36 +1114,36 @@ void __cdecl BattleFx_SummonKjataTrailRenderAndBlendTask(void)
         g_BattleSummonKjataTargetActorIdx = (struct BattleFxKjataTrailState *)(Gfx_GetPsxScratchpadPtr(0));
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0x2D) {
+    if (stage < 45) {
         if (g_BattleIsPaused == 0) {
             BattleFx_SummonKjataUpdateTrailRecords();
         }
         BattleFx_SummonKjataDrawBranchingTrailQuads();
     } else {
-        stage -= 0x2D;
-        if (stage < 0xF) {
+        stage -= 45;
+        if (stage < 15) {
             if (stage == 0) {
                 BattleFx_SummonKjataBuildTrailTriangleArrays();
             }
-            progress = (stage << 0xC) / 0xF;
+            progress = (stage << 12) / 15;
             eased = BattleFx_KjataApplyCameraEasing(progress, 0x3C0);
-            if (progress < 0x800) {
+            if (progress < 2048) {
                 lateProgress = 0;
             } else {
                 lateProgress = progress - 0x800;
             }
             fadeIn = lateProgress;
             MultiplyMatrix(&g_BattleSummonKjataBillboardMatrix, &g_BattleSummonKjataScaleFixed12, &g_BattleSummonKjataTargetActorIdx->worldMatrix);
-            g_BattleSummonKjataTargetActorIdx->rotX = (progress * 0) >> 0xC;
-            g_BattleSummonKjataTargetActorIdx->rotY = progress << 0xC >> 0xC;
-            g_BattleSummonKjataTargetActorIdx->rotZ = (progress * 0) >> 0xC;
+            g_BattleSummonKjataTargetActorIdx->rotX = (progress * 0) >> 12;
+            g_BattleSummonKjataTargetActorIdx->rotY = progress << 12 >> 12;
+            g_BattleSummonKjataTargetActorIdx->rotZ = (progress * 0) >> 12;
             RotMatrix((SVECTOR *)g_BattleSummonKjataTargetActorIdx, (int *)&g_BattleSummonKjataTargetActorIdx->localMatrix);
-            g_BattleSummonKjataTargetActorIdx->nextValue = ((progress * 0) >> 0xC) + 0x1000;
+            g_BattleSummonKjataTargetActorIdx->nextValue = ((progress * 0) >> 12) + 0x1000;
             g_BattleSummonKjataTargetActorIdx->currValue = g_BattleSummonKjataTargetActorIdx->nextValue;
             g_BattleSummonKjataTargetActorIdx->prevValue = g_BattleSummonKjataTargetActorIdx->currValue;
             ScaleMatrix((int *)&g_BattleSummonKjataTargetActorIdx->localMatrix, &g_BattleSummonKjataTargetActorIdx->prevValue);
-            Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x1D, g_BattleSummonKjataTableCursor)));
-            Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x1E, g_BattleSummonKjataTableCursor)));
+            Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(29, g_BattleSummonKjataTableCursor)));
+            Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(30, g_BattleSummonKjataTableCursor)));
             g_BattleOverlayDrawListHead = BattleFx_SummonKjataDrawBlendedTriangles(&g_BattleSummonKjataModelDataDescriptors, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead, g_BattleSummonKjataState, (struct Vec3sPacked *)(g_BattleSummonKjataCoord), g_BattleSummonKjataScratchVector, (short)eased, (short)fadeIn, &g_BattleSummonKjataTargetActorIdx->worldMatrix, (struct BattleFxOffsetTriMeshDesc *)&g_BattleSummonKjataTargetActorIdx->localMatrix);
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -1207,9 +1207,9 @@ int __cdecl BattleFx_SummonKjataDrawBlendedTriangles(BattleFxKjataDraw *draw, in
         triPtr->v2X = pVertC->vx - triPtr->centroidX;
         triPtr->v2Y = pVertC->vy - triPtr->centroidY;
         triPtr->v2Z = pVertC->vz - triPtr->centroidZ;
-        translation->transX = (triPtr->centroidX + positions->vx) * blend + trailSamples->vx * (0x1000 - blend) >> 0xC;
-        translation->transY = (triPtr->centroidY + positions->vy) * blend + trailSamples->vy * (0x1000 - blend) >> 0xC;
-        translation->transZ = (triPtr->centroidZ + positions->vz) * blend + trailSamples->vz * (0x1000 - blend) >> 0xC;
+        translation->transX = (triPtr->centroidX + positions->vx) * blend + trailSamples->vx * (4096 - blend) >> 12;
+        translation->transY = (triPtr->centroidY + positions->vy) * blend + trailSamples->vy * (4096 - blend) >> 12;
+        translation->transZ = (triPtr->centroidZ + positions->vz) * blend + trailSamples->vz * (4096 - blend) >> 12;
         trailSamples = (Vec3sPacked *)((char *)trailSamples + 8);
         positions = (Vec3sPacked *)((char *)positions + 8);
         MultiplyMatrix(worldMatrix, translation, (void *)matrixBuffer);
@@ -1237,7 +1237,7 @@ int __cdecl BattleFx_SummonKjataDrawBlendedTriangles(BattleFxKjataDraw *draw, in
                 Gfx_DrawPsxPrimitive(packet);
                 packet->polyAttr = polyAttr;
                 tmp[0] = rec->color;
-                tmp[0] = tmp[0] | tmp[0] << 8 | tmp[0] << 0x10;
+                tmp[0] = tmp[0] | tmp[0] << 8 | tmp[0] << 16;
                 Gfx_ShadePsxVertexColor((CVECTOR *)tmp, 0x1000 - shade, (CVECTOR *)tmp);
                 packet->colorCmd = tmp[0] | 0x26000000;
                 packet->packedWord = rec->packedWord;
@@ -1288,9 +1288,9 @@ void __cdecl BattleFx_SummonKjataDrawBranchingTrailQuads(void)
     RefreshGlobalTransformState();
     frame.trailBranch = (BattleFxKjataTrailBranch *)g_BattleSummonKjataNodeData;
     for (frame.recordIndex = 0; frame.recordIndex < g_BattleSummonKjataTrailNodeCount; frame.recordIndex++) {
-        frame.branchVerts[frame.recordIndex].vx = frame.trailBranch->baseX + (SinFixed(frame.trailBranch->angle) * frame.trailBranch->length >> 0xC) + (SinFixed(frame.trailBranch->branchAngle) * frame.trailBranch->length >> 0xC);
+        frame.branchVerts[frame.recordIndex].vx = frame.trailBranch->baseX + (SinFixed(frame.trailBranch->angle) * frame.trailBranch->length >> 12) + (SinFixed(frame.trailBranch->branchAngle) * frame.trailBranch->length >> 12);
         frame.branchVerts[frame.recordIndex].vy = frame.trailBranch->baseY;
-        frame.branchVerts[frame.recordIndex].vz = frame.trailBranch->baseZ + (CosFixed(frame.trailBranch->angle) * frame.trailBranch->length >> 0xC) + (CosFixed(frame.trailBranch->branchAngle) * frame.trailBranch->length >> 0xC);
+        frame.branchVerts[frame.recordIndex].vz = frame.trailBranch->baseZ + (CosFixed(frame.trailBranch->angle) * frame.trailBranch->length >> 12) + (CosFixed(frame.trailBranch->branchAngle) * frame.trailBranch->length >> 12);
         frame.predIndex = frame.trailBranch->active;
         if (frame.predIndex != 0) {
             frame.predNode = &g_BattleSummonKjataNodeData[frame.predIndex];
@@ -1317,7 +1317,7 @@ void __cdecl BattleFx_SummonKjataDrawBranchingTrailQuads(void)
                 frame.packet->uv1Tpage = g_BattleSummonKjataColorTable[frame.modeFlags].uv1 | 0x2C0000;
                 frame.packet->uv2 = g_BattleSummonKjataColorTable[frame.modeFlags].uv2;
                 frame.packet->uv3 = g_BattleSummonKjataColorTable[frame.modeFlags].uv3;
-                Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x1C, g_BattleSummonKjataTableCursor)));
+                Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(28, g_BattleSummonKjataTableCursor)));
                 Gfx_DrawPsxPrimitive(frame.packet);
             }
         }
@@ -1330,7 +1330,7 @@ void __cdecl BattleFx_SummonKjataDrawBranchingTrailQuads(void)
                 if (DEAD_IN_RETAIL != 0) {
                     frame.emitValue = 0x7000;
                 } else {
-                    frame.emitValue = rand() % 0x1000 + 0x6000;
+                    frame.emitValue = rand() % 4096 + 24576;
                 }
                 frame.spawnRec->scaleOrVariant = *(short *)&frame.emitValue;
             }
@@ -1344,7 +1344,7 @@ void __cdecl BattleFx_SummonKjataDrawBranchingTrailQuads(void)
 // One frame of a battle effect step on the slot at &g_BattleHitLivewireEmitterRecords +
 // (g_BattleActiveTaskSlotIdx << 5). Fills the draw request block at
 // &g_BattleSummonKjataSpriteRequest1: g_BattleSummonKjataSpriteRequest1 from
-// Gfx_ModelTableGetLoadedRecord(0x17, g_BattleSummonKjataTableCursor) and
+// Gfx_ModelTableGetLoadedRecord(23, g_BattleSummonKjataTableCursor) and
 // g_BattleSummonKjataSpriteRequest1.trailSpriteObject from Battle3d_GetSceneRenderObject(3,
 // g_pBattle3dScene), positions it with
 // BattleFx_SummonKjataInstallSpriteMatrix(the slot's position, its spriteScale, -0x3E8), and stores the
@@ -1359,7 +1359,7 @@ void __cdecl BattleFx_SummonKjataTrailAnimatedSpriteTask(void)
     BattleFxKjataTrailSpriteTask *task;
 
     task = (BattleFxKjataTrailSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleSummonKjataSpriteRequest1.trailSpriteGroup) = Gfx_ModelTableGetLoadedRecord(0x17, g_BattleSummonKjataTableCursor);
+    (g_BattleSummonKjataSpriteRequest1.trailSpriteGroup) = Gfx_ModelTableGetLoadedRecord(23, g_BattleSummonKjataTableCursor);
     g_BattleSummonKjataSpriteRequest1.trailSpriteObject = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
     BattleFx_SummonKjataInstallSpriteMatrix((char *)task + 4, (short)task->spriteScale, 0xFFFFFC18);
     g_BattleSummonKjataSpriteRequest1.trailSpriteFlags = task->spriteIndex | 0x8000;
@@ -1376,7 +1376,7 @@ void __cdecl BattleFx_SummonKjataTrailAnimatedSpriteTask(void)
 // first short of g_BattleSummonKjataQuad, g_BattleSummonKjataShort and g_BattleSummonKjataData.m22),
 // loads g_BattleSummonKjataBillboardMatrix into the GTE and transforms vec with RotTransPoint into
 // the translation g_BattleSummonKjataData.t. When scale is nonzero it normalizes that vector with
-// NormalizeVectorFixed and adds unit * scale (Q12, >> 0xC) to each of the three.
+// NormalizeVectorFixed and adds unit * scale (Q12, >> 12) to each of the three.
 // Installs g_BattleSummonKjataQuad with SetRotMatrix/SetTransMatrix and returns it.
 // FUNCTION: FF7 0x004fc606
 int __cdecl BattleFx_SummonKjataInstallSpriteMatrix(void *vec, short offsetX, int scale)
@@ -1392,9 +1392,9 @@ int __cdecl BattleFx_SummonKjataInstallSpriteMatrix(void *vec, short offsetX, in
     RotTransPoint(vec, g_BattleSummonKjataData.t, &result);
     if (scale != 0) {
         NormalizeVectorFixed(g_BattleSummonKjataData.t, &normal);
-        g_BattleSummonKjataData.t[0] += normal.vx * scale >> 0xC;
-        g_BattleSummonKjataData.t[1] += normal.vy * scale >> 0xC;
-        g_BattleSummonKjataData.t[2] += normal.vz * scale >> 0xC;
+        g_BattleSummonKjataData.t[0] += normal.vx * scale >> 12;
+        g_BattleSummonKjataData.t[1] += normal.vy * scale >> 12;
+        g_BattleSummonKjataData.t[2] += normal.vz * scale >> 12;
     }
     SetRotMatrix(&g_BattleSummonKjataQuad);
     SetTransMatrix(&g_BattleSummonKjataQuad);
@@ -1423,20 +1423,20 @@ void __cdecl BattleFx_SummonKjataUpdateTrailRecords(void)
             pTrailRecord = (BattleFxKjataTrailRecord *)(*(unsigned char *)&curNode->resIndex * 0xC + (char *)&g_BattleSummonKjataLoadedResTable);
             pTrailRecord->angleA += (short)(rand() % 0x200 - 0x100);
             pTrailRecord->angleB += (short)(rand() % 0x200 - 0x100);
-            pTrailRecord->angleC += (short)(rand() % 0x200 - 0x100);
-            pTrailRecord->phaseX += (short)(SinFixed(pTrailRecord->angleC) << 8 >> 0xC);
+            pTrailRecord->angleC += (short)(rand() % 512 - 256);
+            pTrailRecord->phaseX += (short)(SinFixed(pTrailRecord->angleC) << 8 >> 12);
             pTrailRecord->angleD += (short)(rand() % 0x20 - 0x10);
-            pTrailRecord->phaseY += (short)(SinFixed(pTrailRecord->angleD) << 8 >> 0xC);
+            pTrailRecord->phaseY += (short)(SinFixed(pTrailRecord->angleD) << 8 >> 12);
             curNode->randomSeed = rand() & 0xF;
-            curNode->posZ += (short)(SinFixed(pTrailRecord->angleA) << 8 >> 0xC);
-            curNode->swayOffset += (short)(SinFixed(pTrailRecord->angleB) << 8 >> 0xC);
-            curNode->posX = (SinFixed(pTrailRecord->phaseX) * 0xFA >> 0xC) + 0xFA;
-            curNode->posY = (SinFixed(pTrailRecord->phaseY) * 0x96 >> 0xC) + 0x546;
+            curNode->posZ += (short)(SinFixed(pTrailRecord->angleA) << 8 >> 12);
+            curNode->swayOffset += (short)(SinFixed(pTrailRecord->angleB) << 8 >> 12);
+            curNode->posX = (SinFixed(pTrailRecord->phaseX) * 0xFA >> 12) + 250;
+            curNode->posY = (SinFixed(pTrailRecord->phaseY) * 0x96 >> 12) + 1350;
         } else {
             srcNode = &g_BattleSummonKjataNodeData[linkIndex];
             curNode->posZ = srcNode->posZ;
             curNode->swayOffset = srcNode->swayOffset;
-            curNode->posX = srcNode->posX + 0x64;
+            curNode->posX = srcNode->posX + 100;
             curNode->posY = srcNode->posY;
             curNode->randomSeed = *(unsigned char *)&curNode->randomSeed & 0x10 | *(unsigned char *)&srcNode->randomSeed & 0xF;
         }
@@ -1473,7 +1473,7 @@ void __cdecl BattleFx_SummonKjataBuildTrailTriangleArrays(void)
     (g_BattleSummonKjataCentroid.x) = 0;
     g_BattleSummonKjataCentroid.y = 0xFDA8;
     (g_BattleSummonKjataUnused.auxVecX) = 0;
-    g_BattleSummonKjataUnused.auxVecY = 0x258;
+    g_BattleSummonKjataUnused.auxVecY = 600;
     (g_BattleSummonKjataScratchVec1.x) = 0xFC18;
     g_BattleSummonKjataScratchVec1.y = 0xFE0C;
     (g_BattleSummonKjataScratchVec2.x) = 0;
@@ -1489,14 +1489,14 @@ void __cdecl BattleFx_SummonKjataBuildTrailTriangleArrays(void)
     for (trailIdx = 0; trailIdx < g_BattleSummonKjataTrailNodeCount; trailIdx++) {
         if (branch->active != 0) {
             for (copyIndex = 0; copyIndex < 2; copyIndex++) {
-                samplePtr->vx = branch->baseX + (SinFixed(branch->angle) * branch->length >> 0xC) + (SinFixed(branch->branchAngle) * branch->length >> 0xC);
+                samplePtr->vx = branch->baseX + (SinFixed(branch->angle) * branch->length >> 12) + (SinFixed(branch->branchAngle) * branch->length >> 12);
                 samplePtr->vy = branch->baseY;
-                samplePtr->vz = branch->baseZ + (CosFixed(branch->angle) * branch->length >> 0xC) + (CosFixed(branch->branchAngle) * branch->length >> 0xC);
-                positionPtr->vx = triStart->vx + (samplePtr->vx << 0xA >> 0xC);
-                positionPtr->vy = triStart->vy + (samplePtr->vy << 0xA >> 0xC);
-                positionPtr->vz = triStart->vz + (samplePtr->vz << 0xA >> 0xC);
+                samplePtr->vz = branch->baseZ + (CosFixed(branch->angle) * branch->length >> 12) + (CosFixed(branch->branchAngle) * branch->length >> 12);
+                positionPtr->vx = triStart->vx + (samplePtr->vx << 10 >> 12);
+                positionPtr->vy = triStart->vy + (samplePtr->vy << 10 >> 12);
+                positionPtr->vz = triStart->vz + (samplePtr->vz << 10 >> 12);
                 recFlags = *(unsigned char *)&g_BattleSummonKjataNodeData[trailIdx].randomSeed;
-                texBits = ((recFlags & 3) << 6) + ((recFlags & 4) << 0xC);
+                texBits = ((recFlags & 3) << 6) + ((recFlags & 4) << 12);
                 for (cornerIdx = 0; cornerIdx < 3; cornerIdx++) {
                     ((BattleSummonKjataTrailRecord *)recOut)->colorIndex = *(unsigned short *)((char *)&g_BattleSummonKjataColorData + (copyIndex * 6 + cornerIdx * 2)) + texBits;
                     recOut += 2;
@@ -1513,7 +1513,7 @@ void __cdecl BattleFx_SummonKjataBuildTrailTriangleArrays(void)
 // Per-frame step of the current task slot. Unless g_BattleIsPaused is set: once the frame counter
 // has reached 10 and while it is below 0x48, on every even step it allocates a
 // BattleFx_SummonKjataBlackModelFlashTask slot with X and Y set to rand() % 400 - 200 and a scale of
-// rand() % 0x60 + 0x20; at 0x48 or above it frees the slot. Every unpaused call advances the counter.
+// rand() % 96 + 32; at 0x48 or above it frees the slot. Every unpaused call advances the counter.
 // FUNCTION: FF7 0x004fcc1c
 void __cdecl BattleFx_SummonKjataBlackFlashSpawnTask(void)
 {
@@ -1529,18 +1529,18 @@ void __cdecl BattleFx_SummonKjataBlackFlashSpawnTask(void)
         return;
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0xA) { /* empty first arm: lib/codegen.h */
+    if (stage < 10) { /* empty first arm: lib/codegen.h */
     } else {
-        stage -= 0xA;
-        if (stage < 0x3E) {
+        stage -= 10;
+        if (stage < 62) {
             if (stage % 2 == 0) {
                 flash = (BattleFxKjataBlackModelFlashTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataBlackModelFlashTask);
-                flash->offsetX = rand() % 0x190 - 0xC8;
-                flash->offsetY = rand() % 0x190 - 0xC8;
+                flash->offsetX = rand() % 400 - 200;
+                flash->offsetY = rand() % 400 - 200;
                 if (DEAD_IN_RETAIL) {
                     intensity = 0x80;
                 } else {
-                    intensity = rand() % 0x60 + 0x20;
+                    intensity = rand() % 96 + 32;
                 }
                 flash->flashLevel = intensity;
             }
@@ -1566,13 +1566,13 @@ void __cdecl BattleFx_SummonKjataBlackModelFlashTask(void)
     g_BattleSummonKjataModelDescriptor.blackModelRequest = Gfx_ModelTableGetRenderObject(3, g_BattleSummonKjataTableCursor);
     age = pSlot->frameIndex;
     if (age < 1) {
-        intensity = age << 0xC;
-        scale = pSlot->flashLevel * intensity >> 0xC;
+        intensity = age << 12;
+        scale = pSlot->flashLevel * intensity >> 12;
         g_BattleSummonKjataModelDescriptor.blackModelFlashWord = 0;
     } else {
         age--;
         if (age < 2) {
-            intensity = (age << 0xC) / 2;
+            intensity = (age << 12) / 2;
             scale = pSlot->flashLevel;
             g_BattleSummonKjataModelDescriptor.blackModelFlashWord = intensity;
         } else {
@@ -1635,21 +1635,21 @@ void __cdecl BattleFx_SummonKjataComputeTriangleNormalsTask(void)
         g_BattleSummonKjataNormalScratch->edgeBY = pVertMid->vy - pVertB->vy;
         g_BattleSummonKjataNormalScratch->edgeBZ = pVertMid->vz - pVertB->vz;
         CrossProductInt((VECTOR *)&g_BattleSummonKjataNormalScratch->edgeAX, (VECTOR *)&g_BattleSummonKjataNormalScratch->edgeBX, &g_BattleSummonKjataNormalScratch->crossX);
-        while (g_BattleSummonKjataNormalScratch->crossX < -0x4000 || (g_BattleSummonKjataNormalScratch->crossX > 0x4000 || (g_BattleSummonKjataNormalScratch->crossY < -0x4000 || (g_BattleSummonKjataNormalScratch->crossY > 0x4000 || (g_BattleSummonKjataNormalScratch->crossZ < -0x4000 || g_BattleSummonKjataNormalScratch->crossZ > 0x4000))))) {
+        while (g_BattleSummonKjataNormalScratch->crossX < -16384 || (g_BattleSummonKjataNormalScratch->crossX > 16384 || (g_BattleSummonKjataNormalScratch->crossY < -16384 || (g_BattleSummonKjataNormalScratch->crossY > 16384 || (g_BattleSummonKjataNormalScratch->crossZ < -16384 || g_BattleSummonKjataNormalScratch->crossZ > 16384))))) {
             g_BattleSummonKjataNormalScratch->crossX >>= 1;
             g_BattleSummonKjataNormalScratch->crossY >>= 1;
             g_BattleSummonKjataNormalScratch->crossZ >>= 1;
         }
         NormalizeVectorFixed(&g_BattleSummonKjataNormalScratch->crossX, &g_BattleSummonKjataNormalScratch->crossX);
         if (1 != 0) { /* Constant condition kept for /Od branch layout; see lib/codegen.h. */
-            lengthPick = 0x7D0;
+            lengthPick = 2000;
         } else {
-            lengthPick = rand() % 0 + 0x7D0;
+            lengthPick = rand() % 0 + 2000;
         }
         len = lengthPick;
-        pOutNormal->vx = g_BattleSummonKjataNormalScratch->crossX * len >> 0xC;
-        pOutNormal->vy = g_BattleSummonKjataNormalScratch->crossY * len >> 0xC;
-        pOutNormal->vz = g_BattleSummonKjataNormalScratch->crossZ * len >> 0xC;
+        pOutNormal->vx = g_BattleSummonKjataNormalScratch->crossX * len >> 12;
+        pOutNormal->vy = g_BattleSummonKjataNormalScratch->crossY * len >> 12;
+        pOutNormal->vz = g_BattleSummonKjataNormalScratch->crossZ * len >> 12;
         trianglePtr = (BattleFxKjataTriangleOffsets *)((char *)trianglePtr + 0x10);
         pOutNormal = (Vec3sPacked *)((char *)pOutNormal + 8);
     }
@@ -1681,65 +1681,65 @@ void __cdecl BattleFx_SummonKjataFragmentedMeshTask(void)
     }
     MultiplyMatrix(&g_BattleSummonKjataBillboardMatrix, &g_BattleSummonKjataScaleFixed12, &g_BattleSummonKjataFragment->worldMatrix);
     stage = taskPtr->frameCounter;
-    if (stage < 0xF) {
-        progress = (stage << 0xC) / 0xF;
+    if (stage < 15) {
+        progress = (stage << 12) / 15;
         eased = 0x1000 - BattleFx_KjataApplyCameraEasing(progress, 0xFFFFFD01);
-        if (progress < 0x800) {
-            halfFade = 0x800 - progress;
+        if (progress < 2048) {
+            halfFade = 2048 - progress;
         } else {
             halfFade = 0;
         }
         fadeAmount = halfFade;
-        if (progress >= 0xC00) {
+        if (progress >= 3072) {
             g_BattleSummonKjataFragment->offsetZ = 0;
             g_BattleSummonKjataFragment->offsetY = 0;
             g_BattleSummonKjataFragment->offsetX = 0;
         } else {
-            yaw = 0x800 - (progress << 0xC) / 0xC00;
-            g_BattleSummonKjataFragment->offsetX = UNFOLDED(0) >> 0xC;
-            g_BattleSummonKjataFragment->offsetY = yaw << 0xC >> 0xC;
-            g_BattleSummonKjataFragment->offsetZ = UNFOLDED(0) >> 0xC;
+            yaw = 0x800 - (progress << 12) / 3072;
+            g_BattleSummonKjataFragment->offsetX = UNFOLDED(0) >> 12;
+            g_BattleSummonKjataFragment->offsetY = yaw << 12 >> 12;
+            g_BattleSummonKjataFragment->offsetZ = UNFOLDED(0) >> 12;
         }
         RotMatrix((SVECTOR *)g_BattleSummonKjataFragment, (int *)&g_BattleSummonKjataFragment->localMatrix);
-        g_BattleSummonKjataFragment->nextValue = (UNFOLDED(0) >> 0xC) + 0x1000;
+        g_BattleSummonKjataFragment->nextValue = (UNFOLDED(0) >> 12) + 0x1000;
         g_BattleSummonKjataFragment->value = g_BattleSummonKjataFragment->nextValue;
         g_BattleSummonKjataFragment->prevValue = g_BattleSummonKjataFragment->value;
         ScaleMatrix((int *)&g_BattleSummonKjataFragment->localMatrix, &g_BattleSummonKjataFragment->prevValue);
-        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x18, g_BattleSummonKjataTableCursor)));
-        Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x19, g_BattleSummonKjataTableCursor)));
+        Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(24, g_BattleSummonKjataTableCursor)));
+        Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(25, g_BattleSummonKjataTableCursor)));
         g_BattleOverlayDrawListHead = BattleFx_SummonKjataDrawOffsetTriangles(&g_BattleSummonKjataModelDataDescriptors, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead, (struct Vec3sPacked *)(g_BattleSummonKjataCoord), g_BattleSummonKjataScratchVector, (short)eased, (short)fadeAmount, &g_BattleSummonKjataFragment->worldMatrix, (struct BattleFxOffsetTriMeshDesc *)&g_BattleSummonKjataFragment->localMatrix);
     } else {
-        stage -= 0xF;
-        if (stage < 0x14) {
+        stage -= 15;
+        if (stage < 20) {
             SetRotMatrix(&g_BattleSummonKjataFragment->worldMatrix);
             SetTransMatrix(&g_BattleSummonKjataFragment->worldMatrix);
             RefreshGlobalTransformState();
-            Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x18, g_BattleSummonKjataTableCursor)));
-            Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x19, g_BattleSummonKjataTableCursor)));
-            Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x1A, g_BattleSummonKjataTableCursor)));
-            Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x1B, g_BattleSummonKjataTableCursor)));
+            Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(24, g_BattleSummonKjataTableCursor)));
+            Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(25, g_BattleSummonKjataTableCursor)));
+            Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(26, g_BattleSummonKjataTableCursor)));
+            Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(27, g_BattleSummonKjataTableCursor)));
             g_BattleOverlayDrawListHead = BattleFx_SummonKjataDrawPsxMesh(&g_BattleSummonKjataModelDataDescriptors, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
         } else {
-            stage -= 0x14;
-            if (stage < 0x14) {
-                progress = (stage << 0xC) / 0x14;
+            stage -= 20;
+            if (stage < 20) {
+                progress = (stage << 12) / 20;
                 eased = BattleFx_KjataApplyCameraEasing(progress, 0x2FF);
-                if (progress < 0x800) {
+                if (progress < 2048) {
                     fadeTail = 0;
                 } else {
-                    fadeTail = progress * 2 - 0x1000;
+                    fadeTail = progress * 2 - 4096;
                 }
                 fadeAmount = fadeTail;
-                g_BattleSummonKjataFragment->offsetX = progress << 0xC >> 0xC;
-                g_BattleSummonKjataFragment->offsetY = progress << 0xD >> 0xC;
-                g_BattleSummonKjataFragment->offsetZ = UNFOLDED(0) >> 0xC;
+                g_BattleSummonKjataFragment->offsetX = progress << 12 >> 12;
+                g_BattleSummonKjataFragment->offsetY = progress << 13 >> 12;
+                g_BattleSummonKjataFragment->offsetZ = UNFOLDED(0) >> 12;
                 RotMatrix((SVECTOR *)g_BattleSummonKjataFragment, (int *)&g_BattleSummonKjataFragment->localMatrix);
-                g_BattleSummonKjataFragment->nextValue = (fadeAmount * -0x800 >> 0xC) + 0x1000;
+                g_BattleSummonKjataFragment->nextValue = (fadeAmount * -0x800 /* 0.5 */ >> 12) + 0x1000;
                 g_BattleSummonKjataFragment->value = g_BattleSummonKjataFragment->nextValue;
                 g_BattleSummonKjataFragment->prevValue = g_BattleSummonKjataFragment->value;
                 ScaleMatrix((int *)&g_BattleSummonKjataFragment->localMatrix, &g_BattleSummonKjataFragment->prevValue);
-                Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x18, g_BattleSummonKjataTableCursor)));
-                Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x19, g_BattleSummonKjataTableCursor)));
+                Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(24, g_BattleSummonKjataTableCursor)));
+                Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(25, g_BattleSummonKjataTableCursor)));
                 g_BattleOverlayDrawListHead = BattleFx_SummonKjataDrawOffsetTrianglesWithSprites(&g_BattleSummonKjataModelDataDescriptors, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead, (struct Vec3sPacked *)(g_BattleSummonKjataRotation), (short)eased, (short)fadeAmount, &g_BattleSummonKjataFragment->worldMatrix, (struct BattleFxOffsetTriMeshDesc *)&g_BattleSummonKjataFragment->localMatrix);
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -1803,9 +1803,9 @@ int __cdecl BattleFx_SummonKjataDrawOffsetTriangles(BattleFxKjataDraw *draw, int
         pTriangle->v2X = vertC->vx - pTriangle->centroidX;
         pTriangle->v2Y = vertC->vy - pTriangle->centroidY;
         pTriangle->v2Z = vertC->vz - pTriangle->centroidZ;
-        translation->transX = pTriangle->centroidX + (positions->vx * scale >> 0xC);
-        translation->transY = pTriangle->centroidY + (positions->vy * scale >> 0xC);
-        translation->transZ = pTriangle->centroidZ + (positions->vz * scale >> 0xC);
+        translation->transX = pTriangle->centroidX + (positions->vx * scale >> 12);
+        translation->transY = pTriangle->centroidY + (positions->vy * scale >> 12);
+        translation->transZ = pTriangle->centroidZ + (positions->vz * scale >> 12);
         positions = (Vec3sPacked *)((char *)positions + 8);
         MultiplyMatrix(worldMatrix, translation, (void *)matrixBuffer);
         SetRotMatrix((void *)matrixBuffer);
@@ -1822,7 +1822,7 @@ int __cdecl BattleFx_SummonKjataDrawOffsetTriangles(BattleFxKjataDraw *draw, int
             Gfx_ReadTransformOrderingDepth2(&bytes);
             packet->polyAttrib = polyAttrib;
             color[0] = triRecPointer->color;
-            color[0] = color[0] | color[0] << 8 | color[0] << 0x10;
+            color[0] = color[0] | color[0] << 8 | color[0] << 16;
             Gfx_ShadePsxVertexColor((CVECTOR *)color, shade, (CVECTOR *)color);
             packet->colorCmd = color[0] | 0x26000000;
             packet->packedWord = triRecPointer->packedWord;
@@ -1900,9 +1900,9 @@ int __cdecl BattleFx_SummonKjataDrawOffsetTrianglesWithSprites(BattleFxKjataDraw
         pTriangle->v2X = vertC->vx - pTriangle->centroidX;
         pTriangle->v2Y = vertC->vy - pTriangle->centroidY;
         pTriangle->v2Z = vertC->vz - pTriangle->centroidZ;
-        translation->transX = pTriangle->centroidX + (offsets->vx * scale >> 0xC);
-        translation->transY = pTriangle->centroidY + (offsets->vy * scale >> 0xC);
-        translation->transZ = pTriangle->centroidZ + (offsets->vz * scale >> 0xC);
+        translation->transX = pTriangle->centroidX + (offsets->vx * scale >> 12);
+        translation->transY = pTriangle->centroidY + (offsets->vy * scale >> 12);
+        translation->transZ = pTriangle->centroidZ + (offsets->vz * scale >> 12);
         offsets = (Vec3sPacked *)((char *)offsets + 8);
         MultiplyMatrix(worldMatrix, translation, matrixBuffer);
         SetRotMatrix((void *)matrixBuffer);
@@ -1919,7 +1919,7 @@ int __cdecl BattleFx_SummonKjataDrawOffsetTrianglesWithSprites(BattleFxKjataDraw
             Gfx_ReadTransformOrderingDepth2(&bytes);
             packet->polyFlagMask = polyFlagMask;
             color[0] = triRecPointer->color;
-            color[0] = color[0] | color[0] << 8 | color[0] << 0x10;
+            color[0] = color[0] | color[0] << 8 | color[0] << 16;
             Gfx_ShadePsxVertexColor((CVECTOR *)color, shade, (CVECTOR *)color);
             packet->command = color[0] | 0x26000000;
             packet->packedWord = triRecPointer->packedWord;
@@ -1927,7 +1927,7 @@ int __cdecl BattleFx_SummonKjataDrawOffsetTrianglesWithSprites(BattleFxKjataDraw
             packet->vertexOffsetB = triRecPointer->vertexOffsetB;
             Gfx_DrawPsxPrimitive(packet);
             if (shade != 0 && (index & 1) == 0) {
-                matrixBuffer->m22 = shade << 0xD >> 0xC;
+                matrixBuffer->m22 = shade << 13 >> 12;
                 matrixBuffer->m11 = matrixBuffer->m22;
                 matrixBuffer->m00 = matrixBuffer->m11;
                 matrixBuffer->m21 = 0;
@@ -2159,7 +2159,7 @@ int __cdecl BattleFx_SummonKjataDrawPsxMesh(BattleFxKjataDraw *kjataDraw, int or
 // Spawner for the current effect slot (its record in g_BattleTaskSlotBuffer.mainSlots), returning
 // while g_BattleIsPaused is set. Each frame it allocates three
 // BattleFx_SummonKjataBlackModelGrowingTask slots with posX 0, posY 0xFC18 (-0x3E8), posZ 0, rotX =
-// rand() % 0x400 + 0x100, randomValue = rand() & 0xFFF and rotZ 0. The DEAD_IN_RETAIL branch, which
+// rand() % 1024 + 256, randomValue = rand() & 0xFFF and rotZ 0. The DEAD_IN_RETAIL branch, which
 // would set rotX to 0x500, is dead in retail. The frame counter timer advances each frame, and the
 // slot retires once it reaches 5 or more.
 // FUNCTION: FF7 0x004fe6cc
@@ -2182,7 +2182,7 @@ void __cdecl BattleFx_SummonKjataSpawnBlackModelsTask(void)
         if (DEAD_IN_RETAIL) {
             tilt = 0x500;
         } else {
-            tilt = rand() % 0x400 + 0x100;
+            tilt = rand() % 1024 + 256;
         }
         modelPtr->rotX = tilt;
         modelPtr->randomValue = rand() & 0xFFF;
@@ -2211,18 +2211,18 @@ void __cdecl BattleFx_SummonKjataBlackModelGrowingTask(void)
         g_BattleSummonKjataSpinningScratch = (BattleFxKjataBlackGrowState *)Gfx_GetPsxScratchpadPtr(0);
     }
     g_BattleSummonKjataModelDescriptor.growingModelDraw = Gfx_ModelTableGetRenderObject(4, g_BattleSummonKjataTableCursor);
-    g_BattleSummonKjataSpinningScratch->scaleZ = 0x4000;
-    g_BattleSummonKjataSpinningScratch->scaleY = 0x4000;
+    g_BattleSummonKjataSpinningScratch->scaleZ = 0x4000 /* 4.0 */;
+    g_BattleSummonKjataSpinningScratch->scaleY = 0x4000 /* 4.0 */;
     frameCount = task->frameCount;
     if (frameCount < 3) {
-        ratio = (frameCount << 0xC) / 3;
-        g_BattleSummonKjataSpinningScratch->scaleX = ratio << 0xE >> 0xC;
+        ratio = (frameCount << 12) / 3;
+        g_BattleSummonKjataSpinningScratch->scaleX = ratio << 14 >> 12;
         g_BattleSummonKjataModelDescriptor.growingModelParam = 0;
     } else {
         frameCount -= 3;
         if (frameCount < 3) {
-            ratio = (frameCount << 0xC) / 3;
-            g_BattleSummonKjataSpinningScratch->scaleX = 0x4000;
+            ratio = (frameCount << 12) / 3;
+            g_BattleSummonKjataSpinningScratch->scaleX = 0x4000 /* 4.0 */;
             g_BattleSummonKjataModelDescriptor.growingModelParam = ratio;
         } else {
             task->stepIndex = 0xFFFF;
@@ -2264,14 +2264,14 @@ void __cdecl BattleFx_SummonKjataBlackModelExpandingTask(void)
     ((BattleSummonKjataModelDescriptor *)&g_BattleSummonKjataModelDescriptor)->modelRecord = Gfx_ModelTableGetRenderObject(3, g_BattleSummonKjataTableCursor);
     frameCount = task->frameCounter;
     if (frameCount < 5) {
-        ratio = (frameCount << 0xC) / 5;
-        scale = ((ratio * 0x5800) >> 0xC) + 0x800;
+        ratio = (frameCount << 12) / 5;
+        scale = ((ratio * 0x5800) >> 12) + 0x800;
         fadeOffset = 0;
     } else {
         frameCount -= 5;
         if (frameCount < 5) {
-            ratio = (frameCount << 0xC) / 5;
-            scale = 0x6000;
+            ratio = (frameCount << 12) / 5;
+            scale = 0x6000 /* 6.0 */;
             fadeOffset = ratio;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -2308,8 +2308,8 @@ void __cdecl BattleFx_SummonKjataFragmentSpritesTask(void)
     g_BattleSummonKjataModelDescriptor.fragmentRequest = Gfx_ModelTableGetLoadedRecord(7, g_BattleSummonKjataTableCursor);
     g_BattleSummonKjataModelDescriptor.fragmentSpriteAux = Gfx_ModelTableGetSpriteObject(7, g_BattleSummonKjataTableCursor);
     stage = taskPtr->frameCounter;
-    if (stage < 0x19) {
-        progress = (stage << 0xC) / 0x19;
+    if (stage < 25) {
+        progress = (stage << 12) / 25;
         eased = 0x1000 - BattleFx_KjataApplyCameraEasing(progress, 0xFFFFFE80);
     } else {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -2373,9 +2373,9 @@ int __cdecl BattleFx_SummonKjataDrawTriangleFragmentSprites(BattleFxKjataDraw *k
         pFragment->v2X = vertC->vx - pFragment->centroidX;
         pFragment->v2Y = vertC->vy - pFragment->centroidY;
         pFragment->v2Z = vertC->vz - pFragment->centroidZ;
-        localMatrix->transX = (pFragment->centroidX + offsets->vx) * scale >> 0xC;
-        localMatrix->transY = (pFragment->centroidY + offsets->vy) * scale >> 0xC;
-        localMatrix->transZ = (pFragment->centroidZ + offsets->vz) * scale >> 0xC;
+        localMatrix->transX = (pFragment->centroidX + offsets->vx) * scale >> 12;
+        localMatrix->transY = (pFragment->centroidY + offsets->vy) * scale >> 12;
+        localMatrix->transZ = (pFragment->centroidZ + offsets->vz) * scale >> 12;
         offsets = (Vec3sPacked *)((char *)offsets + 0x10);
         MultiplyMatrix((void *)matrix, localMatrix, matrixOut);
         matrixOut->m22 = 0x2000;
@@ -2416,17 +2416,17 @@ void __cdecl BattleFx_SummonKjataBlackModel1ScalingFadeTask(void)
     }
     g_BattleSummonKjataSpriteRequest2.blackModel1Draw = Gfx_ModelTableGetRenderObject(1, g_BattleSummonKjataTableCursor);
     frameCount = task->frameCount;
-    if (frameCount < 0xA) {
-        ratio = (frameCount << 0xC) / 0xA;
+    if (frameCount < 10) {
+        ratio = (frameCount << 12) / 10;
         g_BattleSummonKjataSpriteRequest2.blackModel1Inverse = 0x1000 - ratio;
     } else {
-        frameCount -= 0xA;
-        if (frameCount < 0x14) {
+        frameCount -= 10;
+        if (frameCount < 20) {
             g_BattleSummonKjataSpriteRequest2.blackModel1Inverse = 0;
         } else {
-            frameCount -= 0x14;
-            if (frameCount < 0xA) {
-                ratio = (frameCount << 0xC) / 0xA;
+            frameCount -= 20;
+            if (frameCount < 10) {
+                ratio = (frameCount << 12) / 10;
                 g_BattleSummonKjataSpriteRequest2.blackModel1Inverse = ratio;
             } else {
                 task->stepIndex = 0xFFFF;
@@ -2435,18 +2435,18 @@ void __cdecl BattleFx_SummonKjataBlackModel1ScalingFadeTask(void)
         }
     }
     frameCount = task->frameCount;
-    if (frameCount < 0xA) {
-        ratio = (frameCount << 0xC) / 0xA;
-        scale = ratio * 0x1200 >> 0xC;
+    if (frameCount < 10) {
+        ratio = (frameCount << 12) / 10;
+        scale = ratio * 0x1200 /* 1.125 */ >> 12;
     } else {
-        frameCount -= 0xA;
-        if (frameCount < 0x1E) {
-            scale = 0x1200;
+        frameCount -= 10;
+        if (frameCount < 30) {
+            scale = 0x1200 /* 1.125 */;
         } else {
-            frameCount -= 0x1E;
+            frameCount -= 30;
             if (frameCount < 0) {
-                ratio = (frameCount << 0xC) / 0;
-                scale = (ratio * -0x1200 >> 0xC) + 0x1200;
+                ratio = (frameCount << 12) / 0;
+                scale = (ratio * -0x1200 /* 1.125 */ >> 12) + 0x1200;
             }
         }
     }
@@ -2464,7 +2464,7 @@ void __cdecl BattleFx_SummonKjataBlackModel1ScalingFadeTask(void)
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonKjataSpriteRequest2.blackModel1Draw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
-        task->fadeLevel += 0x50;
+        task->fadeLevel += 80;
         (task->frameCount)++;
     }
 }
@@ -2492,19 +2492,19 @@ void __cdecl BattleFx_SummonKjataSpawnStretchingFadeModelsTask(void)
         if (DEAD_IN_RETAIL != 0) {
             pick = 0x5DC;
         } else {
-            pick = rand() % 0x1F4 + 0x3E8;
+            pick = rand() % 500 + 1000;
         }
         distance = pick;
-        modelPtr->velocitySin = distance * SinFixed(heading) >> 0xC;
+        modelPtr->velocitySin = distance * SinFixed(heading) >> 12;
         modelPtr->posY = 0;
-        modelPtr->velocityCos = distance * CosFixed(heading) >> 0xC;
+        modelPtr->velocityCos = distance * CosFixed(heading) >> 12;
         modelPtr->rotZ = 0;
         modelPtr->rotY = 0;
         modelPtr->rotX = 0;
     }
     (taskPtr->frameCount)++;
-    if (taskPtr->frameCount >= 0x1E) {
-        taskPtr->stretchAmount += 0x40;
+    if (taskPtr->frameCount >= 30) {
+        taskPtr->stretchAmount += 64;
         taskPtr->stepIndex = 0xFFFF;
     }
 }
@@ -2531,7 +2531,7 @@ void __cdecl BattleFx_SummonKjataBlackModel2StretchingFadeTask(void)
     (g_BattleSummonKjataModelDrawRequest1.blackModel2Resource) = Gfx_ModelTableGetRenderObject(2, g_BattleSummonKjataTableCursor);
     stage = task->frameCount;
     if (stage < 5) {
-        ratio = (stage << 0xC) / 5;
+        ratio = (stage << 12) / 5;
         g_BattleSummonKjataModelDrawRequest1.blackModel2Stretch = 0x1000 - ratio;
     } else {
         stage -= 5;
@@ -2540,7 +2540,7 @@ void __cdecl BattleFx_SummonKjataBlackModel2StretchingFadeTask(void)
         } else {
             stage -= 5;
             if (stage < 5) {
-                ratio = (stage << 0xC) / 5;
+                ratio = (stage << 12) / 5;
                 g_BattleSummonKjataModelDrawRequest1.blackModel2Stretch = ratio;
             } else {
                 task->stepIndex = 0xFFFF;
@@ -2549,21 +2549,21 @@ void __cdecl BattleFx_SummonKjataBlackModel2StretchingFadeTask(void)
         }
     }
     stage = task->frameCount;
-    if (stage < 0xF) {
-        ratio = (stage << 0xC) / 0xF;
-        scaleH = ratio << 0xD >> 0xC;
-        vertScale = ratio * 0x1800 >> 0xC;
+    if (stage < 15) {
+        ratio = (stage << 12) / 15;
+        scaleH = ratio << 13 >> 12;
+        vertScale = ratio * 0x1800 /* 1.5 */ >> 12;
     } else {
-        stage -= 0xF;
+        stage -= 15;
         if (stage < 0) {
-            scaleH = 0x2000;
-            vertScale = 0x1800;
+            scaleH = 0x2000 /* 2.0 */;
+            vertScale = 0x1800 /* 1.5 */;
         } else {
             stage = stage;
             if (stage < 0) {
-                ratio = (stage << 0xC) / 0;
-                scaleH = (ratio * -0x2000 >> 0xC) + 0x2000;
-                vertScale = (ratio * -0x1800 >> 0xC) + 0x1800;
+                ratio = (stage << 12) / 0;
+                scaleH = (ratio * -0x2000 /* 2.0 */ >> 12) + 0x2000;
+                vertScale = (ratio * -0x1800 /* 1.5 */ >> 12) + 0x1800;
             }
         }
     }
@@ -2581,19 +2581,19 @@ void __cdecl BattleFx_SummonKjataBlackModel2StretchingFadeTask(void)
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonKjataModelDrawRequest1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
-        task->fadeLevel += 0x50;
+        task->fadeLevel += 80;
         (task->frameCount)++;
     }
 }
 
-// Mechanical clear: zeroes the first short of each of the 0xA0 records of 0xC-byte stride starting
+// Mechanical clear: zeroes the first short of each of the 160 records of 0xC-byte stride starting
 // at &g_BattleSummonKjataParticleBuffer.
 // FUNCTION: FF7 0x004ff5be
 void __cdecl BattleFx_SummonKjataClearParticleSpriteRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0xA0; i++) {
+    for (i = 0; i < 160; i++) {
         *(short *)((char *)&g_BattleSummonKjataParticleBuffer + i * 0xC) = 0;
     }
 }
@@ -2629,7 +2629,7 @@ void __cdecl BattleFx_SummonKjataParticleSpriteArrayTask(void)
     g_BattleSummonKjataParticleState->spriteIndex = 0;
     activeCnt = 0;
     particle = g_BattleSummonKjataParticleBuffer;
-    for (i = 0; i < 0xA0; i++) {
+    for (i = 0; i < 160; i++) {
         if (particle->pending != 0) {
             SetRotMatrix(&g_BattleSummonKjataBillboardMatrix);
             SetTransMatrix(&g_BattleSummonKjataBillboardMatrix);
@@ -2641,10 +2641,10 @@ void __cdecl BattleFx_SummonKjataParticleSpriteArrayTask(void)
             g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonKjataParticleState->spriteResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
             if (g_BattleIsPaused == 0) {
                 (particle->frame)++;
-                if (particle->frame >= 0x10) {
+                if (particle->frame >= 16) {
                     particle->pending = 0;
                 }
-                particle->posY -= 0x32;
+                particle->posY -= 50;
             }
             activeCnt++;
         }
@@ -2684,7 +2684,7 @@ void __cdecl BattleFx_SummonKjataSpawnSpriteParticlesTask(void)
         particle->dirZ = CosFixed(angle);
     }
     pTaskSlot->frameCounter += 1;
-    if (pTaskSlot->frameCounter >= 0xA) {
+    if (pTaskSlot->frameCounter >= 10) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2712,36 +2712,36 @@ void __cdecl BattleFx_SummonKjataHoppingSpriteTask(void)
     g_BattleSummonKjataModelDrawRequest1.hoppingSpriteRequest = Gfx_ModelTableGetLoadedRecord(7, (GfxTableCursor *)((int)g_BattleSummonKjataTableCursor));
     g_BattleSummonKjataModelDrawRequest1.hoppingSpriteAux = Gfx_ModelTableGetSpriteObject(7, (GfxTableCursor *)((int)g_BattleSummonKjataTableCursor));
     if (g_BattleIsPaused == 0) {
-        hopPhase = taskPtr->tick % 0xC;
+        hopPhase = taskPtr->tick % 12;
         if (hopPhase == 0) {
             if (taskPtr->stage >= 3) {
                 taskPtr->stage = 0xFFFF;
                 return;
             }
-            arcPhase = (taskPtr->stage << 0xC) / 2;
+            arcPhase = (taskPtr->stage << 12) / 2;
             g_BattleSummonKjataHopTarget->endX = -taskPtr->posX;
             g_BattleSummonKjataHopTarget->endY = 0;
             g_BattleSummonKjataHopTarget->endZ = 0xFFFFEC78 - taskPtr->posZ;
             distance = SqrtToInt(VectorNormalToSVector((int *)(((int)g_BattleSummonKjataHopTarget) + 8), (short *)((int)g_BattleSummonKjataHopTarget)));
-            distance = distance * (0x2000 - arcPhase) >> 0xC;
-            taskPtr->velocityX = taskPtr->velocityX * (0x1000 - arcPhase) + g_BattleSummonKjataHopTarget->targetX * arcPhase >> 0xC;
-            taskPtr->posY = taskPtr->posY * (0x1000 - arcPhase) + g_BattleSummonKjataHopTarget->targetY * arcPhase >> 0xC;
-            taskPtr->velocityZ = taskPtr->velocityZ * (0x1000 - arcPhase) + g_BattleSummonKjataHopTarget->targetZ * arcPhase >> 0xC;
+            distance = distance * (8192 - arcPhase) >> 12;
+            taskPtr->velocityX = taskPtr->velocityX * (4096 - arcPhase) + g_BattleSummonKjataHopTarget->targetX * arcPhase >> 12;
+            taskPtr->posY = taskPtr->posY * (4096 - arcPhase) + g_BattleSummonKjataHopTarget->targetY * arcPhase >> 12;
+            taskPtr->velocityZ = taskPtr->velocityZ * (4096 - arcPhase) + g_BattleSummonKjataHopTarget->targetZ * arcPhase >> 12;
             arcPhase = 0x1000 / (3 - taskPtr->stage);
-            taskPtr->travelTime = distance * arcPhase / 0xA >> 0xC;
+            taskPtr->travelTime = distance * arcPhase / 10 >> 12;
             if (DEAD_IN_RETAIL != 0) {
-                heightPick = 0xBB8;
+                heightPick = 3000;
             } else {
-                heightPick = rand() % 0x3E8 + 0x7D0;
+                heightPick = rand() % 1000 + 2000;
             }
             taskPtr->hopHeight = heightPick;
             (taskPtr->stage)++;
         }
-        if (hopPhase < 0xA) {
-            arcPhase = (hopPhase << 0xC) / 0xA;
-            taskPtr->posX += (short)(taskPtr->velocityX * taskPtr->travelTime >> 0xC);
-            taskPtr->height = -taskPtr->hopHeight * SinFixed(arcPhase / 2) >> 0xC;
-            taskPtr->posZ += (short)(taskPtr->velocityZ * taskPtr->travelTime >> 0xC);
+        if (hopPhase < 10) {
+            arcPhase = (hopPhase << 12) / 10;
+            taskPtr->posX += (short)(taskPtr->velocityX * taskPtr->travelTime >> 12);
+            taskPtr->height = -taskPtr->hopHeight * SinFixed(arcPhase / 2) >> 12;
+            taskPtr->posZ += (short)(taskPtr->velocityZ * taskPtr->travelTime >> 12);
         } else {
             taskPtr->height = 0;
         }
@@ -2764,7 +2764,7 @@ int __cdecl BattleFx_SummonKjataClaimParticleSpriteRecord(void *payload)
 
     record = (BattleFxKjataParticleSprite *)(g_BattleSummonKjataParticleIndex * 0xC + (char *)&g_BattleSummonKjataParticleBuffer);
     g_BattleSummonKjataParticleIndex++;
-    g_BattleSummonKjataParticleIndex = g_BattleSummonKjataParticleIndex % 0xA0;
+    g_BattleSummonKjataParticleIndex = g_BattleSummonKjataParticleIndex % 160;
     record->active = 1;
     record->frame = 0;
     *(Int64Pair *)((char *)record + 4) = *(Int64Pair *)payload;
@@ -2796,16 +2796,16 @@ void __cdecl BattleFx_SummonKjataCounterRotatingModelsTask(void)
     g_BattleSummonKjataSpriteRequest3.counterModelPart = Gfx_ModelTableGetRenderObject(6, g_BattleSummonKjataTableCursor);
     frameCount = task->frameCounter;
     if (frameCount < 0) {
-        ratio = (frameCount << 0xC) / 0;
+        ratio = (frameCount << 12) / 0;
         rotAngle = 0x1000 - ratio;
     } else {
         frameCount = frameCount;
-        if (frameCount < 0x14) {
+        if (frameCount < 20) {
             rotAngle = 0;
         } else {
-            frameCount -= 0x14;
-            if (frameCount < 0xA) {
-                ratio = (frameCount << 0xC) / 0xA;
+            frameCount -= 20;
+            if (frameCount < 10) {
+                ratio = (frameCount << 12) / 10;
                 rotAngle = ratio;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
@@ -2814,19 +2814,19 @@ void __cdecl BattleFx_SummonKjataCounterRotatingModelsTask(void)
         }
     }
     frameCount = task->frameCounter;
-    if (frameCount < 0x1E) {
-        ratio = (frameCount << 0xC) / 0x1E;
+    if (frameCount < 30) {
+        ratio = (frameCount << 12) / 30;
         ratio = BattleFx_KjataApplyCameraEasing(ratio, 0x2FF);
-        scale = ratio * 0x1400 >> 0xC;
+        scale = ratio * 0x1400 /* 1.25 */ >> 12;
     } else {
-        frameCount -= 0x1E;
+        frameCount -= 30;
         if (frameCount < 0) {
-            scale = 0x1400;
+            scale = 0x1400 /* 1.25 */;
         } else {
             frameCount = frameCount;
             if (frameCount < 0) {
-                ratio = (frameCount << 0xC) / 0;
-                scale = (ratio * -0x1400 >> 0xC) + 0x1400;
+                ratio = (frameCount << 12) / 0;
+                scale = (ratio * -0x1400 /* 1.25 */ >> 12) + 0x1400;
             }
         }
     }
@@ -2890,14 +2890,14 @@ void __cdecl BattleFx_SummonKjataSpawnScalingModelsTask(void)
     for (modelIndex = 0; modelIndex < 1; modelIndex++) {
         modelPtr = (BattleFxKjataScalingRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonKjataScalingModelTask);
         heading = rand() & 0xFFF;
-        modelPtr->dirSin = SinFixed(heading) * 0x111C >> 0xC;
-        modelPtr->dirCos = CosFixed(heading) * 0x111C >> 0xC;
-        modelPtr->rotX = 0xFF00;
+        modelPtr->dirSin = SinFixed(heading) * 0x111C >> 12;
+        modelPtr->dirCos = CosFixed(heading) * 0x111C >> 12;
+        modelPtr->rotX = 0xFF00 /* 5737.5 deg */;
         modelPtr->angle = heading;
         modelPtr->rotZ = 0;
     }
     (taskPtr->timer)++;
-    if (taskPtr->timer >= 0x14) {
+    if (taskPtr->timer >= 20) {
         taskPtr->stepIndex = 0xFFFF;
     }
 }
@@ -2919,18 +2919,18 @@ void __cdecl BattleFx_SummonKjataScalingModelTask(void)
         g_BattleSummonKjataTimer = (BattleFxKjataScalingState *)Gfx_GetPsxScratchpadPtr(0);
     }
     g_BattleSummonKjataScalingModelDraw = Gfx_ModelTableGetRenderObject(5, g_BattleSummonKjataTableCursor);
-    g_BattleSummonKjataTimer->scaleZ = 0x2000;
-    g_BattleSummonKjataTimer->scaleY = 0x2000;
+    g_BattleSummonKjataTimer->scaleZ = 0x2000 /* 2.0 */;
+    g_BattleSummonKjataTimer->scaleY = 0x2000 /* 2.0 */;
     frameCount = task->frameCount;
     if (frameCount < 3) {
-        ratio = (frameCount << 0xC) / 3;
-        g_BattleSummonKjataTimer->scale = ratio << 0xD >> 0xC;
+        ratio = (frameCount << 12) / 3;
+        g_BattleSummonKjataTimer->scale = ratio << 13 >> 12;
         g_BattleSummonKjataScalingModelScale = 0;
     } else {
         frameCount -= 3;
         if (frameCount < 5) {
-            ratio = (frameCount << 0xC) / 5;
-            g_BattleSummonKjataTimer->scale = 0x2000;
+            ratio = (frameCount << 12) / 5;
+            g_BattleSummonKjataTimer->scale = 0x2000 /* 2.0 */;
             g_BattleSummonKjataScalingModelScale = ratio;
         } else {
             task->stepIndex = 0xFFFF;
@@ -2938,9 +2938,9 @@ void __cdecl BattleFx_SummonKjataScalingModelTask(void)
         }
     }
     RotMatrix(&task->angles, &g_BattleSummonKjataTimer->matrix);
-    g_BattleSummonKjataTimer->matrix.t[0] = task->dirSin * g_BattleSummonKjataCounterRotateScale >> 0xC;
+    g_BattleSummonKjataTimer->matrix.t[0] = task->dirSin * g_BattleSummonKjataCounterRotateScale >> 12;
     g_BattleSummonKjataTimer->matrix.t[1] = 0;
-    g_BattleSummonKjataTimer->matrix.t[2] = (task->dirCos * g_BattleSummonKjataCounterRotateScale >> 0xC) - 0x1388;
+    g_BattleSummonKjataTimer->matrix.t[2] = (task->dirCos * g_BattleSummonKjataCounterRotateScale >> 12) - 0x1388;
     MultiplyMatrix(&g_BattleSummonKjataBillboardMatrix, &g_BattleSummonKjataTimer->matrix, &g_BattleSummonKjataTimer->matrix);
     ScaleMatrix(&g_BattleSummonKjataTimer->matrix, g_BattleSummonKjataTimer);
     SetRotMatrix(&g_BattleSummonKjataTimer->matrix);
@@ -2954,8 +2954,8 @@ void __cdecl BattleFx_SummonKjataScalingModelTask(void)
 
 // Spawner for the scaling-fade models, returning while g_BattleIsPaused is set. On every second
 // frame (frameCount % 2 == 0) it allocates a BattleFx_SummonKjataScalingFadeModelTask with a random
-// angle p = rand() & 0xFFF and a radius t = rand() % 0x3E8 + 0x1F4. Its posX is t * SinFixed(p) >>
-// 12, posZ is t * CosFixed(p) >> 12, posY is rand() % 0x3E8 - 0x3E8, and scale is rand() % 0xE00 +
+// angle p = rand() & 0xFFF and a radius t = rand() % 1000 + 500. Its posX is t * SinFixed(p) >>
+// 12, posZ is t * CosFixed(p) >> 12, posY is rand() % 1000 - 1000, and scale is rand() % 3584 +
 // 0x200. The branches guarded by the constant 0 != 0 select 0x5DC, 0 and 0x1000 instead, so they
 // are dead. frameCount advances each frame, and the slot retires (stage 0xFFFF) once it reaches
 // 0x1E.
@@ -2977,26 +2977,26 @@ void __cdecl BattleFx_SummonKjataSpawnScalingFadeModelsTask(void)
         if (DEAD_IN_RETAIL != 0) {
             pick = 0x5DC;
         } else {
-            pick = rand() % 0x3E8 + 0x1F4;
+            pick = rand() % 1000 + 500;
         }
         distance = pick;
-        fadeSlot->posX = distance * SinFixed(heading) >> 0xC;
+        fadeSlot->posX = distance * SinFixed(heading) >> 12;
         if (DEAD_IN_RETAIL != 0) {
             dropPick = 0;
         } else {
-            dropPick = rand() % 0x3E8 - 0x3E8;
+            dropPick = rand() % 1000 - 1000;
         }
         fadeSlot->posY = dropPick;
-        fadeSlot->posZ = distance * CosFixed(heading) >> 0xC;
+        fadeSlot->posZ = distance * CosFixed(heading) >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            scalePick = 0x1000;
+            scalePick = 0x1000 /* 1.0 */;
         } else {
             scalePick = rand() % 0xE00 + 0x200;
         }
         fadeSlot->scale = scalePick;
     }
     (taskSlot->frameCount)++;
-    if (taskSlot->frameCount >= 0x1E) {
+    if (taskSlot->frameCount >= 30) {
         taskSlot->stage = 0xFFFF;
     }
 }
@@ -3018,13 +3018,13 @@ void __cdecl BattleFx_SummonKjataScalingFadeModelTask(void)
     g_BattleSummonKjataModelDrawRequest2.modelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleSummonKjataTableCursor);
     stage = rec->frameCount;
     if (stage < 2) {
-        ratio = (stage << 0xC) / 2;
-        scale = rec->fadeLevel * ratio >> 0xC;
+        ratio = (stage << 12) / 2;
+        scale = rec->fadeLevel * ratio >> 12;
         g_BattleSummonKjataModelDrawRequest2.x = 0;
     } else {
         stage -= 2;
         if (stage < 4) {
-            ratio = (stage << 0xC) / 4;
+            ratio = (stage << 12) / 4;
             scale = rec->fadeLevel;
             g_BattleSummonKjataModelDrawRequest2.x = (short)ratio;
         } else {
@@ -3044,7 +3044,7 @@ void __cdecl BattleFx_SummonKjataScalingFadeModelTask(void)
 // g_BattleSummonKjataRingGridWaveInitFlag and loads g_BattleSummonKjataEffectState from
 // Gfx_GetPsxScratchpadPtr(0). Below stepIndex 0xD it only builds the offscreen request and the ring grid
 // mesh, the latter at step 0. From step 0xD the wave height history is scrolled, but only while
-// unpaused: 0x1E frames of a sine ripple whose amplitude falls from 0x3E8 to 0, then 0x20 frames at
+// unpaused: 30 frames of a sine ripple whose amplitude falls from 0x3E8 to 0, then 32 frames at
 // 0, after which the slot retires (ownerSlot 0xFFFF) and returns. Otherwise, paused or not, it sets
 // the draw colour from g_BattleFxTimelineState, computes the shade word with the 0x2C000000 tag,
 // and draws each ring grid cell whose depth flags are clear.
@@ -3066,23 +3066,23 @@ void __cdecl BattleFx_SummonKjataRingGridWaveTask(void)
         g_BattleSummonKjataEffectState = (struct BattleFxKjataEffectState *)(Gfx_GetPsxScratchpadPtr(0));
     }
     frameIndex = taskPtr->frameCounter;
-    if (frameIndex < 0xD) {
+    if (frameIndex < 13) {
         if (frameIndex == 0) {
             BattleFx_SummonKjataBuildAndQueueStageOffscreenRequest();
             BattleFx_SummonKjataBuildRingGridMesh();
         }
     } else {
         if (g_BattleIsPaused == 0) {
-            frameIndex -= 0xD;
-            if (frameIndex < 0x1E) {
+            frameIndex -= 13;
+            if (frameIndex < 30) {
                 for (i = 0; i < 1; i++) {
-                    angle = (frameIndex + i << 0xC) / 0x1E;
-                    localAmplitude = (angle * -1000 >> 0xC) + 0x3E8;
-                    BattleFx_SummonKjataScrollWaveHeightHistory(-((SinFixed(angle * 5) + 0x1000) / 2) * localAmplitude >> 0xC);
+                    angle = (frameIndex + i << 12) / 30;
+                    localAmplitude = (angle * -1000 >> 12) + 0x3E8;
+                    BattleFx_SummonKjataScrollWaveHeightHistory(-((SinFixed(angle * 5) + 0x1000) / 2) * localAmplitude >> 12);
                 }
             } else {
-                frameIndex -= 0x1E;
-                if (frameIndex < 0x20) {
+                frameIndex -= 30;
+                if (frameIndex < 32) {
                     for (i = 0; i < 1; i++) {
                         BattleFx_SummonKjataScrollWaveHeightHistory(0);
                     }
@@ -3100,8 +3100,8 @@ void __cdecl BattleFx_SummonKjataRingGridWaveTask(void)
         g_BattleSummonKjataWaveBank = 0;
         RefreshGlobalTransformState();
         Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonKjataOffscreenSlot));
-        for (i = 0; i < 0x20; i++) {
-            for (j = 0; j < 0x10; j++) {
+        for (i = 0; i < 32; i++) {
+            for (j = 0; j < 16; j++) {
                 pWaveCell = (BattleFxSummonKjataRingWave *)(0x1080 + g_BattleSummonKjataDrawHandleDescriptor[0] + i * 0x600 + j * 0x60);
                 g_BattleSummonKjataEffectState->depth = Gfx_TransformQuadReturnDepth((void *)pWaveCell->vertexA, (SVECTOR *)(pWaveCell->vertexB), (SVECTOR *)(pWaveCell->quadC), (SVECTOR *)(pWaveCell->quadD), (int *)(((int)g_BattleSummonKjataEffectState) + 4), (int *)(((int)g_BattleSummonKjataEffectState) + 8));
                 if ((g_BattleSummonKjataEffectState->flags & 0x60000) == 0) {
@@ -3136,7 +3136,7 @@ void __cdecl BattleFx_SummonKjataBuildAndQueueStageOffscreenRequest(void)
     } else {
         g_BattleSummonKjataTransformMatrix.viewportOriginX = *(short *)&g_BattleViewportOriginX;
         g_BattleSummonKjataTransformMatrix.viewportOriginY = *(short *)&g_BattleViewportOriginY;
-        g_BattleSummonKjataTransformMatrix.scale = 0x100;
+        g_BattleSummonKjataTransformMatrix.scale = 0x100 /* 0.0625 */;
         g_BattleSummonKjataTransformMatrix.prevScale = g_BattleSummonKjataTransformMatrix.scale;
     }
     g_BattleSummonKjataTransformMatrix.m11 = g_BattleSummonKjataLightMatrix.m[0][0];
@@ -3194,32 +3194,32 @@ void __cdecl BattleFx_SummonKjataBuildRingGridMesh(void)
     BattleFxShardTriVerts *cellPtr;
     int column, angleStart, k, angleNext, clampedRadius, ringScale8;
 
-    for (loopRingIndex = 0; loopRingIndex < 0x20; loopRingIndex++) {
+    for (loopRingIndex = 0; loopRingIndex < 32; loopRingIndex++) {
         loopInnerRad = loopRingIndex << 2;
-        if (loopInnerRad + 4 < 0x80) {
+        if (loopInnerRad + 4 < 128) {
             clampedRadius = loopInnerRad + 4;
         } else {
             clampedRadius = 0x7F;
         }
         texRadius = clampedRadius;
-        for (column = 0; column < 0x10; column++) {
+        for (column = 0; column < 16; column++) {
             cellPtr = (BattleFxShardTriVerts *)(0x1080 + g_BattleSummonKjataDrawHandleDescriptor[0] + loopRingIndex * 0x600 + column * 0x60);
             cellPtr->vertex0 = g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7) + column * 8;
-            cellPtr->vertex1 = g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7) + (column + 1) % 0x10 * 8;
+            cellPtr->vertex1 = g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7) + (column + 1) % 16 * 8;
             cellPtr->vertex2 = g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex + 1 << 7) + column * 8;
-            cellPtr->vertex3 = g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex + 1 << 7) + (column + 1) % 0x10 * 8;
-            angleStart = (column << 0xC) / 0x10;
-            angleNext = ((column + 1) << 0xC) / 0x10;
+            cellPtr->vertex3 = g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex + 1 << 7) + (column + 1) % 16 * 8;
+            angleStart = (column << 12) / 16;
+            angleNext = ((column + 1) << 12) / 16;
             for (k = 0; k < 1; k++) {
                 ((BattleFxKjataRingVertex *)cellPtr)[k].tag = 0x9000000;
-                ((BattleFxKjataRingVertex *)cellPtr)[k].texU = (loopInnerRad * SinFixed(angleStart) >> 0xC) + 0x80;
-                ((BattleFxKjataRingVertex *)cellPtr)[k].texV = (loopInnerRad * CosFixed(angleStart) >> 0xC) + 0x80;
-                ((BattleFxKjataRingVertex *)cellPtr)[k].texU2 = (loopInnerRad * SinFixed(angleNext) >> 0xC) + 0x80;
-                ((BattleFxKjataRingVertex *)cellPtr)[k].texV2 = (loopInnerRad * CosFixed(angleNext) >> 0xC) + 0x80;
-                *(char *)((char *)cellPtr + k * 0x28 + 0x2C) = (texRadius * SinFixed(angleStart) >> 0xC) + 0x80;
-                *(char *)((char *)cellPtr + k * 0x28 + 0x2D) = (texRadius * CosFixed(angleStart) >> 0xC) + 0x80;
-                *(char *)((char *)cellPtr + k * 0x28 + 0x34) = (texRadius * SinFixed(angleNext) >> 0xC) + 0x80;
-                *(char *)((char *)cellPtr + k * 0x28 + 0x35) = (texRadius * CosFixed(angleNext) >> 0xC) + 0x80;
+                ((BattleFxKjataRingVertex *)cellPtr)[k].texU = (loopInnerRad * SinFixed(angleStart) >> 12) + 0x80;
+                ((BattleFxKjataRingVertex *)cellPtr)[k].texV = (loopInnerRad * CosFixed(angleStart) >> 12) + 0x80;
+                ((BattleFxKjataRingVertex *)cellPtr)[k].texU2 = (loopInnerRad * SinFixed(angleNext) >> 12) + 0x80;
+                ((BattleFxKjataRingVertex *)cellPtr)[k].texV2 = (loopInnerRad * CosFixed(angleNext) >> 12) + 0x80;
+                *(char *)((char *)cellPtr + k * 0x28 + 0x2C) = (texRadius * SinFixed(angleStart) >> 12) + 0x80;
+                *(char *)((char *)cellPtr + k * 0x28 + 0x2D) = (texRadius * CosFixed(angleStart) >> 12) + 0x80;
+                *(char *)((char *)cellPtr + k * 0x28 + 0x34) = (texRadius * SinFixed(angleNext) >> 12) + 0x80;
+                *(char *)((char *)cellPtr + k * 0x28 + 0x35) = (texRadius * CosFixed(angleNext) >> 12) + 0x80;
                 ((BattleFxKjataRingVertex *)cellPtr)[k].texPage = 0x12C;
                 if (g_BattleUiScalingMode != 2) {
                     *(unsigned char *)&((BattleFxKjataRingVertex *)cellPtr)[k].texU >>= 1;
@@ -3234,18 +3234,18 @@ void __cdecl BattleFx_SummonKjataBuildRingGridMesh(void)
             }
         }
     }
-    for (loopRingIndex = 0; loopRingIndex < 0x21; loopRingIndex++) {
-        if (loopRingIndex < 0x20) {
+    for (loopRingIndex = 0; loopRingIndex < 33; loopRingIndex++) {
+        if (loopRingIndex < 32) {
             ringScale8 = (loopRingIndex << 2) * 0x60;
         } else {
             ringScale8 = 0x2FA0;
         }
         loopInnerRad = ringScale8;
-        for (column = 0; column < 0x10; column++) {
-            angleStart = (column << 0xC) / 0x10;
-            *(short *)((char *)(g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7)) + column * 8) = loopInnerRad * SinFixed(angleStart) >> 0xC;
+        for (column = 0; column < 16; column++) {
+            angleStart = (column << 12) / 16;
+            *(short *)((char *)(g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7)) + column * 8) = loopInnerRad * SinFixed(angleStart) >> 12;
             *(short *)((char *)(g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7)) + column * 8 + 2) = 0;
-            *(short *)((char *)(g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7)) + column * 8 + 4) = (-loopInnerRad * CosFixed(angleStart) >> 0xC) - 0x1388;
+            *(short *)((char *)(g_BattleSummonKjataDrawHandleDescriptor[0] + (loopRingIndex << 7)) + column * 8 + 4) = (-loopInnerRad * CosFixed(angleStart) >> 12) - 0x1388;
         }
     }
 }
@@ -3258,12 +3258,12 @@ void __cdecl BattleFx_SummonKjataScrollWaveHeightHistory(int height)
 {
     int row, column;
 
-    for (row = 0x20; row > 0; row--) {
-        for (column = 0; column < 0x10; column++) {
+    for (row = 32; row > 0; row--) {
+        for (column = 0; column < 16; column++) {
             *(short *)((char *)(g_BattleSummonKjataDrawHandleDescriptor[0] + (row << 7)) + column * 8 + 2) = *(short *)((char *)(g_BattleSummonKjataDrawHandleDescriptor[0] + (row - 1 << 7)) + column * 8 + 2);
         }
     }
-    for (row = 0; row < 0x10; row++) {
+    for (row = 0; row < 16; row++) {
         *(short *)((char *)g_BattleSummonKjataDrawHandleDescriptor[0] + row * 8 + 2) = height;
     }
 }
@@ -3310,14 +3310,14 @@ void __cdecl BattleFx_SummonKjataTargetWaveHeightTask(void)
     g_BattleSummonKjataWaveTargets->actorOffsetY = 0;
     g_BattleSummonKjataWaveTargets->heightB = actor->posZ - (g_BattleSummonKjataWaveTargets->waveOffsetB + g_BattleSummonKjataLightMatrix.t[2]);
     dist = SqrtToInt(NormalizeVectorFixed((char *)g_BattleSummonKjataWaveTargets + 8, (char *)g_BattleSummonKjataWaveTargets + 8));
-    fraction = (dist % 0x180 << 0xC) / 0x180;
-    dist = dist / 0x180;
-    actor->waveHeight = ((BattleFxKjataDrawHandle *)g_BattleSummonKjataDrawHandleDescriptor[0])[dist].height * (0x1000 - fraction) + ((BattleFxKjataDrawHandle *)g_BattleSummonKjataDrawHandleDescriptor[0])[dist + 1].height * fraction >> 0xC;
+    fraction = (dist % 384 << 12) / 384;
+    dist = dist / 384;
+    actor->waveHeight = ((BattleFxKjataDrawHandle *)g_BattleSummonKjataDrawHandleDescriptor[0])[dist].height * (4096 - fraction) + ((BattleFxKjataDrawHandle *)g_BattleSummonKjataDrawHandleDescriptor[0])[dist + 1].height * fraction >> 12;
     if (actor->waveHeight != task->savedHeight) {
         *(char *)&actor->flags |= 0x10;
     }
     (task->frame)++;
-    if (task->frame >= 0x4B) {
+    if (task->frame >= 75) {
         actor->waveHeight = task->savedHeight;
         actor->flags = actor->flags & 0xFFFFFFEF | task->savedFlags & 0x10;
         task->actorIndex = 0xFFFF;
@@ -3358,8 +3358,8 @@ void __cdecl BattleFx_SummonKjataJitterEnvelopeTask(void)
     }
     local.frame = local.p->frameCount;
     if (local.frame < local.p->riseFrames) {
-        local.ratio = (local.frame << 0xC) / local.p->riseFrames;
-        local.value = local.p->amplitude * local.ratio >> 0xC;
+        local.ratio = (local.frame << 12) / local.p->riseFrames;
+        local.value = local.p->amplitude * local.ratio >> 12;
     } else {
         local.frame -= local.p->riseFrames;
         if (local.frame < local.p->holdFrames) {
@@ -3367,8 +3367,8 @@ void __cdecl BattleFx_SummonKjataJitterEnvelopeTask(void)
         } else {
             local.frame -= local.p->holdFrames;
             if (local.frame < local.p->fallFrames) {
-                local.ratio = (local.frame << 0xC) / local.p->fallFrames;
-                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 0xC;
+                local.ratio = (local.frame << 12) / local.p->fallFrames;
+                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 12;
             } else {
                 local.p->ownerSlot = 0xFFFF;
                 g_BattleCameraTransform.posY = 0;
@@ -3382,7 +3382,7 @@ void __cdecl BattleFx_SummonKjataJitterEnvelopeTask(void)
 
 // One frame of the screen flash pulse on the current task slot; returns without advancing while
 // g_BattleIsPaused is nonzero. On frame 0 it calls BattleFx_StartScreenFlashRamp(7), on frame 0xC
-// BattleFx_FadeOutScreenFlashRamp(0xA) and frees the slot. The frame counter advances each frame.
+// BattleFx_FadeOutScreenFlashRamp(10) and frees the slot. The frame counter advances each frame.
 // FUNCTION: FF7 0x00501377
 void __cdecl BattleFx_SummonKjataScreenFlashPulseTask(void)
 {
@@ -3395,8 +3395,8 @@ void __cdecl BattleFx_SummonKjataScreenFlashPulseTask(void)
     if (task->frameCount == 0) {
         BattleFx_StartScreenFlashRamp(7);
     }
-    if (task->frameCount == 0xC) {
-        BattleFx_FadeOutScreenFlashRamp(0xA);
+    if (task->frameCount == 12) {
+        BattleFx_FadeOutScreenFlashRamp(10);
         task->stage = 0xFFFF;
     }
     (task->frameCount)++;

@@ -355,8 +355,8 @@ int __cdecl BattleFx_LimitEnterCosmoMemory(int targetMask, int actorIdx)
     g_BattleLimitCosmoMemoryFlashRed = 0xF0;
     g_BattleLimitCosmoMemoryFlashGreen = 0xF0;
     g_BattleLimitCosmoMemoryFlashBlue = 0xF0;
-    g_BattleLimitCosmoMemoryRingScale = 0x400;
-    g_BattleLimitCosmoMemoryConvergeScale = 0x400;
+    g_BattleLimitCosmoMemoryRingScale = 0x400 /* 0.25 */;
+    g_BattleLimitCosmoMemoryConvergeScale = 0x400 /* 0.25 */;
     BattleFx_LimitBeginCosmoMemory(targetMask, actorIdx);
     return 0;
 }
@@ -383,7 +383,7 @@ void __cdecl BattleFx_LimitBeginCosmoMemory(int targetMask, int actorIdx)
     Battle_GetActorMaskCentroid(targetMask, (short *)&g_BattleLimitCosmoMemoryDrawListHead);
     frame.spawnRecord = (BattleFxCosmoMemorySpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryTimelineTask);
     Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].altBone, (short *)((char *)frame.spawnRecord + 4));
-    frame.spawnRecord->posY -= 0x3E8;
+    frame.spawnRecord->posY -= 1000;
     frame.dirX.vx = (g_BattleLimitCosmoMemoryDrawListHead.originX) - frame.spawnRecord->posX;
     frame.dirX.vy = 0;
     frame.dirX.vz = g_BattleLimitCosmoMemoryCentroidZ - frame.spawnRecord->posZ;
@@ -393,7 +393,7 @@ void __cdecl BattleFx_LimitBeginCosmoMemory(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0x1000, 0x10);
+    Battle_StartFixedPointRamp(0x1000, 16);
     SoundDispatchCommand(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition((char *)frame.spawnRecord + 4), 0x128, 0, 0, 0, 0, 0, 0);
     SoundDispatchCommand(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition((char *)frame.spawnRecord + 4), 0x1AA, 0, 0, 0, 0, 0, 0);
     g_BattleScriptEffectFlag = 1;
@@ -432,47 +432,47 @@ void __cdecl BattleFx_LimitCosmoMemoryTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (localTaskSlot->timer == 0x14) {
+    if (localTaskSlot->timer == 20) {
         newTaskPtr = (BattleFxCosmoMemorySlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryTriModelSpinTask);
         newTaskPtr->originX = localTaskSlot->originX;
         newTaskPtr->originY = localTaskSlot->originY;
         newTaskPtr->state = localTaskSlot->state;
     }
-    if (localTaskSlot->timer == 0x14) {
+    if (localTaskSlot->timer == 20) {
         newTaskPtr = (BattleFxCosmoMemorySlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryEmitConvergingProjectilesTask);
         newTaskPtr->originX = localTaskSlot->originX;
         newTaskPtr->originY = localTaskSlot->originY;
         newTaskPtr->state = localTaskSlot->state;
     }
-    if (localTaskSlot->timer == 0x32) {
+    if (localTaskSlot->timer == 50) {
         newTaskPtr = (BattleFxCosmoMemorySlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryRotatingSpriteRingsTask);
         newTaskPtr->originX = localTaskSlot->originX;
         newTaskPtr->originY = localTaskSlot->originY;
         newTaskPtr->state = localTaskSlot->state;
     }
-    if (localTaskSlot->timer == 0x87) {
+    if (localTaskSlot->timer == 135) {
         newTaskPtr = (BattleFxCosmoMemorySlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryGrowingModelTask);
         newTaskPtr->originX = localTaskSlot->originX;
         newTaskPtr->originY = localTaskSlot->originY;
         newTaskPtr->state = localTaskSlot->state;
     }
-    if (localTaskSlot->timer >= 0xAA && localTaskSlot->timer < 0xC8 && localTaskSlot->timer % 5 == 0) {
+    if (localTaskSlot->timer >= 170 && localTaskSlot->timer < 200 && localTaskSlot->timer % 5 == 0) {
         newTaskPtr = (BattleFxCosmoMemorySlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryCentroidGrowingModelTask);
         newTaskPtr->originX = (g_BattleLimitCosmoMemoryDrawListHead.originX);
         newTaskPtr->originY = g_BattleLimitCosmoMemoryDrawListHead.originY;
         newTaskPtr->state = g_BattleLimitCosmoMemoryCentroidZ;
     }
-    if (localTaskSlot->timer == 0x8C) {
+    if (localTaskSlot->timer == 140) {
         newTaskPtr = (BattleFxCosmoMemorySlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryShrinkingCyclingModelsTask);
         newTaskPtr->originX = localTaskSlot->originX;
         newTaskPtr->originY = localTaskSlot->originY;
         newTaskPtr->state = localTaskSlot->state;
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition((char *)newTaskPtr + 4), 0x182, 0, 0, 0, 0, 0, 0);
     }
-    if (localTaskSlot->timer == 0xAA) {
+    if (localTaskSlot->timer == 170) {
         Battle_AllocateResourceSlot(BattleFx_LimitCosmoMemoryScreenFlashTask);
     }
-    if (localTaskSlot->timer == 0xAA) {
+    if (localTaskSlot->timer == 170) {
         newTaskPtr = (BattleFxCosmoMemorySlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryExpandingModelTask);
         newTaskPtr->originX = (g_BattleLimitCosmoMemoryDrawListHead.originX);
         newTaskPtr->originY = g_BattleLimitCosmoMemoryDrawListHead.originY;
@@ -480,16 +480,16 @@ void __cdecl BattleFx_LimitCosmoMemoryTimelineTask(void)
         SoundDispatchCommand(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition((char *)newTaskPtr + 4), 0x20D, 0, 0, 0, 0, 0, 0);
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition((char *)newTaskPtr + 4), 0x25A, 0, 0, 0, 0, 0, 0);
     }
-    if (localTaskSlot->timer == 0xE6) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (localTaskSlot->timer == 230) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleLimitCosmoMemorySourceActor & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
     }
     (localTaskSlot->timer)++;
-    if (localTaskSlot->timer == 0xFA) {
-        Battle_StartFixedPointRamp(0, 0xC);
+    if (localTaskSlot->timer == 250) {
+        Battle_StartFixedPointRamp(0, 12);
         g_BattleScriptEffectFlag = 0;
         localTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -510,13 +510,13 @@ void __cdecl BattleFx_LimitCosmoMemoryScreenFlashTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x18) {
+    if (task->frameCounter < 24) {
         g_BattleLimitCosmoMemoryFlashGreen -= 0xA;
         g_BattleLimitCosmoMemoryFlashBlue -= 0xA;
     }
     g_BattleLimitCosmoMemoryFlashRed -= 4;
     (task->frameCounter)++;
-    if (task->frameCounter == 0x3C) {
+    if (task->frameCounter == 60) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -562,7 +562,7 @@ void __cdecl BattleFx_LimitCosmoMemoryGrowingModelTask(void)
         return;
     }
     (frame.growState->frameIndex)++;
-    if (frame.growState->frameIndex == 0x1E) {
+    if (frame.growState->frameIndex == 30) {
         frame.growState->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -587,7 +587,7 @@ void __cdecl BattleFx_LimitCosmoMemoryCentroidGrowingModelTask(void)
 #pragma pack(pop)
 
     frame.centroidState = (BattleFxLimitCosmoMemoryGrowState *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleLimitCosmoMemoryCentroidModelRequest.modelGroup) = Gfx_ModelTableGetRenderObject(0xE, g_pBattleLimitCosmoMemoryTableCursor);
+    (g_BattleLimitCosmoMemoryCentroidModelRequest.modelGroup) = Gfx_ModelTableGetRenderObject(14, g_pBattleLimitCosmoMemoryTableCursor);
     RotMatrix((SVECTOR *)&g_BattleLimitCosmoMemoryCentroidModelRotation, &frame.modelMatrix);
     frame.scaleX.vz = frame.centroidState->frameIndex * 0x7D0;
     frame.scaleX.vy = frame.scaleX.vz;
@@ -606,7 +606,7 @@ void __cdecl BattleFx_LimitCosmoMemoryCentroidGrowingModelTask(void)
         return;
     }
     (frame.centroidState->frameIndex)++;
-    if (frame.centroidState->frameIndex == 0x1E) {
+    if (frame.centroidState->frameIndex == 30) {
         frame.centroidState->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -637,15 +637,15 @@ void __cdecl BattleFx_LimitCosmoMemoryShrinkingCyclingModelsTask(void)
     frame.cycleEntry0[1] = 7;
     frame.cycleEntry0[2] = 8;
     frame.cycleEntry0[3] = 9;
-    frame.cycleEntry0[4] = 0xA;
-    frame.cycleEntry0[5] = 0xB;
-    frame.cycleEntry0[6] = 0xC;
-    frame.cycleEntry0[7] = 0xD;
+    frame.cycleEntry0[4] = 10;
+    frame.cycleEntry0[5] = 11;
+    frame.cycleEntry0[6] = 12;
+    frame.cycleEntry0[7] = 13;
     RotMatrix((SVECTOR *)&g_BattleLimitCosmoMemoryShrinkingModelRotation, &frame.modelMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleLimitCosmoMemoryLoadedResTable, &frame.modelMatrix, &frame.modelMatrix);
     frame.scaleX.vz = 0x5000 - frame.shrinkSlot->timer * 0x258;
     frame.scaleX.vx = frame.scaleX.vz;
-    frame.scaleX.vy = 0x4000;
+    frame.scaleX.vy = 0x4000 /* 4.0 */;
     ScaleMatrix(&frame.modelMatrix, &frame.scaleX);
     frame.modelMatrix.t[0] = frame.shrinkSlot->posX;
     frame.modelMatrix.t[1] = frame.shrinkSlot->posY;
@@ -662,11 +662,11 @@ void __cdecl BattleFx_LimitCosmoMemoryShrinkingCyclingModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.shrinkSlot->timer >= 0x16) {
+    if (frame.shrinkSlot->timer >= 22) {
         g_BattleLimitCosmoMemoryShrinkIntensity--;
     }
     (frame.shrinkSlot->timer)++;
-    if (frame.shrinkSlot->timer == 0x1E) {
+    if (frame.shrinkSlot->timer == 30) {
         frame.shrinkSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -698,18 +698,18 @@ void __cdecl BattleFx_LimitCosmoMemoryExpandingModelTask(void)
 #pragma pack(pop)
 
     frame.expandState = (BattleFxCosmoMemoryExpandingModel *)BATTLE_CURRENT_TASK_SLOT;
-    frame.cycleEntry0[0] = 0x13;
-    frame.cycleEntry0[1] = 0x14;
-    frame.cycleEntry0[2] = 0x15;
-    frame.cycleEntry0[3] = 0x16;
-    frame.cycleEntry0[4] = 0x17;
-    frame.cycleEntry0[5] = 0x18;
-    frame.cycleEntry0[6] = 0x19;
-    frame.cycleEntry0[7] = 0x1A;
+    frame.cycleEntry0[0] = 19;
+    frame.cycleEntry0[1] = 20;
+    frame.cycleEntry0[2] = 21;
+    frame.cycleEntry0[3] = 22;
+    frame.cycleEntry0[4] = 23;
+    frame.cycleEntry0[5] = 24;
+    frame.cycleEntry0[6] = 25;
+    frame.cycleEntry0[7] = 26;
     RotMatrix((SVECTOR *)&g_BattleLimitCosmoMemoryExpandingModelRotation, &frame.modelMatrix);
     frame.scaleX.vz = frame.expandState->frame * 0x190 + 0x1000;
     frame.scaleX.vx = frame.scaleX.vz;
-    frame.scaleX.vy = 0x7F00;
+    frame.scaleX.vy = 0x7F00 /* 7.9375 */;
     ScaleMatrix(&frame.modelMatrix, &frame.scaleX);
     frame.modelMatrix.t[0] = frame.expandState->posX;
     frame.modelMatrix.t[1] = frame.expandState->posY;
@@ -718,20 +718,20 @@ void __cdecl BattleFx_LimitCosmoMemoryExpandingModelTask(void)
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleLimitCosmoMemoryExpandingModelRequest.recordTableOffset = frame.expandState->frame * 0x44;
-    (g_BattleLimitCosmoMemoryExpandingModelRequest.modelGroup) = Gfx_ModelTableGetRenderObject(0x1B, g_pBattleLimitCosmoMemoryTableCursor);
+    g_BattleLimitCosmoMemoryExpandingModelRequest.recordTableOffset = frame.expandState->frame * 68;
+    (g_BattleLimitCosmoMemoryExpandingModelRequest.modelGroup) = Gfx_ModelTableGetRenderObject(27, g_pBattleLimitCosmoMemoryTableCursor);
     g_BattleLimitCosmoMemoryTargetMask = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&(g_BattleLimitCosmoMemoryExpandingModelRequest.modelGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitCosmoMemoryTargetMask);
     (g_BattleLimitCosmoMemoryExpandingModelRequest.modelGroup) = Gfx_ModelTableGetRenderObject(frame.cycleEntry0[((frame.expandState->frame) % 8)], g_pBattleLimitCosmoMemoryTableCursor);
     g_BattleLimitCosmoMemoryTargetMask = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&(g_BattleLimitCosmoMemoryExpandingModelRequest.modelGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitCosmoMemoryTargetMask);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.radius = frame.expandState->frame * 0x46 + 0x190;
-    if (frame.expandState->frame < 0x32) {
+    frame.radius = frame.expandState->frame * 70 + 400;
+    if (frame.expandState->frame < 50) {
         frame.spawn = (BattleFxLimitCosmoMemorySpawn *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryFallingSpinningModelTask);
         frame.angle = ((rand()) % 4096);
-        frame.spawn->posX = frame.expandState->posX + (SinFixed(frame.angle) * frame.radius >> 0xC);
-        frame.spawn->posZ = frame.expandState->posZ + (CosFixed(frame.angle) * frame.radius >> 0xC);
+        frame.spawn->posX = frame.expandState->posX + (SinFixed(frame.angle) * frame.radius >> 12);
+        frame.spawn->posZ = frame.expandState->posZ + (CosFixed(frame.angle) * frame.radius >> 12);
         frame.spawn->posY = 0;
         frame.spawn->modelIndex = ((rand()) % 4);
         frame.spawn->spin = ((rand()) % 4096);
@@ -739,13 +739,13 @@ void __cdecl BattleFx_LimitCosmoMemoryExpandingModelTask(void)
     for (frame.billboardIndex = 0; frame.billboardIndex < 4; frame.billboardIndex++) {
         frame.spawn = (BattleFxLimitCosmoMemorySpawn *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_LimitCosmoMemoryAnimatedBillboardSpriteTask)];
         frame.angle = ((rand()) % 4096);
-        frame.spawn->posX = frame.expandState->posX + (SinFixed(frame.angle) * frame.radius >> 0xC);
-        frame.spawn->posZ = frame.expandState->posZ + (CosFixed(frame.angle) * frame.radius >> 0xC);
+        frame.spawn->posX = frame.expandState->posX + (SinFixed(frame.angle) * frame.radius >> 12);
+        frame.spawn->posZ = frame.expandState->posZ + (CosFixed(frame.angle) * frame.radius >> 12);
         frame.spawn->posY = 0;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x40 - (((frame.expandState->frame) % 2) << 7));
+    g_BattleCameraFocalPoint.focalPointY += (short)(64 - (((frame.expandState->frame) % 2) << 7));
     (frame.expandState->frame)++;
-    if (frame.expandState->frame == 0x3C) {
+    if (frame.expandState->frame == 60) {
         frame.expandState->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -769,9 +769,9 @@ void __cdecl BattleFx_LimitCosmoMemoryAnimatedBillboardSpriteTask(void)
     BattleTaskSlot *task;
 
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
-    (g_BattleLimitCosmoMemoryAnimatedSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x1F, g_pBattleLimitCosmoMemoryTableCursor);
-    g_BattleLimitCosmoMemoryAnimatedSpriteRequest.animatedBillboardRes = Gfx_ModelTableGetSpriteObject(0x1F, g_pBattleLimitCosmoMemoryTableCursor);
-    BattleFx_InstallBillboardMatrix(task->data, 0x4000, 0);
+    (g_BattleLimitCosmoMemoryAnimatedSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(31, g_pBattleLimitCosmoMemoryTableCursor);
+    g_BattleLimitCosmoMemoryAnimatedSpriteRequest.animatedBillboardRes = Gfx_ModelTableGetSpriteObject(31, g_pBattleLimitCosmoMemoryTableCursor);
+    BattleFx_InstallBillboardMatrix(task->data, 0x4000 /* 4.0 */, 0);
     g_BattleLimitCosmoMemoryAnimatedSpriteRequest.animatedBillboardShort12 = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&(g_BattleLimitCosmoMemoryAnimatedSpriteRequest.spriteGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && (g_BattleLimitCosmoMemoryAnimatedSpriteRequest.spriteGroup) != 0) {
@@ -829,9 +829,9 @@ void __cdecl BattleFx_LimitCosmoMemoryFallingSpinningModelTask(void)
         return;
     }
     frame.spinRecord->posY -= 0x190;
-    frame.spinRecord->spin += 0x100;
+    frame.spinRecord->spin += 0x100 /* 22.5 deg */;
     (frame.spinRecord->frame)++;
-    if (frame.spinRecord->frame == 0xA) {
+    if (frame.spinRecord->frame == 10) {
         frame.spinRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -861,8 +861,8 @@ void __cdecl BattleFx_LimitCosmoMemoryEmitConvergingProjectilesTask(void)
 #pragma pack(pop)
 
     frame.convergeSlot = (BattleFxCosmoMemoryConvergeSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleLimitCosmoMemoryConvergingSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x1E, g_pBattleLimitCosmoMemoryTableCursor);
-    g_BattleLimitCosmoMemoryConvergingSpriteRequest.spriteResIndex30 = Gfx_ModelTableGetSpriteObject(0x1E, g_pBattleLimitCosmoMemoryTableCursor);
+    (g_BattleLimitCosmoMemoryConvergingSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(30, g_pBattleLimitCosmoMemoryTableCursor);
+    g_BattleLimitCosmoMemoryConvergingSpriteRequest.spriteResIndex30 = Gfx_ModelTableGetSpriteObject(30, g_pBattleLimitCosmoMemoryTableCursor);
     frame.scaleVec.vz = g_BattleLimitCosmoMemoryConvergeScale;
     frame.scaleVec.vy = frame.scaleVec.vz;
     frame.scaleVec.vx = frame.scaleVec.vy;
@@ -885,11 +885,11 @@ void __cdecl BattleFx_LimitCosmoMemoryEmitConvergingProjectilesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.convergeSlot->step >= 0x14 && frame.convergeSlot->step < 0x6E) {
+    if (frame.convergeSlot->step >= 20 && frame.convergeSlot->step < 110) {
         frame.projectile = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCosmoMemoryProjectileTask);
         frame.offsetX.vx = 0;
         frame.offsetX.vy = 0;
-        frame.offsetX.vz = 0xFA0;
+        frame.offsetX.vz = 4000;
         frame.rotX.vx = (rand() % 4096);
         frame.rotX.vy = (rand() % 4096);
         frame.rotX.vz = 0;
@@ -903,17 +903,17 @@ void __cdecl BattleFx_LimitCosmoMemoryEmitConvergingProjectilesTask(void)
         frame.projectile->posX = frame.convergeSlot->posX + frame.offsetX.vx;
         frame.projectile->posY = frame.convergeSlot->posY + frame.offsetX.vy;
         frame.projectile->posZ = frame.convergeSlot->posZ + frame.offsetX.vz;
-        frame.projectile->velocityX = -frame.offsetX.vx / 0xA;
-        frame.projectile->velocityY = -frame.offsetX.vy / 0xA;
-        frame.projectile->velocityZ = -frame.offsetX.vz / 0xA;
+        frame.projectile->velocityX = -frame.offsetX.vx / 10;
+        frame.projectile->velocityY = -frame.offsetX.vy / 10;
+        frame.projectile->velocityZ = -frame.offsetX.vz / 10;
     }
-    if (frame.convergeSlot->step < 0x78) {
+    if (frame.convergeSlot->step < 120) {
         g_BattleLimitCosmoMemoryConvergeScale += 0x40;
     } else {
-        g_BattleLimitCosmoMemoryConvergeScale -= 0x100;
+        g_BattleLimitCosmoMemoryConvergeScale -= 0x100 /* 0.0625 */;
     }
     (frame.convergeSlot->step)++;
-    if (frame.convergeSlot->step == 0x96) {
+    if (frame.convergeSlot->step == 150) {
         frame.convergeSlot->state = 0xFFFF;
     }
 }
@@ -988,9 +988,9 @@ void __cdecl BattleFx_LimitCosmoMemoryFadingBillboardSpriteTask(void)
     BattleTaskSlot *task;
 
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
-    (g_BattleLimitCosmoMemoryFadingSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x1D, g_pBattleLimitCosmoMemoryTableCursor);
+    (g_BattleLimitCosmoMemoryFadingSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(29, g_pBattleLimitCosmoMemoryTableCursor);
     g_BattleLimitCosmoMemoryFadingSpriteRequest.fadingBillboardRes = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(task->data, 0x2000 /* 2.0 */, 0);
     g_BattleLimitCosmoMemoryFadingSpriteRequest.fadingBillboardFlag = task->frameCounter != 0;
     g_BattleLimitCosmoMemoryFadingSpriteRequest.fadingBillboardAlpha = 0x80 - (task->frameCounter << 4);
     g_BattleLimitCosmoMemoryFadingSpriteRequest.fadingBillboardAlphaOld1 = g_BattleLimitCosmoMemoryFadingSpriteRequest.fadingBillboardAlpha;
@@ -1030,16 +1030,16 @@ void __cdecl BattleFx_LimitCosmoMemoryRotatingSpriteRingsTask(void)
 #pragma pack(pop)
 
     frame.ringSlot = (BattleFxCosmoMemoryRingSlot *)BATTLE_CURRENT_TASK_SLOT;
-    (g_BattleLimitCosmoMemoryRingSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x1C, g_pBattleLimitCosmoMemoryTableCursor);
-    g_BattleLimitCosmoMemoryRingSpriteRequest.recordResIndex28 = Gfx_ModelTableGetSpriteObject(0x1C, g_pBattleLimitCosmoMemoryTableCursor);
+    (g_BattleLimitCosmoMemoryRingSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(28, g_pBattleLimitCosmoMemoryTableCursor);
+    g_BattleLimitCosmoMemoryRingSpriteRequest.recordResIndex28 = Gfx_ModelTableGetSpriteObject(28, g_pBattleLimitCosmoMemoryTableCursor);
     frame.scaleVec.vz = g_BattleLimitCosmoMemoryRingScale;
     frame.scaleVec.vy = frame.scaleVec.vz;
     frame.scaleVec.vx = frame.scaleVec.vy;
     frame.baseAngle = frame.ringSlot->timer << 7;
     for (frame.ringIndex = 0; frame.ringIndex < 3; frame.ringIndex++) {
-        for (frame.pointIndex = 0; frame.pointIndex < 0x10; frame.pointIndex++) {
-            frame.pointX.vx = CosFixed((frame.pointIndex << 8) + frame.baseAngle) * 0x258 >> 0xC;
-            frame.pointX.vy = SinFixed((frame.pointIndex << 8) + frame.baseAngle) * 0x258 >> 0xC;
+        for (frame.pointIndex = 0; frame.pointIndex < 16; frame.pointIndex++) {
+            frame.pointX.vx = CosFixed((frame.pointIndex << 8) + frame.baseAngle) * 0x258 >> 12;
+            frame.pointX.vy = SinFixed((frame.pointIndex << 8) + frame.baseAngle) * 0x258 >> 12;
             frame.pointX.vz = 0;
             frame.rotX.vx = frame.ringSlot->timer << 6;
             frame.rotX.vy = frame.ringIndex * 0x555;
@@ -1052,20 +1052,20 @@ void __cdecl BattleFx_LimitCosmoMemoryRotatingSpriteRingsTask(void)
             SetRotMatrix(&frame.rotMatrix);
             SetTransMatrix(&frame.rotMatrix);
             RotTransPointToInt16(&frame.pointX, (short *)&frame.pointX, &frame.depth);
-            BattleFx_InstallBillboardMatrix(&frame.pointX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.pointX, 0x1000 /* 1.0 */, 0);
             g_BattleLimitCosmoMemoryTargetMask = BattleFx_SubmitSpriteDraw(&(g_BattleLimitCosmoMemoryRingSpriteRequest.spriteGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitCosmoMemoryTargetMask);
         }
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.ringSlot->timer < 0x28) {
+    if (frame.ringSlot->timer < 40) {
         g_BattleLimitCosmoMemoryRingScale += 0x80;
     } else {
         g_BattleLimitCosmoMemoryRingScale -= 0x48;
     }
     (frame.ringSlot->timer)++;
-    if (frame.ringSlot->timer == 0x78) {
+    if (frame.ringSlot->timer == 120) {
         frame.ringSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1098,8 +1098,8 @@ void __cdecl BattleFx_LimitCosmoMemoryTriModelSpinTask(void)
 
     frame.spinSlot = (BattleFxCosmoMemoryTriSpin *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleLimitCosmoMemoryTriSpinModelRequest.modelGroup) = Gfx_ModelTableGetRenderObject(0, g_pBattleLimitCosmoMemoryTableCursor);
-    (g_BattleLimitCosmoMemoryTriSpinSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x1C, g_pBattleLimitCosmoMemoryTableCursor);
-    g_BattleLimitCosmoMemoryTriSpinSpriteRequest.recordResIndex28B = Gfx_ModelTableGetSpriteObject(0x1C, g_pBattleLimitCosmoMemoryTableCursor);
+    (g_BattleLimitCosmoMemoryTriSpinSpriteRequest.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(28, g_pBattleLimitCosmoMemoryTableCursor);
+    g_BattleLimitCosmoMemoryTriSpinSpriteRequest.recordResIndex28B = Gfx_ModelTableGetSpriteObject(28, g_pBattleLimitCosmoMemoryTableCursor);
     SetDrawColorRGB(0, 0, 0);
     g_BattleLimitCosmoMemoryTriSpinModelRequest.recordStateAngleB = 0x1000 - (g_BattleLimitCosmoMemoryTriSpinIntensity << 8);
     for (frame.copyIndex = 0; frame.copyIndex < 3; frame.copyIndex++) {
@@ -1108,7 +1108,7 @@ void __cdecl BattleFx_LimitCosmoMemoryTriModelSpinTask(void)
         frame.scaleVec.vx = frame.scaleVec.vy;
         frame.offsetX.vx = 0;
         frame.offsetX.vy = 0;
-        frame.offsetX.vz = (frame.copyIndex - 1) * 0x320;
+        frame.offsetX.vz = (frame.copyIndex - 1) * 800;
         frame.rotX.vz = 0;
         frame.rotX.vy = (frame.spinSlot->step << 4) + 0x400;
         frame.rotX.vx = frame.spinSlot->step << 4;
@@ -1145,11 +1145,11 @@ void __cdecl BattleFx_LimitCosmoMemoryTriModelSpinTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.spinSlot->step < 0x10) {
+    if (frame.spinSlot->step < 16) {
         g_BattleLimitCosmoMemoryTriSpinIntensity++;
     }
     (frame.spinSlot->step)++;
-    if (frame.spinSlot->step == 0x78) {
+    if (frame.spinSlot->step == 120) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

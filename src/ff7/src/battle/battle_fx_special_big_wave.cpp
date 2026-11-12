@@ -83,11 +83,11 @@ short g_BattleSpecBigWaveLoadedResTable = 0;
 // g_BattleSpecBigWaveWaveTable1 is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0xb6ac48..0xb6ae48 are aliases.
 // GLOBAL: FF7 0x00b6ac48
-unsigned char g_BattleSpecBigWaveWaveTable1[0x200] = {0};
+unsigned char g_BattleSpecBigWaveWaveTable1[512] = {0};
 // g_BattleSpecBigWaveWaveTable2 is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0xb6ae48..0xb6cc48 are aliases.
 // GLOBAL: FF7 0x00b6ae48
-unsigned char g_BattleSpecBigWaveWaveTable2[0x1e00] = {0};
+unsigned char g_BattleSpecBigWaveWaveTable2[7680] = {0};
 // GLOBAL: FF7 0x00b6cc48
 struct GfxTableCursor *g_BattleSpecBigWaveWaveProgress = 0;
 // GLOBAL: FF7 0x00b6cc4c
@@ -155,7 +155,7 @@ void __cdecl BattleFx_SpecialBigWaveSpawnTimeline(int actorMask, int sourceIndex
     BattleFxBigWaveTimeline *slotPtr;
 
     g_BattleSpecBigWaveLoadedResTable = actorMask;
-    for (idx = 0; idx < 0x1000; idx++) {
+    for (idx = 0; idx < 4096; idx++) {
         ((short *)&g_BattleSpecBigWaveWaveTable1)[idx] = SinFixed(idx);
     }
     slotPtr = (BattleFxBigWaveTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBigWaveTimelineTask);
@@ -190,39 +190,39 @@ void __cdecl BattleFx_SpecialBigWaveTimelineTask(void)
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         Battle_StartFixedPointRamp(0x1000, 4);
     }
-    if (p->frameCounter == 0x14) {
+    if (p->frameCounter == 20) {
         Battle_StartFixedPointRamp(0, 8);
     }
     if (p->frameCounter == 0) {
         child = (BattleFxBigWaveSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBigWaveWaveSurfaceTask);
     }
-    if (p->frameCounter > 0x24 && p->frameCounter < 0x2C) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (p->frameCounter > 36 && p->frameCounter < 44) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleSpecBigWaveLoadedResTable & 1 << actorIdx) != 0) {
                 child = (BattleFxBigWaveSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBigWaveAnimatedSpriteTask);
                 Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, &child->posX);
-                child->posX += (short)(rand() % 0x258 - 0x12C);
-                child->posY += (short)(rand() % 0x258 - 0x12C);
-                child->posZ += (short)(rand() % 0x258 - 0x12C);
+                child->posX += (short)(rand() % 600 - 300);
+                child->posY += (short)(rand() % 600 - 300);
+                child->posZ += (short)(rand() % 600 - 300);
                 child->active = 1;
                 child = (BattleFxBigWaveSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialBigWaveAnimatedSpriteTask);
                 Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, &child->posX);
-                child->posX += (short)(rand() % 0x578 - 0x2BC);
-                child->posY += (short)(rand() % 0x578 - 0x2BC);
-                child->posZ += (short)(rand() % 0x578 - 0x2BC);
+                child->posX += (short)(rand() % 1400 - 700);
+                child->posY += (short)(rand() % 1400 - 700);
+                child->posZ += (short)(rand() % 1400 - 700);
                 child->active = 0;
             }
         }
     }
-    if (p->frameCounter == 0x28) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (p->frameCounter == 40) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleSpecBigWaveLoadedResTable & 1 << actorIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
     }
     (p->frameCounter)++;
-    if (p->frameCounter == 0x3C) {
+    if (p->frameCounter == 60) {
         p->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -259,7 +259,7 @@ void __cdecl BattleFx_SpecialBigWaveAnimatedSpriteTask(void)
 }
 
 /*
- * Draws the wave surface for 0x32 frames as a grid of textured quads whose heights come from
+ * Draws the wave surface for 50 frames as a grid of textured quads whose heights come from
  * BattleFx_SpecialBigWaveGetWaveVertexHeight, fading the wave in and out through the wave phase.
  */
 // FUNCTION: FF7 0x00541db9
@@ -299,21 +299,21 @@ void __cdecl BattleFx_SpecialBigWaveWaveSurfaceTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (frame.rowIndex = 0xFFFC; frame.rowIndex < 0x10; frame.rowIndex++) {
-        for (frame.colIndex = 0; frame.colIndex < 0x10; frame.colIndex++) {
-            frame.cellRow = frame.rowIndex - frame.waveLevel / 0x3E8;
-            frame.x0.vx = (frame.colIndex - 8) * 0x3E8;
-            frame.x0.vz = (frame.waveLevel + (frame.cellRow - 8) * 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
-            frame.x1.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-            frame.x1.vz = (frame.waveLevel + (frame.cellRow - 8) * 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
-            frame.x2.vx = (frame.colIndex - 8) * 0x3E8;
-            frame.x2.vz = (frame.waveLevel + (frame.cellRow - 8) * 0x3E8 + 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
-            frame.x3.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-            frame.x3.vz = (frame.waveLevel + (frame.cellRow - 8) * 0x3E8 + 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
-            frame.at22.value = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 0xA0 - frame.cellRow * 0x190, (short)frame.colIndex) - 0xC8;
-            frame.x2.vy = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 0xA0 - (frame.cellRow + 1) * 0x190, (short)frame.colIndex) - 0xC8;
-            frame.at30.value = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 0xA0 - frame.cellRow * 0x190, frame.colIndex + 1) - 0xC8;
-            frame.x3.vy = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 0xA0 - (frame.cellRow + 1) * 0x190, frame.colIndex + 1) - 0xC8;
+    for (frame.rowIndex = 0xFFFC; frame.rowIndex < 16; frame.rowIndex++) {
+        for (frame.colIndex = 0; frame.colIndex < 16; frame.colIndex++) {
+            frame.cellRow = frame.rowIndex - frame.waveLevel / 1000;
+            frame.x0.vx = (frame.colIndex - 8) * 1000;
+            frame.x0.vz = (frame.waveLevel + (frame.cellRow - 8) * 1000) * g_BattleSpecBigWaveWaveActiveFlag;
+            frame.x1.vx = (frame.colIndex - 8) * 1000 + 1000;
+            frame.x1.vz = (frame.waveLevel + (frame.cellRow - 8) * 1000) * g_BattleSpecBigWaveWaveActiveFlag;
+            frame.x2.vx = (frame.colIndex - 8) * 1000;
+            frame.x2.vz = (frame.waveLevel + (frame.cellRow - 8) * 1000 + 1000) * g_BattleSpecBigWaveWaveActiveFlag;
+            frame.x3.vx = (frame.colIndex - 8) * 1000 + 1000;
+            frame.x3.vz = (frame.waveLevel + (frame.cellRow - 8) * 1000 + 1000) * g_BattleSpecBigWaveWaveActiveFlag;
+            frame.at22.value = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 160 - frame.cellRow * 400, (short)frame.colIndex) - 0xC8;
+            frame.x2.vy = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 160 - (frame.cellRow + 1) * 400, (short)frame.colIndex) - 200;
+            frame.at30.value = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 160 - frame.cellRow * 400, frame.colIndex + 1) - 0xC8;
+            frame.x3.vy = (short)BattleFx_SpecialBigWaveGetWaveVertexHeight(frame.waveSlot->frameCounter * 160 - (frame.cellRow + 1) * 400, frame.colIndex + 1) - 200;
             StoreDeferredDrawArgs(&frame.x0, &frame.x2, &frame.x1);
             ApplyDeferredDrawArgs();
             SetPendingResourceHandle((GfxPsxShortVertexSlot *)&frame.x3);
@@ -321,7 +321,7 @@ void __cdecl BattleFx_SpecialBigWaveWaveSurfaceTask(void)
             Gfx_ReadTransformOrderingDepth2(&frame.elementCount);
             if (frame.elementCount > 0) {
                 frame.renderBlock->tag = 0x9000000;
-                frame.renderBlock->colorCommand = g_BattleSpecBigWaveWavePhase * 0x10101 + (g_BattleSpecBigWaveWavePhase - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
+                frame.renderBlock->colorCommand = g_BattleSpecBigWaveWavePhase * 65793 + (g_BattleSpecBigWaveWavePhase - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
                 frame.renderBlock->u0 = frame.colIndex << 6;
                 frame.renderBlock->v0 = frame.cellRow << 6;
                 frame.renderBlock->u1 = frame.colIndex + 1 << 6;
@@ -363,18 +363,18 @@ void __cdecl BattleFx_SpecialBigWaveWaveSurfaceTask(void)
             }
         }
     }
-    frame.waveLevel = frame.waveSlot->frameCounter * 0x19;
+    frame.waveLevel = frame.waveSlot->frameCounter * 25;
     if (DEAD_IN_RETAIL != 0) {
-        for (frame.rowIndex = 0xFFFE; frame.rowIndex < 0x10; frame.rowIndex++) {
-            for (frame.colIndex = 0; frame.colIndex < 0x10; frame.colIndex++) {
-                frame.x0.vx = (frame.colIndex - 8) * 0x3E8;
-                frame.x0.vz = (frame.waveLevel + (frame.rowIndex - 8) * 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
-                frame.x1.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-                frame.x1.vz = (frame.waveLevel + (frame.rowIndex - 8) * 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
-                frame.x2.vx = (frame.colIndex - 8) * 0x3E8;
-                frame.x2.vz = (frame.waveLevel + (frame.rowIndex - 8) * 0x3E8 + 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
-                frame.x3.vx = (frame.colIndex - 8) * 0x3E8 + 0x3E8;
-                frame.x3.vz = (frame.waveLevel + (frame.rowIndex - 8) * 0x3E8 + 0x3E8) * g_BattleSpecBigWaveWaveActiveFlag;
+        for (frame.rowIndex = 0xFFFE; frame.rowIndex < 16; frame.rowIndex++) {
+            for (frame.colIndex = 0; frame.colIndex < 16; frame.colIndex++) {
+                frame.x0.vx = (frame.colIndex - 8) * 1000;
+                frame.x0.vz = (frame.waveLevel + (frame.rowIndex - 8) * 1000) * g_BattleSpecBigWaveWaveActiveFlag;
+                frame.x1.vx = (frame.colIndex - 8) * 1000 + 1000;
+                frame.x1.vz = (frame.waveLevel + (frame.rowIndex - 8) * 1000) * g_BattleSpecBigWaveWaveActiveFlag;
+                frame.x2.vx = (frame.colIndex - 8) * 1000;
+                frame.x2.vz = (frame.waveLevel + (frame.rowIndex - 8) * 1000 + 1000) * g_BattleSpecBigWaveWaveActiveFlag;
+                frame.x3.vx = (frame.colIndex - 8) * 1000 + 1000;
+                frame.x3.vz = (frame.waveLevel + (frame.rowIndex - 8) * 1000 + 1000) * g_BattleSpecBigWaveWaveActiveFlag;
                 frame.x3.vy = 0;
                 frame.x2.vy = frame.x3.vy;
                 frame.at30.value = frame.x2.vy;
@@ -386,7 +386,7 @@ void __cdecl BattleFx_SpecialBigWaveWaveSurfaceTask(void)
                 Gfx_ReadTransformOrderingDepth2(&frame.elementCount);
                 if (frame.elementCount > 0) {
                     frame.renderBlock->tag = 0x9000000;
-                    frame.renderBlock->colorCommand = g_BattleSpecBigWaveWavePhase * 0x10101 + (g_BattleSpecBigWaveWavePhase - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
+                    frame.renderBlock->colorCommand = g_BattleSpecBigWaveWavePhase * 65793 + (g_BattleSpecBigWaveWavePhase - 0x80 != 0 ? 0x2E000000 : 0x2C000000);
                     frame.renderBlock->u0 = frame.colIndex << 5;
                     frame.renderBlock->v0 = frame.rowIndex << 5;
                     frame.renderBlock->u1 = frame.colIndex + 1 << 5;
@@ -427,11 +427,11 @@ void __cdecl BattleFx_SpecialBigWaveWaveSurfaceTask(void)
     if (frame.waveSlot->frameCounter < 4) {
         g_BattleSpecBigWaveWavePhase += 0x20;
     }
-    if (frame.waveSlot->frameCounter > 0x2A) {
+    if (frame.waveSlot->frameCounter > 42) {
         g_BattleSpecBigWaveWavePhase -= 0x10;
     }
     (frame.waveSlot->frameCounter)++;
-    if (frame.waveSlot->frameCounter == 0x32) {
+    if (frame.waveSlot->frameCounter == 50) {
         frame.waveSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -466,11 +466,11 @@ short __cdecl BattleFx_SpecialBigWaveGetWaveVertexHeight(short waveIndex, short 
 {
     short height;
 
-    if (waveIndex < 0 || waveIndex > 0x800) {
+    if (waveIndex < 0 || waveIndex > 2048) {
         waveIndex = 0;
     }
-    height = -((short *)&g_BattleSpecBigWaveWaveTable1)[waveIndex] * 0x9C4 >> 0xC;
-    height = ((short *)&g_BattleSpecBigWaveWaveTable2)[rowIndex * 0x60] * height >> 0xC;
+    height = -((short *)&g_BattleSpecBigWaveWaveTable1)[waveIndex] * 0x9C4 >> 12;
+    height = ((short *)&g_BattleSpecBigWaveWaveTable2)[rowIndex * 0x60] * height >> 12;
     return (short)height;
 }
 } /* extern "C" */

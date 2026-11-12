@@ -191,7 +191,7 @@ int __cdecl BattleFx_SubmitModelDraw(void *modelDraw, int listHandle, int drawMo
                 pSubmit = &drawNode->submit;
                 if ((((BattleFxModelDraw *)modelDraw)->flags & BATTLE_FX_DRAW_FADE_TRANSPARENCY) != 0) {
                     alphaVal = Battle3d_FadeLevelToAlpha(((BattleFxModelDraw *)modelDraw)->fadeLevel);
-                } else if (((BattleFxModelDraw *)modelDraw)->fadeLevel < 0x80) {
+                } else if (((BattleFxModelDraw *)modelDraw)->fadeLevel < 128) {
                     alphaVal = ((BattleFxModelDraw *)modelDraw)->fadeLevel << 1;
                 } else {
                     alphaVal = 0xFF;
@@ -380,19 +380,19 @@ int __cdecl BattleFx_SubmitSpriteDraw(void *pSpriteReq, int otBucket, int otShif
                 if (pk != 0) {
                     zero = 0;
                     cr = *(unsigned char *)&((BattleFxSpriteRequest *)pSpriteReq)->colorR;
-                    if (cr >= 0x80) {
+                    if (cr >= 128) {
                         cr = 0xff;
                     } else {
                         cr <<= 1;
                     }
                     g = *(unsigned char *)&((BattleFxSpriteRequest *)pSpriteReq)->colorG;
-                    if (g >= 0x80) {
+                    if (g >= 128) {
                         g = 0xff;
                     } else {
                         g <<= 1;
                     }
                     blu = *(unsigned char *)&((BattleFxSpriteRequest *)pSpriteReq)->colorB;
-                    if (blu >= 0x80) {
+                    if (blu >= 128) {
                         blu = 0xff;
                     } else {
                         blu <<= 1;
@@ -557,19 +557,19 @@ int __cdecl BattleFx_SubmitSpriteQuadDraw(BattleFxSpriteQuadRequest *pQuadReq, i
             if (v012j != 0) {
                 v088k = 0;
                 v072d = pQuadReq->colorR;
-                if (v072d >= 0x80) {
+                if (v072d >= 128) {
                     v072d = 0xFF;
                 } else {
                     v072d <<= 1;
                 }
                 v084l = pQuadReq->colorG;
-                if (v084l >= 0x80) {
+                if (v084l >= 128) {
                     v084l = 0xFF;
                 } else {
                     v084l <<= 1;
                 }
                 v100m = pQuadReq->colorB;
-                if (v100m >= 0x80) {
+                if (v100m >= 128) {
                     v100m = 0xFF;
                 } else {
                     v100m <<= 1;

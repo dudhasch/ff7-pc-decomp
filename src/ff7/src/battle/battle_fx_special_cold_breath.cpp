@@ -123,13 +123,13 @@ void __cdecl BattleFx_SpecialEnterColdBreath(int targetMask, int actorIdx)
     BattleFx_SpecialLoadResColdBreath();
     g_BattleSpecialColdBreathCentroidVec = (int)&g_GfxPsxPacketScratch;
     g_BattleSpecialColdBreathCounter = 0;
-    g_BattleSpecialColdBreathCentroidZ = 0x1A00;
-    g_BattleSpecialColdBreathScale1 = 0x1000;
-    g_BattleSpecialColdBreathScale2 = 0x1A00;
+    g_BattleSpecialColdBreathCentroidZ = 6656;
+    g_BattleSpecialColdBreathScale1 = 0x1000 /* 1.0 */;
+    g_BattleSpecialColdBreathScale2 = 0x1A00 /* 1.625 */;
     g_BattleSpecialColdBreathTargetMask = 0;
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 4, BattleFx_SpecialSpawnColdBreathPerTarget);
     Battle_PlaySfxPannedToActor(0xB0, (short)actorIdx, 0x40);
-    for (particleIndex = 0; particleIndex < 0xC8; particleIndex++) {
+    for (particleIndex = 0; particleIndex < 200; particleIndex++) {
         g_BattleSpecialColdBreathParticleState[particleIndex].active = 0;
     }
 }
@@ -172,45 +172,45 @@ void __cdecl BattleFx_SpecialColdBreathTimelineTask(void)
         spawned->posX = taskPtr->startX;
         spawned->baseOffset = taskPtr->baseOffset;
         spawned->posY = taskPtr->startY;
-        spawned->velocityX = (taskPtr->endX - taskPtr->startX) / 0x14;
+        spawned->velocityX = (taskPtr->endX - taskPtr->startX) / 20;
         spawned->rate = 0;
-        spawned->velocityY = (taskPtr->endY - taskPtr->startY) / 0x14;
+        spawned->velocityY = (taskPtr->endY - taskPtr->startY) / 20;
         spawned->actorIndex = g_BattleSpecialColdBreathActorIdx;
         spawned = (BattleFxColdBreathParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialColdBreathSpinStretchModelTask);
         spawned->posX = taskPtr->startX;
         spawned->baseOffset = taskPtr->baseOffset;
         spawned->posY = taskPtr->startY;
-        spawned->velocityY = 0x400;
+        spawned->velocityY = 1024;
         spawned->rate = g_BattleSpecialColdBreathActorIdx - 0x400;
         dx9 = taskPtr->endX - taskPtr->startX;
         diffY = taskPtr->endY - taskPtr->startY;
         s = SqrtToInt(dx9 * dx9 + diffY * diffY);
-        spawned->scale = s * 0x1500 / 0xAF0;
-        spawned->fade = s * 0x1500 / 0xAF0;
+        spawned->scale = s * 0x1500 / 2800;
+        spawned->fade = s * 5376 / 2800;
     }
-    if (taskPtr->timer == 0x14) {
+    if (taskPtr->timer == 20) {
         spawned = (BattleFxColdBreathParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialColdBreathRisingGrowingModelTask);
-        spawned->velocityX = SinFixed(g_BattleSpecialColdBreathActorIdx + 0x800) * 0x1E >> 0xC;
-        spawned->velocityY = CosFixed(g_BattleSpecialColdBreathActorIdx + 0x800) * 0x1E >> 0xC;
-        spawned->posX = taskPtr->endX - spawned->velocityX * 0xA;
+        spawned->velocityX = SinFixed(g_BattleSpecialColdBreathActorIdx + 2048) * 0x1E >> 12;
+        spawned->velocityY = CosFixed(g_BattleSpecialColdBreathActorIdx + 2048) * 0x1E >> 12;
+        spawned->posX = taskPtr->endX - spawned->velocityX * 10;
         spawned->baseOffset = taskPtr->altBaseOffset + 0x190;
-        spawned->posY = taskPtr->endY - spawned->velocityY * 0xA;
+        spawned->posY = taskPtr->endY - spawned->velocityY * 10;
     }
-    if (taskPtr->timer == 0x28) {
+    if (taskPtr->timer == 40) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIdx);
         Battle_PlaySfxPannedToActor(0x95, (short)taskPtr->actorIdx, 0x40);
     }
-    if (taskPtr->timer > 0x24 && taskPtr->timer < 0x2C) {
+    if (taskPtr->timer > 36 && taskPtr->timer < 44) {
         for (j6 = 0; j6 < 2; j6++) {
             spawned = (BattleFxColdBreathParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialColdBreathAnimatedSpriteTask);
             Battle_GetBoneWorldPos(taskPtr->actorIdx, g_BattleActorRecords[taskPtr->actorIdx].targetBone, (short *)((char *)spawned + 4));
-            spawned->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            spawned->baseOffset += (short)(rand() % 0x3E8 - 0x1F4);
-            spawned->posY += (short)(rand() % 0x3E8 - 0x1F4);
+            spawned->posX += (short)(rand() % 1000 - 500);
+            spawned->baseOffset += (short)(rand() % 1000 - 500);
+            spawned->posY += (short)(rand() % 1000 - 500);
         }
     }
     (taskPtr->timer)++;
-    if (taskPtr->timer == 0x32) {
+    if (taskPtr->timer == 50) {
         taskPtr->step = 0xFFFF;
     }
 }
@@ -226,7 +226,7 @@ void __cdecl BattleFx_SpecialColdBreathAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialColdBreathModelReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialColdBreathLoadedRes);
     g_BattleSpecialColdBreathModelReq.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialColdBreathLoadedRes);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x1000 /* 1.0 */, 0);
     g_BattleSpecialColdBreathModelReq.frame = task->frameCounter;
     g_BattleSpecialColdBreathCentroidVec = BattleFx_SubmitSpriteDraw(&g_BattleSpecialColdBreathModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialColdBreathCentroidVec);
     if (g_BattleIsPaused == 0 && g_BattleSpecialColdBreathModelReq.spriteGroup != 0) {
@@ -255,7 +255,7 @@ void __cdecl BattleFx_SpecialColdBreathParticleFieldTask(void)
     if (taskPtr->fade != 0) {
         taskPtr->fade += 8;
     }
-    if (taskPtr->frame > 0 && taskPtr->frame < 0x14) {
+    if (taskPtr->frame > 0 && taskPtr->frame < 20) {
         for (i = 0; i < 8; i++) {
             claimed = (BattleSpecialColdBreathParticleState *)BattleFx_SpecialColdBreathClaimParticleRecord();
             if (claimed != 0) {
@@ -265,18 +265,18 @@ void __cdecl BattleFx_SpecialColdBreathParticleFieldTask(void)
         }
     }
     i = 0;
-    for (alive = 0; i < 0xC8; i++) {
+    for (alive = 0; i < 200; i++) {
         if (g_BattleSpecialColdBreathParticleState[i].active != 0) {
             alive++;
             g_BattleSpecialColdBreathParticleState[i].angle -= 0x80;
             (g_BattleSpecialColdBreathParticleState[i].timer)++;
-            if (g_BattleSpecialColdBreathParticleState[i].timer == 0x19) {
+            if (g_BattleSpecialColdBreathParticleState[i].timer == 25) {
                 g_BattleSpecialColdBreathParticleState[i].active = 0;
             }
         }
     }
     (taskPtr->frame)++;
-    if (taskPtr->frame > 0x14 && alive == 0) {
+    if (taskPtr->frame > 20 && alive == 0) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -289,7 +289,7 @@ int __cdecl BattleFx_SpecialColdBreathClaimParticleRecord(void)
 {
     short i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSpecialColdBreathParticleState[i].active == 0) {
             g_BattleSpecialColdBreathParticleState[i].active = 1;
             g_BattleSpecialColdBreathParticleState[i].timer = 0;
@@ -328,11 +328,11 @@ void __cdecl BattleFx_SpecialColdBreathDrawParticleField(BattleFxColdBreathParti
     frame.angleX.vy = particle->actorIndex;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     frame.particleIndex = 0;
-    for (frame.activeCount = 0; frame.particleIndex < 0xC8; frame.particleIndex++) {
+    for (frame.activeCount = 0; frame.particleIndex < 200; frame.particleIndex++) {
         if (g_BattleSpecialColdBreathParticleState[frame.particleIndex].active != 0) {
             frame.activeCount++;
-            frame.vertX.vx = CosFixed(g_BattleSpecialColdBreathParticleState[frame.particleIndex].angle) * g_BattleSpecialColdBreathParticleState[frame.particleIndex].radius * g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer / 0x14 << 8 >> 0x14;
-            frame.vertX.vy = SinFixed(g_BattleSpecialColdBreathParticleState[frame.particleIndex].angle) * g_BattleSpecialColdBreathParticleState[frame.particleIndex].radius * g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer / 0x14 << 8 >> 0x14;
+            frame.vertX.vx = CosFixed(g_BattleSpecialColdBreathParticleState[frame.particleIndex].angle) * g_BattleSpecialColdBreathParticleState[frame.particleIndex].radius * g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer / 20 << 8 >> 20;
+            frame.vertX.vy = SinFixed(g_BattleSpecialColdBreathParticleState[frame.particleIndex].angle) * g_BattleSpecialColdBreathParticleState[frame.particleIndex].radius * g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer / 20 << 8 >> 20;
             frame.vertX.vz = 0;
             TransformVectorToInt16(&frame.rotMatrix, &frame.vertX, &frame.vertX.vx);
             frame.vertX.vx += (short)(particle->posX + particle->velocityX * g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer);
@@ -346,7 +346,7 @@ void __cdecl BattleFx_SpecialColdBreathDrawParticleField(BattleFxColdBreathParti
             frame.primitive->polyCode = 0x68;
             frame.primitive->polyCode = 0x6A;
             frame.depth = Gfx_TransformVertexSlot0ReturnDepth(&frame.vertX, &frame.transformOutA, &frame.transformOutB);
-            if (g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer < 0x11) {
+            if (g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer < 17) {
                 frame.shade = 8;
             } else {
                 frame.shade = 0x19 - g_BattleSpecialColdBreathParticleState[frame.particleIndex].timer;
@@ -381,7 +381,7 @@ void __cdecl BattleFx_SpecialColdBreathSpinStretchModelTask(void)
     frame.slot->spinAngle = -frame.slot->frameCounter << 7;
     RotMatrix((SVECTOR *)&frame.slot->spinAngle, &frame.rotMatrix);
     g_BattleSpecialColdBreathScale1 = frame.slot->scale;
-    g_BattleSpecialColdBreathScale2 = 0x1A00;
+    g_BattleSpecialColdBreathScale2 = 0x1A00 /* 1.625 */;
     g_BattleSpecialColdBreathCentroidZ = g_BattleSpecialColdBreathScale2;
     ScaleMatrix(&frame.rotMatrix, &g_BattleSpecialColdBreathCentroidZ);
     frame.rotMatrix.t[0] = frame.slot->posX;
@@ -398,11 +398,11 @@ void __cdecl BattleFx_SpecialColdBreathSpinStretchModelTask(void)
     if (frame.slot->frameCounter < 8) {
         g_BattleSpecialColdBreathCounter++;
     }
-    if (frame.slot->frameCounter > 0x19) {
+    if (frame.slot->frameCounter > 25) {
         g_BattleSpecialColdBreathCounter--;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x21) {
+    if (frame.slot->frameCounter == 33) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -436,15 +436,15 @@ void __cdecl BattleFx_SpecialColdBreathRisingGrowingModelTask(void)
 #pragma pack(pop)
 
     frame.slot = (BattleFxColdBreathRisingGrowingModelSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scaleM00 = 0x1000;
+    frame.scaleM00 = 0x1000 /* 1.0 */;
     frame.scaleM01 = 0;
     frame.scaleM02 = 0;
     frame.scaleM10 = 0;
-    frame.scaleM11 = 0x1000;
+    frame.scaleM11 = 0x1000 /* 1.0 */;
     frame.scaleM12 = 0;
     frame.scaleM20 = 0;
     frame.scaleM21 = 0;
-    frame.scaleM22 = 0x1000;
+    frame.scaleM22 = 0x1000 /* 1.0 */;
     memset(&frame.posX, 0, 12);
     g_BattleSpecialColdBreathModelReq.risingModel = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialColdBreathLoadedRes);
     frame.scaleX.vz = frame.slot->frameCounter * 0x1E0;
@@ -463,14 +463,14 @@ void __cdecl BattleFx_SpecialColdBreathRisingGrowingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.slot->posY += 0x28;
+    frame.slot->posY += 40;
     frame.slot->posX += frame.slot->velocityX;
     frame.slot->posZ += frame.slot->velocityZ;
-    if (frame.slot->frameCounter > 0xC) {
+    if (frame.slot->frameCounter > 12) {
         g_BattleSpecialColdBreathTargetMask++;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x14) {
+    if (frame.slot->frameCounter == 20) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

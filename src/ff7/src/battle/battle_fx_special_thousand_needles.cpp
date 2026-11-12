@@ -164,12 +164,12 @@ void __cdecl BattleFx_SpecialThousandNeedlesTimelineTask(void)
         frame.stepX = (frame.timelineSlot->endX - frame.timelineSlot->startX) / 8;
         frame.stepY = (frame.timelineSlot->endY - frame.timelineSlot->startY) / 8;
         frame.stepZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 8;
-        for (frame.needleIndex = 0; frame.needleIndex < 0x1E; frame.needleIndex++) {
+        for (frame.needleIndex = 0; frame.needleIndex < 30; frame.needleIndex++) {
             frame.spawnSlot = (BattleFxThousandNeedlesTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialThousandNeedlesScatterModelTask);
             frame.randAngle = rand() & 0xFFF;
-            frame.scatterX.vx = CosFixed(frame.randAngle) * frame.needleIndex / 0x1E * 0x140 >> 0xC;
-            frame.scatterX.vy = SinFixed(frame.randAngle) * frame.needleIndex / 0x1E * 0x140 >> 0xC;
-            frame.scatterX.vz = rand() % (CosFixed((frame.needleIndex << 0xA) / 0x1E) / 6);
+            frame.scatterX.vx = CosFixed(frame.randAngle) * frame.needleIndex / 30 * 0x140 >> 12;
+            frame.scatterX.vy = SinFixed(frame.randAngle) * frame.needleIndex / 30 * 0x140 >> 12;
+            frame.scatterX.vz = rand() % (CosFixed((frame.needleIndex << 10) / 30) / 6);
             if ((rand() & 1) != 0) {
                 frame.tmpSignedZ = frame.scatterX.vz;
             } else {
@@ -184,23 +184,23 @@ void __cdecl BattleFx_SpecialThousandNeedlesTimelineTask(void)
             frame.spawnSlot->velocityY = frame.stepY;
             frame.spawnSlot->velocityZ = frame.stepZ;
             frame.spawnSlot->angle = frame.angleA.vy;
-            frame.spawnSlot->spinAngle = 0xFC00;
+            frame.spawnSlot->spinAngle = 0xFC00 /* 5670 deg */;
         }
     }
     if (frame.timelineSlot->frameCounter == 8) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
-    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 0xC) {
+    if (frame.timelineSlot->frameCounter > 8 && frame.timelineSlot->frameCounter < 12) {
         frame.spawnSlot = (BattleFxThousandNeedlesTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialThousandNeedlesScatteredSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, &frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->scale = 0x3000;
+        frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->scale = 0x3000 /* 3.0 */;
         frame.spawnSlot->pushLength = -g_BattleActorRecords[g_BattleSpecialActorId].radius;
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -270,7 +270,7 @@ void __cdecl BattleFx_SpecialThousandNeedlesScatterModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.drawMatrix);
     SetRotMatrix(&frame.drawMatrix);
     SetTransMatrix(&frame.drawMatrix);
-    if (frame.needleSlot->frameCounter >= 0x12) {
+    if (frame.needleSlot->frameCounter >= 18) {
         frame.tmpLevel = 0x1A - frame.needleSlot->frameCounter << 4;
         frame.tmpMode = 8;
         frame.modelField = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialThousandNeedlesLoadedRes);
@@ -286,19 +286,19 @@ void __cdecl BattleFx_SpecialThousandNeedlesScatterModelTask(void)
         frame.speed = (rand() % 16);
         frame.needleSlot->velocityX = CosFixed(frame.randAngle) * frame.speed >> 8;
         frame.needleSlot->velocityZ = SinFixed(frame.randAngle) * frame.speed >> 8;
-        BattleFx_MakeRandomConeVector(0xFFFFFF00, 0x32, &frame.needleSlot->velocityX);
+        BattleFx_MakeRandomConeVector(0xFFFFFF00, 50, &frame.needleSlot->velocityX);
         frame.needleSlot->spinAngle = (rand() % 4096);
         frame.needleSlot->tiltAngle = (rand() % 4096);
     }
     if (frame.needleSlot->frameCounter > 8) {
         frame.needleSlot->spinAngle += 0x80;
-        frame.needleSlot->velocityY += 0x20;
+        frame.needleSlot->velocityY += 32;
     }
     frame.needleSlot->posX += frame.needleSlot->velocityX;
     frame.needleSlot->posY += frame.needleSlot->velocityY;
     frame.needleSlot->posZ += frame.needleSlot->velocityZ;
     (frame.needleSlot->frameCounter)++;
-    if (frame.needleSlot->frameCounter == 0x1A) {
+    if (frame.needleSlot->frameCounter == 26) {
         frame.needleSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

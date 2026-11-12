@@ -58,9 +58,9 @@ void __cdecl Submarine_RebuildViewTransform(void)
     scratch->rotationY = -g_SubmarineState.camRotY - g_SubmarineState.currentAngleA - g_SubmarineState.axisTermY;
     scratch->rotationZ = -g_SubmarineState.camRotZ - g_SubmarineState.currentAngleB - g_SubmarineState.axisTermZ;
     Submarine_BuildRotationMatrixFromAngles(scratch, &g_SubmarineViewMatrix);
-    viewPos.vx = g_SubmarineState.player.posX >> 0xC;
-    viewPos.vy = g_SubmarineState.player.posY >> 0xC;
-    viewPos.vz = g_SubmarineState.player.posZ >> 0xC;
+    viewPos.vx = g_SubmarineState.player.posX >> 12;
+    viewPos.vy = g_SubmarineState.player.posY >> 12;
+    viewPos.vz = g_SubmarineState.player.posZ >> 12;
     SetRotMatrix(&g_SubmarineViewMatrix);
     TransformVectorToInt32(&g_SubmarineViewMatrix, &viewPos, (char *)scratch + 8);
     g_SubmarineViewMatrix.t[0] = -scratch->translationX;
@@ -106,7 +106,7 @@ void __cdecl Submarine_BuildRotationMatrixFromAngles(SubmarineViewBlock *viewBlo
     vector0X.vy = 0;
     vector0X.vz = (short)-sinSecond;
     vec1X.vx = 0;
-    vec1X.vy = 0x1000;
+    vec1X.vy = 4096;
     vec1X.vz = 0;
     vec2X.vx = (short)sinSecond;
     vec2X.vy = 0;

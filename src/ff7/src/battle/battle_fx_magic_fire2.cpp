@@ -156,7 +156,7 @@ void __cdecl BattleFx_MagicSpawnFire2PerTarget(int actor)
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &record->posX);
     record->posY = 0;
     scaledBytes = Battle_GetActorScaledEffectSize(actor);
-    if (scaledBytes <= 0x7FFF) {
+    if (scaledBytes <= 32767) {
         clampedSize = scaledBytes;
     } else {
         clampedSize = 0x7FFF;
@@ -206,11 +206,11 @@ void __cdecl BattleFx_MagicFire2CyclingModelTask(void)
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = g_BattleMagicFire2_InitialRotation[frame.cycleSlot->step & 3];
     if (frame.cycleSlot->step < 8) {
-        frame.modelDraw->fadeLevel = (frame.cycleSlot->step + 1) * 0xE;
-    } else if (frame.cycleSlot->step < 0x10) {
-        frame.modelDraw->fadeLevel = 0x80;
-    } else if (frame.cycleSlot->step < 0x18) {
-        frame.modelDraw->fadeLevel = 0x80 - (frame.cycleSlot->step - 0xF) * 0xE;
+        frame.modelDraw->fadeLevel = (frame.cycleSlot->step + 1) * 14;
+    } else if (frame.cycleSlot->step < 16) {
+        frame.modelDraw->fadeLevel = 128;
+    } else if (frame.cycleSlot->step < 24) {
+        frame.modelDraw->fadeLevel = 128 - (frame.cycleSlot->step - 15) * 14;
     } else {
         frame.cycleSlot->ownerSlot = BATTLE_TASK_FREE;
         return;

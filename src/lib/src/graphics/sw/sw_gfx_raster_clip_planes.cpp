@@ -10,11 +10,11 @@
 #include "lib/api/mem.h"
 extern "C" {
 
-// Zero-fills one raster batch arena block (0x12F4 units).
+// Zero-fills one raster batch arena block (4852 units).
 // FUNCTION: FF7 0x006ac860
 void __cdecl Gfx_RasterClearBatchArena(void *block)
 {
-    ZeroFillMemory32(0x12F4, block);
+    ZeroFillMemory32(4852, block);
 }
 
 // Builds the float clip rectangle from the integer clip bounds in the context. clipLeft and clipTop

@@ -124,7 +124,7 @@ void __cdecl Gfx_LightFreeRecord(void *record)
 {
     if (record != 0) {
         // STRING: FF7 0x0091212c
-        GameHeapFree(record, "C:\\lib\\src\\graphics\\light.cpp", 0x49);
+        GameHeapFree(record, "C:\\lib\\src\\graphics\\light.cpp", 73);
     }
 }
 
@@ -137,7 +137,7 @@ int __cdecl Gfx_LightAllocRecord(void)
     GfxLight *rec;
 
     // STRING: FF7 0x0091214c
-    rec = (GfxLight *)GameHeapAlloc(1, 0x24, "C:\\lib\\src\\graphics\\light.cpp", 0x51);
+    rec = (GfxLight *)GameHeapAlloc(1, 36, "C:\\lib\\src\\graphics\\light.cpp", 81);
     return (int)rec;
 }
 
@@ -277,16 +277,16 @@ int __cdecl Gfx_LightBuildModelVertexRecords(GfxLightRange *range, PolygonFileAr
             count = source->polygonCount;
         }
         // STRING: FF7 0x0091216c
-        result = (int)GameHeapAlloc(elemCount, 0x18, "C:\\lib\\src\\graphics\\light.cpp", 0xF1);
+        result = (int)GameHeapAlloc(elemCount, 24, "C:\\lib\\src\\graphics\\light.cpp", 241);
         if (result != 0) {
             for (faceIndex = 0; faceIndex < count; faceIndex++) {
-                triangle = source->polygons + (ofs + faceIndex) * 0x18;
+                triangle = source->polygons + (ofs + faceIndex) * 24;
                 for (k = 0; k < 3; k++) {
                     vertexIndex = *(unsigned short *)((char *)triangle + k * 2 + 2);
                     vertRecord = (GfxLightVertexRecord *)(result + vertexIndex * 0x18);
                     if (source->normals != 0) {
                         normalIndex = *(unsigned short *)((char *)triangle + k * 2 + 8);
-                        normalAddress = source->normals + normalIndex * 0xC;
+                        normalAddress = source->normals + normalIndex * 12;
                         if (vertRecord->tag == 0) {
                             vertRecord->tag = normalAddress;
                             packedColor = source->vertexColorWords[colorBase + vertexIndex];
@@ -365,7 +365,7 @@ void __cdecl Gfx_LightFreeOwner(int what, GfxLightOwner *handle)
             }
         }
         // STRING: FF7 0x009121a8
-        GameHeapFree(handle, "C:\\lib\\src\\graphics\\light.cpp", 0x164);
+        GameHeapFree(handle, "C:\\lib\\src\\graphics\\light.cpp", 356);
     }
 }
 
@@ -378,7 +378,7 @@ int __cdecl Gfx_LightCreateOwner(GfxLight *light0, GfxLight *light1, GfxLight *l
     GfxLightOwner *owner;
 
     // STRING: FF7 0x009121c8
-    owner = (GfxLightOwner *)GameHeapAlloc(1, 0x5AC, "C:\\lib\\src\\graphics\\light.cpp", 0x16C);
+    owner = (GfxLightOwner *)GameHeapAlloc(1, 1452, "C:\\lib\\src\\graphics\\light.cpp", 364);
     if (owner != 0) {
         owner->flags = 9;
         owner->maxLights = 3;

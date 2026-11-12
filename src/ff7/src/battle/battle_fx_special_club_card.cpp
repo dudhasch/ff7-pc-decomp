@@ -187,23 +187,23 @@ void __cdecl BattleFx_SpecialClubCardTimelineTask(void)
         }
         frame.slot->distance = frame.distance;
         frame.slot->velocityY = 0xFED4;
-        frame.slot->scale = 0x2000;
+        frame.slot->scale = 0x2000 /* 2.0 */;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleFxClubCardActorBoneWorldPos), 0x1D5);
     }
-    if (frame.current->step == 0x18) {
+    if (frame.current->step == 24) {
         frame.slot = (BattleFxStarCardSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialClubCardOscillatingModelTask);
         frame.slot->offsetY = 0xFEF6;
-        frame.slot->velocityY = 0x21;
+        frame.slot->velocityY = 33;
         frame.slot->angle = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x1D6);
     }
-    if (frame.current->step == 0x48) {
+    if (frame.current->step == 72) {
         Battle_GetBoneWorldPos(g_BattleFxClubCardTargetActorIdx, g_BattleActorRecords[g_BattleFxClubCardTargetActorIdx].targetBone, (short *)((int)frame.current + 4));
         frame.vector[0] = frame.current->posX - g_BattleCameraPosition.cameraPosX;
         frame.vector[1] = 0;
         frame.vector[2] = frame.current->posZ - g_BattleCameraPosZ;
         frame.distance = NormalizeVectorFixed(&frame.vector[0], &frame.vector[0]);
-        frame.distance = SqrtToInt(frame.distance) / 0xC;
+        frame.distance = SqrtToInt(frame.distance) / 12;
         frame.angle = ComputeAngleBetweenVectors(&g_BattleSpecialClubCardForwardAxis, (VECTOR *)(&frame.vector[0]), (VECTOR *)(&frame.axis[0]));
         Gte_BuildAxisAngleMatrix(frame.angle, (PsxMatrix *)(&frame.matrix[0]), (VECTOR *)(&frame.axis[0]));
         TransformVectorToInt32((PsxMatrix *)(&frame.matrix[0]), &g_BattleSpecialClubCardForwardAxis, &frame.vector[0]);
@@ -214,14 +214,14 @@ void __cdecl BattleFx_SpecialClubCardTimelineTask(void)
         frame.slot->posX = g_BattleCameraPosition.cameraPosX;
         frame.slot->offsetY = frame.current->posY;
         frame.slot->posZ = g_BattleCameraPosZ;
-        frame.slot->offsetX = frame.distance * frame.vector[0] >> 0xC;
+        frame.slot->offsetX = frame.distance * frame.vector[0] >> 12;
         frame.slot->velocityY = 0;
-        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 0xC;
+        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 12;
         frame.slot->angle = frame.angle;
         frame.slot->scale = 0x2666;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)frame.current + 4), 0x1D7);
     }
-    if (frame.current->step >= 0x5A) {
+    if (frame.current->step >= 90) {
         frame.current->ownerSlot = 0xFFFF;
     }
     (frame.current->step)++;
@@ -254,7 +254,7 @@ void __cdecl BattleFx_SpecialClubCardSpinningModelTask(void)
     if (frame.spinRecord->step <= 8) {
         frame.spinAngle = frame.spinRecord->step << 7;
     } else {
-        frame.spinAngle = 0x400;
+        frame.spinAngle = 0x400 /* 90 deg */;
     }
     frame.rotX.vx = 0;
     frame.rotX.vy = (g_BattleFxClubCardActorBoneWorldPos.yaw);
@@ -268,7 +268,7 @@ void __cdecl BattleFx_SpecialClubCardSpinningModelTask(void)
     TransformVectorToInt16(&frame.axisMatrix, &frame.offsetX, &frame.offsetX.vx);
     frame.secondRotX.vx = 0;
     frame.secondRotX.vy = 0;
-    frame.secondRotX.vz = 0x800;
+    frame.secondRotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.secondRotX, &frame.rotMatrix);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.spinRecord->posX + frame.offsetX.vx;
@@ -285,11 +285,11 @@ void __cdecl BattleFx_SpecialClubCardSpinningModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleFxClubCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinRecord->step >= 0x12) {
+    if (frame.spinRecord->step >= 18) {
         frame.spinRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -324,7 +324,7 @@ void __cdecl BattleFx_SpecialClubCardOscillatingModelTask(void)
 #pragma pack(pop)
 
     frame.oscState = (BattleFxOscillatingModel *)BATTLE_CURRENT_TASK_SLOT;
-    frame.fixedRotX.vx = 0x400;
+    frame.fixedRotX.vx = 0x400 /* 90 deg */;
     frame.fixedRotX.vy = 0;
     frame.fixedRotX.vz = 0;
     RotMatrixXYZ(&frame.fixedRotX, &frame.rotMatrix);
@@ -342,11 +342,11 @@ void __cdecl BattleFx_SpecialClubCardOscillatingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleFxClubCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.oscState->phase >= 0x30) {
+    if (frame.oscState->phase >= 48) {
         frame.oscState->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -358,10 +358,10 @@ void __cdecl BattleFx_SpecialClubCardOscillatingModelTask(void)
         if (frame.oscState->velocity < 2) {
             frame.oscState->velocity = 1;
         }
-    } else if (frame.oscState->phase < 0x28) {
+    } else if (frame.oscState->phase < 40) {
         frame.sineAngle = frame.oscState->phase - 8 << 7;
-        frame.oscState->offset = SinFixed(frame.sineAngle) * 0x18 >> 0xC;
-        if (frame.oscState->phase >= 0x16 && frame.oscState->phase < 0x22) {
+        frame.oscState->offset = SinFixed(frame.sineAngle) * 0x18 >> 12;
+        if (frame.oscState->phase >= 22 && frame.oscState->phase < 34) {
             frame.oscState->angle -= 0xAA;
         }
     } else {
@@ -395,7 +395,7 @@ void __cdecl BattleFx_SpecialClubCardAcceleratingModelTask(void)
     frame.accelState = (BattleFxSpecialAcceleratingSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.accelState->angleY;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
     frame.rotMatrix.t[0] = frame.accelState->posA;
     frame.rotMatrix.t[1] = frame.accelState->posY;
@@ -411,24 +411,24 @@ void __cdecl BattleFx_SpecialClubCardAcceleratingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleFxClubCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.accelState->timer >= 0xC) {
+    if (frame.accelState->timer >= 12) {
         frame.modelDraw->flags = 8;
-        frame.modelDraw->fadeLevel = 0x80 - (frame.accelState->timer - 0xC << 4);
+        frame.modelDraw->fadeLevel = 128 - (frame.accelState->timer - 12 << 4);
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleFxClubCardLoadedResTable);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.accelState->timer >= 0x14) {
+    if (frame.accelState->timer >= 20) {
         frame.accelState->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.accelState->timer == 0xA) {
+    if (frame.accelState->timer == 10) {
         frame.screenPan = Battle_ComputeScreenPanFromPosition((char *)frame.accelState + 4);
-        if (frame.screenPan > 0x40) {
+        if (frame.screenPan > 64) {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleFxClubCardTargetActorIdx, 0x118);
         } else {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleFxClubCardTargetActorIdx, 0x18);
@@ -459,7 +459,7 @@ void __cdecl BattleFx_SpecialClubCardBuildFacingVectors(void)
     Battle_GetBoneWorldPos(g_BattleFxClubCardActorIndex,
                            g_BattleActorRecords[g_BattleFxClubCardActorIndex].altBone,
                            &g_BattleFxClubCardActorBoneWorldPos.x);
-    g_BattleFxClubCardActorBoneWorldPos.y -= 0xe0;
+    g_BattleFxClubCardActorBoneWorldPos.y -= 224;
     g_BattleFxClubCardActorBoneWorldPos.yaw = g_BattleActorRecords[g_BattleFxClubCardActorIndex].yaw;
     frame.rot[0] = 0;
     frame.rot[1] = g_BattleFxClubCardActorBoneWorldPos.yaw;
@@ -482,7 +482,7 @@ void __cdecl BattleFx_SpecialClubCardDelayedImpactTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x5A) {
+    if (task->frameCounter == 90) {
         BattleFx_SpecialClubCardSpawnPulsingModelWithSound(g_BattleFxClubCardTargetActorIdx, g_BattleFxClubCardActorIndex);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -510,9 +510,9 @@ void __cdecl BattleFx_SpecialClubCardSpawnPulsingModel(int targetActorIdx, int a
     Battle_GetBoneWorldPos(targetActorIdx, g_BattleActorRecords[targetActorIdx].targetBone, (short *)((int)slot + 4));
     slot->posY = 0;
     slot->extent = 0;
-    slot->radius = g_BattleActorRecords[targetActorIdx].radius + 0xE0;
-    if (slot->radius > 0x76C) {
-        slot->radius = 0x76C;
+    slot->radius = g_BattleActorRecords[targetActorIdx].radius + 224;
+    if (slot->radius > 1900) {
+        slot->radius = 1900;
     }
     slot->radius = slot->radius / 8;
     slot->targetIndex = targetActorIdx;
@@ -546,7 +546,7 @@ void __cdecl BattleFx_SpecialClubCardPulsingModelTask(void)
     frame.rotMatrix.t[0] = frame.pulseRecord->posX;
     frame.rotMatrix.t[1] = frame.pulseRecord->posY;
     frame.rotMatrix.t[2] = frame.pulseRecord->posZ;
-    frame.scaleValue = (frame.pulseRecord->value << 0xC) / 0x258;
+    frame.scaleValue = (frame.pulseRecord->value << 12) / 600;
     frame.scale.vz = frame.scaleValue;
     frame.scale.vy = frame.scale.vz;
     frame.scale.vx = frame.scale.vy;
@@ -558,22 +558,22 @@ void __cdecl BattleFx_SpecialClubCardPulsingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleFxClubCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.pulseRecord->stage >= 0x16) {
+    if (frame.pulseRecord->stage >= 22) {
         frame.pulseRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.pulseRecord->stage == 0xE) {
+    if (frame.pulseRecord->stage == 14) {
         Battle_PostActorHitOrHurtMessage(frame.pulseRecord->recordType);
     }
     if (frame.pulseRecord->stage < 8) {
         frame.pulseRecord->value += frame.pulseRecord->step;
-    } else if (frame.pulseRecord->stage >= 0xE) {
+    } else if (frame.pulseRecord->stage >= 14) {
         frame.pulseRecord->value -= frame.pulseRecord->step;
     }
     (frame.pulseRecord->stage)++;

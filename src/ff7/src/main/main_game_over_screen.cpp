@@ -387,8 +387,8 @@ void __cdecl GameOver_BuildScreenQuadsMode2(void)
     GfxTlVertex *batch4Vert2;
     GfxTlVertex *pBatch0V2;
 
-    yOrigin = 0x18;
-    xStart = 0x20;
+    yOrigin = 24;
+    xStart = 32;
     inUStart = 0.0f;
     textureV = 0.0f;
     uWidth = 1.0f;
@@ -701,18 +701,18 @@ void __cdecl GameOver_ModuleEnter(void)
     if (mode == 0) {
         g_GameOverViewportX = 0;
         g_GameOverViewportY = 0;
-        g_GameOverViewportWidth = 0x140;
-        g_GameOverViewportHeight = 0xF0;
+        g_GameOverViewportWidth = 320;
+        g_GameOverViewportHeight = 240;
     } else if (mode == 1) {
-        g_GameOverViewportX = 0xA0;
-        g_GameOverViewportY = 0x78;
-        g_GameOverViewportWidth = 0x140;
-        g_GameOverViewportHeight = 0xF0;
+        g_GameOverViewportX = 160;
+        g_GameOverViewportY = 120;
+        g_GameOverViewportWidth = 320;
+        g_GameOverViewportHeight = 240;
     } else {
         g_GameOverViewportX = 0;
         g_GameOverViewportY = 0;
-        g_GameOverViewportWidth = 0x280;
-        g_GameOverViewportHeight = 0x1E0;
+        g_GameOverViewportWidth = 640;
+        g_GameOverViewportHeight = 480;
     }
     GameOver_LoadDiscEOverTims();
 }

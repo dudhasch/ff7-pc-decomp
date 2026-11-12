@@ -125,7 +125,7 @@ void __cdecl Gfx_RasterFloatToInt64Framed(float value, unsigned int *out)
     rawFlags = *(unsigned int *)&valueCopy;
     mantissa = rawFlags & 0x007FFFFF;
     mantissa |= 0x00800000;
-    shiftCount = ((rawFlags & 0x7F800000) >> 23) - 0x76;
+    shiftCount = ((rawFlags & 0x7F800000) >> 23) - 118;
     if (shiftCount < 0) {
         shiftCount = -shiftCount;
         if (shiftCount < 32) {

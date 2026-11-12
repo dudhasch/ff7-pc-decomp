@@ -824,9 +824,9 @@ void __cdecl Field_UpdateModelInstances(void)
     if (((int)g_pFieldModelSlots) != 0) {
         ReadTimestampCounter(&frame.timestamp);
         for (frame.entityIndex = 0; frame.entityIndex < g_FieldHumanAnimState.modelListCountCopy; frame.entityIndex++) {
-            *(short *)&frame.worldX = (g_FieldEntityState[frame.entityIndex].posX >> 0xC) + g_FieldEntityState[frame.entityIndex].offsetX;
-            frame.worldY = (g_FieldEntityState[frame.entityIndex].posY >> 0xC) + g_FieldEntityState[frame.entityIndex].offsetY + g_FieldModelOffsetY[frame.entityIndex];
-            *(short *)&frame.worldZ = (g_FieldEntityState[frame.entityIndex].posZ >> 0xC) + g_FieldEntityState[frame.entityIndex].offsetZ + g_FieldModelOffsetZ[frame.entityIndex] + -0xA;
+            *(short *)&frame.worldX = (g_FieldEntityState[frame.entityIndex].posX >> 12) + g_FieldEntityState[frame.entityIndex].offsetX;
+            frame.worldY = (g_FieldEntityState[frame.entityIndex].posY >> 12) + g_FieldEntityState[frame.entityIndex].offsetY + g_FieldModelOffsetY[frame.entityIndex];
+            *(short *)&frame.worldZ = (g_FieldEntityState[frame.entityIndex].posZ >> 12) + g_FieldEntityState[frame.entityIndex].offsetZ + g_FieldModelOffsetZ[frame.entityIndex] + -10;
             g_pFieldModelSlots[frame.entityIndex].worldX = (int)*(short *)&frame.worldX;
             g_pFieldModelSlots[frame.entityIndex].worldY = (int)frame.worldY;
             g_pFieldModelSlots[frame.entityIndex].worldZ = (int)*(short *)&frame.worldZ;
@@ -834,7 +834,7 @@ void __cdecl Field_UpdateModelInstances(void)
             frame.modelState = frame.model->skeletonAnim;
             if (g_pFieldModelSlots[frame.entityIndex].entityVisible != 0 && g_FieldModelVisible[frame.entityIndex] != 0) {
                 frame.depth = Field_ProjectWorldToScreen((PsxSVectorZ32 *)&frame.worldX, &frame.screenX);
-                if (frame.depth < 0xF00 && Field_IsOnScreen(frame.screenX.x + g_FieldPaletteTargetOrgX + 0xA0, frame.screenX.y + g_FieldPaletteTargetOrgY + 0x70) != 0) {
+                if (frame.depth < 3840 && Field_IsOnScreen(frame.screenX.x + g_FieldPaletteTargetOrgX + 0xA0, frame.screenX.y + g_FieldPaletteTargetOrgY + 0x70) != 0) {
                     g_FieldModelSortRecords[frame.sortCount].sortKey = frame.entityIndex;
                     g_FieldModelSortRecords[frame.sortCount].depth = *(short *)&frame.depth;
                     if (frame.model->enabled == 0) {
@@ -887,11 +887,11 @@ void __cdecl Field_UpdateModelInstances(void)
             if (g_FieldEntityState[frame.dispatchIndex].kawaiOp1 != 1) {
                 continue;
             }
-            *(short *)&frame.worldX = g_FieldEntityState[frame.dispatchIndex].posX >> 0xC;
-            frame.worldY = g_FieldEntityState[frame.dispatchIndex].posY >> 0xC;
-            *(short *)&frame.worldZ = (g_FieldEntityState[frame.dispatchIndex].posZ >> 0xC) - 0xA;
+            *(short *)&frame.worldX = g_FieldEntityState[frame.dispatchIndex].posX >> 12;
+            frame.worldY = g_FieldEntityState[frame.dispatchIndex].posY >> 12;
+            *(short *)&frame.worldZ = (g_FieldEntityState[frame.dispatchIndex].posZ >> 12) - 0xA;
             frame.depth = Field_ProjectWorldToScreen((PsxSVectorZ32 *)&frame.worldX, &frame.screenX);
-            if (frame.depth < 0xF00) {
+            if (frame.depth < 3840) {
                 if (g_pFieldModelSlots[frame.dispatchIndex].effectPreset == 2 || g_pFieldModelSlots[frame.dispatchIndex].effectPreset == 6) {
                     g_FieldModelLightData[frame.dispatchIndex]->flags &= 0xFFFFFFFE;
                 }
@@ -1312,8 +1312,8 @@ int __cdecl Field_RenderModels(GfxEngineContext *context)
             if (g_FieldLogicActive == 0 || g_FieldMoviePlaying == 1 || g_MovieFlag == 1) {
                 Gfx_SetRenderStateCall(RENDER_STATE_LINEAR_FILTER, 0, context);
                 Field_DrawBackgroundLayers(g_FieldBgLayer2ScrollX, g_FieldBgLayer2ScrollY);
-                Field_DrawTexturePageRange(context, 0, 0xF);
-                Field_DrawTexturePageRange(context, 0x1A, 0x21);
+                Field_DrawTexturePageRange(context, 0, 15);
+                Field_DrawTexturePageRange(context, 26, 33);
             }
             Gfx_SetRenderStateCall(RENDER_STATE_LINEAR_FILTER, 1, context);
             for (i = 0; i < g_FieldHumanAnimState.modelListCountCopy; i++) {
@@ -1359,8 +1359,8 @@ int __cdecl Field_RenderModels(GfxEngineContext *context)
             }
             ClearContextSlotOverride(context);
             if (g_FieldLogicActive == 0 || g_FieldMoviePlaying == 1 || g_MovieFlag == 1) {
-                Field_DrawTexturePageRange(context, 0xF, 0x1A);
-                Field_DrawTexturePageRange(context, 0x21, 0x2A);
+                Field_DrawTexturePageRange(context, 15, 26);
+                Field_DrawTexturePageRange(context, 33, 42);
             }
             Field_EmitLineDrawBatch();
             Field_FxSubmitFadeOverlay(context);

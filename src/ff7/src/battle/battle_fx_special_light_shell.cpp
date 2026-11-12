@@ -272,28 +272,28 @@ void __cdecl BattleFx_SpecialLightShellTimelineTask(void)
         pChild->posX = taskPtr->startX;
         pChild->posY = taskPtr->startY;
         pChild->posZ = taskPtr->startZ;
-        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 0x14;
-        pChild->velocityY = (taskPtr->endY - taskPtr->startY) / 0x14;
-        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 0x14;
+        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 20;
+        pChild->velocityY = (taskPtr->endY - taskPtr->startY) / 20;
+        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 20;
     }
-    if (taskPtr->frame == 0x14) {
+    if (taskPtr->frame == 20) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
         pChild = (BattleFxToxicSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialLightShellExpandingModelTask);
         Battle_GetBoneWorldPos(taskPtr->actorIndex, g_BattleActorRecords[taskPtr->actorIndex].targetBone, (short *)((int)pChild + 4));
         Battle_PlaySfxPannedToActor(0x189, taskPtr->actorIndex, 0x40);
     }
-    if (taskPtr->frame > 0x12 && taskPtr->frame < 0x1C) {
+    if (taskPtr->frame > 18 && taskPtr->frame < 28) {
         for (j6 = 0; j6 < 3; j6++) {
             pChild = (BattleFxToxicSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialLightShellVariantSpriteTask);
             Battle_GetBoneWorldPos(taskPtr->actorIndex, g_BattleActorRecords[taskPtr->actorIndex].targetBone, (short *)((int)pChild + 4));
-            pChild->posX += (short)(rand() % 0x640 - 0x320);
-            pChild->posY += (short)(rand() % 0x640 - 0x320);
-            pChild->posZ += (short)(rand() % 0x640 - 0x320);
+            pChild->posX += (short)(rand() % 1600 - 800);
+            pChild->posY += (short)(rand() % 1600 - 800);
+            pChild->posZ += (short)(rand() % 1600 - 800);
             pChild->phaseOrResIndex = j6;
         }
     }
     (taskPtr->frame)++;
-    if (taskPtr->frame == 0x28) {
+    if (taskPtr->frame == 40) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -315,7 +315,7 @@ void __cdecl BattleFx_SpecialLightShellVariantSpriteTask(void)
     entryIds[0] = 0xF;
     entryIds[1] = 0x10;
     entryIds[2] = 0x11;
-    BattleFx_InstallBillboardMatrix(&task->billboardMatrix, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->billboardMatrix, 0x2000 /* 2.0 */, 0);
     g_BattleSpecLightShellSpriteReq1.req1Word12 = task->frameIndex;
     (g_BattleSpecLightShellSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(entryIds[task->resourceIndex], g_BattleSpecLightShellLoadedResTable);
     g_BattleSpecLightShellSpriteReq1.req1ResourceHandle = Gfx_ModelTableGetSpriteObject(entryIds[task->resourceIndex], g_BattleSpecLightShellLoadedResTable);
@@ -346,7 +346,7 @@ void __cdecl BattleFx_SpecialLightShellTrailSpritesTask(void)
 #pragma pack(pop)
 
     frame.trailSlot = (BattleFxHellBomberRocketSlot *)BATTLE_CURRENT_TASK_SLOT;
-    for (frame.trailIndex = 0; frame.trailIndex < 0xB; frame.trailIndex++) {
+    for (frame.trailIndex = 0; frame.trailIndex < 11; frame.trailIndex++) {
         frame.scaledX.vx = frame.trailSlot->posX * (6 - frame.trailIndex) / 6;
         frame.scaledX.vy = frame.trailSlot->posY * (6 - frame.trailIndex) / 6;
         frame.scaledX.vz = frame.trailSlot->posZ * (6 - frame.trailIndex) / 6;
@@ -355,81 +355,81 @@ void __cdecl BattleFx_SpecialLightShellTrailSpritesTask(void)
         case 0:
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 1:
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, (SinFixed(frame.trailSlot->frameCounter << 0xA) << 0xB >> 0xC) + 0x2000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, (SinFixed(frame.trailSlot->frameCounter << 10) << 11 >> 12) + 0x2000, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 2:
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(5, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(5, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 3:
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(6, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(6, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 4:
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(7, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(7, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 5:
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(8, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(8, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 6:
             (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(9, g_BattleSpecLightShellLoadedResTable);
             g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(9, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 7:
-            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecLightShellLoadedResTable);
-            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecLightShellLoadedResTable);
+            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(10, g_BattleSpecLightShellLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 8:
-            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecLightShellLoadedResTable);
-            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecLightShellLoadedResTable);
+            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecLightShellLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 9:
-            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecLightShellLoadedResTable);
-            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecLightShellLoadedResTable);
+            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecLightShellLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 0xA:
-            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xD, g_BattleSpecLightShellLoadedResTable);
-            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(0xD, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(13, g_BattleSpecLightShellLoadedResTable);
+            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(13, g_BattleSpecLightShellLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
             break;
         case 0xB:
-            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xE, g_BattleSpecLightShellLoadedResTable);
-            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(0xE, g_BattleSpecLightShellLoadedResTable);
-            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000, 0);
+            (g_BattleSpecLightShellSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(14, g_BattleSpecLightShellLoadedResTable);
+            g_BattleSpecLightShellSpriteReq2.req2ResourceHandle = Gfx_ModelTableGetSpriteObject(14, g_BattleSpecLightShellLoadedResTable);
+            BattleFx_InstallBillboardMatrix(&frame.scaledX, 0x1000 /* 1.0 */, 0);
             g_BattleSpecLightShellDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecLightShellSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLightShellDrawListHead);
         }
     }
@@ -440,7 +440,7 @@ void __cdecl BattleFx_SpecialLightShellTrailSpritesTask(void)
     frame.trailSlot->posY += frame.trailSlot->velocityY;
     frame.trailSlot->posZ += frame.trailSlot->velocityZ;
     (frame.trailSlot->frameCounter)++;
-    if (frame.trailSlot->frameCounter == 0x14) {
+    if (frame.trailSlot->frameCounter == 20) {
         frame.trailSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -474,7 +474,7 @@ void __cdecl BattleFx_SpecialLightShellExpandingModelTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(frame.expandSlot->data, frame.combinedMat.t, &frame.depth);
-    frame.combinedMat.m[2][2] = frame.expandSlot->frameCounter * 0x320 + 0x1000;
+    frame.combinedMat.m[2][2] = frame.expandSlot->frameCounter * 800 + 0x1000;
     frame.combinedMat.m[1][1] = frame.combinedMat.m[2][2];
     frame.combinedMat.m[0][0] = frame.combinedMat.m[1][1];
     RotMatrix((SVECTOR *)&g_BattleSpecLightShellModelReq.matrix, &frame.rotMatrix);
@@ -488,7 +488,7 @@ void __cdecl BattleFx_SpecialLightShellExpandingModelTask(void)
         return;
     }
     (frame.expandSlot->frameCounter)++;
-    if (frame.expandSlot->frameCounter == 0xF) {
+    if (frame.expandSlot->frameCounter == 15) {
         frame.expandSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

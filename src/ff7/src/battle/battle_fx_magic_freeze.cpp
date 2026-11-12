@@ -197,39 +197,39 @@ void __cdecl BattleFx_MagicFreezeTimelineTask(void)
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_2, Battle_ComputeScreenPanFromPosition((short *)&g_BattleMagicFreezeTargetPos), 0);
         child = (BattleFxFreezeTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeSpawnSpriteBurstTask);
     }
-    if (task->stage == 0x22) {
+    if (task->stage == 34) {
         child = (BattleFxFreezeTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeFadeModelTask);
         child->posX = g_BattleMagicFreezeTargetPos.posX;
         child->posY = 0xFA88;
         child->posZ = g_BattleMagicFreezeTargetPos.posZ;
     }
-    if (task->stage == 0x22) {
+    if (task->stage == 34) {
         child = (BattleFxFreezeTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeScreenScaledModelTask);
         child->posX = g_BattleMagicFreezeTargetPos.posX;
         child->posY = 0xFA88;
         child->posZ = g_BattleMagicFreezeTargetPos.posZ;
     }
-    if (task->stage == 0x36) {
+    if (task->stage == 54) {
         child = (BattleFxFreezeTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeSpawnGrowingModelsTask);
     }
-    if (task->stage == 0x2C) {
+    if (task->stage == 44) {
         child = (BattleFxFreezeTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeGrowHoldFadeModelTask);
         child->posX = g_BattleMagicFreezeTargetPos.posX;
         child->posY = 0;
         child->posZ = g_BattleMagicFreezeTargetPos.posZ;
     }
-    if (task->stage == 0x4F) {
+    if (task->stage == 79) {
         child = (BattleFxFreezeTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeSpawnDampedGrowthModelsTask);
         *(Int64Pair *)&child->posX = *(Int64Pair *)&task->posX;
     }
-    if (task->stage == 0x27) {
+    if (task->stage == 39) {
         child = (BattleFxFreezeTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeSpawnAnimatedSpritesTask);
         *(Int64Pair *)&child->posX = *(Int64Pair *)&task->posX;
     }
-    if (task->stage == 0x4F) {
+    if (task->stage == 79) {
         Battle_PostActorHitOrHurtMessage(g_BattleMagicFreezeTargetActor);
     }
-    if (task->stage == 0x5E) {
+    if (task->stage == 94) {
         Battle_StartFixedPointRamp(0, 4);
         task->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x1C4, 0xF);
@@ -265,10 +265,10 @@ void __cdecl BattleFx_MagicFreezeSpawnSpriteBurstTask(void)
     for (i = 0; i < 3; i++) {
         pSprite = (BattleMagicFreezeBurstSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeConvergingSpriteTask);
         pSprite->frameIndex = taskPtr->frameCounter;
-        distance = rand() % 0xBB8 + 0x7D0;
+        distance = rand() % 3000 + 2000;
         params->startTime = 0;
         params->angle = rand() & 0xFFF;
-        params->velocity = -(rand() % 0xA00 - 0x100);
+        params->velocity = -(rand() % 2560 - 256);
         RotMatrix((SVECTOR *)params, matrix);
         matrix->t[0] = g_BattleMagicFreezeTargetPos.posX;
         matrix->t[1] = g_BattleMagicFreezeTargetPos.posY;
@@ -282,10 +282,10 @@ void __cdecl BattleFx_MagicFreezeSpawnSpriteBurstTask(void)
         pSprite->posX = srcPosPtr->posX;
         pSprite->posY = srcPosPtr->posY;
         pSprite->posZ = srcPosPtr->posZ;
-        pSprite->burstRandom = rand() % 0xD00 + 0x500;
+        pSprite->burstRandom = rand() % 3328 + 1280;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0x14) {
+    if (taskPtr->frameCounter >= 20) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -312,12 +312,12 @@ void __cdecl BattleFx_MagicFreezeConvergingSpriteTask(void)
         g_BattleMagicFreezeSpriteDrawReq1.colorR = g_BattleMagicFreezeSpriteDrawReq1.colorG;
     }
     localFrame = task->timer + task->ownerSlot;
-    if (localFrame < 0x19) {
+    if (localFrame < 25) {
         if (g_BattleIsPaused == 0) {
-            task->posY += (short)(SinFixed((task->timer << 0xC) / 0x28) * 0x46 >> 0xC);
+            task->posY += (short)(SinFixed((task->timer << 12) / 40) * 0x46 >> 12);
         }
     } else {
-        localFrame -= 0x19;
+        localFrame -= 25;
         if (localFrame < 5) {
             if (localFrame == 0) {
                 task->velocityX = (g_BattleMagicFreezeTargetPos.posX - task->posX) / 5;
@@ -356,19 +356,19 @@ void __cdecl BattleFx_MagicFreezeFadeModelTask(void)
     localFrame = task->frameIndex;
     if (localFrame < 5) {
         g_BattleMagicFreezeModelDrawReq1.flags = 0x88;
-        g_BattleMagicFreezeModelDrawReq1.fadeLevel = localFrame * -0x1000 / 5 + 0x1000;
+        g_BattleMagicFreezeModelDrawReq1.fadeLevel = localFrame * -4096 / 5 + 4096;
         g_BattleMagicFreezeModelDrawReq1.modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleMagicFreezeLoadedResTable);
     } else {
         localFrame -= 5;
-        if (localFrame < 0x28) {
+        if (localFrame < 40) {
             g_BattleMagicFreezeModelDrawReq1.flags = 0x80;
             g_BattleMagicFreezeModelDrawReq1.fadeLevel = 0;
             g_BattleMagicFreezeModelDrawReq1.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleMagicFreezeLoadedResTable);
         } else {
-            localFrame -= 0x28;
-            if (localFrame < 0xF) {
+            localFrame -= 40;
+            if (localFrame < 15) {
                 g_BattleMagicFreezeModelDrawReq1.flags = 0x88;
-                g_BattleMagicFreezeModelDrawReq1.fadeLevel = (localFrame << 0xC) / 0xF;
+                g_BattleMagicFreezeModelDrawReq1.fadeLevel = (localFrame << 12) / 15;
                 g_BattleMagicFreezeModelDrawReq1.modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleMagicFreezeLoadedResTable);
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
@@ -420,8 +420,8 @@ void __cdecl BattleFx_MagicFreezeScreenScaledModelTask(void)
     } else {
         frame.frameStep -= 4;
         if (frame.frameStep < 4) {
-            g_BattleMagicFreezeModelDrawReq2.fadeLevel = (frame.frameStep << 0xC) / 4;
-            frame.scaleValue = 0x1500;
+            g_BattleMagicFreezeModelDrawReq2.fadeLevel = (frame.frameStep << 12) / 4;
+            frame.scaleValue = 0x1500 /* 1.3125 */;
         } else {
             frame.screenSlot->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -485,20 +485,20 @@ void __cdecl BattleFx_MagicFreezeGrowingModelTask(void)
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     g_BattleMagicFreezeModelDrawReq3.modelGroup = Gfx_ModelTableGetRenderObject(5, g_BattleMagicFreezeLoadedResTable);
     localFrame = task->growth;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         g_BattleMagicFreezeModelDrawReq3.fadeLevel = 0;
     } else {
-        localFrame -= 0xA;
+        localFrame -= 10;
         if (localFrame < 5) {
-            g_BattleMagicFreezeModelDrawReq3.fadeLevel = (localFrame << 0xC) / 5;
+            g_BattleMagicFreezeModelDrawReq3.fadeLevel = (localFrame << 12) / 5;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    g_BattleMagicFreezeModelRecord1.scaleZ = task->growth * 0xF00 / 0xF + 0x100;
+    g_BattleMagicFreezeModelRecord1.scaleZ = task->growth * 0xF00 / 15 + 0x100;
     g_BattleMagicFreezeGrowingScaleX = g_BattleMagicFreezeModelRecord1.scaleZ;
-    g_BattleMagicFreezeGrowingScaleY = task->growth * 0x700 / 0xF + 0x100;
+    g_BattleMagicFreezeGrowingScaleY = task->growth * 0x700 / 15 + 0x100;
     g_BattleMagicFreezeModelRecord1.posX = task->posX;
     g_BattleMagicFreezeModelRecord1.posY = task->posY;
     g_BattleMagicFreezeModelRecord1.posZ = task->posZ;
@@ -534,7 +534,7 @@ void __cdecl BattleFx_MagicFreezeGrowHoldFadeModelTask(void)
         g_BattleMagicFreezeModelDrawReq4.modelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleMagicFreezeLoadedResTable);
     } else {
         localFrame -= 5;
-        if (localFrame < 0x1E) {
+        if (localFrame < 30) {
             g_BattleMagicFreezeModelDrawReq4.flags = 0x80;
             g_BattleMagicFreezeModelDrawReq4.fadeLevel = 0;
             g_BattleMagicFreezeModelRecord2.scaleZ = 0x350;
@@ -542,10 +542,10 @@ void __cdecl BattleFx_MagicFreezeGrowHoldFadeModelTask(void)
             g_BattleMagicFreezeHoldScaleX = g_BattleMagicFreezeHoldScaleY;
             g_BattleMagicFreezeModelDrawReq4.modelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleMagicFreezeLoadedResTable);
         } else {
-            localFrame -= 0x1E;
-            if (localFrame < 0xF) {
+            localFrame -= 30;
+            if (localFrame < 15) {
                 g_BattleMagicFreezeModelDrawReq4.flags = 0x88;
-                g_BattleMagicFreezeModelDrawReq4.fadeLevel = (localFrame << 0xC) / 0xF;
+                g_BattleMagicFreezeModelDrawReq4.fadeLevel = (localFrame << 12) / 15;
                 g_BattleMagicFreezeModelRecord2.scaleZ = 0x350;
                 g_BattleMagicFreezeHoldScaleY = g_BattleMagicFreezeModelRecord2.scaleZ;
                 g_BattleMagicFreezeHoldScaleX = g_BattleMagicFreezeHoldScaleY;
@@ -585,10 +585,10 @@ void __cdecl BattleFx_MagicFreezeSpawnDampedGrowthModelsTask(void)
     if (task->frameIndex % 3 == 0) {
         child = (BattleMagicFreezeDampedGrowthRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeDampedGrowthModelTask);
         child->posX = task->posX;
-        child->negativeRandom = -(rand() % 0x884 + 0x140);
+        child->negativeRandom = -(rand() % 2180 + 320);
         child->posZ = task->posZ;
-        child->growthRandom = rand() % 0x300 + 0x400;
-        child->growthVelocity = rand() % 0x100 + 0x300;
+        child->growthRandom = rand() % 768 + 1024;
+        child->growthVelocity = rand() % 256 + 768;
     }
     (task->frameIndex)++;
     if (task->frameIndex >= 9) {
@@ -614,8 +614,8 @@ void __cdecl BattleFx_MagicFreezeDampedGrowthModelTask(void)
         g_BattleMagicFreezeModelDrawReq5.fadeLevel = 0;
     } else {
         localFrame -= 3;
-        if (localFrame < 0xA) {
-            g_BattleMagicFreezeModelDrawReq5.fadeLevel = (localFrame << 0xC) / 0xA;
+        if (localFrame < 10) {
+            g_BattleMagicFreezeModelDrawReq5.fadeLevel = (localFrame << 12) / 10;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -633,7 +633,7 @@ void __cdecl BattleFx_MagicFreezeDampedGrowthModelTask(void)
     g_BattleMagicFreezeDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleMagicFreezeModelDrawReq5, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicFreezeDrawListHead);
     if (g_BattleIsPaused == 0) {
         task->scale += task->growthVelocity;
-        task->growthVelocity = task->growthVelocity * 0x950 >> 0xC;
+        task->growthVelocity = task->growthVelocity * 0x950 >> 12;
         (task->frame)++;
     }
 }
@@ -657,29 +657,29 @@ void __cdecl BattleFx_MagicFreezeSpawnAnimatedSpritesTask(void)
     for (i = 0; i < 3; i++) {
         pSprite = (BattleFxFreezeAnimatedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeAnimatedSpriteTask);
         angle = rand() & 0xFFF;
-        rad = rand() % 0x1F4 + 0x3E8;
-        pSprite->posX = pTaskSlot->centerX + (SinFixed(angle) * rad >> 0xC);
-        pSprite->posY = -(rand() % 0x9C4 + 0x1F4);
-        pSprite->posZ = pTaskSlot->centerZ + (CosFixed(angle) * rad >> 0xC);
+        rad = rand() % 500 + 1000;
+        pSprite->posX = pTaskSlot->centerX + (SinFixed(angle) * rad >> 12);
+        pSprite->posY = -(rand() % 2500 + 500);
+        pSprite->posZ = pTaskSlot->centerZ + (CosFixed(angle) * rad >> 12);
         pSprite->velocityX = 0;
-        pSprite->velocityY = 0x32;
+        pSprite->velocityY = 50;
         pSprite->velocityZ = 0;
         pSprite->scale = rand() % 0x2800 + 0x1000;
     }
     for (i = 0; i < 3; i++) {
         pSprite = (BattleFxFreezeAnimatedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFreezeAnimatedSpriteTask);
         angle = rand() & 0xFFF;
-        rad = rand() % 0x1F4 + 0x3E8;
-        pSprite->posX = pTaskSlot->centerX + (SinFixed(angle) * rad >> 0xC);
+        rad = rand() % 500 + 1000;
+        pSprite->posX = pTaskSlot->centerX + (SinFixed(angle) * rad >> 12);
         pSprite->posY = 0;
-        pSprite->posZ = pTaskSlot->centerZ + (CosFixed(angle) * rad >> 0xC);
-        pSprite->velocityX = SinFixed(angle) * 0x82 >> 0xC;
+        pSprite->posZ = pTaskSlot->centerZ + (CosFixed(angle) * rad >> 12);
+        pSprite->velocityX = SinFixed(angle) * 0x82 >> 12;
         pSprite->velocityY = 0;
-        pSprite->velocityZ = CosFixed(angle) * 0x82 >> 0xC;
+        pSprite->velocityZ = CosFixed(angle) * 0x82 >> 12;
         pSprite->scale = rand() % 0x2800 + 0x1000;
     }
     (pTaskSlot->frame)++;
-    if (pTaskSlot->frame >= 0x28) {
+    if (pTaskSlot->frame >= 40) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

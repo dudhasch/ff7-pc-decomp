@@ -45,7 +45,7 @@ int g_BattleSlipSliceBufferB[2][10] = {0};
 // FUNCTION: FF7 0x00435250
 int __cdecl Battle_GetSlipClockElapsed(int actor)
 {
-    return g_BattleSlipSliceBufferB[g_BattleSlipBufferIndex][actor] >> 0xC;
+    return g_BattleSlipSliceBufferB[g_BattleSlipBufferIndex][actor] >> 12;
 }
 
 /*
@@ -54,7 +54,7 @@ int __cdecl Battle_GetSlipClockElapsed(int actor)
  * frame by frame; this swaps buffers and spends the full one, keeping the remainders.
  *
  * - HP slip: slipRate is +maxHp/32 under Regen and -maxHp/32 under Dual Drain
- *   (Battle_RefreshSlipHpRate), paid per 0x8000 units of the actor's speed stream. HP stops at
+ *   (Battle_RefreshSlipHpRate), paid per 32768 units of the actor's speed stream. HP stops at
  *   max, and a drain below 0 kills.
  * - Status timers count down in three clocks. Stop runs on the battle clock alone, so Haste and
  *   Slow do not shorten or lengthen it. Death Sentence and Slow-numb run on the actor's tick rate
@@ -86,20 +86,20 @@ void __cdecl Battle_ApplyTimeSlices(void)
     g_BattleSlipBufferIndex ^= 1;
     bufferA = (int *)(bufferSel * 0x28 + (char *)&g_BattleSlipSliceBufferA);
     bufferB = (int *)(bufferSel * 0x28 + (char *)&g_BattleSlipSliceBufferB);
-    globalSlices = g_BattleSlipSharedTimeAccumulators[bufferSel] >> 0xD;
+    globalSlices = g_BattleSlipSharedTimeAccumulators[bufferSel] >> 13;
     g_BattleSlipSharedTimeAccumulators[bufferSel] &= 0x1FFF;
-    for (slot = 0; slot < 0xA; slot++) {
+    for (slot = 0; slot < 10; slot++) {
         slipRate = g_BattleState.actors[slot].slipRate;
         firstAdd = bufferA[slot];
         secondAdd = bufferB[slot];
         g_BattleSlipFirstTimeAccumulators[slot] += firstAdd;
-        firstTicks = g_BattleSlipFirstTimeAccumulators[slot] >> 0xD;
+        firstTicks = g_BattleSlipFirstTimeAccumulators[slot] >> 13;
         g_BattleSlipFirstTimeAccumulators[slot] &= 0x1FFF;
         g_BattleSlipSecondTimeAccumulators[slot] += secondAdd;
-        secondSlices = g_BattleSlipSecondTimeAccumulators[slot] >> 0xC;
+        secondSlices = g_BattleSlipSecondTimeAccumulators[slot] >> 12;
         g_BattleSlipSecondTimeAccumulators[slot] &= 0xFFF;
         g_BattleSlipRegenAccumulators[slot] += firstAdd * slipRate;
-        regen = g_BattleSlipRegenAccumulators[slot] >> 0xF;
+        regen = g_BattleSlipRegenAccumulators[slot] >> 15;
         g_BattleSlipRegenAccumulators[slot] &= 0x7FFF;
         bufferA[slot] = 0;
         bufferB[slot] = 0;
@@ -116,7 +116,7 @@ void __cdecl Battle_ApplyTimeSlices(void)
             }
             g_aCombatants[slot].curHp = newHp;
         }
-        for (timerIndex = 0; timerIndex < 0x10; timerIndex++) {
+        for (timerIndex = 0; timerIndex < 16; timerIndex++) {
             timer = (unsigned char)g_BattleState.actors[slot].statusTimers[timerIndex];
             if (timer != 0) {
                 switch (timerIndex) {
@@ -160,7 +160,7 @@ void __cdecl Battle_AccumulateTimeSlices(void)
     bufferB = (int *)(g_BattleSlipBufferIndex * 0x28 + (char *)&g_BattleSlipSliceBufferB);
     sharedAccum = (int *)(g_BattleSlipBufferIndex * 4 + (char *)&g_BattleSlipSharedTimeAccumulators);
     *sharedAccum += g_BattleState.atbSpeedValue;
-    for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    for (actorIdx = 0; actorIdx < 10; actorIdx++) {
         bufferA[actorIdx] += g_BattleState.actors[actorIdx].speedRate;
         bufferB[actorIdx] += *(unsigned short *)&g_BattleState.actors[actorIdx].tickRate;
     }
@@ -191,14 +191,14 @@ void __cdecl Battle_UpdatePartyGaugeHud(void)
         barrierGauge = g_BattleState.actors[partyIndex].gaugeRate;
         mBarrier = g_BattleState.actors[partyIndex].gaugeUnit;
         slicesNow = bufferAddr[partyIndex];
-        hp += slipRate * slicesNow >> 0xF;
+        hp += slipRate * slicesNow >> 15;
         if (hp < 0) {
             hp = 0;
         } else if ((unsigned int)hp > (unsigned int)g_aCombatants[partyIndex].maxHp) {
             hp = g_aCombatants[partyIndex].maxHp;
         }
-        barrierGauge -= slicesNow >> 0xD;
-        mBarrier -= slicesNow >> 0xD;
+        barrierGauge -= slicesNow >> 13;
+        mBarrier -= slicesNow >> 13;
         if (barrierGauge < 0) {
             barrierGauge = 0;
         }

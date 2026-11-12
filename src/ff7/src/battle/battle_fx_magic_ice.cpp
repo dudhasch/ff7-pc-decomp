@@ -131,7 +131,7 @@ void __cdecl BattleFx_MagicIceGrowingRampModelTask(void)
 #pragma pack(pop)
 
     frame.slot = (BattleFxIceRampSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.unclampedScale = frame.slot->step * 0x36D * frame.slot->scale >> 0xC;
+    frame.unclampedScale = frame.slot->step * 0x36D * frame.slot->scale >> 12;
     if (frame.unclampedScale <= 0x7FFF) {
         frame.clampedScale = frame.unclampedScale;
     } else {
@@ -143,7 +143,7 @@ void __cdecl BattleFx_MagicIceGrowingRampModelTask(void)
     if (frame.slot->step < 0) {
         frame.blend = 0;
     } else {
-        frame.blend = frame.slot->step * 0x124;
+        frame.blend = frame.slot->step * 292;
     }
     RotMatrix((SVECTOR *)&frame.slot->rotX, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
@@ -159,7 +159,7 @@ void __cdecl BattleFx_MagicIceGrowingRampModelTask(void)
     g_BattleMagicIce_ChainTail = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleMagicIce_ModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicIce_ChainTail);
     if (g_BattleIsPaused == 0) {
         (frame.slot->step)++;
-        if (frame.slot->step >= 0xF) {
+        if (frame.slot->step >= 15) {
             frame.slot->ownerSlot = BATTLE_TASK_FREE;
         }
     }

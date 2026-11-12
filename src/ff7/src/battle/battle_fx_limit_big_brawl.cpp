@@ -145,11 +145,11 @@ void __cdecl BattleFx_LimitBigBrawlTimelineTask(void)
         frame.targetY = g_BattleActorRecords[frame.targetActor].posY;
         frame.targetZ = g_BattleActorRecords[frame.targetActor].posZ;
         frame.angle = (rand() % 4096);
-        frame.radius = g_BattleActorRecords[frame.targetActor].radius + 0x5DC;
-        frame.targetX += (short)(SinFixed(frame.angle) * frame.radius >> 0xC);
+        frame.radius = g_BattleActorRecords[frame.targetActor].radius + 1500;
+        frame.targetX += (short)(SinFixed(frame.angle) * frame.radius >> 12);
         frame.placedX = frame.targetX;
         frame.placedY = 0;
-        frame.targetZ += (short)(CosFixed(frame.angle) * frame.radius >> 0xC);
+        frame.targetZ += (short)(CosFixed(frame.angle) * frame.radius >> 12);
         frame.placedZ = frame.targetZ;
         g_BattleActorRecords[frame.timeline->actorIndex].posX = frame.placedX;
         g_BattleActorRecords[frame.timeline->actorIndex].posY = frame.placedY;
@@ -163,32 +163,32 @@ void __cdecl BattleFx_LimitBigBrawlTimelineTask(void)
         Battle_PlaySfxPannedToActor(0x15A, (short)frame.targetActor, 0);
         g_BattleLimitBigBrawlTimelineFrame++;
     }
-    if (frame.timeline->frame >= 0x1F && frame.timeline->frame < 0x47) {
+    if (frame.timeline->frame >= 31 && frame.timeline->frame < 71) {
         for (frame.emitIndex = 0; frame.emitIndex < 2; frame.emitIndex++) {
             frame.sprite = (BattleFxLimitBigBrawlSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBigBrawlMovingSpriteTask);
             frame.sprite->posX = g_BattleActorRecords[frame.timeline->actorIndex].posX;
             frame.sprite->posY = g_BattleActorRecords[frame.timeline->actorIndex].posY;
             frame.sprite->posZ = g_BattleActorRecords[frame.timeline->actorIndex].posZ;
             frame.angle = (rand() % 4096);
-            frame.sprite->velocityX = SinFixed(frame.angle) * 0xC8 >> 0xC;
-            frame.sprite->velocityY = -rand() % 0x64;
-            frame.sprite->velocityZ = CosFixed(frame.angle) * 0xC8 >> 0xC;
+            frame.sprite->velocityX = SinFixed(frame.angle) * 0xC8 >> 12;
+            frame.sprite->velocityY = -rand() % 100;
+            frame.sprite->velocityZ = CosFixed(frame.angle) * 0xC8 >> 12;
         }
         for (frame.emitIndex = 0; frame.emitIndex < 2; frame.emitIndex++) {
             frame.sprite = (BattleFxLimitBigBrawlSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBigBrawlMovingSpriteTask);
             frame.angle = (rand() % 4096);
-            frame.radius = rand() % 0xFA0;
-            frame.sprite->posX = *(short *)&g_BattleLimitBigBrawlCentroidX + (SinFixed(frame.angle) * frame.radius >> 0xC);
+            frame.radius = rand() % 4000;
+            frame.sprite->posX = *(short *)&g_BattleLimitBigBrawlCentroidX + (SinFixed(frame.angle) * frame.radius >> 12);
             frame.sprite->posY = 0;
-            frame.sprite->posZ = g_BattleLimitBigBrawlCentroidY + (CosFixed(frame.angle) * frame.radius >> 0xC);
+            frame.sprite->posZ = g_BattleLimitBigBrawlCentroidY + (CosFixed(frame.angle) * frame.radius >> 12);
             frame.angle = (rand() % 4096);
-            frame.sprite->velocityX = SinFixed(frame.angle) * 0x64 >> 0xC;
-            frame.sprite->velocityY = -rand() % 0x64;
-            frame.sprite->velocityZ = CosFixed(frame.angle) * 0x64 >> 0xC;
+            frame.sprite->velocityX = SinFixed(frame.angle) * 0x64 >> 12;
+            frame.sprite->velocityY = -rand() % 100;
+            frame.sprite->velocityZ = CosFixed(frame.angle) * 0x64 >> 12;
         }
     }
     (frame.timeline->frame)++;
-    if (frame.timeline->frame == 0x50) {
+    if (frame.timeline->frame == 80) {
         frame.timeline->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -203,7 +203,7 @@ void __cdecl BattleFx_LimitBigBrawlMovingSpriteTask(void)
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitBigBrawlSpriteRequest.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitBigBrawlLoadedResTable);
     g_BattleLimitBigBrawlSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitBigBrawlLoadedResTable);
-    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x4000, 0);
+    BattleFx_InstallBillboardMatrix((char *)task + 4, 0x4000 /* 4.0 */, 0);
     g_BattleLimitBigBrawlSpriteRequest.frame = task->frame;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitBigBrawlSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {

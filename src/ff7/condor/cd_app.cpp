@@ -31,7 +31,7 @@ void __cdecl Mini_CondorFreeRsdModelHolder(CondorRsdModelHolder *holder, void *f
     if (holder != 0) {
         Pfile_FreeRsdModel(holder->model, flags);
         // STRING: FF7 0x00901a4c
-        GameHeapFree(holder, "C:\\FF7\\condor\\cd_app.cpp", 0x77);
+        GameHeapFree(holder, "C:\\FF7\\condor\\cd_app.cpp", 119);
     }
 }
 /*
@@ -43,7 +43,7 @@ int __cdecl Mini_CondorAllocRsdModelHolder(void)
     CondorRsdModelHolder *rec;
 
     // STRING: FF7 0x00901a68
-    rec = (CondorRsdModelHolder *)GameHeapAlloc(1, 0x10, "C:\\FF7\\condor\\cd_app.cpp", 0x7F);
+    rec = (CondorRsdModelHolder *)GameHeapAlloc(1, 16, "C:\\FF7\\condor\\cd_app.cpp", 127);
     if (rec != 0) {
         rec->initWord0 = 1;
         rec->initWord1 = 1;
@@ -94,7 +94,7 @@ unsigned short g_CondorBattleFrame = 0;
 // GLOBAL: FF7 0x00c60ae4
 short g_CondorChoiceTimer = 0;
 // GLOBAL: FF7 0x00c60ae8
-unsigned char g_CondorHighestUnitY[0x4] = {0};
+unsigned char g_CondorHighestUnitY[4] = {0};
 // GLOBAL: FF7 0x00c60aec
 short g_CondorRedFadeLevel = 0;
 // GLOBAL: FF7 0x00c60af0
@@ -588,7 +588,7 @@ int g_CondorBattleClearWordA = 0;
 // GLOBAL: FF7 0x00cbcc88
 int g_CondorPeakValue = 0;
 // GLOBAL: FF7 0x00cbcc8c
-unsigned char g_CondorScheduledCount[0x4] = {0};
+unsigned char g_CondorScheduledCount[4] = {0};
 // GLOBAL: FF7 0x00cbcc90
 int g_CondorLinearMotionActive = 0;
 // GLOBAL: FF7 0x00cbcc94
@@ -604,7 +604,7 @@ short g_CondorSelectPanelPhase = 0;
 // GLOBAL: FF7 0x00cbcca8
 int g_CondorBattleClearWordB = 0;
 // GLOBAL: FF7 0x00cbccac
-unsigned char g_CondorAlertLevel[0x4] = {0};
+unsigned char g_CondorAlertLevel[4] = {0};
 // GLOBAL: FF7 0x00cbccb0
 int g_CondorCommandPosX = 0;
 // GLOBAL: FF7 0x00cbccb4
@@ -710,7 +710,7 @@ void __cdecl Mini_CondorEnter(GfxEngineContext *context)
         Pfile_SetDefaultModelFlags(0x100000);
         Gfx_SetScenePassCall(0, context);
         Mini_CondorCacheDirectDrawObjects(context);
-        GetCurrentDirectoryA(0x100, buf);
+        GetCurrentDirectoryA(256, buf);
         Mini_CondorInitSfxCommandBuffer();
         Mini_CondorLoadSoundTable();
         SfxSetAllChannelsVolume(0x7f);
@@ -886,6 +886,6 @@ void __cdecl Mini_CondorInitEngineContext(int context, int params)
 // FUNCTION: FF7 0x005f4c5a
 void __cdecl Mini_CondorSceneHookNoOp(GfxEngineContext *context)
 {
-    char unused[0xD4];
+    char unused[212];
 }
 } /* extern "C" */

@@ -736,7 +736,7 @@ void __cdecl Anim_BakeFrameMatrices(int frameIndex, PolygonAnimBake *bake, Polyg
                     break;
                 case ANIM_NODE_PUSH_BONE:
                     frame.boneIndex = frame.nodeOp.boneIndex;
-                    frame.boneFrameEntry = model->frames + frame.boneIndex * 0x1C;
+                    frame.boneFrameEntry = model->frames + frame.boneIndex * 28;
                     frame.tmpParentTop = (PolygonTransform *)MatrixStack_Top(frame.matrixStack);
                     frame.parentMatrix = frame.tmpParentTop;
                     MatrixStack_Push(frame.matrixStack);
@@ -773,7 +773,7 @@ void __cdecl Anim_BakeAllFrameMatrices(PolygonAnimBake *bake, PolygonAnimModel *
 
     if (bake != 0 && model != 0 && bake->baked == 0) {
         // STRING: FF7 0x0090f968
-        bake->matrixBuffer = (PolygonTransform *)GameHeapAlloc(bake->count * (bake->lastFrame + 1), 0x40, "C:\\lib\\src\\polygon\\anm.cpp", 0x404);
+        bake->matrixBuffer = (PolygonTransform *)GameHeapAlloc(bake->count * (bake->lastFrame + 1), 64, "C:\\lib\\src\\polygon\\anm.cpp", 1028);
         if (bake->matrixBuffer != 0) {
             for (frameIndex = 0; frameIndex < bake->count; frameIndex++) {
                 Anim_BakeFrameMatrices(frameIndex, bake, model);

@@ -59,7 +59,7 @@ short __cdecl Mini_CondorAngleOutsideShortArc(short angle, short arcA, short arc
         upper = arcB;
         lower = arcA;
     }
-    if (upper - lower < 0x800) {
+    if (upper - lower < 2048) {
         if (angle > upper || angle < lower) {
             return 1;
         }
@@ -154,7 +154,7 @@ short __cdecl Mini_CondorTestRegionIndexAccepted(CondorRecord *record, short reg
     worldX = record->worldX;
     worldY = record->worldY;
     xOffset = worldX + 0x4000;
-    biasedY = worldY + 0x4000;
+    biasedY = worldY + 16384;
     regionPtrPtr = (CondorRegionRecord *)(regionIndex * 76 + (char *)&g_CondorUnitTable);
     if (xOffset < regionPtrPtr->minX)
         return -1;
@@ -243,7 +243,7 @@ short __cdecl Mini_CondorTestAbsDeltaWithinLimit(short valueA, short valueB)
     if (delta < 0) {
         delta = -delta;
     }
-    if (delta <= 0x400) {
+    if (delta <= 1024) {
         return 1;
     } else {
         return -1;

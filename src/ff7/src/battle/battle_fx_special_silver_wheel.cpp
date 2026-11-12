@@ -47,13 +47,13 @@ int g_BattleSpecialSilverWheelDrawListHandle = 0;
 // GLOBAL: FF7 0x00b72edc
 struct GfxTableCursor *g_BattleSpecialSilverWheelLoadedRes = 0;
 // GLOBAL: FF7 0x00b72ee0
-unsigned char g_BattleSpecialSilverWheelMatrix[0x4] = {0};
+unsigned char g_BattleSpecialSilverWheelMatrix[4] = {0};
 unsigned char g_bssPad_00b72ee4[4] = {0};
 // GLOBAL: FF7 0x00b72ee8
 short g_BattleSpecialSilverWheelMatrixScale = 0;
 unsigned char g_bssPad_00b72eec[4] = {0};
 // GLOBAL: FF7 0x00b72ef0
-unsigned char g_BattleSpecialSilverWheelPoint[0x8] = {0};
+unsigned char g_BattleSpecialSilverWheelPoint[8] = {0};
 unsigned char g_bssPad_00b72ef8[8] = {0};
 // GLOBAL: FF7 0x00b72f00
 short g_BattleSpecialSilverWheelStep = 0;
@@ -169,7 +169,7 @@ void __cdecl BattleFx_SpecialSilverWheelTimelineTask(void)
         frame.spawnSlot->heading = ArcTangentFixed(frame.timelineSlot->toX - frame.timelineSlot->fromX, frame.timelineSlot->toZ - frame.timelineSlot->fromZ);
         frame.offsetX.vy = 0;
         frame.offsetX.vx = frame.offsetX.vy;
-        frame.offsetX.vz = 0xC8;
+        frame.offsetX.vz = 200;
         RotMatrix((SVECTOR *)((int)frame.spawnSlot + 0xC), &frame.rotMatrix);
         frame.rotMatrix.t[2] = 0;
         frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
@@ -186,17 +186,17 @@ void __cdecl BattleFx_SpecialSilverWheelTimelineTask(void)
         frame.spawnSlot->posX = frame.timelineSlot->fromX;
         frame.spawnSlot->posY = frame.timelineSlot->fromY;
         frame.spawnSlot->posZ = frame.timelineSlot->fromZ;
-        frame.spawnSlot->velocityX = (frame.timelineSlot->toX - frame.timelineSlot->fromX) / 0xC;
-        frame.spawnSlot->heading = (frame.timelineSlot->toY - frame.timelineSlot->fromY) / 0xC;
-        frame.spawnSlot->velocityZ = (frame.timelineSlot->toZ - frame.timelineSlot->fromZ) / 0xC;
+        frame.spawnSlot->velocityX = (frame.timelineSlot->toX - frame.timelineSlot->fromX) / 12;
+        frame.spawnSlot->heading = (frame.timelineSlot->toY - frame.timelineSlot->fromY) / 12;
+        frame.spawnSlot->velocityZ = (frame.timelineSlot->toZ - frame.timelineSlot->fromZ) / 12;
         frame.spawnSlot->angle = ArcTangentFixed(frame.timelineSlot->toX - frame.timelineSlot->fromX, frame.timelineSlot->toZ - frame.timelineSlot->fromZ) + 0x400;
         frame.spawnSlot->casterIndex = frame.timelineSlot->casterIndex;
     }
-    if (frame.timelineSlot->frameCounter == 0x10) {
-        BattleFx_HitMarkSpawnScriptAtActorBone(frame.timelineSlot->actorIndex, 9, 0x1000);
+    if (frame.timelineSlot->frameCounter == 16) {
+        BattleFx_HitMarkSpawnScriptAtActorBone(frame.timelineSlot->actorIndex, 9, 0x1000 /* 1.0 */);
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
-    if (frame.timelineSlot->frameCounter > 0xA && frame.timelineSlot->frameCounter < 0x10) {
+    if (frame.timelineSlot->frameCounter > 10 && frame.timelineSlot->frameCounter < 16) {
         for (frame.i = 0; frame.i < 2; frame.i++) {
             frame.spawnSlot = (BattleFxSilverWheelTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSilverWheelVariantSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)((int)frame.spawnSlot + 4));
@@ -204,7 +204,7 @@ void __cdecl BattleFx_SpecialSilverWheelTimelineTask(void)
         }
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x28) {
+    if (frame.timelineSlot->frameCounter == 40) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -220,7 +220,7 @@ void __cdecl BattleFx_SpecialSilverWheelAnimatedSpriteEntry7Task(void)
     task = (int)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecialSilverWheelSpriteData.spriteResource) = Gfx_ModelTableGetLoadedRecord(7, g_BattleSpecialSilverWheelLoadedRes);
     g_BattleSpecialSilverWheelSpriteData.drawObj = Gfx_ModelTableGetSpriteObject(7, g_BattleSpecialSilverWheelLoadedRes);
-    BattleFx_SpecialSilverWheelInstallScaledSpriteMatrix(task + 4, *(ShortQuad *)((char *)task + 0xC), 0x1600);
+    BattleFx_SpecialSilverWheelInstallScaledSpriteMatrix(task + 4, *(ShortQuad *)((char *)task + 0xC), 0x1600 /* 1.375 */);
     g_BattleSpecialSilverWheelSpriteData.kiengiriSpriteArgWord = *(short *)((char *)task + 2);
     g_BattleSpecialSilverWheelDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSilverWheelSpriteData, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSilverWheelDrawListHandle);
     if (g_BattleIsPaused == 0 && (g_BattleSpecialSilverWheelSpriteData.spriteResource) != 0) {
@@ -270,7 +270,7 @@ void __cdecl BattleFx_SpecialSilverWheelVariantSpriteTask(void)
     entryIds[3] = 4;
     entryIds[4] = 5;
     entryIds[5] = 6;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x3000 /* 3.0 */, 0);
     *(short *)((char *)&g_BattleSpecialSilverWheelColor2 + 0x4) = task->frameIndex;
     ((BattleSpecSilverWheelSpriteData *)&g_BattleSpecialSilverWheelSpriteData)->frameTable = Gfx_ModelTableGetLoadedRecord(entryIds[task->variantIndex], g_BattleSpecialSilverWheelLoadedRes);
     ((BattleSpecSilverWheelSpriteData *)&g_BattleSpecialSilverWheelSpriteData)->variantField = Gfx_ModelTableGetSpriteObject(entryIds[task->variantIndex], g_BattleSpecialSilverWheelLoadedRes);
@@ -304,17 +304,17 @@ void __cdecl BattleFx_SpecialSilverWheelTravelModelTask(void)
 
     frame.travelSlot = (BattleFxSilverWheelTravelModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecialSilverWheelModelReq.modelResField) = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialSilverWheelLoadedRes);
-    if (frame.travelSlot->frameCounter < 0xC) {
+    if (frame.travelSlot->frameCounter < 12) {
         frame.clampedCounter = frame.travelSlot->frameCounter;
     } else {
-        frame.clampedCounter = 0xC;
+        frame.clampedCounter = 12;
     }
     frame.progress = *(short *)&frame.clampedCounter;
-    frame.rotX.vx = (frame.progress << 0xA) / 0xC + 0x400;
+    frame.rotX.vx = (frame.progress << 10) / 12 + 0x400;
     frame.rotX.vy = frame.travelSlot->angleY;
     frame.rotX.vz = -frame.travelSlot->frameCounter << 9;
     RotMatrix(&frame.rotX, &frame.rotMatrix);
-    frame.scaleX.vz = ((frame.progress << 8) + 0x800) * g_BattleActorRecords[frame.travelSlot->battleActorIndex].radius / 0x258;
+    frame.scaleX.vz = ((frame.progress << 8) + 0x800) * g_BattleActorRecords[frame.travelSlot->battleActorIndex].radius / 600;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
@@ -325,7 +325,7 @@ void __cdecl BattleFx_SpecialSilverWheelTravelModelTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecialSilverWheelModelReq.stepOffset = g_BattleSpecialSilverWheelStep * 0x258;
+    g_BattleSpecialSilverWheelModelReq.stepOffset = g_BattleSpecialSilverWheelStep * 600;
     g_BattleSpecialSilverWheelModelReq.flags = (g_BattleSpecialSilverWheelStep != 0 ? 8 : 0) + 0x80;
     g_BattleSpecialSilverWheelDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSilverWheelModelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSilverWheelDrawListHandle);
     if (g_BattleIsPaused != 0) {
@@ -334,11 +334,11 @@ void __cdecl BattleFx_SpecialSilverWheelTravelModelTask(void)
     frame.travelSlot->posX += frame.travelSlot->velocityX;
     frame.travelSlot->posY += frame.travelSlot->velocityY;
     frame.travelSlot->posZ += frame.travelSlot->velocityZ;
-    if (frame.travelSlot->frameCounter > 0xC) {
+    if (frame.travelSlot->frameCounter > 12) {
         g_BattleSpecialSilverWheelStep++;
     }
     (frame.travelSlot->frameCounter)++;
-    if (frame.travelSlot->frameCounter == 0x12) {
+    if (frame.travelSlot->frameCounter == 18) {
         frame.travelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

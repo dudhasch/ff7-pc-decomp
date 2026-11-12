@@ -31,7 +31,7 @@ unsigned char g_bssPad_00e0460c[4] = {0};
 // g_WorldBlockLoadSlots is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0xe04610..0xe04910 are aliases.
 // GLOBAL: FF7 0x00e04610
-unsigned char g_WorldBlockLoadSlots[0x300] = {0};
+unsigned char g_WorldBlockLoadSlots[768] = {0};
 // GLOBAL: FF7 0x00e04910
 int g_WorldStreamFocusSmoothing = 0;
 unsigned char g_bssPad_00e04914[4] = {0};
@@ -49,7 +49,7 @@ unsigned char g_bssPad_00e28974[4] = {0};
 // The mesh-decompression queue's 64 eight-byte nodes (next, mesh record): World_InitMeshQueuePool links them
 // into the free list g_WorldFreeBlockNodeList, each node's next word the address of the node after it.
 // GLOBAL: FF7 0x00e28978
-int g_WorldMeshBlockNodes[0x80] = {0};
+int g_WorldMeshBlockNodes[128] = {0};
 // GLOBAL: FF7 0x00e28b78
 int g_pWorldMeshDecompressQueue = 0;
 // GLOBAL: FF7 0x00e28b7c
@@ -74,7 +74,7 @@ int g_WorldProbeRowCounter = 0;
 // The debug position text World_WalkTerrainAndPlaceEntities formats (sprintf) and World_DrawDebugTextOverlay
 // draws (TextOutA); the span to g_WorldBlockLoadBudget is the buffer's.
 // GLOBAL: FF7 0x00e28c48
-char g_WorldWalkDebugText[0x64] = {0};
+char g_WorldWalkDebugText[100] = {0};
 // GLOBAL: FF7 0x00e28cac
 int g_WorldBlockLoadBudget = 0;
 // GLOBAL: FF7 0x00e28cb0
@@ -176,7 +176,7 @@ void __cdecl World_LzsDecompress(unsigned char *src, unsigned char *dst)
 
 /*
  * For each requested mesh-index output, shifts position X or Z right 13 bits, stores a short, then
- * adjusts it once by 0x24 columns or 0x1C rows when below zero or at/above the corresponding
+ * adjusts it once by 36 columns or 28 rows when below zero or at/above the corresponding
  * extent. This is a single wrap step rather than full range normalization. An optional three-short
  * offset output receives low 13 bits of X, zero Y and low 13 bits of Z.
  */
@@ -184,19 +184,19 @@ void __cdecl World_LzsDecompress(unsigned char *src, unsigned char *dst)
 void __cdecl WorldMap_PositionToMesh(void *position, void *subOffset, void *meshX, void *meshZ)
 {
     if (meshX != 0) {
-        *(short *)meshX = ((VECTOR *)position)->vx >> 0xD;
+        *(short *)meshX = ((VECTOR *)position)->vx >> 13;
         if (*(short *)meshX < 0) {
-            *(short *)meshX += 0x24;
-        } else if (*(short *)meshX >= 0x24) {
-            *(short *)meshX -= 0x24;
+            *(short *)meshX += 36;
+        } else if (*(short *)meshX >= 36) {
+            *(short *)meshX -= 36;
         }
     }
     if (meshZ != 0) {
-        *(short *)meshZ = ((VECTOR *)position)->vz >> 0xD;
+        *(short *)meshZ = ((VECTOR *)position)->vz >> 13;
         if (*(short *)meshZ < 0) {
-            *(short *)meshZ += 0x1C;
-        } else if (*(short *)meshZ >= 0x1C) {
-            *(short *)meshZ -= 0x1C;
+            *(short *)meshZ += 28;
+        } else if (*(short *)meshZ >= 28) {
+            *(short *)meshZ -= 28;
         }
     }
     if (subOffset != 0) {
@@ -215,12 +215,12 @@ void __cdecl WorldMap_PositionToMesh(void *position, void *subOffset, void *mesh
 void __cdecl World_WrapPositionToMapBounds(void *position)
 {
     if (position != 0) {
-        if (((VECTOR *)position)->vx >= 0x48000) {
+        if (((VECTOR *)position)->vx >= 294912) {
             ((VECTOR *)position)->vx -= 0x48000;
         } else if (((VECTOR *)position)->vx < 0) {
             ((VECTOR *)position)->vx += 0x48000;
         }
-        if (((VECTOR *)position)->vz >= 0x38000) {
+        if (((VECTOR *)position)->vz >= 229376) {
             ((VECTOR *)position)->vz -= 0x38000;
         } else if (((VECTOR *)position)->vz < 0) {
             ((VECTOR *)position)->vz += 0x38000;
@@ -251,14 +251,14 @@ void __cdecl World_UpdateStreamFocus(WorldStreamFocusData *target, int smooth)
         }
         if (g_WorldStreamFocusChanged) {
             if (target->x - g_WorldStreamFocus.x > (0x12 << 13)) {
-                g_WorldStreamFocus.x += (0x24 << 13);
+                g_WorldStreamFocus.x += (36 << 13);
             } else if (target->x - g_WorldStreamFocus.x < -(0x12 << 13)) {
-                g_WorldStreamFocus.x -= (0x24 << 13);
+                g_WorldStreamFocus.x -= (36 << 13);
             }
             if (target->z - g_WorldStreamFocus.z > (0xE << 13)) {
-                g_WorldStreamFocus.z += (0x1C << 13);
+                g_WorldStreamFocus.z += (28 << 13);
             } else if (target->z - g_WorldStreamFocus.z < -(0xE << 13)) {
-                g_WorldStreamFocus.z -= (0x1C << 13);
+                g_WorldStreamFocus.z -= (28 << 13);
             }
             g_WorldStreamFocus.x = (g_WorldStreamFocus.x * 3 + target->x) >> 2;
             g_WorldStreamFocus.z = (g_WorldStreamFocus.z * 3 + target->z) >> 2;
@@ -354,7 +354,7 @@ void __cdecl World_InitBlockPools(void)
     g_WorldMeshBlockBuffer = g_WorldProbeOffsets;
     g_WorldBlockSlotList = 0;
     g_WorldStreamingEnabled = g_WorldBlockSlotList;
-    for (i = 0; i < 0x13; i++) {
+    for (i = 0; i < 19; i++) {
         *(unsigned char **)&g_WorldMeshRecords[i * 8] = &g_WorldMeshRecords[(i + 1) * 8];
     }
     *(unsigned char **)&g_WorldMeshRecords[i * 8] = 0;
@@ -376,7 +376,7 @@ void __cdecl World_InitMeshQueuePool(void)
 {
     short i;
 
-    for (i = 0; i < 0x3F; i++) {
+    for (i = 0; i < 63; i++) {
         *(int *)((char *)&g_WorldMeshBlockNodes + i * 8) = i * 8 + (int)&g_WorldMeshBlockNodes[2];
     }
     *(int *)((char *)&g_WorldMeshBlockNodes + i * 8) = 0;
@@ -394,7 +394,7 @@ void __cdecl World_InitMeshRecordPool(void)
 {
     short i;
 
-    for (i = 0; i < 0x1F; i++) {
+    for (i = 0; i < 31; i++) {
         *(int *)((char *)&g_WorldBlockLoadSlots + i * 0x18) = (i + 1) * 0x18 + (int)&g_WorldBlockLoadSlots;
     }
     *(int *)((char *)&g_WorldBlockLoadSlots + i * 0x18) = 0;
@@ -497,20 +497,20 @@ void __cdecl World_UpdateTerrainStreaming(short wAngle, int placeEntities)
     WorldEntity_GetPlayerPrevPosition((VECTOR *)&frame.prevPlayerPos);
     if (g_WorldTerrainStreamingEnabled) {
         frame.lookAheadOffset.vx = frame.lookAheadOffset.vy = 0;
-        frame.lookAheadOffset.vz = -0x2000;
+        frame.lookAheadOffset.vz = -8192;
         WorldMap_RotateVec3ByYaw((SVECTOR *)&frame.lookAheadOffset.vx, -wAngle);
         frame.lookAheadPos.x = frame.playerPos.x + frame.lookAheadOffset.vx;
         frame.lookAheadPos.y = frame.playerPos.y;
         frame.lookAheadPos.z = frame.playerPos.z + frame.lookAheadOffset.vz;
         if (frame.lookAheadPos.x < 0) {
-            frame.lookAheadPos.x += 0x24 << 13;
-        } else if (frame.lookAheadPos.x >= 0x24 << 13) {
-            frame.lookAheadPos.x -= 0x24 << 13;
+            frame.lookAheadPos.x += 36 << 13;
+        } else if (frame.lookAheadPos.x >= 36 << 13) {
+            frame.lookAheadPos.x -= 36 << 13;
         }
         if (frame.lookAheadPos.z < 0) {
-            frame.lookAheadPos.z += 0x1c << 13;
-        } else if (frame.lookAheadPos.z >= 0x1c << 13) {
-            frame.lookAheadPos.z -= 0x1c << 13;
+            frame.lookAheadPos.z += 28 << 13;
+        } else if (frame.lookAheadPos.z >= 28 << 13) {
+            frame.lookAheadPos.z -= 28 << 13;
         }
         World_PlanResidentBlocks((int *)&frame.lookAheadPos);
         World_PlanResidentMeshes((int *)&frame.playerPos,
@@ -567,10 +567,10 @@ void __cdecl World_PlanResidentBlocks(int *pos)
     int zmax;
     int z0;
 
-    xmin = (pos[0] - 0x4000) / 0x8000;
-    z0 = (pos[2] - 0x4000) / 0x8000;
-    x1 = (pos[0] + 0x4000) / 0x8000;
-    zmax = (pos[2] + 0x4000) / 0x8000;
+    xmin = (pos[0] - 0x4000) / 32768;
+    z0 = (pos[2] - 16384) / 0x8000;
+    x1 = (pos[0] + 16384) / 0x8000;
+    zmax = (pos[2] + 0x4000) / 32768;
     head = 0;
     for (cellZ = z0; cellZ <= zmax; cellZ++) {
         for (cellX = xmin; cellX <= x1; cellX++) {
@@ -755,8 +755,8 @@ void __cdecl World_ServiceNearestBlockLoad(short column, short row)
                         horizDist = -(cellCol - column);
                     }
                     dxWrap = horizDist;
-                    if (dxWrap > 0x12) {
-                        dxWrap = 0x24 - dxWrap;
+                    if (dxWrap > 18) {
+                        dxWrap = 36 - dxWrap;
                     }
                     if (rowIdx - row > 0) {
                         aa = rowIdx - row;
@@ -764,8 +764,8 @@ void __cdecl World_ServiceNearestBlockLoad(short column, short row)
                         aa = -(rowIdx - row);
                     }
                     wrappedDz = aa;
-                    if (wrappedDz > 0x0E) {
-                        wrappedDz = 0x1C - wrappedDz;
+                    if (wrappedDz > 14) {
+                        wrappedDz = 28 - wrappedDz;
                     }
                     distance = dxWrap + wrappedDz;
                     if (bestDist > distance) {
@@ -821,12 +821,12 @@ void __cdecl World_ReadBlockFromMapFile(WorldBlockLoadRequest *req)
 
     variant = World_GetMapVariant();
     g_WorldMeshQueueHead = variant == 0
-                       ? (g_WorldProgress > 0 && req->cellIndex == 0x32   ? 0x3F
-                          : g_WorldProgress > 1 && req->cellIndex == 0x29 ? 0x40
-                          : g_WorldProgress > 1 && req->cellIndex == 0x2A ? 0x41
-                          : g_WorldProgress > 2 && req->cellIndex == 0x3C ? 0x42
-                          : g_WorldProgress > 3 && req->cellIndex == 0x2F ? 0x43
-                          : g_WorldProgress > 3 && req->cellIndex == 0x30 ? 0x44
+                       ? (g_WorldProgress > 0 && req->cellIndex == 50   ? 0x3F
+                          : g_WorldProgress > 1 && req->cellIndex == 41 ? 0x40
+                          : g_WorldProgress > 1 && req->cellIndex == 42 ? 0x41
+                          : g_WorldProgress > 2 && req->cellIndex == 60 ? 0x42
+                          : g_WorldProgress > 3 && req->cellIndex == 47 ? 0x43
+                          : g_WorldProgress > 3 && req->cellIndex == 48 ? 0x44
                                                                                                : req->cellIndex)
                        : req->cellIndex;
     blk = g_WorldMeshQueueHead;
@@ -1064,7 +1064,7 @@ void __cdecl World_DecompressMeshIntoSlot(WorldMeshSlot *slot, int slotEntry)
     hdr = dst;
     slot->vertices = hdr + 4;
     slot->vertexCount = *(short *)hdr;
-    slot->faces = slot->vertices + slot->vertexCount * 0xC;
+    slot->faces = slot->vertices + slot->vertexCount * 12;
     slot->facesEnd = slot->faces + *(short *)((char *)hdr + 2) * 8;
     World_ShrinkMeshUVs((unsigned char *)slot->vertices, (unsigned char *)(slot->vertices + slot->vertexCount * 0xC), 1);
 }
@@ -1204,7 +1204,7 @@ int __cdecl World_ExpireStaleMeshRecordsAndCount(void)
     previousRec = 0;
     recordPtr = (WorldMeshRecord *)g_WorldMeshRecordList;
     while (recordPtr != 0) {
-        if ((recordPtr->staleFrames)++ >= 0x96) {
+        if ((recordPtr->staleFrames)++ >= 150) {
             if (previousRec != 0) {
                 previousRec->next = recordPtr->next;
             } else {
@@ -1811,8 +1811,8 @@ void __cdecl World_PreloadBlocksFromBot(void)
     int mode;
 
     WorldEntity_GetPlayerPosition((VECTOR *)position);
-    column = position[0] - 0x4000 >> 15;
-    blockRow = position[2] - 0x4000 >> 15;
+    column = position[0] - 16384 >> 15;
+    blockRow = position[2] - 16384 >> 15;
     mode = World_GetMapVariant();
     if (mode == 2) {
         column -= 3;
@@ -1839,7 +1839,7 @@ void __cdecl World_PreloadBlocksFromBot(void)
             block = (blockRow - 4) * 3 + column + 0x4C;
         }
     }
-    World_ReadLooseFileBlock((int)World_BuildLoosePath(1, mode), block * 0xB800 << 2, 0x2E000, g_WorldStreamingSlot, 0);
+    World_ReadLooseFileBlock((int)World_BuildLoosePath(1, mode), block * 47104 << 2, 188416, g_WorldStreamingSlot, 0);
     *(int *)&g_WorldMeshBlockBuffer = (int)&g_WorldProbeOffsets + 0x20;
     g_WorldStreamingEnabled = (int)&g_WorldProbeOffsets;
     *(int *)((char *)&g_WorldProbeOffsets + 0x18) = 0;

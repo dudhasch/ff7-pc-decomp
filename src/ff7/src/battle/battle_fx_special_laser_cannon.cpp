@@ -254,7 +254,7 @@ void __cdecl BattleFx_SpecialLaserCannonCyclingSpriteTask(void)
     task = (BattleFxLaserCannonChild *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecLaserCannon_SpriteReq1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecLaserCannon_LoadedRes);
     g_BattleSpecLaserCannon_SpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecLaserCannon_LoadedRes);
-    BattleFx_InstallBillboardMatrix(task->firstPos, 0x1000, 0xFFFFFF38);
+    BattleFx_InstallBillboardMatrix(task->firstPos, 0x1000 /* 1.0 */, 0xFFFFFF38);
     g_BattleSpecLaserCannon_SpriteReq1.frame = task->frame % 3;
     g_BattleSpecLaserCannon_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecLaserCannon_SpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLaserCannon_DrawListHandle);
     if (g_BattleIsPaused == 0) {
@@ -275,7 +275,7 @@ void __cdecl BattleFx_SpecialLaserCannonSequentialSpriteTask(void)
     task = (BattleFxLaserCannonChild *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecLaserCannon_SpriteReq2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecLaserCannon_LoadedRes);
     g_BattleSpecLaserCannon_SpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecLaserCannon_LoadedRes);
-    BattleFx_InstallBillboardMatrix(task->firstPos, 0x1000, 0xFFFFFF38);
+    BattleFx_InstallBillboardMatrix(task->firstPos, 0x1000 /* 1.0 */, 0xFFFFFF38);
     g_BattleSpecLaserCannon_SpriteReq2.frame = task->frame;
     g_BattleSpecLaserCannon_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecLaserCannon_SpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecLaserCannon_DrawListHandle);
     if (g_BattleIsPaused == 0) {

@@ -240,7 +240,7 @@ int __cdecl Mini_ChocoboAllocSurface16Bit(int width, int height)
     int buffer;
 
     // STRING: FF7 0x0097c748
-    buffer = (int)(GameHeapAllocRaw(width * height << 1, "C:\\FF7\\chocobo\\ch_ddraw.cpp", 0xE4));
+    buffer = (int)(GameHeapAllocRaw(width * height << 1, "C:\\FF7\\chocobo\\ch_ddraw.cpp", 228));
     if (buffer == 0) {
         return 0;
     } else {

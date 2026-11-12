@@ -130,7 +130,7 @@ void __cdecl Credits_UpdateAndDrawFadeOverlay(void)
         if (g_CreditsFadeOverlayAlpha.value < 0) {
             g_CreditsFadeOverlayActive = 0;
             frame.alpha = 0;
-        } else if (g_CreditsFadeOverlayAlpha.value > 0xFF) {
+        } else if (g_CreditsFadeOverlayAlpha.value > 255) {
             g_CreditsFadeOverlayActive = 0;
             frame.alpha = 0xFF;
         } else {
@@ -522,7 +522,7 @@ void __cdecl Credits_DrawBackground1x(void)
         *g_CreditsFadeOverlayBatch.backdropA->colorSignedBytePtr = 0;
         g_CreditsFadeOverlayBatch.backdropA->texturePage = 0;
     }
-    originX += 0x100;
+    originX += 256;
     if (AcquireBatchNode(1, (void *)g_CreditsFadeOverlayBatch.packetSlotB) != 0) {
         pRightTopLeft = g_CreditsFadeOverlayBatch.backdropB->vertices;
         pRightTopLeft->x = originX;
@@ -1193,8 +1193,8 @@ void __cdecl Credits_DrawAfterTextQuads2x(void)
     GfxTlVertex *secondBottomRight;
 
     calcDepth = FLOAT_0_1_BITS;
-    xLeft = 0x83;
-    rightX = 0x144;
+    xLeft = 131;
+    rightX = 324;
     wide = 0xC8;
     texWidth = 0.78125f;
     if (AcquireBatchNode(2, g_CreditsTextState) != 0) {
@@ -1313,8 +1313,8 @@ void __cdecl Credits_DrawAfterTextQuads1x(void)
     zVal = FLOAT_0_1_BITS;
     originX = g_CreditsViewportX;
     viewY = g_CreditsViewportY;
-    xLeft = 0x43;
-    rightX = 0xA2;
+    xLeft = 67;
+    rightX = 162;
     wide = 0x64;
     textureWidth = 0.390625f;
     if (AcquireBatchNode(2, g_CreditsTextState) != 0) {
@@ -1415,16 +1415,16 @@ void __cdecl Credits_InitParticleRecords(void)
     int lowResult;
 
     lowResult = GetUiScalingMode() != MAIN_GRAPHICS_MODE_640X480;
-    for (strip = 0; strip < 0x4C; strip++) {
+    for (strip = 0; strip < 76; strip++) {
         g_CreditsParticleRecords[strip].fadeLevel = 0xFF;
-        g_CreditsParticleRecords[strip].fadeDelta = -(0x4C - strip + 4) >> 1;
+        g_CreditsParticleRecords[strip].fadeDelta = -(76 - strip + 4) >> 1;
         g_CreditsParticleRecords[strip].active = 1;
     }
-    g_CreditsParticleRecords[0].stripCount = 0x4C;
-    g_CreditsParticleStartX = (lowResult != 0 ? 0x42 : 0x83) + g_CreditsViewportX;
-    g_CreditsParticleStartY = (0xE0 >> lowResult) + g_CreditsViewportY;
+    g_CreditsParticleRecords[0].stripCount = 76;
+    g_CreditsParticleStartX = (lowResult != 0 ? 66 : 131) + g_CreditsViewportX;
+    g_CreditsParticleStartY = (224 >> lowResult) + g_CreditsViewportY;
     g_CreditsParticleStepX = lowResult != 0 ? 3 : 5;
-    g_CreditsParticleHeight = 0x20 >> lowResult;
+    g_CreditsParticleHeight = 32 >> lowResult;
 }
 
 /*
@@ -1450,7 +1450,7 @@ int __cdecl Credits_UpdateFadeStrips(void)
     diffuse.value = 0;
     if (count > 0) {
         if (AcquireBatchNode(count, (void *)g_CreditsFadeOverlayBatch.renderObject) != 0) {
-            for (stripIndex = 0; stripIndex < 0x4C; stripIndex++) {
+            for (stripIndex = 0; stripIndex < 76; stripIndex++) {
                 if (g_CreditsParticleRecords[stripIndex].active == 0) {
                     continue;
                 }

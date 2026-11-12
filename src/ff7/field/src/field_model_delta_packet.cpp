@@ -34,7 +34,7 @@ int __cdecl Field_ApplyModelDeltaPacket(PolygonModel *container, FieldModelComma
     red = (*(unsigned char *)&deltaPacket->pHigh) << 8 & 0xFF00 | deltaPacket->command & 0xFF;
     green = deltaPacket->qHigh << 8 & 0xFF00 | deltaPacket->qLow & 0xFF;
     blue = deltaPacket->rHigh << 8 & 0xFF00 | deltaPacket->rLow & 0xFF;
-    if (red > 0xFF || (green > 0xFF || (blue > 0xFF || (red < -255 || (green < -255 || blue < -255))))) {
+    if (red > 255 || (green > 255 || (blue > 255 || (red < -255 || (green < -255 || blue < -255))))) {
         return 0;
     } else {
         Field_ApplyColorDeltaToContainer(container, (short)red, (short)green, (short)blue);

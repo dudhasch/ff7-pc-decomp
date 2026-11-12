@@ -124,25 +124,25 @@ void __cdecl BattleFx_MagicBioTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step >= 0 && taskPtr->step < 0xF && taskPtr->step % 4 == 0) {
+    if (taskPtr->step >= 0 && taskPtr->step < 15 && taskPtr->step % 4 == 0) {
         particle = (BattleFxBioParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBioRisingFadeSpriteTask);
-        particle->posX = taskPtr->spawnX + rand() % 0x3E8 + -0x1F4;
+        particle->posX = taskPtr->spawnX + rand() % 1000 + -500;
         particle->posY = 0;
-        particle->posZ = taskPtr->spawnZ + rand() % 0x3E8 + -0x1F4;
+        particle->posZ = taskPtr->spawnZ + rand() % 1000 + -500;
         particle->scale = rand() % 0x500 + 0x1000;
-        particle->timer = rand() % 0x5A + 0x3C;
+        particle->timer = rand() % 90 + 60;
     }
-    if (taskPtr->step >= 0 && taskPtr->step < 0xF && taskPtr->step % 2 == 0) {
+    if (taskPtr->step >= 0 && taskPtr->step < 15 && taskPtr->step % 2 == 0) {
         particle = (BattleFxBioParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBioSixFrameSpriteTask);
-        particle->posX = taskPtr->spawnX + rand() % 0x320 + -0x190;
-        particle->posY = taskPtr->spawnY + rand() % 0x320 + -0x190;
-        particle->posZ = taskPtr->spawnZ + rand() % 0x320 + -0x190;
+        particle->posX = taskPtr->spawnX + rand() % 800 + -400;
+        particle->posY = taskPtr->spawnY + rand() % 800 + -400;
+        particle->posZ = taskPtr->spawnZ + rand() % 800 + -400;
         particle->scale = rand() % 0x900 + 0x700;
     }
-    if (taskPtr->step == 0xF) {
+    if (taskPtr->step == 15) {
         Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
     }
-    if (taskPtr->step == 0xF) {
+    if (taskPtr->step == 15) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (taskPtr->step)++;
@@ -161,11 +161,11 @@ void __cdecl BattleFx_MagicBioRisingFadeSpriteTask(void)
     BIO_DRAW_REQ->tableEntry = Gfx_ModelTableGetLoadedRecord(0, g_BattleMagicBio_ModelTable);
     BIO_DRAW_REQ->drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicBio_ModelTable);
     localFrame = task->frame;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         BIO_DRAW_REQ->color = 0x2C808080;
     } else {
-        localFrame -= 0xA;
-        if (localFrame < 0xA) {
+        localFrame -= 10;
+        if (localFrame < 10) {
             ((char *)&BIO_DRAW_REQ->color)[3] = 0x2E;
             ((char *)&BIO_DRAW_REQ->color)[2] = localFrame * -0x80 / 0xA + 0x80;
             ((char *)&BIO_DRAW_REQ->color)[1] = ((char *)&BIO_DRAW_REQ->color)[2];

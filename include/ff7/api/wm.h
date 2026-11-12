@@ -647,7 +647,7 @@ void __cdecl World_FreeArena(void);
 /* wmfile.cpp */
 extern int g_WorldCurrentTextureSetId;
 extern short g_WorldAnimTexturePages[22];
-extern struct GfxRenderObject *g_WorldTexturePageRenderObjects[0x11A];
+extern struct GfxRenderObject *g_WorldTexturePageRenderObjects[282];
 extern struct GfxRenderObject *g_WorldRadarRenderObject;
 extern struct GfxRenderObject *g_WorldMiniMapRenderObject;
 extern struct GfxRenderObject *g_WorldTerrainRenderObject;
@@ -739,11 +739,11 @@ struct WorldTriangleCache;
 struct VECTOR;
 
 /* wm_world_camera_accessors.cpp */
-extern unsigned short g_WorldEncounterTable[0x450];
+extern unsigned short g_WorldEncounterTable[1104];
 int __cdecl World_SampleGroundAtEntity(struct WorldTerrainChunkInfo *chunk, struct SVECTOR *position, struct WorldTriangleCache *cache, short *height, struct WorldTerrainTriangle **triangle, short *terrain, unsigned char model);
 
 /* wm_world_effect_nodes.cpp */
-extern unsigned char g_WorldEffectRecordTable[0x6d0];
+extern unsigned char g_WorldEffectRecordTable[1744];
 extern struct VECTOR g_WorldEffectOrigin;
 extern unsigned char g_WorldEffectNodePool[0x20 * 0x54];
 void __cdecl WorldEntity_SpawnTerrainEffects(struct WorldActor *actor, int active);
@@ -778,18 +778,18 @@ void __cdecl WorldEntity_RestoreFromVehicleSlot(struct WorldActor *actor);
 void __cdecl World_SetVehicleReturnPosition(struct VECTOR *);
 
 /* wm_world_message_helpers.cpp */
-extern unsigned char g_WorldMsgDigitGlyphs[0x10];
+extern unsigned char g_WorldMsgDigitGlyphs[16];
 extern short g_WorldMsgWindowScrollX[4];
 extern short g_WorldMsgWindowCursorPos[4];
 extern unsigned char g_WorldMsgTextBuffer[4][256];
 
 /* wm_world_terrain_geometry.cpp */
-extern struct WorldMeshVertex g_WorldMeshVertices[0x80];
-extern struct WorldProjectedVertexEntry g_WorldProjectedVertices[0x80];
-extern struct WorldTransformedVertexEntry g_WorldTransformedVertices[0x80];
+extern struct WorldMeshVertex g_WorldMeshVertices[128];
+extern struct WorldProjectedVertexEntry g_WorldProjectedVertices[128];
+extern struct WorldTransformedVertexEntry g_WorldTransformedVertices[128];
 
 /* wm_world_terrain_streaming.cpp */
-extern char g_WorldWalkDebugText[0x64];
+extern char g_WorldWalkDebugText[100];
 void __cdecl World_UpdateStreamFocus(struct WorldStreamFocusData *target, int smooth);
 void __cdecl World_GetStreamFocus(struct WorldStreamFocusData *focus);
 struct WorldGroundProbe *__cdecl World_ResolveProbesOnMesh(struct WorldTerrainChunkInfo *chunk, struct WorldProbeRow *rows, short x, short y);
@@ -799,8 +799,8 @@ void __cdecl World_FillProbeRow(struct WorldProbeRow *row, struct SVECTOR *posit
 void __cdecl World_SampleZolomHeadGround(struct WorldTerrainChunkInfo *chunk);
 
 /* wmfile.cpp */
-extern short g_WorldAnimGroupPageOrder[0x16];
-extern void * g_WorldTerrainAnimFrameRenderObjects[0x6c];
+extern short g_WorldAnimGroupPageOrder[22];
+extern void * g_WorldTerrainAnimFrameRenderObjects[108];
 
 /* wm_world_camera_accessors.cpp */
 extern char g_WorldDebugBuffer[0x100];

@@ -120,14 +120,14 @@ void __cdecl Mini_CoasterDrawActorAndHitTest(CoasterNode *actor, CoasterActor *t
         g_pCoasterRenderer->drawActor(&frame.model[0]);
     }
     g_pCoasterRenderer->projectEight(target->boundingBox, &target->boundingYX[0]);
-    frame.ys[0] = (target->boundingYX[0] & 0xFFFF0000) >> 0x10;
+    frame.ys[0] = (target->boundingYX[0] & 0xFFFF0000) >> 16;
     frame.xs[0] = target->boundingYX[0] & 0xFFFF;
     frame.minX = frame.xs[0];
     frame.maxX = frame.xs[0];
     frame.minY = frame.ys[0];
     frame.maxY = frame.ys[0];
     for (frame.index = 1; frame.index < 6; frame.index++) {
-        frame.ys[frame.index] = (target->boundingYX[frame.index] & 0xFFFF0000) >> 0x10;
+        frame.ys[frame.index] = (target->boundingYX[frame.index] & 0xFFFF0000) >> 16;
         frame.xs[frame.index] = target->boundingYX[frame.index] & 0xFFFF;
         if (frame.minX > frame.xs[frame.index]) {
             frame.minX = frame.xs[frame.index];
@@ -183,15 +183,15 @@ void __cdecl Mini_CoasterDrawPlayerCar(CoasterNode *car)
     }
     frame.points = g_CoasterCarModelHandle->vertices;
     g_pCoasterRenderer->projectThree((void *)frame.points, &frame.screen[0]);
-    g_CoasterCarScreenY = (frame.screen[1] & 0xFFFF0000) >> 0x10;
+    g_CoasterCarScreenY = (frame.screen[1] & 0xFFFF0000) >> 16;
     g_CoasterCarScreenX = frame.screen[1] & 0xFFFF;
-    g_CoasterCarPoint2ScreenY = (frame.screen[2] & 0xFFFF0000) >> 0x10;
+    g_CoasterCarPoint2ScreenY = (frame.screen[2] & 0xFFFF0000) >> 16;
     g_CoasterCarPoint2ScreenX = frame.screen[2] & 0xFFFF;
-    frame.points = g_CoasterCarModelHandle->vertices + 0x24;
+    frame.points = g_CoasterCarModelHandle->vertices + 36;
     g_pCoasterRenderer->projectThree((void *)frame.points, &frame.screen[0]);
-    g_CoasterShotCharge = (frame.screen[1] & 0xFFFF0000) >> 0x10;
+    g_CoasterShotCharge = (frame.screen[1] & 0xFFFF0000) >> 16;
     g_CoasterChargeCenterX = frame.screen[1] & 0xFFFF;
-    g_CoasterCrosshairX = (frame.screen[2] & 0xFFFF0000) >> 0x10;
+    g_CoasterCrosshairX = (frame.screen[2] & 0xFFFF0000) >> 16;
     g_CoasterCrosshairY = frame.screen[2] & 0xFFFF;
 }
 
@@ -232,7 +232,7 @@ void __cdecl Mini_CoasterDrawSceneryStream(void)
         railIdx = g_CoasterSceneryListHead;
         g_pCoasterRenderer->setMatrix((int *)&g_CoasterCameraMatrixBuf);
         do {
-            recordPtr = sceneryBase + railIdx * 0x24;
+            recordPtr = sceneryBase + railIdx * 36;
             if (g_CoasterDrawThisTick != 0) {
                 g_pCoasterRenderer->drawScenery((void *)recordPtr);
             }
@@ -362,15 +362,15 @@ void __cdecl Mini_CoasterSampleTrack(unsigned int distance, int upOffset, VECTOR
     local.gammaIncrement = local.camera1->vz - local.camera0->vz;
     if (local.alphaIncrement > 0x800)
         local.alphaIncrement -= 0x1000;
-    if (local.betaIncrement > 0x800)
+    if (local.betaIncrement > 2048)
         local.betaIncrement -= 0x1000;
-    if (local.gammaIncrement > 0x800)
+    if (local.gammaIncrement > 2048)
         local.gammaIncrement -= 0x1000;
     if (local.alphaIncrement < -0x800)
         local.alphaIncrement += 0x1000;
-    if (local.betaIncrement < -0x800)
+    if (local.betaIncrement < -2048)
         local.betaIncrement += 0x1000;
-    if (local.gammaIncrement < -0x800)
+    if (local.gammaIncrement < -2048)
         local.gammaIncrement += 0x1000;
     local.alphaIncrement = local.fraction * local.alphaIncrement;
     local.betaIncrement = local.fraction * local.betaIncrement;

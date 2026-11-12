@@ -111,7 +111,7 @@ void __cdecl BattleFx_SpecialEnterSearchScope(short targetMask, int actorId)
     direction[2] = line->endZ - line->startZ;
     Gte_BuildLookBasisFromDirection(direction, (short *)&g_BattleSpecialSearchScopeLookBasis);
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2 = 0;
-    Battle_StartFixedPointRamp(0x400, 0xA);
+    Battle_StartFixedPointRamp(0x400, 10);
     Battle_PlaySfxPannedToActor(0x62, (short)actorId, 0x40);
 }
 
@@ -141,22 +141,22 @@ void __cdecl BattleFx_SpecialSearchScopeTimelineTask(void)
             weave->startY = taskPtr->startY;
             weave->startZ = taskPtr->startZ;
             weave->yaw = ArcTangentFixed(taskPtr->endX - taskPtr->startX, taskPtr->endZ - taskPtr->startZ);
-            weave->scaledLength = pathLen * 0x1500 / 0xAF0;
+            weave->scaledLength = pathLen * 5376 / 2800;
             weave->variant = i;
             weave->pathLength = pathLen;
         }
     }
-    if (taskPtr->step == 0x20) {
-        for (i = 0; i < 0xA; i++) {
+    if (taskPtr->step == 32) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleEffectScratch.targetMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x28) {
+    if (taskPtr->step == 40) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
     }
 }
 
@@ -185,13 +185,13 @@ void __cdecl BattleFx_SpecialSearchScopeDrawWeavingModelTask(void)
 
     frame.taskSlot = (BattleFxSearchScopeDrawWeavingModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.sign = (frame.taskSlot->variant >> 1) * 2 - 1;
-    frame.angleX.vx = SinFixed(frame.taskSlot->frameCounter << 8) / 0x28 * frame.sign;
+    frame.angleX.vx = SinFixed(frame.taskSlot->frameCounter << 8) / 40 * frame.sign;
     frame.baseAngleX.vx = frame.angleX.vx;
     frame.angleX.vy = (SinFixed(frame.taskSlot->frameCounter << 7) >> 4) * frame.sign;
     frame.baseAngleX.vy = frame.angleX.vy;
     frame.angleX.vz = 0;
     frame.baseAngleX.vz = frame.angleX.vz;
-    frame.angleX.vx -= 0x400;
+    frame.angleX.vx -= 0x400 /* 90 deg */;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialSearchScopeLookBasis, &frame.rotMatrix, &frame.rotMatrix);
     frame.scaleX.vy = frame.taskSlot->scaledLength;
@@ -244,11 +244,11 @@ void __cdecl BattleFx_SpecialSearchScopeDrawWeavingModelTask(void)
     if (frame.taskSlot->frameCounter < 8) {
         g_BattleSpecialSearchScopeScaleStep++;
     }
-    if (frame.taskSlot->frameCounter > 0x18) {
+    if (frame.taskSlot->frameCounter > 24) {
         g_BattleSpecialSearchScopeScaleStep--;
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x20) {
+    if (frame.taskSlot->frameCounter == 32) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -265,7 +265,7 @@ void __cdecl BattleFx_SpecialSearchScopeTwoStageAnimatedSpriteTask(void)
     rec = (BattleFxSearchScopeSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     tbl[0] = 2;
     tbl[1] = 3;
-    BattleFx_InstallBillboardMatrix(&rec->pointX, 0x2400, 0);
+    BattleFx_InstallBillboardMatrix(&rec->pointX, 0x2400 /* 2.25 */, 0);
     ((BattleFxSearchScopeTwoStageState *)&g_BattleSpecialSearchScopeResourceTable)->resourceField = Gfx_ModelTableGetLoadedRecord(tbl[rec->resourceIndex], g_BattleSpecialSearchScopeLoadedRes);
     ((BattleFxSearchScopeTwoStageState *)&g_BattleSpecialSearchScopeResourceTable)->resourceAlt = Gfx_ModelTableGetSpriteObject(tbl[rec->resourceIndex], g_BattleSpecialSearchScopeLoadedRes);
     *(short *)((char *)&g_BattleSpecialSearchScopeColor + 0x4) = rec->frame;

@@ -8,7 +8,7 @@
 enum CreditsSequenceState {
     CREDITS_SEQ_MOVIE = 0,          /* run the open movie; on stop: records, music volume 0x7F */
     CREDITS_SEQ_START_ROLL = 1,     /* music on, 3000-tick wait, fade in from opaque */
-    CREDITS_SEQ_ROLL = 2,           /* draw the credit records until 0x1D ticks, then open movie 2 */
+    CREDITS_SEQ_ROLL = 2,           /* draw the credit records until 29 ticks, then open movie 2 */
     CREDITS_SEQ_LOGO_MOVIE = 3,     /* run movie 2 with the logo faded in by its frame */
     CREDITS_SEQ_LOGO_HOLD = 4,      /* the logo for 3000 ms, then the strip, fade in */
     CREDITS_SEQ_LOGO_STRIP = 5,     /* logo and strip for 16000 ms, then fade out and music down */

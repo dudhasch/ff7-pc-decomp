@@ -28,7 +28,7 @@ void __cdecl D3DDetachViewport(GfxEngineContext *viewState)
     if (viewState != 0 && viewState->viewport != 0) {
         if (viewState->d3dDevice != 0) {
             // STRING: FF7 0x0091782c
-            CheckDirectDrawResult(((ComDirect3DDevice *)(viewState->d3dDevice))->DeleteViewport(viewState->viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x12);
+            CheckDirectDrawResult(((ComDirect3DDevice *)(viewState->d3dDevice))->DeleteViewport(viewState->viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 18);
         }
         viewState->viewport = 0;
     }
@@ -46,9 +46,9 @@ void __cdecl D3DCreateAndAttachViewport(GfxEngineContext *viewState)
         viewport = 0;
         D3DDetachViewport(viewState);
         // STRING: FF7 0x0091784c
-        if (CheckDirectDrawResult(((ComDirect3D *)(viewState->direct3D))->CreateViewport(&viewport, 0), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x25) != 0) {
+        if (CheckDirectDrawResult(((ComDirect3D *)(viewState->direct3D))->CreateViewport(&viewport, 0), "C:\\lib\\src\\graphics\\dx_view.cpp", 37) != 0) {
             // STRING: FF7 0x0091786c
-            if (CheckDirectDrawResult(((ComDirect3DDevice *)(viewState->d3dDevice))->AddViewport(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x27) != 0) {
+            if (CheckDirectDrawResult(((ComDirect3DDevice *)(viewState->d3dDevice))->AddViewport(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 39) != 0) {
                 viewState->viewport = viewport;
             }
         }
@@ -98,7 +98,7 @@ void __cdecl SetD3DViewportData(int viewport, GfxEngineContext *viewState)
 {
     if (viewState != 0 && viewState->viewport != 0) {
         // STRING: FF7 0x0091788c
-        CheckDirectDrawResult(((ComDirect3DViewport *)(viewState->viewport))->SetViewport(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x6C);
+        CheckDirectDrawResult(((ComDirect3DViewport *)(viewState->viewport))->SetViewport(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 108);
     }
 }
 
@@ -122,7 +122,7 @@ void __cdecl D3DDetachViewport2(GfxEngineContext *viewState)
     if (viewState != 0 && viewState->viewport2 != 0) {
         if (viewState->d3dDevice2 != 0) {
             // STRING: FF7 0x009178ac
-            CheckDirectDrawResult(((ComDirect3DDevice2 *)(viewState->d3dDevice2))->DeleteViewport(viewState->viewport2), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x82);
+            CheckDirectDrawResult(((ComDirect3DDevice2 *)(viewState->d3dDevice2))->DeleteViewport(viewState->viewport2), "C:\\lib\\src\\graphics\\dx_view.cpp", 130);
         }
         viewState->viewport2 = 0;
     }
@@ -140,9 +140,9 @@ void __cdecl D3DCreateAndAttachViewport2(GfxEngineContext *viewState)
         viewport = 0;
         D3DDetachViewport2(viewState);
         // STRING: FF7 0x009178cc
-        if (CheckDirectDrawResult(((ComDirect3D2 *)(viewState->direct3D2))->CreateViewport(&viewport, 0), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x95) != 0) {
+        if (CheckDirectDrawResult(((ComDirect3D2 *)(viewState->direct3D2))->CreateViewport(&viewport, 0), "C:\\lib\\src\\graphics\\dx_view.cpp", 149) != 0) {
             // STRING: FF7 0x009178ec
-            if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(viewState->d3dDevice2))->AddViewport(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x97) != 0) {
+            if (CheckDirectDrawResult(((ComDirect3DDevice2 *)(viewState->d3dDevice2))->AddViewport(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 151) != 0) {
                 viewState->viewport2 = viewport;
             }
         }
@@ -157,8 +157,8 @@ void __cdecl BuildD3DViewport(int originX, int originY, int width, int height, G
 {
     float aspectRatio;
 
-    ZeroFillMemory32(0x2C, viewport);
-    viewport->viewportSize = 0x2C;
+    ZeroFillMemory32(44, viewport);
+    viewport->viewportSize = 44;
     viewport->viewX = originX;
     viewport->viewY = originY;
     viewport->viewWidth = width;
@@ -193,7 +193,7 @@ void __cdecl SetD3DViewport2Data(int viewport, GfxEngineContext *context)
 {
     if (context != 0 && context->viewport2 != 0) {
         // STRING: FF7 0x0091790c
-        CheckDirectDrawResult(((ComDirect3DViewport2 *)(context->viewport2))->SetViewport2(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 0xD2);
+        CheckDirectDrawResult(((ComDirect3DViewport2 *)(context->viewport2))->SetViewport2(viewport), "C:\\lib\\src\\graphics\\dx_view.cpp", 210);
     }
 }
 
@@ -226,7 +226,7 @@ void __cdecl D3DViewportClear(int clearColor, int clearDepth, int value, GfxEngi
                     rect.right = context->displayWidth;
                     rect.bottom = context->displayHeight;
                     // STRING: FF7 0x0091792c
-                    CheckDirectDrawResult(((ComDirect3DViewport *)(context->viewport2))->Clear(count, (int)&rect, flags), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x106);
+                    CheckDirectDrawResult(((ComDirect3DViewport *)(context->viewport2))->Clear(count, (int)&rect, flags), "C:\\lib\\src\\graphics\\dx_view.cpp", 262);
                 }
             }
         } else if (context != 0 && context->viewport != 0 && context->backgroundMaterial != 0) {
@@ -244,7 +244,7 @@ void __cdecl D3DViewportClear(int clearColor, int clearDepth, int value, GfxEngi
                 rect.right = context->displayWidth;
                 rect.bottom = context->displayHeight;
                 // STRING: FF7 0x0091794c
-                CheckDirectDrawResult(((ComDirect3DViewport *)(context->viewport))->Clear(count, (int)&rect, flags), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x13D);
+                CheckDirectDrawResult(((ComDirect3DViewport *)(context->viewport))->Clear(count, (int)&rect, flags), "C:\\lib\\src\\graphics\\dx_view.cpp", 317);
             }
         }
     }
@@ -302,15 +302,15 @@ void __cdecl D3DSetBackgroundMaterial(struct GfxBgraColorSource *color, GfxEngin
         if (materialPointer) {
             D3DFillMaterialColorFromBgra(1, color, materialPointer);
             // STRING: FF7 0x0091796c
-            if (CheckDirectDrawResult(((ComDirect3DMaterial *)context->backgroundMaterial)->SetMaterial(materialPointer), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x197)) {
+            if (CheckDirectDrawResult(((ComDirect3DMaterial *)context->backgroundMaterial)->SetMaterial(materialPointer), "C:\\lib\\src\\graphics\\dx_view.cpp", 407)) {
                 // STRING: FF7 0x0091798c
-                if (CheckDirectDrawResult(((ComDirect3DMaterial *)context->backgroundMaterial)->GetHandle(context->d3dDevice, &handle), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x199)) {
+                if (CheckDirectDrawResult(((ComDirect3DMaterial *)context->backgroundMaterial)->GetHandle(context->d3dDevice, &handle), "C:\\lib\\src\\graphics\\dx_view.cpp", 409)) {
                     if (context->useDirect3D5) {
                         // STRING: FF7 0x009179ac
-                        CheckDirectDrawResult(((ComDirect3DViewport *)context->viewport2)->SetBackground(handle), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x19d);
+                        CheckDirectDrawResult(((ComDirect3DViewport *)context->viewport2)->SetBackground(handle), "C:\\lib\\src\\graphics\\dx_view.cpp", 413);
                     } else {
                         // STRING: FF7 0x009179cc
-                        CheckDirectDrawResult(((ComDirect3DViewport *)context->viewport)->SetBackground(handle), "C:\\lib\\src\\graphics\\dx_view.cpp", 0x1a4);
+                        CheckDirectDrawResult(((ComDirect3DViewport *)context->viewport)->SetBackground(handle), "C:\\lib\\src\\graphics\\dx_view.cpp", 420);
                     }
                 }
             }

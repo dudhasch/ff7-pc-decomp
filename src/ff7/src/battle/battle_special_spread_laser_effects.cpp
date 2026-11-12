@@ -180,7 +180,7 @@ void __cdecl BattleFx_SpecialSpreadLaserSpawnTimeline(int targetMask, int actorI
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0xC00, 0xA);
+    Battle_StartFixedPointRamp(0xC00, 10);
 }
 
 // Per-frame timeline task for the Kakusan special, with the timeline's position taken from posX,
@@ -213,12 +213,12 @@ void __cdecl BattleFx_SpecialSpreadLaserTimelineTask(void)
         return;
     }
     if (pCurrent->timer == 0) {
-        for (actorIdx = 0; actorIdx < 0x14; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 20; actorIdx++) {
             newTaskPtr = (BattleFxSpreadLaserRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSpreadLaserStreakSpriteTask);
             newTaskPtr->posX = pCurrent->posX;
             newTaskPtr->posY = pCurrent->posY;
             newTaskPtr->posZ = pCurrent->posZ;
-            newTaskPtr->travelLength = g_BattleSpecialSpreadLaserDistance * 0x1800 / 0x7D0;
+            newTaskPtr->travelLength = g_BattleSpecialSpreadLaserDistance * 6144 / 2000;
             newTaskPtr->angleJitter = rand() % 0x200 - 0x100;
             newTaskPtr->angle = rand() % 0x200 + 0x300;
             newTaskPtr->lift = 0x400;
@@ -240,34 +240,34 @@ void __cdecl BattleFx_SpecialSpreadLaserTimelineTask(void)
         newTaskPtr->posX = pCurrent->posX;
         newTaskPtr->posY = 0;
         newTaskPtr->posZ = pCurrent->posZ;
-        newTaskPtr->angleJitter = 0x400;
+        newTaskPtr->angleJitter = 0x400 /* 90 deg */;
         newTaskPtr->angle = ArcTangentFixed((g_BattleSpecialSpreadLaserTargetCentroid.centroidX) - pCurrent->posX, g_BattleSpecialSpreadLaserTargetCentroidZ - pCurrent->posZ);
         newTaskPtr->lift = 0;
     }
-    if (pCurrent->timer < 0x28 && pCurrent->timer % 2 == 0) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (pCurrent->timer < 40 && pCurrent->timer % 2 == 0) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleSpecialSpreadLaserTargetMask & 1 << actorIdx) != 0) {
                 newTaskPtr = (BattleFxSpreadLaserRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSpreadLaserAnimatedSpriteTask);
                 Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].targetBone, (short *)((int)newTaskPtr + 4));
-                newTaskPtr->posX += (short)(rand() % 0x578 - 0x2BC);
-                newTaskPtr->posY += (short)(rand() % 0x578 - 0x2BC);
-                newTaskPtr->posZ += (short)(rand() % 0x578 - 0x2BC);
+                newTaskPtr->posX += (short)(rand() % 1400 - 700);
+                newTaskPtr->posY += (short)(rand() % 1400 - 700);
+                newTaskPtr->posZ += (short)(rand() % 1400 - 700);
                 newTaskPtr->side = 1;
             }
         }
     }
-    if (pCurrent->timer == 0x28) {
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    if (pCurrent->timer == 40) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((g_BattleSpecialSpreadLaserTargetMask & 1 << actorIdx) != 0) {
-                BattleFx_HitMarkSpawnScriptAtActorBone(actorIdx, 0x3A, 0x1000);
+                BattleFx_HitMarkSpawnScriptAtActorBone(actorIdx, 0x3A, 0x1000 /* 1.0 */);
                 Battle_PostActorHitOrHurtMessage(actorIdx);
             }
         }
         Battle_PlaySfxPannedToActor(0x95, -1, 0x40);
     }
     (pCurrent->timer)++;
-    if (pCurrent->timer == 0x32) {
-        Battle_StartFixedPointRamp(0, 0x14);
+    if (pCurrent->timer == 50) {
+        Battle_StartFixedPointRamp(0, 20);
         pCurrent->step = 0xFFFF;
     }
 }
@@ -286,7 +286,7 @@ void __cdecl BattleFx_SpecialSpreadLaserAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecialSpreadLaserSpriteConfig1.spriteResource) = Gfx_ModelTableGetLoadedRecord(9, g_BattleSpecialSpreadLaserLoadedResTable);
     g_BattleSpecialSpreadLaserSpriteConfig1.drawObj = Gfx_ModelTableGetSpriteObject(9, g_BattleSpecialSpreadLaserLoadedResTable);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialSpreadLaserSpriteConfig1.frame = task->frameCounter;
     g_BattleSpecialSpreadLaserMeshDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSpreadLaserSpriteConfig1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSpreadLaserMeshDrawHandle);
     if (g_BattleIsPaused == 0 && (g_BattleSpecialSpreadLaserSpriteConfig1.spriteResource) != 0) {
@@ -346,11 +346,11 @@ void __cdecl BattleFx_SpecialSpreadLaserAimedSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.aimedSprite->frameCounter > 0x20) {
+    if (frame.aimedSprite->frameCounter > 32) {
         g_BattleSpecialSpreadLaserFlag1--;
     }
     (frame.aimedSprite->frameCounter)++;
-    if (frame.aimedSprite->frameCounter == 0x28) {
+    if (frame.aimedSprite->frameCounter == 40) {
         frame.aimedSprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -373,10 +373,10 @@ void __cdecl BattleFx_SpecialSpreadLaserStreakSpriteTask(void)
 #pragma pack(pop)
 
     frame.streakSprite = (BattleFxSpreadLaserStreakSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.streakSprite->frameCounter < 0x20) {
+    if (frame.streakSprite->frameCounter < 32) {
         frame.fadeLevel = 8;
     } else {
-        frame.fadeLevel = 0x28 - frame.streakSprite->frameCounter;
+        frame.fadeLevel = 40 - frame.streakSprite->frameCounter;
     }
     frame.fadeWord = *(short *)&frame.fadeLevel;
     RotMatrixXYZ(&frame.streakSprite->rotX, &frame.rotMatrix);
@@ -406,13 +406,13 @@ void __cdecl BattleFx_SpecialSpreadLaserStreakSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.stepLimit = (frame.streakSprite->direction != 0 ? 0xFFFFFFF8 : 0) + 0x14;
+    frame.stepLimit = (frame.streakSprite->direction != 0 ? 0xFFFFFFF8 : 0) + 20;
     (frame.streakSprite->stepCount)++;
     if (frame.streakSprite->stepCount == frame.stepLimit) {
         frame.streakSprite->stepCount -= 4;
     }
     (frame.streakSprite->frameCounter)++;
-    if (frame.streakSprite->frameCounter == 0x28) {
+    if (frame.streakSprite->frameCounter == 40) {
         frame.streakSprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -450,7 +450,7 @@ void __cdecl BattleFx_SpecialSpreadLaserModelSpriteTask(void)
     g_BattleSpecialSpreadLaserEffectConfig.flag2Shifted = g_BattleSpecialSpreadLaserFlag2 << 4;
     (g_BattleSpecialSpreadLaserEffectConfig.modelResField) = Gfx_ModelTableGetRenderObject(frame.frameIdx0[((frame.modelSprite->frameCounter) % 4)], g_BattleSpecialSpreadLaserLoadedResTable);
     g_BattleSpecialSpreadLaserMeshDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecialSpreadLaserEffectConfig, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSpreadLaserMeshDrawHandle);
-    BattleFx_InstallBillboardMatrix((void *)((int)frame.modelSprite + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)frame.modelSprite + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialSpreadLaserSpriteConfig4.config4Byte3 = g_BattleSpecialSpreadLaserFlag2 << 4;
     g_BattleSpecialSpreadLaserSpriteConfig4.config4Byte2 = g_BattleSpecialSpreadLaserSpriteConfig4.config4Byte3;
     g_BattleSpecialSpreadLaserSpriteConfig4.config4Byte1 = g_BattleSpecialSpreadLaserSpriteConfig4.config4Byte2;
@@ -459,11 +459,11 @@ void __cdecl BattleFx_SpecialSpreadLaserModelSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.modelSprite->frameCounter > 0x20) {
+    if (frame.modelSprite->frameCounter > 32) {
         g_BattleSpecialSpreadLaserFlag2--;
     }
     (frame.modelSprite->frameCounter)++;
-    if (frame.modelSprite->frameCounter == 0x28) {
+    if (frame.modelSprite->frameCounter == 40) {
         frame.modelSprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -494,8 +494,8 @@ void __cdecl BattleFx_SpecialSpreadLaserBeamSpriteTask(void)
     g_BattleSpecialSpreadLaserSpriteConfig5.config5ResField = Gfx_ModelTableGetSpriteObject(6, g_BattleSpecialSpreadLaserLoadedResTable);
     RotMatrixXYZ(&g_BattleSpecialSpreadLaserModelOffset, &frame.rotMatrix);
     ConcatMatrixPreservingTranslation(&g_BattleSpecialSpreadLaserLookBasis, &frame.rotMatrix, &frame.rotMatrix);
-    frame.scaleX.vx = (g_BattleSpecialSpreadLaserDistance << 0xC) / 0x7D0;
-    frame.scaleX.vz = 0x4000;
+    frame.scaleX.vx = (g_BattleSpecialSpreadLaserDistance << 12) / 2000;
+    frame.scaleX.vz = 0x4000 /* 4.0 */;
     frame.scaleX.vy = frame.scaleX.vz;
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
     frame.rotMatrix.t[0] = frame.beamSprite->posX;

@@ -16,9 +16,9 @@ void __cdecl Gfx_RasterFreeVertexBuffer(GfxRasterVertexBuffer *buffer)
 {
     if (buffer != 0) {
         // STRING: FF7 0x00917cc0
-        GameHeapFree((void *)buffer->vertexData, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 0x1F);
+        GameHeapFree((void *)buffer->vertexData, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 31);
         // STRING: FF7 0x00917ce4
-        GameHeapFree(buffer, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 0x20);
+        GameHeapFree(buffer, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 32);
     }
 }
 
@@ -32,11 +32,11 @@ int __cdecl Gfx_RasterCreateVertexBuffer(int vertexCount)
     int bufferData;
 
     // STRING: FF7 0x00917d08
-    record = (GfxRasterVertexBuffer *)GameHeapAlloc(1, 0x50, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 0x28);
+    record = (GfxRasterVertexBuffer *)GameHeapAlloc(1, 80, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 40);
     if (record != 0) {
         record->vertexCount = vertexCount;
         // STRING: FF7 0x00917d2c
-        record->vertexData = (int)GameHeapAlloc(vertexCount + 1, 0x60, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 0x2C);
+        record->vertexData = (int)GameHeapAlloc(vertexCount + 1, 96, "C:\\lib\\src\\graphics\\sw\\sw_vert.cpp", 44);
         if (record->vertexData == 0) {
             Gfx_RasterFreeVertexBuffer(record);
             record = 0;

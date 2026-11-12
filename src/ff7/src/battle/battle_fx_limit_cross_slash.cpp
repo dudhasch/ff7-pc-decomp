@@ -143,7 +143,7 @@ void __cdecl BattleFx_LimitCrossSlashTimelineTask(void)
     if (task->step == 9) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x12);
     }
-    if (task->step == 0xF) {
+    if (task->step == 15) {
         child = (BattleFxCrossSlashTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCrossSlashShrinkingSpriteTask);
         child->tableValue8 = Gfx_ModelTableGetLoadedRecord(1, g_BattleLimitCrossSlash_LoadedRes);
         child->tableValue4 = Gfx_ModelTableGetSpriteObject(1, g_BattleLimitCrossSlash_LoadedRes);
@@ -151,10 +151,10 @@ void __cdecl BattleFx_LimitCrossSlashTimelineTask(void)
         child->pos.pair = task->pos.pair;
         child->negRadius = task->negRadius;
     }
-    if (task->step == 0x13) {
+    if (task->step == 19) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x12);
     }
-    if (task->step == 0x1A) {
+    if (task->step == 26) {
         child = (BattleFxCrossSlashTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCrossSlashShrinkingSpriteTask);
         child->tableValue8 = Gfx_ModelTableGetLoadedRecord(2, g_BattleLimitCrossSlash_LoadedRes);
         child->tableValue4 = Gfx_ModelTableGetSpriteObject(2, g_BattleLimitCrossSlash_LoadedRes);
@@ -162,10 +162,10 @@ void __cdecl BattleFx_LimitCrossSlashTimelineTask(void)
         child->pos.pair = task->pos.pair;
         child->negRadius = task->negRadius;
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x1B);
     }
-    if (task->step == 0x25) {
+    if (task->step == 37) {
         Battle_PostActorHitOrHurtMessage(task->recordType);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x21);
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -216,16 +216,16 @@ void __cdecl BattleFx_LimitCrossSlashShrinkingSpriteTask(void)
         g_BattleLimitCrossSlash_DrawListHandle = BattleFx_SubmitSpriteDraw(&frame.drawWord0, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitCrossSlash_DrawListHandle);
     } else {
         frame.phaseStep = frame.shrinkSprite->step + frame.shrinkSprite->ownerSlot;
-        if (frame.phaseStep < 0x25) {
+        if (frame.phaseStep < 37) {
             frame.colorR = 0x80;
             frame.colorG = frame.colorR;
             frame.colorB = frame.colorG;
             frame.colorType = 0x2E;
-            frame.billboardScale = 0x1000;
+            frame.billboardScale = 0x1000 /* 1.0 */;
             BattleFx_InstallBillboardMatrix(&frame.shrinkSprite->pos.xyz.x, *(short *)&frame.billboardScale, frame.shrinkSprite->negRadius);
             g_BattleLimitCrossSlash_DrawListHandle = BattleFx_SubmitSpriteDraw(&frame.drawWord0, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitCrossSlash_DrawListHandle);
         } else {
-            frame.phaseStep -= 0x25;
+            frame.phaseStep -= 37;
             if (frame.phaseStep < 8) {
                 if (g_BattleIsPaused == 0) {
                     frame.trailRecord = (BattleCrossSlashShrinkingSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitCrossSlashTrailSpriteTask);

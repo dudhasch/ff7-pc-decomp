@@ -282,7 +282,7 @@ void __cdecl Menu_DrawSaveSlotPreview2x(int i, int top, int slotIndex)
     Menu_DrawEncodedString2x(baseX8 + 8, currBaseY + 0xD, info->location, 7, 0.4f);
     for (i = 0; i < 3; i++) {
         if (info->partyPortraits[i] != PARTY_CHAR_NONE) {
-            Menu_DrawCharPortraitById2x(i * 0x57 + 0x25, top + 0xD, 0x50, 0x60, info->partyPortraits[i], 0.4f);
+            Menu_DrawCharPortraitById2x(i * 87 + 0x25, top + 0xD, 80, 96, info->partyPortraits[i], 0.4f);
         }
     }
     baseX8 = 0x1DC;
@@ -294,9 +294,9 @@ void __cdecl Menu_DrawSaveSlotPreview2x(int i, int top, int slotIndex)
                                0.4f);
     Menu_DrawDecimalNumberZeroPad2x(baseX8 + 0x82, currBaseY + 0xF, Menu_PlaytimeToMinutesDigits(info->playtime), 2, 7,
                                0.4f);
-    Menu_DrawDecimalNumber2x(baseX8 + 0x21, currBaseY + 0x2D, info->gil, 0xA, 7, 0.4f);
-    Menu_DrawEncodedString2x(0x160, top + 0x38, g_LoadMenuLevelLabel, 5, 0.4f);
-    Menu_DrawEncodedString2x(0x158, top + 0x11, info->leaderName, 7, 0.4f);
+    Menu_DrawDecimalNumber2x(baseX8 + 0x21, currBaseY + 0x2D, info->gil, 10, 7, 0.4f);
+    Menu_DrawEncodedString2x(352, top + 0x38, g_LoadMenuLevelLabel, 5, 0.4f);
+    Menu_DrawEncodedString2x(344, top + 0x11, info->leaderName, 7, 0.4f);
     Menu_DrawEncodedString2x(baseX8 + 0xA, currBaseY + 0xB, &g_MenuMainLabels.timeText, 7, 0.4f);
     Menu_DrawEncodedString2x(baseX8 + 0xA, currBaseY + 0x29, &g_MenuMainLabels.gilText, 7, 0.4f);
     /* corners in the savemap's order: top-left 0, bottom-left 3, top-right 6, bottom-right 9 */
@@ -343,7 +343,7 @@ void __cdecl Menu_DrawSaveSlotPreview1x(int i, int top, int slotIndex)
     Menu_DrawEncodedString1x(baseX8 + 4, currBaseY + 7, info->location, 7, 0.4f);
     for (i = 0; i < 3; i++) {
         if (info->partyPortraits[i] != PARTY_CHAR_NONE) {
-            Menu_DrawCharPortraitById1x(i * 0x2C + 0x13, top + 7, 0x28, 0x30, info->partyPortraits[i], 0.4f);
+            Menu_DrawCharPortraitById1x(i * 44 + 0x13, top + 7, 40, 48, info->partyPortraits[i], 0.4f);
         }
     }
     baseX8 = 0xEE;
@@ -355,8 +355,8 @@ void __cdecl Menu_DrawSaveSlotPreview1x(int i, int top, int slotIndex)
     Menu_DrawDecimalNumberZeroPad1x(baseX8 + 0x41, currBaseY + 8, Menu_PlaytimeToMinutesDigits(info->playtime), 2, 7,
                                0.4f);
     Menu_DrawDecimalNumber1x(baseX8 + 0x11, currBaseY + 0x17, info->gil, 0xA, 7, 0.4f);
-    Menu_DrawEncodedString1x(0xB0, top + 0x1C, g_LoadMenuLevelLabel, 5, 0.4f);
-    Menu_DrawEncodedString1x(0xAC, top + 9, info->leaderName, 7, 0.4f);
+    Menu_DrawEncodedString1x(176, top + 0x1C, g_LoadMenuLevelLabel, 5, 0.4f);
+    Menu_DrawEncodedString1x(172, top + 9, info->leaderName, 7, 0.4f);
     Menu_DrawEncodedString1x(baseX8 + 0xD, currBaseY + 6, &g_MenuMainLabels.timeText, 7, 0.4f);
     Menu_DrawEncodedString1x(baseX8 + 0xD, currBaseY + 0x15, &g_MenuMainLabels.gilText, 7, 0.4f);
     /* corners in the savemap's order: top-left 0, bottom-left 3, top-right 6, bottom-right 9 */
@@ -515,9 +515,9 @@ unsigned char g_LoadMenuSaveFileNames[10][12] = {
     {0x33, 0x41, 0x56, 0x45, 0x00, 0x19, 0x00, 0x00, 0x00, 0xff, 0x00, 0x00},
     {0x33, 0x41, 0x56, 0x45, 0x00, 0x11, 0x10, 0xff, 0x00, 0x00, 0x00, 0x00}};
 // GLOBAL: FF7 0x00926190
-unsigned char g_LoadMenuWindowRects2x[0x18] = {0xdc, 0x01, 0x09, 0x00, 0xa4, 0x00, 0x4d, 0x00, 0x54, 0x01, 0x56, 0x00, 0x2c, 0x01, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x02, 0x89, 0x00};
+unsigned char g_LoadMenuWindowRects2x[24] = {0xdc, 0x01, 0x09, 0x00, 0xa4, 0x00, 0x4d, 0x00, 0x54, 0x01, 0x56, 0x00, 0x2c, 0x01, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x02, 0x89, 0x00};
 // GLOBAL: FF7 0x009261a8
-unsigned char g_LoadMenuWindowRects1x[0x18] = {0xf6, 0x00, 0x05, 0x00, 0x4a, 0x00, 0x27, 0x00, 0xaa, 0x00, 0x2b, 0x00, 0x96, 0x00, 0x1a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x01, 0x45, 0x00};
+unsigned char g_LoadMenuWindowRects1x[24] = {0xf6, 0x00, 0x05, 0x00, 0x4a, 0x00, 0x27, 0x00, 0xaa, 0x00, 0x2b, 0x00, 0x96, 0x00, 0x1a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x01, 0x45, 0x00};
 // The title menu's window frame at 2x (the New Game / Continue entries are drawn from its x and y).
 // GLOBAL: FF7 0x009261c0
 EnglishWindowFrame g_LoadMenuTitleFrame2x = {267, 206, 107, 69};
@@ -668,7 +668,7 @@ int __cdecl Menu_ScanSaveDirectory(int markNew)
     struct FileHandle *fileHandle;
 
     fileHandle = 0;
-    for (saveSlot = 0; saveSlot < 0xA; saveSlot++) {
+    for (saveSlot = 0; saveSlot < 10; saveSlot++) {
         ((SaveSlotPreview *)&g_LoadMenuPreviewData)[saveSlot].status = SAVE_FILE_STATUS_ABSENT;
     }
     mask = 0;
@@ -678,7 +678,7 @@ int __cdecl Menu_ScanSaveDirectory(int markNew)
         _mkdir((const char *)g_LoadMenuSlotBuffer);
     }
     ChangeDirectorySaving((char *)(prevDir), 0);
-    for (saveSlot = 0; saveSlot < 0xA; saveSlot++) {
+    for (saveSlot = 0; saveSlot < 10; saveSlot++) {
         // STRING: FF7 0x00926260
         sprintf((char *)g_LoadMenuSlotBuffer, "%ssave/save%02d.ff7", g_InitPath_AppPath, saveSlot);
         fileHandle = (struct FileHandle *)OpenFileSimple(FILE_OPEN_READ, g_LoadMenuSlotBuffer);
@@ -787,22 +787,22 @@ int __cdecl Menu_LoadScreenTick(void)
 
     Menu_EmptyTextHook(0x80);
     if (g_LoadMenuFadePhase == LOAD_MENU_FADE_IN) {
-        if (Menu_LoadScreenFadeStep(-0xF) == 0) {
+        if (Menu_LoadScreenFadeStep(-15) == 0) {
             g_LoadMenuFadePhase = LOAD_MENU_FADE_NONE;
         }
     } else if (g_LoadMenuFadePhase == LOAD_MENU_FADE_OUT) {
-        if (Menu_LoadScreenFadeStep(0xF) == 0xFF) {
+        if (Menu_LoadScreenFadeStep(15) == 0xFF) {
             g_LoadMenuFadePhase = LOAD_MENU_FADE_DONE;
         }
     }
     if (g_MenuIsSmallViewport320x240 != 1) {
         switch (g_LoadMenuErrorCode) {
         case LOAD_MENU_SLOT_LIST:
-            Menu_DrawMoreTextArrow2x(g_LoadMenuSlotFrame2x.x + g_LoadMenuCursor0.col * 0x5C + -0x19, g_LoadMenuSlotFrame2x.y + g_LoadMenuCursor0.row * 0x1A + 0xD, 0.2f);
-            Menu_DrawEncodedString2x(0xA, 0xD, g_SaveLoadTextSelectDataFile, 7, 0);
+            Menu_DrawMoreTextArrow2x(g_LoadMenuSlotFrame2x.x + g_LoadMenuCursor0.col * 92 + -0x19, g_LoadMenuSlotFrame2x.y + g_LoadMenuCursor0.row * 26 + 0xD, 0.2f);
+            Menu_DrawEncodedString2x(10, 13, g_SaveLoadTextSelectDataFile, 7, 0);
             nameOffsetY = 0;
             nameOfsX = nameOffsetY;
-            for (nameIdx = 0; nameIdx < 0xA; nameIdx++) {
+            for (nameIdx = 0; nameIdx < 10; nameIdx++) {
                 Menu_DrawEncodedString2x(g_LoadMenuSlotFrame2x.x + nameOfsX + 0x14, g_LoadMenuSlotFrame2x.y + nameOffsetY + 0xB, g_LoadMenuSaveFileNames[nameIdx], ((SaveSlotPreview *)&g_LoadMenuPreviewData)[nameIdx].status != SAVE_FILE_STATUS_ABSENT ? 7 : 0, 0.21f);
                 nameOfsX = nameOfsX + Menu_MeasureEncodedString2x(g_LoadMenuSaveFileNames[nameIdx]) + 0x14;
                 if (nameIdx == 4) {
@@ -817,16 +817,16 @@ int __cdecl Menu_LoadScreenTick(void)
                 g_LoadMenuErrorCode = LOAD_MENU_SLOT_LIST;
                 break;
             }
-            Menu_FlushAndSetScissor2x(0, 0x33, 0x280, 0x19B);
-            Menu_DrawMoreTextArrow2x(8, g_LoadMenuCursor1.row * 0x89 + 0x78, 0);
+            Menu_FlushAndSetScissor2x(0, 51, 640, 411);
+            Menu_DrawMoreTextArrow2x(8, g_LoadMenuCursor1.row * 137 + 0x78, 0);
             visibleSlots = (g_LoadMenuCursor1.scrollState != 0) + 3;
             for (slotIndex = 0; slotIndex < visibleSlots; slotIndex++) {
                 if ((g_SaveSlotPresentMask & 1 << slotIndex + g_LoadMenuCursor1.scrollTop) != 0) {
                     Menu_SaveWindowColors();
-                    Menu_DrawSaveSlotPreview2x(0, slotIndex * 0x89 + g_LoadMenuCursor1.scrollAnim * 0x11 + 0x33, slotIndex + g_LoadMenuCursor1.scrollTop);
+                    Menu_DrawSaveSlotPreview2x(0, slotIndex * 137 + g_LoadMenuCursor1.scrollAnim * 17 + 0x33, slotIndex + g_LoadMenuCursor1.scrollTop);
                     Menu_RestoreWindowColors();
                 } else {
-                    Menu_DrawEncodedString2x(0x53, slotIndex * 0x89 + g_LoadMenuCursor1.scrollAnim * 0x11 + 0x71, g_SaveLoadTextEmpty, 6, 0.4f);
+                    Menu_DrawEncodedString2x(83, slotIndex * 137 + g_LoadMenuCursor1.scrollAnim * 17 + 0x71, g_SaveLoadTextEmpty, 6, 0.4f);
                     Menu_CopyRectShorts((short *)rect, (short *)((char *)g_LoadMenuPreviewLayout + 0x10));
                     Menu_OffsetRectShorts((short *)rect, 0, slotIndex * 0x89 + g_LoadMenuCursor1.scrollAnim * 0x11 + 0x33);
                     Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0.4f);
@@ -835,10 +835,10 @@ int __cdecl Menu_LoadScreenTick(void)
             Menu_EmitBatchListsAndInvalidate();
             Menu_FlushAndResetScissor2x();
             Menu_EmptyTextHook(0x80);
-            Menu_DrawEncodedString2x(0xA, 0xD, g_SaveLoadTextSelectGame, 7, 0);
-            Menu_DrawEncodedString2x(0x157, 0xD, g_SaveLoadTextGame, 6, 0);
-            Menu_DrawEncodedString2x(Menu_MeasureEncodedString2x(g_SaveLoadTextGame) + 0x15A, 0xD, g_SaveLoadTextRows[g_LoadMenuCursor1.row + (g_LoadMenuCursor1.scrollTop + 0xD)], 7, 0);
-            Menu_SetRectShorts((short *)rect, 0x14D, 0, 0x90, 0x33);
+            Menu_DrawEncodedString2x(10, 13, g_SaveLoadTextSelectGame, 7, 0);
+            Menu_DrawEncodedString2x(343, 13, g_SaveLoadTextGame, 6, 0);
+            Menu_DrawEncodedString2x(Menu_MeasureEncodedString2x(g_SaveLoadTextGame) + 0x15A, 13, g_SaveLoadTextRows[g_LoadMenuCursor1.row + (g_LoadMenuCursor1.scrollTop + 0xD)], 7, 0);
+            Menu_SetRectShorts((short *)rect, 333, 0, 144, 51);
             Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0);
             break;
         case LOAD_MENU_CHECKING:
@@ -848,42 +848,42 @@ int __cdecl Menu_LoadScreenTick(void)
             } else {
                 gaugeColor = 0x80E08000;
             }
-            Menu_DrawEncodedString2x(0xA, 0xD, g_SaveLoadTextChecking, 7, 0.1f);
+            Menu_DrawEncodedString2x(10, 13, g_SaveLoadTextChecking, 7, 0.1f);
             if (g_LoadMenuCheckPending == 0) {
-                Menu_DrawGaugeBar2x(0xCB, 0xFF, (g_LoadMenuCheckSlot + 1) * 0xD, 0x11, gaugeColor, 0.1f);
+                Menu_DrawGaugeBar2x(203, 255, (g_LoadMenuCheckSlot + 1) * 13, 17, gaugeColor, 0.1f);
             }
-            Menu_SetRectShorts((short *)rect, 0xBB, 0xF0, 0xE9, 0x33);
+            Menu_SetRectShorts((short *)rect, 187, 240, 233, 51);
             Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0.101f);
             break;
         case LOAD_MENU_LOADING:
             if (g_LoadMenuFadePhase != LOAD_MENU_FADE_OUT) {
                 textLength = Menu_MeasureEncodedString2x(g_SaveLoadTextLoading);
-                Menu_DrawEncodedString2x(0x140 - ((textLength + 0x1B) / 2) + 0xD, 0xFD, g_SaveLoadTextLoading, 7, 0.1f);
-                Menu_SetRectShorts((short *)rect, 0x140 - ((textLength + 0x1B) / 2), 0xF0, textLength + 0x10, 0x33);
+                Menu_DrawEncodedString2x(0x140 - ((textLength + 0x1B) / 2) + 0xD, 253, g_SaveLoadTextLoading, 7, 0.1f);
+                Menu_SetRectShorts((short *)rect, 0x140 - ((textLength + 0x1B) / 2), 240, textLength + 0x10, 51);
                 Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0.101f);
             }
             break;
         case LOAD_MENU_TITLE:
-            Menu_DrawMoreTextArrow2x(g_LoadMenuTitleFrame2x.x - 0x33, g_LoadMenuTitleFrame2x.y + g_LoadMenuCursor2.row * 0x1A + -0xE, 0.1f);
+            Menu_DrawMoreTextArrow2x(g_LoadMenuTitleFrame2x.x - 0x33, g_LoadMenuTitleFrame2x.y + g_LoadMenuCursor2.row * 26 + -0xE, 0.1f);
             Menu_DrawEncodedString2x(g_LoadMenuTitleFrame2x.x, g_LoadMenuTitleFrame2x.y - 0xE, g_SaveLoadTextNewGame, 7, 0.1f);
             Menu_DrawEncodedString2x(g_LoadMenuTitleFrame2x.x, g_LoadMenuTitleFrame2x.y + 0xC, g_SaveLoadTextContinue, g_LoadMenuSubState != 0 ? 7 : 0, 0.1f);
             Menu_BuildLoadPreviewQuad2x();
         }
         if (g_LoadMenuErrorCode != LOAD_MENU_TITLE) {
-            Menu_DrawEncodedString2x(0x1F7, 0xD, g_SaveLoadTextRows[0], 7, 0.1f);
-            Menu_SetRectShorts((short *)rect, 0x1DC, 0, 0xA4, 0x33);
+            Menu_DrawEncodedString2x(503, 13, g_SaveLoadTextRows[0], 7, 0.1f);
+            Menu_SetRectShorts((short *)rect, 476, 0, 164, 51);
             Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0.101f);
-            Menu_SetRectShorts((short *)rect, 0, 0, 0x280, 0x33);
+            Menu_SetRectShorts((short *)rect, 0, 0, 640, 51);
             Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0.201f);
         }
     } else {
         switch (g_LoadMenuErrorCode) {
         case LOAD_MENU_SLOT_LIST:
-            Menu_DrawMoreTextArrow1x(g_LoadMenuSlotFrame1x.x + g_LoadMenuCursor0.col * 0x2B + -0xD, g_LoadMenuSlotFrame1x.y + g_LoadMenuCursor0.row * 0xD + 7, 0.2f);
-            Menu_DrawEncodedString1x(0xA, 7, g_SaveLoadTextSelectDataFile, 7, 0);
+            Menu_DrawMoreTextArrow1x(g_LoadMenuSlotFrame1x.x + g_LoadMenuCursor0.col * 43 + -0xD, g_LoadMenuSlotFrame1x.y + g_LoadMenuCursor0.row * 13 + 7, 0.2f);
+            Menu_DrawEncodedString1x(10, 7, g_SaveLoadTextSelectDataFile, 7, 0);
             nameOffsetY = 0;
             nameOfsX = nameOffsetY;
-            for (nameIdx = 0; nameIdx < 0xA; nameIdx++) {
+            for (nameIdx = 0; nameIdx < 10; nameIdx++) {
                 Menu_DrawEncodedString1x(g_LoadMenuSlotFrame1x.x + nameOfsX + 0xA, g_LoadMenuSlotFrame1x.y + nameOffsetY + 6, g_LoadMenuSaveFileNames[nameIdx], ((SaveSlotPreview *)&g_LoadMenuPreviewData)[nameIdx].status != SAVE_FILE_STATUS_ABSENT ? 7 : 0, 0.21f);
                 nameOfsX = nameOfsX + Menu_MeasureEncodedString1x(g_LoadMenuSaveFileNames[nameIdx]) + 9;
                 if (nameIdx == 4) {
@@ -898,16 +898,16 @@ int __cdecl Menu_LoadScreenTick(void)
                 g_LoadMenuErrorCode = LOAD_MENU_SLOT_LIST;
                 break;
             }
-            Menu_FlushAndSetScissor1x(0, 0x1A, 0x140, 0xCE);
-            Menu_DrawMoreTextArrow1x(4, g_LoadMenuCursor1.row * 0x45 + 0x3C, 0);
+            Menu_FlushAndSetScissor1x(0, 26, 320, 206);
+            Menu_DrawMoreTextArrow1x(4, g_LoadMenuCursor1.row * 69 + 0x3C, 0);
             visibleSlots = (g_LoadMenuCursor1.scrollState != 0) + 3;
             for (slotIndex = 0; slotIndex < visibleSlots; slotIndex++) {
                 if ((g_SaveSlotPresentMask & 1 << slotIndex + g_LoadMenuCursor1.scrollTop) != 0) {
                     Menu_SaveWindowColors();
-                    Menu_DrawSaveSlotPreview1x(0, slotIndex * 0x45 + g_LoadMenuCursor1.scrollAnim * 8 + 0x1A, slotIndex + g_LoadMenuCursor1.scrollTop);
+                    Menu_DrawSaveSlotPreview1x(0, slotIndex * 69 + g_LoadMenuCursor1.scrollAnim * 8 + 0x1A, slotIndex + g_LoadMenuCursor1.scrollTop);
                     Menu_RestoreWindowColors();
                 } else {
-                    Menu_DrawEncodedString1x(0x2A, slotIndex * 0x45 + g_LoadMenuCursor1.scrollAnim * 8 + 0x39, g_SaveLoadTextEmpty, 6, 0.4f);
+                    Menu_DrawEncodedString1x(42, slotIndex * 69 + g_LoadMenuCursor1.scrollAnim * 8 + 0x39, g_SaveLoadTextEmpty, 6, 0.4f);
                     Menu_CopyRectShorts((short *)rect, (short *)((char *)g_LoadMenuPreviewLayout + 0x10));
                     Menu_OffsetRectShorts((short *)rect, 0, slotIndex * 0x45 + g_LoadMenuCursor1.scrollAnim * 8 + 0x1A);
                     Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0.4f);
@@ -917,9 +917,9 @@ int __cdecl Menu_LoadScreenTick(void)
             Menu_FlushAndResetScissor1x();
             Menu_EmptyTextHook(0x80);
             Menu_DrawEncodedString1x(5, 7, g_SaveLoadTextSelectGame, 7, 0);
-            Menu_DrawEncodedString1x(0xB8, 7, g_SaveLoadTextGame, 6, 0);
+            Menu_DrawEncodedString1x(184, 7, g_SaveLoadTextGame, 6, 0);
             Menu_DrawEncodedString1x(Menu_MeasureEncodedString1x(g_SaveLoadTextGame) + 0xBA, 7, g_SaveLoadTextRows[g_LoadMenuCursor1.row + (g_LoadMenuCursor1.scrollTop + 0xD)], 7, 0);
-            Menu_SetRectShorts((short *)rect, 0xB3, 0, 0x43, 0x1A);
+            Menu_SetRectShorts((short *)rect, 179, 0, 67, 26);
             Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0);
             break;
         case LOAD_MENU_CHECKING:
@@ -931,30 +931,30 @@ int __cdecl Menu_LoadScreenTick(void)
             }
             Menu_DrawEncodedString1x(5, 7, g_SaveLoadTextChecking, 7, 0.1f);
             if (g_LoadMenuCheckPending == 0) {
-                Menu_DrawGaugeBar1x(0x66, 0x80, (g_LoadMenuCheckSlot + 1) * 7, 9, gaugeColor, 0.1f);
+                Menu_DrawGaugeBar1x(102, 128, (g_LoadMenuCheckSlot + 1) * 7, 9, gaugeColor, 0.1f);
             }
-            Menu_SetRectShorts((short *)rect, 0x5E, 0x78, 0x75, 0x1A);
+            Menu_SetRectShorts((short *)rect, 94, 120, 117, 26);
             Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0.101f);
             break;
         case LOAD_MENU_LOADING:
             if (g_LoadMenuFadePhase != LOAD_MENU_FADE_OUT) {
                 textLength = Menu_MeasureEncodedString1x(g_SaveLoadTextLoading);
-                Menu_DrawEncodedString1x(0xA0 - ((textLength + 0xE) / 2) + 7, 0x7F, g_SaveLoadTextLoading, 7, 0.1f);
-                Menu_SetRectShorts((short *)rect, 0xA0 - ((textLength + 0xE) / 2), 0x78, textLength + 8, 0x1A);
+                Menu_DrawEncodedString1x(0xA0 - ((textLength + 0xE) / 2) + 7, 127, g_SaveLoadTextLoading, 7, 0.1f);
+                Menu_SetRectShorts((short *)rect, 0xA0 - ((textLength + 0xE) / 2), 120, textLength + 8, 26);
                 Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0.101f);
             }
             break;
         case LOAD_MENU_TITLE:
-            Menu_DrawMoreTextArrow1x(g_LoadMenuTitleFrame1x.x - 0x1A, g_LoadMenuTitleFrame1x.y + g_LoadMenuCursor2.row * 0xD + -7, 0.1f);
+            Menu_DrawMoreTextArrow1x(g_LoadMenuTitleFrame1x.x - 0x1A, g_LoadMenuTitleFrame1x.y + g_LoadMenuCursor2.row * 13 + -7, 0.1f);
             Menu_DrawEncodedString1x(g_LoadMenuTitleFrame1x.x, g_LoadMenuTitleFrame1x.y - 7, g_SaveLoadTextNewGame, 7, 0.1f);
             Menu_DrawEncodedString1x(g_LoadMenuTitleFrame1x.x, g_LoadMenuTitleFrame1x.y + 6, g_SaveLoadTextContinue, g_LoadMenuSubState != 0 ? 7 : 0, 0.1f);
             Menu_BuildLoadPreviewQuad1x();
         }
         if (g_LoadMenuErrorCode != LOAD_MENU_TITLE) {
-            Menu_DrawEncodedString1x(0x104, 7, g_SaveLoadTextRows[0], 7, 0.1f);
-            Menu_SetRectShorts((short *)rect, 0xF6, 0, 0x4A, 0x1A);
+            Menu_DrawEncodedString1x(260, 7, g_SaveLoadTextRows[0], 7, 0.1f);
+            Menu_SetRectShorts((short *)rect, 246, 0, 74, 26);
             Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0.101f);
-            Menu_SetRectShorts((short *)rect, 0, 0, 0x140, 0x1A);
+            Menu_SetRectShorts((short *)rect, 0, 0, 320, 26);
             Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0.201f);
         }
     }
@@ -963,14 +963,14 @@ int __cdecl Menu_LoadScreenTick(void)
         case LOAD_MENU_SLOT_LIST:
             if (Input_GetPressed(INPUT_CIRCLE) != 0) {
                 if (((SaveSlotPreview *)&g_LoadMenuPreviewData)[g_LoadMenuCursor0.row * 5 + g_LoadMenuCursor0.col].status != SAVE_FILE_STATUS_ABSENT) {
-                    g_LoadMenuInputDelay = 0xA;
+                    g_LoadMenuInputDelay = 10;
                     g_LoadMenuCheckSlot = 0;
                     g_LoadMenuSelectedSlot = g_LoadMenuCheckSlot;
                     p = Menu_LoadSaveFileToBuffer(SAVE_FILE_LOAD_EXISTING, g_LoadMenuCursor0.row * 5 + g_LoadMenuCursor0.col);
                     if (p == SAVE_FILE_LOAD_OK) {
                         g_LoadMenuErrorCode = LOAD_MENU_CHECKING;
                         g_LoadMenuCheckPending = 1;
-                        MenuCursor_Init(&g_LoadMenuCursor1, 0, 0, 1, 3, 0, 0, 1, 0xF, 0, 0, 0, 0, 0, 1);
+                        MenuCursor_Init(&g_LoadMenuCursor1, 0, 0, 1, 3, 0, 0, 1, 15, 0, 0, 0, 0, 0, 1);
                         g_LoadMenuCursor1.row = (*(unsigned char *)&g_LoadMenuSlotState) & 0xF;
                         g_LoadMenuCursor1.scrollTop = ((*(unsigned char *)&g_LoadMenuSlotState) & 0xF0) >> 4;
                         loadedFlag = 1;
@@ -1006,7 +1006,7 @@ int __cdecl Menu_LoadScreenTick(void)
                     }
                     SfxPreloadAndPlayOnChannel5(SFX_MENU_CURSOR);
                     g_LoadMenuErrorCode = LOAD_MENU_LOADING;
-                    g_LoadMenuInputDelay = 0xA;
+                    g_LoadMenuInputDelay = 10;
                 } else if (Input_GetPressed(INPUT_CROSS) != 0) {
                     SfxPreloadAndPlayOnChannel5(SFX_MENU_CANCEL);
                     Menu_SaveFileBufferFree();
@@ -1037,7 +1037,7 @@ int __cdecl Menu_LoadScreenTick(void)
                 if (g_LoadMenuCheckSlot == 0xF) {
                     g_LoadMenuCheckSlot = 0xE;
                     g_LoadMenuErrorCode = LOAD_MENU_CHECKED;
-                    g_LoadMenuInputDelay = 0xA;
+                    g_LoadMenuInputDelay = 10;
                     SfxPreloadAndPlayOnChannel5(SFX_MENU_CONFIRM);
                 }
             }
@@ -1055,7 +1055,7 @@ int __cdecl Menu_LoadScreenTick(void)
                 *(char *)&g_GamePauseLatch = 1;
                 cacheRes = (short)Menu_RestoreSaveSlotToSavemap(g_LoadMenuCursor1.row + g_LoadMenuCursor1.scrollTop);
                 if (cacheRes == 0) {
-                    if (gSavemap.checksum != (Menu_SaveChecksumCrc16(0x10F0, &gSavemap.descLevel) & 0xFFFF)) {
+                    if (gSavemap.checksum != (Menu_SaveChecksumCrc16(4336, &gSavemap.descLevel) & 0xFFFF)) {
                         g_LoadMenuErrorCode = LOAD_MENU_GAME_LIST;
                         SfxPreloadAndPlayOnChannel5(SFX_MENU_INVALID);
                         Menu_OpenPopupMessage(g_SaveLoadTextDataRuined, cacheRes);
@@ -1145,7 +1145,7 @@ int __cdecl Menu_LoadScreenModuleUpdate(void)
         Menu_LoadScreenInit(0);
         g_LoadMenuFrameParity = 0;
         g_MenuModuleId = 0x10;
-        Input_SetRepeatRates(0xC8, 0x32);
+        Input_SetRepeatRates(0xC8, 50);
         g_MenuOverlayActive = 1;
         g_LoadMenuActive = g_MenuOverlayActive;
     }

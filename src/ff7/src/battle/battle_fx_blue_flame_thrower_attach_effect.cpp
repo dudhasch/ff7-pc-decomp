@@ -143,7 +143,7 @@ void __cdecl BattleFx_BlueFlameThrowerAttachTimelineTask(void)
     if (taskPtr->frameCounter == 0) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x88);
     }
-    if (taskPtr->frameCounter >= 0 && taskPtr->frameCounter < 0x3A) {
+    if (taskPtr->frameCounter >= 0 && taskPtr->frameCounter < 58) {
         Battle3d_GetActorAttachMatrix(g_BattleBlueFlameThrowerActorIndex, 2, (PsxMatrix *)attachMtx);
         Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, attachMtx, &g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->matrix);
         SetRotMatrix(&g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->matrix);
@@ -155,7 +155,7 @@ void __cdecl BattleFx_BlueFlameThrowerAttachTimelineTask(void)
             g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.centerZ = g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.sourceZ;
             g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posX = g_BattleBlueFlameThrowerVertexOffsets[vertexIdx].vx << 3;
             g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posY = g_BattleBlueFlameThrowerVertexOffsets[vertexIdx].vy << 3;
-            g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posZ = 0x960;
+            g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posZ = 2400;
             RotateSVectorByInstalledMatrix((CameraScriptVector *)&g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posX, (int *)&g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.sourceX);
             g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posX = g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.sourceX;
             g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posY = g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.sourceY;
@@ -163,14 +163,14 @@ void __cdecl BattleFx_BlueFlameThrowerAttachTimelineTask(void)
             BattleFx_BlueFlameThrowerAttachSpawnParticles(&g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn, (Vec3sPacked *)&g_BattleBlueFlameThrowerDataBlockPtr.dataBlock->spawn.posX, taskPtr->frameCounter, 2);
         }
     }
-    if (taskPtr->frameCounter == 0x32) {
-        for (vertexIdx = 0; vertexIdx < 0xA; vertexIdx++) {
+    if (taskPtr->frameCounter == 50) {
+        for (vertexIdx = 0; vertexIdx < 10; vertexIdx++) {
             if ((g_BattleBlueFlameThrowerTargetMask & 1 << vertexIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(vertexIdx);
             }
         }
     }
-    if (taskPtr->frameCounter == 0x4E) {
+    if (taskPtr->frameCounter == 78) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0);
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -187,7 +187,7 @@ void __cdecl BattleFx_BlueFlameThrowerAttachDrawParticlesTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     activeCount = 0;
-    for (particleIdx = 0; particleIdx < 0xC8; particleIdx++) {
+    for (particleIdx = 0; particleIdx < 200; particleIdx++) {
         if (((BattleFxFlameThrowerParticle *)&g_BattleBlueFlameThrowerDataBlockPtr.particlePool)[particleIdx].state != -1) {
             BattleFx_BlueFlameThrowerAttachDrawParticle((BattleBlueFlameThrowerParticle *)&((BattleFxFlameThrowerParticle *)&g_BattleBlueFlameThrowerDataBlockPtr.particlePool)[particleIdx]);
             activeCount++;
@@ -216,21 +216,21 @@ void __cdecl BattleFx_BlueFlameThrowerAttachDrawParticle(BattleBlueFlameThrowerP
         ((BattleFxBlueFlameThrowerDrawReq *)g_BattleBlueFlameThrowerSpriteRequest.spriteGroup)->drawObj0 = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueFlameThrowerLoadedResTable);
         ((BattleFxBlueFlameThrowerDrawReq *)g_BattleBlueFlameThrowerSpriteRequest.spriteGroup)->drawObj1 = Gfx_ModelTableGetSpriteObject(1, g_BattleBlueFlameThrowerLoadedResTable);
     }
-    sine = SinFixed(particleRecord->angleStep * particleRecord->frameCounter / 0x14);
+    sine = SinFixed(particleRecord->angleStep * particleRecord->frameCounter / 20);
     if (particleRecord->offsetY < 0) {
         dampedOfs = particleRecord->offsetY;
     } else {
         dampedOfs = particleRecord->offsetY / 4;
     }
     unusedLift = dampedOfs;
-    g_pBattleBlueFlameThrowerScratchPos->vy = particleRecord->baseY + (particleRecord->driftY * sine >> 0xC) + particleRecord->offsetY;
+    g_pBattleBlueFlameThrowerScratchPos->vy = particleRecord->baseY + (particleRecord->driftY * sine >> 12) + particleRecord->offsetY;
     if (g_pBattleBlueFlameThrowerScratchPos->vy > 0) {
-        g_pBattleBlueFlameThrowerScratchPos->vy = -rand() % 0x64;
+        g_pBattleBlueFlameThrowerScratchPos->vy = -rand() % 100;
     }
-    g_pBattleBlueFlameThrowerScratchPos->vx = particleRecord->baseX + (particleRecord->driftX * sine >> 0xC);
-    g_pBattleBlueFlameThrowerScratchPos->vz = particleRecord->baseZ + (particleRecord->driftZ * sine >> 0xC);
-    g_BattleBlueFlameThrowerSpriteRequest.frame = particleRecord->frameCounter * 0xA / particleRecord->period;
-    BattleFx_InstallBillboardMatrix(g_pBattleBlueFlameThrowerScratchPos, 0x1800, 0xFFFFFE80);
+    g_pBattleBlueFlameThrowerScratchPos->vx = particleRecord->baseX + (particleRecord->driftX * sine >> 12);
+    g_pBattleBlueFlameThrowerScratchPos->vz = particleRecord->baseZ + (particleRecord->driftZ * sine >> 12);
+    g_BattleBlueFlameThrowerSpriteRequest.frame = particleRecord->frameCounter * 10 / particleRecord->period;
+    BattleFx_InstallBillboardMatrix(g_pBattleBlueFlameThrowerScratchPos, 0x1800 /* 1.5 */, 0xFFFFFE80);
     g_BattleBlueFlameThrowerUnused = BattleFx_SubmitSpriteDraw(&g_BattleBlueFlameThrowerSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleBlueFlameThrowerUnused);
     if (g_BattleIsPaused == 0) {
         (particleRecord->frameCounter)++;
@@ -249,7 +249,7 @@ void __cdecl BattleFx_BlueFlameThrowerAttachClearParticleRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         ((BattleFxFlameThrowerParticle *)&g_BattleBlueFlameThrowerDataBlockPtr.particlePool)[i].state = 0xFFFF;
     }
 }
@@ -266,26 +266,26 @@ void __cdecl BattleFx_BlueFlameThrowerAttachSpawnParticles(BattleFxSpawnCenter *
 
     for (i = 0; i < posZ; i++) {
         particle = (BattleFxFlameThrowerParticle *)BattleFx_BlueFlameThrowerAttachClaimParticleRecord();
-        particle->lifeFrames = rand() % 0xF + 0xA;
-        particle->posX = count->centerX + rand() % 0x64 + -0x32;
-        particle->posY = count->centerY + rand() % 0x64 + -0x32;
-        particle->posZ = count->centerZ + rand() % 0x64 + -0x32;
-        amount = (SinFixed((posY << 0xC) / 6) << 0xA >> 0xC) + rand() % 0x400 + 0xE00;
-        particle->ampX = posX->vx * amount >> 0xC;
-        particle->ampY = posX->vy * amount >> 0xC;
-        particle->ampZ = posX->vz * amount >> 0xC;
+        particle->lifeFrames = rand() % 15 + 10;
+        particle->posX = count->centerX + rand() % 100 + -50;
+        particle->posY = count->centerY + rand() % 100 + -50;
+        particle->posZ = count->centerZ + rand() % 100 + -50;
+        amount = (SinFixed((posY << 12) / 6) << 10 >> 12) + rand() % 1024 + 3584;
+        particle->ampX = posX->vx * amount >> 12;
+        particle->ampY = posX->vy * amount >> 12;
+        particle->ampZ = posX->vz * amount >> 12;
         particle->offsetY = 0;
-        particle->velocityY = 0x4B;
+        particle->velocityY = 75;
         if (DEAD_IN_RETAIL != 0) {
-            accelDraw = 0xA;
+            accelDraw = 10;
         } else {
             accelDraw = rand() % 5 + 5;
         }
         particle->accelY = -accelDraw;
         if (DEAD_IN_RETAIL != 0) {
-            speedValue = 0x480;
+            speedValue = 1152;
         } else {
-            speedValue = rand() % 0x80 + 0x400;
+            speedValue = rand() % 128 + 1024;
         }
         particle->angleSpeed = speedValue;
     }
@@ -297,7 +297,7 @@ int __cdecl BattleFx_BlueFlameThrowerAttachClaimParticleRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (((BattleFxFlameThrowerParticle *)&g_BattleBlueFlameThrowerDataBlockPtr.particlePool)[i].state == -1) {
             ((BattleFxFlameThrowerParticle *)&g_BattleBlueFlameThrowerDataBlockPtr.particlePool)[i].state = 0;
             ((BattleFxFlameThrowerParticle *)&g_BattleBlueFlameThrowerDataBlockPtr.particlePool)[i].frameCounter = 0;

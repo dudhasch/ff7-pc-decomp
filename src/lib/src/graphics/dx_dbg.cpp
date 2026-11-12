@@ -423,7 +423,7 @@ void __cdecl Gfx_DestroyDebugLogTarget(GfxDebugLogTarget *logTarget)
             }
         }
         // STRING: FF7 0x0090c804
-        GameHeapFree(logTarget, "C:\\lib\\src\\graphics\\dx_dbg.cpp", 0x140);
+        GameHeapFree(logTarget, "C:\\lib\\src\\graphics\\dx_dbg.cpp", 320);
     }
 }
 
@@ -440,7 +440,7 @@ int __cdecl Gfx_CreateDebugLogTarget(int truncate, void *path)
     GfxDebugLogTarget *target;
 
     // STRING: FF7 0x0090c824
-    target = (GfxDebugLogTarget *)GameHeapAlloc(1, 0x14, "C:\\lib\\src\\graphics\\dx_dbg.cpp", 0x149);
+    target = (GfxDebugLogTarget *)GameHeapAlloc(1, 20, "C:\\lib\\src\\graphics\\dx_dbg.cpp", 329);
     if (target != 0) {
         target->logToFile = 1;
         target->enabled = 1;
@@ -456,7 +456,7 @@ int __cdecl Gfx_CreateDebugLogTarget(int truncate, void *path)
             }
         } else {
             // STRING: FF7 0x0090c848
-            GameHeapFree(target, "C:\\lib\\src\\graphics\\dx_dbg.cpp", 0x15F);
+            GameHeapFree(target, "C:\\lib\\src\\graphics\\dx_dbg.cpp", 351);
             target = 0;
         }
     }

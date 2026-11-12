@@ -170,21 +170,21 @@ void __cdecl BattleFx_SpecialRocketLauncherTimelineTask(void)
         pChild->posY = taskPtr->startY;
         pChild->posZ = taskPtr->startZ;
         pChild->angle = ArcTangentFixed(taskPtr->endX - taskPtr->startX, taskPtr->endZ - taskPtr->startZ);
-        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 0xF;
-        pChild->velocityY = (taskPtr->endY - taskPtr->startY) / 0xF;
-        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 0xF;
-        pChild->arcVelocityY = 0x32;
+        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 15;
+        pChild->velocityY = (taskPtr->endY - taskPtr->startY) / 15;
+        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 15;
+        pChild->arcVelocityY = 50;
     }
     if (taskPtr->phase == 0x14) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
     }
-    if (taskPtr->phase > 0x14 && taskPtr->phase < 0x18) {
+    if (taskPtr->phase > 20 && taskPtr->phase < 24) {
         for (j6 = 0; j6 < 2; j6++) {
             pChild = (BattleFxRocketLauncher *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRocketLauncherAnimatedSpriteTask);
             Battle_GetBoneWorldPos(taskPtr->actorIndex, g_BattleActorRecords[taskPtr->actorIndex].targetBone, &pChild->posX);
-            pChild->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            pChild->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            pChild->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            pChild->posX += (short)(rand() % 1000 - 500);
+            pChild->posY += (short)(rand() % 1000 - 500);
+            pChild->posZ += (short)(rand() % 1000 - 500);
         }
     }
     (taskPtr->phase)++;
@@ -204,7 +204,7 @@ void __cdecl BattleFx_SpecialRocketLauncherAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialRocketLauncherSpriteReq1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecialRocketLauncherLoadedRes);
     g_BattleSpecialRocketLauncherSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecialRocketLauncherLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)(task->data), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)(task->data), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialRocketLauncherSpriteReq1.frame = task->frameCounter;
     g_BattleSpecialRocketLauncherDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialRocketLauncherSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialRocketLauncherDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecialRocketLauncherSpriteReq1.spriteGroup != 0) {
@@ -247,8 +247,8 @@ void __cdecl BattleFx_SpecialRocketLauncherTask(void)
     g_BattleSpecialRocketLauncherSpriteReq2.firstDrawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialRocketLauncherLoadedRes);
     g_BattleSpecialRocketLauncherSpriteReq2.misairuReq2Table48 = Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialRocketLauncherLoadedRes);
     g_BattleSpecialRocketLauncherSpriteReq2.secondDrawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialRocketLauncherLoadedRes);
-    frame.angleX.vx = 0xFC00;
-    frame.angleX.vy = 0xFC00;
+    frame.angleX.vx = 0xFC00 /* 5670 deg */;
+    frame.angleX.vy = 0xFC00 /* 5670 deg */;
     frame.angleX.vz = 0;
     RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
     RotateMatrixY(frame.missileSlot->angle, &frame.rotMatrix);
@@ -274,17 +274,17 @@ void __cdecl BattleFx_SpecialRocketLauncherTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     RotTransPointToInt16(&frame.pointX, (short *)&frame.pointX, &frame.transDepth);
-    BattleFx_InstallBillboardMatrix(&frame.pointX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.pointX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialRocketLauncherSpriteReq2.misairuReq2FrameIndex44 = frame.missileSlot->frameCounter % ((BattleFxSpriteGroup *)g_BattleSpecialRocketLauncherSpriteReq2.misairuReq2Table32)->header->frameCount;
     g_BattleSpecialRocketLauncherDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialRocketLauncherSpriteReq2.misairuReq2Table32, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialRocketLauncherDrawListHandle);
     if (frame.missileSlot->frameCounter >= 6) {
         frame.scratchX.vx = frame.pointX.vx;
         frame.scratchX.vy = frame.pointX.vy;
         frame.scratchX.vz = frame.pointX.vz;
-        frame.stepX = -SinFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 0x50 + 0x50) >> 0xC;
-        frame.stepZ = -CosFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 0x50 + 0x50) >> 0xC;
-        for (frame.stepIndex = 0; frame.stepIndex < 0xC; frame.stepIndex++) {
-            BattleFx_InstallBillboardMatrix(&frame.scratchX, 0x2000, 0);
+        frame.stepX = -SinFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 80 + 80) >> 12;
+        frame.stepZ = -CosFixed(frame.missileSlot->angle) * ((frame.missileSlot->frameCounter % 2) * 80 + 80) >> 12;
+        for (frame.stepIndex = 0; frame.stepIndex < 12; frame.stepIndex++) {
+            BattleFx_InstallBillboardMatrix(&frame.scratchX, 0x2000 /* 2.0 */, 0);
             g_BattleSpecialRocketLauncherSpriteReq2.misairuReq2HalfWord60 = frame.stepIndex >> 1;
             g_BattleSpecialRocketLauncherDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialRocketLauncherSpriteReq2.misairuReq2Table48, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialRocketLauncherDrawListHandle);
             frame.scratchX.vx += frame.stepX;
@@ -297,10 +297,10 @@ void __cdecl BattleFx_SpecialRocketLauncherTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (frame.stepIndex = 0; frame.stepIndex < 0xA; frame.stepIndex++) {
-        frame.scratchX.vx = frame.pointX.vx + rand() % 0x190 + -0xC8;
-        frame.scratchX.vy = frame.pointX.vy + rand() % 0x190 + -0xC8;
-        frame.scratchX.vz = frame.pointX.vz + rand() % 0x190 + -0xC8;
+    for (frame.stepIndex = 0; frame.stepIndex < 10; frame.stepIndex++) {
+        frame.scratchX.vx = frame.pointX.vx + rand() % 400 + -200;
+        frame.scratchX.vy = frame.pointX.vy + rand() % 400 + -200;
+        frame.scratchX.vz = frame.pointX.vz + rand() % 400 + -200;
         frame.drawPacket = (BattleFxRocketLauncherDrawListHandle *)g_BattleSpecialRocketLauncherDrawListHandle;
         frame.drawPacket->tag = frame.drawPacket->tag & 0xFFFFFF | 0x2000000;
         frame.drawPacket->colorCmd = 0x68;
@@ -321,11 +321,11 @@ void __cdecl BattleFx_SpecialRocketLauncherTask(void)
     }
     if (frame.missileSlot->frameCounter >= 6) {
         frame.missileSlot->posX += frame.missileSlot->velocityX;
-        frame.missileSlot->posY += (short)(frame.missileSlot->velocityY - 0xA);
+        frame.missileSlot->posY += (short)(frame.missileSlot->velocityY - 10);
         frame.missileSlot->posZ += frame.missileSlot->velocityZ;
     }
     (frame.missileSlot->frameCounter)++;
-    if (frame.missileSlot->frameCounter == 0x14) {
+    if (frame.missileSlot->frameCounter == 20) {
         frame.missileSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

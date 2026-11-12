@@ -106,9 +106,9 @@ void __cdecl BattleFx_MagicSpawnDemiPerTarget(int actor, int sourceActor)
     travelSlot = (BattleFxDemiTravelSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemiTravelEmitterTask);
     Battle_GetBoneWorldPos(sourceActor, g_BattleActorRecords[sourceActor].targetBone, &travelSlot->targetX);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &travelSlot->velocityX);
-    travelSlot->velocityX = (travelSlot->velocityX - travelSlot->targetX) / 0x18;
-    travelSlot->velocityY = (travelSlot->velocityY - travelSlot->targetY) / 0x18;
-    travelSlot->velocityZ = (travelSlot->velocityZ - travelSlot->targetZ) / 0x18;
+    travelSlot->velocityX = (travelSlot->velocityX - travelSlot->targetX) / 24;
+    travelSlot->velocityY = (travelSlot->velocityY - travelSlot->targetY) / 24;
+    travelSlot->velocityZ = (travelSlot->velocityZ - travelSlot->targetZ) / 24;
     travelSlot->targetActor = actor;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[sourceActor].posX), 0x50);
 }
@@ -148,8 +148,8 @@ void __cdecl BattleFx_MagicDemiTravelEmitterTask(void)
         *(Int64Pair *)&pTrail->posX = *(Int64Pair *)&task->posX;
         pTrail = (BattleFxDemiEmitterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemiExpandingSpriteTask);
         *(Int64Pair *)&pTrail->posX = *(Int64Pair *)&task->posX;
-        pTrail->size = 0x200;
-        pTrail->sizeStep = 0x2D0;
+        pTrail->size = 512;
+        pTrail->sizeStep = 720;
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[task->actorIndex].posX), 0x1E);
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -167,7 +167,7 @@ void __cdecl BattleFx_MagicDemiTrailSpriteTask(void)
     g_BattleMagicDemi_ResourceTable[GRAV1_TRAIL_TABLE_FIELD] = Gfx_ModelTableGetLoadedRecord(0, g_BattleMagicDemi_ResourceHandle);
     g_BattleMagicDemi_ResourceTable[GRAV1_TRAIL_TABLE_WORD] = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicDemi_ResourceHandle);
     g_BattleMagicDemi_SpriteColors.frame = task->mode;
-    matrix = (int)BattleFx_InstallBillboardMatrix(&task->posX, 0x800, 0);
+    matrix = (int)BattleFx_InstallBillboardMatrix(&task->posX, 0x800 /* 0.5 */, 0);
     if (*(int *)((char *)matrix + 0x1A) > 0) {
         g_BattleMagicDemi_ChainTail = BattleFx_SubmitSpriteDraw(&g_BattleMagicDemi_ResourceTable[GRAV1_TRAIL_TABLE_FIELD], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicDemi_ChainTail);
     }
@@ -195,9 +195,9 @@ void __cdecl BattleFx_MagicDemiExpandingSpriteTask(void)
     }
     if (g_BattleIsPaused == 0) {
         task->size += task->sizeStep;
-        task->sizeStep -= 0x28;
+        task->sizeStep -= 40;
         (task->frame)++;
-        if (task->frame >= 0x24) {
+        if (task->frame >= 36) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -210,7 +210,7 @@ void __cdecl BattleFx_MagicDemiAnimatedSpriteTask(void)
     BattleTaskSlot *task;
 
     task = BATTLE_CURRENT_TASK_SLOT;
-    g_BattleMagicDemi_SpriteReq.animFramePhase = task->frameCounter % 0xC;
+    g_BattleMagicDemi_SpriteReq.animFramePhase = task->frameCounter % 12;
     g_BattleMagicDemi_SpriteReq.animFrameTable = Gfx_ModelTableGetLoadedRecord(2, g_BattleMagicDemi_ResourceHandle);
     g_BattleMagicDemi_SpriteReq.animVariantField = Gfx_ModelTableGetSpriteObject(2, g_BattleMagicDemi_ResourceHandle);
     if (g_BattleMagicDemi_SpriteReq.animFrameTable != 0) {
@@ -218,11 +218,11 @@ void __cdecl BattleFx_MagicDemiAnimatedSpriteTask(void)
         ((BattleMagicDemiSpriteReq *)g_BattleMagicDemi_SpriteReq.animFrameTable)->spriteObject3 = Gfx_ModelTableGetSpriteObject(3, g_BattleMagicDemi_ResourceHandle);
         ((BattleMagicDemiSpriteReq *)g_BattleMagicDemi_SpriteReq.animFrameTable)->spriteObject4 = Gfx_ModelTableGetSpriteObject(4, g_BattleMagicDemi_ResourceHandle);
     }
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000, 0xFFFFFF38);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000 /* 1.0 */, 0xFFFFFF38);
     g_BattleMagicDemi_ChainTail = BattleFx_SubmitSpriteDraw(&g_BattleMagicDemi_SpriteReq.animFrameTable, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicDemi_ChainTail);
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        if (task->frameCounter >= 0x24) {
+        if (task->frameCounter >= 36) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }

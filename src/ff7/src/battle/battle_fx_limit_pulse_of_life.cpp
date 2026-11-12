@@ -208,20 +208,20 @@ void __cdecl BattleFx_LimitPulseOfLifeTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step == 0x38) {
+    if (taskPtr->step == 56) {
         child = (BattleFxPulseOfLifeTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitPulseOfLifePulsingModelTask);
         child->posX = taskPtr->posX;
         child->posY = 0;
         child->posZ = taskPtr->posZ;
         child->negRadius = taskPtr->negRadius;
     }
-    if (taskPtr->step == 0x38) {
+    if (taskPtr->step == 56) {
         child = (BattleFxPulseOfLifeTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitPulseOfLifeSpawnRisingSpriteTask);
         child->actorIndex = taskPtr->actorIndex;
         child->negRadius = taskPtr->negRadius;
     }
-    if (taskPtr->step == 0x61) {
-        for (i = 0; i < 0x14; i++) {
+    if (taskPtr->step == 97) {
+        for (i = 0; i < 20; i++) {
             child = (BattleFxPulseOfLifeTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitPulseOfLifeAnimatedSpriteTask);
             *(Int64Pair *)&child->posX = *(Int64Pair *)&taskPtr->posX;
             g_BattleLimitPulseOfLifeTransformScratch->angles.vx = 0;
@@ -251,29 +251,29 @@ void __cdecl BattleFx_LimitPulseOfLifePulsingModelTask(void)
     task = (BattleFxPulseOfLifePulseTask *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleLimitPulseOfLifeLoadedRes);
     stage = task->step;
-    if (stage < 0xF) {
+    if (stage < 15) {
         if (stage == 0) {
-            Battle_StartFixedPointRamp(0x800, 0xF);
+            Battle_StartFixedPointRamp(0x800, 15);
         }
-        g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel.fadeLevel = stage * -0x800 / 0xF + 0x1000;
+        g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel.fadeLevel = stage * -2048 / 15 + 4096;
     } else {
-        stage -= 0xF;
-        if (stage < 0x19) {
-            g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel.fadeLevel = 0x800;
+        stage -= 15;
+        if (stage < 25) {
+            g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel.fadeLevel = 2048;
         } else {
-            stage -= 0x19;
-            if (stage < 0xF) {
+            stage -= 25;
+            if (stage < 15) {
                 if (stage == 0) {
-                    Battle_StartFixedPointRamp(0, 0xF);
+                    Battle_StartFixedPointRamp(0, 15);
                 }
-                g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel.fadeLevel = (stage << 0xB) / 0xF + 0x800;
+                g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel.fadeLevel = (stage << 11) / 15 + 2048;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
             }
         }
     }
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x800, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x800 /* 0.5 */, task->pushLength);
     SetDrawColorRGB(0, 0, 0);
     g_BattleLimitPulseOfLifeDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitPulseOfLifeSpriteRequest1.pulseModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitPulseOfLifeDrawListHandle);
     if (g_BattleIsPaused == 0) {
@@ -300,15 +300,15 @@ void __cdecl BattleFx_LimitPulseOfLifeSpawnRisingSpriteTask(void)
         pSprite = (BattleFxLimitPulseOfLifeSpinSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitPulseOfLifeRisingSpinningSpriteTask);
         pSprite->ownerSlot = 0xA - taskPtr->timer;
         Battle_GetBoneWorldPos(taskPtr->actorIndex, rand() % g_BattleActorRecords[taskPtr->actorIndex].boneCount, &pSprite->posX);
-        pSprite->posX += (short)(rand() % 0xC8 - 0x64);
-        pSprite->posY += (short)(rand() % 0xC8 - 0x7B7);
-        pSprite->posZ += (short)(rand() % 0xC8 - 0x64);
+        pSprite->posX += (short)(rand() % 200 - 100);
+        pSprite->posY += (short)(rand() % 200 - 1975);
+        pSprite->posZ += (short)(rand() % 200 - 100);
         pSprite->tiltAngle = rand() & 0xFFF;
         pSprite->startScale = rand() % 0x400 + 0x400;
         pSprite->pushLength = taskPtr->negRadius;
     }
     (taskPtr->timer)++;
-    if (taskPtr->timer >= 0xA) {
+    if (taskPtr->timer >= 10) {
         taskPtr->actorIndex = BATTLE_TASK_FREE;
     }
 }
@@ -338,11 +338,11 @@ void __cdecl BattleFx_LimitPulseOfLifeRisingSpinningSpriteTask(void)
         bytes = task->startScale;
     } else {
         frame -= 5;
-        if (frame < 0x14) {
+        if (frame < 20) {
             g_BattleLimitPulseOfLifeSpriteRequest2.risingSpriteColor.word = 0x2E808080;
             bytes = task->startScale;
         } else {
-            frame -= 0x14;
+            frame -= 20;
             if (frame < 5) {
                 g_BattleLimitPulseOfLifeSpriteRequest2.risingSpriteColor.rgb.b = frame * -0x80 / 5 + 0x80;
                 g_BattleLimitPulseOfLifeSpriteRequest2.risingSpriteColor.rgb.g = g_BattleLimitPulseOfLifeSpriteRequest2.risingSpriteColor.rgb.b;
@@ -367,8 +367,8 @@ void __cdecl BattleFx_LimitPulseOfLifeRisingSpinningSpriteTask(void)
     SetTransMatrix(&g_BattleLimitPulseOfLifeSpriteScratch->matrix);
     g_BattleLimitPulseOfLifeDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleLimitPulseOfLifeSpriteRequest1.risingSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitPulseOfLifeDrawListHandle);
     if (g_BattleIsPaused == 0) {
-        if (task->frame < 0x19) {
-            task->posY += 0x4B;
+        if (task->frame < 25) {
+            task->posY += 75;
             task->tiltAngle += 0x80;
         }
         (task->frame)++;
@@ -386,7 +386,7 @@ void __cdecl BattleFx_LimitPulseOfLifeAnimatedSpriteTask(void)
     task = (BattleFxPulseOfLifeSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitPulseOfLifeSpriteRequest2.burstSprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleLimitPulseOfLifeLoadedRes);
     g_BattleLimitPulseOfLifeSpriteRequest2.burstSprite.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleLimitPulseOfLifeLoadedRes);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000, 0xFFFFFF00);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000 /* 1.0 */, 0xFFFFFF00);
     g_BattleLimitPulseOfLifeSpriteRequest2.burstSprite.frame = task->frame / 2;
     g_BattleLimitPulseOfLifeDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleLimitPulseOfLifeSpriteRequest2.burstSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitPulseOfLifeDrawListHandle);
     if (g_BattleIsPaused == 0) {
@@ -399,9 +399,9 @@ void __cdecl BattleFx_LimitPulseOfLifeAnimatedSpriteTask(void)
             task->posX += task->velocityX;
             task->posY += task->velocityY;
             task->posZ += task->velocityZ;
-            task->velocityX = task->velocityX * 0xC00 >> 0xC;
-            task->velocityY = (task->velocityY * 0xE00 >> 0xC) + 0x1E;
-            task->velocityZ = task->velocityZ * 0xC00 >> 0xC;
+            task->velocityX = task->velocityX * 0xC00 /* 0.75 */ >> 12;
+            task->velocityY = (task->velocityY * 0xE00 /* 0.875 */ >> 12) + 30;
+            task->velocityZ = task->velocityZ * 0xC00 /* 0.75 */ >> 12;
         }
     }
 }
@@ -420,7 +420,7 @@ void __cdecl BattleFx_LimitPulseOfLifeSoundTask(void)
     }
     if (task->frameCounter == 5) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(task->data), 0x15);
-    } else if (task->frameCounter == 0x38) {
+    } else if (task->frameCounter == 56) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(task->data), 0x11E);
         task->ownerSlot = BATTLE_TASK_FREE;
     }

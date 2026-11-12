@@ -101,7 +101,7 @@ void __cdecl BattleFx_SpecialLoadResWaterGun(void)
 void __cdecl BattleFx_SpecialEnterWaterGun(int targetMask, int actorIdx)
 {
     g_BattleSpecialWaterGunScaleStep = 1;
-    g_BattleSpecialWaterGunScale = 0x2000;
+    g_BattleSpecialWaterGunScale = 0x2000 /* 2.0 */;
     g_BattleSpecialWaterGunModelScaleZ = 0;
     g_BattleSpecialWaterGunAlphaFactor = 0x2000;
     BattleFx_SpecialBeginWaterGun(targetMask, actorIdx);
@@ -170,29 +170,29 @@ void __cdecl BattleFx_SpecialWaterGunTimelineTask(void)
         frame.spawnSlot->deltaZ = frame.timelineSlot->deltaZ - frame.timelineSlot->startZ;
         frame.deltaZ = frame.spawnSlot->deltaZ;
         frame.distance = SqrtToInt(frame.deltaX * frame.deltaX + frame.deltaY * frame.deltaY + frame.deltaZ * frame.deltaZ);
-        frame.spawnSlot->scaleRate = (frame.distance << 0xC) / 0xAF0;
+        frame.spawnSlot->scaleRate = (frame.distance << 12) / 2800;
     }
-    if (frame.timelineSlot->frameCounter == 0xA) {
+    if (frame.timelineSlot->frameCounter == 10) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->targetSlot);
     }
-    if (frame.timelineSlot->frameCounter > 5 && frame.timelineSlot->frameCounter < 0xA) {
+    if (frame.timelineSlot->frameCounter > 5 && frame.timelineSlot->frameCounter < 10) {
         for (frame.spriteIndex = 0; frame.spriteIndex < 2; frame.spriteIndex++) {
             frame.spawnSlot = (BattleFxOilTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWaterGunVariantSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->targetSlot, g_BattleActorRecords[frame.timelineSlot->targetSlot].targetBone, (short *)&frame.spawnSlot->posX);
-            frame.spawnSlot->posX += (short)(rand() % 0x4B0 - 0x258);
-            frame.spawnSlot->posY += (short)(rand() % 0x4B0 - 0x258);
-            frame.spawnSlot->posZ += (short)(rand() % 0x4B0 - 0x258);
+            frame.spawnSlot->posX += (short)(rand() % 1200 - 600);
+            frame.spawnSlot->posY += (short)(rand() % 1200 - 600);
+            frame.spawnSlot->posZ += (short)(rand() % 1200 - 600);
             frame.spawnSlot->isActive = 0;
         }
         frame.spawnSlot = (BattleFxOilTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWaterGunVariantSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->targetSlot, g_BattleActorRecords[frame.timelineSlot->targetSlot].targetBone, (short *)&frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x258 - 0x12C);
-        frame.spawnSlot->posY += (short)(rand() % 0x258 - 0x12C);
-        frame.spawnSlot->posZ += (short)(rand() % 0x258 - 0x12C);
+        frame.spawnSlot->posX += (short)(rand() % 600 - 300);
+        frame.spawnSlot->posY += (short)(rand() % 600 - 300);
+        frame.spawnSlot->posZ += (short)(rand() % 600 - 300);
         frame.spawnSlot->isActive = 1;
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0xF) {
+    if (frame.timelineSlot->frameCounter == 15) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -272,7 +272,7 @@ void __cdecl BattleFx_SpecialWaterGunStretchModelTask(void)
     if (frame.stretchSlot->frameCounter < 4) {
         g_BattleSpecialWaterGunScaleStep++;
     } else {
-        g_BattleSpecialWaterGunScale -= 0x800;
+        g_BattleSpecialWaterGunScale -= 0x800 /* 0.5 */;
         g_BattleSpecialWaterGunAlphaFactor -= 0x800;
     }
     (frame.stretchSlot->frameCounter)++;

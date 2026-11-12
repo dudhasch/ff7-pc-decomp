@@ -430,17 +430,17 @@ void __cdecl BattleFx_SaferSephirothDeathRunCameraScript(void)
                 vec->y = g_SaferSephirothDeathCameraOther->u.position.y - g_SaferSephirothDeathCameraTrack->base.y;
                 vec->z = g_SaferSephirothDeathCameraOther->u.position.z - g_SaferSephirothDeathCameraTrack->base.z;
                 VectorNormalToSVector((int *)vec, (short *)ofsPtr);
-                g_SaferSephirothDeathCameraTrack->u.position.x = g_SaferSephirothDeathCameraOther->u.position.x - (ofsPtr->vx * g_SaferSephirothDeathCameraTrack->distance >> 0xC);
-                g_SaferSephirothDeathCameraTrack->u.position.y = g_SaferSephirothDeathCameraOther->u.position.y - (ofsPtr->vy * g_SaferSephirothDeathCameraTrack->distance >> 0xC);
-                g_SaferSephirothDeathCameraTrack->u.position.z = g_SaferSephirothDeathCameraOther->u.position.z - (ofsPtr->vz * g_SaferSephirothDeathCameraTrack->distance >> 0xC);
+                g_SaferSephirothDeathCameraTrack->u.position.x = g_SaferSephirothDeathCameraOther->u.position.x - (ofsPtr->vx * g_SaferSephirothDeathCameraTrack->distance >> 12);
+                g_SaferSephirothDeathCameraTrack->u.position.y = g_SaferSephirothDeathCameraOther->u.position.y - (ofsPtr->vy * g_SaferSephirothDeathCameraTrack->distance >> 12);
+                g_SaferSephirothDeathCameraTrack->u.position.z = g_SaferSephirothDeathCameraOther->u.position.z - (ofsPtr->vz * g_SaferSephirothDeathCameraTrack->distance >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_SaferSephirothDeathCameraTrack->distance += g_SaferSephirothDeathCameraTrack->delta;
                 easedDistance = g_SaferSephirothDeathCameraTrack->distance;
                 easedDistance = BattleFx_SaferSephirothDeathApplyCameraEasing(easedDistance, g_SaferSephirothDeathCameraTrack->easing);
-                g_SaferSephirothDeathCameraTrack->u.position.x = g_SaferSephirothDeathCameraTrack->base.x + (g_SaferSephirothDeathCameraTrack->velocity.x * easedDistance >> 0xC);
-                g_SaferSephirothDeathCameraTrack->u.position.y = g_SaferSephirothDeathCameraTrack->base.y + (g_SaferSephirothDeathCameraTrack->velocity.y * easedDistance >> 0xC);
-                g_SaferSephirothDeathCameraTrack->u.position.z = g_SaferSephirothDeathCameraTrack->base.z + (g_SaferSephirothDeathCameraTrack->velocity.z * easedDistance >> 0xC);
+                g_SaferSephirothDeathCameraTrack->u.position.x = g_SaferSephirothDeathCameraTrack->base.x + (g_SaferSephirothDeathCameraTrack->velocity.x * easedDistance >> 12);
+                g_SaferSephirothDeathCameraTrack->u.position.y = g_SaferSephirothDeathCameraTrack->base.y + (g_SaferSephirothDeathCameraTrack->velocity.y * easedDistance >> 12);
+                g_SaferSephirothDeathCameraTrack->u.position.z = g_SaferSephirothDeathCameraTrack->base.z + (g_SaferSephirothDeathCameraTrack->velocity.z * easedDistance >> 12);
             }
             (g_SaferSephirothDeathCameraTrack->frames)--;
             g_SaferSephirothDeathCameraTrack = &g_SaferSephirothDeathCameraFocus;
@@ -584,12 +584,12 @@ void __cdecl BattleFx_SaferSephirothDeathTimelineTask(void)
         return;
     }
     frame = task->frameCounter;
-    if (frame < 0xC8) {
+    if (frame < 200) {
         if (frame == 0) {
             g_BattleFxTimelineState.red = 0;
             g_BattleFxTimelineState.channel1 = 0;
             g_BattleFxTimelineState.channel2 = 0;
-            Battle_StartFixedPointRamp(0x400, 0xA);
+            Battle_StartFixedPointRamp(0x400, 10);
             g_BattleActorStates[4].flags |= 2;
             Battle_AllocateResourceSlot(BattleFx_SaferSephirothDeathFlashSequenceTask);
             g_BattleActorRecords[4].tintR = 0xFF;
@@ -597,26 +597,26 @@ void __cdecl BattleFx_SaferSephirothDeathTimelineTask(void)
             g_BattleActorRecords[4].tintB = 0xFF;
             g_BattleActorRecords[4].tintPhase = 0;
         }
-        if (frame == 0x3C) {
+        if (frame == 60) {
             Battle_AllocateResourceSlot(BattleFx_SaferSephirothDeathSpawnFadingModelsTask);
         }
-        if (frame == 0x3C) {
+        if (frame == 60) {
             Battle_AllocateResourceSlot(BattleFx_SaferSephirothDeathSpawnBillboardsTask);
         }
-        if (frame == 0xC7) {
+        if (frame == 199) {
             BattleFx_SaferSephirothDeathBuildShatterFragments();
             g_BattleActorRecords[4].drawFlags |= 2;
             g_BattleActorRecords[4].drawFlags |= 4;
             g_BattleActorStates[4].flags &= (unsigned short)~2;
         }
-        g_BattleActorRecords[4].tintPhase = ((SinFixed((frame << 0xC) * 3 / 0xC8 + 0xC00) + 0x1000) / 2) << 0xB >> 0xC;
+        g_BattleActorRecords[4].tintPhase = ((SinFixed((frame << 12) * 3 / 200 + 0xC00) + 0x1000) / 2) << 11 >> 12;
     } else {
-        frame -= 0xC8;
-        if (frame < 0x1FE) {
+        frame -= 200;
+        if (frame < 510) {
             if (frame == 0) {
                 child = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SaferSephirothDeathShatterDrawTask);
             }
-            if (frame == 0x1C2) {
+            if (frame == 450) {
                 Battle_AllocateSecondaryResourceSlot(BattleFx_SaferSephirothDeathWhiteFlashRampTask);
             }
         } else {
@@ -629,9 +629,9 @@ void __cdecl BattleFx_SaferSephirothDeathTimelineTask(void)
             g_BattleScriptEffectFlag = 0;
             task->ownerSlot = BATTLE_TASK_FREE;
             // STRING: FF7 0x007e2e70
-            GameHeapFree((void *)g_SaferSephirothDeath_EnemyDatHandle, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 0x2CF);
+            GameHeapFree((void *)g_SaferSephirothDeath_EnemyDatHandle, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 719);
             // STRING: FF7 0x007e2e94
-            GameHeapFree(g_SaferSephirothDeath_ModelTablePtr, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 0x2D0);
+            GameHeapFree(g_SaferSephirothDeath_ModelTablePtr, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 720);
             g_SaferSephirothDeath_EnemyDatHandle = 0;
             g_SaferSephirothDeath_ModelTablePtr = 0;
             Sfx_ReleaseCachedBuffer(0x2DA, 0xF);
@@ -664,8 +664,8 @@ void __cdecl BattleFx_SaferSephirothDeathBuildShatterFragments(void)
             fragmentCount = BattleFx_SaferSephirothDeathExtractModelFragments((SaferSephirothDeathModelPart *)g_SaferSephirothDeath_ModelTablePtr[partIdx], fragmentCount);
         }
     }
-    for (partIdx = 0; partIdx < 0x97C; partIdx++) {
-        g_SaferSephirothDeath_FragmentNormalBuf[partIdx].startFrame = (g_SaferSephirothDeath_FragmentVertexBuf[partIdx].vz + rand() % 0xC8 + 0xE74) * 0x1C2 / 0xE74;
+    for (partIdx = 0; partIdx < 2428; partIdx++) {
+        g_SaferSephirothDeath_FragmentNormalBuf[partIdx].startFrame = (g_SaferSephirothDeath_FragmentVertexBuf[partIdx].vz + rand() % 200 + 3700) * 450 / 3700;
         g_SaferSephirothDeath_FragmentNormalBuf[partIdx].deltaZ = -(rand() % 5);
         g_SaferSephirothDeath_FragmentColorBuf[partIdx] = 0;
     }
@@ -807,9 +807,9 @@ void __cdecl BattleFx_SaferSephirothDeathShatterDrawTask(void)
     }
     if (g_BattleIsPaused == 0) {
         g_SaferSephirothDeath_SavedMatrix.t[2] -= 0x1E;
-        g_SaferSephirothDeath_ActorPos.vz -= 0x1E;
+        g_SaferSephirothDeath_ActorPos.vz -= 30;
         (pTaskSlot->frameCounter)++;
-        if (pTaskSlot->frameCounter >= 0x1FE) {
+        if (pTaskSlot->frameCounter >= 510) {
             pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -1055,15 +1055,15 @@ void __cdecl BattleFx_SaferSephirothDeathStepFragmentMotion(int frameCount)
     g_pSaferSephirothDeath_FragmentState->delta.vx = 0;
     g_pSaferSephirothDeath_FragmentState->delta.vz = 0;
     RotMatrix(&g_pSaferSephirothDeath_FragmentState->delta, &g_pSaferSephirothDeath_FragmentState->matrix);
-    g_pSaferSephirothDeath_FragmentState->scaleY = 0x1000;
-    g_pSaferSephirothDeath_FragmentState->scaleX = 0x1000;
-    g_pSaferSephirothDeath_FragmentState->scaleZ = 0x1000;
+    g_pSaferSephirothDeath_FragmentState->scaleY = 0x1000 /* 1.0 */;
+    g_pSaferSephirothDeath_FragmentState->scaleX = 0x1000 /* 1.0 */;
+    g_pSaferSephirothDeath_FragmentState->scaleZ = 0x1000 /* 1.0 */;
     ScaleMatrix(&g_pSaferSephirothDeath_FragmentState->matrix, (VECTOR *)&g_pSaferSephirothDeath_FragmentState->scaleX);
-    for (fragIdx = 0; fragIdx < 0x97C; fragIdx++) {
+    for (fragIdx = 0; fragIdx < 2428; fragIdx++) {
         elapsed = frameCount - g_SaferSephirothDeath_FragmentNormalBuf[fragIdx].startFrame;
         if (elapsed >= 0) {
-            if (elapsed < 0x28) {
-                g_SaferSephirothDeath_FragmentNormalBuf[fragIdx].deltaZ = (g_SaferSephirothDeath_FragmentNormalBuf[fragIdx].deltaZ * 0xF00 >> 0xC) - 5;
+            if (elapsed < 40) {
+                g_SaferSephirothDeath_FragmentNormalBuf[fragIdx].deltaZ = (g_SaferSephirothDeath_FragmentNormalBuf[fragIdx].deltaZ * 0xF00 /* 0.9375 */ >> 12) - 5;
                 g_SaferSephirothDeath_FragmentVertexBuf[fragIdx].vz += g_SaferSephirothDeath_FragmentNormalBuf[fragIdx].deltaZ;
                 g_pSaferSephirothDeath_FragmentState->delta.vx = g_SaferSephirothDeath_FragmentVertexBuf[fragIdx].vx - (g_SaferSephirothDeath_BoneWorldPos.vx);
                 g_pSaferSephirothDeath_FragmentState->delta.vy = g_SaferSephirothDeath_FragmentVertexBuf[fragIdx].vy - g_SaferSephirothDeath_BoneWorldPos.vy;
@@ -1071,17 +1071,17 @@ void __cdecl BattleFx_SaferSephirothDeathStepFragmentMotion(int frameCount)
                 g_SaferSephirothDeath_FragmentVertexBuf[fragIdx].vx = g_pSaferSephirothDeath_FragmentState->delta.vx + (g_SaferSephirothDeath_BoneWorldPos.vx);
                 g_SaferSephirothDeath_FragmentVertexBuf[fragIdx].vy = g_pSaferSephirothDeath_FragmentState->delta.vy + g_SaferSephirothDeath_BoneWorldPos.vy;
                 for (cornerIdx = 0; cornerIdx < 4; cornerIdx++) {
-                    g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vx = g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vx * 0xF00 >> 0xC;
-                    g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vy = g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vy * 0xF00 >> 0xC;
+                    g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vx = g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vx * 0xF00 /* 0.9375 */ >> 12;
+                    g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vy = g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vy * 0xF00 /* 0.9375 */ >> 12;
                 }
-                g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[0].vz += 0x14;
-                g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[2].vz -= 0x14;
-                g_SaferSephirothDeath_FragmentColorBuf[fragIdx] = (elapsed << 0xC) / 0x28;
+                g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[0].vz += 20;
+                g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[2].vz -= 20;
+                g_SaferSephirothDeath_FragmentColorBuf[fragIdx] = (elapsed << 12) / 40;
             } else {
-                elapsed -= 0x28;
-                if (elapsed < 0x14) {
-                    g_SaferSephirothDeath_FragmentVertexBuf[fragIdx].vz -= 0x1F4;
-                } else if (elapsed == 0x14) {
+                elapsed -= 40;
+                if (elapsed < 20) {
+                    g_SaferSephirothDeath_FragmentVertexBuf[fragIdx].vz -= 500;
+                } else if (elapsed == 20) {
                     for (cornerIdx = 0; cornerIdx < 4; cornerIdx++) {
                         g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vz = 0;
                         g_SaferSephirothDeath_FragmentBuffer[fragIdx].corner[cornerIdx].vy = 0;
@@ -1140,15 +1140,15 @@ void __cdecl BattleFx_SaferSephirothDeathSpawnFadingModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    g_SaferSephirothDeath_SubTaskCount += 0xA0;
-    while (g_SaferSephirothDeath_SubTaskCount >= 0x100) {
+    g_SaferSephirothDeath_SubTaskCount += 160;
+    while (g_SaferSephirothDeath_SubTaskCount >= 256) {
         modelPtr = (BattleFxSaferSephirothDeathFadingTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SaferSephirothDeathFadingModelTask);
         modelPtr->rot.vx = 0;
         modelPtr->rot.vy = 0;
-        g_SaferSephirothDeath_TaskFinished = g_SaferSephirothDeath_TaskFinished + (rand() & 0x7FF) + 0x400;
+        g_SaferSephirothDeath_TaskFinished = g_SaferSephirothDeath_TaskFinished + (rand() & 0x7FF) + 1024;
         modelPtr->rot.vz = (short)g_SaferSephirothDeath_TaskFinished;
         if (DEAD_IN_RETAIL != 0) {
-            scaleValue = 0x800;
+            scaleValue = 0x800 /* 0.5 */;
         } else {
             scaleValue = rand() % 0x400 + 0x400;
         }
@@ -1156,13 +1156,13 @@ void __cdecl BattleFx_SaferSephirothDeathSpawnFadingModelsTask(void)
         if (DEAD_IN_RETAIL != 0) {
             yOfs = 0x12C;
         } else {
-            yOfs = rand() % 0xC8 + 0x64;
+            yOfs = rand() % 200 + 100;
         }
         modelPtr->offsetY = -yOfs;
-        g_SaferSephirothDeath_SubTaskCount -= 0x100;
+        g_SaferSephirothDeath_SubTaskCount -= 256;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0x8C) {
+    if (taskPtr->frameCounter >= 140) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1185,17 +1185,17 @@ void __cdecl BattleFx_SaferSephirothDeathFadingModelTask(void)
         g_SaferSephirothDeath_CameraScriptOperandPool.u.fadeBlock = (struct SaferSephirothDeathFadeBlock *)Gfx_GetPsxScratchpadPtr(0);
     }
     time = taskPtr->frame;
-    if (time < 0x14) {
-        ratio = (time << 0xC) / 0x14;
-        fade = 0x1000 - ratio;
+    if (time < 20) {
+        ratio = (time << 12) / 20;
+        fade = 4096 - ratio;
     } else {
-        time -= 0x14;
+        time -= 20;
         if (time < 5) {
             fade = 0;
         } else {
             time -= 5;
-            if (time < 0x14) {
-                ratio = (time << 0xC) / 0x14;
+            if (time < 20) {
+                ratio = (time << 12) / 20;
                 fade = ratio;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -1251,13 +1251,13 @@ void __cdecl BattleFx_SaferSephirothDeathSpawnBillboardsTask(void)
         return;
     }
     g_SaferSephirothDeath_BillboardSpawnAccum += 0x80;
-    while (g_SaferSephirothDeath_BillboardSpawnAccum >= 0x100) {
+    while (g_SaferSephirothDeath_BillboardSpawnAccum >= 256) {
         sprite = (BattleFxSaferSephirothDeathBillboardRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SaferSephirothDeathBillboardTask);
-        sprite->posX = rand() % 0x640 + (g_SaferSephirothDeath_BoneWorldPos.vx) + -0x320;
-        sprite->posY = rand() % 0x640 + g_SaferSephirothDeath_BoneWorldPos.vy + -0x320;
-        sprite->posZ = rand() % 0x640 + g_SaferSephirothDeath_BoneWorldPos.vz + -0x320;
+        sprite->posX = rand() % 1600 + (g_SaferSephirothDeath_BoneWorldPos.vx) + -800;
+        sprite->posY = rand() % 1600 + g_SaferSephirothDeath_BoneWorldPos.vy + -800;
+        sprite->posZ = rand() % 1600 + g_SaferSephirothDeath_BoneWorldPos.vz + -800;
         if (DEAD_IN_RETAIL != 0) {
-            angle = 0x800;
+            angle = 0x800 /* 180 deg */;
         } else {
             angle = rand() % 0x800;
         }
@@ -1265,7 +1265,7 @@ void __cdecl BattleFx_SaferSephirothDeathSpawnBillboardsTask(void)
         g_SaferSephirothDeath_BillboardSpawnAccum -= 0x100;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0x8C) {
+    if (taskPtr->frameCounter >= 140) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1287,15 +1287,15 @@ void __cdecl BattleFx_SaferSephirothDeathBillboardTask(void)
     g_SaferSephirothDeathBillboardDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0, g_SaferSephirothDeath_Loaded);
     frame = task->frameCount;
     if (frame < 2) {
-        ratio = (frame << 0xC) / 2;
+        ratio = (frame << 12) / 2;
         easedValue = BattleFx_SaferSephirothDeathApplyCameraEasing(ratio, 0x1FF);
-        scale = task->startValue * easedValue >> 0xC;
+        scale = task->startValue * easedValue >> 12;
     } else {
         frame -= 2;
         if (frame < 2) {
-            ratio = (frame << 0xC) / 2;
+            ratio = (frame << 12) / 2;
             easedValue = BattleFx_SaferSephirothDeathApplyCameraEasing(ratio, 0xFFFFFE01);
-            scale = task->startValue + ((0 - task->startValue) * easedValue >> 0xC);
+            scale = task->startValue + ((0 - task->startValue) * easedValue >> 12);
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1322,9 +1322,9 @@ void __cdecl BattleFx_SaferSephirothDeathWhiteFlashRampTask(void)
 
     task = (struct BattleTaskSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
     frame = task->frameCounter;
-    if (frame < 0x3C) {
-        ratio = (frame << 0xC) / 0x3C;
-        shade = ratio * 0xFF >> 0xC;
+    if (frame < 60) {
+        ratio = (frame << 12) / 60;
+        shade = ratio * 0xFF >> 12;
     } else {
         shade = 0xFF;
     }
@@ -1380,10 +1380,10 @@ int __cdecl BattleFx_SaferSephirothDeathLoadEnemy331ModelTable(void)
         readPointer = (DeadSefDatStream *)((int)readPointer + 4);
         if (partCount > 0) {
             // STRING: FF7 0x007e2ec8
-            partTable = (int *)GameHeapAlloc(partCount, 4, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 0x342);
+            partTable = (int *)GameHeapAlloc(partCount, 4, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 834);
         } else {
             // STRING: FF7 0x007e2eec
-            partTable = (int *)GameHeapAlloc(partCount + 1, 4, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 0x346);
+            partTable = (int *)GameHeapAlloc(partCount + 1, 4, "C:\\FF7\\src\\battle\\yasui\\deadsef.cpp", 838);
         }
         if (partCount > 0) {
             readPointer = (DeadSefDatStream *)((int)readPointer + 2);

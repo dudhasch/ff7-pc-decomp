@@ -139,7 +139,7 @@ void __cdecl WorldEntity_InitPool(int slotTable)
 {
     int index;
 
-    for (index = 0; index < 0xF; index++) {
+    for (index = 0; index < 15; index++) {
         g_WorldActorPool[index].next = &g_WorldActorPool[index + 1];
     }
     g_WorldActorPool[index].next = 0;
@@ -846,13 +846,13 @@ void __cdecl WorldEntity_StepFacingToward(struct WorldActor *entity, short targe
             absDirect = -(entity->heading - targetFacing);
         }
         diff = absDirect;
-        if (entity->heading - targetFacing + 0x1000 > 0) {
+        if (entity->heading - targetFacing + 4096 > 0) {
             magUp = entity->heading - targetFacing + 0x1000;
         } else {
             magUp = -(entity->heading - targetFacing + 0x1000);
         }
         upDist = magUp;
-        if (entity->heading - targetFacing - 0x1000 > 0) {
+        if (entity->heading - targetFacing - 4096 > 0) {
             absDown = entity->heading - targetFacing - 0x1000;
         } else {
             absDown = -(entity->heading - targetFacing - 0x1000);
@@ -874,9 +874,9 @@ void __cdecl WorldEntity_StepFacingToward(struct WorldActor *entity, short targe
         }
         entity->heading = blended;
         if (entity->heading < 0) {
-            entity->heading += 0x1000;
+            entity->heading += 0x1000 /* 360 deg */;
         } else if (entity->heading >= 0x1000) {
-            entity->heading -= 0x1000;
+            entity->heading -= 0x1000 /* 360 deg */;
         }
     }
 }
@@ -906,7 +906,7 @@ void __cdecl WorldEntity_EaseCurrentTilt(short target)
     if (g_pWorldCurrentActor != 0) {
         if (g_WorldMovementMultiplier == 1) {
             if ((g_pWorldCurrentActor->flags1 & 1) != 0) {
-                fastBlend = g_pWorldCurrentActor->headingOffset * 0xF + target >> 4;
+                fastBlend = g_pWorldCurrentActor->headingOffset * 15 + target >> 4;
             } else {
                 fastBlend = g_pWorldCurrentActor->headingOffset * 3 + target >> 2;
             }
@@ -1161,7 +1161,7 @@ int __cdecl WorldEntity_GetPlayerTerrainTopBit(void)
     int bit;
 
     if (g_pWorldPlayerActor != 0) {
-        bit = (g_pWorldPlayerActor->walkmesh >> 0xf) & 1;
+        bit = (g_pWorldPlayerActor->walkmesh >> 15) & 1;
     } else {
         bit = 0;
     }
@@ -1311,7 +1311,7 @@ void __cdecl WorldEntity_ApplyPlayerGroundStep(void *ground)
     terrain = WorldEntity_GetPlayerTerrainType();
     WorldEntity_SetPositionAndGround(g_pWorldPlayerActor, (WorldPosition *)ground);
     if (terrain == WORLD_TERRAIN_FOREST || terrain == WORLD_TERRAIN_JUNGLE) {
-        g_WorldPlayerStepCountdown = 0x1E;
+        g_WorldPlayerStepCountdown = 30;
     } else if (terrain == WORLD_TERRAIN_MOUNTAIN || terrain == WORLD_TERRAIN_CLIFF) {
         g_WorldPlayerStepCountdown = 0;
     }
@@ -1338,10 +1338,10 @@ void __cdecl WorldEntity_ApplyPlayerGroundStep(void *ground)
             } else {
                 g_pWorldPlayerActor->pos.vy = g_pWorldPlayerActor->altPos.vy;
             }
-        } else if (g_pWorldPlayerActor->pos.vy - g_pWorldPlayerActor->altPos.vy < -0x32) {
+        } else if (g_pWorldPlayerActor->pos.vy - g_pWorldPlayerActor->altPos.vy < -50) {
             g_pWorldPlayerActor->pos.vy = g_pWorldPlayerActor->altPos.vy;
             g_WorldPlayerStepY = 0xFFFFFFFF;
-        } else if (g_pWorldPlayerActor->pos.vy - g_pWorldPlayerActor->altPos.vy > 0x32) {
+        } else if (g_pWorldPlayerActor->pos.vy - g_pWorldPlayerActor->altPos.vy > 50) {
             g_pWorldPlayerActor->pos.vy = g_pWorldPlayerActor->altPos.vy;
             g_WorldPlayerStepY = 1;
         }
@@ -1564,15 +1564,15 @@ int __cdecl WorldEntity_TestActorPairCollision(WorldActor *entity, WorldActor *c
     result = 0;
     if (entity != 0 && collider != 0 && (int)entity != (int)collider && (entity->flags1 & 0x80) == 0 && (collider->flags1 & 0x80) == 0 && entity->actorType < 0x1A && collider->actorType < 0x1A && collider->actorType != 0x15 && collider->actorType != 0x16 && collider->actorType != 0x17) {
         xDelta = collider->pos.vx - entity->pos.vx;
-        if (xDelta > 0x24000) {
+        if (xDelta > 147456) {
             xDelta -= 0x48000;
-        } else if (xDelta < -0x24000) {
+        } else if (xDelta < -147456) {
             xDelta += 0x48000;
         }
         deltaZ = collider->pos.vz - entity->pos.vz;
-        if (deltaZ > 0x1C000) {
+        if (deltaZ > 114688) {
             deltaZ -= 0x38000;
-        } else if (deltaZ < -0x1C000) {
+        } else if (deltaZ < -114688) {
             deltaZ += 0x38000;
         }
         if (xDelta > 0) {
@@ -1580,13 +1580,13 @@ int __cdecl WorldEntity_TestActorPairCollision(WorldActor *entity, WorldActor *c
         } else {
             absDx = -xDelta;
         }
-        if (absDx < 0x400) {
+        if (absDx < 1024) {
             if (deltaZ > 0) {
                 az = deltaZ;
             } else {
                 az = -deltaZ;
             }
-            if (az < 0x400) {
+            if (az < 1024) {
                 if (xDelta > 0) {
                     absDxCur = xDelta;
                 } else {
@@ -1598,8 +1598,8 @@ int __cdecl WorldEntity_TestActorPairCollision(WorldActor *entity, WorldActor *c
                     absZCurrent = -deltaZ;
                 }
                 distance = absDxCur + absZCurrent;
-                xDelta = xDelta + 0x400 >> 8;
-                deltaZ = deltaZ + 0x400 >> 8;
+                xDelta = xDelta + 1024 >> 8;
+                deltaZ = deltaZ + 1024 >> 8;
                 if (xDelta >= 0 && xDelta < 8 && deltaZ >= 0 && deltaZ < 8) {
                     if ((g_WorldActorCollisionMasks[(deltaZ + entity->actorType * 8)] >> xDelta & 1) == 0 && (g_WorldActorCollisionMasks[(collider->actorType * 8 + (7 - deltaZ))] >> 7 - xDelta & 1) == 0) {
                         collide = 0;
@@ -1609,15 +1609,15 @@ int __cdecl WorldEntity_TestActorPairCollision(WorldActor *entity, WorldActor *c
                     result = collide;
                     if (result != 0) {
                         xDelta = collider->pos.vx - entity->altPos.vx;
-                        if (xDelta > 0x24000) {
+                        if (xDelta > 147456) {
                             xDelta -= 0x48000;
-                        } else if (xDelta < -0x24000) {
+                        } else if (xDelta < -147456) {
                             xDelta += 0x48000;
                         }
                         deltaZ = collider->pos.vz - entity->altPos.vz;
-                        if (deltaZ > 0x1C000) {
+                        if (deltaZ > 114688) {
                             deltaZ -= 0x38000;
-                        } else if (deltaZ < -0x1C000) {
+                        } else if (deltaZ < -114688) {
                             deltaZ += 0x38000;
                         }
                         if (xDelta > 0) {
@@ -1717,13 +1717,13 @@ void __cdecl WorldEntity_MoveCurrentBy(int dx, int dz)
         if (g_pWorldCurrentActor->pos.vx < 0) {
             g_pWorldCurrentActor->pos.vx += 0x48000;
         }
-        if (g_pWorldCurrentActor->pos.vx >= 0x48000) {
+        if (g_pWorldCurrentActor->pos.vx >= 294912) {
             g_pWorldCurrentActor->pos.vx -= 0x48000;
         }
         if (g_pWorldCurrentActor->pos.vz < 0) {
             g_pWorldCurrentActor->pos.vz += 0x38000;
         }
-        if (g_pWorldCurrentActor->pos.vz >= 0x38000) {
+        if (g_pWorldCurrentActor->pos.vz >= 229376) {
             g_pWorldCurrentActor->pos.vz -= 0x38000;
         }
         g_pWorldCurrentActor->flags1 |= 1;
@@ -1898,10 +1898,10 @@ void __cdecl WorldEntity_UpdateActorModel(WorldActor *actor)
                     s.animation = actor->animId > 0 ? actor->animId : 0;
                 } else {
                     s.dx = actor->pos.vx - actor->altPos.vx > 0 ? actor->pos.vx - actor->altPos.vx : -(actor->pos.vx - actor->altPos.vx);
-                    if (s.dx >= 0x24000)
+                    if (s.dx >= 147456)
                         s.dx = 0x48000 - s.dx;
                     s.dy = actor->pos.vz - actor->altPos.vz > 0 ? actor->pos.vz - actor->altPos.vz : -(actor->pos.vz - actor->altPos.vz);
-                    if (s.dy >= 0x1c000)
+                    if (s.dy >= 114688)
                         s.dy = 0x38000 - s.dy;
                     s.distance = s.dx * s.dx + s.dy * s.dy;
                     s.animation = s.distance >= 100;
@@ -1933,15 +1933,15 @@ void __cdecl WorldEntity_UpdateActorModel(WorldActor *actor)
                 } else {
                     World_GetStreamFocus(&s.focus);
                     s.dx = actor->pos.vx - s.focus.x;
-                    if (s.dx < -0x24000)
+                    if (s.dx < -147456)
                         s.dx += 0x48000;
-                    else if (s.dx >= 0x24000)
+                    else if (s.dx >= 147456)
                         s.dx -= 0x48000;
                     s.model->position.x = (float)s.dx;
                     s.dz = actor->pos.vz - s.focus.z;
-                    if (s.dz < -0x1c000)
+                    if (s.dz < -114688)
                         s.dz += 0x38000;
-                    else if (s.dz >= 0x1c000)
+                    else if (s.dz >= 114688)
                         s.dz -= 0x38000;
                     s.model->position.z = (float)s.dz;
                     if (actor != g_pWorldPlayerActor)
@@ -2122,7 +2122,7 @@ void __cdecl WorldScript_Init(unsigned char *base)
     g_WorldMeshTriggerCounter = 0;
     g_WorldVehicleBoardedFlag = g_WorldMeshTriggerCounter;
     g_WorldWaitFramesZero = g_WorldVehicleBoardedFlag;
-    for (i = 0; i < 0x40; i++) {
+    for (i = 0; i < 64; i++) {
         g_WorldScriptAuxStorage[i] = 0;
     }
     for (i = 0; i < 3; i++) {
@@ -2233,7 +2233,7 @@ void __cdecl WorldScript_Request(int dwScriptId, int dwPriority)
                 frame.didPushState = 1;
             }
             frame.scriptTableCursor = (WorldScriptDirectoryEntry *)(((unsigned char *)((unsigned char *)g_pWorldScriptBase)) + 0x200);
-            frame.searchStep = 0x40;
+            frame.searchStep = 64;
             for (; frame.searchStep != 0 && frame.scriptTableCursor->scriptId != dwScriptId; frame.searchStep >>= 1) {
                 if (frame.scriptTableCursor->scriptId < dwScriptId)
                     frame.scriptTableCursor += frame.searchStep;
@@ -2407,7 +2407,7 @@ void __cdecl WorldScript_ExecEntity(WorldActor *actor)
 /*
  * Executes world-script unary negation/not, binary multiply/add/subtract, shifts, signed
  * comparisons, equality, bitwise AND/OR and logical AND/OR using popped operands. Both logical
- * operands are always popped before evaluation. Opcode 0xE0 passes a popped value to
+ * operands are always popped before evaluation. Opcode 224 passes a popped value to
  * WorldScript_StoreToLValue; opcodes 0x18 through 0x1B query zone distance, entity distance, one
  * of three saved-point distances or zone angle with retained shifts. Entity distance temporarily
  * changes and then restores the current actor; invalid saved-point indices produce zero. After
@@ -3320,7 +3320,7 @@ void __cdecl World_SaveAllVehicleSlots(void)
  * +4  z           18 bits    y     14 bits
  *
  * The masks are written as they appear in the image rather than derived from
- * the shifts, because `<< 0x13 & 0xF80000` and `& 0x1F << 0x13` do not
+ * the shifts, because `<< 0x13 & 0xF80000` and `& 0x1F << 19` do not
  * generate the same instructions at /Od.
  */
 // FUNCTION: FF7 0x007660db

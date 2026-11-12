@@ -131,11 +131,11 @@ void __cdecl BattleFx_BlueSpawnL4SuicidePerTarget(int actor, int sourceActor)
     pParticle = (BattleFxBlueJibakuTarget *)Gfx_GetPsxScratchpadPtr(0);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)&timeline->pos);
     value = g_BattleActorRecords[actor].radius + 0xE0;
-    if (value > 0x4F2) {
+    if (value > 1266) {
         value = 0x4F2;
     }
     timeline->spreadRadius = value;
-    timeline->scaleRatio = (value << 0xC) / 0x12C;
+    timeline->scaleRatio = (value << 12) / 300;
     timeline->ringIndex = (short)g_BattleBlueL4SuicideTargetCount;
     timeline->nextFrame = 0;
     timeline->phase = 0;
@@ -162,20 +162,20 @@ void __cdecl BattleFx_BlueSpawnL4SuicidePerTarget(int actor, int sourceActor)
     length = NormalizeVectorFixed(&recordPtr->offset, &recordPtr->offset);
     NormalizeVectorFixed(&recordPtr->perp, &recordPtr->perp);
     length = SqrtToInt(length);
-    pParticle->speed = randomVal % 0x8C + 0xC8;
+    pParticle->speed = randomVal % 140 + 200;
     segment = value / 3;
     pParticle->amplitude = segment + randomVal % segment;
-    pParticle->phaseStep = 0x1000 / (randomVal % 0xC + 0x10);
+    pParticle->phaseStep = 4096 / (randomVal % 12 + 16);
     pParticle->phase = pParticle->phaseStep;
     pParticle->accum = *(SVECTOR *)&g_BattleBlueL4SuicideStateBlob;
     pParticle->goal = timeline->pos;
-    pParticle->vel.vx = recordPtr->offset.vx * pParticle->speed >> 0xC;
+    pParticle->vel.vx = recordPtr->offset.vx * pParticle->speed >> 12;
     pParticle->vel.vy = 0;
-    pParticle->vel.vz = recordPtr->offset.vz * pParticle->speed >> 0xC;
+    pParticle->vel.vz = recordPtr->offset.vz * pParticle->speed >> 12;
     pParticle->swing = recordPtr->perp;
     segmentCount = length / pParticle->speed + 1;
-    if (segmentCount > 0x20) {
-        segmentCount = 0x20;
+    if (segmentCount > 32) {
+        segmentCount = 32;
     }
     recordPtr->segmentCount = segmentCount;
     segmentCount++;
@@ -183,10 +183,10 @@ void __cdecl BattleFx_BlueSpawnL4SuicidePerTarget(int actor, int sourceActor)
     for (segment = 1; segment < segmentCount; segment++) {
         pParticle->accum.vx += (short)pParticle->vel.vx;
         pParticle->accum.vz += (short)pParticle->vel.vz;
-        length = SinFixed(pParticle->phase) * pParticle->amplitude >> 0xC;
-        pParticle->pos.vx = pParticle->accum.vx + (pParticle->swing.vx * length >> 0xC);
+        length = SinFixed(pParticle->phase) * pParticle->amplitude >> 12;
+        pParticle->pos.vx = pParticle->accum.vx + (pParticle->swing.vx * length >> 12);
         pParticle->pos.vy = 0;
-        pParticle->pos.vz = pParticle->accum.vz + (pParticle->swing.vz * length >> 0xC);
+        pParticle->pos.vz = pParticle->accum.vz + (pParticle->swing.vz * length >> 12);
         recordPtr->segments[segment].pos = pParticle->pos;
         pParticle->rel.vx = pParticle->pos.vx - recordPtr->segments[segment - 1].pos.vx;
         pParticle->rel.vy = 0;
@@ -223,7 +223,7 @@ void __cdecl BattleFx_BlueL4SuicideTimelineTask(void)
     switch (mainTaskSlot->phase) {
     case BLUE_JIBAKU_PHASE_FADE_IN:
         ring->segmentIndex = 0;
-        p = mainTaskSlot->frame * 0x60606;
+        p = mainTaskSlot->frame * 394758;
         if (mainTaskSlot->frame >= 7) {
             mainTaskSlot->phase = BLUE_JIBAKU_PHASE_HOLD;
         }
@@ -231,12 +231,12 @@ void __cdecl BattleFx_BlueL4SuicideTimelineTask(void)
     case BLUE_JIBAKU_PHASE_HOLD:
         ring->segmentIndex = 0;
         p = 0x303030;
-        if (mainTaskSlot->frame >= 0xB) {
+        if (mainTaskSlot->frame >= 11) {
             mainTaskSlot->phase = BLUE_JIBAKU_PHASE_SWEEP;
         }
         break;
     case BLUE_JIBAKU_PHASE_SWEEP:
-        ring->segmentIndex = mainTaskSlot->frame - 0xB;
+        ring->segmentIndex = mainTaskSlot->frame - 11;
         p = 0x303030;
         if (ring->segmentCount == ring->segmentIndex) {
             mainTaskSlot->phase = BLUE_JIBAKU_PHASE_EXPLODE;
@@ -254,8 +254,8 @@ void __cdecl BattleFx_BlueL4SuicideTimelineTask(void)
                 nodePtr->pos.vx += (short)(rand() % fullRange - spread);
                 nodePtr->pos.vy += (short)(rand() % fullRange - spread);
                 nodePtr->pos.vz += (short)(rand() % fullRange - spread);
-                randFactor = rand() % 0x1000 + 0x800;
-                nodePtr->scale = mainTaskSlot->scaleRatio * randFactor >> 0xC;
+                randFactor = rand() % 4096 + 2048;
+                nodePtr->scale = mainTaskSlot->scaleRatio * randFactor >> 12;
             }
         }
         if (mainTaskSlot->frame >= mainTaskSlot->nextFrame) {
@@ -306,7 +306,7 @@ void __cdecl BattleFx_BlueL4SuicideAnimatedSpriteTask(void)
     g_BattleBlueL4SuicideSpriteDrawReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleBlueL4SuicideLoadedRes);
     g_BattleBlueL4SuicideSpriteDrawReq.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleBlueL4SuicideLoadedRes);
     g_BattleFxActiveDrawListPtr = (int)BattleFx_SubmitSpriteDraw(&g_BattleBlueL4SuicideSpriteDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frame >= 0xB) {
+    if (task->frame >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -329,25 +329,25 @@ void __cdecl BattleFx_BlueL4SuicideDrawPsxGouraudTriangles(BattleFxJibakuShard *
     RefreshGlobalTransformState();
     primitive = (BattleFxPsxPolygonPacket *)Gfx_GetPsxPacketScratchPtr();
     segmentIndex = ringRecord->segmentIndex;
-    for (i = 0; i < 0x28; i++) {
-        shard->vel0.vx = rand() % 0x1000 - 0x800;
-        shard->vel0.vy = -(rand() % 0x800);
-        shard->vel0.vz = rand() % 0x1000 - 0x800;
+    for (i = 0; i < 40; i++) {
+        shard->vel0.vx = rand() % 4096 - 2048;
+        shard->vel0.vy = -(rand() % 2048);
+        shard->vel0.vz = rand() % 4096 - 2048;
         shard->vel1.vx = -shard->vel0.vy - shard->vel0.vz;
         shard->vel1.vy = shard->vel0.vx - shard->vel0.vz;
         shard->vel1.vz = shard->vel0.vx + shard->vel0.vy;
         NormalizeVectorFixed(&shard->vel0, &shard->vel0);
         NormalizeVectorFixed(&shard->vel1, &shard->vel1);
-        len = rand() % 0xB4 + 0x190;
+        len = rand() % 180 + 400;
         shard->vertex[0] = ringRecord->segments[segmentIndex].pos;
-        shard->vertex[0].vx += (short)(shard->vel0.vx * len >> 0xC);
-        shard->vertex[0].vy += (short)(shard->vel0.vy * len >> 0xC);
-        shard->vertex[0].vz += (short)(shard->vel0.vz * len >> 0xC);
+        shard->vertex[0].vx += (short)(shard->vel0.vx * len >> 12);
+        shard->vertex[0].vy += (short)(shard->vel0.vy * len >> 12);
+        shard->vertex[0].vz += (short)(shard->vel0.vz * len >> 12);
         len >>= 3;
         shard->vertex[1] = ringRecord->segments[segmentIndex].pos;
-        shard->vertex[1].vx += (short)(shard->vel1.vx * len >> 0xC);
-        shard->vertex[1].vy += (short)(shard->vel1.vy * len >> 0xC);
-        shard->vertex[1].vz += (short)(shard->vel1.vz * len >> 0xC);
+        shard->vertex[1].vx += (short)(shard->vel1.vx * len >> 12);
+        shard->vertex[1].vy += (short)(shard->vel1.vy * len >> 12);
+        shard->vertex[1].vz += (short)(shard->vel1.vz * len >> 12);
         shard->depth = Gfx_TransformTriangleReturnDepthAlt(&shard->vertex[0], &shard->vertex[1], &ringRecord->segments[segmentIndex].pos, &shard->projected, &shard->clipFlags);
         primitive->colorCmd = 0x2030A;
         primitive->color1 = shard->vel0.vx & 0x1F1F3F;
@@ -367,7 +367,7 @@ void __cdecl BattleFx_BlueL4SuicideDrawRingSegments(BattleFxJibakuShard *ringSta
 {
     int segmentIdx, nextSegment, vertex;
 
-    BattleFx_BlueL4SuicideProjectRingPoints(ringState, &ringRecord->segments[ringRecord->segmentIndex], 0x1A);
+    BattleFx_BlueL4SuicideProjectRingPoints(ringState, &ringRecord->segments[ringRecord->segmentIndex], 26);
     for (segmentIdx = ringRecord->segmentIndex; segmentIdx < ringRecord->segmentCount; segmentIdx++) {
         nextSegment = segmentIdx + 1;
         for (vertex = 0; vertex < 4; vertex++) {
@@ -376,7 +376,7 @@ void __cdecl BattleFx_BlueL4SuicideDrawRingSegments(BattleFxJibakuShard *ringSta
             ringState->prevBlendSecond[vertex] = ringState->blendSecond[vertex];
         }
         ringState->prevDepth = ringState->depth;
-        BattleFx_BlueL4SuicideProjectRingPoints(ringState, &ringRecord->segments[nextSegment], 0x1A);
+        BattleFx_BlueL4SuicideProjectRingPoints(ringState, &ringRecord->segments[nextSegment], 26);
         BattleFx_BlueL4SuicideDrawPsxFlatRingQuads(ringState, &ringRecord->segments[nextSegment], color);
     }
 }

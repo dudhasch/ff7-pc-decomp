@@ -1198,7 +1198,7 @@ extern short g_FieldLayer1StateE50[2];
 /* ad_data.cpp */
 extern unsigned char g_FieldModelCommandGate[72];
 extern struct FieldClearColor g_FieldClearColor;
-extern unsigned char g_FieldBgLayer2OffsetY[0x4];
+extern unsigned char g_FieldBgLayer2OffsetY[4];
 extern char g_FieldDataDir[0x100];
 
 /* ad_obj.cpp */
@@ -1206,18 +1206,18 @@ extern struct GfxLightOwner *g_FieldModelLightData[14];
 int __cdecl Field_InstantiateModels(struct PfileLoadOptions *opts, struct GfxEngineContext *ctx);
 
 /* ad_tile.cpp */
-extern struct FieldLayer *g_FieldLayers[0x2a];
+extern struct FieldLayer *g_FieldLayers[42];
 
 /* field_encounter_random.cpp */
-extern unsigned char g_FieldRandomTable[0x100];
+extern unsigned char g_FieldRandomTable[256];
 
 /* field_engine_model_anim.cpp */
 extern unsigned char g_FieldModelSortBuffer[0x48];
 
 /* field_fx_fade_overlays.cpp */
-extern unsigned char g_FieldFxFadeRed[0x4];
-extern unsigned char g_FieldFxFadeBlue[0x4];
-extern unsigned char g_FieldFxFadeGreen[0x4];
+extern unsigned char g_FieldFxFadeRed[4];
+extern unsigned char g_FieldFxFadeBlue[4];
+extern unsigned char g_FieldFxFadeGreen[4];
 
 /* field_message_window.cpp */
 extern struct WindowData g_FieldWindows[4];
@@ -1226,21 +1226,21 @@ extern struct WindowData g_FieldWindows[4];
 extern struct FieldRequest * g_pFieldRequest;
 
 /* field_script_operands.cpp */
-extern short g_FieldModelIdleAnimSpeed[0x10];
-extern unsigned char g_FieldEntityLine[0xb8];
-extern unsigned short g_FieldScriptPriorityPC[0x30][8];
-extern unsigned char g_FieldEntityModel[0x30];
-extern unsigned short g_FieldPalettes[0x40][16];
-extern unsigned char g_FieldWindowText[4][0x100];
-extern unsigned char g_FieldFollowerState[0x30];
-extern unsigned char g_FieldModelIdleAnimId[0x10];
-extern unsigned char g_FieldDialogTextState[0x4];
-extern unsigned char g_FieldScriptPriority[0x30];
-extern unsigned char g_FieldScriptPriorityState[0x30][8];
-extern short g_FieldModelAnimSpeed[0x10];
-extern unsigned char g_FieldMovieOffset[0x8];
-extern unsigned char g_FieldTempBank[0x100];
-extern char g_FieldCurrentMapName[0x80];
+extern short g_FieldModelIdleAnimSpeed[16];
+extern unsigned char g_FieldEntityLine[184];
+extern unsigned short g_FieldScriptPriorityPC[48][8];
+extern unsigned char g_FieldEntityModel[48];
+extern unsigned short g_FieldPalettes[64][16];
+extern unsigned char g_FieldWindowText[4][256];
+extern unsigned char g_FieldFollowerState[48];
+extern unsigned char g_FieldModelIdleAnimId[16];
+extern unsigned char g_FieldDialogTextState[4];
+extern unsigned char g_FieldScriptPriority[48];
+extern unsigned char g_FieldScriptPriorityState[48][8];
+extern short g_FieldModelAnimSpeed[16];
+extern unsigned char g_FieldMovieOffset[8];
+extern unsigned char g_FieldTempBank[256];
+extern char g_FieldCurrentMapName[128];
 FILE *__cdecl Field_FileOpen(char *name, char *mode);
 short __cdecl Field_FileClose(FILE *file);
 void __cdecl Field_FileSeek(FILE *file, int offset, int origin);
@@ -1268,7 +1268,7 @@ extern short g_FieldArcsinTable[130];
 extern int g_FieldWindowTextPointers[4];
 extern int (__cdecl *g_FieldScriptOpTable[256])(void);
 
-extern unsigned short g_FieldModelDefaultSpeed[0x18];
+extern unsigned short g_FieldModelDefaultSpeed[24];
 extern short g_FieldMovieFrame;
 extern unsigned char g_FieldRandomIndex;
 #ifdef __cplusplus

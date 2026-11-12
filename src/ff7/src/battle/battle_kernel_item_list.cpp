@@ -35,7 +35,7 @@ void __cdecl Kernel_BuildBattleItemList(void)
     int cur;
 
     count = 0;
-    for (i = 0; i < 0x140; i++) {
+    for (i = 0; i < 320; i++) {
         pt = (BattleInventoryItemRecord *)(i * 6 + (char *)g_BattleItemListBlock.slots);
         id = gSavemap.items[i];
         num = 0;

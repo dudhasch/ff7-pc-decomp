@@ -116,8 +116,8 @@ void __cdecl BattleFx_LimitGalianBeastSpawnTimeline(void)
     task = (BattleFxLimitGalianBeastSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGalianBeastTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleLimitGalianBeastActorMask, &task->baseX);
     task->baseY = 0xFC80;
-    task->spreadRadius = 0x700;
-    task->jitterRange = 0x1C0;
+    task->spreadRadius = 1792;
+    task->jitterRange = 448;
 }
 
 /*
@@ -149,7 +149,7 @@ void __cdecl BattleFx_LimitGalianBeastTimelineTask(void)
         return;
     }
     frame.beastSlot = (BattleFxLimitGalianBeastSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.beastSlot->step == 0x19) {
+    if (frame.beastSlot->step == 25) {
         Battle_GetBoneWorldPos(g_BattleLimitGalianBeastActorIndex, g_BattleActorRecords[g_BattleLimitGalianBeastActorIndex].altBone, &g_BattleLimitGalianBeastSourcePos.posX);
         frame.angle = rand() % 0x1000;
         frame.rotX.vz = 0;
@@ -160,21 +160,21 @@ void __cdecl BattleFx_LimitGalianBeastTimelineTask(void)
             RotMatrixXYZ(&frame.rotX, &frame.rotMatrix);
             TransformVectorToInt32(&frame.rotMatrix, g_BattleLimitGalianBeastForwardVector, &frame.dirX);
             frame.spread = frame.beastSlot->spreadRadius + rand() % (frame.beastSlot->spreadRadius >> 1);
-            frame.spawnX = frame.beastSlot->baseX + (frame.spread * frame.dirX.vx >> 0xC);
+            frame.spawnX = frame.beastSlot->baseX + (frame.spread * frame.dirX.vx >> 12);
             frame.spawnY = frame.beastSlot->baseY + rand() % frame.beastSlot->jitterRange - (frame.beastSlot->jitterRange >> 1);
-            frame.spawnZ = frame.beastSlot->baseZ + (frame.spread * frame.dirX.vz >> 0xC);
+            frame.spawnZ = frame.beastSlot->baseZ + (frame.spread * frame.dirX.vz >> 12);
             frame.spinRec = (BattleFxLimitGalianBeastSpin *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGalianBeastSpinningModelPairTask);
             frame.spinRec->position = g_BattleLimitGalianBeastSourcePos.pair;
-            frame.spinRec->bobAngle = rand() % 2 << 0xB;
+            frame.spinRec->bobAngle = rand() % 2 << 11;
             frame.spinRec->velX = (frame.spawnX - g_BattleLimitGalianBeastSourcePos.posX) / 6 << 1;
             frame.spinRec->velY = (frame.spawnY - g_BattleLimitGalianBeastSourcePos.posY) / 6;
             frame.spinRec->velZ = (frame.spawnZ - g_BattleLimitGalianBeastSourcePos.posZ) / 6 << 1;
             frame.spinRec->lifetime = rand() % 7 + frame.spinIndex;
             frame.spinRec->angle = rand() % 0x1000;
             frame.spinRec->spinVelocity = rand() % 0x140 + 0x100;
-            frame.spinRec->scale = 0x1A00;
-            frame.spread = rand() % 0x500 + 0xD00;
-            frame.spinRec->scale = (frame.spinRec->scale * frame.spread >> 0xC) / 0x14;
+            frame.spinRec->scale = 0x1A00 /* 1.625 */;
+            frame.spread = rand() % 1280 + 3328;
+            frame.spinRec->scale = (frame.spinRec->scale * frame.spread >> 12) / 20;
             frame.spinRec->scaleVelocity = frame.spinRec->scale * 6;
             frame.spinRec->delayCount = 0;
             frame.spinRec->targetActor = *(short *)&g_BattleLimitGalianBeastPoolCount;
@@ -189,21 +189,21 @@ void __cdecl BattleFx_LimitGalianBeastTimelineTask(void)
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         frame.trailStartValue = 0;
-    } else if (frame.beastSlot->step < 0x10) {
-        frame.trailStartValue = (frame.beastSlot->step - 8) * 0x180;
-    } else if (frame.beastSlot->step < 0x42) {
+    } else if (frame.beastSlot->step < 16) {
+        frame.trailStartValue = (frame.beastSlot->step - 8) * 384;
+    } else if (frame.beastSlot->step < 66) {
         frame.trailStartValue = 0xC00;
     } else {
-        frame.trailStartValue = 0xC00 - (frame.beastSlot->step - 0x42) * 0x180;
+        frame.trailStartValue = 0xC00 - (frame.beastSlot->step - 0x42) * 384;
     }
-    if (frame.beastSlot->step == 0x3E) {
+    if (frame.beastSlot->step == 62) {
         for (frame.spinIndex = 0; frame.spinIndex < 0xA; frame.spinIndex++) {
             if ((g_BattleLimitGalianBeastActorMask & 1 << frame.spinIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.spinIndex);
             }
         }
     }
-    if (frame.beastSlot->step >= 0x4A) {
+    if (frame.beastSlot->step >= 74) {
         frame.trailStartValue = 0;
         frame.beastSlot->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -275,16 +275,16 @@ void __cdecl BattleFx_LimitGalianBeastSpinningModelPairTask(void)
         frame.modelRec->drawList = g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED;
         frame.modelRec->otShift = 0xC;
         frame.modelRec->renderState = Gfx_GetPsxPacketScratchPtr();
-        if (frame.pairState->phase >= 0x14) {
+        if (frame.pairState->phase >= 20) {
             frame.modelRec->baseColorB = 0x80;
             frame.modelRec->baseColorG = 0x80;
             frame.modelRec->baseColorR = 0x80;
             frame.modelRec->colorR = 0xC0;
             frame.modelRec->colorB = 0x40;
             frame.modelRec->colorG = 0x40;
-            frame.modelRec->shade = (frame.pairState->phase - 0x14) * 0xBA;
-            if (frame.pairState->phase >= 0x1A) {
-                frame.modelRec->fadeWeight = frame.pairState->phase - 0x1A << 8;
+            frame.modelRec->shade = (frame.pairState->phase - 0x14) * 186;
+            if (frame.pairState->phase >= 26) {
+                frame.modelRec->fadeWeight = frame.pairState->phase - 26 << 8;
             } else {
                 frame.modelRec->fadeWeight = 0;
             }
@@ -301,7 +301,7 @@ void __cdecl BattleFx_LimitGalianBeastSpinningModelPairTask(void)
         SetRotMatrix(&frame.counterMatrix);
         SetTransMatrix(&frame.counterMatrix);
         RefreshGlobalTransformState();
-        if (frame.pairState->phase >= 0x14) {
+        if (frame.pairState->phase >= 20) {
             frame.modelRec->baseColorB = 0x60;
             frame.modelRec->baseColorG = 0x60;
             frame.modelRec->baseColorR = 0x60;
@@ -310,7 +310,7 @@ void __cdecl BattleFx_LimitGalianBeastSpinningModelPairTask(void)
             frame.modelRec->colorG = 0x28;
         }
         g_BattleFxActiveDrawListPtr = BattleFx_LimitGalianBeastDrawPsxMesh(frame.modelRec);
-        if (frame.pairState->phase >= 0x2A) {
+        if (frame.pairState->phase >= 42) {
             frame.pairState->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
@@ -323,10 +323,10 @@ void __cdecl BattleFx_LimitGalianBeastSpinningModelPairTask(void)
             frame.pairState->posZ += frame.pairState->velocityZ;
             frame.pairState->velocityX -= (short)(frame.pairState->velocityX >> 2);
             frame.pairState->velocityZ -= (short)(frame.pairState->velocityZ >> 2);
-        } else if (frame.pairState->phase < 0x14) {
+        } else if (frame.pairState->phase < 20) {
             frame.sinValue = SinFixed(frame.pairState->angle);
             frame.pairState->angle += (short)(rand() % 0x2C + 0x96);
-            frame.pairState->posY += (short)(frame.sinValue * 0x50 >> 0xC);
+            frame.pairState->posY += (short)(frame.sinValue * 0x50 >> 12);
         } else {
             frame.pairState->spinRateY -= (short)(frame.pairState->spinRateY >> 3);
             frame.pairState->scale += frame.pairState->scaleRate;

@@ -4274,7 +4274,7 @@ typedef struct YasuiSatanSlamTriPrim {
     };
 } YasuiSatanSlamTriPrim;
 
-/* g_YasuiLimitSatanSlamCellGridEntries: 0x411 entries and the cellHead of a 0x412th, which
+/* g_YasuiLimitSatanSlamCellGridEntries: 1041 entries and the cellHead of a 0x412th, which
  * BattleFx_LimitSatanSlamBuildMeshCellGrid also clears (entries[0x411].cellHead). */
 #pragma pack(push, 1)
 typedef struct {

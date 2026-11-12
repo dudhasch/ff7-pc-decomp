@@ -92,7 +92,7 @@ void __cdecl Mini_CoasterResolveTrackTables(void)
     g_CoasterRailSetTable = railTableUnit;
     g_CoasterRailInitX = 0;
     g_CoasterRailInitY = 0xFFFFE48A;
-    g_CoasterRailInitZ = 0xC8;
+    g_CoasterRailInitZ = 200;
     Mini_CoasterSelectRailSet(0);
     g_CoasterRideMode = 1;
 }
@@ -111,15 +111,15 @@ void __cdecl Mini_CoasterAdvanceRide(void)
         int gravity;
     } local; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
-    local.rotationMatrix.m[0][0] = 0x1000;
+    local.rotationMatrix.m[0][0] = 0x1000 /* 360 deg */;
     local.rotationMatrix.m[0][1] = 0;
     local.rotationMatrix.m[0][2] = 0;
     local.rotationMatrix.m[1][0] = 0;
-    local.rotationMatrix.m[1][1] = 0x1000;
+    local.rotationMatrix.m[1][1] = 0x1000 /* 360 deg */;
     local.rotationMatrix.m[1][2] = 0;
     local.rotationMatrix.m[2][0] = 0;
     local.rotationMatrix.m[2][1] = 0;
-    local.rotationMatrix.m[2][2] = 0x1000;
+    local.rotationMatrix.m[2][2] = 0x1000 /* 360 deg */;
     local.rotationMatrix.t[0] = 0;
     local.rotationMatrix.t[1] = 0;
     local.rotationMatrix.t[2] = 0;
@@ -135,7 +135,7 @@ void __cdecl Mini_CoasterAdvanceRide(void)
     g_CoasterCameraPositionPadCopy = g_CoasterCameraPosition.pad;
 
     if (local.cameraRotation.vx < 0)
-        local.cameraRotation.vx += 0x1000;
+        local.cameraRotation.vx += 0x1000 /* 360 deg */;
     local.gravity = SinFixed(local.cameraRotation.vx) / 15;
     if (local.gravity > 0 && g_CoasterRideSpeed > 43000)
         g_CoasterRideSpeed -= local.gravity;

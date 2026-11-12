@@ -193,13 +193,13 @@ GfxPolygonSet *__cdecl GfxLoadPolygonSet(GfxMatrixArray *matrices, PolygonHundre
         polygonSet->matrices = (int)matrices;
         if ((spec->optionBits & 1) != 0 || (spec->flags & 0x2000000) != 0) {
             // STRING: FF7 0x0090aa2c
-            polygonSet->entries = (GfxPolygonSetEntry *)GameHeapAlloc(polygonSet->groupCount, 0x24, "C:\\lib\\src\\graphics\\g_drv.cpp", 0xB2);
+            polygonSet->entries = (GfxPolygonSetEntry *)GameHeapAlloc(polygonSet->groupCount, 36, "C:\\lib\\src\\graphics\\g_drv.cpp", 178);
             if (polygonSet->entries != 0) {
                 polygonSet->lightGroup = spec->lightGroup;
             }
         }
         // STRING: FF7 0x0090aa4c
-        polygonSet->groupStates = (int)GameHeapAlloc(polygonSet->groupCount, 4, "C:\\lib\\src\\graphics\\g_drv.cpp", 0xBA);
+        polygonSet->groupStates = (int)GameHeapAlloc(polygonSet->groupCount, 4, "C:\\lib\\src\\graphics\\g_drv.cpp", 186);
         if (driver->allocBatchArray(polygonSet) != 0) {
             hasExtra = 0;
             groupState = (PolygonHundredState *)polygonSet->groupState;
@@ -229,7 +229,7 @@ GfxPolygonSet *__cdecl GfxLoadPolygonSet(GfxMatrixArray *matrices, PolygonHundre
                     if (source != 0) {
                         if (source->groupCount > 1) {
                             polyRecord = (GfxPolygonGroupRecord *)(source->groups + idx * 0x38);
-                            ent->vertexTable = source->vertices + polyRecord->firstVertex * 0xC;
+                            ent->vertexTable = source->vertices + polyRecord->firstVertex * 12;
                             if (source->sourceIndices != 0) {
                                 ent->indexBase = source->sourceIndices + polyRecord->firstVertex * 4;
                             }
@@ -273,7 +273,7 @@ GfxPolygonSet *__cdecl GfxLoadPolygonSet(GfxMatrixArray *matrices, PolygonHundre
             }
             if (hasExtra != 0 && lightModel != 0) {
                 // STRING: FF7 0x0090aa6c
-                polygonSet->elements = (int)GameHeapAlloc(lightModel->vertexCount, 0x14, "C:\\lib\\src\\graphics\\g_drv.cpp", 0x15A);
+                polygonSet->elements = (int)GameHeapAlloc(lightModel->vertexCount, 20, "C:\\lib\\src\\graphics\\g_drv.cpp", 346);
             }
         }
     }

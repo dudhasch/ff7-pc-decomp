@@ -185,12 +185,12 @@ void __cdecl Field_UpdateAdjacentMapPreload(FieldPlayerPos *playerPos, FieldMapG
 
     pScratch = 0;
     // STRING: FF7 0x009066f0
-    pScratch = (FieldAdjacentMapPreload *)GameHeapAllocRaw(0x1F40, "C:\\FF7\\field\\src\\ad_image.cpp", 0x58);
-    pScratch->centerX = playerPos->posX >> 0xC;
-    pScratch->centerY = playerPos->posY >> 0xC;
-    pScratch->centerZ = playerPos->posZ >> 0xC;
+    pScratch = (FieldAdjacentMapPreload *)GameHeapAllocRaw(8000, "C:\\FF7\\field\\src\\ad_image.cpp", 88);
+    pScratch->centerX = playerPos->posX >> 12;
+    pScratch->centerY = playerPos->posY >> 12;
+    pScratch->centerZ = playerPos->posZ >> 12;
     minDist = 0x7FFFFFFF;
-    for (index = 0; index < 0xC; index++, gateways++) {
+    for (index = 0; index < 12; index++, gateways++) {
         if (gateways->targetMap != 0x7FFF) {
             distance = (gateways->posX - pScratch->centerX) * (gateways->posX - pScratch->centerX) + (gateways->posY - pScratch->centerY) * (gateways->posY - pScratch->centerY);
             if (distance < minDist) {
@@ -211,7 +211,7 @@ void __cdecl Field_UpdateAdjacentMapPreload(FieldPlayerPos *playerPos, FieldMapG
         }
     }
     // STRING: FF7 0x00906710
-    GameHeapFree(pScratch, "C:\\FF7\\field\\src\\ad_image.cpp", 0x82);
+    GameHeapFree(pScratch, "C:\\FF7\\field\\src\\ad_image.cpp", 130);
 }
 
 /*
@@ -244,16 +244,16 @@ int __cdecl Field_ClampBackgroundPositionToBounds(short *xPtr, short *yPtr)
     } else {
         bgWidth = g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX;
         height = g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY;
-        if (*xPtr + (bgWidth / 2) + -0xA0 < 0) {
+        if (*xPtr + (bgWidth / 2) + -160 < 0) {
             *xPtr = 0xA0 - (bgWidth / 2);
         }
-        if (*yPtr + (height / 2) + -0x78 < 0) {
+        if (*yPtr + (height / 2) + -120 < 0) {
             *yPtr = 0x78 - (height / 2);
         }
-        if (*xPtr + (bgWidth / 2) + 0xA0 > bgWidth) {
+        if (*xPtr + (bgWidth / 2) + 160 > bgWidth) {
             *xPtr = (bgWidth / 2) - 0xA0;
         }
-        if (*yPtr + (height / 2) + 0x78 > height) {
+        if (*yPtr + (height / 2) + 120 > height) {
             *yPtr = (height / 2) - 0x78;
         }
         g_FieldBgLayer2ScrollX = *xPtr;
@@ -261,19 +261,19 @@ int __cdecl Field_ClampBackgroundPositionToBounds(short *xPtr, short *yPtr)
         if (g_FieldDoDrawLayer3 != 0) {
             bgWidth = *(short *)&g_FieldLayer3StateE24.width;
             height = *(short *)&g_FieldLayer3StateE24.height;
-            tempX = g_FieldBgLayer3ScrollX - 0xA0;
-            tempY = g_FieldBgLayer3ScrollY - 0x70;
-            if (tempX + (bgWidth / 2) + -0xA0 < 0) {
-                tempX = 0xA0 - (bgWidth / 2);
+            tempX = g_FieldBgLayer3ScrollX - 160;
+            tempY = g_FieldBgLayer3ScrollY - 112;
+            if (tempX + (bgWidth / 2) + -160 < 0) {
+                tempX = 160 - (bgWidth / 2);
             }
-            if (tempY + (height / 2) + -0x78 < 0) {
-                tempY = 0x78 - (height / 2);
+            if (tempY + (height / 2) + -120 < 0) {
+                tempY = 120 - (height / 2);
             }
-            if (tempX + (bgWidth / 2) + 0xA0 > bgWidth) {
-                tempX = (bgWidth / 2) - 0xA0;
+            if (tempX + (bgWidth / 2) + 160 > bgWidth) {
+                tempX = (bgWidth / 2) - 160;
             }
-            if (tempY + (height / 2) + 0x78 > height) {
-                tempY = (height / 2) - 0x78;
+            if (tempY + (height / 2) + 120 > height) {
+                tempY = (height / 2) - 120;
             }
             g_FieldBgLayer3ScrollX = tempX;
             g_FieldBgLayer3ScrollY = tempY;
@@ -281,19 +281,19 @@ int __cdecl Field_ClampBackgroundPositionToBounds(short *xPtr, short *yPtr)
         if (g_FieldDoDrawLayer4 != 0) {
             bgWidth = *(short *)&g_FieldLayer4StateE8c.width;
             height = *(short *)&g_FieldLayer4StateE8c.height;
-            tempX = g_FieldBgLayer4ScrollX - 0xA0;
-            tempY = g_FieldBgLayer4ScrollY - 0x70;
-            if (tempX + (bgWidth / 2) + -0xA0 < 0) {
-                tempX = 0xA0 - (bgWidth / 2);
+            tempX = g_FieldBgLayer4ScrollX - 160;
+            tempY = g_FieldBgLayer4ScrollY - 112;
+            if (tempX + (bgWidth / 2) + -160 < 0) {
+                tempX = 160 - (bgWidth / 2);
             }
-            if (tempY + (height / 2) + -0x78 < 0) {
-                tempY = 0x78 - (height / 2);
+            if (tempY + (height / 2) + -120 < 0) {
+                tempY = 120 - (height / 2);
             }
-            if (tempX + (bgWidth / 2) + 0xA0 > bgWidth) {
-                tempX = (bgWidth / 2) - 0xA0;
+            if (tempX + (bgWidth / 2) + 160 > bgWidth) {
+                tempX = (bgWidth / 2) - 160;
             }
-            if (tempY + (height / 2) + 0x78 > height) {
-                tempY = (height / 2) - 0x78;
+            if (tempY + (height / 2) + 120 > height) {
+                tempY = (height / 2) - 120;
             }
             g_FieldBgLayer4ScrollX = tempX;
             g_FieldBgLayer4ScrollY = tempY;
@@ -319,21 +319,21 @@ int __cdecl Field_ComputeBackgroundViewportClip(short *xPtr, short *yPtr, unsign
     } else {
         w = g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX;
         triggerHeight = g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY;
-        if (*xPtr + (w / 2) + -0xA0 < 0) {
-            *offsetXOut = 0xA0 - (w / 2) - *xPtr;
-            *extentXOut = 0x140 - *offsetXOut;
+        if (*xPtr + (w / 2) + -160 < 0) {
+            *offsetXOut = 160 - (w / 2) - *xPtr;
+            *extentXOut = 320 - *offsetXOut;
         }
-        if (*yPtr + (triggerHeight / 2) + -0x78 < 0) {
-            *offsetYOut = 0x78 - (triggerHeight / 2) - *yPtr;
-            *extentYOut = 0xF0 - *offsetYOut;
+        if (*yPtr + (triggerHeight / 2) + -120 < 0) {
+            *offsetYOut = 120 - (triggerHeight / 2) - *yPtr;
+            *extentYOut = 240 - *offsetYOut;
         }
-        if (*xPtr + (w / 2) + 0xA0 > w) {
+        if (*xPtr + (w / 2) + 160 > w) {
             *offsetXOut = 0;
-            *extentXOut = -*xPtr - (w / 2) + w + 0xA0;
+            *extentXOut = -*xPtr - (w / 2) + w + 160;
         }
-        if (*yPtr + (triggerHeight / 2) + 0x78 > triggerHeight) {
+        if (*yPtr + (triggerHeight / 2) + 120 > triggerHeight) {
             *offsetYOut = 0;
-            *extentYOut = -*yPtr - (triggerHeight / 2) + triggerHeight + 0x78;
+            *extentYOut = -*yPtr - (triggerHeight / 2) + triggerHeight + 120;
         }
         return 1;
     }
@@ -452,20 +452,20 @@ int __cdecl Field_WriteTileSamplesToBuffer(int buffer, int tileIndex, short orig
 void __cdecl Field_ClipBackgroundRecordGroup1ToViewport(short centerX, short centerY, short *posX, short *posY, short *srcX, short *srcY, short *width, short *height, int index, int extent)
 {
     if (g_FieldLayer2Tiles[index & 0xFFFF].spanY < centerY - 0x78) {
-        *height = g_FieldLayer2Tiles[index & 0xFFFF].spanY + (extent & 0xFFFF) + 0x78 - centerY;
-        *posY = centerY - 0x78;
+        *height = g_FieldLayer2Tiles[index & 0xFFFF].spanY + (extent & 0xFFFF) + 120 - centerY;
+        *posY = centerY - 120;
         *srcY = g_FieldLayer2Tiles[index & 0xFFFF].srcY + ((extent & 0xFFFF) - *height);
     }
     if (g_FieldLayer2Tiles[index & 0xFFFF].spanY + (extent & 0xFFFF) > centerY + 0x68) {
-        *height = centerY + 0x78 - g_FieldLayer2Tiles[index & 0xFFFF].spanY - 0x10;
+        *height = centerY + 120 - g_FieldLayer2Tiles[index & 0xFFFF].spanY - 16;
     }
     if (g_FieldLayer2Tiles[index & 0xFFFF].tileX < centerX - 0xA0) {
-        *width = g_FieldLayer2Tiles[index & 0xFFFF].tileX + (extent & 0xFFFF) + 0xA0 - centerX;
-        *posX = centerX - 0xA0;
+        *width = g_FieldLayer2Tiles[index & 0xFFFF].tileX + (extent & 0xFFFF) + 160 - centerX;
+        *posX = centerX - 160;
         *srcX = g_FieldLayer2Tiles[index & 0xFFFF].srcX + ((extent & 0xFFFF) - *width);
     }
     if (g_FieldLayer2Tiles[index & 0xFFFF].tileX + (extent & 0xFFFF) > centerX + 0xA0) {
-        *width = centerX + 0xA0 - g_FieldLayer2Tiles[index & 0xFFFF].tileX;
+        *width = centerX + 160 - g_FieldLayer2Tiles[index & 0xFFFF].tileX;
     }
 }
 
@@ -482,20 +482,20 @@ void __cdecl Field_ClipBackgroundRecordGroup2ToViewport(short centerX, short cen
         return;
     }
     if (*posY < centerY - 0x78) {
-        *height = *posY + (extent & 0xFFFF) + 0x78 - centerY;
-        *posY = centerY - 0x78;
+        *height = *posY + (extent & 0xFFFF) + 120 - centerY;
+        *posY = centerY - 120;
         *srcY = g_FieldLayer3Tiles[index & 0xFFFF].srcY + ((extent & 0xFFFF) - *height);
     }
     if (*posY + (extent & 0xFFFF) > centerY + 0x70) {
-        *height = centerY + 0x78 - *posY - 0x10;
+        *height = centerY + 120 - *posY - 16;
     }
     if (*posX < centerX - 0xA0) {
-        *width = *posX + (extent & 0xFFFF) + 0xA0 - centerX;
-        *posX = centerX - 0xA0;
+        *width = *posX + (extent & 0xFFFF) + 160 - centerX;
+        *posX = centerX - 160;
         *srcX = g_FieldLayer3Tiles[index & 0xFFFF].srcX + ((extent & 0xFFFF) - *width);
     }
     if (*posX + (extent & 0xFFFF) > centerX + 0xA0) {
-        *width = centerX + 0xA0 - *posX;
+        *width = centerX + 160 - *posX;
     }
 }
 
@@ -512,20 +512,20 @@ void __cdecl Field_ClipBackgroundRecordGroup3ToViewport(short centerX, short cen
         return;
     }
     if (*posY < centerY - 0x78) {
-        *height = *posY + (extent & 0xFFFF) + 0x78 - centerY;
-        *posY = centerY - 0x78;
+        *height = *posY + (extent & 0xFFFF) + 120 - centerY;
+        *posY = centerY - 120;
         *srcY = g_FieldLayer4Tiles[index & 0xFFFF].srcY + ((extent & 0xFFFF) - *height);
     }
     if (*posY + (extent & 0xFFFF) > centerY + 0x70) {
-        *height = centerY + 0x78 - *posY - 0x10;
+        *height = centerY + 120 - *posY - 16;
     }
     if (*posX < centerX - 0xA0) {
-        *width = *posX + (extent & 0xFFFF) + 0xA0 - centerX;
-        *posX = centerX - 0xA0;
+        *width = *posX + (extent & 0xFFFF) + 160 - centerX;
+        *posX = centerX - 160;
         *srcX = g_FieldLayer4Tiles[index & 0xFFFF].srcX + ((extent & 0xFFFF) - *width);
     }
     if (*posX + (extent & 0xFFFF) > centerX + 0xA0) {
-        *width = centerX + 0xA0 - *posX;
+        *width = centerX + 160 - *posX;
     }
 }
 
@@ -582,8 +582,8 @@ int __cdecl Field_BltBackgroundLayer3Entries(short centerX, short centerY, int n
                 g_FieldLayer3Tiles[ent].inUse = 1;
                 textureX = *(short *)&g_FieldLayer3Tiles[ent].srcX;
                 sourceRow = *(short *)&g_FieldLayer3Tiles[ent].srcY;
-                width = 0x20;
-                srcHeight = 0x20;
+                width = 32;
+                srcHeight = 32;
                 /* Retail caller prototype (short, short, void *, void *, void *, void *, void *, void *, short, int) -> void preserved for /Od argument promotion on `Field_ClipBackgroundRecordGroup2ToViewport`. */
                 ((void(__cdecl *)(short, short, void *, void *, void *, void *, void *, void *, short, int))Field_ClipBackgroundRecordGroup2ToViewport)((short)centerX, (short)centerY, &xPos, &tileY, &textureX, &sourceRow, &width, &srcHeight, (short)ent, 0x20);
                 SetRect(&rectSrc, textureX, sourceRow, textureX + width, sourceRow + srcHeight);
@@ -658,8 +658,8 @@ int __cdecl Field_BltBackgroundLayer4Entries(short centerX, short centerY, int n
                 posY = g_FieldLayer4Tiles[rawIndex].posY;
                 texU = *(short *)&g_FieldLayer4Tiles[rawIndex].srcX;
                 sourceY = *(short *)&g_FieldLayer4Tiles[rawIndex].srcY;
-                width = 0x20;
-                sourceHeight = 0x20;
+                width = 32;
+                sourceHeight = 32;
                 /* Retail caller prototype (short, short, void *, void *, void *, void *, void *, void *, short, short) -> void preserved for /Od argument promotion on `Field_ClipBackgroundRecordGroup3ToViewport`. */
                 ((void(__cdecl *)(short, short, void *, void *, void *, void *, void *, void *, short, short))Field_ClipBackgroundRecordGroup3ToViewport)((short)centerX, (short)centerY, &tileHeightX, &posY, &texU, &sourceY, &width, &sourceHeight, (short)rawIndex, 0x20);
                 SetRect((RECT *)&srcRect, texU, sourceY, texU + width, sourceY + sourceHeight);
@@ -713,8 +713,8 @@ int __cdecl Field_BltTileSpriteRange(int startIndex, int endIndex, short centerX
                             spanY = g_FieldLayer2Tiles[entry].spanY;
                             srcX = *(short *)&g_FieldLayer2Tiles[entry].srcX;
                             sourceY = *(short *)&g_FieldLayer2Tiles[entry].srcY;
-                            rangeW = 0x10;
-                            height = 0x10;
+                            rangeW = 16;
+                            height = 16;
                             /* Retail caller prototype (short, short, void *, void *, void *, void *, void *, void *, short, int) -> void preserved for /Od argument promotion on `Field_ClipBackgroundRecordGroup1ToViewport`. */
                             ((void(__cdecl *)(short, short, void *, void *, void *, void *, void *, void *, short, int))Field_ClipBackgroundRecordGroup1ToViewport)((short)centerX, (short)centerY, &tileX, &spanY, &srcX, &sourceY, &rangeW, &height, (short)entry, 0x10);
                             SetRect(&dstRect, tileX + 0xA0 - centerX, spanY + 0x78 - centerY + 8, tileX + 0xA0 - centerX + rangeW, spanY + 0x78 - centerY + height + 8);
@@ -724,7 +724,7 @@ int __cdecl Field_BltTileSpriteRange(int startIndex, int endIndex, short centerX
                     }
                 }
             }
-            Field_WriteTileSamplesToSurface(g_FieldDDrawSurfaceDd4, (short)centerX, (short)centerY, 0x140, 0xF0, 1);
+            Field_WriteTileSamplesToSurface(g_FieldDDrawSurfaceDd4, (short)centerX, (short)centerY, 320, 240, 1);
         } else {
             for (drawSlot = startIndex; drawSlot < (endIndex & 0xFFFF); drawSlot++) {
                 entry = g_pFieldTileDrawOrder[drawSlot].tileIndex;
@@ -737,8 +737,8 @@ int __cdecl Field_BltTileSpriteRange(int startIndex, int endIndex, short centerX
                             spanY = g_FieldLayer2Tiles[entry].spanY;
                             srcX = *(short *)&g_FieldLayer2Tiles[entry].srcX;
                             sourceY = *(short *)&g_FieldLayer2Tiles[entry].srcY;
-                            rangeW = 0x10;
-                            height = 0x10;
+                            rangeW = 16;
+                            height = 16;
                             /* Retail caller prototype (short, short, void *, void *, void *, void *, void *, void *, short, int) -> void preserved for /Od argument promotion on `Field_ClipBackgroundRecordGroup1ToViewport`. */
                             ((void(__cdecl *)(short, short, void *, void *, void *, void *, void *, void *, short, int))Field_ClipBackgroundRecordGroup1ToViewport)((short)centerX, (short)centerY, &tileX, &spanY, &srcX, &sourceY, &rangeW, &height, (short)entry, 0x10);
                             SetRect(&dstRect, tileX + 0xA0 - centerX << 1, (spanY + 0x78 - centerY) * 2 + 0x10, tileX + 0xA0 - centerX + rangeW << 1, (spanY + 0x78 - centerY + height) * 2 + 0x10);
@@ -776,8 +776,8 @@ int __cdecl Field_CompositeBackgroundFrame(short scrollX, short scrollY)
 
     clipLeft = 0;
     top = 0;
-    endX = 0x140;
-    endY = 0xF0;
+    endX = 320;
+    endY = 240;
     if (g_FieldDDrawSurfaceDd4 == 0) {
         return 0;
     } else {
@@ -786,12 +786,12 @@ int __cdecl Field_CompositeBackgroundFrame(short scrollX, short scrollY)
         endY += top;
         g_FieldBgLayer2ScrollX = scrollX;
         g_FieldBgLayer2ScrollY = scrollY;
-        g_FieldBgLayer3ScrollX = (int)g_FieldBgLayer3ScrollX - 0xA0;
-        g_FieldBgLayer3ScrollY = (int)g_FieldBgLayer3ScrollY - 0x70;
-        g_FieldBgLayer4ScrollX = (int)g_FieldBgLayer4ScrollX - 0xA0;
-        g_FieldBgLayer4ScrollY = (int)g_FieldBgLayer4ScrollY - 0x70;
-        if (clipLeft != 0 || (top != 0 || (endX != 0x140 || endY != 0xF0))) {
-            effects.dwSize = 0x64;
+        g_FieldBgLayer3ScrollX = (int)g_FieldBgLayer3ScrollX - 160;
+        g_FieldBgLayer3ScrollY = (int)g_FieldBgLayer3ScrollY - 112;
+        g_FieldBgLayer4ScrollX = (int)g_FieldBgLayer4ScrollX - 160;
+        g_FieldBgLayer4ScrollY = (int)g_FieldBgLayer4ScrollY - 112;
+        if (clipLeft != 0 || (top != 0 || (endX != 320 || endY != 240))) {
+            effects.dwSize = 100;
             effects.dwFillColor = 0;
             hr = ((LPDIRECTDRAWSURFACE)g_FieldDDrawSurfaceDd4)->Blt(0, 0, 0, 0x400, &effects);
         }
@@ -800,7 +800,7 @@ int __cdecl Field_CompositeBackgroundFrame(short scrollX, short scrollY)
             g_FieldPaletteCurrentOrgY = g_FieldPaletteTargetOrgY;
             SetProjectionOffsetAndRebuild(g_FieldPaletteTargetOrgX << 1, g_FieldPaletteTargetOrgY << 1);
         }
-        if (g_FieldActorState.state.layer2Depth >= 0xFFF) {
+        if (g_FieldActorState.state.layer2Depth >= 4095) {
             Field_BltBackgroundLayer3Entries((short)g_FieldBgLayer3ScrollX, (short)g_FieldBgLayer3ScrollY, 1);
         }
         if (g_FieldCameraScrollE74 != 0) {
@@ -831,8 +831,8 @@ int __cdecl Field_CompositeBackgroundFrame(short scrollX, short scrollY)
             }
         }
         if (1 != 0) {
-            SetRect(&dst, 0, 0x10, 0x280, 0x1D0);
-            SetRect(&source, 0, 8, 0x140, 0xE8);
+            SetRect(&dst, 0, 16, 640, 464);
+            SetRect(&source, 0, 8, 320, 232);
             Field_RetryBltOnSurfaceLost(g_pFieldBackSurface, g_FieldDDrawSurfaceDd4, &source, &dst, 0, 0);
         }
         return 1;
@@ -895,10 +895,10 @@ int __cdecl Field_UploadPalette(int blockPtr)
     g_FieldTimPaletteSize = *cursor;
     cursor++;
     g_FieldTimPaletteOrgX = *cursor & 0xFFFF;
-    g_FieldTimPaletteVramY = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimPaletteVramY = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_FieldTimPaletteOrgY = *cursor & 0xFFFF;
-    g_FieldTimPaletteRows = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimPaletteRows = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_pFieldTimPaletteData = (unsigned short *)cursor;
     if (Field_BuildPaletteRecords((short)g_FieldTimPaletteOrgY, (short)g_FieldTimPaletteRows, g_pFieldTimPaletteData, Field_ClassifyPaletteFormat((short)g_FieldTimPaletteOrgY, (short)g_FieldTimPaletteRows)) == 0) {
@@ -944,10 +944,10 @@ int __cdecl Field_ParsePaletteImageBlocks(int blockPtr)
     g_FieldTimPaletteSize = *cursor;
     cursor++;
     g_FieldTimPaletteOrgX = *cursor & 0xFFFF;
-    g_FieldTimPaletteVramY = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimPaletteVramY = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_FieldTimPaletteOrgY = *cursor & 0xFFFF;
-    g_FieldTimPaletteRows = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimPaletteRows = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_pFieldTimPaletteData = (unsigned short *)cursor;
     cursor = (int *)((int)cursor + ((unsigned int)g_FieldTimPaletteSize >> 2) * 4 + -0xC);
@@ -957,10 +957,10 @@ int __cdecl Field_ParsePaletteImageBlocks(int blockPtr)
         g_FieldTimPixelSize1 = *cursor;
         cursor++;
         g_FieldTimPixelWidth1 = *cursor & 0xFFFF;
-        g_FieldTimPixelVramY1 = (*cursor & 0xFFFF0000) >> 0x10;
+        g_FieldTimPixelVramY1 = (*cursor & 0xFFFF0000) >> 16;
         cursor++;
         g_FieldTimImage1Width = (*cursor & 0xFFFF & 0xFFFF) << 1;
-        g_FieldTimImage1Height = (*cursor & 0xFFFF0000) >> 0x10;
+        g_FieldTimImage1Height = (*cursor & 0xFFFF0000) >> 16;
         cursor++;
         g_pFieldTimPixelData1 = (int)cursor;
         cursor = (int *)((int)cursor + ((unsigned int)g_FieldTimPixelSize1 >> 2) * 4 + -0xC);
@@ -968,10 +968,10 @@ int __cdecl Field_ParsePaletteImageBlocks(int blockPtr)
         cursor++;
         if ((unsigned int)g_FieldTimPixelSize2 > (unsigned int)0) {
             g_FieldTimPixelWidth2 = *cursor & 0xFFFF;
-            g_FieldTimPixelVramY2 = (*cursor & 0xFFFF0000) >> 0x10;
+            g_FieldTimPixelVramY2 = (*cursor & 0xFFFF0000) >> 16;
             cursor++;
             g_FieldTimImage2Width = (*cursor & 0xFFFF & 0xFFFF) << 1;
-            g_FieldTimImage2Height = (*cursor & 0xFFFF0000) >> 0x10;
+            g_FieldTimImage2Height = (*cursor & 0xFFFF0000) >> 16;
             cursor++;
             g_pFieldTimPixelData2 = (int)cursor;
         }
@@ -997,20 +997,20 @@ int __cdecl Field_ParseBackgroundHeaders(void *blockPtr)
     g_FieldTimPaletteSize = *cursor;
     cursor++;
     g_FieldTimPaletteOrgX = *cursor & 0xFFFF;
-    g_FieldTimPaletteVramY = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimPaletteVramY = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_FieldTimPaletteOrgY = *cursor & 0xFFFF;
-    g_FieldTimPaletteRows = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimPaletteRows = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_pFieldTimPaletteData = (unsigned short *)cursor;
     cursor += (unsigned int)(g_FieldTimPaletteSize - 0xC) >> 2;
     g_FieldTimPixelSize1 = *cursor;
     cursor++;
     g_FieldTimPixelWidth1 = *cursor & 0xFFFF;
-    g_FieldTimPixelVramY1 = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimPixelVramY1 = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_FieldTimImage1Width = (*cursor & 0xFFFF & 0xFFFF) << 1;
-    g_FieldTimImage1Height = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldTimImage1Height = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_pFieldTimPixelData1 = (int)cursor;
     if (Field_BuildPaletteRecords((short)g_FieldTimPaletteOrgY, (short)g_FieldTimPaletteRows, g_pFieldTimPaletteData, Field_ExtractImageFormatBits(g_FieldTimHeader2)) == 0) {
@@ -1020,10 +1020,10 @@ int __cdecl Field_ParseBackgroundHeaders(void *blockPtr)
         g_FieldTimPixelSize2 = *cursor;
         cursor++;
         g_FieldTimPixelWidth2 = *cursor & 0xFFFF;
-        g_FieldTimPixelVramY2 = (*cursor & 0xFFFF0000) >> 0x10;
+        g_FieldTimPixelVramY2 = (*cursor & 0xFFFF0000) >> 16;
         cursor++;
         g_FieldTimImage2Width = (*cursor & 0xFFFF & 0xFFFF) << 1;
-        g_FieldTimImage2Height = (*cursor & 0xFFFF0000) >> 0x10;
+        g_FieldTimImage2Height = (*cursor & 0xFFFF0000) >> 16;
         cursor++;
         g_pFieldTimPixelData2 = (int)cursor;
         return 1;
@@ -1115,11 +1115,11 @@ int __cdecl Field_ColorFillSurfaceRect(int left, int top, int width, int height)
         RECT rect;
     } frame;
     if ((left & 0xffff) < 0 || (top & 0xffff) < 0 ||
-        (left & 0xffff) + (width & 0xffff) > 0x276 ||
-        (top & 0xffff) + (height & 0xffff) > 0x1cc) {
+        (left & 0xffff) + (width & 0xffff) > 630 ||
+        (top & 0xffff) + (height & 0xffff) > 460) {
         return 0;
     } else {
-        frame.effects.dwSize = 0x64;
+        frame.effects.dwSize = 100;
         frame.effects.dwFillColor = 0xff;
         SetRect(&frame.rect, left & 0xffff, top & 0xffff,
                 (left & 0xffff) + (width & 0xffff), (top & 0xffff) + (height & 0xffff));
@@ -1175,20 +1175,20 @@ int __cdecl Field_ParsePaletteBlockPair(void *blockPtr)
     g_FieldPackedColorSize1 = *cursor;
     cursor++;
     g_FieldPackedColorOrgX1 = *cursor & 0xFFFF;
-    g_FieldPackedColorOrgY1 = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldPackedColorOrgY1 = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_FieldPackedColorCount1 = *cursor & 0xFFFF;
-    g_FieldPackedColorRows1 = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldPackedColorRows1 = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_pFieldPackedColorData1 = (int)cursor;
     cursor = (int *)((int)cursor + ((unsigned int)g_FieldPackedColorSize1 >> 2) * 4 + -0xC);
     g_FieldPackedColorSize2 = *cursor;
     cursor++;
     g_FieldPackedColorOrgX2 = *cursor & 0xFFFF;
-    g_FieldPackedColorOrgY2 = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldPackedColorOrgY2 = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_FieldPackedColorPixelWidth2 = (*cursor & 0xFFFF & 0xFFFF) << 1;
-    g_FieldPackedColorPixelHeight2 = (*cursor & 0xFFFF0000) >> 0x10;
+    g_FieldPackedColorPixelHeight2 = (*cursor & 0xFFFF0000) >> 16;
     cursor++;
     g_pFieldPackedColorData2 = (int)cursor;
     if (Field_BuildPackedColorRecords((short)g_FieldPackedColorCount1, (short)g_FieldPackedColorRows1, (unsigned short *)g_pFieldPackedColorData1, Field_ClassifyPaletteFormat((short)g_FieldPackedColorCount1, (short)g_FieldPackedColorRows1)) == 0) {
@@ -1225,7 +1225,7 @@ void __cdecl Field_BlitTile32At(short x, short y)
     if (g_FieldDDrawSurfaceDd8 == 0) {
         return;
     }
-    SetRect(&source, 0, 0, 0x20, 0x20);
+    SetRect(&source, 0, 0, 32, 32);
     SetRect(&dst, x, y, x + 0x20, y + 0x20);
     Field_BltFastAtPoint(g_pFieldBackSurface, g_FieldDDrawSurfaceDd8, &source, &dst, 1);
 }
@@ -1249,19 +1249,19 @@ int __cdecl Field_IsPointClearOfModels(short screenX, short screenY)
 
     i = 0;
     hit = 0;
-    relX = screenX + 0xA0 - g_FieldBgLayer2ScrollX;
-    localY = screenY + 0x78 - g_FieldBgLayer2ScrollY;
+    relX = screenX + 160 - g_FieldBgLayer2ScrollX;
+    localY = screenY + 120 - g_FieldBgLayer2ScrollY;
     for (i = 0; i < g_FieldModelSortCount && hit == 0; i++) {
-        if (*(unsigned short *)&g_FieldModelSortRecords[i].depth > 0x15E) {
-            halfRight = 0x19;
-            extentLeft = 0x19;
-            extentBottom = 0x46;
-            extentTop = 0x14;
+        if (*(unsigned short *)&g_FieldModelSortRecords[i].depth > 350) {
+            halfRight = 25;
+            extentLeft = 25;
+            extentBottom = 70;
+            extentTop = 20;
         } else {
-            halfRight = 0x28;
-            extentLeft = 0x28;
-            extentBottom = 0x64;
-            extentTop = 0x1E;
+            halfRight = 40;
+            extentLeft = 40;
+            extentBottom = 100;
+            extentTop = 30;
         }
         if (g_FieldModelSortRecords[i].screenX < relX + halfRight && g_FieldModelSortRecords[i].screenX > relX - extentLeft && g_FieldModelSortRecords[i].screenY < localY + extentBottom && g_FieldModelSortRecords[i].screenY > localY - extentTop) {
             hit = 1;

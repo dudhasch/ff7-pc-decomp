@@ -59,7 +59,7 @@ unsigned int __cdecl AcmGetDecodedSize(int stream, unsigned int inputSize)
 
     if (MmCheckError(acmStreamSize(stream, inputSize, &outputSize, SOUND_ACM_STREAMSIZEF_SOURCE),
                      // STRING: FF7 0x00968bf8
-                     "C:\\lib\\src\\sound\\acm.cpp", 0x4E)) {
+                     "C:\\lib\\src\\sound\\acm.cpp", 78)) {
         return outputSize;
     }
     return 0;
@@ -75,7 +75,7 @@ unsigned int __cdecl AcmGetSourceSizeForDecoded(int stream, unsigned int inputSi
 
     if (MmCheckError(acmStreamSize(stream, inputSize, &outputSize, SOUND_ACM_STREAMSIZEF_DESTINATION),
                      // STRING: FF7 0x00968c14
-                     "C:\\lib\\src\\sound\\acm.cpp", 0x5B)) {
+                     "C:\\lib\\src\\sound\\acm.cpp", 91)) {
         return outputSize;
     }
     return 0;
@@ -91,11 +91,11 @@ int __cdecl AcmStreamOpen(int output, int sourceFormat, int destinationFormat, i
     case SOUND_ACM_OPEN_SYNC:
         return MmCheckError(acmStreamOpen(output, 0, sourceFormat, destinationFormat, 0, 0, 0, 0),
                             // STRING: FF7 0x00968c30
-                            "C:\\lib\\src\\sound\\acm.cpp", 0x6A);
+                            "C:\\lib\\src\\sound\\acm.cpp", 106);
     case SOUND_ACM_OPEN_ASYNC:
         return MmCheckError(acmStreamOpen(output, 0, sourceFormat, destinationFormat, 0, 0, 0, SOUND_ACM_STREAMOPENF_ASYNC),
                             // STRING: FF7 0x00968c4c
-                            "C:\\lib\\src\\sound\\acm.cpp", 0x6D);
+                            "C:\\lib\\src\\sound\\acm.cpp", 109);
     }
     return 0;
 }
@@ -110,12 +110,12 @@ void __cdecl AcmStreamConvert(int stream, void *header, int mode)
     case SOUND_ACM_CONVERT_WHOLE:
         MmCheckError(acmStreamConvert(stream, header, 0),
                      // STRING: FF7 0x00968c68
-                     "C:\\lib\\src\\sound\\acm.cpp", 0x93);
+                     "C:\\lib\\src\\sound\\acm.cpp", 147);
         break;
     case SOUND_ACM_CONVERT_BLOCK_ALIGN:
         MmCheckError(acmStreamConvert(stream, header, SOUND_ACM_STREAMCONVERTF_BLOCKALIGN),
                      // STRING: FF7 0x00968c84
-                     "C:\\lib\\src\\sound\\acm.cpp", 0x96);
+                     "C:\\lib\\src\\sound\\acm.cpp", 150);
         break;
     }
 }
@@ -127,14 +127,14 @@ void __cdecl AcmStreamConvert(int stream, void *header, int mode)
 int __cdecl AcmStreamPrepare(int stream, SoundAcmStreamHeader *header, int source, int sourceBytes, int destination, int destinationBytes)
 {
     memset(header, 0, 0x54);
-    header->structSize = 0x54;
+    header->structSize = 84;
     header->source = source;
     header->sourceBytes = sourceBytes;
     header->destination = destination;
     header->destinationBytes = destinationBytes;
     return MmCheckError(acmStreamPrepareHeader(stream, header, 0),
                         // STRING: FF7 0x00968ca0
-                        "C:\\lib\\src\\sound\\acm.cpp", 0xA5);
+                        "C:\\lib\\src\\sound\\acm.cpp", 165);
 }
 
 /*
@@ -145,7 +145,7 @@ int __cdecl AcmStreamUnprepare(int stream, int header)
 {
     return MmCheckError(acmStreamUnprepareHeader(stream, header, 0),
                         // STRING: FF7 0x00968cbc
-                        "C:\\lib\\src\\sound\\acm.cpp", 0xAA);
+                        "C:\\lib\\src\\sound\\acm.cpp", 170);
 }
 
 /*
@@ -156,6 +156,6 @@ int __cdecl AcmStreamClose(int stream)
 {
     return MmCheckError(acmStreamClose(stream, 0),
                         // STRING: FF7 0x00968cd8
-                        "C:\\lib\\src\\sound\\acm.cpp", 0xAF);
+                        "C:\\lib\\src\\sound\\acm.cpp", 175);
 }
 } /* extern "C" */

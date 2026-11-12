@@ -162,24 +162,24 @@ void __cdecl BattleFx_MagicBreakTimelineTask(void)
         child->posZ = task->posZ;
         child->size = task->size;
     }
-    if (task->frame == 0xF) {
+    if (task->frame == 15) {
         child = (BattleFxMagicBreakTask *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBreakStagedModelFadeTask);
         child->posX = task->posX;
         child->posY = 0;
         child->posZ = task->posZ;
         child->size = task->size;
     }
-    if (task->frame == 0x14) {
+    if (task->frame == 20) {
         child = (BattleFxMagicBreakTask *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBreakBlackModelGrowTask);
         child->posX = task->posX;
         child->posY = 0;
         child->posZ = task->posZ;
         child->size = task->size;
     }
-    if (task->frame == 0x14) {
+    if (task->frame == 20) {
         Battle_PostActorHitOrHurtMessage(task->ownerSlot);
     }
-    if (task->frame == 0x14) {
+    if (task->frame == 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frame)++;
@@ -200,9 +200,9 @@ void __cdecl BattleFx_MagicBreakGrowingModelFadeTask(void)
     ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicBreak_ModelTable);
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     pScales = (BattleFxFixedScaleVec *)(matrix + 1);
-    pScales->scaleZ = (task->frame * 0x350 / 0x19 + 0x100) * task->size >> 0xC;
+    pScales->scaleZ = (task->frame * 0x350 / 25 + 0x100) * task->size >> 12;
     pScales->scaleX = pScales->scaleZ;
-    pScales->scaleY = task->frame * 0x380 / 0x19 * task->size >> 0xC;
+    pScales->scaleY = task->frame * 0x380 / 25 * task->size >> 12;
     if (pScales->scaleZ > 0x7FFF) {
         pScales->scaleZ = 0x7FFF;
     }
@@ -210,11 +210,11 @@ void __cdecl BattleFx_MagicBreakGrowingModelFadeTask(void)
         pScales->scaleY = 0x7FFF;
     }
     localFrame = task->frame;
-    if (localFrame < 0xF) {
-        ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->fadeLevel = 0x80;
+    if (localFrame < 15) {
+        ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->fadeLevel = 128;
     } else {
-        localFrame -= 0xF;
-        if (localFrame < 0xA) {
+        localFrame -= 15;
+        if (localFrame < 10) {
             ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->fadeLevel = localFrame * -0x80 / 0xA + 0x80;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -259,15 +259,15 @@ void __cdecl BattleFx_MagicBreakStagedModelFadeTask(void)
         ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->partHandle = Gfx_ModelTableGetRenderObject(2, g_BattleMagicBreak_ModelTable);
     } else {
         stage -= 5;
-        if (stage < 0xF) {
+        if (stage < 15) {
             ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->tintLevel = 0x80;
             ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->blendFraction = 0;
             ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->partHandle = Gfx_ModelTableGetRenderObject(1, g_BattleMagicBreak_ModelTable);
         } else {
-            stage -= 0xF;
-            if (stage < 0xA) {
+            stage -= 15;
+            if (stage < 10) {
                 ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->tintLevel = 0x88;
-                ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->blendFraction = (stage << 0xC) / 0xA;
+                ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->blendFraction = (stage << 12) / 0xA;
                 ((BattleFxModelDraw *)&g_BattleMagicBreak_ModelData1)->partHandle = Gfx_ModelTableGetRenderObject(2, g_BattleMagicBreak_ModelTable);
             } else {
                 faderPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -275,8 +275,8 @@ void __cdecl BattleFx_MagicBreakStagedModelFadeTask(void)
             }
         }
     }
-    value = faderPtr->size * 0x300 >> 0xC;
-    if (value <= 0x7FFF) {
+    value = faderPtr->size * 0x300 /* 0.1875 */ >> 12;
+    if (value <= 32767) {
         clamped = value;
     } else {
         clamped = 0x7FFF;
@@ -311,8 +311,8 @@ void __cdecl BattleFx_MagicBreakBlackModelGrowTask(void)
     pTaskSlot = (BattleFxMagicBreakTask *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicBreak_ModelData3.modelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleMagicBreak_ModelTable);
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
-    rawBytes = (pTaskSlot->frame * 0x1100 / 0x14 + 0x400) * pTaskSlot->size >> 0xC;
-    if (rawBytes <= 0x7FFF) {
+    rawBytes = (pTaskSlot->frame * 4352 / 20 + 0x400) * pTaskSlot->size >> 12;
+    if (rawBytes <= 32767) {
         clamped8 = rawBytes;
     } else {
         clamped8 = 0x7FFF;
@@ -326,8 +326,8 @@ void __cdecl BattleFx_MagicBreakBlackModelGrowTask(void)
         g_BattleMagicBreak_ModelData3.scale = 0;
     } else {
         localFrame = localFrame;
-        if (localFrame < 0x14) {
-            g_BattleMagicBreak_ModelData3.scale = (localFrame << 0xC) / 0x14;
+        if (localFrame < 20) {
+            g_BattleMagicBreak_ModelData3.scale = (localFrame << 12) / 20;
         } else {
             pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
             return;

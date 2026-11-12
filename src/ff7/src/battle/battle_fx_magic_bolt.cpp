@@ -142,14 +142,14 @@ void __cdecl BattleFx_MagicBoltTimelineTask(void)
             *(Int64Pair *)((char *)child + 4) = *(Int64Pair *)((char *)task + 4);
             child->posY = 0;
             child->offset = 0x1000;
-            child->velocity = 0x200;
+            child->velocity = 512;
             child->pushLength = task->negRadius;
         }
         if (task->stage >= 2) {
             child = (BattleFxBoltSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBoltFlippedBillboardSpriteTask);
-            child->posX = task->posX + rand() % 0x3E8 + -0x1F4;
-            child->posY = task->posY + rand() % 0x3E8 + -0x1F4;
-            child->posZ = task->posZ + rand() % 0x3E8 + -0x1F4;
+            child->posX = task->posX + rand() % 1000 + -500;
+            child->posY = task->posY + rand() % 1000 + -500;
+            child->posZ = task->posZ + rand() % 1000 + -500;
             child->variant = rand() & 3;
             child->pushLength = task->negRadius;
         }
@@ -170,7 +170,7 @@ void __cdecl BattleFx_MagicBoltGrowFadeModelTask(void)
     (g_BattleMagicBolt_ModelReq.tableField) = Gfx_ModelTableGetRenderObject(2, g_BattleMagicBolt_ResourceHandle);
     if (task->step < 8) {
         g_BattleMagicBolt_ModelReq.alpha = 0x80;
-    } else if (task->step < 0x10) {
+    } else if (task->step < 16) {
         g_BattleMagicBolt_ModelReq.alpha = 0x80 - (task->step - 8 << 4);
     } else {
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -201,7 +201,7 @@ void __cdecl BattleFx_MagicBoltBillboardSpriteTask(void)
     task = (BattleFxBoltBillboardSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicBolt_ModelReq.resourceHandle = Gfx_ModelTableGetLoadedRecord(0, g_BattleMagicBolt_ResourceHandle);
     g_BattleMagicBolt_ModelReq.altHandle = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicBolt_ResourceHandle);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, task->pushLength);
     *(short *)((char *)&g_BattleMagicBolt_ModelScale + 0x4) = task->frameCount >> 1;
     g_BattleMagicBolt_ChainTail = BattleFx_SubmitSpriteDraw(&g_BattleMagicBolt_ModelReq.resourceHandle, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicBolt_ChainTail);
     if (g_BattleIsPaused == 0) {
@@ -222,7 +222,7 @@ void __cdecl BattleFx_MagicBoltFlippedBillboardSpriteTask(void)
     (g_BattleMagicBolt_SpriteReq.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleMagicBolt_ResourceHandle);
     g_BattleMagicBolt_SpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleMagicBolt_ResourceHandle);
     matrix = (short *)BattleFx_InstallBillboardMatrix(
-        &task->posX, 0x2000, task->pushLength);
+        &task->posX, 0x2000 /* 2.0 */, task->pushLength);
     if ((task->flags & 1) != 0) {
         *matrix = -*matrix;
     }

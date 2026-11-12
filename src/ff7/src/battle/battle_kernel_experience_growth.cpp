@@ -174,9 +174,9 @@ void __cdecl Savemap_WriteGrowthToRecord(CharGrowth *growth, SavemapCharacter *c
     charRecord->expToNext = growth->expNextLevel - growth->exp;
     charRecord->levelProgress = 0;
     if (growth->expNextLevel - growth->expLevelStart != 0) {
-        charRecord->levelProgress = (unsigned int)((growth->exp - growth->expLevelStart) * 0x3D) / (unsigned int)(growth->expNextLevel - growth->expLevelStart);
+        charRecord->levelProgress = (unsigned int)((growth->exp - growth->expLevelStart) * 61) / (unsigned int)(growth->expNextLevel - growth->expLevelStart);
     }
-    if (growth->level >= 0x63) {
+    if (growth->level >= 99) {
         charRecord->expToNext = 0;
         charRecord->levelProgress = 0x3D;
     }
@@ -198,7 +198,7 @@ void __cdecl Kernel_BindGrowthRecord(CharGrowth *growthPtr)
         }
         growthPtr->curStats[index] = growthPtr->baseStats[index];
     }
-    for (index = 0; index < 0x10; index++) {
+    for (index = 0; index < 16; index++) {
         growthPtr->thresholds[index] = 0;
     }
 }
@@ -222,16 +222,16 @@ void __cdecl Kernel_ApplyExpGrowthLevelUps(CharGrowth *growth)
     local.count = 0;
     growth->exp =
         growth->expBase + growth->expEarned;
-    if ((unsigned int)growth->exp > 0x3B9AC9FF) {
+    if ((unsigned int)growth->exp > 999999999) {
         growth->exp = 0x3B9AC9FF;
     }
     growth->expForLevel = Kernel_ComputeExpForLevel(
         growth, growth->level - 1);
     growth->expLevelStart = growth->expForLevel;
-    while ((local.level = growth->level) < 0x63) {
+    while ((local.level = growth->level) < 99) {
         local.nextExp = Kernel_ComputeExpForLevel(growth, local.level);
         growth->expNextLevel = local.nextExp;
-        if (local.count < 0x10) {
+        if (local.count < 16) {
             growth->thresholds[local.count] = local.nextExp;
             local.count++;
         }
@@ -265,15 +265,15 @@ int __cdecl Kernel_ComputeExpForLevel(CharGrowth *growth, int level)
     total = 0;
     growth->tier = 0;
     if (level != 0) {
-        if (level <= 0x3C) {
-            tier = (level - 1) / 0xA;
+        if (level <= 60) {
+            tier = (level - 1) / 10;
         } else {
-            tier = (level - 0x3D) / 0x14 + 6;
+            tier = (level - 0x3D) / 20 + 6;
         }
         growth->tier = tier;
     }
     for (step = 1; step <= level; step++) {
-        total += g_BattleKernelData.curves[growth->kernelRow->expCurve].brackets[growth->tier].gradient * step * step / 0xA;
+        total += g_BattleKernelData.curves[growth->kernelRow->expCurve].brackets[growth->tier].gradient * step * step / 10;
     }
     return total;
 }
@@ -295,7 +295,7 @@ void __cdecl Kernel_LevelUpPrimaryStat(CharGrowth *growth, int statIndex)
     bonusIndex = Kernel_PickGrowthBonusIndex(delta);
     newStat = growth->curStats[statIndex];
     newStat += g_BattleKernelData.statBonus[bonusIndex];
-    if (newStat > 0x64) {
+    if (newStat > 100) {
         newStat = 0x64;
     }
     growth->curStats[statIndex] = newStat;
@@ -314,7 +314,7 @@ int __cdecl Kernel_PickGrowthBonusIndex(int delta)
     if (index < 0) {
         index = 0;
     } else if ((unsigned int)index >= (unsigned int)0xC) {
-        index = 0xB;
+        index = 11;
     }
     return index;
 }
@@ -328,7 +328,7 @@ int __cdecl Kernel_PickGrowthBonusIndex(int delta)
 // FUNCTION: FF7 0x005c79fc
 int __cdecl Kernel_EvalPrimaryStatCurve(CharGrowth *growth, int level, int statIndex)
 {
-    return g_BattleKernelData.curves[growth->kernelRow->statCurves[statIndex]].brackets[growth->tier].gradient * level / 0x64 + g_BattleKernelData.curves[growth->kernelRow->statCurves[statIndex]].brackets[growth->tier].base;
+    return g_BattleKernelData.curves[growth->kernelRow->statCurves[statIndex]].brackets[growth->tier].gradient * level / 100 + g_BattleKernelData.curves[growth->kernelRow->statCurves[statIndex]].brackets[growth->tier].base;
 }
 
 /*
@@ -348,11 +348,11 @@ void __cdecl Kernel_LevelUpMaxHp(CharGrowth *growth)
 
     currentCurve = Kernel_EvalHpCurve(growth, growth->level);
     nextCurve = Kernel_EvalHpCurve(growth, growth->level + 1);
-    overshoot = currentCurve * 0x64 / growth->cur.maxHp - 0x64;
+    overshoot = currentCurve * 100 / growth->cur.maxHp - 0x64;
     index = Kernel_PickGrowthBonusIndex(overshoot);
     hp = growth->cur.maxHp;
-    hp += (nextCurve - currentCurve) * g_BattleKernelData.hpBonus[index] / 0x64;
-    if (hp > 0x270F) {
+    hp += (nextCurve - currentCurve) * g_BattleKernelData.hpBonus[index] / 100;
+    if (hp > 9999) {
         hp = 0x270F;
     }
     growth->cur.maxHp = hp;
@@ -365,7 +365,7 @@ void __cdecl Kernel_LevelUpMaxHp(CharGrowth *growth)
 // FUNCTION: FF7 0x005c7b01
 int __cdecl Kernel_EvalHpCurve(CharGrowth *growth, int level)
 {
-    return g_BattleKernelData.curves[growth->kernelRow->hpCurve].brackets[growth->tier].gradient * level + g_BattleKernelData.curves[growth->kernelRow->hpCurve].brackets[growth->tier].base * 0x28;
+    return g_BattleKernelData.curves[growth->kernelRow->hpCurve].brackets[growth->tier].gradient * level + g_BattleKernelData.curves[growth->kernelRow->hpCurve].brackets[growth->tier].base * 40;
 }
 
 /*
@@ -383,11 +383,11 @@ void __cdecl Kernel_LevelUpMaxMp(CharGrowth *growth)
 
     currentCurve = Kernel_EvalMpCurve(growth, growth->level);
     nextCurve = Kernel_EvalMpCurve(growth, growth->level + 1);
-    overshoot = currentCurve * 0x64 / growth->cur.maxMp - 0x64;
+    overshoot = currentCurve * 100 / growth->cur.maxMp - 0x64;
     index = Kernel_PickGrowthBonusIndex(overshoot);
     mpCeil = growth->cur.maxMp;
-    mpCeil += (nextCurve - currentCurve) * g_BattleKernelData.mpBonus[index] / 0x64;
-    if (mpCeil > 0x3E7) {
+    mpCeil += (nextCurve - currentCurve) * g_BattleKernelData.mpBonus[index] / 100;
+    if (mpCeil > 999) {
         mpCeil = 0x3E7;
     }
     growth->cur.maxMp = mpCeil;
@@ -400,7 +400,7 @@ void __cdecl Kernel_LevelUpMaxMp(CharGrowth *growth)
 // FUNCTION: FF7 0x005c7bf7
 int __cdecl Kernel_EvalMpCurve(CharGrowth *growth, int level)
 {
-    return g_BattleKernelData.curves[growth->kernelRow->mpCurve].brackets[growth->tier].gradient * level / 0xA + g_BattleKernelData.curves[growth->kernelRow->mpCurve].brackets[growth->tier].base * 2;
+    return g_BattleKernelData.curves[growth->kernelRow->mpCurve].brackets[growth->tier].gradient * level / 10 + g_BattleKernelData.curves[growth->kernelRow->mpCurve].brackets[growth->tier].base * 2;
 }
 
 // clang-format on

@@ -140,7 +140,7 @@ void __cdecl Mini_SnowboardEffectHitLaunchWithSignal(SnowboardEffect *record)
 // FUNCTION: FF7 0x00735482
 void __cdecl Mini_SnowboardEffectRetireAfterDelay(SnowboardEffect *record)
 {
-    if ((record->age)++ > 0x3c && (record->fade)++ > 0x1e)
+    if ((record->age)++ > 60 && (record->fade)++ > 30)
         record->active = 0;
 }
 
@@ -159,7 +159,7 @@ void __cdecl Mini_SnowboardEffectUpdateLaunchArc(struct SnowboardEffect *record)
         record->sidePos += record->sideVelocity;
         record->height += record->fallVelocity;
         record->forward += record->forwardVelocity;
-        record->fallVelocity += 0x1000;
+        record->fallVelocity += 4096;
         record->rotX -= 0x20;
         record->matrixValid = 0;
         if (record->fallVelocity > 0) {
@@ -200,7 +200,7 @@ void __cdecl Mini_SnowboardEffectUpdateSwayFade(SnowboardEffect *effect)
 {
     effect->rotX = -SinFixed(SinFixed(effect->age << 5) >> 4) >> 3;
     effect->matrixValid = 0;
-    if ((effect->age)++ > 0x78 && (effect->fade)++ > 0x1e)
+    if ((effect->age)++ > 120 && (effect->fade)++ > 30)
         effect->active = 0;
 }
 
@@ -227,11 +227,11 @@ void __cdecl Mini_SnowboardEffectStartLateralDrift(SnowboardEffect *effect)
     int speed;
     int lateralSpeed;
 
-    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 0x700000) {
+    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 7340032) {
         return;
     }
     speed = (int)g_SnoboStatePtr->velocityZ >> 1;
-    if (speed < 0x8000) {
+    if (speed < 32768) {
         speed = 0x8000;
     }
     effect->forwardVelocity = speed;
@@ -242,7 +242,7 @@ void __cdecl Mini_SnowboardEffectStartLateralDrift(SnowboardEffect *effect)
     }
     effect->sideVelocity = lateralSpeed;
     effect->fade = 0;
-    effect->contactRadius = 0x40;
+    effect->contactRadius = 64;
     effect->update = Mini_SnowboardEffectUpdateLateralDrift;
 }
 
@@ -260,8 +260,8 @@ void __cdecl Mini_SnowboardEffectUpdateLateralDrift(SnowboardEffect *effect)
     if (effect->contact != 0) {
         Mini_SnowboardEffectBeginHitTumble(effect);
     } else {
-        distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 0xC;
-        if (distance > 0x200) {
+        distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 12;
+        if (distance > 512) {
             effect->active = 0;
         } else {
             effect->sidePos += effect->sideVelocity;
@@ -269,19 +269,19 @@ void __cdecl Mini_SnowboardEffectUpdateLateralDrift(SnowboardEffect *effect)
             effect->height = Mini_SnowboardSlopeHeightFromForward(effect->forward);
             distance = effect->sidePos >> 0xC & 0xFFFFF;
             if (effect->age != 0) {
-                if (distance < 0xF0364) {
+                if (distance < 983908) {
                     effect->rotY += 0x80;
                     effect->matrixValid = 0;
                     effect->fallVelocity = 0xFFFF0000;
-                    if (distance < 0xEFDE6) {
+                    if (distance < 982502) {
                         effect->update = Mini_SnowboardEffectUpdateFallingSpinRetireAtGround;
                     }
                 }
-            } else if (distance > 0xF0364) {
+            } else if (distance > 983908) {
                 effect->rotY -= 0x80;
                 effect->matrixValid = 0;
                 effect->fallVelocity = 0xFFFF0000;
-                if (distance > 0xF08E5) {
+                if (distance > 985317) {
                     effect->update = Mini_SnowboardEffectUpdateFallingSpinRetireAtGround;
                 }
             }
@@ -297,8 +297,8 @@ void __cdecl Mini_SnowboardEffectUpdateLateralDrift(SnowboardEffect *effect)
 // FUNCTION: FF7 0x007358b8
 int __cdecl Mini_SnowboardSlopeHeightFromForward(int forward)
 {
-    forward = (forward >> 0xC) - 0xB042;
-    return forward * 0x5865 / 0x14A33 + 0x10A36 << 0xC;
+    forward = (forward >> 12) - 0xB042;
+    return forward * 22629 / 84531 + 0x10A36 << 12;
 }
 
 // Starts the tumble after a hit. tumbleFrames is cleared, sideVelocity and forwardVelocity are
@@ -316,7 +316,7 @@ void __cdecl Mini_SnowboardEffectBeginHitTumble(SnowboardEffect *effect)
 }
 
 /*
- * Removes effects more than 0x200 units behind, otherwise advances coordinates and vertical
+ * Removes effects more than 512 units behind, otherwise advances coordinates and vertical
  * velocity with 0x1000 acceleration. On descending ground approach changes mesh/state, snaps
  * height, halves horizontal/forward speed and creates a secondary effect, with distance-scaled
  * sound when ahead within 0x1000. Updates vertical position and applies early rotation while the
@@ -330,8 +330,8 @@ void __cdecl Mini_SnowboardEffectUpdateTumbleFallBounce(struct SnowboardEffect *
     int h;
     int child;
 
-    distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 0xC;
-    if (distance > 0x200) {
+    distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 12;
+    if (distance > 512) {
         effect->active = 0;
     } else {
         effect->model = 0xD3;
@@ -339,13 +339,13 @@ void __cdecl Mini_SnowboardEffectUpdateTumbleFallBounce(struct SnowboardEffect *
         effect->sidePos += effect->sideVelocity;
         effect->forward += effect->forwardVelocity;
         slopeHeight = Mini_SnowboardSlopeHeightFromForward(effect->forward);
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
         h = effect->height + effect->fallVelocity;
         if (effect->fallVelocity > 0 && h > slopeHeight - 0x40000) {
             h = slopeHeight;
             effect->model = 0xE2;
             effect->model2 = 0;
-            effect->rotY = 0x200;
+            effect->rotY = 0x200 /* 45 deg */;
             effect->update = Mini_SnowboardEffectFallFadeRetire;
             effect->fallVelocity = 0xFFFE0000;
             effect->sideVelocity >>= 1;
@@ -355,13 +355,13 @@ void __cdecl Mini_SnowboardEffectUpdateTumbleFallBounce(struct SnowboardEffect *
             g_SnoboTumbleBounceEffectDef.height = h;
             g_SnoboTumbleBounceEffectDef.forward = effect->forward;
             child = Mini_SnowboardAllocEffectNode(Mini_SnowboardForwardToSectionIndex(effect->forward), &g_SnoboTumbleBounceEffectDef, 1);
-            distance = effect->forward - (int)g_SnoboStatePtr->riderPos >> 0xC;
-            if (distance > 0 && distance < 0x1000) {
+            distance = effect->forward - (int)g_SnoboStatePtr->riderPos >> 12;
+            if (distance > 0 && distance < 4096) {
                 Mini_SnowboardPlaySfxOnChannel(4, 0x1AB, 0x7F - (distance >> 5));
             }
         }
         effect->height = h;
-        if ((effect->timer)++ < 0x40) {
+        if ((effect->timer)++ < 64) {
             effect->rotX += -0x20;
             effect->matrixValid = 0;
         }
@@ -408,7 +408,7 @@ int __cdecl Mini_SnowboardFindFreeEffectNode(void)
     int slot;
     SnowboardEffect *pNode;
     int remaining;
-    remaining = 0x20;
+    remaining = 32;
     for (slot = g_SnoboEffectNodeCursor; remaining--; slot = (slot + 1) & 0x1F) {
         pNode = (SnowboardEffect *)(slot * 0x90 + ((char *)&g_SnoboEffectRecords));
         if (*(unsigned char *)pNode == 0) {
@@ -427,8 +427,8 @@ int __cdecl Mini_SnowboardFindFreeEffectNode(void)
 // FUNCTION: FF7 0x00735c60
 int __cdecl Mini_SnowboardForwardToSectionIndex(int forward)
 {
-    forward = (forward >> 0xC) - 0xB042;
-    return forward * 0x39 / 0x14A33 + 0x8E;
+    forward = (forward >> 12) - 0xB042;
+    return forward * 57 / 84531 + 0x8E;
 }
 
 /*
@@ -440,14 +440,14 @@ int __cdecl Mini_SnowboardForwardToSectionIndex(int forward)
 // FUNCTION: FF7 0x00735c86
 void __cdecl Mini_SnowboardEffectFallFadeRetire(struct SnowboardEffect *effect)
 {
-    if ((effect->age)++ > 0x3c && (effect->fade)++ > 0x1e) {
+    if ((effect->age)++ > 60 && (effect->fade)++ > 30) {
         effect->active = 0;
     } else {
         effect->sidePos += effect->sideVelocity;
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
         effect->height += effect->fallVelocity;
         effect->forward += effect->forwardVelocity;
-        effect->rotX += -0x200;
+        effect->rotX += -0x200 /* 45 deg */;
         effect->matrixValid = 0;
     }
 }
@@ -473,7 +473,7 @@ void __cdecl Mini_SnowboardEffectUpdateFrameCycle(SnowboardEffect *effect)
 }
 
 /*
- * Removes effects more than 0x200 units behind. Otherwise advances lateral/forward coordinates,
+ * Removes effects more than 512 units behind. Otherwise advances lateral/forward coordinates,
  * accelerates vertical velocity by 0x1000 and removes the effect on descending ground approach.
  * Before ground contact stores the new height, rotates by negative 0x40 and clears the other
  * rotation field.
@@ -485,8 +485,8 @@ void __cdecl Mini_SnowboardEffectUpdateFallingSpinRetireAtGround(struct Snowboar
     int gap;
     int height;
 
-    gap = (int)g_SnoboStatePtr->riderPos - effect->forward >> 0xC;
-    if (gap > 0x200) {
+    gap = (int)g_SnoboStatePtr->riderPos - effect->forward >> 12;
+    if (gap > 512) {
         effect->active = 0;
     } else {
         effect->model = 0xD3;
@@ -494,7 +494,7 @@ void __cdecl Mini_SnowboardEffectUpdateFallingSpinRetireAtGround(struct Snowboar
         effect->sidePos += effect->sideVelocity;
         effect->forward += effect->forwardVelocity;
         groundH = Mini_SnowboardSlopeHeightFromForward(effect->forward);
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
         height = effect->height + effect->fallVelocity;
         if (effect->fallVelocity > 0 && height > groundH - 0x40000) {
             effect->active = 0;
@@ -513,12 +513,12 @@ void __cdecl Mini_SnowboardEffectUpdateFallingSpinRetireAtGround(struct Snowboar
 // FUNCTION: FF7 0x00735eb3
 void __cdecl Mini_SnowboardEffectStartApproachFollow(SnowboardEffect *effect)
 {
-    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 0x200000) {
+    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 2097152) {
         return;
     }
     effect->fade = 0;
     effect->forwardVelocity = (int)g_SnoboStatePtr->velocityZ;
-    effect->contactRadius = 0x40;
+    effect->contactRadius = 64;
     effect->update = Mini_SnowboardEffectUpdateFollowRiderSway;
 }
 
@@ -539,9 +539,9 @@ void __cdecl Mini_SnowboardEffectUpdateFollowRiderSway(SnowboardEffect *effect)
         Mini_SnowboardEffectBeginHitTumble(effect);
     } else {
         riderPos = (int)g_SnoboStatePtr->riderPos;
-        forwardPos = effect->forwardVelocity + (effect->forward > riderPos ? 0xFFFFFC00 : 0x800);
-        if (forwardPos < 0x4000) {
-            forwardPos = 0x4000;
+        forwardPos = effect->forwardVelocity + (effect->forward > riderPos ? 0xFFFFFC00 : 2048);
+        if (forwardPos < 16384) {
+            forwardPos = 16384;
         }
         effect->forwardVelocity = forwardPos;
         forwardPos = effect->forward + effect->forwardVelocity;
@@ -558,7 +558,7 @@ void __cdecl Mini_SnowboardEffectUpdateFollowRiderSway(SnowboardEffect *effect)
         }
         effect->forward = forwardPos;
         effect->height = Mini_SnowboardSlopeHeightFromForward(effect->forward);
-        effect->age += 0x10;
+        effect->age += 16;
         effect->sidePos += CosFixed(effect->age) << 4;
         if (forwardPos > effect->forwardLimit) {
             effect->timer = 0;
@@ -579,14 +579,14 @@ void __cdecl Mini_SnowboardEffectUpdateSwaySpinLaunch(SnowboardEffect *effect)
     if (effect->contact != 0) {
         Mini_SnowboardEffectBeginHitTumble(effect);
     } else {
-        effect->age += 0x10;
+        effect->age += 16;
         effect->sidePos += CosFixed(effect->age) * 8;
         effect->forward += effect->forwardVelocity;
         effect->height = Mini_SnowboardSlopeHeightFromForward(effect->forward);
         effect->spinVelocity += 8;
         effect->rotY += effect->spinVelocity;
         effect->matrixValid = 0;
-        if ((effect->timer)++ > 0x1E) {
+        if ((effect->timer)++ > 30) {
             effect->contactRadius = 0;
             effect->fallVelocity = 0xFFFE0000;
             effect->update = Mini_SnowboardEffectUpdateTumbleFallBounce;
@@ -605,11 +605,11 @@ void __cdecl Mini_SnowboardEffectStartLateralDriftSpawnChild(SnowboardEffect *ef
     int speed;
     int lateralSpeed;
 
-    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 0x700000) {
+    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 7340032) {
         return;
     }
     speed = (int)g_SnoboStatePtr->velocityZ >> 1;
-    if (speed < 0x8000) {
+    if (speed < 32768) {
         speed = 0x8000;
     }
     effect->forwardVelocity = speed;
@@ -620,12 +620,12 @@ void __cdecl Mini_SnowboardEffectStartLateralDriftSpawnChild(SnowboardEffect *ef
     }
     effect->sideVelocity = lateralSpeed;
     effect->fade = 0;
-    effect->contactRadius = 0x40;
+    effect->contactRadius = 64;
     effect->update = Mini_SnowboardEffectUpdateLateralDriftSpawnChild;
 }
 
 /*
- * Dispatches flagged effects to Mini_SnowboardEffectBeginHitTumbleSpawnChild. Otherwise removes effects more than 0x200 units
+ * Dispatches flagged effects to Mini_SnowboardEffectBeginHitTumbleSpawnChild. Otherwise removes effects more than 512 units
  * behind, advances lateral/forward coordinates and samples height. At side-dependent lateral
  * thresholds applies rotation and negative vertical velocity and changes to the falling callback
  * beyond the outer threshold.
@@ -638,8 +638,8 @@ void __cdecl Mini_SnowboardEffectUpdateLateralDriftSpawnChild(SnowboardEffect *e
     if (effect->contact != 0) {
         Mini_SnowboardEffectBeginHitTumbleSpawnChild(effect);
     } else {
-        distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 0xC;
-        if (distance > 0x200) {
+        distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 12;
+        if (distance > 512) {
             effect->active = 0;
         } else {
             effect->sidePos += effect->sideVelocity;
@@ -647,19 +647,19 @@ void __cdecl Mini_SnowboardEffectUpdateLateralDriftSpawnChild(SnowboardEffect *e
             effect->height = Mini_SnowboardSlopeHeightFromForward(effect->forward);
             distance = effect->sidePos >> 0xC & 0xFFFFF;
             if (effect->age != 0) {
-                if (distance < 0xF0364) {
+                if (distance < 983908) {
                     effect->rotY += 0x80;
                     effect->matrixValid = 0;
                     effect->fallVelocity = 0xFFFF0000;
-                    if (distance < 0xEFDE6) {
+                    if (distance < 982502) {
                         effect->update = Mini_SnowboardEffectUpdateFallingSpinRetireAtGround;
                     }
                 }
-            } else if (distance > 0xF0364) {
+            } else if (distance > 983908) {
                 effect->rotY -= 0x80;
                 effect->matrixValid = 0;
                 effect->fallVelocity = 0xFFFF0000;
-                if (distance > 0xF08E5) {
+                if (distance > 985317) {
                     effect->update = Mini_SnowboardEffectUpdateFallingSpinRetireAtGround;
                 }
             }
@@ -699,7 +699,7 @@ void __cdecl Mini_SnowboardEffectBeginHitTumbleSpawnChild(SnowboardEffect *effec
 }
 
 /*
- * Removes effects more than 0x200 units behind or advances position under vertical acceleration.
+ * Removes effects more than 512 units behind or advances position under vertical acceleration.
  * On descending ground approach snaps to terrain and initializes its mesh, dimensions, color/state
  * and ground-effect callback, playing distance-scaled sound when ahead within 0x1000. Otherwise
  * stores the airborne height and applies early rotation while the old timer is below 0x40.
@@ -711,37 +711,37 @@ void __cdecl Mini_SnowboardEffectUpdateAirborneLandingFrameCycle(SnowboardEffect
     int gap;
     int height;
 
-    gap = (int)g_SnoboStatePtr->riderPos - effect->forward >> 0xC;
-    if (gap > 0x200) {
+    gap = (int)g_SnoboStatePtr->riderPos - effect->forward >> 12;
+    if (gap > 512) {
         effect->active = 0;
     } else {
         effect->sidePos += effect->sideVelocity;
         effect->forward += effect->forwardVelocity;
         groundH = Mini_SnowboardSlopeHeightFromForward(effect->forward);
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
         height = effect->height + effect->fallVelocity;
         if (effect->fallVelocity > 0 && height > groundH - 0x40000) {
             effect->active = 1;
             effect->section = Mini_SnowboardForwardToSectionIndex(effect->forward);
             effect->model = 0xD5;
             effect->model2 = 0;
-            effect->contactRadius = 0x40;
+            effect->contactRadius = 64;
             effect->height = groundH;
             effect->rotX = 0xFF56;
             effect->rotY = 0;
             effect->matrixValid = 0;
             effect->update = Mini_SnowboardEffectUpdateFrameCycle;
             effect->contactSplit = 0x40;
-            effect->contactTop = 0x40;
+            effect->contactTop = 64;
             effect->contactResponse[3] = 0xA;
             effect->contactResponse[2] = 0xA;
-            gap = effect->forward - (int)g_SnoboStatePtr->riderPos >> 0xC;
-            if (gap > 0 && gap < 0x1000) {
+            gap = effect->forward - (int)g_SnoboStatePtr->riderPos >> 12;
+            if (gap > 0 && gap < 4096) {
                 Mini_SnowboardPlaySfxOnChannel(4, 0x1AB, 0x7F - (gap >> 5));
             }
         } else {
             effect->height = height;
-            if ((effect->timer)++ < 0x40) {
+            if ((effect->timer)++ < 64) {
                 effect->rotX += -0x20;
                 effect->matrixValid = 0;
             }
@@ -758,14 +758,14 @@ void __cdecl Mini_SnowboardEffectUpdateAirborneLandingFrameCycle(SnowboardEffect
 // FUNCTION: FF7 0x00736640
 void __cdecl Mini_SnowboardEffectFallFadeRetireNoSkip(struct SnowboardEffect *effect)
 {
-    if ((effect->age)++ > 0x3c && (effect->fade)++ > 0x1e) {
+    if ((effect->age)++ > 60 && (effect->fade)++ > 30) {
         effect->active = 0;
     }
     effect->sidePos += effect->sideVelocity;
-    effect->fallVelocity += 0x1000;
+    effect->fallVelocity += 4096;
     effect->height += effect->fallVelocity;
     effect->forward += effect->forwardVelocity;
-    effect->rotX += -0x200;
+    effect->rotX += -0x200 /* 45 deg */;
     effect->matrixValid = 0;
 }
 
@@ -776,12 +776,12 @@ void __cdecl Mini_SnowboardEffectFallFadeRetireNoSkip(struct SnowboardEffect *ef
 // FUNCTION: FF7 0x007366fe
 void __cdecl Mini_SnowboardEffectStartApproachFollowSpawnChild(SnowboardEffect *effect)
 {
-    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 0x200000) {
+    if (effect->forward - (int)g_SnoboStatePtr->riderPos > 2097152) {
         return;
     }
     effect->fade = 0;
     effect->forwardVelocity = (int)g_SnoboStatePtr->velocityZ;
-    effect->contactRadius = 0x40;
+    effect->contactRadius = 64;
     effect->update = Mini_SnowboardEffectUpdateFollowRiderSwaySpawnChild;
 }
 
@@ -802,20 +802,20 @@ void __cdecl Mini_SnowboardEffectUpdateFollowRiderSwaySpawnChild(struct Snowboar
         Mini_SnowboardEffectBeginHitTumbleSpawnChild(effect);
     } else {
         riderPos = (int)g_SnoboStatePtr->riderPos;
-        forwardPos = effect->forwardVelocity + (effect->forward > riderPos ? 0xFFFFFC00 : 0x800);
-        if (forwardPos < 0x4000) {
-            forwardPos = 0x4000;
+        forwardPos = effect->forwardVelocity + (effect->forward > riderPos ? 0xFFFFFC00 : 2048);
+        if (forwardPos < 16384) {
+            forwardPos = 16384;
         }
         effect->forwardVelocity = forwardPos;
         forwardPos = effect->forward + effect->forwardVelocity;
         distance = riderPos - forwardPos;
         if (g_SnoboStatePtr->followAngle > 0x200) {
-            if (distance > 0x80000) {
+            if (distance > 524288) {
                 forwardPos = riderPos - 0x80000;
                 if (effect->forwardVelocity < (int)g_SnoboStatePtr->velocityZ) {
                     effect->forwardVelocity = (int)g_SnoboStatePtr->velocityZ;
                 }
-            } else if (distance < -0x1000000) {
+            } else if (distance < -16777216) {
                 forwardPos = riderPos + 0x1000000;
             }
         }
@@ -841,14 +841,14 @@ void __cdecl Mini_SnowboardEffectUpdateSwaySpinThenDrop(SnowboardEffect *effect)
     if (effect->contact != 0) {
         Mini_SnowboardEffectBeginHitTumble(effect);
     } else {
-        effect->age += 0x10;
+        effect->age += 16;
         effect->sidePos += CosFixed(effect->age) * 8;
         effect->forward += effect->forwardVelocity;
         effect->height = Mini_SnowboardSlopeHeightFromForward(effect->forward);
         effect->spinVelocity += 8;
         effect->rotY += effect->spinVelocity;
         effect->matrixValid = 0;
-        if ((effect->timer)++ > 0x1E) {
+        if ((effect->timer)++ > 30) {
             effect->contactRadius = 0;
             effect->fallVelocity = 0xFFFE0000;
             effect->update = Mini_SnowboardEffectUpdateAirborneLandingFrameCycle;
@@ -926,13 +926,13 @@ void __cdecl Mini_SnowboardEffectOnHitSplitBallisticFadeOut(SnowboardEffect *eff
 // FUNCTION: FF7 0x00736b85
 void __cdecl Mini_SnowboardEffectUpdateBallisticFadeOut(struct SnowboardEffect *effect)
 {
-    if ((effect->age)++ > 0x28 && (effect->fade)++ > 0x1e) {
+    if ((effect->age)++ > 40 && (effect->fade)++ > 30) {
         effect->active = 0;
     } else {
         effect->sidePos += effect->sideVelocity;
         effect->height += effect->fallVelocity;
         effect->forward += effect->forwardVelocity;
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
     }
 }
 
@@ -987,7 +987,7 @@ void __cdecl Mini_SnowboardEffectSpawnLinkedBlinkGroup(struct SnowboardEffect *e
 void __cdecl Mini_SnowboardEffectUpdateBlinkAfterDelay(SnowboardEffect *effect)
 {
     int oldAge;
-    if ((oldAge = (effect->age)++) > 0x3c) {
+    if ((oldAge = (effect->age)++) > 60) {
         effect->model = (oldAge & 4) ? 0xde : 0;
     }
 }
@@ -1001,17 +1001,17 @@ void __cdecl Mini_SnowboardEffectUpdateBlinkAfterDelay(SnowboardEffect *effect)
 void __cdecl Mini_SnowboardEffectActivateLinkedEffectsAfterDelay(SnowboardEffect *linkedEffect)
 {
     SnowboardEffect *linked;
-    if ((linkedEffect->age)++ > 0x78) {
+    if ((linkedEffect->age)++ > 120) {
         linkedEffect->age = 0;
         linkedEffect->model = 0xda;
         linkedEffect->model2 = 0xdb;
         linkedEffect->update = Mini_SnowboardEffectUpdateLinkedHit;
-        linkedEffect->contactRadius = 0x40;
-        linkedEffect->contactTop = 0x80;
+        linkedEffect->contactRadius = 64;
+        linkedEffect->contactTop = 128;
         linked = (SnowboardEffect *)(linkedEffect->linkedA);
         linked->update = Mini_SnowboardEffectUpdateThrownArcToGround;
-        linked->contactRadius = 0xc0;
-        linked->contactTop = 0x40;
+        linked->contactRadius = 192;
+        linked->contactTop = 64;
         linked->contactResponse[3] = 12;
         linked->contactResponse[2] = 12;
         linked->contactResponse[1] = 12;
@@ -1067,9 +1067,9 @@ void __cdecl Mini_SnowboardEffectUpdateLinkedHit(SnowboardEffect *effect)
 void __cdecl Mini_SnowboardEffectFadeOutLinkedRecord(SnowboardEffect *effect)
 {
     SnowboardEffect *linkedRecord;
-    if ((effect->age)++ > 0x3c) {
+    if ((effect->age)++ > 60) {
         linkedRecord = (SnowboardEffect *)effect->linked;
-        if ((effect->fade)++ > 0x1e) {
+        if ((effect->fade)++ > 30) {
             effect->active = 0;
             linkedRecord->active = 0;
         } else {
@@ -1091,7 +1091,7 @@ void __cdecl Mini_SnowboardEffectUpdateThrownArcToGround(SnowboardEffect *effect
 
     effect->sidePos += effect->sideVelocity;
     effect->forward += effect->forwardVelocity;
-    effect->fallVelocity += 0x1000;
+    effect->fallVelocity += 4096;
     newY = effect->height + effect->fallVelocity;
     groundHeight = Mini_SnowboardSlopeHeightFromForward(effect->forward);
     if (newY > groundHeight) {
@@ -1100,7 +1100,7 @@ void __cdecl Mini_SnowboardEffectUpdateThrownArcToGround(SnowboardEffect *effect
         effect->update = Mini_SnowboardEffectRetireAfterDelay;
     }
     effect->height = newY;
-    if ((effect->timer)++ < 0x15) {
+    if ((effect->timer)++ < 21) {
         effect->rotX += 0x60;
         effect->matrixValid = 0;
     }
@@ -1123,9 +1123,9 @@ void __cdecl Mini_SnowboardEffectUpdateFallToGroundThenRetire(struct SnowboardEf
 
     effect->sidePos += effect->sideVelocity;
     effect->forward -= 0x4000;
-    effect->fallVelocity += 0x1000;
+    effect->fallVelocity += 4096;
     newY = effect->height + effect->fallVelocity;
-    groundLimit = Mini_SnowboardSlopeHeightFromForward(effect->forward) + 0x20;
+    groundLimit = Mini_SnowboardSlopeHeightFromForward(effect->forward) + 32;
     if (newY > groundLimit) {
         newY = groundLimit;
         effect->update = Mini_SnowboardEffectRetireAfterDelay;
@@ -1153,14 +1153,14 @@ void __cdecl Mini_SnowboardEffectSpawnChildCopyMotion(SnowboardEffect *effect)
 void __cdecl Mini_SnowboardEffectSpawnSidedChildCopyMotion(SnowboardEffect *effect, int side)
 {
     SnowboardEffect *childNode;
-    g_SnoboLandingHitLaunchEffectDef.homeX = side ? 0x20 : -0x20;
+    g_SnoboLandingHitLaunchEffectDef.homeX = side ? 32 : -32;
     *(Copy16 *)&g_SnoboLandingHitLaunchEffectDef.sidePos = *(Copy16 *)&effect->sidePos;
     childNode = (SnowboardEffect *)Mini_SnowboardAllocEffectNode(g_SnoboStatePtr->section, &g_SnoboLandingHitLaunchEffectDef, 1);
     *(Copy16 *)&childNode->sideVelocity = *(Copy16 *)&effect->sideVelocity;
 }
 
 /*
- * Removes effects more than 0x200 units behind. Otherwise advances position with vertical
+ * Removes effects more than 512 units behind. Otherwise advances position with vertical
  * acceleration; on descending ground approach snaps height and initializes mesh, size, color and a
  * new callback with sound. Before contact stores height and applies rotation while the old timer
  * is below 0x40.
@@ -1172,26 +1172,26 @@ void __cdecl Mini_SnowboardEffectUpdateAirborneLandingHitLaunch(SnowboardEffect 
     int distance;
     int newY;
 
-    distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 0xC;
-    if (distance > 0x200) {
+    distance = (int)g_SnoboStatePtr->riderPos - effect->forward >> 12;
+    if (distance > 512) {
         effect->active = 0;
     } else {
         effect->sidePos += effect->sideVelocity;
         effect->forward += effect->forwardVelocity;
         slopeHeight = Mini_SnowboardSlopeHeightFromForward(effect->forward);
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
         newY = effect->height + effect->fallVelocity;
         if (effect->fallVelocity > 0 && newY > slopeHeight - 0x40000) {
             effect->active = 1;
             effect->model = 0xDB;
             effect->model2 = 0xDA;
-            effect->contactRadius = 0x40;
+            effect->contactRadius = 64;
             effect->height = slopeHeight;
             effect->rotX = 0;
             effect->rotY = 0;
             effect->matrixValid = 0;
             effect->contactSplit = 0x40;
-            effect->contactTop = 0x40;
+            effect->contactTop = 64;
             effect->contactResponse[3] = 0xA;
             effect->contactResponse[2] = 0xA;
             effect->timer = 0;
@@ -1200,7 +1200,7 @@ void __cdecl Mini_SnowboardEffectUpdateAirborneLandingHitLaunch(SnowboardEffect 
             Mini_SnowboardPlaySfxOnChannel(3, 0x38, 0);
         } else {
             effect->height = newY;
-            if ((effect->timer)++ < 0x40) {
+            if ((effect->timer)++ < 64) {
                 effect->rotX += -0x40;
                 effect->matrixValid = 0;
             }
@@ -1246,7 +1246,7 @@ void __cdecl Mini_SnowboardEffectUpdateHitLaunchOrDrift(SnowboardEffect *effect)
             effect->matrixValid = 0;
         }
     } else {
-        if ((effect->age)++ < 0xF) {
+        if ((effect->age)++ < 15) {
             return;
         }
         effect->rotY += effect->angleStep;
@@ -1256,14 +1256,14 @@ void __cdecl Mini_SnowboardEffectUpdateHitLaunchOrDrift(SnowboardEffect *effect)
         /* Retail caller prototype (int, short) -> void preserved for /Od argument promotion on `Mini_SnowboardBuildYRotationMatrix`. */
         ((void(__cdecl *)(int, short))Mini_SnowboardBuildYRotationMatrix)((int)&ptr->yawMatrix, value);
         ptr->step.x = 0;
-        ptr->step.z = -0xC00;
+        ptr->step.z = -3072;
         PsxApplyMatrix33ToLongVector(&ptr->yawMatrix, &ptr->step, &ptr->rotatedX);
         effect->sidePos += ptr->rotatedX << 4;
         effect->forward += ptr->rotatedForward << 4;
         effect->height = Mini_SnowboardSlopeHeightFromForward(effect->forward);
         value = effect->sidePos;
-        value = (value >> 0xC) & 0xFFFFF;
-        if (value > 0xF0900 || value < 0xEFDA0) {
+        value = (value >> 12) & 0xFFFFF;
+        if (value > 985344 || value < 982432) {
             effect->launched = 1;
             effect->model = 0xE3;
             effect->model2 = 0xE4;
@@ -1312,10 +1312,10 @@ void __cdecl Mini_SnowboardEffectUpdatePairedLaunchOrSwing(SnowboardEffect *effe
     ptr = (SnowboardEffectScratch *)Gfx_GetPsxScratchpadPtr(0);
     other = (SnowboardEffect *)(effect->linked);
     if (effect->isLatched != 0) {
-        if ((effect->timer)++ > 0x3C) {
+        if ((effect->timer)++ > 60) {
             effect->fade += 1;
             other->fade += 1;
-            if (effect->fade > 0x1E) {
+            if (effect->fade > 30) {
                 effect->active = 0;
                 other->active = 0;
                 return;
@@ -1325,19 +1325,19 @@ void __cdecl Mini_SnowboardEffectUpdatePairedLaunchOrSwing(SnowboardEffect *effe
         g_SnoboSignalValue = effect->section;
         if ((effect->contact & 2) != 0) {
             effect->contactRadius = 0;
-            ptr->step.x = (short)(effect->hitVelocityX >> 0xC);
-            ptr->step.z = (short)(effect->hitVelocityZ >> 0xC);
+            ptr->step.x = (short)(effect->hitVelocityX >> 12);
+            ptr->step.z = (short)(effect->hitVelocityZ >> 12);
             Mini_SnowboardBuildYRotationMatrix(&ptr->yawMatrix, 0x100);
             PsxApplyMatrix33ToLongVector(&ptr->yawMatrix, &ptr->step, &ptr->rotatedX);
-            effect->sideVelocity = ptr->rotatedX << 0xC;
+            effect->sideVelocity = ptr->rotatedX << 12;
             effect->fallVelocity = -0x28000;
-            effect->forwardVelocity = ptr->rotatedForward << 0xC;
+            effect->forwardVelocity = ptr->rotatedForward << 12;
             effect->update = Mini_SnowboardEffectUpdateFallSpinFadeOutCopyIndex;
             Mini_SnowboardBuildYRotationMatrix(&ptr->yawMatrix, 0xF00);
             PsxApplyMatrix33ToLongVector(&ptr->yawMatrix, &ptr->step, &ptr->rotatedX);
-            other->sideVelocity = ptr->rotatedX << 0xC;
+            other->sideVelocity = ptr->rotatedX << 12;
             other->fallVelocity = -0x28000;
-            other->forwardVelocity = ptr->rotatedForward << 0xC;
+            other->forwardVelocity = ptr->rotatedForward << 12;
             other->update = Mini_SnowboardEffectUpdateFallSpinFadeOutCopyIndex;
             other->model = 0xCA;
             other->model2 = 0xD0;
@@ -1371,12 +1371,12 @@ void __cdecl Mini_SnowboardEffectUpdatePairedLaunchOrSwing(SnowboardEffect *effe
 // FUNCTION: FF7 0x00737a27
 void __cdecl Mini_SnowboardEffectUpdateFallSpinFadeOutCopyIndex(struct SnowboardEffect *context)
 {
-    if ((context->age)++ > 0x3c && (context->fade)++ > 0x1e) {
+    if ((context->age)++ > 60 && (context->fade)++ > 30) {
         context->active = 0;
     } else {
         context->section = g_SnoboStatePtr->section;
         context->sidePos += context->sideVelocity;
-        context->fallVelocity += 0x1000;
+        context->fallVelocity += 4096;
         context->height += context->fallVelocity;
         context->forward += context->forwardVelocity;
         context->rotX += 0x80;
@@ -1399,7 +1399,7 @@ void __cdecl Mini_SnowboardEffectUpdateHopWait(SnowboardEffect *effect)
         }
         effect->update = Mini_SnowboardEffectRetireAfterDelay;
     }
-    if ((effect->age)++ > 0xF) {
+    if ((effect->age)++ > 15) {
         effect->fallVelocity = 0xFFFF0000;
         effect->update = Mini_SnowboardEffectUpdateHopArc;
     }
@@ -1415,7 +1415,7 @@ void __cdecl Mini_SnowboardEffectUpdateHopArc(SnowboardEffect *effect)
     if ((effect->contact & 2) != 0) {
         Mini_SnowboardEffectBeginHitFallFade(effect);
     } else {
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
         effect->height += effect->fallVelocity;
         if (effect->height > effect->heightLimit) {
             effect->age = 0;
@@ -1452,11 +1452,11 @@ void __cdecl Mini_SnowboardEffectBeginHitFallFade(SnowboardEffect *effect)
 // FUNCTION: FF7 0x00737c58
 void __cdecl Mini_SnowboardEffectUpdateFallSpinFadeOut(struct SnowboardEffect *effect)
 {
-    if ((effect->age)++ > 0x3c && (effect->fade)++ > 0x1e) {
+    if ((effect->age)++ > 60 && (effect->fade)++ > 30) {
         effect->active = 0;
     } else {
         effect->sidePos += effect->sideVelocity;
-        effect->fallVelocity += 0x1000;
+        effect->fallVelocity += 4096;
         effect->height += effect->fallVelocity;
         effect->forward += effect->forwardVelocity;
         effect->rotX += 0x80;
@@ -1513,14 +1513,14 @@ void __cdecl Mini_SnowboardEffectUpdatePickup(SnowboardEffect *pickup)
 void __cdecl Mini_SnowboardEffectUpdatePickupRiseFadeOut(SnowboardEffect *pickup)
 {
     int phase;
-    if ((pickup->counter)++ > 0x3c && (pickup->fade)++ > 0x1e) {
+    if ((pickup->counter)++ > 60 && (pickup->fade)++ > 30) {
         pickup->active = 0;
     } else {
         phase = (pickup->age)++;
         pickup->model = ((phase >> 3) & 3) + 0xb8;
         pickup->packedFlags = (pickup->packedFlags & 0xf) | (((phase >> 3) & 3) << 4);
         pickup->height += pickup->fallVelocity;
-        pickup->fallVelocity -= 0x800;
+        pickup->fallVelocity -= 2048;
     }
 }
 
@@ -1714,8 +1714,8 @@ void __cdecl Mini_SnowboardEffectUpdateCircularOrbit(SnowboardEffect *effect)
         return;
     }
     phase = (effect->timer << 5) + effect->phaseOffset;
-    effect->sidePos = effect->orbitX + SinFixed(phase) * 0x1C0;
-    effect->forward = effect->orbitZ + CosFixed(phase) * 0x1C0;
+    effect->sidePos = effect->orbitX + SinFixed(phase) * 448;
+    effect->forward = effect->orbitZ + CosFixed(phase) * 448;
     effect->height = 0;
     effect->rotY += 0x20;
     effect->matrixValid = 0;
@@ -1734,8 +1734,8 @@ void __cdecl Mini_SnowboardEffectUpdateCircularOrbit(SnowboardEffect *effect)
 int __cdecl Mini_SnowboardEffectTickHitOrExpire(SnowboardEffect *effect)
 {
     if (effect->age != 0) {
-        if ((effect->age)++ > 0x3C) {
-            if ((effect->fade)++ > 0x1E) {
+        if ((effect->age)++ > 60) {
+            if ((effect->fade)++ > 30) {
                 effect->active = 0;
                 return 1;
             }
@@ -1767,7 +1767,7 @@ void __cdecl Mini_SnowboardEffectUpdateKnockedArcSpinFadeOut(struct SnowboardEff
     Mini_SnowboardEffectRetireAfterDelay(effect);
     effect->sidePos += effect->sideVelocity;
     effect->forward += effect->forwardVelocity;
-    effect->fallVelocity -= 0xC00;
+    effect->fallVelocity -= 3072;
     effect->height += effect->fallVelocity;
     effect->rotY += effect->spinRate;
     effect->matrixValid = 0;
@@ -1835,9 +1835,9 @@ void __cdecl Mini_SnowboardFillEffectPosFromObject(short objIndex, struct Snowbo
 
     posEntry = (SnowboardEffectPos *)(g_SnoboStatePtr->effectPosTable + objIndex * 0xC);
     effect->rotY = desc->tag;
-    effect->sidePos = desc->offsetX + posEntry->posX << 0xC;
-    effect->height = desc->offsetY + posEntry->posY << 0xC;
-    effect->forward = desc->offsetZ + posEntry->posZ << 0xC;
+    effect->sidePos = desc->offsetX + posEntry->posX << 12;
+    effect->height = desc->offsetY + posEntry->posY << 12;
+    effect->forward = desc->offsetZ + posEntry->posZ << 12;
 }
 
 // Event hook for one object. When spawnFlag is non-zero it spawns descriptor g_SnoboNodeOffsetsDesc_Slot012
@@ -3418,13 +3418,13 @@ void __cdecl Mini_SnowboardSetRiderAnimByHeightDiff(void)
             return;
         }
         val = ((int)g_SnoboStatePtr->terrainHeight - (int)g_SnoboStatePtr->relPosY) >> 12;
-        if (val < 0x100) {
+        if (val < 256) {
             return;
         }
-        if (val < 0x1c0) {
+        if (val < 448) {
             g_SnoboStatePtr->riderState = 12;
             Mini_SnowboardPlaySfxOnChannel(2, 0xf0, 0);
-        } else if (val < 0x1c8) {
+        } else if (val < 456) {
             g_SnoboStatePtr->riderState = 10;
             Mini_SnowboardPlaySfxOnChannel(2, 0xf0, 0);
         }
@@ -3539,7 +3539,7 @@ void __cdecl Mini_SnowboardQueueApproachFollowEffect(short objectIndex, Snowboar
     Mini_SnowboardFillEffectPosFromObject((short)objectIndex, &g_SnoboApproachFollowEffectDef, (struct SnowboardEffectPosOffset *)descriptor);
     node = (SnowboardEffect *)(Mini_SnowboardAllocEffectNode((short)objectIndex, &g_SnoboApproachFollowEffectDef, 2));
     node->age = descriptor->swayPhase;
-    node->offsetPos = node->forward + (descriptor->fixedOffset << 0xC);
+    node->offsetPos = node->forward + (descriptor->fixedOffset << 12);
     node->fade = 0xFFFF;
 }
 
@@ -3760,7 +3760,7 @@ void __cdecl Mini_SnowboardSpawnEffectKind2AtObject(short objIndex, SnowboardKin
     Mini_SnowboardFillEffectPosFromObject((short)objIndex, &g_SnoboApproachFollowSpawnChildEffectDef, (struct SnowboardEffectPosOffset *)descriptor);
     nodePtr = (SnowboardEffect *)(Mini_SnowboardAllocEffectNode((short)objIndex, &g_SnoboApproachFollowSpawnChildEffectDef, 2));
     nodePtr->age = descriptor->swayPhase;
-    nodePtr->offsetPos = nodePtr->forward + (descriptor->fixedOffset << 0xC);
+    nodePtr->offsetPos = nodePtr->forward + (descriptor->fixedOffset << 12);
     nodePtr->fade = 0xFFFF;
 }
 
@@ -4114,7 +4114,7 @@ void __cdecl Mini_SnowboardCheckRiderDropEnterState0B(int objectIndex)
     if ((unsigned char)g_SnoboStatePtr->riderState == 11) {
         return;
     }
-    if (((int)g_SnoboStatePtr->terrainHeight - (int)g_SnoboStatePtr->relPosY) >> 12 > 0x240) {
+    if (((int)g_SnoboStatePtr->terrainHeight - (int)g_SnoboStatePtr->relPosY) >> 12 > 576) {
         Mini_SnowboardEnterRiderState0BPlaySfx();
     }
 }
@@ -4133,7 +4133,7 @@ void __cdecl Mini_SnowboardEnterRiderState0BPlaySfx(void)
     if (val < 0) {
         val = -val;
     }
-    if (val < 0x40000) {
+    if (val < 262144) {
         val = 0x40000;
     }
     g_SnoboStatePtr->fadeLevel = (float)val;
@@ -4626,7 +4626,7 @@ void __cdecl Mini_SnowboardSpawnVerticalBobEffect(short objIndex, SnowboardEffec
     node = (SnowboardOffsetsEffectNode *)(Mini_SnowboardAllocEffectNode((short)objIndex, &g_SnoboVerticalBobEffectDef, 1));
     node->phaseOffset = desc->phaseOffset;
     node->spinRate = desc->spinRate;
-    node->offsetPos = ((SnowboardEffect *)node)->height - (desc->heightUnits << 0xC);
+    node->offsetPos = ((SnowboardEffect *)node)->height - (desc->heightUnits << 12);
 }
 
 /*
@@ -5596,12 +5596,12 @@ void __cdecl Mini_SnowboardEffectStartFallWhenPlayerNear(SnowboardEffect *effect
     if (Mini_SnowboardGetXZDistanceFloatToFixed(&g_SnoboStatePtr->relPosX, &effect->sidePos) < g_SnoboStatePtr->followAngle + 0x400) {
         effect->update = Mini_SnowboardUpdateFallingEffect;
         if (effect->variant != 0) {
-            effect->contactRadius = 0x180;
-            effect->contactTop = 0x100;
+            effect->contactRadius = 384;
+            effect->contactTop = 256;
             effect->contactSplit = 0x100;
         } else {
-            effect->contactRadius = 0x40;
-            effect->contactTop = 0x100;
+            effect->contactRadius = 64;
+            effect->contactTop = 256;
             effect->contactSplit = 0x100;
         }
     }
@@ -5639,11 +5639,11 @@ void __cdecl Mini_SnowboardUpdateFallingEffect(SnowboardEffect *effect)
             effect->isFalling = 0;
         }
     }
-    effect->fallVelocity += 0x1000;
+    effect->fallVelocity += 4096;
     effect->height += effect->fallVelocity;
     if (effect->height > effect->heightLimit) {
         effect->update = Mini_SnowboardEffectCountdownThenFadeOut;
-        effect->age = 0x3C;
+        effect->age = 60;
     }
     if (effect->landed == 0 && effect->height > effect->heightLimit - 0x20000) {
         Mini_SnowboardPlaySfxOnChannel(3, 0x1AB, 0);
@@ -5672,7 +5672,7 @@ void __cdecl Mini_SnowboardEffectCountdownThenFadeOut(SnowboardEffect *effect)
         }
     } else {
         effect->contactRadius = 0;
-        if ((effect->fade)++ > 0x1e)
+        if ((effect->fade)++ > 30)
             effect->active = 0;
     }
 }
@@ -6015,10 +6015,10 @@ void __cdecl Mini_SnowboardSpawnEffectTileF2OrF3(short objectIndex, void *descri
     }
     if (((SnowboardCompactEffectDesc *)descriptor)->param != 0) {
         g_SnoboTileEffectDef.model = 0xF2;
-        g_SnoboTileEffectDef.contactRadius = 0x100;
+        g_SnoboTileEffectDef.contactRadius = 256;
     } else {
         g_SnoboTileEffectDef.model = 0xF3;
-        g_SnoboTileEffectDef.contactRadius = 0xC0;
+        g_SnoboTileEffectDef.contactRadius = 192;
     }
     Mini_SnowboardFillEffectPosFromObject((short)objectIndex, &g_SnoboTileEffectDef, (struct SnowboardEffectPosOffset *)descriptor);
     Mini_SnowboardAllocEffectNode((short)objectIndex, &g_SnoboTileEffectDef, 1);
@@ -6427,19 +6427,19 @@ void __cdecl Mini_SnowboardSpawnLinkedEffectPair(short objectIndex, SnoboLinkedE
     }
     if (spec->flag != 0) {
         g_SnoboLinkedEffectDef.model = 0xE8;
-        g_SnoboLinkedEffectDef.contactRadius = 0xA0;
-        g_SnoboLinkedEffectDef.contactTop = 0x100;
+        g_SnoboLinkedEffectDef.contactRadius = 160;
+        g_SnoboLinkedEffectDef.contactTop = 256;
         g_SnoboLinkedEffectDef.contactSplit = 0xE0;
     } else {
         g_SnoboLinkedEffectDef.model = 0xE9;
-        g_SnoboLinkedEffectDef.contactRadius = 0x60;
-        g_SnoboLinkedEffectDef.contactTop = 0xC0;
+        g_SnoboLinkedEffectDef.contactRadius = 96;
+        g_SnoboLinkedEffectDef.contactTop = 192;
         g_SnoboLinkedEffectDef.contactSplit = 0xA0;
     }
     Mini_SnowboardFillEffectPosFromObject((short)objectIndex, &g_SnoboLinkedEffectDef, (struct SnowboardEffectPosOffset *)spec);
     node = (SnowboardEffect *)(Mini_SnowboardAllocEffectNode((short)objectIndex, &g_SnoboLinkedEffectDef, 1));
-    node->height -= (spec->flag != 0 ? 0x40 : 0) + 0x40 << 0xC;
-    g_SnoboLinkedEffectTopDef.height = node->height - ((spec->flag != 0 ? 0x40 : 0) + 0x40 << 0xC);
+    node->height -= (spec->flag != 0 ? 64 : 0) + 64 << 12;
+    g_SnoboLinkedEffectTopDef.height = node->height - ((spec->flag != 0 ? 64 : 0) + 64 << 12);
     g_SnoboLinkedEffectTopDef.rotY = spec->flags;
     linkedNode = Mini_SnowboardAllocEffectNode((short)objectIndex, &g_SnoboLinkedEffectTopDef, 1);
     node->linked = linkedNode;

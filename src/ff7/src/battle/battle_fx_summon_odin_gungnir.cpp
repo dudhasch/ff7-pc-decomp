@@ -1054,7 +1054,7 @@ void __cdecl BattleFx_SummonBeginOdinGungnir(int targetMask, int casterIdx)
 
     g_BattleOverlayDrawListHead = Gfx_GetPsxPacketScratchPtr();
     BattleFx_SummonLoadResOdinGungnir();
-    for (slot = 0; slot < 0xA; slot++) {
+    for (slot = 0; slot < 10; slot++) {
         if ((targetMask & 1 << slot) != 0) {
             g_BattleSummonOdinGTargetActorIdx.actorIdx = slot;
             break;
@@ -1064,7 +1064,7 @@ void __cdecl BattleFx_SummonBeginOdinGungnir(int targetMask, int casterIdx)
     if (position.vz > g_BattleActorRecords[casterIdx].posZ) {
         g_BattleSummonOdinGMatrixD530.t[2] = position.vz - 0xD48;
     } else {
-        g_BattleSummonOdinGInitialAngles.angleY = 0x800;
+        g_BattleSummonOdinGInitialAngles.angleY = 0x800 /* 180 deg */;
         g_BattleSummonOdinGMatrixD530.t[2] = position.vz + 0xD48;
     }
     g_BattleSummonOdinGMatrixD530.t[0] = position.vx;
@@ -1093,7 +1093,7 @@ void __cdecl BattleFx_SummonBeginOdinGungnir(int targetMask, int casterIdx)
 // Blends two short vectors selected by vertexIndex and writes the result as three floats at outVec.
 // The base vector is entry vertexIndex of g_BattleSummonOdinGVertexDeltasTable1, the offset entry
 // vertexIndex of g_BattleSummonOdinGTaskSlot71A8, and the weight is
-// (0x1000 - g_BattleSummonOdinGStateA8) applied Q12 (>> 0xC) to the offset. unused is not read.
+// (0x1000 - g_BattleSummonOdinGStateA8) applied Q12 (>> 12) to the offset. unused is not read.
 // FUNCTION: FF7 0x004a0d45
 void __cdecl BattleFx_SummonOdinGungnirBlendPolygonSetVerticesResource0(int vertexIndex, int unused, BattleFxHellBomberEndVertex *outVec)
 {
@@ -1108,18 +1108,18 @@ void __cdecl BattleFx_SummonOdinGungnirBlendPolygonSetVerticesResource0(int vert
     basePointer = (Vec3sPacked *)(vertexIndex * 8 + (int)g_BattleSummonOdinGVertexDeltasTable1);
     ofsRef = (Vec3sPacked *)(vertexIndex * 8 + (char *)&g_BattleSummonOdinGTaskSlot71A8);
     factor = 0x1000 - g_BattleSummonOdinGStateA8;
-    blendX = basePointer->vx + (ofsRef->vx * factor >> 0xC);
+    blendX = basePointer->vx + (ofsRef->vx * factor >> 12);
     outVec->posX = blendX;
-    blendedY = basePointer->vy + (ofsRef->vy * factor >> 0xC);
+    blendedY = basePointer->vy + (ofsRef->vy * factor >> 12);
     outVec->posY = blendedY;
-    blendedZ = basePointer->vz + (ofsRef->vz * factor >> 0xC);
+    blendedZ = basePointer->vz + (ofsRef->vz * factor >> 12);
     outVec->posZ = blendedZ;
 }
 
 // Identical in shape to BattleFx_SummonOdinGungnirBlendPolygonSetVerticesResource0 with different
 // tables: base vector entry vertexIndex of g_BattleSummonOdinGVertexDeltasTable2,
 // offset entry vertexIndex of g_BattleSummonOdinGTaskSlotB1D0, weighted by (0x1000 -
-// g_BattleSummonOdinGStateA8) Q12 (>> 0xC), written as three floats at outVec. unused is not read.
+// g_BattleSummonOdinGStateA8) Q12 (>> 12), written as three floats at outVec. unused is not read.
 // FUNCTION: FF7 0x004a0ddd
 void __cdecl BattleFx_SummonOdinGungnirBlendPolygonSetVerticesResource1(int vertexIndex, int unused, BattleFxHellBomberEndVertex *outVec)
 {
@@ -1134,11 +1134,11 @@ void __cdecl BattleFx_SummonOdinGungnirBlendPolygonSetVerticesResource1(int vert
     basePointer = (Vec3sPacked *)(vertexIndex * 8 + (int)g_BattleSummonOdinGVertexDeltasTable2);
     ofsRef = (Vec3sPacked *)(vertexIndex * 8 + (char *)&g_BattleSummonOdinGTaskSlotB1D0);
     factor = 0x1000 - g_BattleSummonOdinGStateA8;
-    blendX = basePointer->vx + (ofsRef->vx * factor >> 0xC);
+    blendX = basePointer->vx + (ofsRef->vx * factor >> 12);
     outVec->posX = blendX;
-    blendedY = basePointer->vy + (ofsRef->vy * factor >> 0xC);
+    blendedY = basePointer->vy + (ofsRef->vy * factor >> 12);
     outVec->posY = blendedY;
-    blendedZ = basePointer->vz + (ofsRef->vz * factor >> 0xC);
+    blendedZ = basePointer->vz + (ofsRef->vz * factor >> 12);
     outVec->posZ = blendedZ;
 }
 
@@ -1300,7 +1300,7 @@ void __cdecl BattleFx_OdinGungnirRunCameraScript(void)
                 g_pBattleSummonOdinCameraTrack[1].mode = *(short *)state->scriptCursor;
                 state->scriptCursor += 2;
                 g_pBattleSummonOdinCameraTrack->progress = 0;
-                g_pBattleSummonOdinCameraTrack->stepSize = 0x1000 / g_pBattleSummonOdinCameraTrack->stepCount;
+                g_pBattleSummonOdinCameraTrack->stepSize = 4096 / g_pBattleSummonOdinCameraTrack->stepCount;
                 g_pBattleSummonOdinCameraTrack->deltaX = g_pBattleSummonOdinCameraTrack->posX;
                 g_pBattleSummonOdinCameraTrack->deltaY = g_pBattleSummonOdinCameraTrack->posY;
                 g_pBattleSummonOdinCameraTrack->deltaZ = g_pBattleSummonOdinCameraTrack->posZ;
@@ -1353,17 +1353,17 @@ void __cdecl BattleFx_OdinGungnirRunCameraScript(void)
                 camVector->offsetY = g_pBattleSummonOdinCameraOther->posY - g_pBattleSummonOdinCameraTrack->deltaY;
                 camVector->offsetZ = g_pBattleSummonOdinCameraOther->posZ - g_pBattleSummonOdinCameraTrack->deltaZ;
                 VectorNormalToSVector((int *)camVector, (short *)scratchVec);
-                g_pBattleSummonOdinCameraTrack->posX = g_pBattleSummonOdinCameraOther->posX - (scratchVec->vx * g_pBattleSummonOdinCameraTrack->progress >> 0xC);
-                g_pBattleSummonOdinCameraTrack->posY = g_pBattleSummonOdinCameraOther->posY - (scratchVec->vy * g_pBattleSummonOdinCameraTrack->progress >> 0xC);
-                g_pBattleSummonOdinCameraTrack->posZ = g_pBattleSummonOdinCameraOther->posZ - (scratchVec->vz * g_pBattleSummonOdinCameraTrack->progress >> 0xC);
+                g_pBattleSummonOdinCameraTrack->posX = g_pBattleSummonOdinCameraOther->posX - (scratchVec->vx * g_pBattleSummonOdinCameraTrack->progress >> 12);
+                g_pBattleSummonOdinCameraTrack->posY = g_pBattleSummonOdinCameraOther->posY - (scratchVec->vy * g_pBattleSummonOdinCameraTrack->progress >> 12);
+                g_pBattleSummonOdinCameraTrack->posZ = g_pBattleSummonOdinCameraOther->posZ - (scratchVec->vz * g_pBattleSummonOdinCameraTrack->progress >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_pBattleSummonOdinCameraTrack->progress += g_pBattleSummonOdinCameraTrack->stepSize;
                 fraction = g_pBattleSummonOdinCameraTrack->progress;
                 fraction = BattleFx_OdinGungnirApplyCameraEasing(fraction, g_pBattleSummonOdinCameraTrack[1].mode);
-                g_pBattleSummonOdinCameraTrack->posX = g_pBattleSummonOdinCameraTrack->deltaX + (g_pBattleSummonOdinCameraTrack->stepX * fraction >> 0xC);
-                g_pBattleSummonOdinCameraTrack->posY = g_pBattleSummonOdinCameraTrack->deltaY + (g_pBattleSummonOdinCameraTrack->stepY * fraction >> 0xC);
-                g_pBattleSummonOdinCameraTrack->posZ = g_pBattleSummonOdinCameraTrack->deltaZ + (g_pBattleSummonOdinCameraTrack->stepZ * fraction >> 0xC);
+                g_pBattleSummonOdinCameraTrack->posX = g_pBattleSummonOdinCameraTrack->deltaX + (g_pBattleSummonOdinCameraTrack->stepX * fraction >> 12);
+                g_pBattleSummonOdinCameraTrack->posY = g_pBattleSummonOdinCameraTrack->deltaY + (g_pBattleSummonOdinCameraTrack->stepY * fraction >> 12);
+                g_pBattleSummonOdinCameraTrack->posZ = g_pBattleSummonOdinCameraTrack->deltaZ + (g_pBattleSummonOdinCameraTrack->stepZ * fraction >> 12);
             }
             (g_pBattleSummonOdinCameraTrack->stepCount)--;
             g_pBattleSummonOdinCameraTrack = (BattleFxCameraOrbitState *)&g_BattleSummonOdinFocusTrackHead;
@@ -1519,16 +1519,16 @@ void __cdecl BattleFx_SummonOdinGungnirTimelineTask(void)
     if (stage < 5) { /* empty first arm: lib/codegen.h */
     } else {
         stage -= 5;
-        if (stage < 0x41) {
+        if (stage < 65) {
             if (stage == 0) {
                 pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirRampHoldScaleModelTask);
                 pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirPoolParticleEmitterTask);
                 pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirFlashOverlayTask);
                 pRecord->ownerSlot = 0;
             }
-            if (stage == 0xF) {
+            if (stage == 15) {
                 pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirSpawnPooledFadingSpritesTask);
-                Battle_StartFixedPointRamp(0xFF0, 0x6E);
+                Battle_StartFixedPointRamp(0xFF0, 110);
                 g_BattleFxTimelineState.red = 0x10;
                 g_BattleFxTimelineState.channel1 = 0x10;
                 g_BattleFxTimelineState.channel2 = 0;
@@ -1537,27 +1537,27 @@ void __cdecl BattleFx_SummonOdinGungnirTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            stage -= 0x41;
-            if (stage < 0xF) { /* empty first arm: lib/codegen.h */
+            stage -= 65;
+            if (stage < 15) { /* empty first arm: lib/codegen.h */
             } else {
-                stage -= 0xF;
-                if (stage < 0xF) {
-                    if (stage == 0xE) {
+                stage -= 15;
+                if (stage < 15) {
+                    if (stage == 14) {
                         pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirActorFadeMoveTask);
                     }
                 } else {
-                    stage -= 0xF;
-                    if (stage < 0xF) {
+                    stage -= 15;
+                    if (stage < 15) {
                         if (stage == 0) {
                             Battle_AllocateResourceSlot(BattleFx_SummonOdinGungnirAttachedModelPairTrailTask);
                             Battle_AllocateResourceSlot(BattleFx_SummonOdinGungnirSpawnPooledFallingSpritesTask);
                         }
                     } else {
-                        stage -= 0xF;
-                        if (stage < 0xF) { /* empty first arm: lib/codegen.h */
+                        stage -= 15;
+                        if (stage < 15) { /* empty first arm: lib/codegen.h */
                         } else {
-                            stage -= 0xF;
-                            if (stage < 0x3C) {
+                            stage -= 15;
+                            if (stage < 60) {
                                 if (stage == 0) {
                                     Battle_AllocateResourceSlot(BattleFx_SummonOdinGungnirSpawnPooledDampedSpritesTask);
                                 }
@@ -1565,8 +1565,8 @@ void __cdecl BattleFx_SummonOdinGungnirTimelineTask(void)
                                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_2, 0x40, 1);
                                 }
                             } else {
-                                stage -= 0x3C;
-                                if (stage < 0xF) {
+                                stage -= 60;
+                                if (stage < 15) {
                                     if (stage == 0) {
                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                         Sfx_ReleaseCachedBuffer(0x253, 0);
@@ -1574,55 +1574,55 @@ void __cdecl BattleFx_SummonOdinGungnirTimelineTask(void)
                                         Sfx_ReleaseCachedBuffer(0x255, 0);
                                     }
                                 } else {
-                                    stage -= 0xF;
-                                    if (stage < 0x19) { /* empty first arm: lib/codegen.h */
+                                    stage -= 15;
+                                    if (stage < 25) { /* empty first arm: lib/codegen.h */
                                     } else {
-                                        stage -= 0x19;
-                                        if (stage < 0x14) { /* empty first arm: lib/codegen.h */
+                                        stage -= 25;
+                                        if (stage < 20) { /* empty first arm: lib/codegen.h */
                                         } else {
-                                            stage -= 0x14;
-                                            if (stage < 0xC) {
-                                                if (stage == 0xB) {
+                                            stage -= 20;
+                                            if (stage < 12) {
+                                                if (stage == 11) {
                                                     BattleFx_Odin1AltSpawnCameraScript(0x80, 0x80, 0x12);
                                                 }
                                             } else {
-                                                stage -= 0xC;
-                                                if (stage < 0x12) {
-                                                    if (stage == 0x11) {
+                                                stage -= 12;
+                                                if (stage < 18) {
+                                                    if (stage == 17) {
                                                         g_BattleCameraScriptValue = 0x200;
                                                     }
                                                 } else {
-                                                    stage -= 0x12;
-                                                    if (stage < 0x14) {
+                                                    stage -= 18;
+                                                    if (stage < 20) {
                                                         if (stage == 0) {
                                                             pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirSpinningModelPairTask);
                                                             g_BattleSummonOdinGStateA8 = 0;
                                                         }
                                                     } else {
-                                                        stage -= 0x14;
-                                                        if (stage < 0xF) {
-                                                            g_BattleSummonOdinGStateA8 = (stage << 0xC) / 0xF;
+                                                        stage -= 20;
+                                                        if (stage < 15) {
+                                                            g_BattleSummonOdinGStateA8 = (stage << 12) / 15;
                                                             g_BattleSummonOdinGStateA8 = SinFixed(SinFixed(SinFixed(SinFixed(g_BattleSummonOdinGStateA8 / 4) / 4) / 4) / 4);
-                                                            *(int *)&g_BattleSummonOdinGTaskSlotAC = (g_BattleSummonOdinGStateA8 * -0x100 >> 0xC) + 0x400;
+                                                            *(int *)&g_BattleSummonOdinGTaskSlotAC = (g_BattleSummonOdinGStateA8 * -0x100 /* 0.0625 */ >> 12) + 0x400;
                                                             pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirFadingGouraudQuadTask);
                                                             pRecord->ownerSlot = stage;
                                                             pRecord->posX = 0;
                                                             pRecord->posY = 0xAA10;
                                                             pRecord->posZ = 0;
                                                             pRecord->sinOffset = 0;
-                                                            g_BattleSummonOdinGVarD590 = g_BattleSummonOdinGVarD590 + (rand() & 0x7FF) + 0x400;
+                                                            g_BattleSummonOdinGVarD590 = g_BattleSummonOdinGVarD590 + (rand() & 0x7FF) + 1024;
                                                             pRecord->phase = *(short *)&g_BattleSummonOdinGVarD590;
                                                             pRecord->rotZOrCosOffset = 0x380;
-                                                            pRecord->scale = 0x1000;
-                                                            pRecord->duration = rand() % 0xC8 + 0x64;
+                                                            pRecord->scale = 0x1000 /* 1.0 */;
+                                                            pRecord->duration = rand() % 200 + 100;
                                                             if (stage == 0) {
                                                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 3);
                                                                 Sfx_ReleaseCachedBuffer(0x256, 1);
                                                                 Sfx_ReleaseCachedBuffer(0x257, 1);
                                                             }
                                                         } else {
-                                                            stage -= 0xF;
-                                                            if (stage < 0x19) {
+                                                            stage -= 15;
+                                                            if (stage < 25) {
                                                                 if (stage == 0) {
                                                                     Battle_AllocateResourceSlot(BattleFx_SummonOdinGungnirScreenColorRampTask);
                                                                 }
@@ -1630,25 +1630,25 @@ void __cdecl BattleFx_SummonOdinGungnirTimelineTask(void)
                                                                 pRecord->ownerSlot = stage;
                                                                 pRecord->posX = 0;
                                                                 pRecord->posY = 0xDCD8;
-                                                                pRecord->posZ = 0xD48;
+                                                                pRecord->posZ = 3400;
                                                                 pRecord->sinOffset = 0;
-                                                                g_BattleSummonOdinGVarD590 = g_BattleSummonOdinGVarD590 + (rand() & 0x7FF) + 0x400;
+                                                                g_BattleSummonOdinGVarD590 = g_BattleSummonOdinGVarD590 + (rand() & 0x7FF) + 1024;
                                                                 pRecord->phase = *(short *)&g_BattleSummonOdinGVarD590;
-                                                                pRecord->rotZOrCosOffset = (rand() & 0x7F) + 0x280;
-                                                                pRecord->scale = 0x4000;
-                                                                pRecord->duration = rand() % 0xC8 + 0x64;
-                                                                if (stage == 0x18) {
+                                                                pRecord->rotZOrCosOffset = (rand() & 0x7F) + 640;
+                                                                pRecord->scale = 0x4000 /* 4.0 */;
+                                                                pRecord->duration = rand() % 200 + 100;
+                                                                if (stage == 24) {
                                                                     BattleFx_Odin1AltSpawnCameraScript(0x100, 0x100, 0xF);
                                                                 }
                                                             } else {
-                                                                stage -= 0x19;
-                                                                if (stage < 0xF) {
-                                                                    if (stage == 0xE) {
+                                                                stage -= 25;
+                                                                if (stage < 15) {
+                                                                    if (stage == 14) {
                                                                         g_BattleCameraScriptValue = 0x200;
                                                                     }
                                                                 } else {
-                                                                    stage -= 0xF;
-                                                                    if (stage < 0xA) {
+                                                                    stage -= 15;
+                                                                    if (stage < 10) {
                                                                         if (stage == 0) {
                                                                             for (spawnIdx = 0; spawnIdx < 4; spawnIdx++) {
                                                                                 pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirGrowingModelTask);
@@ -1660,25 +1660,25 @@ void __cdecl BattleFx_SummonOdinGungnirTimelineTask(void)
                                                                             }
                                                                         }
                                                                     } else {
-                                                                        stage -= 0xA;
-                                                                        if (stage < 0x1E) {
+                                                                        stage -= 10;
+                                                                        if (stage < 30) {
                                                                             if (stage == 0) {
                                                                                 pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirPulsingModelTask);
                                                                                 pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirBillboardGrowingModelTask);
                                                                                 *(Int64Pair *)&pRecord->posX = *(Int64Pair *)taskPtr->data;
-                                                                                for (spawnIdx = 0; spawnIdx < 0x14; spawnIdx++) {
+                                                                                for (spawnIdx = 0; spawnIdx < 20; spawnIdx++) {
                                                                                     pRecord = (BattleFxOdinGungnirRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinGungnirAnimatedBillboardSpriteTask);
                                                                                     pRecord->posX = 0;
                                                                                     pRecord->posY = 0;
-                                                                                    pRecord->posZ = 0xD48;
-                                                                                    angleOffset = (spawnIdx << 0xC) / 0x14 + rand() % 0xCC;
-                                                                                    radialSpeed = rand() % 0xC8 + 0xC8;
-                                                                                    pRecord->sinOffset = SinFixed(angleOffset) * radialSpeed >> 0xC;
+                                                                                    pRecord->posZ = 3400;
+                                                                                    angleOffset = (spawnIdx << 12) / 20 + rand() % 204;
+                                                                                    radialSpeed = rand() % 200 + 200;
+                                                                                    pRecord->sinOffset = SinFixed(angleOffset) * radialSpeed >> 12;
                                                                                     pRecord->phase = 0;
-                                                                                    pRecord->rotZOrCosOffset = CosFixed(angleOffset) * radialSpeed >> 0xC;
-                                                                                    pRecord->scale = 0x4000;
+                                                                                    pRecord->rotZOrCosOffset = CosFixed(angleOffset) * radialSpeed >> 12;
+                                                                                    pRecord->scale = 0x4000 /* 4.0 */;
                                                                                 }
-                                                                                BattleFx_SummonOdinGungnirSpawnShakeEnvelope(0xC8, 0, 0, 0xA);
+                                                                                BattleFx_SummonOdinGungnirSpawnShakeEnvelope(0xC8, 0, 0, 10);
                                                                                 Battle_PostActorHitOrHurtMessage(g_BattleSummonOdinGTargetActorIdx.actorIdx);
                                                                             }
                                                                             if (stage == 0) {
@@ -1743,21 +1743,21 @@ void __cdecl BattleFx_SummonOdinGungnirPoolParticleEmitterTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     if (g_BattleIsPaused == 0) {
         if (task->frameCounter == 0) {
-            for (poolIdx = 0; poolIdx < 0x168; poolIdx++) {
+            for (poolIdx = 0; poolIdx < 360; poolIdx++) {
                 g_BattleSummonOdinGAnimTableB8C0[poolIdx].state = 0xFFFF;
             }
         }
         stage = task->frameCounter;
-        if (stage < 0x6E) {
+        if (stage < 110) {
             emission = 0x80;
         } else {
-            stage -= 0x6E;
-            if (stage < 0xF) {
-                ratio = (stage << 0xC) / 0xF;
-                emission = (ratio * 0xE80 >> 0xC) + 0x80;
+            stage -= 110;
+            if (stage < 15) {
+                ratio = (stage << 12) / 15;
+                emission = (ratio * 0xE80 >> 12) + 0x80;
             } else {
-                stage -= 0xF;
-                if (stage < 0x78) {
+                stage -= 15;
+                if (stage < 120) {
                     emission = 0xF00;
                 } else {
                     task->ownerSlot = BATTLE_TASK_FREE;
@@ -1766,32 +1766,32 @@ void __cdecl BattleFx_SummonOdinGungnirPoolParticleEmitterTask(void)
             }
         }
         emission = (emission * task->frameCounter & 0xFF) + emission;
-        while (emission >= 0x100) {
+        while (emission >= 256) {
             newParticle = &g_BattleSummonOdinGAnimTableB8C0[g_BattleSummonOdinGTaskSlotD570];
-            g_BattleSummonOdinGTaskSlotD570 = (g_BattleSummonOdinGTaskSlotD570 + 1) % 0x168;
+            g_BattleSummonOdinGTaskSlotD570 = (g_BattleSummonOdinGTaskSlotD570 + 1) % 360;
             newParticle->state = 0;
             newParticle->clearedWord = 0;
             if (DEAD_IN_RETAIL != 0) {
-                xRand = 0x1194;
+                xRand = 4500;
             } else {
-                xRand = rand() % 0x2328 - 0x1194;
+                xRand = rand() % 9000 - 4500;
             }
             newParticle->posX = xRand;
-            newParticle->posY = rand() % 0x1F4 - 0x1388;
+            newParticle->posY = rand() % 500 - 5000;
             if (DEAD_IN_RETAIL != 0) {
-                zRand = 0x1388;
+                zRand = 5000;
             } else {
-                zRand = rand() % 0x1388;
+                zRand = rand() % 5000;
             }
             newParticle->posZ = zRand;
             newParticle->velocityX = 0;
-            newParticle->velocityY = 0x1F4;
+            newParticle->velocityY = 500;
             newParticle->velocityZ = 0xFFCE;
             emission -= 0x100;
         }
         (task->frameCounter)++;
     }
-    for (poolIdx = 0; poolIdx < 0x168; poolIdx++) {
+    for (poolIdx = 0; poolIdx < 360; poolIdx++) {
         if (g_BattleSummonOdinGAnimTableB8C0[poolIdx].state != -1) {
             BattleFx_SummonOdinGungnirUpdateDrawPoolParticle((BattleFxOdinGungnirParticle *)&g_BattleSummonOdinGAnimTableB8C0[poolIdx]);
         }
@@ -1811,8 +1811,8 @@ void __cdecl BattleFx_SummonOdinGungnirUpdateDrawPoolParticle(BattleFxOdinGungni
         g_BattleSummonOdinPoolScratchReady |= 1;
         g_BattleSummonOdinGVarB89C = (struct BattleFxBladeBeamTrailPoint *)(Gfx_GetPsxScratchpadPtr(0));
     }
-    (g_BattleSummonOdinGParticleSprite.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSummonOdinGLoadedResTable);
-    g_BattleSummonOdinGParticleSprite.drawObject = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSummonOdinGLoadedResTable);
+    (g_BattleSummonOdinGParticleSprite.spriteResource) = Gfx_ModelTableGetLoadedRecord(10, g_BattleSummonOdinGLoadedResTable);
+    g_BattleSummonOdinGParticleSprite.drawObject = Gfx_ModelTableGetSpriteObject(10, g_BattleSummonOdinGLoadedResTable);
     g_BattleSummonOdinGVarB89C->posX = particle->posX + particle->velocityX;
     g_BattleSummonOdinGVarB89C->posY = particle->posY + particle->velocityY;
     g_BattleSummonOdinGVarB89C->posZ = particle->posZ + particle->velocityZ;
@@ -1873,8 +1873,8 @@ void __cdecl BattleFx_SummonOdinGungnirShakeEnvelopeTask(void)
     }
     local.frame = local.p->frameCount;
     if (local.frame < local.p->riseFrames) {
-        local.ratio = (local.frame << 0xC) / local.p->riseFrames;
-        local.value = local.p->amplitude * local.ratio >> 0xC;
+        local.ratio = (local.frame << 12) / local.p->riseFrames;
+        local.value = local.p->amplitude * local.ratio >> 12;
     } else {
         local.frame -= local.p->riseFrames;
         if (local.frame < local.p->holdFrames) {
@@ -1882,8 +1882,8 @@ void __cdecl BattleFx_SummonOdinGungnirShakeEnvelopeTask(void)
         } else {
             local.frame -= local.p->holdFrames;
             if (local.frame < local.p->fallFrames) {
-                local.ratio = (local.frame << 0xC) / local.p->fallFrames;
-                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 0xC;
+                local.ratio = (local.frame << 12) / local.p->fallFrames;
+                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 12;
             } else {
                 local.p->ownerSlot = 0xFFFF;
                 g_BattleCameraTransform.posZ = 0;
@@ -1926,27 +1926,27 @@ void __cdecl BattleFx_SummonOdinGungnirSpawnPooledFadingSpritesTask(void)
         return;
     }
     if (taskPtr->cycleIndex == 0) {
-        for (entryIdx = 0; entryIdx < 0xF; entryIdx++) {
+        for (entryIdx = 0; entryIdx < 15; entryIdx++) {
             g_BattleSummonOdinGMatrixBuffer7CB0[entryIdx].timer = 0;
         }
         BattleFx_SummonOdinGungnirClearPooledSpriteCallbacks();
         Battle_AllocateResourceSlot(BattleFx_SummonOdinGungnirPooledSpriteDispatchTask);
     }
     stage = taskPtr->cycleIndex;
-    if (stage < 0x50) {
+    if (stage < 80) {
         groupFirst = taskPtr->cycleIndex % 3 * 5;
         for (entryIdx = groupFirst; entryIdx < groupFirst + 5; entryIdx++) {
             sprite = (BattleFxOdinGungnirPooledSprite *)(BattleFx_SummonOdinGungnirClaimPooledSpriteRecord((int)BattleFx_SummonOdinGungnirPooledFadingSpriteTask));
             sprite->cycleIndex = taskPtr->cycleIndex;
-            sprite->posX = rand() % 0xC8 - 0x64;
-            sprite->posY = rand() % 0xC8 - 0x834;
-            sprite->posZ = rand() % 0xC8 - 0xC1C;
+            sprite->posX = rand() % 200 - 100;
+            sprite->posY = rand() % 200 - 2100;
+            sprite->posZ = rand() % 200 - 3100;
             if ((g_BattleSummonOdinGMatrixBuffer7CB0[entryIdx].timer)-- == 0) {
-                g_BattleSummonOdinGVarB1BC = g_BattleSummonOdinGVarB1BC + (rand() & 0x7FF) + 0x400;
+                g_BattleSummonOdinGVarB1BC = g_BattleSummonOdinGVarB1BC + (rand() & 0x7FF) + 1024;
                 g_BattleSummonOdinGMatrixBuffer7CB0[entryIdx].phase = *(short *)&g_BattleSummonOdinGVarB1BC;
-                g_BattleSummonOdinGMatrixBuffer7CB0[entryIdx].rotationY = 0x400;
+                g_BattleSummonOdinGMatrixBuffer7CB0[entryIdx].rotationY = 0x400 /* 90 deg */;
                 if (DEAD_IN_RETAIL != 0) {
-                    tiltAngle = 0x200;
+                    tiltAngle = 0x200 /* 45 deg */;
                 } else {
                     tiltAngle = rand() % 0x80 + 0x180;
                 }
@@ -1954,7 +1954,7 @@ void __cdecl BattleFx_SummonOdinGungnirSpawnPooledFadingSpritesTask(void)
                 if (DEAD_IN_RETAIL != 0) {
                     magnitude = 0x96;
                 } else {
-                    magnitude = rand() % 0x32 + 0x64;
+                    magnitude = rand() % 50 + 100;
                 }
                 g_BattleSummonOdinGMatrixBuffer7CB0[entryIdx].fadeLevel = magnitude;
                 if (DEAD_IN_RETAIL != 0) {
@@ -1983,7 +1983,7 @@ void __cdecl BattleFx_SummonOdinGungnirClearPooledSpriteCallbacks(void)
 {
     int i;
 
-    for (i = 0; i < 0x1F4; i++) {
+    for (i = 0; i < 500; i++) {
         g_BattleSummonOdinGParticleBuffer[i] = 0;
     }
 }
@@ -1995,7 +1995,7 @@ int __cdecl BattleFx_SummonOdinGungnirClaimPooledSpriteRecord(int owner)
 {
     int i;
 
-    for (i = 0; i < 0x1F4; i++) {
+    for (i = 0; i < 500; i++) {
         if (g_BattleSummonOdinGParticleBuffer[i] == 0) {
             g_BattleSummonOdinGParticleBuffer[i] = (void(__cdecl *)(int))owner;
             g_BattleSummonOdinParticleRecordPool[i].state = 0;
@@ -2021,7 +2021,7 @@ void __cdecl BattleFx_SummonOdinGungnirPooledSpriteDispatchTask(void)
 
     frame.slot = BATTLE_CURRENT_TASK_SLOT;
     frame.active = 0;
-    for (frame.i = 0; frame.i < 0x1f4; frame.i++) {
+    for (frame.i = 0; frame.i < 500; frame.i++) {
         if (g_BattleSummonOdinGParticleBuffer[frame.i] != 0) {
             g_BattleSummonOdinGParticleBuffer[frame.i]((int)&g_BattleSummonOdinParticleRecordPool[frame.i]);
             if (g_BattleSummonOdinParticleRecordPool[frame.i].state == -1) {
@@ -2060,10 +2060,10 @@ void __cdecl BattleFx_SummonOdinGungnirPooledFadingSpriteTask(BattleFxOdinSprite
     SetRotMatrix(&g_BattleSummonOdinGBillboardMatrix);
     SetTransMatrix(&g_BattleSummonOdinGBillboardMatrix);
     combined = task->frameCount + task->frameOffset;
-    if (combined >= 0x50) {
+    if (combined >= 80) {
         combined -= 0x50;
-        fade = (combined << 0xC) / 0xF;
-        g_BattleSummonOdinGFadingSprite.colorB = (fade * -0x20 >> 0xC) + 0x20;
+        fade = (combined << 12) / 15;
+        g_BattleSummonOdinGFadingSprite.colorB = (fade * -0x20 >> 12) + 0x20;
         g_BattleSummonOdinGFadingSprite.colorG = g_BattleSummonOdinGFadingSprite.colorB;
         g_BattleSummonOdinGFadingSprite.colorR = g_BattleSummonOdinGFadingSprite.colorG;
     } else {
@@ -2072,7 +2072,7 @@ void __cdecl BattleFx_SummonOdinGungnirPooledFadingSpriteTask(BattleFxOdinSprite
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonOdinGFadingSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->frameCount)++;
-        if (task->frameCount >= 0x2D) {
+        if (task->frameCount >= 45) {
             task->frameOffset = 0xFFFF;
         } else if (task->frameCount + task->frameOffset >= 0x5F) {
             task->frameOffset = 0xFFFF;
@@ -2080,9 +2080,9 @@ void __cdecl BattleFx_SummonOdinGungnirPooledFadingSpriteTask(BattleFxOdinSprite
             task->posX += task->velX;
             task->posY += task->velY;
             task->posZ += task->velZ;
-            task->velX = task->velX * 0xFF0 >> 0xC;
-            task->velY = task->velY * 0xFF0 >> 0xC;
-            task->velZ = task->velZ * 0x1040 >> 0xC;
+            task->velX = task->velX * 0xFF0 >> 12;
+            task->velY = task->velY * 0xFF0 >> 12;
+            task->velZ = task->velZ * 0x1040 >> 12;
         }
     }
 }
@@ -2127,12 +2127,12 @@ void __cdecl BattleFx_SummonOdinGungnirSpawnPooledFallingSpritesTask(void)
         g_BattleSummonOdinGVar7CAC->actorDeltaY = ((PsxMatrix *)(g_BattleActorRecords[3].boneNodes + attachIndex * 0x34))->t[1] - g_BattleSummonOdinGMatrixB168.matrixOriginY;
         g_BattleSummonOdinGVar7CAC->actorDeltaZ = ((PsxMatrix *)(g_BattleActorRecords[3].boneNodes + attachIndex * 0x34))->t[2] - g_BattleSummonOdinGMatrixB168.matrixOriginZ;
         RotateSVectorByInstalledMatrix((void *)g_BattleSummonOdinGVar7CAC, &g_BattleSummonOdinGVar7CAC->centerX);
-        sprite->posX = g_BattleSummonOdinGVar7CAC->centerX + rand() % 0x190 + -0x4B0;
-        sprite->posY = g_BattleSummonOdinGVar7CAC->centerY + rand() % 0x190 + -0xC8;
-        sprite->posZ = g_BattleSummonOdinGVar7CAC->centerZ + rand() % 0x190 + 0x12C;
+        sprite->posX = g_BattleSummonOdinGVar7CAC->centerX + rand() % 400 + -1200;
+        sprite->posY = g_BattleSummonOdinGVar7CAC->centerY + rand() % 400 + -200;
+        sprite->posZ = g_BattleSummonOdinGVar7CAC->centerZ + rand() % 400 + 300;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0x1E) {
+    if (taskPtr->frameCounter >= 30) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2169,8 +2169,8 @@ void __cdecl BattleFx_SummonOdinGungnirPooledFallingSpriteTask(BattleOdinFalling
             }
         }
         record->posX = record->posX;
-        record->fallSpeed += -0x14;
-        record->posY += -0x28;
+        record->fallSpeed += -20;
+        record->posY += -40;
     }
 }
 
@@ -2205,34 +2205,34 @@ void __cdecl BattleFx_SummonOdinGungnirSpawnPooledDampedSpritesTask(void)
     for (spriteIndex = 0; spriteIndex < 5; spriteIndex++) {
         sprite = (BattleFxOdinGungnirPooledSprite *)(BattleFx_SummonOdinGungnirClaimPooledSpriteRecord((int)BattleFx_SummonOdinGungnirPooledDampedSpriteTask));
         if (DEAD_IN_RETAIL != 0) {
-            randPitch = 0x200;
+            randPitch = 0x200 /* 45 deg */;
         } else {
             randPitch = rand() % 0x100 + 0x100;
         }
         g_BattleSummonOdinGVar7CA4->vecX = randPitch;
         if (DEAD_IN_RETAIL != 0) {
-            yawRoll = 0x200;
+            yawRoll = 0x200 /* 45 deg */;
         } else {
             yawRoll = rand() % 0x400 - 0x200;
         }
         g_BattleSummonOdinGVar7CA4->wheelAngle = yawRoll;
         g_BattleSummonOdinGVar7CA4->spinSpeed = 0;
         if (DEAD_IN_RETAIL != 0) {
-            randRadius = 0x1F4;
+            randRadius = 500;
         } else {
-            randRadius = rand() % 0xC8 + 0x12C;
+            randRadius = rand() % 200 + 300;
         }
         distance = randRadius;
-        sprite->posX = distance * SinFixed(g_BattleSummonOdinGVar7CA4->wheelAngle) >> 0xC;
+        sprite->posX = distance * SinFixed(g_BattleSummonOdinGVar7CA4->wheelAngle) >> 12;
         sprite->posY = 0;
-        sprite->posZ = distance * CosFixed(g_BattleSummonOdinGVar7CA4->wheelAngle) >> 0xC;
+        sprite->posZ = distance * CosFixed(g_BattleSummonOdinGVar7CA4->wheelAngle) >> 12;
         RotMatrix((SVECTOR *)((int)g_BattleSummonOdinGVar7CA4), (void *)(((int)g_BattleSummonOdinGVar7CA4) + 0x18));
         g_BattleSummonOdinGVar7CA4->vecX = 0;
         g_BattleSummonOdinGVar7CA4->wheelAngle = 0;
         if (DEAD_IN_RETAIL != 0) {
-            randVel = 0x12C;
+            randVel = 300;
         } else {
-            randVel = rand() % 0x64 + 0xC8;
+            randVel = rand() % 100 + 200;
         }
         g_BattleSummonOdinGVar7CA4->spinSpeed = randVel;
         TransformVectorToInt16((void *)(((int)g_BattleSummonOdinGVar7CA4) + 0x18), (void *)((int)g_BattleSummonOdinGVar7CA4), (char *)sprite + 0xC);
@@ -2274,9 +2274,9 @@ void __cdecl BattleFx_SummonOdinGungnirPooledDampedSpriteTask(BattleFxOdinDebris
             record->posX += record->velocityX;
             record->posY += record->velocityY;
             record->posZ += record->velocityZ;
-            record->velocityX = record->velocityX * 0xF00 >> 0xC;
-            record->velocityY = record->velocityY * 0x1080 >> 0xC;
-            record->velocityZ = record->velocityZ * 0xF00 >> 0xC;
+            record->velocityX = record->velocityX * 0xF00 /* 0.9375 */ >> 12;
+            record->velocityY = record->velocityY * 0x1080 >> 12;
+            record->velocityZ = record->velocityZ * 0xF00 /* 0.9375 */ >> 12;
         }
     }
 }
@@ -2330,7 +2330,7 @@ void __cdecl BattleFx_SummonOdinGungnirSpinningModelPairTask(void)
     if (g_BattleIsPaused == 0 && taskPtr->frameCounter == 0) {
         g_BattleSummonOdinGRightMatrix.t[0] = 0xFFFFFF9C;
         for (bankIdx = 0; bankIdx < 4; bankIdx++) {
-            for (recIndex = 0; recIndex < 0x10; recIndex++) {
+            for (recIndex = 0; recIndex < 16; recIndex++) {
                 g_BattleSummonOdinGRecordBuffer1[bankIdx][recIndex].tag = 0x8000000;
                 g_BattleSummonOdinGRecordBuffer1[bankIdx][recIndex].color0 = 0x3AFFC040;
                 g_BattleSummonOdinGRecordBuffer1[bankIdx][recIndex].color1 = 0;
@@ -2340,17 +2340,17 @@ void __cdecl BattleFx_SummonOdinGungnirSpinningModelPairTask(void)
         }
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0x14) {
+    if (stage < 20) {
         g_BattleSummonOdinGRightMatrix.t[0] += 5;
-        g_BattleSummonOdinGSpinningModelB.fadeLevel = 0xC00;
+        g_BattleSummonOdinGSpinningModelB.fadeLevel = 3072;
         g_BattleSummonOdinGSpinningModelA.fadeLevel = g_BattleSummonOdinGSpinningModelB.fadeLevel;
     } else {
-        stage -= 0x14;
-        if (stage < 0xF) {
-            totalFraction = (stage << 0xC) / 0xF;
+        stage -= 20;
+        if (stage < 15) {
+            totalFraction = (stage << 12) / 15;
             if (stage < 5) {
-                fadeProgress = (stage << 0xC) / 5;
-                g_BattleSummonOdinGSpinningModelB.fadeLevel = (fadeProgress * -0xC00 >> 0xC) + 0xC00;
+                fadeProgress = (stage << 12) / 5;
+                g_BattleSummonOdinGSpinningModelB.fadeLevel = (fadeProgress * -0xC00 /* 0.75 */ >> 12) + 3072;
                 g_BattleSummonOdinGSpinningModelA.fadeLevel = g_BattleSummonOdinGSpinningModelB.fadeLevel;
             } else {
                 g_BattleSummonOdinGSpinningModelA.fadeLevel = 0;
@@ -2410,7 +2410,7 @@ void __cdecl BattleFx_SummonOdinGungnirGrowingModelTask(void)
     pScaleVector = &matrix->scale;
     stage = taskSlot->frameIndex;
     if (stage < 5) {
-        g_BattleSummonOdinGGrowingModel.fadeLevel = stage * -0x1000 / 5 + 0x1000;
+        g_BattleSummonOdinGGrowingModel.fadeLevel = stage * -4096 / 5 + 4096;
     } else {
         stage -= 5;
         if (stage < 0) {
@@ -2418,15 +2418,15 @@ void __cdecl BattleFx_SummonOdinGungnirGrowingModelTask(void)
         } else {
             stage = stage;
             if (stage < 5) {
-                g_BattleSummonOdinGGrowingModel.fadeLevel = (stage << 0xC) / 5;
+                g_BattleSummonOdinGGrowingModel.fadeLevel = (stage << 12) / 5;
             } else {
                 taskSlot->ownerSlot = BATTLE_TASK_FREE;
                 return;
             }
         }
     }
-    uniformScale = (taskSlot->frameIndex << 0xB) / 0xA + 0x1000;
-    uniformScale = taskSlot->scaleFactor * uniformScale >> 0xC;
+    uniformScale = (taskSlot->frameIndex << 11) / 10 + 0x1000;
+    uniformScale = taskSlot->scaleFactor * uniformScale >> 12;
     pScaleVector->scaleZ = uniformScale;
     pScaleVector->scaleY = uniformScale;
     pScaleVector->scaleX = uniformScale;
@@ -2443,7 +2443,7 @@ void __cdecl BattleFx_SummonOdinGungnirGrowingModelTask(void)
     if (g_BattleIsPaused == 0) {
         (taskSlot->frameIndex)++;
         taskSlot->angle += 0x80;
-        taskSlot->posY += -0x32;
+        taskSlot->posY += -50;
     }
 }
 
@@ -2467,16 +2467,16 @@ void __cdecl BattleFx_SummonOdinGungnirPulsingModelTask(void)
         g_BattleSummonOdinGPulsingModel.fadeLevel = 0;
     } else {
         stage -= 5;
-        if (stage < 0xA) {
-            g_BattleSummonOdinGPulsingModel.fadeLevel = (stage << 0xC) / 0xA;
+        if (stage < 10) {
+            g_BattleSummonOdinGPulsingModel.fadeLevel = (stage << 12) / 10;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    scale = (task->frameCounter << 0xC) / 0xF;
+    scale = (task->frameCounter << 12) / 15;
     scale = SinFixed(scale / 4);
-    g_BattleSummonOdinGSpriteDrawRequest.pulseScale[2][2] = scale * 0x3000 >> 0xC;
+    g_BattleSummonOdinGSpriteDrawRequest.pulseScale[2][2] = scale * 0x3000 /* 3.0 */ >> 12;
     g_BattleSummonOdinGSpriteDrawRequest.pulseScale[1][1] = g_BattleSummonOdinGSpriteDrawRequest.pulseScale[2][2];
     g_BattleSummonOdinGSpriteDrawRequest.pulseScale[0][0] = g_BattleSummonOdinGSpriteDrawRequest.pulseScale[1][1];
     MultiplyMatrix(&(g_BattleSummonOdinGMatrixB168.matrix), g_BattleSummonOdinGSpriteDrawRequest.pulseScale, matrixBlock);
@@ -2507,12 +2507,12 @@ void __cdecl BattleFx_SummonOdinGungnirBillboardGrowingModelTask(void)
     stage = task->frameCount;
     if (stage < 5) {
         g_BattleSummonOdinGSpriteDrawRequest.scale = 0;
-        scale = (stage << 0xE) / 5;
+        scale = (stage << 14) / 5;
     } else {
         stage -= 5;
         if (stage < 5) {
-            g_BattleSummonOdinGSpriteDrawRequest.scale = (stage << 0xC) / 5;
-            scale = 0x4000;
+            g_BattleSummonOdinGSpriteDrawRequest.scale = (stage << 12) / 5;
+            scale = 0x4000 /* 4.0 */;
         } else {
             task->ownerSlot = -1;
             return;
@@ -2548,18 +2548,18 @@ void __cdecl BattleFx_SummonOdinGungnirRampHoldScaleModelTask(void)
     }
     (g_BattleSummonOdinGSpriteDrawRequest.rampModelResource) = Gfx_ModelTableGetRenderObject(8, g_BattleSummonOdinGLoadedResTable);
     frameCount = task->frameCounter;
-    if (frameCount < 0xF) {
-        fixedFraction = (frameCount << 0xC) / 0xF;
-        scaleValue = fixedFraction * 0xC00 >> 0xC;
+    if (frameCount < 15) {
+        fixedFraction = (frameCount << 12) / 15;
+        scaleValue = fixedFraction * 0xC00 /* 0.75 */ >> 12;
     } else {
-        frameCount -= 0xF;
-        if (frameCount < 0x6E) {
-            scaleValue = 0xC00;
+        frameCount -= 15;
+        if (frameCount < 110) {
+            scaleValue = 0xC00 /* 0.75 */;
         } else {
-            frameCount -= 0x6E;
-            if (frameCount < 0x3C) {
-                fixedFraction = (frameCount << 0xC) / 0x3C;
-                scaleValue = (0x1000 - fixedFraction) * 0xC00 >> 0xC;
+            frameCount -= 110;
+            if (frameCount < 60) {
+                fixedFraction = (frameCount << 12) / 60;
+                scaleValue = (0x1000 - fixedFraction) * 0xC00 /* 0.75 */ >> 12;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -2603,22 +2603,22 @@ void __cdecl BattleFx_SummonOdinGungnirFadingGouraudQuadTask(void)
     prim = (BattleFxOdinGungnirFadeQuadPrim *)Gfx_GetPsxPacketScratchPtr();
     cnt = taskSlot->frame;
     if (cnt < 5) {
-        fixedFraction = (cnt << 0xC) / 5;
-        prim->colorR = fixedFraction * 0xFF >> 0xC;
+        fixedFraction = (cnt << 12) / 5;
+        prim->colorR = fixedFraction * 0xFF >> 12;
         prim->colorRCopy = prim->colorR;
-        prim->colorG = fixedFraction * 0xFF >> 0xC;
+        prim->colorG = fixedFraction * 0xFF >> 12;
         prim->colorGCopy = prim->colorG;
-        prim->colorB = fixedFraction * 0xFF >> 0xC;
+        prim->colorB = fixedFraction * 0xFF >> 12;
         prim->colorBCopy = prim->colorB;
     } else {
         cnt -= 5;
         if (cnt < 5) {
-            fixedFraction = (cnt << 0xC) / 5;
-            prim->colorR = (fixedFraction * -0xFF >> 0xC) + 0xFF;
+            fixedFraction = (cnt << 12) / 5;
+            prim->colorR = (fixedFraction * -0xFF >> 12) + 0xFF;
             prim->colorRCopy = prim->colorR;
-            prim->colorG = (fixedFraction * -0xFF >> 0xC) + 0xFF;
+            prim->colorG = (fixedFraction * -0xFF >> 12) + 0xFF;
             prim->colorGCopy = prim->colorG;
-            prim->colorB = (fixedFraction * -0xFF >> 0xC) + 0xFF;
+            prim->colorB = (fixedFraction * -0xFF >> 12) + 0xFF;
             prim->colorBCopy = prim->colorB;
         } else {
             taskSlot->ownerSlot = BATTLE_TASK_FREE;
@@ -2647,7 +2647,7 @@ void __cdecl BattleFx_SummonOdinGungnirFadingGouraudQuadTask(void)
     }
     if (g_BattleIsPaused == 0) {
         (taskSlot->frame)++;
-        if (taskSlot->frame + taskSlot->ownerSlot >= 0xF) {
+        if (taskSlot->frame + taskSlot->ownerSlot >= 15) {
             taskSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2677,17 +2677,17 @@ void __cdecl BattleFx_SummonOdinGungnirFadingGouraudTriangleTask(void)
     prim = (BattleFxOdinGungnirGouraudTriangle *)Gfx_GetPsxPacketScratchPtr();
     cnt = taskSlot->frameCount;
     if (cnt < 5) {
-        fixedFraction = (cnt << 0xC) / 5;
-        prim->colorR = fixedFraction * 0xFF >> 0xC;
-        prim->colorG = fixedFraction * 0xFF >> 0xC;
-        prim->colorB = fixedFraction * 0xFF >> 0xC;
+        fixedFraction = (cnt << 12) / 5;
+        prim->colorR = fixedFraction * 0xFF >> 12;
+        prim->colorG = fixedFraction * 0xFF >> 12;
+        prim->colorB = fixedFraction * 0xFF >> 12;
     } else {
         cnt -= 5;
         if (cnt < 5) {
-            fixedFraction = (cnt << 0xC) / 5;
-            prim->colorR = (fixedFraction * -0xFF >> 0xC) + 0xFF;
-            prim->colorG = (fixedFraction * -0xFF >> 0xC) + 0xFF;
-            prim->colorB = (fixedFraction * -0xFF >> 0xC) + 0xFF;
+            fixedFraction = (cnt << 12) / 5;
+            prim->colorR = (fixedFraction * -0xFF >> 12) + 0xFF;
+            prim->colorG = (fixedFraction * -0xFF >> 12) + 0xFF;
+            prim->colorB = (fixedFraction * -0xFF >> 12) + 0xFF;
         } else {
             taskSlot->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -2717,7 +2717,7 @@ void __cdecl BattleFx_SummonOdinGungnirFadingGouraudTriangleTask(void)
     }
     if (g_BattleIsPaused == 0) {
         (taskSlot->frameCount)++;
-        if (taskSlot->frameCount + taskSlot->ownerSlot >= 0x19) {
+        if (taskSlot->frameCount + taskSlot->ownerSlot >= 25) {
             taskSlot->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2752,9 +2752,9 @@ void __cdecl BattleFx_SummonOdinGungnirAnimatedBillboardSpriteTask(void)
             task->posX += task->velX;
             task->posY += task->velY;
             task->posZ += task->velZ;
-            task->velX = task->velX * 0xE00 >> 0xC;
-            task->velY += -0xF;
-            task->velZ = task->velZ * 0xE00 >> 0xC;
+            task->velX = task->velX * 0xE00 /* 0.875 */ >> 12;
+            task->velY += -15;
+            task->velZ = task->velZ * 0xE00 /* 0.875 */ >> 12;
         }
     }
 }
@@ -2856,18 +2856,18 @@ void __cdecl BattleFx_SummonOdinGungnirScreenColorRampTask(void)
         return;
     }
     local.frame = local.p->frameCounter;
-    if (local.frame < 0xF) {
-        local.ratio = (local.frame << 0xC) / 0xF;
-        local.value = (local.ratio * -0x1FF0 >> 0xC) + 0xFF0;
+    if (local.frame < 15) {
+        local.ratio = (local.frame << 12) / 15;
+        local.value = (local.ratio * -0x1FF0 >> 12) + 0xFF0;
     } else {
-        local.frame -= 0xF;
-        if (local.frame < 0xA) {
+        local.frame -= 15;
+        if (local.frame < 10) {
             local.value = -0x1000;
         } else {
-            local.frame -= 0xA;
-            if (local.frame < 0x28) {
-                local.ratio = (local.frame << 0xC) / 0x28;
-                local.value = (local.ratio << 0xC >> 0xC) - 0x1000;
+            local.frame -= 10;
+            if (local.frame < 40) {
+                local.ratio = (local.frame << 12) / 40;
+                local.value = (local.ratio << 12 >> 12) - 0x1000;
             } else {
                 g_BattleFxTimelineState.startValue = 0;
                 local.p->ownerSlot = 0xFFFF;
@@ -2914,8 +2914,8 @@ void __cdecl BattleFx_Odin1AltRunCameraScript(void)
     int fixedFraction;
 
     task = (BattleFxOdinAltLerpTask *)BATTLE_CURRENT_TASK_SLOT;
-    fixedFraction = (task->frame << 0xC) / task->duration;
-    g_BattleCameraScriptValue = task->startValue + ((task->endValue - task->startValue) * fixedFraction >> 0xC);
+    fixedFraction = (task->frame << 12) / task->duration;
+    g_BattleCameraScriptValue = task->startValue + ((task->endValue - task->startValue) * fixedFraction >> 12);
     if (g_BattleIsPaused == 0) {
         (task->frame)++;
         if (task->frame >= task->duration) {
@@ -2958,14 +2958,14 @@ void __cdecl BattleFx_SummonOdinGungnirAttachedModelPairTrailTask(void)
     }
     g_BattleOverlayDrawListHead = Gfx_GetPsxPacketScratchPtr();
     (g_BattleSummonOdinGAnimDataCE0.modelGroup) = Gfx_ModelTableGetRenderObject(9, g_BattleSummonOdinGLoadedResTable);
-    (*(int *)&g_BattleSummonOdinGAnimDataD00) = Gfx_ModelTableGetRenderObject(0xB, g_BattleSummonOdinGLoadedResTable);
+    (*(int *)&g_BattleSummonOdinGAnimDataD00) = Gfx_ModelTableGetRenderObject(11, g_BattleSummonOdinGLoadedResTable);
     Battle3d_GetActorAttachMatrix(3, 8, pAttachMat);
     cnt = taskSlot->frameCount;
-    if (cnt < 0xA2) {
+    if (cnt < 162) {
         drawMatrixPtr = pAttachMat;
     } else {
-        cnt -= 0xA2;
-        if (cnt < 0x12) {
+        cnt -= 162;
+        if (cnt < 18) {
             if (cnt == 0) {
                 Battle_ComposeMatrixRelativeToCamera((short *)&(g_BattleSummonOdinGMatrixB168.matrix), (void *)pAttachMat, (PsxMatrix *)g_BattleSummonOdinGParamB190);
                 taskSlot->posX = *(short *)&g_BattleSummonOdinGParamB1A0.tx;
@@ -2976,71 +2976,71 @@ void __cdecl BattleFx_SummonOdinGungnirAttachedModelPairTrailTask(void)
                 g_pBattleSummonOdinTrailState->rotationZ = 0;
                 RotMatrix((SVECTOR *)g_pBattleSummonOdinTrailState, (int *)&g_BattleSummonOdinGParamB190);
                 taskSlot->velocityX = 0;
-                taskSlot->velocityY = CosFixed(0x7CB) * 0x7530 >> 0xC;
-                taskSlot->velocityZ = SinFixed(0x7CB) * 0x7530 >> 0xC;
+                taskSlot->velocityY = CosFixed(1995) * 0x7530 >> 12;
+                taskSlot->velocityZ = SinFixed(1995) * 0x7530 >> 12;
             }
             if (g_BattleIsPaused == 0) {
-                ease = (cnt << 0xC) / 0x12;
+                ease = (cnt << 12) / 18;
                 ease = BattleFx_OdinGungnirApplyCameraEasing(ease, 0xFFFFFC80);
-                g_BattleSummonOdinGParamB1A0.tx = taskSlot->posX + (taskSlot->velocityX * ease >> 0xC);
-                g_BattleSummonOdinGParamB1A0.ty = taskSlot->posY + (taskSlot->velocityY * ease >> 0xC);
-                g_BattleSummonOdinGParamB1A0.tz = taskSlot->posZ + (taskSlot->velocityZ * ease >> 0xC);
+                g_BattleSummonOdinGParamB1A0.tx = taskSlot->posX + (taskSlot->velocityX * ease >> 12);
+                g_BattleSummonOdinGParamB1A0.ty = taskSlot->posY + (taskSlot->velocityY * ease >> 12);
+                g_BattleSummonOdinGParamB1A0.tz = taskSlot->posZ + (taskSlot->velocityZ * ease >> 12);
             }
             MultiplyMatrix(&(g_BattleSummonOdinGMatrixB168.matrix), (int *)&g_BattleSummonOdinGParamB190, &g_pBattleSummonOdinTrailState->matrix);
-            ease = (cnt << 0xC) / 0x12;
+            ease = (cnt << 12) / 18;
             ease = BattleFx_OdinGungnirApplyCameraEasing(ease, 0xFFFFFD80);
-            g_pBattleSummonOdinTrailState->pointZ = (ease << 0xD >> 0xC) + 0x1000;
+            g_pBattleSummonOdinTrailState->pointZ = (ease << 13 >> 12) + 4096;
             g_pBattleSummonOdinTrailState->pointY = g_pBattleSummonOdinTrailState->pointZ;
             g_pBattleSummonOdinTrailState->pointX = g_pBattleSummonOdinTrailState->pointY;
             ScaleMatrix(&g_pBattleSummonOdinTrailState->matrix, &g_pBattleSummonOdinTrailState->pointX);
             drawMatrixPtr = &g_pBattleSummonOdinTrailState->matrix;
             g_BattleSummonOdinGVarD58C = 0;
         } else {
-            cnt -= 0x12;
-            if (cnt < 0x23) {
+            cnt -= 18;
+            if (cnt < 35) {
                 if (cnt == 0) {
                     g_pBattleSummonOdinTrailState->rotationX = 0x540;
                     g_pBattleSummonOdinTrailState->rotationY = 0;
                     g_pBattleSummonOdinTrailState->rotationZ = 0;
                     RotMatrix((SVECTOR *)g_pBattleSummonOdinTrailState, (int *)&g_BattleSummonOdinGParamB190);
                     taskSlot->velocityX = 0;
-                    taskSlot->velocityY = CosFixed(0x540) * 0x1B58 >> 0xC;
-                    taskSlot->velocityZ = SinFixed(0x540) * 0x1B58 >> 0xC;
+                    taskSlot->velocityY = CosFixed(1344) * 0x1B58 >> 12;
+                    taskSlot->velocityZ = SinFixed(1344) * 0x1B58 >> 12;
                     taskSlot->posX = 0;
                     taskSlot->posY = 0xFFFFB1E0 - taskSlot->velocityY;
                     taskSlot->posZ = 0 - taskSlot->velocityZ;
                     taskSlot->velocityX = 0;
-                    taskSlot->velocityY = taskSlot->velocityY * 0x23 / 0x14;
-                    taskSlot->velocityZ = taskSlot->velocityZ * 0x23 / 0x14;
+                    taskSlot->velocityY = taskSlot->velocityY * 35 / 20;
+                    taskSlot->velocityZ = taskSlot->velocityZ * 35 / 20;
                     g_BattleSummonOdinGVarD58C = 0;
                 }
                 if (g_BattleIsPaused == 0) {
-                    ease = (cnt << 0xC) / 0x23;
+                    ease = (cnt << 12) / 35;
                     ease = BattleFx_OdinGungnirApplyCameraEasing(ease, 0x1FF);
-                    g_BattleSummonOdinGParamB1A0.tx = taskSlot->posX + (taskSlot->velocityX * ease >> 0xC);
-                    g_BattleSummonOdinGParamB1A0.ty = taskSlot->posY + (taskSlot->velocityY * ease >> 0xC);
-                    g_BattleSummonOdinGParamB1A0.tz = taskSlot->posZ + (taskSlot->velocityZ * ease >> 0xC);
+                    g_BattleSummonOdinGParamB1A0.tx = taskSlot->posX + (taskSlot->velocityX * ease >> 12);
+                    g_BattleSummonOdinGParamB1A0.ty = taskSlot->posY + (taskSlot->velocityY * ease >> 12);
+                    g_BattleSummonOdinGParamB1A0.tz = taskSlot->posZ + (taskSlot->velocityZ * ease >> 12);
                 }
                 MultiplyMatrix(&(g_BattleSummonOdinGMatrixB168.matrix), (int *)&g_BattleSummonOdinGParamB190, &g_pBattleSummonOdinTrailState->matrix);
-                ease = (cnt << 0xC) / 0x23;
+                ease = (cnt << 12) / 35;
                 ease = BattleFx_OdinGungnirApplyCameraEasing(ease, 0x4FF);
-                g_pBattleSummonOdinTrailState->pointZ = (ease * -0xEE00 >> 0xC) + 0xF000;
+                g_pBattleSummonOdinTrailState->pointZ = (ease * -0xEE00 /* 14.875 */ >> 12) + 0xF000;
                 g_pBattleSummonOdinTrailState->pointY = g_pBattleSummonOdinTrailState->pointZ;
                 g_pBattleSummonOdinTrailState->pointX = g_pBattleSummonOdinTrailState->pointY;
                 ScaleMatrix(&g_pBattleSummonOdinTrailState->matrix, &g_pBattleSummonOdinTrailState->pointX);
-                g_BattleSummonOdinGTaskTransformMatrix.transY = 0xA79 - (g_pBattleSummonOdinTrailState->pointY * 0xA79 >> 0xC);
+                g_BattleSummonOdinGTaskTransformMatrix.transY = 2681 - (g_pBattleSummonOdinTrailState->pointY * 0xA79 >> 12);
                 MultiplyMatrix(&g_pBattleSummonOdinTrailState->matrix, (int *)&g_BattleSummonOdinGTaskTransformMatrix, &g_pBattleSummonOdinTrailState->matrix);
                 drawMatrixPtr = &g_pBattleSummonOdinTrailState->matrix;
             } else {
-                cnt -= 0x23;
-                if (cnt < 0x2D) {
+                cnt -= 35;
+                if (cnt < 45) {
                     if (g_BattleIsPaused == 0) {
                         (taskSlot->frameCount)++;
                     }
                     return;
                 }
-                cnt -= 0x2D;
-                if (cnt < 0x23) {
+                cnt -= 45;
+                if (cnt < 35) {
                     if (cnt == 0) {
                         g_BattleSummonOdinGParamB1A0.tx = 0;
                         g_BattleSummonOdinGParamB1A0.ty = 0xFFFFBADC;
@@ -3140,28 +3140,28 @@ void __cdecl BattleFx_SummonOdinGungnirActorFadeMoveTask(void)
         actor->tintG = 0;
         actor->tintR = 0;
     }
-    if (frameCount < 0x1E) {
-        if (frameCount < 0x1E) {
-            actor->fadeLevel = ((frameCount + 1 << 0xC) / 0x1E * -0x1000 >> 0xC) + 0x1000;
+    if (frameCount < 30) {
+        if (frameCount < 30) {
+            actor->fadeLevel = ((frameCount + 1 << 12) / 30 * -0x1000 /* 1.0 */ >> 12) + 4096;
         }
         g_BattleSummonOdinGVectorD40[1] += 0x21;
         g_BattleSummonOdinGVectorD40[2] += 0x64;
     } else {
-        frameCount -= 0x1E;
-        if (frameCount < 0x96) { /* empty first arm: lib/codegen.h */
+        frameCount -= 30;
+        if (frameCount < 150) { /* empty first arm: lib/codegen.h */
         } else {
-            frameCount -= 0x96;
-            if (frameCount < 0x23) {
+            frameCount -= 150;
+            if (frameCount < 35) {
                 if (frameCount == 0) {
                     actor->flags |= 2;
                 }
             } else {
-                frameCount -= 0x23;
-                if (frameCount < 0x28) {
+                frameCount -= 35;
+                if (frameCount < 40) {
                     if (frameCount == 0) {
                         actor->flags &= 0xFD;
                     }
-                    if (frameCount == 0x18) {
+                    if (frameCount == 24) {
                         Battle_AllocSceneMessage(2);
                         task->ownerSlot = BATTLE_TASK_FREE;
                     }

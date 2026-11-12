@@ -33,7 +33,7 @@ BattleFxGustSegment *BattleFx_SpecialBuiltinGustClaimSegmentRecord(void);
 
 // clang-format off
 // GLOBAL: FF7 0x00c1ea70
-BattleFxGustSegment g_BattleFxGustSegmentRecords[0xc8] = {0};
+BattleFxGustSegment g_BattleFxGustSegmentRecords[200] = {0};
 // GLOBAL: FF7 0x00c1fa10
 struct BattleFxGustFourColorPacket *g_BattleFxGustResourcePtr = 0;
 // GLOBAL: FF7 0x00c1fa14
@@ -66,7 +66,7 @@ void BattleFx_SpecialBeginBuiltinGust(unsigned int targetMask, int actingActor)
 
     Battle_CreateBitPatternCallbackTask(targetMask, actingActor, 4,
                                  BattleFx_SpecialSpawnBuiltinGustPerTarget);
-    for (i = 0; i < 0xc8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleFxGustSegmentRecords[i].active = 0;
     }
 }
@@ -104,25 +104,25 @@ void BattleFx_SpecialBuiltinGustTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->step >= 0 && task->step < 0x10 &&
+    if (task->step >= 0 && task->step < 16 &&
         task->step % 2 == 0) {
         swirl = (BattleFxGustSwirlSlot *)&g_BattleTaskSlotBuffer.mainSlots[Battle_AllocateResourceSlot(BattleFx_SpecialBuiltinGustSwirlTask)];
         phase = g_BattleFxGustAngleSteps[task->step >> 1] << 7;
         swirl->posX = task->posA;
-        swirl->posY = task->posB + phase + rand() % 0x64 - 0x232;
+        swirl->posY = task->posB + phase + rand() % 100 - 562;
         swirl->posZ = task->posC;
-        swirl->radius = (SinFixed(phase << 1) * 0x258 >> 0xC) + 0xC8;
-        swirl->radiusVelocity = (SinFixed(phase << 1) * 5 >> 0xC) + 5;
+        swirl->radius = (SinFixed(phase << 1) * 0x258 >> 12) + 200;
+        swirl->radiusVelocity = (SinFixed(phase << 1) * 5 >> 12) + 5;
         swirl->angle = rand() % 0x1000;
     }
-    if (task->step == 0x32) {
+    if (task->step == 50) {
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
     }
-    if (task->step > 0x2C) {
+    if (task->step > 44) {
         g_BattleFxGustColorScale--;
     }
     (task->step)++;
-    if (task->step == 0x3C) {
+    if (task->step == 60) {
         g_BattleFxGustActiveFlag = 1;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -139,7 +139,7 @@ void BattleFx_SpecialBuiltinGustDrawActiveSegments(void)
 {
     int i;
 
-    for (i = 0; i < 0xc8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleFxGustSegmentRecords[i].active != 0) {
             BattleFx_SpecialBuiltinGustDrawSegment(&g_BattleFxGustSegmentRecords[i]);
         }
@@ -171,7 +171,7 @@ void BattleFx_SpecialBuiltinGustDrawSegment(BattleFxGustSegment *segment)
 
     colorCode = 0x3A000000;
     topOfs = 0x32;
-    bottomDisp = 0x32;
+    bottomDisp = 50;
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
@@ -234,12 +234,12 @@ void __cdecl BattleFx_SpecialBuiltinGustSwirlTask(void)
         return;
     }
     for (i = 0; i < 2; i++) {
-        startX = CosFixed(taskPtr->angle) * taskPtr->radius >> 0xC;
-        previousZ = SinFixed(taskPtr->angle) * taskPtr->radius >> 0xC;
-        taskPtr->angle += 0x100;
+        startX = CosFixed(taskPtr->angle) * taskPtr->radius >> 12;
+        previousZ = SinFixed(taskPtr->angle) * taskPtr->radius >> 12;
+        taskPtr->angle += 0x100 /* 22.5 deg */;
         taskPtr->radius += taskPtr->radiusVelocity;
-        xNew = CosFixed(taskPtr->angle) * taskPtr->radius >> 0xC;
-        nextZ = SinFixed(taskPtr->angle) * taskPtr->radius >> 0xC;
+        xNew = CosFixed(taskPtr->angle) * taskPtr->radius >> 12;
+        nextZ = SinFixed(taskPtr->angle) * taskPtr->radius >> 12;
         segment = BattleFx_SpecialBuiltinGustClaimSegmentRecord();
         if (segment != 0) {
             segment->x1 = xNew + taskPtr->centerX;
@@ -265,7 +265,7 @@ BattleFxGustSegment *BattleFx_SpecialBuiltinGustClaimSegmentRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0xc8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleFxGustSegmentRecords[i].active == 0) {
             g_BattleFxGustSegmentRecords[i].active = 1;
             return &g_BattleFxGustSegmentRecords[i];

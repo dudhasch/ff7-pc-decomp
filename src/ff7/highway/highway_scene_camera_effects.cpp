@@ -85,8 +85,8 @@ HighwayScene::HighwayScene()
 // FUNCTION: FF7 0x0065a563
 void HighwayScene::initialize()
 {
-    this->pathCountTable = HighwayResolveFieldResource(0x20);
-    this->pathOffsetTable = HighwayResolveFieldResource(0x21);
+    this->pathCountTable = HighwayResolveFieldResource(32);
+    this->pathOffsetTable = HighwayResolveFieldResource(33);
     if (g_HighwayControlFlags & HIGHWAY_CTRL_DEBUG_CAM_MODE7) {
         this->mode = 7;
     } else if (g_HighwayControlFlags & HIGHWAY_CTRL_DEBUG_CAM_MODE6_FREEZE_SCROLL) {
@@ -189,7 +189,7 @@ void HighwayScene::update()
         GtePsxMatrixToFloat4x4((PsxMatrix *)psxMatrix, &floatMatrix);
         ClearMatrixTranslationAndW(&floatMatrix);
         negPos[0] = (float)(-pos[0]) * 1.0f;
-        negPos[1] = (float)(-(pos[1] - 0xB4)) * 1.0f;
+        negPos[1] = (float)(-(pos[1] - 180)) * 1.0f;
         negPos[2] = (float)(-pos[2]) * 1.0f;
         TransformPoint3RowVec(&floatMatrix, negPos, viewPosition);
         *(HighwayMat64 *)*(int *)g_pHighwayFileBlock = floatMatrix;
@@ -259,7 +259,7 @@ void HighwayScene::draw(int context)
         soundPan = 0x7f;
     if (soundPan < 0)
         soundPan = 0;
-    if (attenuation[actorIndex] > 0x5a)
+    if (attenuation[actorIndex] > 90)
         attenuation[actorIndex] = 0x5a;
     if (attenuation[actorIndex] < 0)
         attenuation[actorIndex] = 0;
@@ -303,7 +303,7 @@ void HighwayScene::draw(int context)
             soundPan = 0x7f;
         if (soundPan < 0)
             soundPan = 0;
-        if (attenuation[this->nearestRivalSlot] > 0x5a)
+        if (attenuation[this->nearestRivalSlot] > 90)
             attenuation[this->nearestRivalSlot] = 0x5a;
         if (attenuation[this->nearestRivalSlot] < 0)
             attenuation[this->nearestRivalSlot] = 0;
@@ -315,10 +315,10 @@ void HighwayScene::draw(int context)
     }
     carState = (HighwaySlotState *)(g_HighwaySlotActors + 0x68);
     this->lift = 0;
-    if (this->nearestDistance < 0x320) {
+    if (this->nearestDistance < 800) {
         this->lift = (0x320 - this->nearestDistance) / 4;
     }
-    lift8 = (carState->posZ - 0x55730) / 0x800;
+    lift8 = (carState->posZ - 0x55730) / 2048;
     if (lift8 < 0)
         lift8 = 0;
     if (lift8 > this->lift)
@@ -326,7 +326,7 @@ void HighwayScene::draw(int context)
     switch (this->mode) {
     case HIGHWAY_CAMERA_MODE_CHASE:
         positionEye[0] = (-(carState->posX >> 9) << 2) / 3;
-        positionEye[1] = 0x55;
+        positionEye[1] = 85;
         positionEye[2] = carState->posZ >> 9;
         targetPos[0] = carState->posX >> 8;
         targetPos[1] = 0x78;
@@ -340,7 +340,7 @@ void HighwayScene::draw(int context)
     case HIGHWAY_CAMERA_MODE_PATH:
         ((HighwaySkelItem *)this)->samplePosition(this->accum, this->coordsStart, &this->lastEyeOffsetX, 1);
         positionEye[0] = (-(carState->posX >> 9) << 2) / 3 + this->lastEyeOffsetX;
-        positionEye[1] = 0x55;
+        positionEye[1] = 85;
         positionEye[2] = (carState->posZ >> 9) + this->lastEyeOffsetZ;
         targetPos[0] = carState->posX >> 8;
         targetPos[1] = 0x78;
@@ -379,7 +379,7 @@ void HighwayScene::draw(int context)
     this->focusX = this->targetX;
     this->focusY = this->targetY - (this->lift >> 1);
     this->focusZ = this->targetZ;
-    if (Mini_HighwayIntSqrtUnsigned(aimVec[0] * aimVec[0] + aimVec[1] * aimVec[1] + aimVec[2] * aimVec[2]) > 0x1000) {
+    if (Mini_HighwayIntSqrtUnsigned(aimVec[0] * aimVec[0] + aimVec[1] * aimVec[1] + aimVec[2] * aimVec[2]) > 4096) {
         NormalizeVectorFixed(aimVec, dirNorm);
         pitchYaw[0] = Mini_HighwayCameraAtan2Angle4096(dirNorm[1], Mini_HighwayIntSqrtUnsigned(dirNorm[0] * dirNorm[0] + dirNorm[2] * dirNorm[2]));
         pitchYaw[1] = Mini_HighwayCameraAtan2Angle4096(dirNorm[2], dirNorm[0]) - 0x400;
@@ -471,11 +471,11 @@ void HighwayEffect::loadCoords(char index)
     int cntTable;
     int ofsTable;
 
-    HighwayResolveFieldResource(0x20, cntTable);
-    HighwayResolveFieldResource(0x21, ofsTable);
+    HighwayResolveFieldResource(32, cntTable);
+    HighwayResolveFieldResource(33, ofsTable);
     this->count = ((int *)cntTable)[index];
     start = ((int *)ofsTable)[index];
-    this->coordsBase = HighwayResolveFieldResource(0x22) + start;
+    this->coordsBase = HighwayResolveFieldResource(34) + start;
 }
 
 /*

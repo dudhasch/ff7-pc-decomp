@@ -86,22 +86,22 @@ void __cdecl Mini_CoasterSetViewport(GfxEngineContext *ctx)
     val = GetUiScalingMode();
     switch (val) {
     case MAIN_GRAPHICS_MODE_320X240:
-        GfxSetViewportRect(0, 0, 0x140, 0xF0, ctx);
+        GfxSetViewportRect(0, 0, 320, 240, ctx);
         g_CoasterDisplayScaleY = 1;
         g_coasterSubVolumeFactor = g_CoasterDisplayScaleY;
         break;
     case MAIN_GRAPHICS_MODE_320X240_CENTERED:
-        GfxSetViewportRect(0xA0, 0x78, 0x140, 0xF0, ctx);
+        GfxSetViewportRect(160, 120, 320, 240, ctx);
         g_CoasterDisplayScaleY = 1;
         g_coasterSubVolumeFactor = g_CoasterDisplayScaleY;
         break;
     case MAIN_GRAPHICS_MODE_640X480:
-        GfxSetViewportRect(0, 0, 0x280, 0x1E0, ctx);
+        GfxSetViewportRect(0, 0, 640, 480, ctx);
         g_CoasterDisplayScaleY = 2;
         g_coasterSubVolumeFactor = g_CoasterDisplayScaleY;
         break;
     default:
-        GfxSetViewportRect(0, 0, 0x140, 0xF0, ctx);
+        GfxSetViewportRect(0, 0, 320, 240, ctx);
         g_CoasterDisplayScaleY = 1;
         g_coasterSubVolumeFactor = g_CoasterDisplayScaleY;
     }
@@ -143,7 +143,7 @@ void __cdecl Mini_CoasterEnter(struct GfxEngineContext *context)
 
     SetMatrixLayoutMode(0);
     Mini_CoasterSetupCamera(context);
-    for (i = 0; i < 0x16; i++) {
+    for (i = 0; i < 22; i++) {
         Gfx_SetRenderStateCall(i, 0, (struct GfxEngineContext *)context);
     }
     Gfx_SetRenderStateCall(RENDER_STATE_DEPTH_TEST, 1, (struct GfxEngineContext *)context);
@@ -307,7 +307,7 @@ void __cdecl Mini_CoasterTick(struct GfxEngineContext *context)
         Mini_CoasterRetireStreamedEntries();
         Mini_CoasterUpdateActors();
         Mini_CoasterDrawHud();
-        if (g_CoasterRideSpeed < 0x4000) {
+        if (g_CoasterRideSpeed < 16384) {
             g_CoasterEngineVolume = 0;
         } else {
             g_CoasterEngineVolume = 0x7F;

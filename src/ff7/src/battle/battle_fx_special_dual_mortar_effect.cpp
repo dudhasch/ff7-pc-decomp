@@ -177,24 +177,24 @@ void __cdecl BattleFx_SpecialDualMortarTimelineTask(void)
         Battle_GetBoneWorldPos(frame.timelineSlot->boneOwnerIndex, g_BattleActorRecords[frame.timelineSlot->boneOwnerIndex].bone36, (short *)&frame.spawnSlot->posX);
         frame.spawnSlot->rotOrVelX = 0;
         frame.spawnSlot->yaw = frame.dirAngle + 0x400;
-        frame.spawnSlot->spinSpeed = 0xFE00;
+        frame.spawnSlot->spinSpeed = 0xFE00 /* 5715 deg */;
         frame.spawnSlot = (BattleFxDualMortarTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDualMortarAnimatedSpriteTask);
         Battle_GetBoneWorldPos(frame.timelineSlot->boneOwnerIndex, g_BattleActorRecords[frame.timelineSlot->boneOwnerIndex].bone37, (short *)&frame.spawnSlot->posX);
         frame.spawnSlot->rotOrVelX = 0;
         frame.spawnSlot->yaw = frame.dirAngle + 0x400;
-        frame.spawnSlot->spinSpeed = 0xFE00;
+        frame.spawnSlot->spinSpeed = 0xFE00 /* 5715 deg */;
     }
-    if (frame.timelineSlot->frameCounter == 0x14) {
+    if (frame.timelineSlot->frameCounter == 20) {
         for (frame.ringIndex = 0; frame.ringIndex < 2; frame.ringIndex++) {
-            frame.spawnX = frame.timelineSlot->centerX + (CosFixed((frame.ringIndex << 0xB) + 0x200) * 0x320 >> 0xC);
+            frame.spawnX = frame.timelineSlot->centerX + (CosFixed((frame.ringIndex << 11) + 512) * 0x320 >> 12);
             frame.centerY = frame.timelineSlot->centerY;
-            frame.spawnZ = frame.timelineSlot->centerZ + (SinFixed((frame.ringIndex << 0xB) + 0x200) * 0x320 >> 0xC);
-            for (frame.partIndex = 0; frame.partIndex < 0x18; frame.partIndex++) {
+            frame.spawnZ = frame.timelineSlot->centerZ + (SinFixed((frame.ringIndex << 11) + 512) * 0x320 >> 12);
+            for (frame.partIndex = 0; frame.partIndex < 24; frame.partIndex++) {
                 frame.spawnSlot = (BattleFxDualMortarTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDualMortarFallingDebrisSpriteTask);
-                frame.spawnSlot->posX = frame.spawnX + rand() % 0x190 + -0xC8;
-                frame.spawnSlot->posZ = frame.spawnZ + rand() % 0x190 + -0xC8;
+                frame.spawnSlot->posX = frame.spawnX + rand() % 400 + -200;
+                frame.spawnSlot->posZ = frame.spawnZ + rand() % 400 + -200;
                 frame.spawnSlot->posY = 0;
-                BattleFx_MakeRandomConeVector(0xFFFFFED4, 0x32, &frame.spawnSlot->rotOrVelX);
+                BattleFx_MakeRandomConeVector(0xFFFFFED4, 50, &frame.spawnSlot->rotOrVelX);
                 frame.spawnSlot->variant = rand() % 9;
             }
             frame.spawnSlot = (BattleFxDualMortarTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDualMortarExpandingShellsTask);
@@ -206,7 +206,7 @@ void __cdecl BattleFx_SpecialDualMortarTimelineTask(void)
                 frame.spawnSlot->posX = frame.spawnX;
                 frame.spawnSlot->posY = frame.centerY;
                 frame.spawnSlot->posZ = frame.spawnZ;
-                frame.spawnSlot->posY = -(4 - frame.partIndex) * 0x50;
+                frame.spawnSlot->posY = -(4 - frame.partIndex) * 80;
                 frame.spawnSlot->scale = g_BattleSpecDualMortarShellScales[frame.partIndex];
                 frame.spawnSlot->yaw = -(4 - frame.partIndex) * 0xA;
                 frame.spawnSlot->spinAngle = (rand() % 4096);
@@ -214,11 +214,11 @@ void __cdecl BattleFx_SpecialDualMortarTimelineTask(void)
         }
         Battle_PlaySfxPannedToActor(0xFA, (short)frame.timelineSlot->actorIndex, 0);
     }
-    if (frame.timelineSlot->frameCounter == 0x23) {
+    if (frame.timelineSlot->frameCounter == 35) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x2D) {
+    if (frame.timelineSlot->frameCounter == 45) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -273,7 +273,7 @@ void __cdecl BattleFx_SpecialDualMortarAnimatedSpriteTask(void)
 
 /*
  * Draws one debris sprite that falls under gravity, fading by the frame counter, and frees the
- * slot after 0x14 frames.
+ * slot after 20 frames.
  */
 // FUNCTION: FF7 0x00523f1c
 void __cdecl BattleFx_SpecialDualMortarFallingDebrisSpriteTask(void)
@@ -303,7 +303,7 @@ void __cdecl BattleFx_SpecialDualMortarFallingDebrisSpriteTask(void)
         frame.debrisMatrix.m[1][frame.axisIndex] = 0;
         frame.debrisMatrix.m[0][frame.axisIndex] = 0;
     }
-    if (frame.debrisSlot->frameCounter < 0xC) {
+    if (frame.debrisSlot->frameCounter < 12) {
         frame.rampValue = 8;
     } else {
         frame.rampValue = 0x14 - frame.debrisSlot->frameCounter;
@@ -335,16 +335,16 @@ void __cdecl BattleFx_SpecialDualMortarFallingDebrisSpriteTask(void)
     frame.debrisSlot->posX += frame.debrisSlot->velocityX;
     frame.debrisSlot->posY += frame.debrisSlot->velocityY;
     frame.debrisSlot->posZ += frame.debrisSlot->velocityZ;
-    frame.debrisSlot->velocityY += 0x14;
-    frame.debrisSlot->spinAngle += 0x200;
+    frame.debrisSlot->velocityY += 20;
+    frame.debrisSlot->spinAngle += 0x200 /* 45 deg */;
     (frame.debrisSlot->frameCounter)++;
-    if (frame.debrisSlot->frameCounter == 0x14) {
+    if (frame.debrisSlot->frameCounter == 20) {
         frame.debrisSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Draws one expanding model that spins and tilts, and frees the slot after 0x14 frames.
+ * Draws one expanding model that spins and tilts, and frees the slot after 20 frames.
  */
 // FUNCTION: FF7 0x0052419b
 void __cdecl BattleFx_SpecialDualMortarExpandingModelTask(void)
@@ -367,7 +367,7 @@ void __cdecl BattleFx_SpecialDualMortarExpandingModelTask(void)
     frame.rotX.vx = frame.rotX.vz;
     frame.rotX.vy = frame.modelSlot->spinAngle;
     RotMatrix(&frame.rotX, &frame.rotMatrix);
-    frame.scaleX.vy = 0x1000;
+    frame.scaleX.vy = 0x1000 /* 1.0 */;
     frame.scaleX.vz = frame.modelSlot->tiltAngle;
     frame.scaleX.vx = frame.scaleX.vz;
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
@@ -378,16 +378,16 @@ void __cdecl BattleFx_SpecialDualMortarExpandingModelTask(void)
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecDualMortarSpriteReq2.alpha = frame.modelSlot->frameCounter * 0xC8;
+    g_BattleSpecDualMortarSpriteReq2.alpha = frame.modelSlot->frameCounter * 200;
     g_BattleSpecDualMortarDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecDualMortarSpriteReq2.res8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecDualMortarDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.modelSlot->tiltAngle += 0x200;
+    frame.modelSlot->tiltAngle += 0x200 /* 45 deg */;
     frame.modelSlot->spinAngle += 0x80;
     frame.modelSlot->posY += frame.modelSlot->velocityY;
     (frame.modelSlot->frameCounter)++;
-    if (frame.modelSlot->frameCounter == 0x14) {
+    if (frame.modelSlot->frameCounter == 20) {
         frame.modelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -458,19 +458,19 @@ void __cdecl BattleFx_SpecialDualMortarExpandingShellsTask(void)
     SetTransMatrix(composedMat);
     g_BattleSpecDualMortarSpriteReq3.flags = 0xA8;
     g_BattleSpecDualMortarSpriteReq3.modelHandle = Gfx_ModelTableGetRenderObject(1, g_BattleSpecDualMortarLoadedResTable);
-    g_BattleSpecDualMortarSpriteReq3.alpha = curPtr->timer * 0x30 + 0xC00;
+    g_BattleSpecDualMortarSpriteReq3.alpha = curPtr->timer * 48 + 0xC00;
     g_BattleSpecDualMortarDrawListHead = BattleFx_SubmitModelDraw(
         (BattleFxModelDraw *)&g_BattleSpecDualMortarSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecDualMortarDrawListHead);
     g_BattleSpecDualMortarSpriteReq3.flags = 0xA8;
     g_BattleSpecDualMortarSpriteReq3.modelHandle = Gfx_ModelTableGetRenderObject(4, g_BattleSpecDualMortarLoadedResTable);
-    g_BattleSpecDualMortarSpriteReq3.alpha = curPtr->timer * 0x60;
+    g_BattleSpecDualMortarSpriteReq3.alpha = curPtr->timer * 96;
     g_BattleSpecDualMortarDrawListHead = BattleFx_SubmitModelDraw(
         (BattleFxModelDraw *)&g_BattleSpecDualMortarSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecDualMortarDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (curPtr->timer)++;
-    if (curPtr->timer == 0x14) {
+    if (curPtr->timer == 20) {
         curPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }

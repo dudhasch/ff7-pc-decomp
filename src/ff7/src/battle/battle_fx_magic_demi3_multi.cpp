@@ -163,21 +163,21 @@ void __cdecl BattleFx_MagicDemi3MultiTimelineTask(void)
         newTask = (BattleFxDemi3MultiCoordTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3MultiScaledSpriteMeshTask);
         newTask->coords = g_BattleMagicDemi3Multi_Coords;
     }
-    if (taskPtr->frameCounter == 0xA) {
+    if (taskPtr->frameCounter == 10) {
         newTask = (BattleFxDemi3MultiCoordTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3MultiStretchedLookModelTask);
         newTask->coords = g_BattleMagicDemi3Multi_Coords;
     }
-    if (taskPtr->frameCounter == 0x36) {
+    if (taskPtr->frameCounter == 54) {
         Battle_AllocateResourceSlot(BattleFx_MagicDemi3MultiSpawnBlackMeshTask);
     }
-    if (taskPtr->frameCounter == 0x45) {
-        for (i = 0; i < 0xA; i++) {
+    if (taskPtr->frameCounter == 69) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicDemi3Multi_ActorMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (taskPtr->frameCounter == 0x45) {
+    if (taskPtr->frameCounter == 69) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (taskPtr->frameCounter)++;
@@ -204,16 +204,16 @@ void __cdecl BattleFx_MagicDemi3MultiStretchedLookModelTask(void)
     spinMatrix = matrix + 1;
     stepVector = (BattleDemi3MultiStretchStep *)(spinMatrix + 1);
     phaseFrame = pTaskSlot->frameCounter;
-    if (phaseFrame < 0xF) {
-        g_BattleMagicDemi3Multi_DrawArgs1.fadeLevel = phaseFrame * -0x1000 / 0xF + 0x1000;
+    if (phaseFrame < 15) {
+        g_BattleMagicDemi3Multi_DrawArgs1.fadeLevel = phaseFrame * -4096 / 15 + 4096;
     } else {
-        phaseFrame -= 0xF;
-        if (phaseFrame < 0x1E) {
+        phaseFrame -= 15;
+        if (phaseFrame < 30) {
             g_BattleMagicDemi3Multi_DrawArgs1.fadeLevel = 0;
         } else {
-            phaseFrame -= 0x1E;
-            if (phaseFrame < 0xA) {
-                g_BattleMagicDemi3Multi_DrawArgs1.fadeLevel = (phaseFrame << 0xC) / 0xA;
+            phaseFrame -= 30;
+            if (phaseFrame < 10) {
+                g_BattleMagicDemi3Multi_DrawArgs1.fadeLevel = (phaseFrame << 12) / 10;
             } else {
                 pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -225,11 +225,11 @@ void __cdecl BattleFx_MagicDemi3MultiStretchedLookModelTask(void)
     posPtr->vy += g_BattleCameraTransform.translation[1];
     posPtr->vz += g_BattleCameraTransform.translation[2];
     Gte_BuildLookBasisFromDirection(&posPtr->vx, &matrix->m[0][0]);
-    stepVector->stepX = 0x9C4;
-    stepVector->stepY = 0x9C4;
-    stepVector->stepZ = 0x4000;
+    stepVector->stepX = 2500;
+    stepVector->stepY = 2500;
+    stepVector->stepZ = 16384;
     ScaleMatrix(matrix, stepVector);
-    (*(short *)&g_BattleMagicDemi3Multi_StepCounter) = 0x400;
+    (*(short *)&g_BattleMagicDemi3Multi_StepCounter) = 1024;
     (((BattleFxTimelineState *)&g_BattleMagicDemi3Multi_StepCounter)->wheelAngle) = pTaskSlot->frameCounter * 0x18;
     RotMatrixXYZ((short *)&g_BattleMagicDemi3Multi_StepCounter, spinMatrix);
     ConcatMatrixPreservingTranslation(matrix, spinMatrix, matrix);
@@ -275,34 +275,34 @@ void __cdecl BattleFx_MagicDemi3MultiConvergingParticleSpawnTask(void)
         return;
     }
     spawnFrame = taskPtr->spawnCounter;
-    if (spawnFrame < 0xF) {
+    if (spawnFrame < 15) {
         for (i = 0; i < 2; i++) {
             child = (BattleFxDemi3MultiEmitterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3MultiFadingQuadSpriteTask);
-            offset->vx = rand() % 0xBB8 + 0xBB8;
+            offset->vx = rand() % 3000 + 3000;
             offset->vy = 0;
             offset->vz = 0;
             rotation->angleX = 0;
             rotation->startAngle = rand() & 0xFFF;
-            rotation->startOffset = rand() % 0xA00 - 0x100;
+            rotation->startOffset = rand() % 2560 - 256;
             RotMatrix((SVECTOR *)rotation, matrix);
             TransformVectorToInt16(matrix, (SVECTOR *)offset, &offset->vx);
             child->coords.posX = g_BattleMagicDemi3Multi_Coords.posX + offset->vx;
             child->coords.posY = g_BattleMagicDemi3Multi_Coords.posY + offset->vy;
             child->coords.posZ = g_BattleMagicDemi3Multi_Coords.posZ + offset->vz;
-            child->velocityX = -offset->vx / 0xA;
-            child->velocityY = -offset->vy / 0xA;
-            child->velocityZ = -offset->vz / 0xA;
+            child->velocityX = -offset->vx / 10;
+            child->velocityY = -offset->vy / 10;
+            child->velocityZ = -offset->vz / 10;
         }
     } else {
-        spawnFrame -= 0xF;
-        if (spawnFrame < 0xA) { /* empty first arm: lib/codegen.h */
+        spawnFrame -= 15;
+        if (spawnFrame < 10) { /* empty first arm: lib/codegen.h */
         } else {
             for (i = 0; i < 3; i++) {
                 child = (BattleFxDemi3MultiEmitterSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3MultiRingBurstTask);
                 child->coords = g_BattleMagicDemi3Multi_Coords;
                 child->velocityX = (i << 9) / 3;
                 child->velocityY = 0;
-                child->velocityZ = (i << 0xB) / 3;
+                child->velocityZ = (i << 11) / 3;
             }
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -353,7 +353,7 @@ void __cdecl BattleFx_MagicDemi3MultiFadingQuadSpriteTask(void)
 void __cdecl BattleFx_MagicDemi3MultiDrawQuadSprite(Vec3sPacked *vertexOffset, BattleFxSpriteColor *color, int flags)
 {
     g_BattleMagicDemi3Multi_SpriteDrawReq1.quadState = Gfx_ModelTableGetSpriteObject(4, g_BattleMagicDemi3Multi_LoadedRes2);
-    BattleFx_InstallBillboardMatrix((void *)vertexOffset, 0x900, flags);
+    BattleFx_InstallBillboardMatrix((void *)vertexOffset, 0x900 /* 0.5625 */, flags);
     g_BattleMagicDemi3Multi_SpriteDrawReq1.colorR = color->colorR;
     g_BattleMagicDemi3Multi_SpriteDrawReq1.colorG = color->colorG;
     g_BattleMagicDemi3Multi_SpriteDrawReq1.colorB = color->colorB;
@@ -380,36 +380,36 @@ void __cdecl BattleFx_MagicDemi3MultiRingBurstTask(void)
     matrix = (PsxMatrix *)((int)pVec + 8);
     stepCount = task->step;
     if (stepCount < 5) {
-        radius = stepCount * 0x3E8 / 5;
+        radius = stepCount * 1000 / 5;
     } else {
         stepCount -= 5;
-        if (stepCount < 0x14) {
-            radius = 0x3E8;
+        if (stepCount < 20) {
+            radius = 1000;
         } else {
             RotMatrix((SVECTOR *)&task->angleX, matrix);
-            for (j = 0; j < 0xC; j++) {
+            for (j = 0; j < 12; j++) {
                 child = (BattleDemi3MultiRingBurstParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3MultiBurstQuadFadeOutTask);
-                pVec->vx = SinFixed((j << 0xC) / 0xC) * 0x3E8 >> 0xC;
+                pVec->vx = SinFixed((j << 12) / 12) * 0x3E8 >> 12;
                 pVec->vy = 0;
-                pVec->vz = CosFixed((j << 0xC) / 0xC) * 0x3E8 >> 0xC;
+                pVec->vz = CosFixed((j << 12) / 12) * 0x3E8 >> 12;
                 TransformVectorToInt16(matrix, (void *)pVec, (void *)pVec);
                 child->posX = pVec->vx + task->velocityX;
                 child->posY = pVec->vy + task->velocityY;
                 child->posZ = pVec->vz + task->velocityZ;
-                speed = rand() % 0x700 + 0x500;
-                child->scaledOffsetX = pVec->vx * speed >> 0xC;
-                child->scaledOffsetY = pVec->vy * speed >> 0xC;
-                child->scaledOffsetZ = pVec->vz * speed >> 0xC;
+                speed = rand() % 1792 + 1280;
+                child->scaledOffsetX = pVec->vx * speed >> 12;
+                child->scaledOffsetY = pVec->vy * speed >> 12;
+                child->scaledOffsetZ = pVec->vz * speed >> 12;
             }
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
     RotMatrix((SVECTOR *)&task->angleX, matrix);
-    for (j = 0; j < 0xC; j++) {
-        pVec->vx = radius * SinFixed((j << 0xC) / 0xC) >> 0xC;
+    for (j = 0; j < 12; j++) {
+        pVec->vx = radius * SinFixed((j << 12) / 12) >> 12;
         pVec->vy = 0;
-        pVec->vz = radius * CosFixed((j << 0xC) / 0xC) >> 0xC;
+        pVec->vz = radius * CosFixed((j << 12) / 12) >> 12;
         TransformVectorToInt16(matrix, (void *)pVec, (void *)pVec);
         pVec->vx += task->velocityX;
         pVec->vy += task->velocityY;
@@ -436,7 +436,7 @@ void __cdecl BattleFx_MagicDemi3MultiBurstQuadFadeOutTask(void)
 
     slot = (BattleFxMeteorModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     t = slot->frameCount;
-    if (t < 0xA) {
+    if (t < 10) {
         rgb[2] = 0x80;
         rgb[1] = rgb[2];
         rgb[0] = rgb[1];
@@ -490,7 +490,7 @@ void __cdecl BattleFx_MagicDemi3MultiScaledSpriteMeshTask(void)
     else {
         frame.time -= 15;
         if (frame.time < 35)
-            frame.scale = 0x3000;
+            frame.scale = 0x3000 /* 3.0 */;
         else {
             frame.time -= 35;
             if (frame.time < 15)
@@ -705,7 +705,7 @@ void __cdecl BattleFx_MagicDemi3MultiSpawnBlackMeshTask(void)
         pMesh->rotZ = (rand() & 0x3FF) - 0x200;
     }
     task->spawnCounter += 1;
-    if (task->spawnCounter >= 0x10) {
+    if (task->spawnCounter >= 16) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -730,8 +730,8 @@ void __cdecl BattleFx_MagicDemi3MultiBlackMeshTask(void)
         g_BattleMagicDemi3MultiSecondaryMeshRequest.shade = 0;
     } else {
         phaseFrame--;
-        if (phaseFrame < 0xF) {
-            g_BattleMagicDemi3MultiSecondaryMeshRequest.shade = (phaseFrame << 0xC) / 0xF;
+        if (phaseFrame < 15) {
+            g_BattleMagicDemi3MultiSecondaryMeshRequest.shade = (phaseFrame << 12) / 15;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;

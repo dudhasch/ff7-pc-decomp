@@ -374,7 +374,7 @@ int g_BtlMenuPanelDispatchData[754] = {
     0x0, 0x0, 0x0, (int)(g_BtlMenuWindowTemplatePool + 0x0)
 };
 // GLOBAL: FF7 0x0091e5b0
-float g_BtlMenuWindowSubFrameDepth[0x22] = {0.6f, 0.5f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.0f, 0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.4f, 0.3f, 0.0f, 0.0f, 0.4f, 0.0f, 0.4f, 0.4f, 0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+float g_BtlMenuWindowSubFrameDepth[34] = {0.6f, 0.5f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.0f, 0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.4f, 0.3f, 0.0f, 0.0f, 0.4f, 0.0f, 0.4f, 0.4f, 0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 // The battle windows' handlers, one per window id (0x20): Battle_OpenWindow calls
 // g_BtlMenuWindowOpenHandlers[id]() when a window opens, the window frame calls
 // g_BtlMenuWindowActiveHandlers[id]() while it is open, and no code reads
@@ -382,7 +382,7 @@ float g_BtlMenuWindowSubFrameDepth[0x22] = {0.6f, 0.5f, 0.4f, 0.4f, 0.4f, 0.4f, 
 // handler) only return.
 typedef void (*BattleUiHandlerFn)(void);
 // GLOBAL: FF7 0x0091e638
-BattleUiHandlerFn g_BtlMenuWindowOpenHandlers[0x20] = {
+BattleUiHandlerFn g_BtlMenuWindowOpenHandlers[32] = {
     Battle_WindowOpenSlot0NoOp, Battle_WindowOpenCommandMenuResizeResetCursor, Battle_WindowOpenSlot2NoOp, Battle_WindowOpenSlot3NoOp,
     Battle_WindowOpenEnemySkillListResetCursor, Battle_WindowOpenItemPanelResetCursor, Battle_WindowOpenMagicPanelResetCursor, Battle_WindowOpenSummonListResetCursor,
     Battle_WindowOpenNoOp, Battle_WindowOpenWorriedChoice, Battle_WindowOpenNoOp, Battle_WindowOpenSeedGilAmount,
@@ -393,7 +393,7 @@ BattleUiHandlerFn g_BtlMenuWindowOpenHandlers[0x20] = {
     Battle_WindowOpenSlotScreen, Battle_WindowOpenNoOp, Battle_WindowOpenNoOp, Battle_WindowOpenNoOp
 };
 // GLOBAL: FF7 0x0091e6b8
-BattleUiHandlerFn g_BtlMenuWindowActiveHandlers[0x20] = {
+BattleUiHandlerFn g_BtlMenuWindowActiveHandlers[32] = {
     Battle_WindowFrameSlot0OpenCommandMenuForActor, Battle_WindowFrameCommandMenu, Battle_WindowFrameSlot2ConfirmOrCancel, Battle_WindowFrameSlot3ConfirmOrCancel,
     Battle_WindowFrameEnemySkillList, Battle_WindowFrameItemPanel, Battle_WindowFrameMagicList, Battle_WindowFrameSummonList,
     Battle_WindowFrameNoOp, Battle_WindowFrameWorriedChoice, Battle_WindowFrameNoOp, Battle_WindowFrameGilAmountPrompt,
@@ -404,7 +404,7 @@ BattleUiHandlerFn g_BtlMenuWindowActiveHandlers[0x20] = {
     Battle_WindowFrameSlotScreen, Battle_WindowFrameNoOp, Battle_WindowFrameNoOp, Battle_WindowFrameNoOp
 };
 // GLOBAL: FF7 0x0091e738
-BattleUiHandlerFn g_BtlMenuWindowUnusedHandlers[0x20] = {
+BattleUiHandlerFn g_BtlMenuWindowUnusedHandlers[32] = {
     Battle_WindowUnusedSlot0NoOp, Battle_WindowUnusedSlot1NoOp, Battle_WindowUnusedSlot2NoOp, Battle_WindowUnusedSlot3NoOp,
     Battle_WindowUnusedSlot4NoOp, Battle_WindowUnusedSlot5NoOp, Battle_WindowUnusedSlot6NoOp, Battle_WindowUnusedSlot7NoOp,
     Battle_WindowUnusedNoOp, Battle_WindowUnusedNoOp, Battle_WindowUnusedNoOp, Battle_WindowUnusedSlot11And20NoOp,
@@ -448,7 +448,7 @@ unsigned char g_BtlMenuSelectionSingleTarget = 0;
 unsigned char g_bssPad_00dc1f5c[4] = {0};
 unsigned char g_bssPad_00dc1f60[264] = {0};
 // GLOBAL: FF7 0x00dc2068
-unsigned char g_BattleWindowStates[0x20] = {0};
+unsigned char g_BattleWindowStates[32] = {0};
 // GLOBAL: FF7 0x00dc2088
 short g_BattleSelectedUseCondition = 0;
 // GLOBAL: FF7 0x00dc208c
@@ -471,7 +471,7 @@ unsigned char g_bssPad_00dc20a8[48] = {0};
 // MenuCursor blocks of fourteen dwords. This one is the item list's: the item menu reads it as
 // `(MenuCursor *)&g_BtlMenuSlotTableA[actor * 0x700]` and the hand cursor reads its row and scrollTop.
 // GLOBAL: FF7 0x00dc20d8
-unsigned char g_BtlMenuSlotTableA[0x38] = {0};
+unsigned char g_BtlMenuSlotTableA[56] = {0};
 // GLOBAL: FF7 0x00dc2110
 unsigned char g_BtlMenuSlotTableB[4] = {0};
 // GLOBAL: FF7 0x00dc2114
@@ -520,9 +520,9 @@ unsigned char g_BtlMenuEnemySkillPageScroll[4] = {0};
 // MenuCursor_Update as `&g_BtlMenuLimitCursor[actor * 0x700]`, and the gil prompt's, whose row places the
 // hand cursor.
 // GLOBAL: FF7 0x00dc21b8
-unsigned char g_BtlMenuLimitCursor[0x38] = {0};
+unsigned char g_BtlMenuLimitCursor[56] = {0};
 // GLOBAL: FF7 0x00dc21f0
-int g_BtlMenuGilCursor[0xe] = {0};
+int g_BtlMenuGilCursor[14] = {0};
 // GLOBAL: FF7 0x00dc2228
 MenuCursor g_BtlMenuSlotScreenCursor = {0};
 // GLOBAL: FF7 0x00dc2260
@@ -583,7 +583,7 @@ short g_BtlMenuSelectionIndex = 0;
 // GLOBAL: FF7 0x00dc363c
 unsigned int g_BtlMenuGilAmount = 0;
 // GLOBAL: FF7 0x00dc3640
-unsigned char g_BtlMenuGilAmountText[0x10] = {0};
+unsigned char g_BtlMenuGilAmountText[16] = {0};
 // GLOBAL: FF7 0x00dc3650
 unsigned char g_BtlMenuSlotSeed = 0;
 // GLOBAL: FF7 0x00dc3654
@@ -719,20 +719,20 @@ void __cdecl Battle_DrawMenuCursorAndDimOverlay2x(int *rows)
             return;
         g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].x +
                           ((BattleMenuWindowSet *)g_BtlMenuWindowSets)[g_BtlActiveActor].cursorIndex * 0x58 +
-                          (((BattleMenuWindowSet *)g_BtlMenuWindowSets)[g_BtlActiveActor].cursorIndex ? 0x10 : 0) - 0x24;
+                          (((BattleMenuWindowSet *)g_BtlMenuWindowSets)[g_BtlActiveActor].cursorIndex ? 16 : 0) - 0x24;
         g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].y +
                           *(int *)(((unsigned char *)&g_BtlMenuSlotRecords) + g_BtlActiveActor * 0x700) * 0x18 + 14;
         break;
     case BATTLE_MENU_LIMIT_LIST:
         if (g_BattleWindowStates[BATTLE_WINDOW_LIMIT_LIST] != BATTLE_WINDOW_STATE_OPEN || g_BtlMenuLimitCursorHidden != 0)
             return;
-        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_LIMIT_LIST].x - 0x24;
+        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_LIMIT_LIST].x - 36;
         g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_LIMIT_LIST].y +
                           ((BattleMenuCursor *)(&g_BtlMenuLimitCursor[4]))[g_BtlActivePartyMember].row * 30 + 22;
         break;
     case BATTLE_MENU_CHANGE_CONFIRM:
     case BATTLE_MENU_DEFEND_CONFIRM:
-        g_BattleMenuCursorX = g_BattleMenuData[g_BattleMenuState].x - 0x24;
+        g_BattleMenuCursorX = g_BattleMenuData[g_BattleMenuState].x - 36;
         g_BattleMenuCursorY = g_BattleMenuData[g_BattleMenuState].y + 16;
         break;
     case BATTLE_MENU_ITEM_LIST:
@@ -756,27 +756,27 @@ void __cdecl Battle_DrawMenuCursorAndDimOverlay2x(int *rows)
     case BATTLE_MENU_ENEMY_SKILL_LIST:
         if (g_BattleWindowStates[BATTLE_WINDOW_ENEMY_SKILL_LIST] != BATTLE_WINDOW_STATE_OPEN)
             return;
-        g_BattleMenuCursorX = ((BattleMenuWindow *)g_BtlMenuWindows)[g_BtlActiveActor].entryIndex ? 0xf0 : 0;
+        g_BattleMenuCursorX = ((BattleMenuWindow *)g_BtlMenuWindows)[g_BtlActiveActor].entryIndex ? 240 : 0;
         g_BattleMenuCursorY = ((BattleMenuCursor *)g_BtlMenuCursors)[g_BtlActiveActor].row * 32 + 0x16c;
         break;
     case BATTLE_MENU_GIL_AMOUNT:
         if (g_BattleWindowStates[BATTLE_WINDOW_GIL_AMOUNT] != BATTLE_WINDOW_STATE_OPEN)
             return;
-        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_GIL_AMOUNT].x - 0x24;
+        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_GIL_AMOUNT].x - 36;
         g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_GIL_AMOUNT].y +
                           ((BtlMenuActorFieldStride *)(&g_BtlMenuGilCursor[1]))[g_BtlActiveActor].value * 0x18 + 14;
         break;
     case BATTLE_MENU_MANIP_ACTION_LIST:
         if (g_BattleWindowStates[BATTLE_WINDOW_MANIP_ACTION_LIST] != BATTLE_WINDOW_STATE_OPEN)
             return;
-        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_MANIP_ACTION_LIST].x - 0x24;
+        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_MANIP_ACTION_LIST].x - 36;
         g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_MANIP_ACTION_LIST].y + g_BtlMenuControlledActionRow * 32 + 16;
         break;
     case BATTLE_MENU_ARENA_SLOT:
         if (g_BattleWindowStates[BATTLE_WINDOW_ARENA_SLOT] != BATTLE_WINDOW_STATE_OPEN)
             return;
         if (g_BtlMenuSlotScreenState == BATTLE_SLOT_SCREEN_CHOOSE) {
-            g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_ARENA_SLOT].x + g_BtlMenuSlotScreenCursor.col * 0x90 + 40;
+            g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_ARENA_SLOT].x + g_BtlMenuSlotScreenCursor.col * 144 + 40;
             g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_ARENA_SLOT].y + 62;
         } else {
             return;
@@ -956,13 +956,13 @@ void __cdecl Battle_DrawMenuCursorAndDimOverlay1x(int *rows)
     case BATTLE_MENU_LIMIT_LIST:
         if (g_BattleWindowStates[BATTLE_WINDOW_LIMIT_LIST] != BATTLE_WINDOW_STATE_OPEN || g_BtlMenuLimitCursorHidden != 0)
             return;
-        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_LIMIT_LIST].x - 0x12;
+        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_LIMIT_LIST].x - 18;
         g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_LIMIT_LIST].y +
                           ((BattleMenuCursor *)(&g_BtlMenuLimitCursor[4]))[g_BtlActivePartyMember].row * 15 + 11;
         break;
     case BATTLE_MENU_CHANGE_CONFIRM:
     case BATTLE_MENU_DEFEND_CONFIRM:
-        g_BattleMenuCursorX = g_BattleMenuData[g_BattleMenuState].x - 0x12;
+        g_BattleMenuCursorX = g_BattleMenuData[g_BattleMenuState].x - 18;
         g_BattleMenuCursorY = g_BattleMenuData[g_BattleMenuState].y + 8;
         break;
     case BATTLE_MENU_ITEM_LIST:
@@ -986,27 +986,27 @@ void __cdecl Battle_DrawMenuCursorAndDimOverlay1x(int *rows)
     case BATTLE_MENU_ENEMY_SKILL_LIST:
         if (g_BattleWindowStates[BATTLE_WINDOW_ENEMY_SKILL_LIST] != BATTLE_WINDOW_STATE_OPEN)
             return;
-        g_BattleMenuCursorX = ((BattleMenuWindow *)g_BtlMenuWindows)[g_BtlActiveActor].entryIndex ? 0x78 : 0;
+        g_BattleMenuCursorX = ((BattleMenuWindow *)g_BtlMenuWindows)[g_BtlActiveActor].entryIndex ? 120 : 0;
         g_BattleMenuCursorY = ((BattleMenuCursor *)g_BtlMenuCursors)[g_BtlActiveActor].row * 16 + 0xb6;
         break;
     case BATTLE_MENU_GIL_AMOUNT:
         if (g_BattleWindowStates[BATTLE_WINDOW_GIL_AMOUNT] != BATTLE_WINDOW_STATE_OPEN)
             return;
-        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_GIL_AMOUNT].x - 0x12;
+        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_GIL_AMOUNT].x - 18;
         g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_GIL_AMOUNT].y +
                           ((BtlMenuActorFieldStride *)(&g_BtlMenuGilCursor[1]))[g_BtlActiveActor].value * 16 + 8;
         break;
     case BATTLE_MENU_MANIP_ACTION_LIST:
         if (g_BattleWindowStates[BATTLE_WINDOW_MANIP_ACTION_LIST] != BATTLE_WINDOW_STATE_OPEN)
             return;
-        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_MANIP_ACTION_LIST].x - 0x12;
+        g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_MANIP_ACTION_LIST].x - 18;
         g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_MANIP_ACTION_LIST].y + g_BtlMenuControlledActionRow * 16 + 8;
         break;
     case BATTLE_MENU_ARENA_SLOT:
         if (g_BattleWindowStates[BATTLE_WINDOW_ARENA_SLOT] != BATTLE_WINDOW_STATE_OPEN)
             return;
         if (g_BtlMenuSlotScreenState == BATTLE_SLOT_SCREEN_CHOOSE) {
-            g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_ARENA_SLOT].x + g_BtlMenuSlotScreenCursor.col * 0x48 + 20;
+            g_BattleMenuCursorX = g_BattleMenuData[BATTLE_WINDOW_ARENA_SLOT].x + g_BtlMenuSlotScreenCursor.col * 72 + 20;
             g_BattleMenuCursorY = g_BattleMenuData[BATTLE_WINDOW_ARENA_SLOT].y + 31;
         } else {
             return;
@@ -1223,7 +1223,7 @@ void __cdecl Battle_DrawSelectionCursorQuads2x(void *unused, short posX, short p
             paletteIndex = 7;
             batchNode = g_MenuWinABlend4GraphicsObject;
             vRowSpan = 0.125f;
-            cellPx = 0x20;
+            cellPx = 32;
             shadowUBase = 0.1875f;
             shadowV = 0.59375f;
             depth = FLOAT_0_01_BITS;
@@ -1234,7 +1234,7 @@ void __cdecl Battle_DrawSelectionCursorQuads2x(void *unused, short posX, short p
             paletteIndex = 1;
             batchNode = g_MenuWinBBlend4GraphicsObject;
             vRowSpan = 0.1015625f;
-            cellPx = 0x1A;
+            cellPx = 26;
             shadowUBase = 0.1875f;
             shadowV = 0.59375f;
             depthShadow = 0x3C257A78;
@@ -1246,7 +1246,7 @@ void __cdecl Battle_DrawSelectionCursorQuads2x(void *unused, short posX, short p
         paletteIndex = 1;
         batchNode = g_MenuWinBBlend4GraphicsObject;
         vRowSpan = 0.1015625f;
-        cellPx = 0x1A;
+        cellPx = 26;
         shadowUBase = 0.0f;
         shadowV = 0.59375f;
         depthShadow = 0x3C257A78;
@@ -1374,7 +1374,7 @@ void __cdecl Battle_DrawSelectionCursorQuads1x(void *unused, short posX, short p
             subBaseV = 0.0625f;
             paletteIndex = 7;
             vPitch = 0.0625f;
-            stageCursorHeight = 0x10;
+            stageCursorHeight = 16;
             shadowUBase = 0.1015625f;
             shadowV = 0.296875f;
             depth = FLOAT_0_01_BITS;
@@ -1384,7 +1384,7 @@ void __cdecl Battle_DrawSelectionCursorQuads1x(void *unused, short posX, short p
             subBaseV = 0.03125f;
             paletteIndex = 1;
             vPitch = 0.05078125f;
-            stageCursorHeight = 0xD;
+            stageCursorHeight = 13;
             shadowUBase = 0.1015625f;
             shadowV = 0.296875f;
             depthShadow = 0x3C257A78;
@@ -1395,7 +1395,7 @@ void __cdecl Battle_DrawSelectionCursorQuads1x(void *unused, short posX, short p
         subBaseV = 0.03125f;
         paletteIndex = 1;
         vPitch = 0.05078125f;
-        stageCursorHeight = 0xD;
+        stageCursorHeight = 13;
         shadowUBase = 0.0f;
         shadowV = 0.296875f;
         depthShadow = 0x3C257A78;
@@ -1525,7 +1525,7 @@ void __cdecl Battle_PositionAndDrawTargetSelectionCursor2x(void *cursorCtx, shor
 
     if (g_BattleActorRecords[actorIndex].facing == 0) {
         g_BtlMenuTargetCursorState = 1;
-        posX = g_BattleActorScreenPositions[actorIndex].prevX - 0x30;
+        posX = g_BattleActorScreenPositions[actorIndex].prevX - 48;
     } else {
         g_BtlMenuTargetCursorState = 0;
         posX = g_BattleActorScreenPositions[actorIndex].prevX;
@@ -1535,8 +1535,8 @@ void __cdecl Battle_PositionAndDrawTargetSelectionCursor2x(void *cursorCtx, shor
     tempCursorY &= 0xfffe;
 
     if (g_BattleScriptEffectFlag != 0 || g_BtlPointedTargetInvalid != 0) {
-        posX = 0x40;
-        tempCursorY = 0x10c;
+        posX = 64;
+        tempCursorY = 268;
         if ((g_BtlMenuFrameCounter & 8) != 0) {
             g_BtlMenuTargetCursorState = 2;
         } else {
@@ -1545,24 +1545,24 @@ void __cdecl Battle_PositionAndDrawTargetSelectionCursor2x(void *cursorCtx, shor
     }
 
     if (g_BattleSelectionCursorState == 0) {
-        if (posX >= 0 && posX < 0x250 && tempCursorY >= 0x20 && tempCursorY < 0x14c) {
+        if (posX >= 0 && posX < 592 && tempCursorY >= 32 && tempCursorY < 332) {
             Battle_DrawSelectionCursorQuads2x(cursorCtx, posX, tempCursorY);
         }
-        if (posX >= 0 && posX < 0x250 && tempCursorY >= 0x20 && tempCursorY < 0x14c) {
+        if (posX >= 0 && posX < 592 && tempCursorY >= 32 && tempCursorY < 332) {
             Battle_SelectionCursorOverlayNoOp(cursorCtx, posX, tempCursorY);
         }
         g_BtlMenuCursorX = posX;
         g_BtlMenuCursorY = tempCursorY;
         g_BattleSelectionCursorState = 1;
     } else {
-        if (posX >= 0 && posX < 0x250 && tempCursorY >= 0x20 && tempCursorY < 0x14c) {
+        if (posX >= 0 && posX < 592 && tempCursorY >= 32 && tempCursorY < 332) {
             Battle_DrawSelectionCursorQuads2x(cursorCtx, posX, tempCursorY);
         }
-        if (posX >= 0 && posX < 0x250 && tempCursorY >= 0x20 && tempCursorY < 0x14c) {
+        if (posX >= 0 && posX < 592 && tempCursorY >= 32 && tempCursorY < 332) {
             Battle_SelectionCursorOverlayNoOp(cursorCtx, posX, tempCursorY);
         }
-        if (g_BtlMenuCursorX >= 0 && g_BtlMenuCursorX < 0x250 &&
-            g_BtlMenuCursorY >= 0x20 && g_BtlMenuCursorY < 0x14c) {
+        if (g_BtlMenuCursorX >= 0 && g_BtlMenuCursorX < 592 &&
+            g_BtlMenuCursorY >= 32 && g_BtlMenuCursorY < 332) {
             Battle_EraseSelectionCursorNoOp(cursorCtx, g_BtlMenuCursorX, g_BtlMenuCursorY);
         }
         g_BtlMenuCursorX = posX;
@@ -1594,7 +1594,7 @@ void __cdecl Battle_PositionAndDrawTargetSelectionCursor1x(void *cursorCtx, shor
     baseY = g_MenuViewportY;
     if (g_BattleActorRecords[actorIndex].facing == 0) {
         g_BtlMenuTargetCursorState = 1;
-        posX = g_BattleActorScreenPositions[actorIndex].prevX - 0x18;
+        posX = g_BattleActorScreenPositions[actorIndex].prevX - 24;
     } else {
         g_BtlMenuTargetCursorState = 0;
         posX = g_BattleActorScreenPositions[actorIndex].prevX;
@@ -1604,8 +1604,8 @@ void __cdecl Battle_PositionAndDrawTargetSelectionCursor1x(void *cursorCtx, shor
     tempCursorY &= 0xfffe;
 
     if (g_BattleScriptEffectFlag != 0 || g_BtlPointedTargetInvalid != 0) {
-        posX = g_MenuViewportX + 0x20;
-        tempCursorY = g_MenuViewportY + 0x86;
+        posX = g_MenuViewportX + 32;
+        tempCursorY = g_MenuViewportY + 134;
         if ((g_BtlMenuFrameCounter & 8) != 0) {
             g_BtlMenuTargetCursorState = 2;
         } else {
@@ -1673,8 +1673,8 @@ void __cdecl Battle_DrawTargetCursorWhenMenuStateZero2x(void *what)
     if (g_BattleMenuState == BATTLE_MENU_SELECT_TARGET) {
         Battle_DrawSelectionCursorForTarget2x(what, g_BtlPointedTarget);
     } else if (g_BattleTargetCursorActive != 0 && g_BtlMenuCursorX >= 0 &&
-               g_BtlMenuCursorX < 0x250 && g_BtlMenuCursorY >= 0x20 &&
-               g_BtlMenuCursorY < 0x14c) {
+               g_BtlMenuCursorX < 592 && g_BtlMenuCursorY >= 32 &&
+               g_BtlMenuCursorY < 332) {
         Battle_EraseSelectionCursorNoOp(what, g_BtlMenuCursorX, g_BtlMenuCursorY);
     }
 }
@@ -1689,8 +1689,8 @@ void __cdecl Battle_DrawTargetCursorWhenMenuStateZero1x(void *what)
     if (g_BattleMenuState == BATTLE_MENU_SELECT_TARGET) {
         Battle_DrawSelectionCursorForTarget1x(what, g_BtlPointedTarget);
     } else if (g_BattleTargetCursorActive != 0 && g_BtlMenuCursorX >= 0 &&
-               g_BtlMenuCursorX < 0x128 && g_BtlMenuCursorY >= 0x10 &&
-               g_BtlMenuCursorY < 0xa6) {
+               g_BtlMenuCursorX < 296 && g_BtlMenuCursorY >= 16 &&
+               g_BtlMenuCursorY < 166) {
         Battle_EraseSelectionCursorNoOp(what, g_BtlMenuCursorX, g_BtlMenuCursorY);
     }
 }
@@ -1818,7 +1818,7 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
     switch (windowIndex) {
     case BATTLE_WINDOW_HELP:
         text_o = g_BattleTextBuffer;
-        textLimit_i = 0x1A;
+        textLimit_i = 26;
         break;
     case BATTLE_WINDOW_ACTION_NAME:
         windowIndex = BATTLE_WINDOW_MESSAGE;
@@ -1864,14 +1864,14 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
         break;
     case BATTLE_WINDOW_MESSAGE:
         text_o = g_BattleTextBuffer;
-        textLimit_i = 0x1A;
+        textLimit_i = 26;
     }
     if (g_MenuIsSmallViewport320x240 != 1) {
         int count;
         count = 0;
         savedText_i = text_o;
         penX_h = 0;
-        for (charIndex_o = 0; charIndex_o < 0x100; charIndex_o++) {
+        for (charIndex_o = 0; charIndex_o < 256; charIndex_o++) {
             if (*text_o == TEXT_END) {
                 break;
             }
@@ -1908,30 +1908,30 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
         }
         text_o = savedText_i;
         penX_h = g_BattleMenuData[windowIndex].width / 2 - penX_h / 2;
-        penY_g = 0xC;
-        for (charIndex_o = 0; charIndex_o < 0x100; charIndex_o++) {
+        penY_g = 12;
+        for (charIndex_o = 0; charIndex_o < 256; charIndex_o++) {
             if (*text_o == TEXT_END) {
                 break;
             }
             switch (*text_o) {
             case TEXT_FONT_PAGE_1:
                 text_o++;
-                atlasX_g = *text_o % 0x15 * 0xC;
-                atlasY_f = *text_o / 0x15 * 0xC + 0x84;
+                atlasX_g = *text_o % 21 * 12;
+                atlasY_f = *text_o / 21 * 12 + 132;
                 penX_h += (short)(g_pTextSpacing[*text_o + 0xE7] >> 5 << 1);
                 advance_k = (g_pTextSpacing[*text_o + 0xE7] & 0x1F) << 1;
                 break;
             case TEXT_FONT_PAGE_2:
                 text_o++;
-                atlasX_g = *text_o % 0x15 * 0xC;
-                atlasY_f = *text_o / 0x15 * 0xC;
+                atlasX_g = *text_o % 21 * 12;
+                atlasY_f = *text_o / 21 * 12;
                 penX_h += (short)(g_pTextSpacing[*text_o + 0x1B9] >> 5 << 1);
                 advance_k = (g_pTextSpacing[*text_o + 0x1B9] & 0x1F) << 1;
                 break;
             case TEXT_FONT_PAGE_3:
                 text_o++;
-                atlasX_g = *text_o % 0x15 * 0xC;
-                atlasY_f = *text_o / 0x15 * 0xC + 0x84;
+                atlasX_g = *text_o % 21 * 12;
+                atlasY_f = *text_o / 21 * 12 + 132;
                 penX_h += (short)(g_pTextSpacing[*text_o + 0x2A0] >> 5 << 1);
                 advance_k = (g_pTextSpacing[*text_o + 0x2A0] & 0x1F) << 1;
                 break;
@@ -1943,22 +1943,22 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
                 if (charCode_l == 0xD2 || charCode_l == 0xD3) {
                     charCode_l -= 0x4E;
                 }
-                atlasX_g = charCode_l % 0x15 * 0x18;
-                atlasY_f = charCode_l / 0x15 * 0x18;
-                if (atlasX_g > 0xF0) {
+                atlasX_g = charCode_l % 21 * 24;
+                atlasY_f = charCode_l / 21 * 24;
+                if (atlasX_g > 240) {
                     clippedU_d = atlasX_g - 0x100;
                     glyphWidth_e = 24.0f;
-                    quadWidth_o = 0x18;
+                    quadWidth_o = 24;
                     glyphBatch = g_pBattle3dScene->glyphOverflow;
                 } else {
-                    if (atlasX_g == 0xF0) {
+                    if (atlasX_g == 240) {
                         clippedU_d = atlasX_g;
                         glyphWidth_e = 16.0f;
-                        quadWidth_o = 0x10;
+                        quadWidth_o = 16;
                     } else {
                         clippedU_d = atlasX_g;
                         glyphWidth_e = 24.0f;
-                        quadWidth_o = 0x18;
+                        quadWidth_o = 24;
                     }
                     glyphBatch = g_pBattle3dScene->glyph2x;
                 }
@@ -1987,7 +1987,7 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
         count = 0;
         savedText_i = text_o;
         penX_h = 0;
-        for (charIndex_o = 0; charIndex_o < 0x100; charIndex_o++) {
+        for (charIndex_o = 0; charIndex_o < 256; charIndex_o++) {
             if (*text_o == TEXT_END) {
                 break;
             }
@@ -2025,29 +2025,29 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
         text_o = savedText_i;
         penX_h = g_BattleMenuData[windowIndex].width / 2 - penX_h / 2;
         penY_g = 6;
-        for (charIndex_o = 0; charIndex_o < 0x100; charIndex_o++) {
+        for (charIndex_o = 0; charIndex_o < 256; charIndex_o++) {
             if (*text_o == TEXT_END) {
                 break;
             }
             switch (*text_o) {
             case TEXT_FONT_PAGE_1:
                 text_o++;
-                atlasX_g = *text_o % 0x15 * 0xC;
-                atlasY_f = *text_o / 0x15 * 0xC + 0x84;
+                atlasX_g = *text_o % 21 * 12;
+                atlasY_f = *text_o / 21 * 12 + 132;
                 penX_h += (short)(g_pTextSpacing[*text_o + 0xE7] >> 5);
                 advance_k = g_pTextSpacing[*text_o + 0xE7] & 0x1F;
                 break;
             case TEXT_FONT_PAGE_2:
                 text_o++;
-                atlasX_g = *text_o % 0x15 * 0xC;
-                atlasY_f = *text_o / 0x15 * 0xC;
+                atlasX_g = *text_o % 21 * 12;
+                atlasY_f = *text_o / 21 * 12;
                 penX_h += (short)(g_pTextSpacing[*text_o + 0x1B9] >> 5);
                 advance_k = g_pTextSpacing[*text_o + 0x1B9] & 0x1F;
                 break;
             case TEXT_FONT_PAGE_3:
                 text_o++;
-                atlasX_g = *text_o % 0x15 * 0xC;
-                atlasY_f = *text_o / 0x15 * 0xC + 0x84;
+                atlasX_g = *text_o % 21 * 12;
+                atlasY_f = *text_o / 21 * 12 + 132;
                 penX_h += (short)(g_pTextSpacing[*text_o + 0x2A0] >> 5);
                 advance_k = g_pTextSpacing[*text_o + 0x2A0] & 0x1F;
                 break;
@@ -2055,8 +2055,8 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
                 text_o += 2;
                 continue;
             default:
-                atlasX_g = *text_o % 0x15 * 0xC;
-                atlasY_f = *text_o / 0x15 * 0xC;
+                atlasX_g = *text_o % 21 * 12;
+                atlasY_f = *text_o / 21 * 12;
                 penX_h += (short)(g_pTextSpacing[*text_o] >> 5);
                 advance_k = g_pTextSpacing[*text_o] & 0x1F;
             }
@@ -2168,8 +2168,8 @@ void __cdecl Menu_DrawBattleWindow(int unused1, short windowIndex, int op, int p
                 g_pBattle3dScene->frame2x->paletteIndex = 0;
             }
         }
-        windowWidth_f = g_BattleMenuData[windowIndex].width - 0xC;
-        windowHeight_a = g_BattleMenuData[windowIndex].height - 0xC;
+        windowWidth_f = g_BattleMenuData[windowIndex].width - 12;
+        windowHeight_a = g_BattleMenuData[windowIndex].height - 12;
         if (emphasis_d != 0) {
             if (Menu_IsTextSubsystemReady() != 0 && g_BattleIsPaused == 0) {
                 if (AcquireBatchNode(1, g_pBattle3dScene->emphasis) != 0) {
@@ -2320,17 +2320,17 @@ void __cdecl Battle_FormatWindowGilAmountText(int value)
         num = value / g_BtlMenuGilDigitDivisors[i];
         if (num == 0) {
             if (blanking == 0) {
-                g_BtlMenuGilAmountText[out] = 0x10;
+                g_BtlMenuGilAmountText[out] = 16;
                 out++;
             }
         } else {
             blanking = 0;
-            g_BtlMenuGilAmountText[out] = (unsigned char)(num + 0x10);
+            g_BtlMenuGilAmountText[out] = (unsigned char)(num + 16);
             out++;
         }
         value = value % g_BtlMenuGilDigitDivisors[i];
     }
-    g_BtlMenuGilAmountText[out] = 0x10;
+    g_BtlMenuGilAmountText[out] = 16;
     out++;
     for (i = 0; i < 5; i++) {
         g_BtlMenuGilAmountText[out] = (&g_MenuMainLabels.gilText)[i];
@@ -2840,14 +2840,14 @@ void __cdecl Battle_DrawOpenWindows2x(void)
         Battle_DrawPauseCaption2x();
     }
     if (g_BattleWindowStates[BATTLE_WINDOW_COMMAND_MENU] != BATTLE_WINDOW_STATE_CLOSED && gSavemap.party[g_BtlActiveActor] == PARTY_CHAR_NONE) {
-        for (i = 1; i < 0x20; i++) {
+        for (i = 1; i < 32; i++) {
             if (g_BattleWindowStates[i] != BATTLE_WINDOW_STATE_CLOSED) {
                 Battle_SetWindowStateClosing(i);
             }
         }
     }
     g_BtlMenuDrawWindowIndex = 0;
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         if (i != 0 && g_BattleWindowStates[i] != BATTLE_WINDOW_STATE_CLOSED && Input_GetHeld(INPUT_SQUARE) != 0) {
             continue;
         }
@@ -2869,9 +2869,9 @@ void __cdecl Battle_DrawPauseCaption2x(void)
     int w;
 
     w = Menu_MeasureEncodedString2x((unsigned char *)g_BtlMenuWindowColors);
-    Menu_DrawEncodedString2x(0x140 - w / 2 + 8, 0xb2, (unsigned char *)g_BtlMenuWindowColors,
+    Menu_DrawEncodedString2x(0x140 - w / 2 + 8, 178, (unsigned char *)g_BtlMenuWindowColors,
                       (g_BtlMenuFrameCounter & 0x20) ? 7 : 0, 0.0f);
-    Menu_SetRectShorts(rect, 0x140 - w / 2 - 4, 0xa6, w + 0x14, 0x30);
+    Menu_SetRectShorts(rect, 0x140 - w / 2 - 4, 166, w + 0x14, 48);
     Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0.0f);
 }
 
@@ -2890,14 +2890,14 @@ void __cdecl Battle_DrawOpenWindows1x(void)
         Battle_DrawPauseCaption1x();
     }
     if (g_BattleWindowStates[BATTLE_WINDOW_COMMAND_MENU] != BATTLE_WINDOW_STATE_CLOSED && gSavemap.party[g_BtlActiveActor] == PARTY_CHAR_NONE) {
-        for (i = 1; i < 0x20; i++) {
+        for (i = 1; i < 32; i++) {
             if (g_BattleWindowStates[i] != BATTLE_WINDOW_STATE_CLOSED) {
                 Battle_SetWindowStateClosing(i);
             }
         }
     }
     g_BtlMenuDrawWindowIndex = 0;
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         if (i != 0 && g_BattleWindowStates[i] != BATTLE_WINDOW_STATE_CLOSED && Input_GetHeld(INPUT_SQUARE) != 0) {
             continue;
         }
@@ -2919,9 +2919,9 @@ void __cdecl Battle_DrawPauseCaption1x(void)
     int w;
 
     w = Menu_MeasureEncodedString1x((unsigned char *)g_BtlMenuWindowColors);
-    Menu_DrawEncodedString1x(0xa0 - w / 2 + 4, 0x59, (unsigned char *)g_BtlMenuWindowColors,
+    Menu_DrawEncodedString1x(0xa0 - w / 2 + 4, 89, (unsigned char *)g_BtlMenuWindowColors,
                          (g_BtlMenuFrameCounter & 0x20) ? 7 : 0, 0.0f);
-    Menu_SetRectShorts(rect, 0xa0 - w / 2 - 2, 0x53, w + 0xa, 0x18);
+    Menu_SetRectShorts(rect, 0xa0 - w / 2 - 2, 83, w + 0xa, 24);
     Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0.0f);
 }
 
@@ -3259,7 +3259,7 @@ void __cdecl Battle_WindowFrameSlot0OpenCommandMenuForActor(void)
             }
         }
         if (g_BattleWindowStates[BATTLE_WINDOW_COMMAND_MENU] != BATTLE_WINDOW_STATE_CLOSED && ((activeActor & 0xFF) == 0xFF || (activeActor & 0xFF) != g_BtlActiveActor)) {
-            for (slotIdx = 1; slotIdx < 0x20; slotIdx++) {
+            for (slotIdx = 1; slotIdx < 32; slotIdx++) {
                 if (g_BattleWindowStates[slotIdx] != BATTLE_WINDOW_STATE_CLOSED) {
                     Battle_SetWindowStateClosing((short)slotIdx);
                     if (slotIdx == BATTLE_WINDOW_TIFA_SLOTS || slotIdx == BATTLE_WINDOW_CAIT_SITH_SLOTS) {
@@ -3270,7 +3270,7 @@ void __cdecl Battle_WindowFrameSlot0OpenCommandMenuForActor(void)
             g_BattleMenuState = 0xFFFF;
         }
         if (g_BattleWindowStates[BATTLE_WINDOW_MANIP_ACTION_LIST] != BATTLE_WINDOW_STATE_CLOSED && ((activeActor & 0xFF) == 0xFF || (activeActor & 0xFF) != g_BtlEnemyIndex + 4)) {
-            for (slotIdx = 1; slotIdx < 0x20; slotIdx++) {
+            for (slotIdx = 1; slotIdx < 32; slotIdx++) {
                 if (g_BattleWindowStates[slotIdx] != BATTLE_WINDOW_STATE_CLOSED) {
                     Battle_SetWindowStateClosing((short)slotIdx);
                 }
@@ -3322,7 +3322,7 @@ void __cdecl Battle_WindowFrameGilAmountPrompt(void)
             g_BattleWindowFrameId = BATTLE_MENU_GIL_AMOUNT;
             g_BtlTargetFlags = BTL_TARGETF_SELECTABLE | BTL_TARGETF_START_ON_ENEMIES |
                                BTL_TARGETF_DEFAULT_MULTIPLE | BTL_TARGETF_ONE_SIDE_ONLY;
-            g_BtlIssuedActionId = g_BtlMenuGilAmount / 0xA;
+            g_BtlIssuedActionId = g_BtlMenuGilAmount / 10;
             Battle_BeginTargetSelection();
         } else if (BtlMenu_GetInputRepeat(INPUT_CROSS) != 0) {
             g_BtlMenuSelectionConfirmed = 1;
@@ -3331,13 +3331,13 @@ void __cdecl Battle_WindowFrameGilAmountPrompt(void)
             SfxPreloadAndPlayOnChannel5(SFX_MENU_CANCEL);
         } else {
             if (BtlMenu_GetInputRepeat(INPUT_RIGHT) != 0) {
-                g_BtlMenuGilAmount += 0x3E8;
+                g_BtlMenuGilAmount += 1000;
             } else if (BtlMenu_GetInputRepeat(INPUT_LEFT) != 0) {
-                g_BtlMenuGilAmount -= 0x3E8;
+                g_BtlMenuGilAmount -= 1000;
             } else if (BtlMenu_GetInputRepeat(INPUT_UP) != 0) {
-                g_BtlMenuGilAmount += 0x2710;
+                g_BtlMenuGilAmount += 10000;
             } else if (BtlMenu_GetInputRepeat(INPUT_DOWN) != 0) {
-                g_BtlMenuGilAmount -= 0x2710;
+                g_BtlMenuGilAmount -= 10000;
             }
             if ((g_BtlMenuGilAmount & 0x80000000) != 0) {
                 g_BtlMenuGilAmount = 0;
@@ -3444,7 +3444,7 @@ void __cdecl Battle_WindowFrameCommandMenu(void)
             g_BattleMenuState = BATTLE_MENU_CHANGE_CONFIRM;
             if (g_MenuIsSmallViewport320x240 != 1) {
                 Battle_OpenWindow(g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].x - 0x60,
-                                  v.cursor->row * 0x18 + 0x152, BATTLE_WINDOW_CHANGE);
+                                  v.cursor->row * 24 + 0x152, BATTLE_WINDOW_CHANGE);
             } else {
                 Battle_OpenWindow(g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].x - 0x30,
                                   v.cursor->row * 12 + 0xa9, BATTLE_WINDOW_CHANGE);
@@ -3457,7 +3457,7 @@ void __cdecl Battle_WindowFrameCommandMenu(void)
             if (g_MenuIsSmallViewport320x240 != 1) {
                 Battle_OpenWindow(g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].x +
                                       g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].width - 0x10,
-                                  v.cursor->row * 0x18 + 0x152, BATTLE_WINDOW_DEFEND);
+                                  v.cursor->row * 24 + 0x152, BATTLE_WINDOW_DEFEND);
             } else {
                 Battle_OpenWindow(g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].x +
                                       g_BattleMenuData[BATTLE_WINDOW_COMMAND_MENU].width - 8,
@@ -3666,7 +3666,7 @@ void __cdecl Battle_WindowUnusedSlot5NoOp(void)
 
 /*
  * Battle_WindowOpenItemPanelResetCursor's shape again, on the magic list's MenuCursor at
- * g_BtlMenuSlotTableB: three columns and 0x12 rows in all. Then refreshes command 1's availability.
+ * g_BtlMenuSlotTableB: three columns and 18 rows in all. Then refreshes command 1's availability.
  */
 // FUNCTION: FF7 0x006d9ad5
 void __cdecl Battle_WindowOpenMagicPanelResetCursor(void)
@@ -3683,7 +3683,7 @@ void __cdecl Battle_WindowOpenMagicPanelResetCursor(void)
     cursor->colCount = 3;
     cursor->rowCount = 3;
     cursor->rowStep = 3;
-    cursor->totalRows = 0x12;
+    cursor->totalRows = 18;
     cursor->colWrapMode = MENU_CURSOR_WRAP_INTO_ROWS;
     cursor->rowWrapMode = MENU_CURSOR_CLAMP;
     cursor->unused8 = 0;
@@ -3696,7 +3696,7 @@ void __cdecl Battle_WindowOpenMagicPanelResetCursor(void)
 /*
  * Refreshes the selected character's mode-1 records, then in menu state 6 with no
  * input latch updates its cursor. Confirm computes the three-column entry index,
- * rejects bit-2/0xFF entries with sound 3, otherwise saves its
+ * rejects bit-2/255 entries with sound 3, otherwise saves its
  * item/index/auxiliary fields, plays sound 1 and enters the use- condition path
  * through Battle_BeginTargetSelection/Kernel_GetUseCondition, invoking Battle_OpenWindow when
  * allowed.
@@ -3871,7 +3871,7 @@ void __cdecl Battle_WindowUnusedSlot3NoOp(void)
 }
 
 /*
- * The same, on the summon list's MenuCursor at g_BtlMenuWindowRecordsC: one column and 0x10 rows
+ * The same, on the summon list's MenuCursor at g_BtlMenuWindowRecordsC: one column and 16 rows
  * in all. Then refreshes command 2's availability.
  */
 // FUNCTION: FF7 0x006d9faf
@@ -3889,7 +3889,7 @@ void __cdecl Battle_WindowOpenSummonListResetCursor(void)
     cursor->colCount = 1;
     cursor->rowCount = 3;
     cursor->rowStep = 1;
-    cursor->totalRows = 0x10;
+    cursor->totalRows = 16;
     cursor->colWrapMode = MENU_CURSOR_WRAP_INTO_ROWS;
     cursor->rowWrapMode = MENU_CURSOR_CLAMP;
     cursor->unused8 = 0;
@@ -3902,7 +3902,7 @@ void __cdecl Battle_WindowOpenSummonListResetCursor(void)
 /*
  * Refreshes the selected character's mode-2 records, then in menu state 7 with no
  * input latch updates its cursor. Confirm computes the entry index, rejects
- * bit-2/0xFF entries with sound 3, otherwise saves item/index/auxiliary fields,
+ * bit-2/255 entries with sound 3, otherwise saves item/index/auxiliary fields,
  * plays sound 1, calls Battle_BeginTargetSelection and selects state 0 with prior state 7.
  */
 // FUNCTION: FF7 0x006da072
@@ -4258,7 +4258,7 @@ void __cdecl Battle_WindowOpenSlotScreen(void)
 
     cursor = &g_BtlMenuSlotScreenCursor;
     MenuCursor_Init(cursor, 0, 0, 2, 1, 0, 0, 2, 1, 0, 0, 1, 0, 0, 0);
-    for (i = 1; i < 0x1c; i++) {
+    for (i = 1; i < 28; i++) {
         if (g_BattleWindowStates[i] != BATTLE_WINDOW_STATE_CLOSED) {
             Battle_SetWindowStateClosing(i);
         }
@@ -4343,7 +4343,7 @@ void __cdecl Battle_WindowOpenWorriedChoice(void)
 
     cursor = &g_BtlMenuWorriedChoiceCursor;
     MenuCursor_Init(cursor, 0, 0, 2, 1, 0, 0, 2, 1, 0, 0, 1, 0, 0, 0);
-    for (i = 1; i < 0x20; i++) {
+    for (i = 1; i < 32; i++) {
         if (i == 9) {
             continue;
         }
@@ -4389,7 +4389,7 @@ void __cdecl Battle_WindowFrameWorriedChoice(void)
 void __cdecl Menu_BattleWindowOpenStep(short windowIndex)
 {
     if (windowIndex == 0) {
-        g_BattleMenuData[windowIndex].clipWidth += (short)(g_BattleMenuData[windowIndex].width / 0x2D);
+        g_BattleMenuData[windowIndex].clipWidth += (short)(g_BattleMenuData[windowIndex].width / 45);
         (g_BattleMenuData[windowIndex].clipHeight)++;
     } else {
         g_BattleMenuData[windowIndex].clipWidth += (short)(g_BattleMenuData[windowIndex].width / 5);
@@ -4440,7 +4440,7 @@ void __cdecl Menu_ClearBattleWindowStates(void)
 {
     short i;
 
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         g_BattleWindowStates[i] = BATTLE_WINDOW_STATE_CLOSED;
     }
 }
@@ -4463,7 +4463,7 @@ void Battle_ProcessCommandMenuInput(void)
     } v; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     if (g_BattleWindowStates[BATTLE_WINDOW_COMMAND_MENU] != BATTLE_WINDOW_STATE_CLOSED && gSavemap.party[g_BtlActiveActor] == PARTY_CHAR_NONE) {
-        for (v.i = 1; v.i < 0x20; v.i++) {
+        for (v.i = 1; v.i < 32; v.i++) {
             if (g_BattleWindowStates[v.i] != BATTLE_WINDOW_STATE_CLOSED) {
                 Battle_SetWindowStateClosing(v.i);
             }
@@ -4484,13 +4484,13 @@ void Battle_ProcessCommandMenuInput(void)
         Battle_ReopenQueuedCommandMenu();
         g_BtlMenuSelectionConfirmed = 1;
         g_BattleMenuState = -1;
-        for (v.i = 1; v.i < 0x20; v.i++) {
+        for (v.i = 1; v.i < 32; v.i++) {
             if (g_BattleWindowStates[v.i] != BATTLE_WINDOW_STATE_CLOSED) {
                 Battle_SetWindowStateClosing(v.i);
             }
         }
     }
-    for (v.i = 0; v.i < 0x20; v.i++) {
+    for (v.i = 0; v.i < 32; v.i++) {
         switch ((int)g_BattleWindowStates[v.i]) {
         case BATTLE_WINDOW_STATE_OPENING:
             Menu_BattleWindowOpenStep(v.i);
@@ -4909,7 +4909,7 @@ void __cdecl Battle_FlushMenuBatches2x(void)
     Gfx_EmptyRenderObjectBatch((int)g_MenuFlatRectGraphicsObject);
     InvalidateBatchGeneration(g_MenuWindowBgGraphicsObject);
     InvalidateBatchGeneration(g_MenuTextBoxQuadGraphicsObject);
-    GfxSetViewportRect(0, 0, 0x280, 0x1E0, (GfxEngineContext *)ctx);
+    GfxSetViewportRect(0, 0, 640, 480, (GfxEngineContext *)ctx);
 }
 
 /*

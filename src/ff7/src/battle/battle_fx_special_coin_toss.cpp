@@ -133,32 +133,32 @@ void __cdecl BattleFx_SpecialCoinTossTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frame < 0x10) {
+    if (taskPtr->frame < 16) {
         g_BattleSpecCoinTossFlashLevel += 4;
     }
-    if (taskPtr->frame > 0x36) {
+    if (taskPtr->frame > 54) {
         g_BattleSpecCoinTossFlashLevel -= 4;
     }
-    if (taskPtr->frame < 0x26) {
+    if (taskPtr->frame < 38) {
         for (i8 = 0; i8 < 3; i8++) {
             pChild = (BattleFxCoinTossBounceSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialCoinTossBouncingSpriteTask);
             pChild->posX = ((short *)&g_BattleSpecCoinTossSourceBonePos)[0];
             pChild->posY = ((short *)&g_BattleSpecCoinTossSourceBonePos)[1];
             pChild->posZ = g_BattleSpecCoinTossSourceBonePosZ;
             heading = rand() % 0x1000;
-            tempRadius = rand() % 0xC8;
-            pChild->velocityX = SinFixed(heading) * tempRadius >> 0xC;
-            pChild->velocityZ = CosFixed(heading) * tempRadius >> 0xC;
-            pChild->velocityY = 0xFFFFFF38 - rand() % 0xC8;
+            tempRadius = rand() % 200;
+            pChild->velocityX = SinFixed(heading) * tempRadius >> 12;
+            pChild->velocityZ = CosFixed(heading) * tempRadius >> 12;
+            pChild->velocityY = 0xFFFFFF38 - rand() % 200;
             pChild->variant = rand() % 4;
             pChild->angle = rand() % 0x1000;
         }
     }
-    if (taskPtr->frame == 0x3C) {
+    if (taskPtr->frame == 60) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
     }
     (taskPtr->frame)++;
-    if (taskPtr->frame == 0x46) {
+    if (taskPtr->frame == 70) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -190,7 +190,7 @@ void __cdecl BattleFx_SpecialCoinTossBouncingSpriteTask(void)
         frame.scaleMatrix.m[1][frame.vecIndex] = 0;
         frame.scaleMatrix.m[0][frame.vecIndex] = 0;
     }
-    if (frame.kinzanSlot->frameCounter < 0x16) {
+    if (frame.kinzanSlot->frameCounter < 22) {
         frame.phase = 8;
     } else {
         frame.phase = 0x1E - frame.kinzanSlot->frameCounter;
@@ -202,7 +202,7 @@ void __cdecl BattleFx_SpecialCoinTossBouncingSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.kinzanSlot->posX, frame.scaleMatrix.t, &frame.rotDepth);
-    frame.scaleMatrix.m[2][2] = 0x1000;
+    frame.scaleMatrix.m[2][2] = 0x1000 /* 1.0 */;
     frame.scaleMatrix.m[1][1] = frame.scaleMatrix.m[2][2];
     frame.scaleMatrix.m[0][0] = frame.scaleMatrix.m[1][1];
     RotMatrix(&frame.rotX, &frame.rotMatrix);
@@ -233,10 +233,10 @@ void __cdecl BattleFx_SpecialCoinTossBouncingSpriteTask(void)
         frame.kinzanSlot->posY = 0;
         frame.kinzanSlot->velocityY *= -1;
     }
-    frame.kinzanSlot->velocityY += 0x14;
-    frame.kinzanSlot->angle += 0x200;
+    frame.kinzanSlot->velocityY += 20;
+    frame.kinzanSlot->angle += 0x200 /* 45 deg */;
     (frame.kinzanSlot->frameCounter)++;
-    if (frame.kinzanSlot->frameCounter == 0x1E) {
+    if (frame.kinzanSlot->frameCounter == 30) {
         frame.kinzanSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

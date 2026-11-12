@@ -58,16 +58,16 @@ void __cdecl Mini_CondorStepEffectSequence(CondorEffectSequence *sequence, int s
                    0, 6, 6, 1, 6, 7, 4, 6, 7, 4, 1, 7};
     int lastResult;
 
-    if (sequence->tableIndex >= 0x40) {
+    if (sequence->tableIndex >= 64) {
         sequence->tableIndex = 0xFF;
         sequence->timer = 0;
-    } else if (sequence->tableIndex <= 0xA) {
+    } else if (sequence->tableIndex <= 10) {
         g_CondorEffectSpriteSlots[slot].drawFlags = 0;
         if (sequence->timer == 0) {
             sequence->tableIndex += 1;
             sequence->timer = n[sequence->tableIndex * 3 + 1] - 1;
             sequence->flags = (unsigned char)n[sequence->tableIndex * 3 + 2];
-            g_CondorEffectSpriteSlots[slot].duration = 0x340;
+            g_CondorEffectSpriteSlots[slot].duration = 832;
             g_CondorEffectSpriteSlots[slot].effectId = 0xF1;
             g_CondorEffectSpriteSlots[slot].drawFlags = 0;
         } else {
@@ -92,8 +92,8 @@ void __cdecl Mini_CondorStepEffectSequence(CondorEffectSequence *sequence, int s
         }
         g_CondorEffectSpriteSlots[slot].texX = (sequence->flags & 3) << 6;
         g_CondorEffectSpriteSlots[slot].texY = (sequence->flags & 4) << 3;
-        g_CondorEffectSpriteSlots[slot].screenX = sequence->posX + 0x180 - (unsigned short)g_CondorSnapshotX - 0xA0;
-        g_CondorEffectSpriteSlots[slot].screenY = sequence->posY + 0x268 - (unsigned short)g_CondorSnapshotY - 0x68;
+        g_CondorEffectSpriteSlots[slot].screenX = sequence->posX + 384 - (unsigned short)g_CondorSnapshotX - 160;
+        g_CondorEffectSpriteSlots[slot].screenY = sequence->posY + 616 - (unsigned short)g_CondorSnapshotY - 104;
         g_CondorEffectSpriteSlots[slot].baseSize = 0x40;
         g_CondorEffectSpriteSlots[slot].baseHeight = 0x20;
         lastResult = Gfx_EmitTexturedRect(g_CondorViewportOffsetX + g_CondorEffectSpriteSlots[slot].screenX * g_CondorViewportScale,
@@ -111,13 +111,13 @@ void __cdecl Mini_CondorStepEffectSequence(CondorEffectSequence *sequence, int s
     } else {
         sequence->tableIndex += 1;
     }
-    if (sequence->tableIndex == 0xC) {
+    if (sequence->tableIndex == 12) {
         pRecPtr = &buf;
-        pRecPtr->posX = sequence->posX + 0x100;
-        pRecPtr->posY = sequence->posY + 0x210;
+        pRecPtr->posX = sequence->posX + 256;
+        pRecPtr->posY = sequence->posY + 528;
         pRecPtr->posZ = sequence->posZ;
-        pRecPtr->extentX = 0x40;
-        pRecPtr->extentY = 0x20;
+        pRecPtr->extentX = 64;
+        pRecPtr->extentY = 32;
         pRecPtr->scalePercent = sequence->scalePercent;
         pRecPtr->attackerSlot = sequence->attackerSlot;
         Mini_CondorApplyHitToTargets(pRecPtr);
@@ -133,7 +133,7 @@ short __cdecl Mini_CondorApplyHitToTargets(CondorRecord *hit)
     CondorRecord *pTarget;
     short index;
 
-    index = Mini_CondorFindNearestOtherRecordInRange(hit, 0x14, 0x28);
+    index = Mini_CondorFindNearestOtherRecordInRange(hit, 20, 40);
     if (g_CondorMatchCount != 0) {
         for (index = 0; index < g_CondorMatchCount; index++) {
             pTarget = g_CondorMatchListState.entries[index].peer;
@@ -196,7 +196,7 @@ void __cdecl Mini_CondorApplyRecordDamage(CondorRecord *target)
     if (hp == 0) {
         if (target->retired == 0) {
             target->retired = 0xFF;
-            if (target->unitIndex < 0x10) {
+            if (target->unitIndex < 16) {
                 g_CondorPlayerUnitCount--;
             } else {
                 g_CondorSpawnCount--;
@@ -222,15 +222,15 @@ void __cdecl Mini_CondorStepEffectSequenceAlt(CondorEffectSequence *sequence, in
                    4, 6, 6, 4, 3, 7, 4, 2, 7, 4, 1, 7};
     CondorBatchPrimitive *vertexPtr;
 
-    if (sequence->tableIndex >= 0x40) {
+    if (sequence->tableIndex >= 64) {
         sequence->tableIndex = 0xFF;
         sequence->timer = 0;
-    } else if (sequence->tableIndex <= 0xA) {
+    } else if (sequence->tableIndex <= 10) {
         if (sequence->timer == 0) {
             sequence->tableIndex += 1;
             sequence->timer = n[sequence->tableIndex * 3 + 1] - 1;
             sequence->flags = (unsigned char)n[sequence->tableIndex * 3 + 2];
-            g_CondorEffectSpriteSlots[slot].duration = 0x340;
+            g_CondorEffectSpriteSlots[slot].duration = 832;
             g_CondorEffectSpriteSlots[slot].effectId = 0xF1;
             g_CondorEffectSpriteSlots[slot].drawFlags = 0;
         } else {
@@ -255,8 +255,8 @@ void __cdecl Mini_CondorStepEffectSequenceAlt(CondorEffectSequence *sequence, in
         }
         g_CondorEffectSpriteSlots[slot].texX = (sequence->flags & 3) << 6;
         g_CondorEffectSpriteSlots[slot].texY = (sequence->flags & 4) * 8 + 0x40;
-        g_CondorEffectSpriteSlots[slot].screenX = sequence->posX + 0x180 - (unsigned short)g_CondorSnapshotX - 0xA0;
-        g_CondorEffectSpriteSlots[slot].screenY = sequence->posY + 0x268 - (unsigned short)g_CondorSnapshotY - 0x6E;
+        g_CondorEffectSpriteSlots[slot].screenX = sequence->posX + 384 - (unsigned short)g_CondorSnapshotX - 160;
+        g_CondorEffectSpriteSlots[slot].screenY = sequence->posY + 616 - (unsigned short)g_CondorSnapshotY - 110;
         g_CondorEffectSpriteSlots[slot].baseSize = 0x40;
         g_CondorEffectSpriteSlots[slot].baseHeight = 0x20;
         vertexPtr = (CondorBatchPrimitive *)Gfx_EmitTexturedRect(g_CondorEffectSpriteSlots[slot].screenX * g_CondorViewportScale + g_CondorViewportOffsetX,
@@ -282,13 +282,13 @@ void __cdecl Mini_CondorStepEffectSequenceAlt(CondorEffectSequence *sequence, in
     } else {
         sequence->tableIndex += 1;
     }
-    if (sequence->tableIndex == 0xA) {
+    if (sequence->tableIndex == 10) {
         pRecPtr = &buf;
-        pRecPtr->posX = sequence->posX + 0x100;
-        pRecPtr->posY = sequence->posY + 0x210;
+        pRecPtr->posX = sequence->posX + 256;
+        pRecPtr->posY = sequence->posY + 528;
         pRecPtr->posZ = sequence->posZ;
-        pRecPtr->extentX = 0x20;
-        pRecPtr->extentY = 0x20;
+        pRecPtr->extentX = 32;
+        pRecPtr->extentY = 32;
         pRecPtr->scalePercent = sequence->scalePercent;
         pRecPtr->attackerSlot = sequence->attackerSlot;
         Mini_CondorApplyHitToTargets(pRecPtr);
@@ -306,12 +306,12 @@ void __cdecl Mini_CondorTickUnitTimers(void)
 
     if (g_CondorRecordMode <= CONDOR_RECORD_MODE_CURSOR && g_CondorSelectPanelPhase == CONDOR_PANEL_CLOSED && g_CondorMainState != CONDOR_STATE_RECORD_SELECT_WHEEL) {
         unit = &g_CondorRecordTable.records[40];
-        for (recordIndex = 0x28; recordIndex < 0x46; recordIndex++) {
+        for (recordIndex = 40; recordIndex < 70; recordIndex++) {
             if (unit->status != 0) {
                 (unit->actionCountdown)--;
                 if (unit->actionCountdown == 0) {
                     unit->actionCountdown = unit->timerReload;
-                    if (unit->unitIndex == 0x18) {
+                    if (unit->unitIndex == 24) {
                         Mini_CondorUpdateUnitByType(unit);
                     } else {
                         Mini_CondorTickTimedRecordState(unit);
@@ -341,16 +341,16 @@ void __cdecl Mini_CondorUpdateUnitByType(CondorRecord *unit)
         break;
     case CONDOR_SHOT_ARC:
     case CONDOR_SHOT_ARC_ALT:
-        unit->rotX += 0x200;
+        unit->rotX += 0x200 /* 45 deg */;
         result = unit->costOrArcVelY >> 8;
         unit->worldY += result;
-        unit->costOrArcVelY += 0x14;
+        unit->costOrArcVelY += 20;
         break;
     case CONDOR_SHOT_FAST:
     case CONDOR_SHOT_FAST_ALT:
         Mini_CondorIntegrateUnitVelocity(unit);
         Mini_CondorIntegrateUnitVelocity(unit);
-        unit->rotX = 0x200;
+        unit->rotX = 0x200 /* 45 deg */;
         if (unit->counter > 3) {
             if (unit->attackerSlot == 4) {
                 result = Mini_CondorApplyHitToTargets(unit);
@@ -409,7 +409,7 @@ short __cdecl Mini_CondorApplyHitToFirstTarget(CondorRecord *source)
     CondorRecord *pTarget;
     short index;
 
-    index = Mini_CondorFindNearestOtherRecordInRange(source, 0, 0x14);
+    index = Mini_CondorFindNearestOtherRecordInRange(source, 0, 20);
     if (g_CondorMatchCount != 0) {
         for (index = 0; index < g_CondorMatchCount; index++) {
             pTarget = g_CondorMatchListState.entries[index].peer;
@@ -473,14 +473,14 @@ void __cdecl Mini_CondorTickTimedRecordState(CondorRecord *record)
             record->status = 0;
         }
     }
-    if (record->unitIndex == 0xB) {
+    if (record->unitIndex == 11) {
         res = Mini_CondorFindNearestOtherRecordInRange(record, 0x14, 0x28);
         if (res != -1) {
             record->status = 0;
             record->retired = 0;
             res = Mini_CondorSpawnEffectSlot(record);
             contact = &g_CondorRecordTable.records[record->contactSlot];
-            if (contact->status != 0 && contact->unitIndex == 0xD) {
+            if (contact->status != 0 && contact->unitIndex == 13) {
                 contact->candidate = contact->candidate & 0x7F;
             }
         }
@@ -555,7 +555,7 @@ short __cdecl Mini_CondorSpawnMovingRecord(CondorRecord *source, int motionKind)
     } frame;
 #pragma pack(pop)
 
-    frame.recordIndexShort = Mini_CondorFindInactiveRecordInRange(0x28, 0x45);
+    frame.recordIndexShort = Mini_CondorFindInactiveRecordInRange(40, 69);
     if ((frame.recordIndex & 0xFFFF) != 0xFFFF) {
         if ((short)motionKind <= 1) {
             frame.unitKind = 0x18;
@@ -578,8 +578,8 @@ short __cdecl Mini_CondorSpawnMovingRecord(CondorRecord *source, int motionKind)
         frame.condorRecord->worldY = source->worldY;
         frame.condorRecord->worldZ = source->worldZ;
         frame.condorRecord->angle = source->angle;
-        frame.condorRecord->posZ -= 0x14;
-        frame.condorRecord->worldZ -= 0x14;
+        frame.condorRecord->posZ -= 20;
+        frame.condorRecord->worldZ -= 20;
         frame.condorRecord->scalePercent = source->scalePercent;
         frame.condorRecord->actionCountdown = 1;
         frame.condorRecord->timerReload = 1;
@@ -614,7 +614,7 @@ short __cdecl Mini_CondorSpawnMovingRecord(CondorRecord *source, int motionKind)
         switch (frame.condorRecord->uOperand) {
         case CONDOR_SHOT_ARC:
         case CONDOR_SHOT_ARC_ALT:
-            if (frame.condorRecord->velX == 0x100) {
+            if (frame.condorRecord->velX == 256) {
                 frame.distance = frame.condorRecord->posX - frame.condorRecord->targetX;
             } else {
                 frame.distance = frame.condorRecord->posY - frame.condorRecord->targetY;
@@ -644,8 +644,8 @@ void __cdecl Mini_CondorApplySourceStateToRecord(CondorRecord *source, CondorRec
     case CONDOR_UNIT_SHOOTER:
     case CONDOR_UNIT_ENEMY_SHOOTER:
         spawned->operand = CONDOR_SHOT_FAST;
-        spawned->posY -= 0x10;
-        spawned->worldY -= 0x10;
+        spawned->posY -= 16;
+        spawned->worldY -= 16;
         spawned->extentY = 2;
         spawned->extentX = 2;
         Mini_CondorRestartSfxPanned(SFX_ID_CONDOR_FAST_SHOT, 3, (short)spawned->posX);
@@ -662,23 +662,23 @@ void __cdecl Mini_CondorApplySourceStateToRecord(CondorRecord *source, CondorRec
         break;
     case CONDOR_UNIT_CATAPULT:
         spawned->operand = CONDOR_SHOT_ARC;
-        spawned->posY -= 0x28;
-        spawned->worldY -= 0x28;
+        spawned->posY -= 40;
+        spawned->worldY -= 40;
         Mini_CondorPlaySfxPanned(SFX_ID_CONDOR_ARC_SHOT, 2, (short)spawned->posX);
         break;
     case CONDOR_UNIT_FIRE_CATAPULT:
         spawned->operand = CONDOR_SHOT_ARC_ALT;
-        spawned->posY -= 0x28;
-        spawned->worldY -= 0x28;
+        spawned->posY -= 40;
+        spawned->worldY -= 40;
         Mini_CondorPlaySfxPanned(SFX_ID_CONDOR_ARC_SHOT, 2, (short)spawned->posX);
         break;
     case CONDOR_UNIT_SUB_SHOT:
         if (spawned->uOperand == CONDOR_SHOT_SPIN) {
-            spawned->posX -= 0x10;
-            spawned->worldX -= 0x10;
+            spawned->posX -= 16;
+            spawned->worldX -= 16;
         } else {
-            spawned->posX += 0x10;
-            spawned->worldX += 0x10;
+            spawned->posX += 16;
+            spawned->worldX += 16;
         }
         spawned->operand = CONDOR_SHOT_SPIN;
     }
@@ -693,20 +693,20 @@ void __cdecl Mini_CondorResetAuxiliaryRecords(void)
     CondorRecord *rec;
 
     rec = (CondorRecord *)g_CondorRecordTable.auxiliaryRecords;
-    rec->worldX = 0x400;
-    rec->posX = 0x400;
+    rec->worldX = 1024;
+    rec->posX = 1024;
     rec->rotX = 0;
     rec->rotY = 0;
     rec->rotZ = 0;
     rec = &g_CondorRecordTable.records[68];
-    rec->worldX = 0x400;
-    rec->posX = 0x400;
+    rec->worldX = 1024;
+    rec->posX = 1024;
     rec->rotX = 0;
     rec->rotY = 0;
     rec->rotZ = 0;
     rec = &g_CondorRecordTable.records[67];
-    rec->worldX = 0x400;
-    rec->posX = 0x400;
+    rec->worldX = 1024;
+    rec->posX = 1024;
     rec->rotX = 0;
     rec->rotY = 0;
     rec->rotZ = 0;
@@ -731,8 +731,8 @@ void __cdecl Mini_CondorRefreshSelectionAuxRecords(void)
         aux->worldY = pSelected->worldY;
         aux->worldZ = pSelected->worldZ;
         aux->angle = pSelected->sAngle;
-        aux->posZ -= 0xA;
-        aux->worldZ -= 0xA;
+        aux->posZ -= 10;
+        aux->worldZ -= 10;
         aux->worldY -= (short)(char)g_CondorSelectionAuxByteTable[pSelected->unitIndex];
         aux->rotX = 0;
         aux->rotY = 0;
@@ -782,19 +782,19 @@ void __cdecl Mini_CondorRefreshSelectionAuxRecords(void)
         aux->worldY = pSelected->worldY;
         aux->worldZ = pSelected->worldZ;
         aux->angle = pSelected->sAngle;
-        aux->posZ -= 0xA;
-        aux->worldZ -= 0xA;
-        aux->rotX = 0x400;
+        aux->posZ -= 10;
+        aux->worldZ -= 10;
+        aux->rotX = 0x400 /* 90 deg */;
         aux->rotY = 0;
         aux->rotZ = 0;
         aux->drawAngle = 0;
-        if (aux - g_CondorRecordTable.records == 0x44) {
+        if (aux - g_CondorRecordTable.records == 68) {
             aux->rotY = pSelected->sAngle;
         } else {
             /* Retail caller reads residual EAX/AX as `short` after `void Mini_CondorAngleMagnitudeToOffset` returns. */
             ((short(__cdecl *)(short, short))Mini_CondorAngleMagnitudeToOffset)(pSelected->sDrawAngle, (*(short *)&g_CondorSelectedAttackRangeBuf));
             aux->worldX = pSelected->worldX + g_CondorVecX;
-            aux->worldY = pSelected->worldY + g_CondorVecY + -0x28;
+            aux->worldY = pSelected->worldY + g_CondorVecY + -40;
             if (pSelected->unitIndex == 8) {
                 aux->ringOldest = *(int *)&g_CondorScreenDistanceBuf / (unsigned short)g_CondorStepDivisor << 1;
             } else {
@@ -828,15 +828,15 @@ void __cdecl Mini_CondorInitAuxiliaryRecords(void)
     frame.initX.y = frame.initZ;
     frame.initX.x = frame.initX.y;
     frame.condorRecord = (CondorRecord *)g_CondorRecordTable.auxiliaryRecords;
-    g_pCondorConfigEntry->unitIndex = 0x1A;
+    g_pCondorConfigEntry->unitIndex = 26;
     Mini_CondorInitRecordFromConfig(frame.condorRecord, g_pCondorConfigEntry, 0x45, &frame.initX);
     frame.condorRecord = &g_CondorRecordTable.records[68];
-    g_pCondorConfigEntry->unitIndex = 0x1B;
+    g_pCondorConfigEntry->unitIndex = 27;
     Mini_CondorInitRecordFromConfig(frame.condorRecord, g_pCondorConfigEntry, 0x44, &frame.initX);
     frame.condorRecord->operand = 0;
     Mini_CondorRecordCodeHookNoOp(frame.condorRecord, 1);
     frame.condorRecord = &g_CondorRecordTable.records[67];
-    g_pCondorConfigEntry->unitIndex = 0x1B;
+    g_pCondorConfigEntry->unitIndex = 27;
     Mini_CondorInitRecordFromConfig(frame.condorRecord, g_pCondorConfigEntry, 0x43, &frame.initX);
     frame.condorRecord->operand = 1;
     Mini_CondorRecordCodeHookNoOp(frame.condorRecord, 2);
@@ -865,7 +865,7 @@ short __cdecl Mini_CondorSpawnRecordAtSource(CondorRecord *source, short kind)
     } frame;
 #pragma pack(pop)
 
-    frame.recordIndexShort = Mini_CondorFindInactiveRecordInRange(0x28, 0x45);
+    frame.recordIndexShort = Mini_CondorFindInactiveRecordInRange(40, 69);
     if ((frame.recordIndex & 0xFFFF) != 0xFFFF) {
         frame.condorRecord = &g_CondorRecordTable.records[(frame.recordIndex & 0xFFFF)];
         g_pCondorConfigEntry->unitIndex = kind;

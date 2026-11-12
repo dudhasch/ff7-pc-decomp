@@ -288,7 +288,7 @@ unsigned char g_bssPad_00bcc804[4] = {0};
 // GLOBAL: FF7 0x00bcc808
 Int64Pair g_BattleSummonRamuhActorPositions[10] = {0};
 // GLOBAL: FF7 0x00bcc858
-unsigned char g_BattleSummonRamuhActorShakeDeltas[0x4] = {0};
+unsigned char g_BattleSummonRamuhActorShakeDeltas[4] = {0};
 unsigned char g_bssPad_00bcc85c[4] = {0};
 unsigned char g_bssPad_00bcc860[1080] = {0};
 // GLOBAL: FF7 0x00bccc98
@@ -356,7 +356,7 @@ void __cdecl BattleFx_SummonLoadResRamuh(void)
 // FUNCTION: FF7 0x00596ff1
 int __cdecl BattleFx_SummonEnterRamuh(int targetMask, int actorIdx)
 {
-    memcpy((void *)&(g_BattleSummonRamuhMeshSource1.polygonOffset), (void *)&g_BattleSummonRamuhMeshSource2, 0x1524);
+    memcpy((void *)&(g_BattleSummonRamuhMeshSource1.polygonOffset), (void *)&g_BattleSummonRamuhMeshSource2, 5412);
     g_pBattleSummonRamuhOrigin = (struct BattleFxEulerAngles16 *)&g_BattleSummonRamuhMeshSource1.cameraScriptData;
     g_BattleSummonRamuhEffectScale = 0;
     g_BattleSummonRamuhParticleColor.effectScale = g_BattleSummonRamuhEffectScale;
@@ -383,14 +383,14 @@ void __cdecl BattleFx_SummonBeginRamuh(int targetMask, int actorIdx)
     g_BattleSummonRamuhBasisMatrix.transX = g_BattleSummonRamuhBasisMatrix.transY;
     Battle_GetActorMaskCentroid(g_BattleSummonRamuhActorIdx = targetMask, (short *)centroid);
     if (centroid->vz < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonRamuhBasisMatrix.transZ = centroid->vz + 0x1388;
-        g_BattleSummonRamuhParticleColor.effectScale = 0x800;
+        g_BattleSummonRamuhBasisMatrix.transZ = centroid->vz + 5000;
+        g_BattleSummonRamuhParticleColor.effectScale = 0x800 /* 0.5 */;
     } else {
-        g_BattleSummonRamuhBasisMatrix.transZ = centroid->vz - 0x1388;
+        g_BattleSummonRamuhBasisMatrix.transZ = centroid->vz - 5000;
         g_BattleSummonRamuhParticleColor.effectScale = 0;
     }
     RotMatrix((SVECTOR *)&g_BattleSummonRamuhParticleColor, &g_BattleSummonRamuhBasisMatrix);
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         if ((g_BattleSummonRamuhActorIdx & 1 << i) != 0) {
             g_BattleSummonRamuhActorPositions[i] = *(Int64Pair *)&g_BattleActorRecords[i].posX;
         }
@@ -527,7 +527,7 @@ void __cdecl BattleFx_RamuhRunCameraScript(void)
             case SUMMON_CAMERA_MOVE_EASED:
                 g_pBattleSummonRamuhCameraTrack->stepCount = BattleFx_RamuhReadCameraScriptOperand(&pTaskPtr->script);
                 g_pBattleSummonRamuhCameraTrack->progress = 0;
-                g_pBattleSummonRamuhCameraTrack->stepSize = 0x1000 / g_pBattleSummonRamuhCameraTrack->stepCount;
+                g_pBattleSummonRamuhCameraTrack->stepSize = 4096 / g_pBattleSummonRamuhCameraTrack->stepCount;
                 g_pBattleSummonRamuhCameraTrack->deltaX = g_pBattleSummonRamuhCameraTrack->posX;
                 g_pBattleSummonRamuhCameraTrack->deltaY = g_pBattleSummonRamuhCameraTrack->posY;
                 g_pBattleSummonRamuhCameraTrack->deltaZ = g_pBattleSummonRamuhCameraTrack->posZ;
@@ -577,17 +577,17 @@ void __cdecl BattleFx_RamuhRunCameraScript(void)
                 pVector->offsetY = g_pBattleSummonRamuhCameraOther->posY - g_pBattleSummonRamuhCameraTrack->deltaY;
                 pVector->offsetZ = g_pBattleSummonRamuhCameraOther->posZ - g_pBattleSummonRamuhCameraTrack->deltaZ;
                 VectorNormalToSVector((int *)pVector, (short *)deltaVec);
-                g_pBattleSummonRamuhCameraTrack->posX = g_pBattleSummonRamuhCameraOther->posX - (deltaVec->vx * g_pBattleSummonRamuhCameraTrack->progress >> 0xC);
-                g_pBattleSummonRamuhCameraTrack->posY = g_pBattleSummonRamuhCameraOther->posY - (deltaVec->vy * g_pBattleSummonRamuhCameraTrack->progress >> 0xC);
-                g_pBattleSummonRamuhCameraTrack->posZ = g_pBattleSummonRamuhCameraOther->posZ - (deltaVec->vz * g_pBattleSummonRamuhCameraTrack->progress >> 0xC);
+                g_pBattleSummonRamuhCameraTrack->posX = g_pBattleSummonRamuhCameraOther->posX - (deltaVec->vx * g_pBattleSummonRamuhCameraTrack->progress >> 12);
+                g_pBattleSummonRamuhCameraTrack->posY = g_pBattleSummonRamuhCameraOther->posY - (deltaVec->vy * g_pBattleSummonRamuhCameraTrack->progress >> 12);
+                g_pBattleSummonRamuhCameraTrack->posZ = g_pBattleSummonRamuhCameraOther->posZ - (deltaVec->vz * g_pBattleSummonRamuhCameraTrack->progress >> 12);
                 break;
             case SUMMON_CAMERA_MOVE_EASED:
                 g_pBattleSummonRamuhCameraTrack->progress += g_pBattleSummonRamuhCameraTrack->stepSize;
                 easeVal = g_pBattleSummonRamuhCameraTrack->progress;
                 easeVal = SinFixed(SinFixed(easeVal / 4) / 4);
-                g_pBattleSummonRamuhCameraTrack->posX = g_pBattleSummonRamuhCameraTrack->deltaX + (g_pBattleSummonRamuhCameraTrack->stepX * easeVal >> 0xC);
-                g_pBattleSummonRamuhCameraTrack->posY = g_pBattleSummonRamuhCameraTrack->deltaY + (g_pBattleSummonRamuhCameraTrack->stepY * easeVal >> 0xC);
-                g_pBattleSummonRamuhCameraTrack->posZ = g_pBattleSummonRamuhCameraTrack->deltaZ + (g_pBattleSummonRamuhCameraTrack->stepZ * easeVal >> 0xC);
+                g_pBattleSummonRamuhCameraTrack->posX = g_pBattleSummonRamuhCameraTrack->deltaX + (g_pBattleSummonRamuhCameraTrack->stepX * easeVal >> 12);
+                g_pBattleSummonRamuhCameraTrack->posY = g_pBattleSummonRamuhCameraTrack->deltaY + (g_pBattleSummonRamuhCameraTrack->stepY * easeVal >> 12);
+                g_pBattleSummonRamuhCameraTrack->posZ = g_pBattleSummonRamuhCameraTrack->deltaZ + (g_pBattleSummonRamuhCameraTrack->stepZ * easeVal >> 12);
             }
             (g_pBattleSummonRamuhCameraTrack->stepCount)--;
             g_pBattleSummonRamuhCameraTrack = (struct BattleFxCameraOrbitState *)&g_BattleSummonRamuhSavedActorBitmasks;
@@ -692,7 +692,7 @@ void __cdecl BattleFx_SummonRamuhTimelineTask(void)
         }
     } else {
         frameIndex -= 4;
-        if (frameIndex < 0xF) {
+        if (frameIndex < 15) {
             if (frameIndex == 0) {
                 spawned = (BattleFxRamuhTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonRamuhFourFrameSpriteSetTask);
                 spawned->posZ = 0;
@@ -701,7 +701,7 @@ void __cdecl BattleFx_SummonRamuhTimelineTask(void)
                 spawned->rotZ = 0;
                 spawned->rotY = 0;
                 spawned->rotX = 0;
-                spawned->timer = 0xF;
+                spawned->timer = 15;
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
             }
             if (frameIndex % 4 == 0) {
@@ -717,44 +717,44 @@ void __cdecl BattleFx_SummonRamuhTimelineTask(void)
                 spawned->posZ = position->posZ;
             }
         } else {
-            frameIndex -= 0xF;
+            frameIndex -= 15;
             if (frameIndex < 5) { /* empty first arm: lib/codegen.h */
             } else {
                 frameIndex -= 5;
-                if (frameIndex < 0xA) {
+                if (frameIndex < 10) {
                     if (frameIndex == 0) {
                         Battle_AllocateResourceSlot(BattleFx_SummonRamuhSpawnBurstChildrenTask);
                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
                     }
                 } else {
-                    frameIndex -= 0xA;
-                    if (frameIndex < 0xA) {
+                    frameIndex -= 10;
+                    if (frameIndex < 10) {
                         if (frameIndex == 0) {
                             spawned = (BattleFxRamuhTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonRamuhMorphingMeshTask);
                             spawned->ownerSlot = 0;
                             BattleFx_SummonRamuhSetCameraShakeAmplitude(0x32);
                         }
                     } else {
-                        frameIndex -= 0xA;
-                        if (frameIndex < 0x2D) {
+                        frameIndex -= 10;
+                        if (frameIndex < 45) {
                             if (frameIndex == 0) {
                                 BattleFx_SummonRamuhSetCameraShakeAmplitude(0x1E);
                             }
                         } else {
-                            frameIndex -= 0x2D;
-                            if (frameIndex < 0xF) {
+                            frameIndex -= 45;
+                            if (frameIndex < 15) {
                                 if (frameIndex == 0) {
                                     BattleFx_SummonRamuhSetCameraShakeAmplitude(0xA);
                                 }
-                                if (frameIndex == 0xE) {
+                                if (frameIndex == 14) {
                                     BattleFx_StartScreenFlashRamp(1);
                                 }
                             } else {
-                                frameIndex -= 0xF;
-                                if (frameIndex < 0x32) {
+                                frameIndex -= 15;
+                                if (frameIndex < 50) {
                                     if (frameIndex == 0) {
                                         BattleFx_SummonRamuhSetCameraShakeAmplitude(0);
-                                        BattleFx_FadeOutScreenFlashRamp(0xA);
+                                        BattleFx_FadeOutScreenFlashRamp(10);
                                         ringRec = (BattleFxSummonRamuhRingRecord *)Battle_AllocSceneMessage(1);
                                         ringRec->transX = *(short *)&g_BattleSummonRamuhBasisMatrix.transX;
                                         ringRec->angleY = g_pBattleSummonRamuhOrigin->angleY;
@@ -762,19 +762,19 @@ void __cdecl BattleFx_SummonRamuhTimelineTask(void)
                                         ringRec->facing = g_BattleSummonRamuhParticleColor.effectScale ^ 0x800;
                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                     }
-                                    if (frameIndex == 0xA) {
+                                    if (frameIndex == 10) {
                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 3);
                                     }
                                 } else {
-                                    frameIndex -= 0x32;
-                                    if (frameIndex < 0x1E) {
+                                    frameIndex -= 50;
+                                    if (frameIndex < 30) {
                                         if (frameIndex == 0) {
                                             g_pBattleSummonRamuhOrigin = (struct BattleFxEulerAngles16 *)&g_BattleSummonRamuhRotXYZ;
                                         }
                                         BattleFx_SummonRamuhTransformAttachPointToEffectSpace();
                                     } else {
-                                        frameIndex -= 0x1E;
-                                        if (frameIndex < 0xA) {
+                                        frameIndex -= 30;
+                                        if (frameIndex < 10) {
                                             BattleFx_SummonRamuhTransformAttachPointToEffectSpace();
                                             if (frameIndex == 0) {
                                                 spawned = (BattleFxRamuhTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonRamuhExpandingSpriteSetTask);
@@ -794,25 +794,25 @@ void __cdecl BattleFx_SummonRamuhTimelineTask(void)
                                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 4);
                                             }
                                         } else {
-                                            frameIndex -= 0xA;
-                                            if (frameIndex < 0xF) {
+                                            frameIndex -= 10;
+                                            if (frameIndex < 15) {
                                                 if (frameIndex == 0) {
                                                     Battle_AllocateResourceSlot(BattleFx_SummonRamuhSpawnEightModelsTask);
                                                     Battle_AllocateResourceSlot(BattleFx_SummonRamuhSpawnAngledSpritesTask);
                                                 }
                                             } else {
-                                                frameIndex -= 0xF;
-                                                if (frameIndex < 0x1E) {
+                                                frameIndex -= 15;
+                                                if (frameIndex < 30) {
                                                     if (frameIndex == 0) {
                                                         ringRec = (BattleFxSummonRamuhRingRecord *)Battle_AllocSceneMessage(2);
                                                         BattleFx_SummonRamuhSetActorShakeAmplitude(0x32);
                                                     }
                                                 } else {
-                                                    frameIndex -= 0x1E;
-                                                    if (frameIndex < 0x14) {
+                                                    frameIndex -= 30;
+                                                    if (frameIndex < 20) {
                                                         if (frameIndex == 0) {
                                                             BattleFx_SummonRamuhSetActorShakeAmplitude(0);
-                                                            for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+                                                            for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                                                                 if ((g_BattleSummonRamuhActorIdx & 1 << actorIndex) != 0) {
                                                                     spawned = (BattleFxRamuhTimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonRamuhFadingBillboardSpriteTask);
                                                                     Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].targetBone, (short *)((int)spawned + 4));
@@ -905,7 +905,7 @@ void __cdecl BattleFx_SummonRamuhQuadBillboardTask(void)
     g_BattleSummonRamuhSpriteReq1.object = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
     task->cameraAngleY = g_pBattleSummonRamuhOrigin->angleY;
     g_BattleSummonRamuhSpriteReq1.uvOffset = task->spriteIndex << 5;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x4000, -0x80);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x4000 /* 4.0 */, -128);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleSummonRamuhSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->spriteIndex)++;
@@ -1053,9 +1053,9 @@ void __cdecl BattleFx_SummonRamuhSpawnBurstChildrenTask(void)
         child->posZ = 0;
         child->posY = 0;
         child->posX = 0;
-        child->velX = (rand() & 0x3FF) - 0x200;
+        child->velX = (rand() & 0x3FF) - 512;
         child->velY = 0;
-        child->velZ = (rand() & 0x3FF) - 0x200;
+        child->velZ = (rand() & 0x3FF) - 512;
         child->frameCounter = 3;
     }
     if (taskSlot->frameCounter % 4 == 0) {
@@ -1071,7 +1071,7 @@ void __cdecl BattleFx_SummonRamuhSpawnBurstChildrenTask(void)
         child->posZ = position->posZ;
     }
     (taskSlot->frameCounter)++;
-    if (taskSlot->frameCounter >= 0x9D) {
+    if (taskSlot->frameCounter >= 157) {
         taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1103,10 +1103,10 @@ void __cdecl BattleFx_SummonRamuhMorphingMeshTask(void)
     SetRotMatrix(matrix);
     SetTransMatrix(matrix);
     RefreshGlobalTransformState();
-    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xE, g_BattleSummonRamuhLoadedRes)));
-    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xF, g_BattleSummonRamuhLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x10, g_BattleSummonRamuhLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0x11, g_BattleSummonRamuhLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(14, g_BattleSummonRamuhLoadedRes)));
+    Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(15, g_BattleSummonRamuhLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(16, g_BattleSummonRamuhLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(17, g_BattleSummonRamuhLoadedRes)));
     g_BattleOverlayDrawListHead = BattleFx_SummonRamuhDrawPsxMesh((BattleFxProceduralMesh *)&g_BattleSummonRamuhRotAngles2[2], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         while (taskSlot->spriteFrame == 0) {
@@ -1126,15 +1126,15 @@ void __cdecl BattleFx_SummonRamuhMorphingMeshTask(void)
         (taskSlot->spriteFrame)--;
         if (taskSlot->tableIndex < 8) {
             for (i = 0; i < 3; i++) {
-                vertex = (Vec3sPacked *)(rand() % 0x88 * 8 + (char *)&g_BattleSummonRamuhMeshSource1.vertexBase);
+                vertex = (Vec3sPacked *)(rand() % 136 * 8 + (char *)&g_BattleSummonRamuhMeshSource1.vertexBase);
                 pDebris = (BattleFxRamuhMorphParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonRamuhTumblingModelTask);
                 pDebris->posX = vertex->vx;
                 pDebris->posY = vertex->vy;
                 pDebris->posZ = vertex->vz;
                 randScale = rand() % 0x100;
-                pDebris->velocityX = vertex->vx * randScale >> 0xC;
-                pDebris->velocityY = -(rand() % 0x64 + 0xC8);
-                pDebris->velocityZ = vertex->vz * randScale >> 0xC;
+                pDebris->velocityX = vertex->vx * randScale >> 12;
+                pDebris->velocityY = -(rand() % 100 + 200);
+                pDebris->velocityZ = vertex->vz * randScale >> 12;
                 pDebris->spinX = (rand() & 0xF) - 8;
                 pDebris->spinY = (rand() & 0xF) - 8;
                 pDebris->spinZ = (rand() & 0xF) - 8;
@@ -1145,9 +1145,9 @@ void __cdecl BattleFx_SummonRamuhMorphingMeshTask(void)
             for (i = 0; i < 3; i++) {
                 pDebris = (BattleFxRamuhMorphParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonRamuhBillboardSpriteTask);
                 randScale = rand() & 0xFFF;
-                pOffsetVec->vx = SinFixed(randScale) * 0x9C4 >> 0xC;
+                pOffsetVec->vx = SinFixed(randScale) * 0x9C4 >> 12;
                 pOffsetVec->vy = 0;
-                pOffsetVec->vz = CosFixed(randScale) * 0x9C4 >> 0xC;
+                pOffsetVec->vz = CosFixed(randScale) * 0x9C4 >> 12;
                 RotTransPoint((void *)pOffsetVec, (int *)screenPointPtr, &bits);
                 pDebris->posX = screenPointPtr->posX;
                 pDebris->posY = screenPointPtr->posY;
@@ -1389,7 +1389,7 @@ void __cdecl BattleFx_SummonRamuhTumblingModelTask(void)
         frameCount -= 8;
         if (frameCount < 4) {
             g_BattleSummonRamuhTransformMatrix1.flagWord = 0x88;
-            g_BattleSummonRamuhTransformMatrix1.fixedFraction = (frameCount << 0xC) / 4;
+            g_BattleSummonRamuhTransformMatrix1.fixedFraction = (frameCount << 12) / 4;
             g_BattleSummonRamuhTransformMatrix1.fieldPtr = Gfx_ModelTableGetRenderObject(3, g_BattleSummonRamuhLoadedRes);
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -1453,7 +1453,7 @@ void __cdecl BattleFx_SummonRamuhComputeMeshVertexDeltas(Vec3sPacked *poseA, Vec
 {
     int i;
 
-    for (i = 0; i < 0x88; i++) {
+    for (i = 0; i < 136; i++) {
         deltas->vx = (poseB->vx - poseA->vx) / divisor;
         deltas->vy = (poseB->vy - poseA->vy) / divisor;
         deltas->vz = (poseB->vz - poseA->vz) / divisor;
@@ -1471,7 +1471,7 @@ void __cdecl BattleFx_SummonRamuhAddMeshVertexDeltas(Vec3sPacked *dest, Vec3sPac
 {
     int i;
 
-    for (i = 0; i < 0x88; i++) {
+    for (i = 0; i < 136; i++) {
         dest->vx += deltas->vx;
         dest->vy += deltas->vy;
         dest->vz += deltas->vz;
@@ -1493,15 +1493,15 @@ void __cdecl BattleFx_SummonRamuhExpandingSpriteSetTask(void)
     task = (BattleFxExpandingSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     frameCount = task->frameCount;
     if (frameCount < 5) {
-        scale = (frameCount << 0xB) / 5;
+        scale = (frameCount << 11) / 5;
     } else {
         task->ownerSlot = -1;
         return;
     }
     BattleFx_InstallBillboardMatrix(&task->billboardMatrix, (short)scale, 0);
     RefreshGlobalTransformState();
-    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xB, g_BattleSummonRamuhLoadedRes)));
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xC, g_BattleSummonRamuhLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(11, g_BattleSummonRamuhLoadedRes)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(12, g_BattleSummonRamuhLoadedRes)));
     g_BattleSummonRamuhSpriteFrameTable.flash.recordCount = task->frameCount % (char)g_BattleSummonRamuhResourceDefs[0x64];
     g_BattleOverlayDrawListHead = BattleFx_SummonRamuhDrawPsxSpriteRecordsShift5(&g_BattleSummonRamuhSpriteFrameTable.flash, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
@@ -1603,15 +1603,15 @@ void __cdecl BattleFx_SummonRamuhRadialLineBurstTask(void)
 
     taskSlot = BATTLE_CURRENT_TASK_SLOT;
     cnt = taskSlot->frameCounter;
-    if (cnt < 0xA) {
-        billboardScale = (cnt << 0xB) / 5;
+    if (cnt < 10) {
+        billboardScale = (cnt << 11) / 5;
         color = 0x3200FFFF;
     } else {
-        cnt -= 0xA;
+        cnt -= 10;
         if (cnt < 5) {
             color = cnt * -0xFF / 5 + 0xFF;
             color = color << 8 | 0x32000000 | color;
-            billboardScale = 0x2000;
+            billboardScale = 0x2000 /* 2.0 */;
         } else {
             taskSlot->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1651,19 +1651,19 @@ void __cdecl BattleFx_SummonRamuhDrawRadialLineBurst(int color)
     frame.block->vy = 0;
     frame.block->vz = 0;
     frame.scratch0 = ProjectPointHardware(frame.block, (short *)frame.input, &frame.projected, &frame.scratch1) >> 2;
-    frame.block->vy = 0x640;
+    frame.block->vy = 1600;
     ProjectPointHardware(frame.block, (short *)frame.output, &frame.projected, &frame.scratch1);
     frame.primitive = (struct BattleFxRamuhLineBurstPrim *)Gfx_GetPsxPacketScratchPtr();
-    for (frame.i = 0; frame.i < 0x10; frame.i++) {
-        frame.angle += 0x100;
+    for (frame.i = 0; frame.i < 16; frame.i++) {
+        frame.angle += 0x100 /* 22.5 deg */;
         frame.primitive->header = 0x6000000;
         frame.primitive->color0 = color;
         frame.primitive->color2 = 0;
         frame.primitive->color1 = 0;
         frame.primitive->xy0 = *(int *)frame.input;
         frame.primitive->xy1 = *(int *)frame.output;
-        frame.block->vx = SinFixed(frame.angle) * 0x640 >> 0xC;
-        frame.block->vy = CosFixed(frame.angle) * 0x640 >> 0xC;
+        frame.block->vx = SinFixed(frame.angle) * 0x640 >> 12;
+        frame.block->vy = CosFixed(frame.angle) * 0x640 >> 12;
         ProjectPointHardware(frame.block, (short *)frame.output, &frame.projected, &frame.scratch1);
         frame.primitive->xy2 = *(int *)frame.output;
         /* Retail caller prototype (float, float) -> void preserved for /Od argument promotion on `Gfx_SetBlendFactorPair`. */
@@ -1693,7 +1693,7 @@ void __cdecl BattleFx_SummonRamuhSpawnEightModelsTask(void)
         child->clearedWordB = 0;
         child->clearedWordA = 0;
         child->spinRate = rand() % 0x1B0 - 0x600;
-        child->angle = (spawnIndex << 0xC) / 8 + rand() % 0x100;
+        child->angle = (spawnIndex << 12) / 8 + rand() % 0x100;
         child->angleZ = 0;
     }
     *(short *)selfAddr = 0xFFFF;
@@ -1727,19 +1727,19 @@ void __cdecl BattleFx_SummonRamuhScaledSpriteSetBillboardTask(void)
         g_BattleSummonRamuhSpriteFrameTable.bolt.colorR = g_BattleSummonRamuhSpriteFrameTable.bolt.colorG;
     } else {
         count -= 2;
-        if (count < 0x26) {
-            scaleHistory->historyNewest = 0x7000;
-            scaleHistory->historyMiddle = 0x7000;
-            scaleHistory->historyOldest = 0x7000;
+        if (count < 38) {
+            scaleHistory->historyNewest = 0x7000 /* 7.0 */;
+            scaleHistory->historyMiddle = 0x7000 /* 7.0 */;
+            scaleHistory->historyOldest = 0x7000 /* 7.0 */;
             g_BattleSummonRamuhSpriteFrameTable.bolt.colorB = (char)0x80;
             g_BattleSummonRamuhSpriteFrameTable.bolt.colorG = g_BattleSummonRamuhSpriteFrameTable.bolt.colorB;
             g_BattleSummonRamuhSpriteFrameTable.bolt.colorR = g_BattleSummonRamuhSpriteFrameTable.bolt.colorG;
         } else {
-            count -= 0x26;
+            count -= 38;
             if (count < 5) {
-                scaleHistory->historyNewest = 0x7000;
-                scaleHistory->historyMiddle = 0x7000;
-                scaleHistory->historyOldest = 0x7000;
+                scaleHistory->historyNewest = 0x7000 /* 7.0 */;
+                scaleHistory->historyMiddle = 0x7000 /* 7.0 */;
+                scaleHistory->historyOldest = 0x7000 /* 7.0 */;
                 g_BattleSummonRamuhSpriteFrameTable.bolt.colorB = (char)(count * -0x80 / 5 + 0x80);
                 g_BattleSummonRamuhSpriteFrameTable.bolt.colorG = g_BattleSummonRamuhSpriteFrameTable.bolt.colorB;
                 g_BattleSummonRamuhSpriteFrameTable.bolt.colorR = g_BattleSummonRamuhSpriteFrameTable.bolt.colorG;
@@ -1797,8 +1797,8 @@ void __cdecl BattleFx_SummonRamuhFadingBillboardSpriteTask(void)
     BattleFxPhaseControllerTask *task;
 
     task = (BattleFxPhaseControllerTask *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSummonRamuhSpriteTransform1.fieldPtr = Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSummonRamuhLoadedRes);
-    g_BattleSummonRamuhSpriteTransform1.secondPtr = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSummonRamuhLoadedRes);
+    g_BattleSummonRamuhSpriteTransform1.fieldPtr = Gfx_ModelTableGetLoadedRecord(10, g_BattleSummonRamuhLoadedRes);
+    g_BattleSummonRamuhSpriteTransform1.secondPtr = Gfx_ModelTableGetSpriteObject(10, g_BattleSummonRamuhLoadedRes);
     frameCount = task->frameCount;
     if (frameCount < 0) {
         g_BattleSummonRamuhSpriteColor4.colorB = 0x80;
@@ -1806,8 +1806,8 @@ void __cdecl BattleFx_SummonRamuhFadingBillboardSpriteTask(void)
         (g_BattleSummonRamuhSpriteColor4.colorR) = g_BattleSummonRamuhSpriteColor4.colorG;
     } else {
         frameCount = frameCount;
-        if (frameCount < 0x14) {
-            g_BattleSummonRamuhSpriteColor4.colorB = frameCount * -0x80 / 0x14 + 0x80;
+        if (frameCount < 20) {
+            g_BattleSummonRamuhSpriteColor4.colorB = frameCount * -0x80 / 20 + 0x80;
             g_BattleSummonRamuhSpriteColor4.colorG = g_BattleSummonRamuhSpriteColor4.colorB;
             (g_BattleSummonRamuhSpriteColor4.colorR) = g_BattleSummonRamuhSpriteColor4.colorG;
         } else {
@@ -1815,7 +1815,7 @@ void __cdecl BattleFx_SummonRamuhFadingBillboardSpriteTask(void)
             return;
         }
     }
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x4000, 0xFFFFFE0C);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x4000 /* 4.0 */, 0xFFFFFE0C);
     if (g_BattleSummonRamuhSpriteTransform1.fieldPtr != 0) {
         g_BattleSummonRamuhSpriteColor4.frameIndex = task->frameCount % *(int *)((char *)*(int *)g_BattleSummonRamuhSpriteTransform1.fieldPtr + 4);
     } else {
@@ -1843,13 +1843,13 @@ void __cdecl BattleFx_SummonRamuhSpawnAngledSpritesTask(void)
     }
     for (spawnIdx = 0; spawnIdx < 2; spawnIdx++) {
         child = (BattleFxSummonRamuhAngledSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonRamuhAngledSpriteTask);
-        child->posX = rand() % 0xA00 - 0x500;
-        child->posY = rand() % 0x780 - 0x3C0;
-        child->scale = 0x1000;
-        child->sizeW = rand() % 0xC00 + 0x400;
+        child->posX = rand() % 2560 - 1280;
+        child->posY = rand() % 1920 - 960;
+        child->scale = 0x1000 /* 1.0 */;
+        child->sizeW = rand() % 3072 + 1024;
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0x2D) {
+    if (task->frameCounter >= 45) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1863,8 +1863,8 @@ void __cdecl BattleFx_SummonRamuhAngledSpriteTask(void)
     BattleFxRamuhAngledSprite *a;
 
     a = (BattleFxRamuhAngledSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSummonRamuhSpriteColor4.frameTable = Gfx_ModelTableGetLoadedRecord(0xD, g_BattleSummonRamuhLoadedRes);
-    g_BattleSummonRamuhSpriteColor4.spriteValue = Gfx_ModelTableGetSpriteObject(0xD, g_BattleSummonRamuhLoadedRes);
+    g_BattleSummonRamuhSpriteColor4.frameTable = Gfx_ModelTableGetLoadedRecord(13, g_BattleSummonRamuhLoadedRes);
+    g_BattleSummonRamuhSpriteColor4.spriteValue = Gfx_ModelTableGetSpriteObject(13, g_BattleSummonRamuhLoadedRes);
     g_BattleSummonRamuhAngledSpriteRequest.matrix.m[1][1] = a->color;
     g_BattleSummonRamuhAngledSpriteRequest.matrix.m[0][0] = g_BattleSummonRamuhAngledSpriteRequest.matrix.m[1][1];
     g_BattleSummonRamuhAngledSpriteRequest.matrix.t[0] = a->posX;
@@ -1894,7 +1894,7 @@ void __cdecl BattleFx_SummonRamuhTransformAttachPointToEffectSpace(void)
     int attachMtx[8];
     VECTOR attachX;
 
-    Battle3d_GetActorAttachMatrix(3, 0x2D, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x820]);
+    Battle3d_GetActorAttachMatrix(3, 45, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x820]);
     Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, &g_BattleActorRecords[3].boneNodes5[0x820], (PsxMatrix *)attachMtx);
     SetRotMatrix(attachMtx);
     SetTransMatrix(attachMtx);
@@ -1936,7 +1936,7 @@ void __cdecl BattleFx_SummonRamuhActorShakeTask(void)
     int actorIndex;
 
     taskPtr = (BattleFxSummonRamuhActorShake *)BATTLE_CURRENT_TASK_SLOT;
-    for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    for (actorIndex = 0; actorIndex < 10; actorIndex++) {
         if ((g_BattleSummonRamuhActorIdx & 1 << actorIndex) != 0) {
             if ((taskPtr->frameCount & 1) != 0) {
                 g_BattleActorRecords[actorIndex].posX += taskPtr->shakeX;

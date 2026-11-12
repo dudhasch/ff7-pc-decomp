@@ -164,7 +164,7 @@ void __cdecl BattleFx_LimitFuryBrandTimelineTask(void)
         pPiece->posZ = task->centerZ;
         pPiece->rotX = 0;
         pPiece->velocityY = 0;
-        pPiece->rotZ = 0xFF00;
+        pPiece->rotZ = 0xFF00 /* 5737.5 deg */;
         pPiece->pushLength = task->negatedRadius;
         BattleFx_StartScreenFlashRamp(1);
     }
@@ -179,7 +179,7 @@ void __cdecl BattleFx_LimitFuryBrandTimelineTask(void)
         pPiece->posZ = task->centerZ;
         pPiece->rotX = 0;
         pPiece->velocityY = 0;
-        pPiece->rotZ = 0x100;
+        pPiece->rotZ = 0x100 /* 22.5 deg */;
         pPiece->pushLength = task->negatedRadius;
         BattleFx_StartScreenFlashRamp(1);
     }
@@ -201,15 +201,15 @@ void __cdecl BattleFx_LimitFuryBrandTimelineTask(void)
     if (task->phase == 0x3C) {
         BattleFx_FadeOutScreenFlashRamp(1);
     }
-    if (task->phase >= 0x41 && task->phase < 0x46) {
+    if (task->phase >= 65 && task->phase < 70) {
         for (index = 0; index < 3; index++) {
             pPiece = (BattleFxLimitFuryBrandPiece *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitFuryBrandAnimatedSpriteTask);
             pPiece->ownerSlot = rand() & 1;
             angle = rand() & 0xFFF;
-            pPiece->posX = task->centerX + (SinFixed(angle) * 0x190 >> 0xC);
-            pPiece->posY = -(rand() % 0x3E8);
-            pPiece->posZ = task->centerZ + (CosFixed(angle) * 0x190 >> 0xC);
-            pPiece->velocityY = -(rand() % 0x32 + 0x32);
+            pPiece->posX = task->centerX + (SinFixed(angle) * 0x190 >> 12);
+            pPiece->posY = -(rand() % 1000);
+            pPiece->posZ = task->centerZ + (CosFixed(angle) * 0x190 >> 12);
+            pPiece->velocityY = -(rand() % 50 + 50);
             pPiece->pushLength = 0;
         }
     }
@@ -290,7 +290,7 @@ void __cdecl BattleFx_LimitFuryBrandAnimatedSpriteTask(void)
         g_BattleLimitFuryBrandSpriteReqB.spriteData = Gfx_ModelTableGetSpriteObject(4, g_BattleLimitFuryBrandLoadedResTable);
     }
     g_BattleLimitFuryBrandSpriteReqB.frame = task->frameIndex;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800, task->pushLength);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1800 /* 1.5 */, task->pushLength);
     g_BattleLimitFuryBrandDrawHandle = BattleFx_SubmitSpriteDraw(&g_BattleLimitFuryBrandSpriteReqB.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitFuryBrandDrawHandle);
     if (g_BattleIsPaused == 0) {
         task->posY += task->velocityY;
@@ -320,14 +320,14 @@ void __cdecl BattleFx_LimitFuryBrandSpawnFadingModelsTask(void)
     }
     for (i = 0; i < 2; i++) {
         child = (BattleFxFuryBrandFadingSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitFuryBrandFadingModelTask);
-        angle = ((pTaskSlot->frame * 2 + i) << 0xB) / 0x1E;
+        angle = ((pTaskSlot->frame * 2 + i) << 11) / 30;
         child->posX = pTaskSlot->posX;
-        child->posY = -((0x1000 - CosFixed(angle)) * 0x1F4 >> 0xC);
+        child->posY = -((4096 - CosFixed(angle)) * 0x1F4 >> 12);
         child->posZ = pTaskSlot->posZ;
-        child->scale = SinFixed(angle) * 0x300 >> 0xC;
+        child->scale = SinFixed(angle) * 0x300 /* 0.1875 */ >> 12;
     }
     (pTaskSlot->frame)++;
-    if (pTaskSlot->frame >= 0xF) {
+    if (pTaskSlot->frame >= 15) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -375,7 +375,7 @@ void __cdecl BattleFx_LimitFuryBrandFadingModelTask(void)
     memset(frame.zero.values, 0, 12);
     g_BattleLimitFuryBrandModelReqA.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleLimitFuryBrandLoadedResTable);
     frame.dataBlock = Gfx_GetPsxScratchpadPtr(0);
-    g_BattleLimitFuryBrandModelReqA.fadeLevel = (frame.fadeState->frameIndex << 0xC) / 8;
+    g_BattleLimitFuryBrandModelReqA.fadeLevel = (frame.fadeState->frameIndex << 12) / 8;
     frame.diagX = frame.fadeState->scale;
     frame.diagY = frame.diagX;
     frame.localMatrix = frame.diagY;
@@ -413,14 +413,14 @@ void __cdecl BattleFx_LimitFuryBrandGrowingFadeModelTask(void)
         g_BattleLimitFuryBrandModelReqB.fadeLevel = 0;
     } else {
         age -= 5;
-        if (age < 0xA) {
-            g_BattleLimitFuryBrandModelReqB.fadeLevel = (age << 0xC) / 0xA;
+        if (age < 10) {
+            g_BattleLimitFuryBrandModelReqB.fadeLevel = (age << 12) / 10;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    (g_BattleLimitFuryBrandScaleDelta.scale) = (task->frame << 0xC) / 0xF;
+    (g_BattleLimitFuryBrandScaleDelta.scale) = (task->frame << 12) / 15;
     g_BattleLimitFuryBrandScaleValue = (g_BattleLimitFuryBrandScaleDelta.scale);
     g_BattleLimitFuryBrandScaleMatrix = g_BattleLimitFuryBrandScaleValue;
     g_BattleLimitFuryBrandScaleDelta.x = task->scaleDeltaX;
@@ -446,9 +446,9 @@ void __cdecl BattleFx_LimitFuryBrandSoundTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x37) {
+    if (task->frameCounter == 55) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->posX), 0x13A);
-    } else if (task->frameCounter == 0x4B) {
+    } else if (task->frameCounter == 75) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->posX), 0x174);
         task->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x13A, 0xF);

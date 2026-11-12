@@ -155,14 +155,14 @@ void __cdecl BattleFx_SpecialWingScalesScreenFlashTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x10) {
+    if (task->frameCounter < 16) {
         g_BattleSpecWingScalesFlashIntensity += 3;
     }
-    if (task->frameCounter > 0x54) {
+    if (task->frameCounter > 84) {
         g_BattleSpecWingScalesFlashIntensity -= 3;
     }
     (task->frameCounter)++;
-    if (task->frameCounter == 0x64) {
+    if (task->frameCounter == 100) {
         g_BattleSpecWingScalesParticleActiveFlag = 1;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -213,12 +213,12 @@ void __cdecl BattleFx_SpecialWingScalesTimelineTask(void)
         workTravel->posZ = pCur->startZ;
         dx8 = pCur->endX - workTravel->posX;
         dz = pCur->endZ - workTravel->posZ;
-        workTravel->speed = SqrtToInt(dx8 * dx8 + dz * dz) / 0x18;
+        workTravel->speed = SqrtToInt(dx8 * dx8 + dz * dz) / 24;
     }
-    if (pCur->frame == 0x46) {
+    if (pCur->frame == 70) {
         Battle_PostActorHitOrHurtMessage(pCur->actorIndex);
     }
-    if (pCur->frame == 0x30) {
+    if (pCur->frame == 48) {
         workTravel = (BattleFxWingScalesTravel *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWingScalesImpactModelTask);
         workTravel->posX = pCur->endX;
         workTravel->posY = pCur->endY;
@@ -226,7 +226,7 @@ void __cdecl BattleFx_SpecialWingScalesTimelineTask(void)
         Battle_PlaySfxPannedToActor(0x19B, (short)pCur->actorIndex, 0);
     }
     (pCur->frame)++;
-    if (pCur->frame == 0x50) {
+    if (pCur->frame == 80) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -275,18 +275,18 @@ void __cdecl BattleFx_SpecialWingScalesImpactModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter < 0x14) {
+    if (frame.slot->frameCounter < 20) {
         for (frame.axisIndex = 0; frame.axisIndex < 2; frame.axisIndex++) {
             frame.spriteAngle = ((rand()) % 4096);
             frame.sprite = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialWingScalesVariantSpriteTask);
-            frame.sprite->posX = frame.slot->baseX + (SinFixed(frame.spriteAngle) * 0x258 >> 0xC);
-            frame.sprite->posY = frame.slot->baseY + frame.slot->frameCounter * 0x32 + rand() % 0x320 + -0x3E8;
-            frame.sprite->posZ = frame.slot->baseZ + (CosFixed(frame.spriteAngle) * 0x258 >> 0xC);
+            frame.sprite->posX = frame.slot->baseX + (SinFixed(frame.spriteAngle) * 0x258 >> 12);
+            frame.sprite->posY = frame.slot->baseY + frame.slot->frameCounter * 50 + rand() % 800 + -1000;
+            frame.sprite->posZ = frame.slot->baseZ + (CosFixed(frame.spriteAngle) * 0x258 >> 12);
             frame.sprite->variant = 0;
         }
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x1E) {
+    if (frame.slot->frameCounter == 30) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -319,7 +319,7 @@ void __cdecl BattleFx_SpecialWingScalesVariantSpriteTask(void)
         return;
     }
     if (local.p->variant == 0) {
-        local.p->posY += 0x14;
+        local.p->posY += 20;
     }
     if ((g_BattleSpecWingScalesSpriteReq1.spriteResource) != 0) {
         (local.p->frameIndex)++;
@@ -355,7 +355,7 @@ void __cdecl BattleFx_SpecialWingScalesSpawnParticlePairsTask(void)
         return;
     }
     if ((frame.slot->frameCounter % 2) == 0) {
-        frame.radius = (SinFixed(frame.slot->frameCounter << 6) * 0x140 >> 0xC) + 0x140;
+        frame.radius = (SinFixed(frame.slot->frameCounter << 6) * 0x140 >> 12) + 320;
         frame.pairRecord = (BattleFxWingScalesParticlePair *)(((short)BattleFx_SpecialWingScalesClaimParticlePairSlot() << 5) + (char *)&g_BattleSpecWingScalesParticlePairSlots);
         frame.pairRecord->posX = frame.slot->posX;
         frame.pairRecord->posY = frame.slot->posY;
@@ -369,7 +369,7 @@ void __cdecl BattleFx_SpecialWingScalesSpawnParticlePairsTask(void)
         frame.pointZ.vz = frame.slot->speed;
         frame.rotX.vx = 0;
         frame.rotX.vy = (-SinFixed(frame.slot->frameCounter * 0x88)) / 16;
-        frame.rotX.vz = 0x200;
+        frame.rotX.vz = 0x200 /* 45 deg */;
         RotMatrixZYX(&frame.rotX, &frame.rotMatrix);
         RotateMatrixY(frame.slot->angleY, &frame.rotMatrix);
         frame.rotMatrix.t[2] = 0;
@@ -380,7 +380,7 @@ void __cdecl BattleFx_SpecialWingScalesSpawnParticlePairsTask(void)
         RotTransPointToInt16(&frame.pointZ, (short *)&frame.pairRecord->velocityX, &frame.depthZ);
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x20) {
+    if (frame.slot->frameCounter == 32) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -395,7 +395,7 @@ void __cdecl BattleFx_SpecialWingScalesInitParticlePairPool(void)
     short i;
 
     cursor = (BattleFxWingScalesParticlePair *)&g_BattleSpecWingScalesParticlePairSlots;
-    for (i = 0; i < 0x96; i++) {
+    for (i = 0; i < 150; i++) {
         cursor->frameIndex = 0;
         cursor->status = 0;
         cursor++;
@@ -417,7 +417,7 @@ void __cdecl BattleFx_SpecialWingScalesParticlePairPoolTask(void)
 
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     rec = (BattleFxWingScalesParticlePair *)&g_BattleSpecWingScalesParticlePairSlots;
-    for (g_BattleSpecWingScalesParticleLoopIndex = 0; g_BattleSpecWingScalesParticleLoopIndex < 0x96; g_BattleSpecWingScalesParticleLoopIndex++) {
+    for (g_BattleSpecWingScalesParticleLoopIndex = 0; g_BattleSpecWingScalesParticleLoopIndex < 150; g_BattleSpecWingScalesParticleLoopIndex++) {
         if (rec->status == 1) {
             BattleFx_SpecialWingScalesDrawParticlePairSprites();
             if (rec->status == -1) {
@@ -453,11 +453,11 @@ void __cdecl BattleFx_SpecialWingScalesDrawParticlePairSprites(void)
     g_BattleSpecWingScalesSpriteReq2.res12 = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecWingScalesLoadedResTable);
     g_BattleSpecWingScalesSpriteReq2.res24 = Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecWingScalesLoadedResTable);
     g_BattleSpecWingScalesSpriteReq2.object28 = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(&frame.pairRecord->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.pairRecord->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecWingScalesSpriteReq2.frame = frame.pairRecord->spriteFrame;
     g_BattleSpecWingScalesDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecWingScalesSpriteReq2.res8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecWingScalesDrawListHead);
-    frame.spritePosX.vx = frame.pairRecord->posX + (CosFixed(frame.pairRecord->angle) * frame.pairRecord->radius >> 0xC);
-    frame.spritePosX.vy = frame.pairRecord->posY + (SinFixed(frame.pairRecord->angle) * frame.pairRecord->radius >> 0xC);
+    frame.spritePosX.vx = frame.pairRecord->posX + (CosFixed(frame.pairRecord->angle) * frame.pairRecord->radius >> 12);
+    frame.spritePosX.vy = frame.pairRecord->posY + (SinFixed(frame.pairRecord->angle) * frame.pairRecord->radius >> 12);
     frame.spritePosX.vz = frame.pairRecord->posZ;
     BattleFx_InstallBillboardMatrix(&frame.spritePosX, (short)frame.pairRecord->scale, 0);
     g_BattleSpecWingScalesSpriteReq2.secondFrame = frame.pairRecord->frameIndex % *(int *)((char *)*(int *)g_BattleSpecWingScalesSpriteReq2.res8 + 4);
@@ -468,7 +468,7 @@ void __cdecl BattleFx_SpecialWingScalesDrawParticlePairSprites(void)
     frame.pairRecord->posX += frame.pairRecord->velocityX;
     frame.pairRecord->posY += frame.pairRecord->velocityY;
     frame.pairRecord->posZ += frame.pairRecord->velocityZ;
-    frame.pairRecord->angle += 0x100;
+    frame.pairRecord->angle += 0x100 /* 22.5 deg */;
     if (g_BattleSpecWingScalesSpriteReq2.res8 != 0) {
         (frame.pairRecord->frameIndex)++;
         if (frame.pairRecord->frameIndex >> 1 >= *(int *)((char *)*(int *)g_BattleSpecWingScalesSpriteReq2.res8 + 4)) {
@@ -489,7 +489,7 @@ short __cdecl BattleFx_SpecialWingScalesClaimParticlePairSlot(void)
     short i;
 
     cursor = (BattleFxWingScalesParticlePair *)&g_BattleSpecWingScalesParticlePairSlots;
-    for (i = 0; i < 0x96; i++) {
+    for (i = 0; i < 150; i++) {
         if (cursor->status == 0) {
             cursor->status = 1;
             return i;

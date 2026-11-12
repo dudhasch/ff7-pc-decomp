@@ -102,7 +102,7 @@ void __cdecl BattleFx_LimitBeginDice(int targetMask, int actorIdx)
     g_BattleFxActiveDrawListPtr = Gfx_GetPsxPacketScratchPtr();
     g_BattleLimitDiceTargetMask = targetMask;
     i = 0;
-    for (found = 0; i < 0xA; i++) {
+    for (found = 0; i < 10; i++) {
         if ((targetMask & 1 << i) != 0) {
             found++;
             if (found == 1) {
@@ -185,8 +185,8 @@ void __cdecl BattleFx_LimitDiceTimelineTask(void)
             }
             frame.dieState = (BattleFxDiceTumbleState *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDiceTumblingDieTask);
             *(Int64Pair *)&frame.dieState->posX = *(Int64Pair *)(&frame.bonePos);
-            frame.dieState->posX += (short)(rand() % 0xC8 - 0x64);
-            frame.dieState->posZ += (short)(rand() % 0xC8 - 0x64);
+            frame.dieState->posX += (short)(rand() % 200 - 100);
+            frame.dieState->posZ += (short)(rand() % 200 - 100);
             frame.dieState->spawned = 0;
             frame.dieState->scale = 0x5D1;
             frame.dieState->state = BATTLE_DICE_TUMBLE_FALL;
@@ -197,26 +197,26 @@ void __cdecl BattleFx_LimitDiceTimelineTask(void)
             RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
             TransformVectorToInt32((PsxMatrix *)&frame.rotMatrix, &g_BattleLimitDiceModelDrawRequest, &frame.rotVecX);
             frame.randScale = rand() % 0x1E + 0x50;
-            g_BattleLimitDiceDies[frame.recordIndex].velocityX = frame.randScale * frame.rotVecX >> 0xC;
-            g_BattleLimitDiceDies[frame.recordIndex].velocityY = -(rand() % 0x5A + 0x140);
-            g_BattleLimitDiceDies[frame.recordIndex].velocityZ = frame.randScale * frame.rotVecZ >> 0xC;
-            g_BattleLimitDiceDies[frame.recordIndex].gravity = rand() % 0x14 + 0x50;
+            g_BattleLimitDiceDies[frame.recordIndex].velocityX = frame.randScale * frame.rotVecX >> 12;
+            g_BattleLimitDiceDies[frame.recordIndex].velocityY = -(rand() % 90 + 320);
+            g_BattleLimitDiceDies[frame.recordIndex].velocityZ = frame.randScale * frame.rotVecZ >> 12;
+            g_BattleLimitDiceDies[frame.recordIndex].gravity = rand() % 20 + 80;
             g_BattleLimitDiceDies[frame.recordIndex].spinStep = 0;
             g_BattleLimitDiceDies[frame.recordIndex].spinAngle = 0;
             g_BattleLimitDiceDies[frame.recordIndex].angleZ = 0;
             g_BattleLimitDiceDies[frame.recordIndex].angle = 0;
             g_BattleLimitDiceDies[frame.recordIndex].angleStep = rand() % 0x64 + 0x190;
-            g_BattleLimitDiceDies[frame.recordIndex].angleZStep = rand() % 0x5A + 0x154;
+            g_BattleLimitDiceDies[frame.recordIndex].angleZStep = rand() % 90 + 340;
             *(BattleVec4i *)g_BattleLimitDiceDies[frame.recordIndex].moveDir = *(BattleVec4i *)(&frame.rotVecX);
             g_BattleLimitDiceDies[frame.recordIndex].directionIndex = frame.nibble;
             frame.recordIndex++;
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.bonePos), 0x15);
     }
-    if (frame.timeline->frameCounter == 0x37) {
+    if (frame.timeline->frameCounter == 55) {
         Battle_PostActorHitOrHurtMessage(g_BattleLimitDiceFirstTargetIdx);
     }
-    if (frame.timeline->frameCounter >= 0x3C) {
+    if (frame.timeline->frameCounter >= 60) {
         frame.timeline->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.timeline->frameCounter)++;
@@ -301,7 +301,7 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
         if (g_BattleIsPaused != 0) {
             break;
         }
-        if (frame.tumbleRec->posY < -0x64) {
+        if (frame.tumbleRec->posY < -100) {
             frame.tumbleRec->posX += frame.dieRec->velocityX;
             frame.tumbleRec->posY += frame.dieRec->velocityY;
             frame.tumbleRec->posZ += frame.dieRec->velocityZ;
@@ -309,13 +309,13 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
             frame.dieRec->gravity -= (short)(frame.dieRec->gravity >> 4);
             frame.dieRec->angle += frame.dieRec->angleStep;
             frame.dieRec->angleZ += frame.dieRec->angleZStep;
-            if (frame.tumbleRec->posY > -0x64) {
+            if (frame.tumbleRec->posY > -100) {
                 frame.tumbleRec->posY = 0xFF9C;
             }
         } else {
             TransformVectorToInt32((PsxMatrix *)&frame.rotMatrix, (void *)((frame.dieRec->directionIndex << 4) + (char *)&g_BattleLimitDiceCollisionDirections), &frame.vecX);
             frame.snapIndex = ComputeAngleBetweenVectors((VECTOR *)&frame.vecX, (VECTOR *)&g_BattleLimitDiceCollisionRefVector, (VECTOR *)frame.dieRec->turnAxis);
-            if (frame.snapIndex > 0x200) {
+            if (frame.snapIndex > 512) {
                 frame.tumbleRec->state = BATTLE_DICE_TUMBLE_HOP;
                 if ((frame.snapIndex & 1) != 0) {
                     frame.spinAngle = rand() % 0x1000;
@@ -326,12 +326,12 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
                     TransformVectorToInt16(&frame.turnMatrix, (void *)frame.dieRec, (void *)frame.dieRec);
                     frame.dieRec->velocityX = frame.dieRec->velocityX / 3 << 1;
                     frame.dieRec->velocityZ = frame.dieRec->velocityZ / 3 << 1;
-                    frame.dieRec->velocityY = -(rand() % 0x28 + 0x64);
-                    frame.dieRec->gravity = rand() % 0x10 + 0x20;
+                    frame.dieRec->velocityY = -(rand() % 40 + 100);
+                    frame.dieRec->gravity = rand() % 16 + 32;
                     frame.tmpScalar = BattleFx_LimitDiceCountHopFrames(0, frame.dieRec->velocityY, frame.dieRec->gravity, 0);
                     frame.dieRec->spinAngle = 0;
-                    if (frame.snapIndex > 0x400) {
-                        frame.snapIndex = 0x400;
+                    if (frame.snapIndex > 1024) {
+                        frame.snapIndex = 1024;
                     }
                     frame.dieRec->spinStep = (frame.snapIndex + 0x1000) / frame.tmpScalar;
                     frame.dieRec->spinFramesLeft = frame.tmpScalar;
@@ -368,13 +368,13 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
         break;
     case BATTLE_DICE_TUMBLE_HOP:
         if (g_BattleIsPaused == 0) {
-            if (frame.tumbleRec->posY < -0x64 && frame.dieRec->spinFramesLeft > 0) {
+            if (frame.tumbleRec->posY < -100 && frame.dieRec->spinFramesLeft > 0) {
                 frame.tumbleRec->posX += frame.dieRec->velocityX;
                 frame.tumbleRec->posY += frame.dieRec->velocityY;
                 frame.tumbleRec->posZ += frame.dieRec->velocityZ;
                 frame.dieRec->velocityY += frame.dieRec->gravity;
                 frame.dieRec->gravity -= (short)(frame.dieRec->gravity >> 4);
-                if (frame.tumbleRec->posY > -0x64) {
+                if (frame.tumbleRec->posY > -100) {
                     frame.tumbleRec->posY = 0xFF9C;
                 }
             } else {
@@ -390,7 +390,7 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
         } else {
             TransformVectorToInt32((PsxMatrix *)&frame.rotMatrix, (void *)((frame.dieRec->directionIndex << 4) + (char *)&g_BattleLimitDiceCollisionDirections), &frame.vecX);
             frame.snapIndex = ComputeAngleBetweenVectors((VECTOR *)&frame.vecX, (VECTOR *)&g_BattleLimitDiceCollisionRefVector, &frame.collisionAxis);
-            if (frame.snapIndex > 0x200) {
+            if (frame.snapIndex > 512) {
                 frame.spinAngle = rand() % 0x1000;
                 frame.rotX.vx = 0;
                 frame.rotX.vy = *(short *)&frame.spinAngle;
@@ -400,8 +400,8 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
                 frame.tumbleRec->state = BATTLE_DICE_TUMBLE_HOP;
                 frame.dieRec->velocityX = frame.dieRec->velocityX / 3 << 1;
                 frame.dieRec->velocityZ = frame.dieRec->velocityZ / 3 << 1;
-                frame.dieRec->velocityY = -(rand() % 0x1E + 0x50);
-                frame.dieRec->gravity = rand() % 0xA + 0x1A;
+                frame.dieRec->velocityY = -(rand() % 30 + 80);
+                frame.dieRec->gravity = rand() % 10 + 26;
                 frame.tmpScalar = BattleFx_LimitDiceCountHopFrames(0, frame.dieRec->velocityY, frame.dieRec->gravity, 0);
                 frame.dieRec->spinStep = frame.snapIndex / frame.tmpScalar;
                 frame.dieRec->spinFramesLeft = frame.tmpScalar;
@@ -427,12 +427,12 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
     frame.draw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleLimitDiceLoadedResTable);
     frame.draw->flags = 0;
     frame.draw->uvScroll = 0;
-    frame.draw->fadeLevel = 0x80;
+    frame.draw->fadeLevel = 128;
     frame.draw->stateFlags = 0x20;
     frame.draw->texturePageBits = 0;
-    if (frame.tumbleRec->timer >= 0x2A) {
+    if (frame.tumbleRec->timer >= 42) {
         frame.draw->flags |= 8;
-        frame.draw->fadeLevel -= (short)(frame.tumbleRec->timer - 0x2A << 4);
+        frame.draw->fadeLevel -= (short)(frame.tumbleRec->timer - 42 << 4);
         frame.draw->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleLimitDiceLoadedResTable);
     }
     if (frame.dieRec->directionIndex > 6) {
@@ -440,7 +440,7 @@ void __cdecl BattleFx_LimitDiceTumblingDieTask(void)
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.draw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.tumbleRec->timer >= 0x32) {
+    if (frame.tumbleRec->timer >= 50) {
         frame.tumbleRec->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -458,7 +458,7 @@ int __cdecl BattleFx_LimitDiceCountHopFrames(int position, int velocity, int acc
 
     position += velocity;
     velocity += accel;
-    for (i = 0; i < 0x63; i++) {
+    for (i = 0; i < 99; i++) {
         position += velocity;
         velocity += accel;
         accel -= accel >> 4;

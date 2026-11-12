@@ -106,7 +106,7 @@ void *__cdecl BattleModel_BuildSkeletonFromLmd(Battle3dPartyLoadDesc *battleLoad
                     }
                     if (af->active > 0) {
                         // STRING: FF7 0x00900120
-                        af->buffer = (Battle3dSkeletonPartBuffer *)GameHeapAlloc(1, 8, "C:\\FF7\\src\\battle\\battle3d\\mdl.cpp", 0xA7);
+                        af->buffer = (Battle3dSkeletonPartBuffer *)GameHeapAlloc(1, 8, "C:\\FF7\\src\\battle\\battle3d\\mdl.cpp", 167);
                         if (af->buffer != 0) {
                             ev = af->buffer;
                             f2 = (char *)modelBlob + p;
@@ -148,7 +148,7 @@ void *__cdecl BattleModel_BuildSkeletonFromLmd(Battle3dPartyLoadDesc *battleLoad
                     b2++;
                     af->active = 1;
                     // STRING: FF7 0x00900144
-                    af->buffer = (Battle3dSkeletonPartBuffer *)GameHeapAlloc(1, 8, "C:\\FF7\\src\\battle\\battle3d\\mdl.cpp", 0x103);
+                    af->buffer = (Battle3dSkeletonPartBuffer *)GameHeapAlloc(1, 8, "C:\\FF7\\src\\battle\\battle3d\\mdl.cpp", 259);
                     if (af->buffer != 0) {
                         hj = af->buffer;
                         hz = (char *)modelBlob + p;
@@ -193,7 +193,7 @@ void __cdecl Lmd_DebugLoadArthurTest(void)
         modelBytes = modelFile;
         skeleton = BattleModel_BuildSkeletonFromLmd(loadDescPtr, 0, 0, (int *)modelBytes, tim, loadOptions, modelName);
         // STRING: FF7 0x00900174
-        GameHeapFree(modelFile, "C:\\FF7\\src\\battle\\battle3d\\mdl.cpp", 0x14F);
+        GameHeapFree(modelFile, "C:\\FF7\\src\\battle\\battle3d\\mdl.cpp", 335);
     }
 }
 } /* extern "C" */

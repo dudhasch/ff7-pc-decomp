@@ -138,14 +138,14 @@ void __cdecl BattleFx_MagicBeginHitmark(int targetMask, int actorIdx)
     g_BattleMagicHitmark_OriginCoordZ = 0xEE6C;
     g_BattleMagicHitmark_DeltaX = g_BattleMagicHitmark_OriginCoords.originX - g_BattleMagicHitmark_ResourceDefs.impactCenterX;
     g_BattleMagicHitmark_DeltaZ = g_BattleMagicHitmark_OriginCoordZ - g_BattleMagicHitmark_ImpactCenterZ;
-    g_BattleMagicHitmark_RayDistSq = g_BattleMagicHitmark_DeltaX * g_BattleMagicHitmark_DeltaX + g_BattleMagicHitmark_DeltaZ * g_BattleMagicHitmark_DeltaZ + -0x895440 >> 0xC;
-    for (i = 0; i < 0x258; i++) {
+    g_BattleMagicHitmark_RayDistSq = g_BattleMagicHitmark_DeltaX * g_BattleMagicHitmark_DeltaX + g_BattleMagicHitmark_DeltaZ * g_BattleMagicHitmark_DeltaZ + -0x895440 >> 12;
+    for (i = 0; i < 600; i++) {
         g_BattleMagicHitmark_ParticlePool[i].timer = 0;
     }
     Battle_AllocateResourceSlot(BattleFx_MagicHitmarkTimelineTask);
     Battle_AllocateResourceSlot(BattleFx_MagicHitmarkParticlePoolTask);
-    Battle_SpawnBoneParticleBurst(0, 4, 0x13, 0x5DC, 0, 0x2D);
-    Battle_SpawnBoneParticleBurst(0, 4, 0x23, 0x5DC, 0, 0x2D);
+    Battle_SpawnBoneParticleBurst(0, 4, 0x13, 0x5DC, 0, 45);
+    Battle_SpawnBoneParticleBurst(0, 4, 0x23, 0x5DC, 0, 45);
 }
 
 /*
@@ -160,7 +160,7 @@ void __cdecl BattleFx_MagicHitmarkParticlePoolTask(void)
 
     taskSlot = BATTLE_CURRENT_TASK_SLOT;
     activeCount = 0;
-    for (i = 0; i < 0x258; i++) {
+    for (i = 0; i < 600; i++) {
         if (g_BattleMagicHitmark_ParticlePool[i].timer != 0) {
             BattleFx_MagicHitmarkDrawAndStepParticle(&g_BattleMagicHitmark_ParticlePool[i]);
             activeCount++;
@@ -200,7 +200,7 @@ void __cdecl BattleFx_MagicHitmarkDrawAndStepParticle(BattleFxMagicHitmarkPartic
     ApplyDeferredDrawArgs();
     Gfx_PsxStoreClearFlag(bits);
     if ((*bits & 0x60000) == 0) {
-        color = (particle->timer << 7) / 0xF;
+        color = (particle->timer << 7) / 15;
         color = color << 0x10 | 0x22000000 | color << 8 | color;
         Gfx_ReadTransformOrderingDepth2(vector);
         prim->tag = 0x4000000;
@@ -211,9 +211,9 @@ void __cdecl BattleFx_MagicHitmarkDrawAndStepParticle(BattleFxMagicHitmarkPartic
         particle->posX += particle->velocityX;
         particle->posY += particle->velocityY;
         particle->posZ += particle->velocityZ;
-        particle->velocityX = particle->velocityX * 0xC00 >> 0xC;
-        particle->velocityY = particle->velocityY + 0xC8;
-        particle->velocityZ = particle->velocityZ * 0xC00 >> 0xC;
+        particle->velocityX = particle->velocityX * 0xC00 /* 0.75 */ >> 12;
+        particle->velocityY = particle->velocityY + 200;
+        particle->velocityZ = particle->velocityZ * 0xC00 /* 0.75 */ >> 12;
         particle->angleX += particle->rateX;
         particle->angleY += particle->rateY;
         particle->angleZ += particle->rateZ;
@@ -236,10 +236,10 @@ void __cdecl BattleFx_MagicHitmarkTimelineTask(void)
     if (DEAD_IN_RETAIL != 0) {
         return;
     }
-    if (task->frameCounter < 0x2D && task->frameCounter % 1 == 0) {
-        angle = task->frameCounter * 0x500 / 0x2D;
+    if (task->frameCounter < 45 && task->frameCounter % 1 == 0) {
+        angle = task->frameCounter * 0x500 / 45;
         g_BattleMagicHitmark_RayDirection[0] = SinFixed(angle - 0x300);
-        g_BattleMagicHitmark_RayDirection[1] = rand() % 0x200 - 0x100;
+        g_BattleMagicHitmark_RayDirection[1] = rand() % 512 - 256;
         g_BattleMagicHitmark_RayDirection[2] = CosFixed(angle - 0x300);
         g_BattleMagicHitmark_RayIntersectionResult = BattleFx_MagicHitmarkIntersectRaySphere(g_BattleMagicHitmark_RayDirection, &g_BattleMagicHitmark_HitPos1.vx, ((short *)&g_BattleMagicHitmark_HitPos2));
         if (g_BattleMagicHitmark_RayIntersectionResult == 0) {
@@ -254,14 +254,14 @@ void __cdecl BattleFx_MagicHitmarkTimelineTask(void)
                 g_BattleMagicHitmark_SoundPlayedFlag = 1;
             }
         } else {
-            dist = (-0xCE4 - g_BattleMagicHitmark_OriginCoords.originX << 0xC) / g_BattleMagicHitmark_RayDirection[0];
-            g_BattleMagicHitmark_HitPos1.vz = g_BattleMagicHitmark_OriginCoordZ + (g_BattleMagicHitmark_RayDirection[2] * dist >> 0xC);
-            if (g_BattleMagicHitmark_HitPos1.vz > -0xDAC && g_BattleMagicHitmark_HitPos1.vz < 0x2BC) {
+            dist = (-3300 - g_BattleMagicHitmark_OriginCoords.originX << 12) / g_BattleMagicHitmark_RayDirection[0];
+            g_BattleMagicHitmark_HitPos1.vz = g_BattleMagicHitmark_OriginCoordZ + (g_BattleMagicHitmark_RayDirection[2] * dist >> 12);
+            if (g_BattleMagicHitmark_HitPos1.vz > -3500 && g_BattleMagicHitmark_HitPos1.vz < 700) {
                 g_BattleMagicHitmark_HitPos1.vx = 0xF31C;
-                g_BattleMagicHitmark_HitPos1.vy = g_BattleMagicHitmark_OriginCoords.originY + (g_BattleMagicHitmark_RayDirection[1] * dist >> 0xC);
+                g_BattleMagicHitmark_HitPos1.vy = g_BattleMagicHitmark_OriginCoords.originY + (g_BattleMagicHitmark_RayDirection[1] * dist >> 12);
                 newTask = (BattleFxHitmarkImpactSpriteTask *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicHitmarkImpactSpriteTask);
                 *(Int64Pair *)&newTask->posX = *(Int64Pair *)&g_BattleMagicHitmark_HitPos1;
-                newTask->scale = 0x4000;
+                newTask->scale = 0x4000 /* 4.0 */;
             }
             if (g_BattleMagicHitmark_SoundPlayedFlag == 0) {
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&g_BattleMagicHitmark_HitPos1), 0x1E7);
@@ -269,7 +269,7 @@ void __cdecl BattleFx_MagicHitmarkTimelineTask(void)
         }
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0x2D) {
+    if (task->frameCounter >= 45) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -285,7 +285,7 @@ void __cdecl BattleFx_MagicHitmarkImpactSpriteTask(void)
     task = (BattleFxHitmarkImpactSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicHitmark_SpriteDrawReq.sprite.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleMagicHitmark_LoadedRes);
     g_BattleMagicHitmark_SpriteDrawReq.sprite.drawObj = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix(&task->posX, (short)task->scale, task->scale * -0x20 >> 0xC);
+    BattleFx_InstallBillboardMatrix(&task->posX, (short)task->scale, task->scale * -0x20 >> 12);
     g_BattleMagicHitmark_SpriteDrawReq.sprite.frame = (task->frame + 4) | 0x8000;
     g_BattleMagicHitmark_PrimitivePtr = BattleFx_SubmitSpriteDraw(&g_BattleMagicHitmark_SpriteDrawReq.sprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicHitmark_PrimitivePtr);
     if (1 != 0) { /* Constant condition kept for /Od branch layout; see lib/codegen.h. */
@@ -330,9 +330,9 @@ void __cdecl BattleFx_MagicHitmarkDrawRadialTriangleBurst(Vec3sPacked *origin)
     SetTransMatrix(&frame.basisMatrix);
     RefreshGlobalTransformState();
     for (frame.sector = 0; frame.sector < 8; frame.sector++) {
-        frame.radius = rand() % 0x1F4 + 0x3E8;
-        frame.verts[frame.sector].vx = SinFixed((frame.sector << 0xC) / 8) * frame.radius >> 0xC;
-        frame.verts[frame.sector].vy = CosFixed((frame.sector << 0xC) / 8) * frame.radius >> 0xB;
+        frame.radius = rand() % 500 + 1000;
+        frame.verts[frame.sector].vx = SinFixed((frame.sector << 12) / 8) * frame.radius >> 12;
+        frame.verts[frame.sector].vy = CosFixed((frame.sector << 12) / 8) * frame.radius >> 11;
         frame.verts[frame.sector].vz = 0;
     }
     frame.primitive = (BattleHitmarkPrimitive *)g_BattleMagicHitmark_PrimitivePtr;
@@ -358,7 +358,7 @@ void __cdecl BattleFx_MagicHitmarkSpawnImpactParticleBurst(Vec3sPacked *origin, 
     int i;
     int matrix[8];
 
-    for (i = 0; i < 0x14; i++) {
+    for (i = 0; i < 20; i++) {
         particle = BattleFx_MagicHitmarkClaimParticleRecord();
         particle->posX = origin->vx;
         particle->posY = origin->vy;
@@ -371,13 +371,13 @@ void __cdecl BattleFx_MagicHitmarkSpawnImpactParticleBurst(Vec3sPacked *origin, 
         particle->angleZ = 0;
         particle->angleY = 0;
         particle->angleX = 0;
-        particle->rateX = (rand() & 0x3FF) - 0x200;
-        particle->rateY = (rand() & 0x3FF) - 0x200;
-        particle->rateZ = (rand() & 0x3FF) - 0x200;
+        particle->rateX = (rand() & 0x3FF) - 512;
+        particle->rateY = (rand() & 0x3FF) - 512;
+        particle->rateZ = (rand() & 0x3FF) - 512;
     }
     taskPtr = (BattleFxHitmarkImpactSpriteTask *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicHitmarkImpactSpriteTask);
     *(Int64Pair *)&taskPtr->posX = *(Int64Pair *)origin;
-    taskPtr->scale = 0x1000;
+    taskPtr->scale = 0x1000 /* 1.0 */;
 }
 
 /*
@@ -388,9 +388,9 @@ BattleFxMagicHitmarkParticle *__cdecl BattleFx_MagicHitmarkClaimParticleRecord(v
 {
     int i;
 
-    for (i = 0; i < 0x258; i++) {
+    for (i = 0; i < 600; i++) {
         if (g_BattleMagicHitmark_ParticlePool[i].timer == 0) {
-            g_BattleMagicHitmark_ParticlePool[i].timer = 0xF;
+            g_BattleMagicHitmark_ParticlePool[i].timer = 15;
             return &g_BattleMagicHitmark_ParticlePool[i];
         }
     }

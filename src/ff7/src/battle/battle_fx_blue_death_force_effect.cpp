@@ -160,7 +160,7 @@ void __cdecl BattleFx_BlueBeginDeathForce(int targetMask)
 
     g_BattleFxDrawListBufferTaskSlotPtr = (unsigned char *)BATTLE_NEW_TASK_SLOT(BattleFx_SelectDrawListBuffer);
     idx = 0;
-    for (count = 0; idx < 0xA; idx++) {
+    for (count = 0; idx < 10; idx++) {
         if ((targetMask & 1 << idx) != 0) {
             count++;
             if (count == 1) {
@@ -184,7 +184,7 @@ void __cdecl BattleFx_BlueDeathForceSetupTask(void)
     task = (BattleFxDeathForceTask *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueDeathForceTimelineTask);
     Battle_GetBoneWorldPos(g_BattleBlueDeathForceTargetIndex, g_BattleActorRecords[g_BattleBlueDeathForceTargetIndex].targetBone, &task->posX);
     rad = g_BattleActorRecords[g_BattleBlueDeathForceTargetIndex].radius + 0x180;
-    if (rad > 0x76C) {
+    if (rad > 1900) {
         rad = 0x76C;
     }
     task->radius = rad;
@@ -200,48 +200,48 @@ void __cdecl BattleFx_BlueDeathForceTimelineTask(void)
     BattleFxDeathForceTask *pNewTask;
 
     task = (BattleFxDeathForceTask *)BATTLE_CURRENT_TASK_SLOT;
-    width = 0x20;
+    width = 32;
     angle = task->frame << 7;
-    if (task->frame <= 0x14) {
-        sineValue = CosFixed(task->frame * 0x33);
-        sineValue = sineValue << 7 >> 0xC;
-    } else if (task->frame >= 0x32) {
-        sineValue = SinFixed((task->frame - 0x32) * 0x33);
-        sineValue = sineValue << 8 >> 0xC;
+    if (task->frame <= 20) {
+        sineValue = CosFixed(task->frame * 51);
+        sineValue = sineValue << 7 >> 12;
+    } else if (task->frame >= 50) {
+        sineValue = SinFixed((task->frame - 0x32) * 51);
+        sineValue = sineValue << 8 >> 12;
     } else {
         sineValue = 0;
     }
-    if (task->frame < 0x10) {
+    if (task->frame < 16) {
         opacity = task->frame << 3;
-    } else if (task->frame >= 0x3A) {
-        opacity = 0x80 - (task->frame - 0x3A) * 0xA;
+    } else if (task->frame >= 58) {
+        opacity = 0x80 - (task->frame - 0x3A) * 10;
     } else {
         opacity = 0x80;
     }
-    if (task->frame == 0x15) {
+    if (task->frame == 21) {
         pNewTask = (BattleFxDeathForceTask *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueDeathForceSpinModelSparksTask);
         *(Int64Pair *)&pNewTask->posX = *(Int64Pair *)&task->posX;
         pNewTask->angle = 0;
         pNewTask->angleSpeed = 0x84;
         pNewTask->tilt = 0;
-        pNewTask->tiltSpeed = 0x30;
+        pNewTask->tiltSpeed = 48;
         pNewTask->turn = 0;
-        pNewTask->turnSpeed = 0xFFAE;
-        pNewTask->modelScale = (task->radius << 0xC) / 0x320;
+        pNewTask->turnSpeed = 0xFFAE /* -82 */;
+        pNewTask->modelScale = (task->radius << 12) / 800;
         pNewTask->sparkRadius = task->radius;
     }
     BattleFx_BlueDeathForceDrawWaveStrips(sineValue, width, angle, opacity);
-    if (task->frame < 0xC) {
+    if (task->frame < 12) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         frameFadeLevel = task->frame << 8;
-    } else if (task->frame >= 0x3E) {
-        frameFadeLevel = 0xC00 - (task->frame - 0x3E) * 0x180;
+    } else if (task->frame >= 62) {
+        frameFadeLevel = 3072 - (task->frame - 62) * 384;
     } else {
-        frameFadeLevel = 0xC00;
+        frameFadeLevel = 3072;
     }
-    if (task->frame >= 0x46) {
+    if (task->frame >= 70) {
         frameFadeLevel = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -249,7 +249,7 @@ void __cdecl BattleFx_BlueDeathForceTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frame == 0x37) {
+    if (task->frame == 55) {
         Battle_PostActorHitOrHurtMessage(g_BattleBlueDeathForceTargetIndex);
     }
     (task->frame)++;
@@ -299,20 +299,20 @@ void __cdecl BattleFx_BlueDeathForceSpinModelSparksTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     if (frame.slot->frame < 8) {
-        frame.modelDraw->fadeLevel = 0x1000 - (frame.slot->frame << 9);
-    } else if (frame.slot->frame >= 0x10) {
-        frame.modelDraw->fadeLevel = frame.slot->frame - 0x10 << 9;
+        frame.modelDraw->fadeLevel = 4096 - (frame.slot->frame << 9);
+    } else if (frame.slot->frame >= 16) {
+        frame.modelDraw->fadeLevel = frame.slot->frame - 16 << 9;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = (int)BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frame >= 0x18) {
+    if (frame.slot->frame >= 24) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frame < 0x14) {
-        frame.magnitudeScale = (frame.slot->sparkRadius << 0xC) / 0x15E;
+    if (frame.slot->frame < 20) {
+        frame.magnitudeScale = (frame.slot->sparkRadius << 12) / 350;
         frame.scale = frame.slot->sparkRadius;
         frame.scaleRange = frame.scale << 1;
         for (frame.spriteIndex = 0; frame.spriteIndex < 4; frame.spriteIndex++) {
@@ -321,8 +321,8 @@ void __cdecl BattleFx_BlueDeathForceSpinModelSparksTask(void)
             frame.spriteSlot->posX += (short)(rand() % frame.scaleRange - frame.scale);
             frame.spriteSlot->posY += (short)(rand() % frame.scaleRange - frame.scale);
             frame.spriteSlot->posZ += (short)(rand() % frame.scaleRange - frame.scale);
-            frame.spriteSlot->magnitude = (rand() % 4096) + 0x800;
-            frame.spriteSlot->magnitude = frame.spriteSlot->magnitude * frame.magnitudeScale >> 0xC;
+            frame.spriteSlot->magnitude = (rand() % 4096) + 2048;
+            frame.spriteSlot->magnitude = frame.spriteSlot->magnitude * frame.magnitudeScale >> 12;
         }
     }
     frame.slot->angle += frame.slot->angleSpeed;
@@ -371,16 +371,16 @@ void __cdecl BattleFx_BlueDeathForceDrawWaveStrips(int amplitude, int angleStep,
     frame.quadptr = (BattleFxWaveStripQuad *)&frame.quad;
     Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_BattleBlueDeathForceModelTable)));
     frame.angle = startAngle;
-    frame.color = (gray << 0x10) + (gray + (gray << 8));
-    frame.x = 0x4D;
+    frame.color = (gray << 16) + (gray + (gray << 8));
+    frame.x = 77;
     frame.row = 0;
     frame.tex = FLOAT_1_875_BITS;
     frame.dims = 0x200A6;
-    for (frame.i = 0; frame.i < 0xA6; frame.i++) {
+    for (frame.i = 0; frame.i < 166; frame.i++) {
         if (amplitude != 0) {
             frame.sine = BattleFx_LookupSineFromQuarterTable(frame.angle);
             frame.angle += angleStep;
-            frame.offset = amplitude * frame.sine >> 0xC;
+            frame.offset = amplitude * frame.sine >> 12;
         } else {
             frame.offset = 0;
         }
@@ -405,8 +405,8 @@ void __cdecl BattleFx_BlueDeathForceDrawWaveStrips(int amplitude, int angleStep,
             frame.quadptr->y3 = frame.tileptr->row + frame.tileptr->height;
             break;
         case MAIN_GRAPHICS_MODE_320X240_CENTERED:
-            frame.tileptr->x += 0xA0;
-            frame.tileptr->row += 0x78;
+            frame.tileptr->x += 160;
+            frame.tileptr->row += 120;
             frame.quadptr->x0 = frame.tileptr->x;
             frame.quadptr->y0 = frame.tileptr->row;
             frame.quadptr->x2 = frame.tileptr->x;

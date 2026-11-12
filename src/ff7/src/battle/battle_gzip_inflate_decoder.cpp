@@ -217,7 +217,7 @@ int __cdecl GzipInflate_CopyStoredBlock(void)
         bitsLeft += 8;
     }
     len = bitBuf & 0xFFFF;
-    bitBuf >>= 0x10;
+    bitBuf >>= 16;
     bitsLeft -= 0x10;
     while ((unsigned int)bitsLeft < (unsigned int)0x10) {
         bitBuf |= g_GzipInputBuffer[g_GzipInputOffset] << bitsLeft;
@@ -227,7 +227,7 @@ int __cdecl GzipInflate_CopyStoredBlock(void)
     if (len != (~bitBuf & 0xFFFF)) {
         return 1;
     } else {
-        bitBuf >>= 0x10;
+        bitBuf >>= 16;
         bitsLeft -= 0x10;
         while (len-- != 0) {
             while ((unsigned int)bitsLeft < (unsigned int)8) {
@@ -686,7 +686,7 @@ int __cdecl GzipInflate_DecodeDynamicBlock(void)
             frame.codeLengths[g_GzipBorderOrder[frame.tmpIndex]] = 0;
         }
         frame.tableBits = 7;
-        frame.status = GzipInflate_BuildHuffmanTable((unsigned *)&frame.codeLengths[0], 0x13, 0x13, 0, 0, (GzipHuffmanNode **)&frame.litTable, (unsigned *)&frame.tableBits);
+        frame.status = GzipInflate_BuildHuffmanTable((unsigned *)&frame.codeLengths[0], 19, 0x13, 0, 0, (GzipHuffmanNode **)&frame.litTable, (unsigned *)&frame.tableBits);
         if (frame.status != 0) {
             if (frame.status == 1) {
                 GzipInflate_WalkHuffmanChain((GzipHuffmanNode *)frame.litTable);
@@ -712,7 +712,7 @@ int __cdecl GzipInflate_DecodeDynamicBlock(void)
                     frame.prevLength = frame.tmpIndex;
                     frame.codeLengths[frame.status] = frame.prevLength;
                     frame.status++;
-                } else if (frame.tmpIndex == 0x10) {
+                } else if (frame.tmpIndex == 16) {
                     while ((unsigned int)frame.bitCount < (unsigned int)2) {
                         frame.bitBuffer |= g_GzipInputBuffer[g_GzipInputOffset] << frame.bitCount;
                         g_GzipInputOffset++;
@@ -728,7 +728,7 @@ int __cdecl GzipInflate_DecodeDynamicBlock(void)
                         frame.codeLengths[frame.status] = frame.prevLength;
                         frame.status++;
                     }
-                } else if (frame.tmpIndex == 0x11) {
+                } else if (frame.tmpIndex == 17) {
                     while ((unsigned int)frame.bitCount < (unsigned int)3) {
                         frame.bitBuffer |= g_GzipInputBuffer[g_GzipInputOffset] << frame.bitCount;
                         g_GzipInputOffset++;
@@ -751,7 +751,7 @@ int __cdecl GzipInflate_DecodeDynamicBlock(void)
                         g_GzipInputOffset++;
                         frame.bitCount += 8;
                     }
-                    frame.tmpIndex = (frame.bitBuffer & 0x7F) + 0xB;
+                    frame.tmpIndex = (frame.bitBuffer & 0x7F) + 11;
                     frame.bitBuffer >>= 7;
                     frame.bitCount -= 7;
                     if ((unsigned int)(frame.status + frame.tmpIndex) > (unsigned int)frame.totalCodes) {

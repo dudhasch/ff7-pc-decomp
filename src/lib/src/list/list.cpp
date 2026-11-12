@@ -29,7 +29,7 @@ ListNode *__cdecl AllocListNode(List *list)
         node = (ListNode *)calloc(1, 8);
     } else {
         // STRING: FF7 0x00911fdc
-        node = (ListNode *)GameHeapAlloc(1, 8, "C:\\lib\\src\\list\\list.cpp", 0x13);
+        node = (ListNode *)GameHeapAlloc(1, 8, "C:\\lib\\src\\list\\list.cpp", 19);
     }
     return node;
 }
@@ -45,7 +45,7 @@ void __cdecl FreeListNode(ListNode *node, List *list)
             free(node);
         } else {
             // STRING: FF7 0x00911ff8
-            GameHeapFree(node, "C:\\lib\\src\\list\\list.cpp", 0x23);
+            GameHeapFree(node, "C:\\lib\\src\\list\\list.cpp", 35);
         }
     }
 }
@@ -90,7 +90,7 @@ List *__cdecl CreateList(ListFreeValueFn freeValue)
     List *localVal;
 
     // STRING: FF7 0x00912014
-    localVal = (List *)GameHeapAlloc(1, 0x20, "C:\\lib\\src\\list\\list.cpp", 0x4C);
+    localVal = (List *)GameHeapAlloc(1, 32, "C:\\lib\\src\\list\\list.cpp", 76);
     if (localVal != 0) {
         localVal->initFlag = 1;
         localVal->freeValue = freeValue;
@@ -110,7 +110,7 @@ void __cdecl DestroyList(List *list)
             free((void *)list);
         } else {
             // STRING: FF7 0x00912030
-            GameHeapFree(list, "C:\\lib\\src\\list\\list.cpp", 0x62);
+            GameHeapFree(list, "C:\\lib\\src\\list\\list.cpp", 98);
         }
     }
 }
@@ -271,7 +271,7 @@ void __cdecl ForEachListEntry(ListVisitFn visit, int arg, List *list)
 void __cdecl ListFreeValueGameHeap(int ptr)
 {
     // STRING: FF7 0x0091204c
-    GameHeapFree((void *)ptr, "C:\\lib\\src\\list\\list.cpp", 0x10A);
+    GameHeapFree((void *)ptr, "C:\\lib\\src\\list\\list.cpp", 266);
 }
 
 /*
@@ -286,7 +286,7 @@ void *__cdecl ListToArray(int indirect, int size, List *list)
     result = 0;
     if (list != 0 && ListGetCount(list) > 0) {
         // STRING: FF7 0x00912068
-        result = GameHeapAllocRaw(size * ListGetCount(list), "C:\\lib\\src\\list\\list.cpp", 0x117);
+        result = GameHeapAllocRaw(size * ListGetCount(list), "C:\\lib\\src\\list\\list.cpp", 279);
         if (result != 0) {
             dest = (char *)result;
             cur = list->head;

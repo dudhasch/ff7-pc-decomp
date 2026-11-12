@@ -166,29 +166,29 @@ void __cdecl BattleFx_SpecialEnergySiphonTimelineTask(void)
     if (taskPtr->timer == 0) {
         spawned = (BattleFxDrainTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergySiphonSpinModelTask);
         spawned->posX = taskPtr->startX;
-        spawned->posY = taskPtr->startY - 0x190;
+        spawned->posY = taskPtr->startY - 400;
         spawned->posZ = taskPtr->startZ;
-        spawned->deltaX = (taskPtr->endX - spawned->posX) / 0x14;
-        spawned->deltaY = (taskPtr->endY - 0x320 - spawned->posY) / 0x14;
-        spawned->deltaZ = (taskPtr->endZ - spawned->posZ) / 0x14;
+        spawned->deltaX = (taskPtr->endX - spawned->posX) / 20;
+        spawned->deltaY = (taskPtr->endY - 800 - spawned->posY) / 20;
+        spawned->deltaZ = (taskPtr->endZ - spawned->posZ) / 20;
     }
-    if (taskPtr->timer == 0x5A) {
+    if (taskPtr->timer == 90) {
         Battle_PostActorHitOrHurtMessage(taskPtr->targetIndex);
         Battle_PlaySfxPannedToActor(0x1F, (short)taskPtr->casterIndex, 0x40);
     }
-    if (taskPtr->timer > 0x56 && taskPtr->timer < 0x66) {
+    if (taskPtr->timer > 86 && taskPtr->timer < 102) {
         for (i8 = 0; i8 < 4; i8++) {
             spawned = (BattleFxDrainTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergySiphonAnimatedSpriteEntry4Task);
             Battle_GetBoneWorldPos(taskPtr->casterIndex,
                                    rand() % g_BattleActorRecords[taskPtr->casterIndex].boneCount,
                                    &spawned->posX);
-            spawned->posX += (short)(rand() % 0x258 - 0x12C);
-            spawned->posY += (short)(rand() % 0x258 - 0x12C);
-            spawned->posZ += (short)(rand() % 0x258 - 0x12C);
+            spawned->posX += (short)(rand() % 600 - 300);
+            spawned->posY += (short)(rand() % 600 - 300);
+            spawned->posZ += (short)(rand() % 600 - 300);
         }
     }
     (taskPtr->timer)++;
-    if (taskPtr->timer == 0x6E) {
+    if (taskPtr->timer == 110) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -204,7 +204,7 @@ void __cdecl BattleFx_SpecialEnergySiphonAnimatedSpriteEntry4Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialEnergySiphonSpriteReq1[0].spriteResource = Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecialEnergySiphonLoadedRes);
     g_BattleSpecialEnergySiphonSpriteReq1[0].spriteObject = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecialEnergySiphonLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialEnergySiphonSpriteReq1[0].frameIndex = task->frameCounter;
     g_BattleSpecialEnergySiphonDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergySiphonSpriteReq1[0], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergySiphonDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecialEnergySiphonSpriteReq1[0].spriteResource != 0) {
@@ -265,13 +265,13 @@ void __cdecl BattleFx_SpecialEnergySiphonSpinModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter < 0x14) {
+    if (frame.slot->frameCounter < 20) {
         frame.slot->posX += frame.slot->velocityX;
         frame.slot->posY += frame.slot->velocityY;
         frame.slot->posZ += frame.slot->velocityZ;
         g_BattleSpecialEnergySiphonState += 6;
     }
-    if (frame.slot->frameCounter >= 0x14 && frame.slot->frameCounter < 0x32) {
+    if (frame.slot->frameCounter >= 20 && frame.slot->frameCounter < 50) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 1; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxDrainSpinModelSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergySiphonSpiralSpriteTask);
             frame.spawnSlot->posX = frame.slot->posX;
@@ -282,20 +282,20 @@ void __cdecl BattleFx_SpecialEnergySiphonSpinModelTask(void)
             frame.spawnSlot->weightB = 0x3E8;
         }
     }
-    if (frame.slot->frameCounter >= 0x26 && frame.slot->frameCounter < 0x2C && (frame.slot->frameCounter % 2) == 0) {
+    if (frame.slot->frameCounter >= 38 && frame.slot->frameCounter < 44 && (frame.slot->frameCounter % 2) == 0) {
         frame.spawnSlot = (BattleFxDrainSpinModelSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergySiphonOrbitSpriteTask);
         frame.spawnSlot->posX = frame.slot->posX;
-        frame.spawnSlot->posY = frame.slot->posY - 0x1F4;
+        frame.spawnSlot->posY = frame.slot->posY - 500;
         frame.spawnSlot->posZ = frame.slot->posZ;
         frame.spawnSlot->velocityX = -frame.slot->velocityX << 1;
         frame.spawnSlot->velocityY = -frame.slot->velocityY << 1;
         frame.spawnSlot->velocityZ = -frame.slot->velocityZ << 1;
-        frame.spawnSlot->scalePhase = 0x100;
+        frame.spawnSlot->scalePhase = 0x100 /* 0.0625 */;
         frame.spawnSlot->weightB = 0;
         frame.spawnSlot->weightA = 0;
         frame.spawnSlot->scaleDivisor = ((frame.slot->frameCounter - 0x26) / 2) + 5;
     }
-    if (frame.slot->frameCounter > 0x32) {
+    if (frame.slot->frameCounter > 50) {
         g_BattleSpecialEnergySiphonState -= 6;
         if (g_BattleSpecialEnergySiphonState == 0) {
             frame.slot->ownerSlot = BATTLE_TASK_FREE;
@@ -322,10 +322,10 @@ void __cdecl BattleFx_SpecialEnergySiphonSpiralSpriteTask(void)
     frame.slot = (BattleFxDrainSpiralSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialEnergySiphonSpriteReq2.request[0].spriteResource = Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialEnergySiphonLoadedRes);
     g_BattleSpecialEnergySiphonSpriteReq2.request[0].spriteObject = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialEnergySiphonLoadedRes);
-    frame.spriteX.vx = frame.slot->posX + (SinFixed(frame.slot->angle) * frame.slot->radius >> 0xC);
-    frame.spriteX.vz = frame.slot->posZ + (CosFixed(frame.slot->angle) * frame.slot->radius >> 0xC);
+    frame.spriteX.vx = frame.slot->posX + (SinFixed(frame.slot->angle) * frame.slot->radius >> 12);
+    frame.spriteX.vz = frame.slot->posZ + (CosFixed(frame.slot->angle) * frame.slot->radius >> 12);
     frame.spriteX.vy = frame.slot->posY + frame.slot->velocityY;
-    BattleFx_InstallBillboardMatrix(&frame.spriteX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.spriteX, 0x2000 /* 2.0 */, 0);
     if (g_BattleSpecialEnergySiphonSpriteReq2.request[0].spriteResource != 0) {
         g_BattleSpecialEnergySiphonSpriteReq2.request[0].frameIndex = frame.slot->frameCounter % ((BattleFxSpriteGroup *)g_BattleSpecialEnergySiphonSpriteReq2.request[0].spriteResource)->header->frameCount;
     }
@@ -333,11 +333,11 @@ void __cdecl BattleFx_SpecialEnergySiphonSpiralSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.slot->radius -= (short)(frame.slot->radius / 0xA);
-    frame.slot->velocityY -= 0x32;
+    frame.slot->radius -= (short)(frame.slot->radius / 10);
+    frame.slot->velocityY -= 50;
     frame.slot->angle += 0x80;
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x14) {
+    if (frame.slot->frameCounter == 20) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -361,8 +361,8 @@ void __cdecl BattleFx_SpecialEnergySiphonOrbitSpriteTask(void)
     frame.slot = (BattleFxEnergySiphonOrbitSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialEnergySiphonSpriteReq2.request[2].spriteResource = Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecialEnergySiphonLoadedRes);
     g_BattleSpecialEnergySiphonSpriteReq2.request[2].spriteObject = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecialEnergySiphonLoadedRes);
-    frame.spriteX.vx = frame.slot->posX + (SinFixed(frame.slot->angle) * frame.slot->radius >> 0xC);
-    frame.spriteX.vy = frame.slot->posY + (CosFixed(frame.slot->angle) * frame.slot->radius >> 0xC);
+    frame.spriteX.vx = frame.slot->posX + (SinFixed(frame.slot->angle) * frame.slot->radius >> 12);
+    frame.spriteX.vy = frame.slot->posY + (CosFixed(frame.slot->angle) * frame.slot->radius >> 12);
     frame.spriteX.vz = frame.slot->posZ;
     BattleFx_InstallBillboardMatrix(&frame.spriteX, frame.slot->phase * 5 / frame.slot->scaleDivisor, 0);
     if (g_BattleSpecialEnergySiphonSpriteReq2.request[2].spriteResource != 0) {
@@ -372,31 +372,31 @@ void __cdecl BattleFx_SpecialEnergySiphonOrbitSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter < 0x1E) {
+    if (frame.slot->frameCounter < 30) {
         frame.slot->phase += 0xC0;
     }
-    if (frame.slot->frameCounter >= 0x1E && frame.slot->frameCounter < 0x28) {
+    if (frame.slot->frameCounter >= 30 && frame.slot->frameCounter < 40) {
         frame.slot->posX += frame.slot->velocityX;
         frame.slot->posY += frame.slot->velocityY;
         frame.slot->posZ += frame.slot->velocityZ;
         frame.slot->pulseAngle += 0xCC;
-        frame.slot->radius = SinFixed(frame.slot->pulseAngle) * 0x190 >> 0xC;
-        frame.slot->angle += 0x200;
+        frame.slot->radius = SinFixed(frame.slot->pulseAngle) * 0x190 >> 12;
+        frame.slot->angle += 0x200 /* 45 deg */;
         frame.spawnSlot = (BattleFxEnergySiphonOrbitSpriteSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergySiphonAnimatedSpriteEntry1Task);
-        frame.spawnSlot->posX = frame.slot->posX + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posY = frame.slot->posY + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posZ = frame.slot->posZ + rand() % 0x320 + -0x190;
+        frame.spawnSlot->posX = frame.slot->posX + rand() % 800 + -400;
+        frame.spawnSlot->posY = frame.slot->posY + rand() % 800 + -400;
+        frame.spawnSlot->posZ = frame.slot->posZ + rand() % 800 + -400;
     }
-    if (frame.slot->frameCounter > 0x28) {
+    if (frame.slot->frameCounter > 40) {
         frame.slot->phase -= 0x100;
         frame.spawnSlot = (BattleFxEnergySiphonOrbitSpriteSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialEnergySiphonVariantLoopingSpriteTask);
-        frame.spawnSlot->posX = frame.slot->posX + rand() % 0x258 + -0x12C;
-        frame.spawnSlot->posY = frame.slot->posY + rand() % 0x258 + -0x12C;
-        frame.spawnSlot->posZ = frame.slot->posZ + rand() % 0x258 + -0x12C;
+        frame.spawnSlot->posX = frame.slot->posX + rand() % 600 + -300;
+        frame.spawnSlot->posY = frame.slot->posY + rand() % 600 + -300;
+        frame.spawnSlot->posZ = frame.slot->posZ + rand() % 600 + -300;
         frame.spawnSlot->variant = rand() & 1;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x3C) {
+    if (frame.slot->frameCounter == 60) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -410,7 +410,7 @@ void __cdecl BattleFx_SpecialEnergySiphonVariantLoopingSpriteTask(void)
     BattleFxEnergySiphonLoopingSprite *task;
 
     task = (BattleFxEnergySiphonLoopingSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialEnergySiphonSpriteReq1[1].spriteResource = Gfx_ModelTableGetLoadedRecord(g_BattleSpecialEnergySiphonSpriteReq2.variantEntries[task->variant], g_BattleSpecialEnergySiphonLoadedRes);
     g_BattleSpecialEnergySiphonSpriteReq1[1].spriteObject = Gfx_ModelTableGetSpriteObject(g_BattleSpecialEnergySiphonSpriteReq2.variantEntries[task->variant], g_BattleSpecialEnergySiphonLoadedRes);
     if (g_BattleSpecialEnergySiphonSpriteReq1[1].spriteResource != 0) {
@@ -420,9 +420,9 @@ void __cdecl BattleFx_SpecialEnergySiphonVariantLoopingSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    task->posY += 0x64;
+    task->posY += 100;
     (task->frame)++;
-    if (task->frame == 0xA) {
+    if (task->frame == 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -438,7 +438,7 @@ void __cdecl BattleFx_SpecialEnergySiphonAnimatedSpriteEntry1Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialEnergySiphonSpriteReq2.request[1].spriteResource = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialEnergySiphonLoadedRes);
     g_BattleSpecialEnergySiphonSpriteReq2.request[1].spriteObject = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialEnergySiphonLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialEnergySiphonSpriteReq2.request[1].frameIndex = task->frameCounter;
     g_BattleSpecialEnergySiphonDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialEnergySiphonSpriteReq2.request[1], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialEnergySiphonDrawListHandle);
     if (g_BattleIsPaused != 0) {

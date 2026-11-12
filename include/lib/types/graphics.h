@@ -5029,7 +5029,7 @@ typedef struct GfxEngineContext {
     int matrixStack; /* +0x2F4 */
     int matrixStack2; /* +0x2F8: a second stack of matrixStackSize identity matrices */
     int cameraMatrix; /* +0x2FC: the view matrix the draws concatenate (an identity at init) */
-    int drawPool; /* +0x300: Gfx_CreateDrawPool(0x200); Gfx_AdvanceDrawPoolGeneration each frame */
+    int drawPool; /* +0x300: Gfx_CreateDrawPool(512); Gfx_AdvanceDrawPoolGeneration each frame */
     unsigned char pad_304[0x4];
     int triAlphaShadeCaps; /* +0x308 */
     unsigned char pad_30C[0x18];

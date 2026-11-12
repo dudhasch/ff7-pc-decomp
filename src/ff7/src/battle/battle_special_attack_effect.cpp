@@ -85,7 +85,7 @@ int __cdecl Battle_RunSpecialAttackEffect(int effectId)
                 case BATTLE_ADDED_FX_STAGE_AFTER_HITS:
                     if (g_pBattleCommandCtx->hitCount == 0) {
                         (g_pBattleCommandCtx->repeatRemaining)++;
-                        g_pBattleCommandCtx->stepPower = 0x61;
+                        g_pBattleCommandCtx->stepPower = 97;
                         Battle_RestoreSequenceCursors();
                         Battle_QueueFollowUpAttack(g_pBattleCommandCtx->stepPower);
                     }
@@ -123,11 +123,11 @@ int __cdecl Battle_RunSpecialAttackEffect(int effectId)
                 break;
             case BATTLE_ADDED_FX_STEAL_GIL:
                 if (g_pBattleCommandCtx->targetSlot < 3) {
-                    transferAmount = g_pBattleCommandCtx->attackerLevel * 0x14;
+                    transferAmount = g_pBattleCommandCtx->attackerLevel * 20;
                     if ((unsigned int)transferAmount > (unsigned int)gSavemap.gil) {
                         transferAmount = *(short *)&gSavemap.gil;
                     }
-                    if (transferAmount != 0 && transferAmount + (unsigned short)g_aCombatants[actorIdx].spoilA < 0xFFFF) {
+                    if (transferAmount != 0 && transferAmount + (unsigned short)g_aCombatants[actorIdx].spoilA < 65535) {
                         g_aCombatants[actorIdx].spoilA += transferAmount;
                         gSavemap.gil -= transferAmount;
                         Battle_PostBattleMessageFormatted(actorIdx, 0x55, 1, &transferAmount);

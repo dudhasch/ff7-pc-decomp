@@ -103,7 +103,7 @@ void __cdecl BattleFx_SpecialBeginFourLaser(int targetMask, int actorIdx)
 
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 4, BattleFx_SpecialSpawnFourLaserPerTarget);
     Battle_PlaySfxPannedToActor(0x6C, (short)actorIdx, 0x40);
-    for (i = 0; i < 0x1F4; i++) {
+    for (i = 0; i < 500; i++) {
         g_BattleSpecialFourLaserQuadRecords[i].active = 0;
     }
 }
@@ -141,7 +141,7 @@ void __cdecl BattleFx_SpecialFourLaserQuadRecordsTask(void)
         return;
     }
     i = 0;
-    for (alive = 0; i < 0x1F4; i++) {
+    for (alive = 0; i < 500; i++) {
         if (g_BattleSpecialFourLaserQuadRecords[i].active != 0) {
             alive++;
             (g_BattleSpecialFourLaserQuadRecords[i].timer)++;
@@ -151,7 +151,7 @@ void __cdecl BattleFx_SpecialFourLaserQuadRecordsTask(void)
         }
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x1E) {
+    if (taskPtr->frameCounter == 30) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -192,21 +192,21 @@ void __cdecl BattleFx_SpecialFourLaserDrawQuadRecords(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (frame.recordIndex = 0; frame.recordIndex < 0x1F4; frame.recordIndex++) {
+    for (frame.recordIndex = 0; frame.recordIndex < 500; frame.recordIndex++) {
         if (g_BattleSpecialFourLaserQuadRecords[frame.recordIndex].active != 0) {
             frame.quadRecord = (BattleSpecialFourLaserQuadRecord *)(frame.recordIndex * 0x14 + (char *)&g_BattleSpecialFourLaserQuadRecords);
             frame.listHandle = (BattleFxFourLaserQuadBatchHead *)g_BattleSpecialFourLaserDrawListHandle;
             frame.quadAHiZ.vx = frame.quadRecord->startPoint.vx;
-            frame.quadAHiZ.vy = frame.quadRecord->startPoint.vy + 0x14;
+            frame.quadAHiZ.vy = frame.quadRecord->startPoint.vy + 20;
             frame.quadAHiZ.vz = frame.quadRecord->startPoint.vz;
             frame.quadALoZ.vx = frame.quadRecord->startPoint.vx;
-            frame.quadALoZ.vy = frame.quadRecord->startPoint.vy - 0x14;
+            frame.quadALoZ.vy = frame.quadRecord->startPoint.vy - 20;
             frame.quadALoZ.vz = frame.quadRecord->startPoint.vz;
             frame.quadBHiZ.vx = frame.quadRecord->endPoint.vx;
-            frame.quadBHiZ.vy = frame.quadRecord->endPoint.vy + 0x14;
+            frame.quadBHiZ.vy = frame.quadRecord->endPoint.vy + 20;
             frame.quadBHiZ.vz = frame.quadRecord->endPoint.vz;
             frame.quadBLoZ.vx = frame.quadRecord->endPoint.vx;
-            frame.quadBLoZ.vy = frame.quadRecord->endPoint.vy - 0x14;
+            frame.quadBLoZ.vy = frame.quadRecord->endPoint.vy - 20;
             frame.quadBLoZ.vz = frame.quadRecord->endPoint.vz;
             frame.projResult = Gfx_ProjectQuadToScreen(&frame.quadAHiZ, &frame.quadBHiZ, &frame.quadALoZ, &frame.quadBLoZ, (char *)frame.listHandle + 8, (char *)frame.listHandle + 0x10, (char *)frame.listHandle + 0x18, (char *)frame.listHandle + 0x20, &frame.projOutA, &frame.projOutB);
             frame.projVertex = (BattleFxFourLaserProjectedVertexRecord *)Gfx_GetProjectedVertexRecord(0);
@@ -224,7 +224,7 @@ void __cdecl BattleFx_SpecialFourLaserDrawQuadRecords(void)
             Gfx_SetBlendFactorQuad(*(float *)&frame.screenX0, *(float *)&frame.screenY0, *(float *)&frame.screenX1, *(float *)&frame.screenY1, *(float *)&frame.screenX2, *(float *)&frame.screenY2, *(float *)&frame.screenX3, *(float *)&frame.screenY3);
             frame.listHandle->primCode = 0x3A;
             frame.listHandle->tag = 0x8000000;
-            frame.fadeLevel = 0x80 - (g_BattleSpecialFourLaserQuadRecords[frame.recordIndex].timer << 4);
+            frame.fadeLevel = 128 - (g_BattleSpecialFourLaserQuadRecords[frame.recordIndex].timer << 4);
             frame.listHandle->colorR3 = 0;
             frame.listHandle->colorR2 = 0;
             frame.listHandle->colorR1 = 0;
@@ -275,7 +275,7 @@ void __cdecl BattleFx_SpecialFourLaserTimelineTask(void)
         frame.spawnSlot->angle = ArcTangentFixed(frame.taskSlot->velocityX - frame.taskSlot->posX, frame.taskSlot->velocityZ - frame.taskSlot->posZ);
         frame.offX.vy = 0;
         frame.offX.vx = frame.offX.vy;
-        frame.offX.vz = 0x190;
+        frame.offX.vz = 400;
         RotMatrix((SVECTOR *)&frame.spawnSlot->velocityX, &frame.rotMatrix);
         frame.rotMatrix.t[2] = 0;
         frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
@@ -286,40 +286,40 @@ void __cdecl BattleFx_SpecialFourLaserTimelineTask(void)
         frame.spawnSlot->posX = frame.taskSlot->posX + frame.offX.vx;
         frame.spawnSlot->posY = frame.taskSlot->posY + frame.offX.vy;
         frame.spawnSlot->posZ = frame.taskSlot->posZ + frame.offX.vz;
-        frame.spawnSlot->angle -= 0x400;
+        frame.spawnSlot->angle -= 0x400 /* 90 deg */;
         Battle_GetBoneWorldPos(frame.taskSlot->actorIndex, g_BattleActorRecords[frame.taskSlot->actorIndex].altBone, (short *)&frame.bonePos);
-        frame.spanY = frame.baseY - 0xC8;
-        for (frame.spawnIndex = 0; frame.spawnIndex < 0xA; frame.spawnIndex++) {
+        frame.spanY = frame.baseY - 200;
+        for (frame.spawnIndex = 0; frame.spawnIndex < 10; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxFourLaserTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFourLaserOrbitTrailTask);
             frame.spawnSlot->posX = frame.taskSlot->posX + frame.offX.vx;
             frame.spawnSlot->posY = frame.taskSlot->posY + frame.offX.vy;
             frame.spawnSlot->posZ = frame.taskSlot->posZ + frame.offX.vz;
-            frame.spawnSlot->velocityX = (frame.taskSlot->velocityX - frame.spawnSlot->posX) / 0xA;
-            frame.spawnSlot->angle = (frame.spanY / 0xA * frame.spawnIndex - frame.spawnSlot->posY) / 0xA;
-            frame.spawnSlot->velocityZ = (frame.taskSlot->velocityZ - frame.spawnSlot->posZ) / 0xA;
+            frame.spawnSlot->velocityX = (frame.taskSlot->velocityX - frame.spawnSlot->posX) / 10;
+            frame.spawnSlot->angle = (frame.spanY / 10 * frame.spawnIndex - frame.spawnSlot->posY) / 10;
+            frame.spawnSlot->velocityZ = (frame.taskSlot->velocityZ - frame.spawnSlot->posZ) / 10;
             if ((frame.spawnIndex % 2) == 0) {
                 frame.spawnSlot->orbitAngle = (rand() % 512) - 0x100;
-                frame.spawnSlot->angularVelocity = (g_BattleSpecialFourLaserSpriteConfig.targetSlot) * 0x180;
+                frame.spawnSlot->angularVelocity = (g_BattleSpecialFourLaserSpriteConfig.targetSlot) * 384;
             } else {
                 frame.spawnSlot->orbitAngle = (rand() % 512) + 0x700;
                 frame.spawnSlot->angularVelocity = (g_BattleSpecialFourLaserSpriteConfig.targetSlot) * 0xFFFFFE80;
             }
             frame.spawnSlot->radius = 0;
-            frame.spawnSlot->radiusScale = (SinFixed(frame.spawnIndex * 0xCC) * 0x384 >> 0xC) + 0x12C;
+            frame.spawnSlot->radiusScale = (SinFixed(frame.spawnIndex * 0xCC) * 0x384 >> 12) + 0x12C;
         }
     }
-    if (frame.taskSlot->frameCounter == 0xA) {
+    if (frame.taskSlot->frameCounter == 10) {
         Battle_PostActorHitOrHurtMessage(frame.taskSlot->actorIndex);
     }
-    if (frame.taskSlot->frameCounter > 0xA && frame.taskSlot->frameCounter < 0xF) {
+    if (frame.taskSlot->frameCounter > 10 && frame.taskSlot->frameCounter < 15) {
         frame.spawnSlot = (BattleFxFourLaserTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFourLaserAnimatedSpriteEntry1Task);
         Battle_GetBoneWorldPos(frame.taskSlot->actorIndex, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, (short *)&frame.spawnSlot->posX);
-        frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-        frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+        frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+        frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x1E) {
+    if (frame.taskSlot->frameCounter == 30) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -342,9 +342,9 @@ void __cdecl BattleFx_SpecialFourLaserDirectedSpriteTask(void)
 #pragma pack(pop)
 
     frame.taskSlot = (BattleFxFourLaserTimelineSpawnSlot *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scaleVec.x = 0x1800;
-    frame.scaleVec.y = 0x1800;
-    frame.scaleVec.z = 0x1800;
+    frame.scaleVec.x = 0x1800 /* 1.5 */;
+    frame.scaleVec.y = 0x1800 /* 1.5 */;
+    frame.scaleVec.z = 0x1800 /* 1.5 */;
     memset(&frame.tmpZero, 0, 4);
     g_BattleSpecialFourLaserSpriteConfig.reza2SpriteConfigTable8 = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecialFourLaserLoadedRes);
     g_BattleSpecialFourLaserSpriteConfig.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecialFourLaserLoadedRes);
@@ -382,7 +382,7 @@ void __cdecl BattleFx_SpecialFourLaserAnimatedSpriteEntry1Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialFourLaserSpriteConfig.reza2DrawTable24 = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialFourLaserLoadedRes);
     g_BattleSpecialFourLaserSpriteConfig.reza2SceneObject28 = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000 /* 2.0 */, 0);
     g_BattleSpecialFourLaserSpriteConfig.reza2ArgWord36 = task->frameCounter;
     g_BattleSpecialFourLaserDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialFourLaserSpriteConfig.reza2DrawTable24, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialFourLaserDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecialFourLaserSpriteConfig.reza2DrawTable24 != 0) {
@@ -411,11 +411,11 @@ void __cdecl BattleFx_SpecialFourLaserOrbitTrailTask(void)
     if (quad != 0) {
         BattleFx_SpecialFourLaserGetOrbitOffsetPoint(orbit, &quad->startPoint);
     }
-    if (orbit->step < 0xA) {
+    if (orbit->step < 10) {
         orbit->centerX += orbit->velocityX;
         orbit->centerY += orbit->velocityY;
         orbit->centerZ += orbit->velocityZ;
-        orbit->radius = SinFixed(orbit->step * 0xC8) * orbit->radiusScale >> 0xC;
+        orbit->radius = SinFixed(orbit->step * 200) * orbit->radiusScale >> 12;
     } else {
         orbit->angle += orbit->angularVelocity;
         orbit->radius -= orbit->radius / 16;
@@ -424,7 +424,7 @@ void __cdecl BattleFx_SpecialFourLaserOrbitTrailTask(void)
         BattleFx_SpecialFourLaserGetOrbitOffsetPoint(orbit, &quad->endPoint);
     }
     (orbit->step)++;
-    if (orbit->step == 0x10) {
+    if (orbit->step == 16) {
         orbit->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -437,7 +437,7 @@ int __cdecl BattleFx_SpecialFourLaserClaimQuadRecord(void)
 {
     short i;
 
-    for (i = 0; i < 0x1F4; i++) {
+    for (i = 0; i < 500; i++) {
         if (g_BattleSpecialFourLaserQuadRecords[i].active == 0) {
             g_BattleSpecialFourLaserQuadRecords[i].active = 1;
             g_BattleSpecialFourLaserQuadRecords[i].timer = 0;
@@ -453,8 +453,8 @@ int __cdecl BattleFx_SpecialFourLaserClaimQuadRecord(void)
 // FUNCTION: FF7 0x005593ff
 void __cdecl BattleFx_SpecialFourLaserGetOrbitOffsetPoint(BattleFxSpiderWebOrbit *orbit, Vec3sPacked *outPoint)
 {
-    outPoint->vx = orbit->centerX + (CosFixed(orbit->angle) * orbit->radius >> 0xC);
+    outPoint->vx = orbit->centerX + (CosFixed(orbit->angle) * orbit->radius >> 12);
     outPoint->vy = orbit->centerY;
-    outPoint->vz = orbit->centerZ + (SinFixed(orbit->angle) * orbit->radius >> 0xC);
+    outPoint->vz = orbit->centerZ + (SinFixed(orbit->angle) * orbit->radius >> 12);
 }
 } /* extern "C" */

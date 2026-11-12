@@ -280,7 +280,7 @@ void __cdecl Battle_RefreshActorCommandTargeting(int actorIndex)
     statWords = &g_MenuPartyStats[actorIndex];
     actorBase = &g_BattleState.weaponActionRows[actorIndex];
     statWords->commandColumns = 1;
-    for (slotIdx = 0; slotIdx < 0x10; slotIdx++) {
+    for (slotIdx = 0; slotIdx < 16; slotIdx++) {
         commandFlags = 0xFF;
         if (statWords->commands[slotIdx].commandId != 0xFF) {
             commandFlags = g_KernelCommandTable[statWords->commands[slotIdx].commandId].targetFlags;
@@ -316,15 +316,15 @@ void __cdecl Battle_RefreshActorCommandTargeting(int actorIndex)
         }
         statWords->commands[slotIdx].targetFlags = commandFlags;
     }
-    for (slotIdx = 0; slotIdx < 0x60; slotIdx++) {
+    for (slotIdx = 0; slotIdx < 96; slotIdx++) {
         entIndex = statWords->abilities[slotIdx].attackId;
         if (entIndex != 0xFF) {
-            if (slotIdx >= 0x48) {
-                entIndex += 0x48;
-            } else if (slotIdx >= 0x38) {
-                entIndex += 0x38;
+            if (slotIdx >= 72) {
+                entIndex += 72;
+            } else if (slotIdx >= 56) {
+                entIndex += 56;
             }
-            if (slotIdx < 0x38) {
+            if (slotIdx < 56) {
                 flagByte = g_BattleAttackTable[entIndex].targetFlags;
                 if ((flagByte & BTL_TARGETF_TOGGLE_MULTIPLE) == 0) {
                     statWords->abilities[slotIdx].allCount = 0;

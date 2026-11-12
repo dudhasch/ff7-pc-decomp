@@ -224,7 +224,7 @@ char *g_SoundMidiSongNames[99] = {
 // FUNCTION: FF7 0x0074a0d0
 char *__cdecl MidiGetSongName(int index)
 {
-    if (index <= 0x62) {
+    if (index <= 98) {
         return g_SoundMidiSongNames[index];
     } else {
         return 0;

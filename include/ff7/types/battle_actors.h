@@ -639,7 +639,7 @@ typedef struct BattleMagicScreenShatterGridVertex {
 } BattleMagicScreenShatterGridVertex;
 
 /* One row of 41 vertices (0x1EC bytes). */
-typedef BattleMagicScreenShatterGridVertex BattleMagicScreenShatterGridRow[0x29];
+typedef BattleMagicScreenShatterGridVertex BattleMagicScreenShatterGridRow[41];
 
 /* The motion part of one 0x80-byte shatter tile: the four grid vertices of its corners, its
  * displacement, velocity, rotation and spin. It is followed by the next tile's two quads. */
@@ -763,7 +763,7 @@ typedef struct BattleModelFileOffsets {
     unsigned char pad_00[0x24];
     int partOffsets[8];  /* +0x24 */
     unsigned char pad_44[0x24];
-    int animOffsets[0x4A]; /* +0x68: 0x4A entries in the party models, 0x20 in the enemy models */
+    int animOffsets[0x4A]; /* +0x68: 74 entries in the party models, 32 in the enemy models */
 } BattleModelFileOffsets;
 
 /* The scratch Battle3d_PushActorNodeMatrices and Battle3d_ComposeNodeWithParent build at

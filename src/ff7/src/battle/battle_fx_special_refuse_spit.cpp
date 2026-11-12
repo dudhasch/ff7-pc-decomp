@@ -113,9 +113,9 @@ void __cdecl BattleFx_SpecialSpawnRefuseSpitPerTarget(int actor, int actorIndex)
     path = (BattleFxRefuseSpitPath *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRefuseSpitTimelineTask);
     Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].bone33, &path->startX);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, targetPosition);
-    path->velocityX = (targetPosition[0] - path->startX) / 0xC;
-    path->velocityY = (targetPosition[1] - path->startY) / 0xC;
-    path->velocityZ = (targetPosition[2] - path->startZ) / 0xC;
+    path->velocityX = (targetPosition[0] - path->startX) / 12;
+    path->velocityY = (targetPosition[1] - path->startY) / 12;
+    path->velocityZ = (targetPosition[2] - path->startZ) / 12;
     path->targetIndex = actor;
 }
 
@@ -146,18 +146,18 @@ void __cdecl BattleFx_SpecialRefuseSpitTimelineTask(void)
             sprite->scaleIndex = taskPtr->timer * 2 + spriteIndex;
         }
     }
-    if (taskPtr->timer == 0xC) {
+    if (taskPtr->timer == 12) {
         Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
     }
-    if (taskPtr->timer > 0xA && taskPtr->timer < 0x14) {
+    if (taskPtr->timer > 10 && taskPtr->timer < 20) {
         sprite = (BattleFxRefuseSpitTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialRefuseSpitAnimatedSpriteTask);
         Battle_GetBoneWorldPos(taskPtr->recordType, g_BattleActorRecords[g_BattleSpecialActorId].targetBone, &sprite->posX);
-        sprite->posX += (short)(rand() % 0x320 - 0x190);
-        sprite->posY += (short)(rand() % 0x320 - 0x190);
-        sprite->posZ += (short)(rand() % 0x320 - 0x190);
+        sprite->posX += (short)(rand() % 800 - 400);
+        sprite->posY += (short)(rand() % 800 - 400);
+        sprite->posZ += (short)(rand() % 800 - 400);
     }
     (taskPtr->timer)++;
-    if (taskPtr->timer == 0x28) {
+    if (taskPtr->timer == 40) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -173,7 +173,7 @@ void __cdecl BattleFx_SpecialRefuseSpitAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_RefuseSpitSprites.impact.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialRefuseSpitLoadedRes);
     g_RefuseSpitSprites.impact.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialRefuseSpitLoadedRes);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1C00, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1C00 /* 1.75 */, 0);
     g_RefuseSpitSprites.impact.frame = task->frameCounter;
     g_BattleSpecialRefuseSpitDrawListHandle = BattleFx_SubmitSpriteDraw(&g_RefuseSpitSprites.impact, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialRefuseSpitDrawListHandle);
     if (g_BattleIsPaused != 0) {
@@ -205,7 +205,7 @@ void __cdecl BattleFx_SpecialRefuseSpitDriftSpriteTask(void)
     task->posY += task->velocityY;
     task->posZ += task->velocityZ;
     (task->frameIndex)++;
-    if (task->frameIndex == 0xC) {
+    if (task->frameIndex == 12) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

@@ -247,16 +247,16 @@ void __cdecl Swirl_InitGridAndPackets(void)
 
     g_pSwirlRecord = &g_SwirlRecord;
     memset(&g_SwirlRecord, 0, 4440);
-    g_SwirlGridCenterX = (g_SwirlScreenWidth / 2) + g_SwirlScaleMultiplier * 0x19;
-    g_SwirlGridCenterY = (g_SwirlScreenHeight / 2) + g_SwirlScaleMultiplier * 0x19;
+    g_SwirlGridCenterX = (g_SwirlScreenWidth / 2) + g_SwirlScaleMultiplier * 25;
+    g_SwirlGridCenterY = (g_SwirlScreenHeight / 2) + g_SwirlScaleMultiplier * 25;
     g_pSwirlRecord->scaleX = 0x1040;
     g_pSwirlRecord->scaleY = 0x1040;
-    g_pSwirlRecord->scaleZ = 0x1000;
+    g_pSwirlRecord->scaleZ = 0x1000 /* 1.0 */;
     g_pSwirlRecord->spinSpeed = 4;
     g_pSwirlRecord->frameCounter = 0;
-    g_pSwirlRecord->fade = 0x80;
+    g_pSwirlRecord->fade = 128;
     for (frame.gridY = 0; frame.gridY < 9; frame.gridY++) {
-        for (frame.gridX = 0; frame.gridX < 0xB; frame.gridX++) {
+        for (frame.gridX = 0; frame.gridX < 11; frame.gridX++) {
             g_pSwirlRecord->points[frame.gridX][frame.gridY][0] = frame.gridX * g_SwirlGridSpacing - g_SwirlGridCenterX;
             g_pSwirlRecord->points[frame.gridX][frame.gridY][1] = frame.gridY * g_SwirlGridSpacing - g_SwirlGridCenterY;
             g_pSwirlRecord->points[frame.gridX][frame.gridY][2] = 0;
@@ -264,7 +264,7 @@ void __cdecl Swirl_InitGridAndPackets(void)
     }
     frame.swirlRecord = g_pSwirlRecord;
     for (frame.gridY = 0; frame.gridY < 8; frame.gridY++) {
-        for (frame.gridX = 0; frame.gridX < 0xA; frame.gridX++) {
+        for (frame.gridX = 0; frame.gridX < 10; frame.gridX++) {
             frame.swirlRecord->packets[frame.gridX][frame.gridY].header.length = 9;
             frame.swirlRecord->packets[frame.gridX][frame.gridY].bytes[7] = 0x2C;
             if (1 != 0) { /* Constant condition kept for /Od branch layout; see lib/codegen.h. */
@@ -515,7 +515,7 @@ void __cdecl Swirl_UpdateAndDrawGrid(GfxEngineContext *context, int active)
     if (active != 0) {
         g_pSwirlRecord->frameCounter++;
     }
-    if (g_pSwirlRecord->frameCounter > 0x2E) {
+    if (g_pSwirlRecord->frameCounter > 46) {
         if (g_pSwirlRecord->fade >= 0) {
             g_pSwirlRecord->fade -= 4;
         } else {
@@ -526,11 +526,11 @@ void __cdecl Swirl_UpdateAndDrawGrid(GfxEngineContext *context, int active)
         frame.tintByte = (char)g_pSwirlRecord->fade;
         frame.tintByteCopy = (char)g_pSwirlRecord->fade;
         for (frame.rowIndex = 0; frame.rowIndex < 8; frame.rowIndex++) {
-            for (frame.colIndex = 0; frame.colIndex < 0xA; frame.colIndex++) {
+            for (frame.colIndex = 0; frame.colIndex < 10; frame.colIndex++) {
                 frame.swirlRecord->packets[frame.colIndex][frame.rowIndex].dwords[1] = frame.colorWord;
             }
         }
-        if (g_pSwirlRecord->frameCounter > 0x4E) {
+        if (g_pSwirlRecord->frameCounter > 78) {
             frame.module.enter = GameModeDispatcher_Enter;
             frame.module.frame = GameModeDispatcher_Frame;
             frame.module.exit = GameModeDispatcher_Exit;
@@ -550,7 +550,7 @@ void __cdecl Swirl_UpdateAndDrawGrid(GfxEngineContext *context, int active)
         g_pSwirlRecord->scaleY += frame.angleStep;
     }
     for (frame.rowIndex = 0; frame.rowIndex < 9; frame.rowIndex++) {
-        for (frame.colIndex = 0; frame.colIndex < 0xB; frame.colIndex++) {
+        for (frame.colIndex = 0; frame.colIndex < 11; frame.colIndex++) {
             GtePsxMatrixToFloat4x4ColVec((PsxMatrix *)&g_SwirlTransformMatrix, frame.rotMatrix.v);
             frame.pointX.x = (float)g_pSwirlRecord->points[frame.colIndex][frame.rowIndex][0];
             frame.pointX.y = (float)g_pSwirlRecord->points[frame.colIndex][frame.rowIndex][1];
@@ -564,7 +564,7 @@ void __cdecl Swirl_UpdateAndDrawGrid(GfxEngineContext *context, int active)
     Gfx_OrRenderObjectPolygonSetFlags(frame.objectFlags, Gfx_GetOffscreenSlotRenderObject(g_SwirlSpriteHandleFirst));
     Gfx_OrRenderObjectPolygonSetFlags(frame.objectFlags, Gfx_GetOffscreenSlotRenderObject(g_SwirlSpriteHandleThird));
     for (frame.rowIndex = 0; frame.rowIndex < 8; frame.rowIndex++) {
-        for (frame.colIndex = 0; frame.colIndex < 0xA; frame.colIndex++) {
+        for (frame.colIndex = 0; frame.colIndex < 10; frame.colIndex++) {
             frame.swirlRecord->packets[frame.colIndex][frame.rowIndex].words[4] = g_pSwirlRecord->projected[frame.colIndex][frame.rowIndex][0];
             frame.swirlRecord->packets[frame.colIndex][frame.rowIndex].words[5] = g_pSwirlRecord->projected[frame.colIndex][frame.rowIndex][1];
             frame.swirlRecord->packets[frame.colIndex][frame.rowIndex].words[8] = g_pSwirlRecord->projected[(frame.colIndex + 1)][frame.rowIndex][0];

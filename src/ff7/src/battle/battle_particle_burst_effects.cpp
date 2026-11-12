@@ -230,14 +230,14 @@ void __cdecl Battle_ParticleBurstTask(void)
                         Battle_WorldPointToCameraLocalDup((struct BattleCameraWorldPointScratch *)((frame.emitter->actorIndex << 6) + (int)g_BattleActorTransformRecords[0].auxNode), (BattleCameraLocalPoint2 *)((int)frame.spawnSlot + 8));
                     }
                     frame.velX.vx = 0xFFFFFFC4 - (rand() & 0xF);
-                    frame.velX.vy = (rand() & 0x1F) - 0x96;
-                    frame.velX.vz = (rand() & 0xF) + 0x14;
+                    frame.velX.vy = (rand() & 0x1F) - 150;
+                    frame.velX.vz = (rand() & 0xF) + 20;
                     RotMatrix((SVECTOR *)&g_BattleActorRecords[frame.emitter->actorIndex].rotX, &frame.rotMatrix);
                     TransformVectorToInt16(&frame.rotMatrix, &frame.velX, (char *)frame.spawnSlot + 0x10);
                     frame.spawnSlot->actorId = frame.emitter->actorIndex;
                     frame.spawnSlot->ownerSlot = 0;
                     frame.spawnSlot->yaw = g_BattleActorRecords[frame.emitter->actorIndex].yaw;
-                    Battle_SpawnWorldSpriteTask((Vec3sPacked *)((int)frame.spawnSlot + 8), 0x400, 0x800);
+                    Battle_SpawnWorldSpriteTask((Vec3sPacked *)((int)frame.spawnSlot + 8), 1024, 2048);
                 }
             }
         } else {
@@ -285,17 +285,17 @@ void __cdecl Battle_ParticleBurstBouncingModelTask(void)
         frame.particleSlot->posX += frame.particleSlot->velX;
         frame.particleSlot->posY += frame.particleSlot->velY;
         frame.particleSlot->posZ += frame.particleSlot->velZ;
-        frame.particleSlot->velY += 0x1E;
+        frame.particleSlot->velY += 30;
         if (frame.particleSlot->posY >= 0) {
             frame.particleSlot->velY = (-frame.particleSlot->velY >> 2) - (rand() & 0x1F);
             frame.particleSlot->posY = -frame.particleSlot->posY >> 2;
-            frame.particleSlot->velX = (frame.particleSlot->velX >> 2) + (rand() & 0x1F) + -0x10;
-            frame.particleSlot->velZ = (frame.particleSlot->velZ >> 2) + (rand() & 0x1F) + -0x10;
+            frame.particleSlot->velX = (frame.particleSlot->velX >> 2) + (rand() & 0x1F) + -16;
+            frame.particleSlot->velZ = (frame.particleSlot->velZ >> 2) + (rand() & 0x1F) + -16;
             (frame.particleSlot->bounces)++;
             if (frame.particleSlot->bounces == 2) {
                 frame.particleSlot->bounces = 0xFFFF;
             }
-            Battle_SpawnWorldSpriteTask((Vec3sPacked *)((int)frame.particleSlot + 8), 0x200, 0x400);
+            Battle_SpawnWorldSpriteTask((Vec3sPacked *)((int)frame.particleSlot + 8), 512, 1024);
         }
     }
 }

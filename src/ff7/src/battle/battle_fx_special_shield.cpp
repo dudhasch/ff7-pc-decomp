@@ -203,12 +203,12 @@ void __cdecl BattleFx_SpecialShieldTimelineTask(void)
     }
     if (timeline->step == g_BattleSpecialShieldVariant) {
         Battle_AllocateResourceSlot(BattleFx_SpecialShieldFlashShakeTask);
-        BattleFx_HitMarkSpawnScriptAtActorBone(timeline->targetIndex, 0x46, 0x1000);
+        BattleFx_HitMarkSpawnScriptAtActorBone(timeline->targetIndex, 0x46, 0x1000 /* 1.0 */);
         Battle_PostActorHitOrHurtMessage(timeline->targetIndex);
         Battle_PlaySfxPannedToActor(0x14, (short)timeline->targetIndex, 0);
     }
     (timeline->step)++;
-    if (timeline->step == 0x1E) {
+    if (timeline->step == 30) {
         timeline->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -228,7 +228,7 @@ void __cdecl BattleFx_SpecialShieldFlashShakeTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)((4 - task->shakeStep) * 0x14 * (1 - (task->shakeStep % 2 << 1)));
+    g_BattleCameraFocalPoint.focalPointY += (short)((4 - task->shakeStep) * 20 * (1 - (task->shakeStep % 2 << 1)));
     g_BattleSpecialShieldCameraStep -= 2;
     (task->shakeStep)++;
     if (task->shakeStep == 4) {
@@ -290,9 +290,9 @@ void __cdecl BattleFx_SpecialShieldTrailModelTask(void)
 #pragma pack(pop)
 
     frame.shieldTrail = (BattleFxShieldTrail *)BATTLE_CURRENT_TASK_SLOT;
-    frame.scaleX.x = 0x1000;
-    frame.scaleX.y = 0x1000;
-    frame.scaleX.z = 0x1000;
+    frame.scaleX.x = 0x1000 /* 1.0 */;
+    frame.scaleX.y = 0x1000 /* 1.0 */;
+    frame.scaleX.z = 0x1000 /* 1.0 */;
     memset(&frame.zeroWord, 0, 4);
     Gte_BuildLookBasisFromDirection(&frame.shieldTrail->velocityX, frame.basisMatrix.m[0]);
     RotMatrix((SVECTOR *)&g_BattleSpecialShieldRotationVector, &frame.rotMatrix);
@@ -307,7 +307,7 @@ void __cdecl BattleFx_SpecialShieldTrailModelTask(void)
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecialShieldModelReq.flags4 = 0x80;
     g_BattleSpecialShieldModelReq.flags4 |= frame.shieldTrail->variant != 0 ? 8 : 0;
-    g_BattleSpecialShieldModelReq.alpha = frame.shieldTrail->variant * 0x300;
+    g_BattleSpecialShieldModelReq.alpha = frame.shieldTrail->variant * 768;
     (g_BattleSpecialShieldModelReq.modelDraw) = Gfx_ModelTableGetRenderObject(g_BattleSpecialShieldModelIndices[frame.shieldTrail->modelIndex + (frame.shieldTrail->variant != 0 ? -2 + 2 : 2)], g_BattleSpecialShieldLoadedResTable);
     g_BattleSpecialShieldDrawListHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&(g_BattleSpecialShieldModelReq.modelDraw), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialShieldDrawListHandle);
     if (g_BattleIsPaused != 0) {

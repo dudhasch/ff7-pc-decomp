@@ -220,7 +220,7 @@ int __cdecl Mini_CondorAllocSurfaceBuffer16(int width, int height)
     int buffer;
 
     // STRING: FF7 0x00905464
-    buffer = (int)GameHeapAllocRaw(width * height << 1, "C:\\FF7\\condor\\cd_ddraw.cpp", 0xE1);
+    buffer = (int)GameHeapAllocRaw(width * height << 1, "C:\\FF7\\condor\\cd_ddraw.cpp", 225);
     if (buffer == 0) {
         return 0;
     } else {
@@ -244,11 +244,11 @@ void __cdecl Mini_CondorFillTwoRowsColor16(int surface, int row, int color)
     if (surface == 0) {
         return;
     }
-    row += 0x14;
+    row += 20;
     if (Mini_CondorLockSurfaceBits((LPDIRECTDRAWSURFACE)surface, &lockedFlags, &pitch) != 0) {
         pair = (color & 0xFFFF) << 0x10 | color & 0xFFFF;
         flags = (int *)lockedFlags;
-        for (column = 0; column < 0x140; column++) {
+        for (column = 0; column < 320; column++) {
             flags[(row * pitch >> 2) + column] = pair;
             flags[(row * pitch >> 2) + (pitch >> 2) + column] = pair;
         }
@@ -275,12 +275,12 @@ void __cdecl Mini_CondorClearTopAndBottomBands(void)
     }
     rowPtr = (char *)pixelFlags;
     basePointer = rowPtr;
-    for (rowIndex = 0; rowIndex < 0x14; rowIndex++) {
+    for (rowIndex = 0; rowIndex < 20; rowIndex++) {
         memset(rowPtr, 0, 0x500);
         rowPtr += pitch;
     }
-    rowPtr = basePointer + pitch * 0x1CC;
-    for (rowIndex = 0x1CC; rowIndex < 0x1E0; rowIndex++) {
+    rowPtr = basePointer + pitch * 460;
+    for (rowIndex = 460; rowIndex < 480; rowIndex++) {
         memset(rowPtr, 0, 0x500);
         rowPtr += pitch;
     }

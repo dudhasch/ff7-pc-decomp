@@ -144,7 +144,7 @@ int __cdecl Menu_DrawFontGlyph2x(int penX, int posY, unsigned int colorIndex,
         return penX;
     case TEXT_FONT_PAGE_1:
         f.codeBytes++;
-        f.atlasY = 0x84;
+        f.atlasY = 132;
         f.spacingBase = 0xE7;
         break;
     case TEXT_FONT_PAGE_2:
@@ -155,22 +155,22 @@ int __cdecl Menu_DrawFontGlyph2x(int penX, int posY, unsigned int colorIndex,
         break;
     case TEXT_FONT_PAGE_3:
         f.codeBytes++;
-        f.atlasY = 0x84;
+        f.atlasY = 132;
         f.pageShift = 0x10;
         f.spacingBase = 0x2A0;
         break;
     case TEXT_FONT_PAGE_4:
         f.codeBytes++;
-        f.atlasY = 0x84;
+        f.atlasY = 132;
         f.spacingBase = 0x372;
-        f.rowDelta = -0x40;
+        f.rowDelta = -64;
         break;
     case TEXT_EXTENDED:
         f.codeBytes++;
-        f.atlasY = 0x84;
+        f.atlasY = 132;
         f.pageShift = 0x10;
         f.spacingBase = 0x444;
-        f.rowDelta = -0x40;
+        f.rowDelta = -64;
         break;
     default:
         f.spacingBase = 0;
@@ -475,9 +475,9 @@ void __cdecl Menu_DrawFixedPitchString2x(int x, int y, unsigned char *text,
         }
         DrawIconGlyph16_2x(x, y, *text++, colorIndex, z);
         if (g_MenuModuleActive != 0) {
-            x += 0xd;
+            x += 13;
         } else {
-            x += 0x10;
+            x += 16;
         }
     }
 }
@@ -1077,9 +1077,9 @@ void Menu_DrawTifaReelFadeBands2x(int x, int y, int width, int height)
             bands.simpleH->color = 0xFF000000;
             bands.simpleH->specular = 0xFF000000;
         }
-    } else if (AcquireBatchNode(0x20, g_MenuBandGraphicsObject) != 0) {
+    } else if (AcquireBatchNode(32, g_MenuBandGraphicsObject) != 0) {
         bands.topColor.word = bands.bottomColor.word = 0;
-        for (bands.i = 0; bands.i < 0x10; bands.i++) {
+        for (bands.i = 0; bands.i < 16; bands.i++) {
             bands.upperY = bands.i * 2;
             bands.lowerY = bands.upperY + 2;
             bands.topColor.bytes[3] = (unsigned char)(0xE0 - bands.i * 14);
@@ -1141,7 +1141,7 @@ void Menu_DrawTifaReelFadeBands2x(int x, int y, int width, int height)
             bands.loopH->rhwBits = FLOAT_ONE_BITS;
             bands.loopH->color = bands.topColor.word;
             bands.loopH->specular = 0xFF000000;
-            if (bands.i != 0x10) {
+            if (bands.i != 16) {
                 g_MenuBandGraphicsObject->vertexCursor += g_MenuBandGraphicsObject->cursorStep;
             }
         }
@@ -1751,7 +1751,7 @@ void __cdecl Menu_DrawDecimalNumber2x(int x, int y, unsigned int value, char dig
                 GfxTlVertex *nextCorner;
                 GfxTlVertex *bottomRightAddr;
 
-                state.u = (float)((state.remaining / state.divisor) * 0x10 + 0x10) * 0.00390625f;
+                state.u = (float)((state.remaining / state.divisor) * 16 + 0x10) * 0.00390625f;
                 state.v = 0.0f;
                 state.du = 0.0546875f;
                 state.dv = 0.0625f;
@@ -1809,7 +1809,7 @@ void __cdecl Menu_DrawDecimalNumber2x(int x, int y, unsigned int value, char dig
         GfxTlVertex *nextLastTopRight;
         GfxTlVertex *h;
 
-        state.u = (float)(state.remaining * 0x10 + 0x10) * 0.00390625f;
+        state.u = (float)(state.remaining * 16 + 0x10) * 0.00390625f;
         state.v = 0.0f;
         state.du = 0.0546875f;
         state.dv = 0.0625f;
@@ -1896,7 +1896,7 @@ void __cdecl Menu_DrawDecimalNumberZeroPad2x(int x, int y, unsigned int value, u
             GfxTlVertex *nextCorner;
             GfxTlVertex *bottomRightAddr;
 
-            state.u = (float)((state.remaining / state.divisor) * 0x10 + 0x10) * 0.00390625f;
+            state.u = (float)((state.remaining / state.divisor) * 16 + 0x10) * 0.00390625f;
             state.v = 0.0f;
             state.du = 0.0546875f;
             state.dv = 0.0625f;
@@ -1953,7 +1953,7 @@ void __cdecl Menu_DrawDecimalNumberZeroPad2x(int x, int y, unsigned int value, u
         GfxTlVertex *nextLastTopRight;
         GfxTlVertex *h;
 
-        state.u = (float)(state.remaining * 0x10 + 0x10) * 0.00390625f;
+        state.u = (float)(state.remaining * 16 + 0x10) * 0.00390625f;
         state.v = 0.0f;
         state.du = 0.0546875f;
         state.dv = 0.0625f;
@@ -2086,7 +2086,7 @@ void __cdecl Menu_FlushAndResetScissor2x(void)
     InvalidateBatchGeneration(g_MenuWinBBlend1GraphicsObject);
     InvalidateBatchGeneration(g_MenuWinCBlend1GraphicsObject);
     InvalidateBatchGeneration(g_MenuWinDBlend1GraphicsObject);
-    GfxSetViewportRect(0, 0, 0x280, 0x1E0, (GfxEngineContext *)ctx);
+    GfxSetViewportRect(0, 0, 640, 480, (GfxEngineContext *)ctx);
 }
 
 /*
@@ -2189,13 +2189,13 @@ int __cdecl Menu_DrawFontGlyph1x(int penX, int posY, unsigned int colorIndex,
     case TEXT_FONT_PAGE_2:
         p++;
         r = 0;
-        j = 0x10;
+        j = 16;
         s = 0x1B9;
         break;
     case TEXT_FONT_PAGE_3:
         p++;
         r = 0x84;
-        j = 0x10;
+        j = 16;
         s = 0x2A0;
         break;
     case TEXT_FONT_PAGE_4:
@@ -2207,7 +2207,7 @@ int __cdecl Menu_DrawFontGlyph1x(int penX, int posY, unsigned int colorIndex,
     case TEXT_EXTENDED:
         p++;
         r = 0x84;
-        j = 0x10;
+        j = 16;
         s = 0x444;
         v = -0x40;
         break;
@@ -2217,8 +2217,8 @@ int __cdecl Menu_DrawFontGlyph1x(int penX, int posY, unsigned int colorIndex,
         break;
     }
     charCode = *p;
-    q = charCode % 0x15 * 0xC;
-    r += charCode / 0x15 * 0xC;
+    q = charCode % 21 * 12;
+    r += charCode / 21 * 12;
     if (g_MenuModuleActive != 0) {
         penX += (int)((g_pTextSpacing[charCode + s] >> 5) * 0.8333333f);
     } else {
@@ -2665,7 +2665,7 @@ void __cdecl Menu_DrawShopPartyTileHighlight1x(int x, int y, int width, int heig
     }
     x += g_MenuViewportX;
     y += g_MenuViewportY;
-    colour = (level << 0x10) | 0xa0000000 | (level << 8) | level;
+    colour = (level << 16) | 0xa0000000 | (level << 8) | level;
     Gfx_EmitFlatRect(x - 1, y - 1, width + 2, height + 2, colour, 0, 0.2f,
                      (int)g_MenuFlatRectGraphicsObject);
 }
@@ -3122,7 +3122,7 @@ void Menu_DrawTifaReelFadeBands1x(int originX, int originY, int width, int heigh
             status.simpleH->color = 0xFF000000;
             status.simpleH->specular = 0xFF000000;
         }
-    } else if (AcquireBatchNode(0x10, g_MenuBandGraphicsObject) != 0) {
+    } else if (AcquireBatchNode(16, g_MenuBandGraphicsObject) != 0) {
         status.topColor.word = status.bottomColor.word = 0;
         for (status.i = 0; status.i < 8; status.i++) {
             status.upperY = status.i * 2;

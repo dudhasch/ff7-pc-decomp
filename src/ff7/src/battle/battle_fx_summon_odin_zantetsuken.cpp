@@ -184,7 +184,7 @@ int __cdecl BattleFx_SummonEnterOdinZantetsuken(int targetMask, int actorIdx)
     memset((void *)&g_BattleSummonOdinZBillboardMatrix, 0, 0x1E);
     memset((void *)&g_BattleSummonOdinZScrollMatrix, 0, 0x1E);
     g_BattleSummonOdinZScrollMatrix[0] = 0x1000;
-    g_BattleSummonOdinZVectorC0.rotation[0] = 0x800;
+    g_BattleSummonOdinZVectorC0.rotation[0] = 0x800 /* 180 deg */;
     g_BattleSummonOdinZScrollOffset = 0xFFFFF400;
     g_BattleSummonOdinZStateWord = 0;
     g_BattleSummonOdinZVar98 = 0;
@@ -216,13 +216,13 @@ void __cdecl BattleFx_SummonBeginOdinZantetsuken(int targetMask, int actorIdx)
 
     g_BattleOverlayDrawListHead = (int)Gfx_GetPsxPacketScratchPtr();
     BattleFx_SummonLoadResOdinZantetsuken();
-    g_BattleSummonOdinZFrames = Battle_PopCountActorMask(targetMask) * 0xF;
+    g_BattleSummonOdinZFrames = Battle_PopCountActorMask(targetMask) * 15;
     g_BattleSummonOdinZCameraScriptTable.frames = g_BattleSummonOdinZFrames;
     Battle_GetActorMaskCentroid(g_BattleSummonOdinZWordB0 = targetMask, position);
     if (position[2] > g_BattleActorRecords[actorIdx].posZ) {
         g_BattleSummonOdinZMatrixD8.t[2] = position[2] - 0x1388;
     } else {
-        g_BattleSummonOdinZAnglesF8[1] = 0x800;
+        g_BattleSummonOdinZAnglesF8[1] = 0x800 /* 180 deg */;
         g_BattleSummonOdinZMatrixD8.t[2] = position[2] + 0x1388;
     }
     RotMatrix((SVECTOR *)g_BattleSummonOdinZAnglesF8, &g_BattleSummonOdinZMatrixD8);
@@ -541,9 +541,9 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
     }
     if (g_BattleSummonOdinZStateWord != 0) {
         frameIndex = g_BattleSummonOdinZVar98 % 5;
-        pulse = (frameIndex << 0xC) / 5;
-        g_BattleSummonOdinZMeshDef.shade = (SinFixed(pulse) << 0xA >> 0xC) + 0x400;
-        Battle3d_GetActorAttachMatrix(3, 0x12, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x2a4]);
+        pulse = (frameIndex << 12) / 5;
+        g_BattleSummonOdinZMeshDef.shade = (SinFixed(pulse) << 10 >> 12) + 0x400;
+        Battle3d_GetActorAttachMatrix(3, 18, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x2a4]);
         SetRotMatrix(&g_BattleActorRecords[3].boneNodes5[0x2a4]);
         SetTransMatrix(&g_BattleActorRecords[3].boneNodes5[0x2a4]);
         SetDrawColorRGB(0, 0, 0);
@@ -554,10 +554,10 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
         return;
     }
     frameIndex = taskPtr->frameIndex;
-    if (frameIndex < 0x54) { /* empty first arm: lib/codegen.h */
+    if (frameIndex < 84) { /* empty first arm: lib/codegen.h */
     } else {
-        frameIndex -= 0x54;
-        if (frameIndex < 0x3C) {
+        frameIndex -= 84;
+        if (frameIndex < 60) {
             if (frameIndex == 0) {
                 ringRecord = (BattleFxOdinZantetsukenMotionRecord *)Battle_AllocSceneMessage(1);
                 ringRecord->posX = 0;
@@ -568,26 +568,26 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                 g_BattleSummonOdinZCameraTarget->tintG = 0;
                 g_BattleSummonOdinZCameraTarget->tintB = 0;
                 g_BattleSummonOdinZCameraTarget->tintPhase = 0x1000;
-                g_BattleSummonOdinZCameraTarget->scale = 0x200;
+                g_BattleSummonOdinZCameraTarget->scale = 0x200 /* 0.125 */;
                 g_BattleSummonOdinZStateWord = 1;
             }
         } else {
-            frameIndex -= 0x3C;
-            if (frameIndex < 0x19) {
+            frameIndex -= 60;
+            if (frameIndex < 25) {
                 if (frameIndex == 0) {
                     g_BattleSummonOdinZCameraTarget->tintPhase = 0;
-                    g_BattleSummonOdinZCameraTarget->scale = 0x1000;
+                    g_BattleSummonOdinZCameraTarget->scale = 0x1000 /* 1.0 */;
                     g_BattleSummonOdinZInitialAngles.angleY = 0xEC78;
                     g_BattleSummonOdinZInitialAngles.angleZ = 0xEE6C;
                 }
                 g_BattleSummonOdinZVar98++;
             } else {
-                frameIndex -= 0x19;
-                if (frameIndex < 0x23) {
+                frameIndex -= 25;
+                if (frameIndex < 35) {
                     if (frameIndex == 0) {
-                        taskPtr->angularVelocity = 0xFF6A;
+                        taskPtr->angularVelocity = 0xFF6A /* -150 */;
                     }
-                    if (frameIndex < 0xF) {
+                    if (frameIndex < 15) {
                         BattleFx_SummonOdinZantetsukenSpawnBoneSprites(3);
                     }
                     g_BattleSummonOdinZInitialAngles.angleY += taskPtr->angularVelocity;
@@ -595,27 +595,27 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                     taskPtr->angularVelocity += 5;
                     g_BattleSummonOdinZVar98++;
                 } else {
-                    frameIndex -= 0x23;
-                    if (frameIndex < 0x19) {
+                    frameIndex -= 35;
+                    if (frameIndex < 25) {
                         if (frameIndex == 0) {
                             g_BattleSummonOdinZInitialAngles.angleY = 0xFED4;
                             g_BattleSummonOdinZInitialAngles.angleZ = 0xF448;
                         }
-                        if (frameIndex < 0x13) {
+                        if (frameIndex < 19) {
                             if (g_BattleSummonOdinZInitialAngles.angleY < 0) {
                                 g_BattleSummonOdinZInitialAngles.angleY += 0xF;
                                 g_BattleSummonOdinZInitialAngles.angleZ += 0x12C;
                             }
                             g_BattleSummonOdinZVar98++;
                         }
-                        if (frameIndex == 0xA) {
+                        if (frameIndex == 10) {
                             Battle_AllocateResourceSlot(BattleFx_SummonOdinZantetsukenSpawnAfterimageTask);
                             childTask = BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinZantetsukenSpawnTrailSegmentsTask);
                             childTask->ownerSlot = 0;
                         }
                     } else {
-                        frameIndex -= 0x19;
-                        if (frameIndex < 0xF) {
+                        frameIndex -= 25;
+                        if (frameIndex < 15) {
                             if (frameIndex == 0) {
                                 g_BattleSummonOdinZInitialAngles.angleY = 0xFF6A;
                                 g_BattleSummonOdinZInitialAngles.angleZ = 0;
@@ -633,8 +633,8 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                                 childTask->ownerSlot = 0;
                             }
                         } else {
-                            frameIndex -= 0xF;
-                            if (frameIndex < 0xF) {
+                            frameIndex -= 15;
+                            if (frameIndex < 15) {
                                 if (frameIndex == 0) {
                                     g_BattleSummonOdinZInitialAngles.angleY = 0xFF6A;
                                     g_BattleSummonOdinZInitialAngles.angleZ = 0;
@@ -652,7 +652,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                                     childTask->ownerSlot = 0;
                                 }
                             } else {
-                                frameIndex -= 0xF;
+                                frameIndex -= 15;
                                 if (frameIndex < g_BattleSummonOdinZFrames) {
                                     if (frameIndex == 0) {
                                         g_BattleSummonOdinZCameraTarget->drawFlags |= 2;
@@ -662,7 +662,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                                     return;
                                 }
                                 frameIndex -= g_BattleSummonOdinZFrames;
-                                if (frameIndex < 0xF) {
+                                if (frameIndex < 15) {
                                     if (frameIndex == 0) {
                                         g_BattleSummonOdinZCameraTarget->drawFlags &= 0xFC;
                                         g_BattleSummonOdinZStateWord = 1;
@@ -672,7 +672,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                                     if (frameIndex < 8) {
                                         g_BattleSummonOdinZInitialAngles.angleY += 0xC8;
                                     } else if (frameIndex == 8) {
-                                        taskPtr->angularVelocity = 0xFE0C;
+                                        taskPtr->angularVelocity = 0xFE0C /* -500 */;
                                         g_BattleSummonOdinZCameraTarget->tintB = 0;
                                         g_BattleSummonOdinZCameraTarget->tintG = 0;
                                         g_BattleSummonOdinZCameraTarget->tintR = 0;
@@ -681,9 +681,9 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                                             (&g_BattleSummonOdinZCameraTarget->fadeFlags)[trackIndex] = 8;
                                         }
                                     } else {
-                                        g_BattleSummonOdinZCameraTarget->tintPhase = (frameIndex - 8 << 0xC) / 7;
+                                        g_BattleSummonOdinZCameraTarget->tintPhase = (frameIndex - 8 << 12) / 7;
                                         g_BattleSummonOdinZInitialAngles.angleY += taskPtr->angularVelocity;
-                                        taskPtr->angularVelocity += 0x32;
+                                        taskPtr->angularVelocity += 50;
                                     }
                                     g_BattleSummonOdinZInitialAngles.angleZ += 0x1F4;
                                     if (frameIndex != 0) {
@@ -695,7 +695,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenActorMotionTask(void)
                                         SetTransMatrix(&g_pBattleSummonOdinZMotionScratch->matrix);
                                         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonOdinZAnimParams2, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_2, 0, g_BattleOverlayDrawListHead);
                                     }
-                                    if (frameIndex == 0xE) {
+                                    if (frameIndex == 14) {
                                         Battle_AllocSceneMessage(2);
                                     }
                                     g_BattleSummonOdinZVar98++;
@@ -771,9 +771,9 @@ int __cdecl BattleFx_SummonOdinZantetsukenDrawPsxGouraudMesh(BattleFxPsxMeshHead
             if (facing >= 0) {
                 primitive->tag = 0x6000000;
                 Gfx_ReadTransformOrderingDepth2(zDepth);
-                zDepth[0] -= 0x60;
-                if (zDepth[0] < 0x40) {
-                    zDepth[0] = 0x40;
+                zDepth[0] -= 96;
+                if (zDepth[0] < 64) {
+                    zDepth[0] = 64;
                 }
                 if (mesh->shade != 0) {
                     Gfx_ShadePsxTriVertexColors(&recordPointer->color0Vec, &recordPointer->color1Vec, &recordPointer->color2Vec, mesh->shade, &primitive->color0Vec, &primitive->texWordVec, &primitive->attrWordVec);
@@ -814,9 +814,9 @@ int __cdecl BattleFx_SummonOdinZantetsukenDrawPsxGouraudMesh(BattleFxPsxMeshHead
                 SetPendingResourceHandle((GfxPsxShortVertexSlot *)(origin + recordPointer->resourceOffset));
                 ApplyPendingResourceHandle();
                 Gfx_ReadTransformOrderingDepth2(zDepth);
-                zDepth[0] -= 0x60;
-                if (zDepth[0] < 0x40) {
-                    zDepth[0] = 0x40;
+                zDepth[0] -= 96;
+                if (zDepth[0] < 64) {
+                    zDepth[0] = 64;
                 }
                 quadPacket->tag = 0x8000000;
                 if (mesh->shade != 0) {
@@ -859,7 +859,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenSpawnBoneSprites(int count)
         sprite->posY += rand() % 400 - 200;
         sprite->posZ += rand() % 400 - 200;
         if (DEAD_IN_RETAIL) {
-            scaleValue = 0x2000;
+            scaleValue = 0x2000 /* 2.0 */;
         } else {
             scaleValue = rand() % 0x1000 + 0x1000;
         }
@@ -910,7 +910,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenSpawnAfterimageTask(void)
     }
     child = (BattleFxZantetsukenAfterimage *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinZantetsukenAfterimageTask);
     child->ownerSlot = task->recordIndex;
-    Battle3d_GetActorAttachMatrix(3, 0x12, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x2a4]);
+    Battle3d_GetActorAttachMatrix(3, 18, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x2a4]);
     Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleSummonOdinZMatrixE0, (void *)&g_BattleActorRecords[3].boneNodes5[0x2a4], &g_BattleSummonOdinZAfterimageMatrices.matrices[task->recordIndex]);
     child->matrix = &g_BattleSummonOdinZAfterimageMatrices.matrices[task->recordIndex];
     (task->recordIndex)++;
@@ -937,9 +937,9 @@ void __cdecl BattleFx_SummonOdinZantetsukenAfterimageTask(void)
         g_pBattleSummonOdinZAfterimageMatrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     }
     frameSum = task->frameCount + task->ownerSlot;
-    if (frameSum < 0xF) {
+    if (frameSum < 15) {
         if (task->frameCount < 9) {
-            g_BattleSummonOdinZAnimDef.shade = (task->frameCount << 0xC) / 9;
+            g_BattleSummonOdinZAnimDef.shade = (task->frameCount << 12) / 9;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1206,7 +1206,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenSpawnTrailSegmentsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    Battle3d_GetActorAttachMatrix(3, 0x12, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x2a4]);
+    Battle3d_GetActorAttachMatrix(3, 18, (PsxMatrix *)&g_BattleActorRecords[3].boneNodes5[0x2a4]);
     Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleSummonOdinZMatrixE0, (void *)&g_BattleActorRecords[3].boneNodes5[0x2a4], &g_BattleSummonOdinZTrailDataBlock->matrix);
     SetRotMatrix(&g_BattleSummonOdinZTrailDataBlock->matrix);
     SetTransMatrix(&g_BattleSummonOdinZTrailDataBlock->matrix);
@@ -1216,14 +1216,14 @@ void __cdecl BattleFx_SummonOdinZantetsukenSpawnTrailSegmentsTask(void)
         *(Int64Pair *)&g_BattleSummonOdinZTrailDataBlock->prevX = *(Int64Pair *)&g_BattleSummonOdinZRecordBuffer1[task->recordIndex - 1].posX;
         *(Int64Pair *)&g_BattleSummonOdinZTrailDataBlock->prevX2 = *(Int64Pair *)&g_BattleSummonOdinZRecordBuffer1[task->recordIndex - 1].trailX;
         for (quarter = 1; quarter <= 4; quarter++) {
-            fixedFraction = (quarter << 0xC) / 4;
-            g_BattleSummonOdinZTrailDataBlock->currentX = g_BattleSummonOdinZTrailDataBlock->sourceX * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevX * (0x1000 - fixedFraction) >> 0xC;
-            g_BattleSummonOdinZTrailDataBlock->currentY = g_BattleSummonOdinZTrailDataBlock->sourceY * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevY * (0x1000 - fixedFraction) >> 0xC;
-            g_BattleSummonOdinZTrailDataBlock->currentZ = g_BattleSummonOdinZTrailDataBlock->sourceZ * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevZ * (0x1000 - fixedFraction) >> 0xC;
-            g_BattleSummonOdinZTrailDataBlock->currentX2 = g_BattleSummonOdinZTrailDataBlock->sourceX2 * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevX2 * (0x1000 - fixedFraction) >> 0xC;
-            g_BattleSummonOdinZTrailDataBlock->currentY2 = g_BattleSummonOdinZTrailDataBlock->sourceY2 * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevY2 * (0x1000 - fixedFraction) >> 0xC;
-            g_BattleSummonOdinZTrailDataBlock->currentZ2 = g_BattleSummonOdinZTrailDataBlock->sourceZ2 * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevZ2 * (0x1000 - fixedFraction) >> 0xC;
-            BattleFx_SummonOdinZantetsukenOffsetPointAlongLine(&g_BattleSummonOdinZTrailDataBlock->current, &g_BattleSummonOdinZTrailDataBlock->current2, 0x578, &g_BattleSummonOdinZTrailDataBlock->trail);
+            fixedFraction = (quarter << 12) / 4;
+            g_BattleSummonOdinZTrailDataBlock->currentX = g_BattleSummonOdinZTrailDataBlock->sourceX * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevX * (4096 - fixedFraction) >> 12;
+            g_BattleSummonOdinZTrailDataBlock->currentY = g_BattleSummonOdinZTrailDataBlock->sourceY * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevY * (4096 - fixedFraction) >> 12;
+            g_BattleSummonOdinZTrailDataBlock->currentZ = g_BattleSummonOdinZTrailDataBlock->sourceZ * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevZ * (4096 - fixedFraction) >> 12;
+            g_BattleSummonOdinZTrailDataBlock->currentX2 = g_BattleSummonOdinZTrailDataBlock->sourceX2 * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevX2 * (4096 - fixedFraction) >> 12;
+            g_BattleSummonOdinZTrailDataBlock->currentY2 = g_BattleSummonOdinZTrailDataBlock->sourceY2 * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevY2 * (4096 - fixedFraction) >> 12;
+            g_BattleSummonOdinZTrailDataBlock->currentZ2 = g_BattleSummonOdinZTrailDataBlock->sourceZ2 * fixedFraction + g_BattleSummonOdinZTrailDataBlock->prevZ2 * (4096 - fixedFraction) >> 12;
+            BattleFx_SummonOdinZantetsukenOffsetPointAlongLine(&g_BattleSummonOdinZTrailDataBlock->current, &g_BattleSummonOdinZTrailDataBlock->current2, 1400, &g_BattleSummonOdinZTrailDataBlock->trail);
             g_BattleSummonOdinZRecordBuffer1[task->recordIndex].posX = g_BattleSummonOdinZTrailDataBlock->currentX + g_BattleSummonOdinZTrailDataBlock->trailX;
             g_BattleSummonOdinZRecordBuffer1[task->recordIndex].posY = g_BattleSummonOdinZTrailDataBlock->currentY + g_BattleSummonOdinZTrailDataBlock->trailY;
             g_BattleSummonOdinZRecordBuffer1[task->recordIndex].posZ = g_BattleSummonOdinZTrailDataBlock->currentZ + g_BattleSummonOdinZTrailDataBlock->trailZ;
@@ -1252,7 +1252,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenSpawnTrailSegmentsTask(void)
 }
 
 // Takes the vector from the short triple at startPoint to the one at endPoint, normalizes it with
-// NormalizeVectorFixed, and writes startPoint + unit * distance (Q12, >> 0xC) - endPoint into three shorts at
+// NormalizeVectorFixed, and writes startPoint + unit * distance (Q12, >> 12) - endPoint into three shorts at
 // outPoint, that is the point distance fixed-point units along the line from startPoint toward endPoint, expressed
 // relative to endPoint. The function normalizes in place into the first component's slot and reads
 // the other two components from the adjacent stack slots.
@@ -1265,9 +1265,9 @@ void __cdecl BattleFx_SummonOdinZantetsukenOffsetPointAlongLine(Vec3sPacked *sta
     moveDir.vy = endPoint->vy - startPoint->vy;
     moveDir.vz = endPoint->vz - startPoint->vz;
     NormalizeVectorFixed(&moveDir, &moveDir);
-    outPoint->vx = startPoint->vx + (moveDir.vx * distance >> 0xC) - endPoint->vx;
-    outPoint->vy = startPoint->vy + (moveDir.vy * distance >> 0xC) - endPoint->vy;
-    outPoint->vz = startPoint->vz + (moveDir.vz * distance >> 0xC) - endPoint->vz;
+    outPoint->vx = startPoint->vx + (moveDir.vx * distance >> 12) - endPoint->vx;
+    outPoint->vy = startPoint->vy + (moveDir.vy * distance >> 12) - endPoint->vy;
+    outPoint->vz = startPoint->vz + (moveDir.vz * distance >> 12) - endPoint->vz;
 }
 
 // Uses task counter plus saved sequence index to select a thirty-six-count colour ramp followed by
@@ -1294,18 +1294,18 @@ void __cdecl BattleFx_SummonOdinZantetsukenTrailSegmentQuadTask(void)
 
     taskSlotPtr = (BattleFxOdinZantetsukenSegment *)BATTLE_CURRENT_TASK_SLOT;
     combined = taskSlotPtr->step + taskSlotPtr->ownerSlot;
-    if (combined < 0x24) {
-        if (taskSlotPtr->step >= 0x24) {
+    if (combined < 36) {
+        if (taskSlotPtr->step >= 36) {
             taskSlotPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
-        upper = (taskSlotPtr->step + 1 << 0xC) / 0x24;
-        lowerFraction = (taskSlotPtr->step << 0xC) / 0x24;
+        upper = (taskSlotPtr->step + 1 << 12) / 36;
+        lowerFraction = (taskSlotPtr->step << 12) / 36;
     } else {
         combined -= 0x24;
-        if (combined < 0x18) {
-            upper = (taskSlotPtr->step - combined + 1 << 0xC) / 0x24;
-            lowerFraction = (taskSlotPtr->step - combined << 0xC) / 0x24;
+        if (combined < 24) {
+            upper = (taskSlotPtr->step - combined + 1 << 12) / 36;
+            lowerFraction = (taskSlotPtr->step - combined << 12) / 36;
         } else {
             taskSlotPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1376,22 +1376,22 @@ void __cdecl BattleFx_SummonOdinZantetsukenTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL != 0) {
-        w = g_BattleSummonOdinZDrawBufferCurrent % 0x200; g_BattleSummonOdinZDrawBufferCurrent++; x = 0; s = 0x100; z = 0x100; u = 0; v = 0; y = 0; t = 0xFFFFFFFF;
+        w = g_BattleSummonOdinZDrawBufferCurrent % 512; g_BattleSummonOdinZDrawBufferCurrent++; x = 0; s = 0x100; z = 256; u = 0; v = 0; y = 0; t = 0xFFFFFFFF;
         if (Battle3d_GetOffscreenRenderObject(g_BattleSummonOdinZState) != 0) {
             Gfx_EmitPsxTexturedSpriteQuad(w, x, s, z, u, v, y, FLOAT_ONE_BITS, t, 0, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonOdinZState));
         }
     }
     p = a->frameCounter;
-    if (p < 0xA) {
+    if (p < 10) {
         if (p == 0) {
-            g_BattleFxTimelineState.red = 0; g_BattleFxTimelineState.channel1 = 0; g_BattleFxTimelineState.channel2 = 0; Battle_StartFixedPointRamp(0x1000, 0xA);
+            g_BattleFxTimelineState.red = 0; g_BattleFxTimelineState.channel1 = 0; g_BattleFxTimelineState.channel2 = 0; Battle_StartFixedPointRamp(0x1000, 10);
         }
         if (p == 9) {
             g_BattleStageHideFlags |= 0xF;
         }
     } else {
         p -= 0xA;
-        if (p < 0x32) {
+        if (p < 50) {
             if (p == 0) {
                 r = (BattleFxOdinSpriteSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinZantetsukenFadeInTripleSpriteTask); r->posX = 0; r->posY = 0;
                 r->posZ = 0xEC78; r = (BattleFxOdinSpriteSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinZantetsukenStaticSpriteTask); r->posX = 0;
@@ -1402,10 +1402,10 @@ void __cdecl BattleFx_SummonOdinZantetsukenTimelineTask(void)
             }
         } else {
             p -= 0x32;
-            if (p < 0x19) { /* empty first arm: lib/codegen.h */
+            if (p < 25) { /* empty first arm: lib/codegen.h */
             } else {
                 p -= 0x19;
-                if (p < 0x28) {
+                if (p < 40) {
                     if (p == 0) {
                         r = (BattleFxOdinSpriteSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinZantetsukenStaticModelTask);
                         r = (BattleFxOdinSpriteSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinZantetsukenScrollingTripleSpriteTask); r->posX = 0; r->posY = 0xFFBA;
@@ -1413,22 +1413,22 @@ void __cdecl BattleFx_SummonOdinZantetsukenTimelineTask(void)
                     }
                 } else {
                     p -= 0x28;
-                    if (p < 0x14) { /* empty first arm: lib/codegen.h */
+                    if (p < 20) { /* empty first arm: lib/codegen.h */
                     } else {
                         p -= 0x14;
-                        if (p < 0x19) {
+                        if (p < 25) {
                             if (p == 0) {
                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                             }
                         } else {
                             p -= 0x19;
-                            if (p < 0x23) {
+                            if (p < 35) {
                                 if (p == 0) {
-                                    g_BattleStageHideFlags &= 0xF0; Battle_StartFixedPointRamp(0, 0x23);
+                                    g_BattleStageHideFlags &= 0xF0; Battle_StartFixedPointRamp(0, 35);
                                 }
                             } else {
                                 p -= 0x23;
-                                if (p < 0x19) {
+                                if (p < 25) {
                                     if (p == 0x12) {
                                         Battle_AllocateResourceSlot(BattleFx_SummonOdinZantetsukenScreenFlashPulseTask); BattleFx_SummonOdinZantetsukenToggleMaskedActorBit1();
                                     }
@@ -1441,7 +1441,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenTimelineTask(void)
                                     }
                                 } else {
                                     p -= 0x19;
-                                    if (p < 0xF) {
+                                    if (p < 15) {
                                         if (p == 8) {
                                             Battle_AllocateResourceSlot(BattleFx_SummonOdinZantetsukenScreenFlashPulseTask); BattleFx_SummonOdinZantetsukenToggleMaskedActorBit1();
                                         }
@@ -1454,7 +1454,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenTimelineTask(void)
                                         }
                                     } else {
                                         p -= 0xF;
-                                        if (p < 0xF) {
+                                        if (p < 15) {
                                             if (p == 8) {
                                                 Battle_AllocateResourceSlot(BattleFx_SummonOdinZantetsukenScreenFlashPulseTask); BattleFx_SummonOdinZantetsukenToggleMaskedActorBit1();
                                             }
@@ -1477,7 +1477,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenTimelineTask(void)
                                                     }
                                                 } else {
                                                     p -= g_BattleSummonOdinZFrames;
-                                                    if (p < 0xF) {
+                                                    if (p < 15) {
                                                         if (p == 0) {
                                                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 4);
                                                         }
@@ -1529,22 +1529,22 @@ void __cdecl BattleFx_SummonOdinZantetsukenFadeInTripleSpriteTask(void)
     flagVal = 0x10000;
     Gfx_OrRenderObjectPolygonSetFlags(flagVal, g_BattleSummonOdinZRefVector.drawObj);
     if (taskPtr->frameIndex == 0) {
-        g_BattleSummonOdinZScale = 0x400;
+        g_BattleSummonOdinZScale = 0x400 /* 0.25 */;
     }
     frameIndex = taskPtr->frameIndex;
-    if (frameIndex < 0xA) {
-        frac = (frameIndex << 0xC) / 0xA;
-        g_BattleSummonOdinZRefVector.color.b = frac << 7 >> 0xC;
+    if (frameIndex < 10) {
+        frac = (frameIndex << 12) / 10;
+        g_BattleSummonOdinZRefVector.color.b = frac << 7 >> 12;
         g_BattleSummonOdinZRefVector.color.g = g_BattleSummonOdinZRefVector.color.b;
         g_BattleSummonOdinZRefVector.color.r = g_BattleSummonOdinZRefVector.color.g;
     } else {
-        frameIndex -= 0xA;
-        if (frameIndex < 0x7D) {
-            frac = (frameIndex << 0xC) / 0x7D;
+        frameIndex -= 10;
+        if (frameIndex < 125) {
+            frac = (frameIndex << 12) / 125;
             g_BattleSummonOdinZRefVector.colorWord = 0x2E808080;
         } else {
-            frameIndex -= 0x7D;
-            if (frameIndex < 0x19) {
+            frameIndex -= 125;
+            if (frameIndex < 25) {
                 if (frameIndex == 0) {
                     taskPtr->posX = 0;
                     taskPtr->posY = 0xECDC;
@@ -1592,9 +1592,9 @@ int __cdecl BattleFx_SummonOdinZantetsukenInstallBillboardMatrix(void *point, in
     RotTransPoint(point, (char *)&g_BattleSummonOdinZSpriteReq1 + 2, &depth);
     if (distance != 0) {
         NormalizeVectorFixed((char *)&g_BattleSummonOdinZSpriteReq1 + 2, &normal);
-        *(int *)((char *)&g_BattleSummonOdinZSpriteReq1 + 2) += normal.vx * distance >> 0xC;
-        *(int *)((char *)&g_BattleSummonOdinZSpriteReq1 + 6) += normal.vy * distance >> 0xC;
-        *(int *)((char *)&g_BattleSummonOdinZSpriteReq1 + 10) += normal.vz * distance >> 0xC;
+        *(int *)((char *)&g_BattleSummonOdinZSpriteReq1 + 2) += normal.vx * distance >> 12;
+        *(int *)((char *)&g_BattleSummonOdinZSpriteReq1 + 6) += normal.vy * distance >> 12;
+        *(int *)((char *)&g_BattleSummonOdinZSpriteReq1 + 10) += normal.vz * distance >> 12;
     }
     SetRotMatrix((PsxMatrix *)g_BattleSummonOdinZBillboardMatrix);
     SetTransMatrix((PsxMatrix *)g_BattleSummonOdinZBillboardMatrix);
@@ -1623,10 +1623,10 @@ void __cdecl BattleFx_SummonOdinZantetsukenStaticSpriteTask(void)
     flagBits = 0x10000;
     Gfx_OrRenderObjectPolygonSetFlags(flagBits, g_BattleSummonOdinZSpriteDrawRequest.drawObj);
     frame = task->spawnIndex;
-    if (frame < 0x87) { /* empty first arm: lib/codegen.h */
+    if (frame < 135) { /* empty first arm: lib/codegen.h */
     } else {
-        frame = frame - 0x87;
-        if (frame < 0x19) {
+        frame = frame - 135;
+        if (frame < 25) {
             if (frame == 0) {
                 task->posX = 0;
                 task->posY = 0xECDC;
@@ -1669,7 +1669,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenStaticModelTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonOdinZAnimParams1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, (int)(g_BattleOverlayDrawListHead));
     if (!g_BattleIsPaused) {
         task->frameCounter += 1;
-        if (task->frameCounter >= 0x3C) {
+        if (task->frameCounter >= 60) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -1699,18 +1699,18 @@ void __cdecl BattleFx_SummonOdinZantetsukenScrollingTripleSpriteTask(void)
     objectFlags = 0x8000;
     Gfx_OrRenderObjectPolygonSetFlags(objectFlags, g_BattleSummonOdinZVector2.drawObj);
     cnt = taskSlot->frameCounter;
-    if (cnt < 0x23) {
+    if (cnt < 35) {
         g_BattleSummonOdinZVector2.colorWord = 0x2E000000;
     } else {
-        cnt -= 0x23;
-        if (cnt < 0xA) {
-            frac = (cnt << 0xC) / 0xA;
-            g_BattleSummonOdinZVector2.color.r = frac << 6 >> 0xC;
-            g_BattleSummonOdinZVector2.color.g = frac << 6 >> 0xC;
-            g_BattleSummonOdinZVector2.color.b = frac << 6 >> 0xC;
+        cnt -= 35;
+        if (cnt < 10) {
+            frac = (cnt << 12) / 10;
+            g_BattleSummonOdinZVector2.color.r = frac << 6 >> 12;
+            g_BattleSummonOdinZVector2.color.g = frac << 6 >> 12;
+            g_BattleSummonOdinZVector2.color.b = frac << 6 >> 12;
         } else {
-            cnt -= 0xA;
-            if (cnt < 0xF) {
+            cnt -= 10;
+            if (cnt < 15) {
                 g_BattleSummonOdinZVector2.color.r = 0x40;
                 g_BattleSummonOdinZVector2.color.g = 0x40;
                 g_BattleSummonOdinZVector2.color.b = 0x40;
@@ -1726,10 +1726,10 @@ void __cdecl BattleFx_SummonOdinZantetsukenScrollingTripleSpriteTask(void)
     g_BattleSummonOdinZVectorC0.translationX = scrollOfs + g_BattleSummonOdinZScrollOffset;
     SetTransMatrix((PsxMatrix *)g_BattleSummonOdinZScrollMatrix);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonOdinZVector2, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleOverlayDrawListHead);
-    g_BattleSummonOdinZVectorC0.translationX += 0x800;
+    g_BattleSummonOdinZVectorC0.translationX += 2048;
     SetTransMatrix((PsxMatrix *)g_BattleSummonOdinZScrollMatrix);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonOdinZVector2, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleOverlayDrawListHead);
-    g_BattleSummonOdinZVectorC0.translationX += 0x800;
+    g_BattleSummonOdinZVectorC0.translationX += 2048;
     SetTransMatrix((PsxMatrix *)g_BattleSummonOdinZScrollMatrix);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonOdinZVector2, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
@@ -1744,7 +1744,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenScrollingTripleSpriteTask(void)
 // Builds the view-space point for the Zantetsuken effect. It loads the rotation and translation
 // matrix from g_BattleSummonOdinZMatrixE0, then RotTransPoint transforms point into the three ints
 // in target->t. When distance is nonzero, it normalizes that vector with NormalizeVectorFixed and
-// adds the unit vector times distance (Q12, >> 0xC) to target->t[0], t[1] and t[2]. The second and
+// adds the unit vector times distance (Q12, >> 12) to target->t[0], t[1] and t[2]. The second and
 // third components are read from the stack slots dirY and unitZ beside the normalize output, not
 // from its result. An unreferenced padding slot (unusedSpace) preserves VC5 /Od stack layout. Returns
 // target unchanged.
@@ -1759,9 +1759,9 @@ PsxMatrix *__cdecl BattleFx_SummonOdinZantetsukenMakeViewSpacePointPushed(void *
     RotTransPoint(point, target->t, &depth);
     if (distance != 0) {
         NormalizeVectorFixed(target->t, &normal);
-        target->t[0] += normal.vx * distance >> 0xC;
-        target->t[1] += normal.vy * distance >> 0xC;
-        target->t[2] += normal.vz * distance >> 0xC;
+        target->t[0] += normal.vx * distance >> 12;
+        target->t[1] += normal.vy * distance >> 12;
+        target->t[2] += normal.vz * distance >> 12;
     }
     return target;
 }
@@ -1792,7 +1792,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenTargetSequenceTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->phase % 0xF == 0) {
+    if (task->phase % 15 == 0) {
         while ((g_BattleSummonOdinZWordB0 & 1 << task->bitIndex) == 0) {
             (task->bitIndex)++;
         }
@@ -1805,12 +1805,12 @@ void __cdecl BattleFx_SummonOdinZantetsukenTargetSequenceTask(void)
         }
         Battle_GetBoneWorldPos(task->bitIndex, g_BattleActorRecords[task->bitIndex].targetBone, (short *)&g_BattleSummonOdinZCameraScriptTable);
         if (DEAD_IN_RETAIL != 0) {
-            rotationX = 0x200;
+            rotationX = 0x200 /* 45 deg */;
         } else {
             rotationX = (rand() % 0x400) - 0x200;
         }
         g_pBattleSummonOdinZTargetScratch->angle[0] = rotationX;
-        g_pBattleSummonOdinZTargetScratch->angle[1] = 0x400;
+        g_pBattleSummonOdinZTargetScratch->angle[1] = 0x400 /* 90 deg */;
         g_pBattleSummonOdinZTargetScratch->angle[2] = -(rand() & 0x7FF);
         RotMatrix((SVECTOR *)g_pBattleSummonOdinZTargetScratch->angle, &g_pBattleSummonOdinZTargetScratch->matrix);
         g_pBattleSummonOdinZTargetScratch->angle[0] = g_BattleActorRecords[task->bitIndex].radius * 0x14;
@@ -1820,7 +1820,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenTargetSequenceTask(void)
         g_BattleSummonOdinZCameraEye.cameraPosX = g_pBattleSummonOdinZTargetScratch->angle[0] + g_BattleSummonOdinZCameraScriptTable.posX;
         g_BattleSummonOdinZCameraEye.cameraPosY = g_pBattleSummonOdinZTargetScratch->angle[1] + g_BattleSummonOdinZCameraScriptTable.posY;
         g_BattleSummonOdinZCameraEyeZ = g_pBattleSummonOdinZTargetScratch->angle[2] + g_BattleSummonOdinZCameraScriptTable.posZ;
-    } else if (task->phase % 0xF == 3) {
+    } else if (task->phase % 15 == 3) {
         if ((g_BattleTimelineTargetMask & 1 << task->bitIndex) != 0) {
             splitTask = (BattleFxOdinZantetsukenSplitActor *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonOdinZantetsukenSplitActorTask);
             splitTask->actorIndex = task->bitIndex;
@@ -1868,12 +1868,12 @@ void __cdecl BattleFx_SummonOdinZantetsukenSplitActorTask(void)
         if (g_BattleUiScalingMode != 2) {
             g_BattleSummonOdinZTaskParam.captureRect.posX = (short)g_BattleViewportOriginX;
             g_BattleSummonOdinZTaskParam.captureRect.posY = (short)g_BattleViewportOriginY;
-            g_BattleSummonOdinZTaskParam.captureRect.height = 0x80;
+            g_BattleSummonOdinZTaskParam.captureRect.height = 128;
             g_BattleSummonOdinZTaskParam.captureRect.width = g_BattleSummonOdinZTaskParam.captureRect.height;
         } else {
             g_BattleSummonOdinZTaskParam.captureRect.posX = (short)g_BattleViewportOriginX;
             g_BattleSummonOdinZTaskParam.captureRect.posY = (short)g_BattleViewportOriginY;
-            g_BattleSummonOdinZTaskParam.captureRect.height = 0x100;
+            g_BattleSummonOdinZTaskParam.captureRect.height = 256;
             g_BattleSummonOdinZTaskParam.captureRect.width = g_BattleSummonOdinZTaskParam.captureRect.height;
         }
         if (g_BattleIsPaused == 0) {
@@ -1899,7 +1899,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenSplitActorTask(void)
             }
             g_BattleSummonOdinZSplitOffsetA += g_BattleSummonOdinZSplitSpeed;
             g_BattleSummonOdinZSplitOffsetB -= g_BattleSummonOdinZSplitSpeed;
-            g_BattleSummonOdinZSplitSpeed = g_BattleSummonOdinZSplitSpeed * 0xFF0 >> 0xC;
+            g_BattleSummonOdinZSplitSpeed = g_BattleSummonOdinZSplitSpeed * 0xFF0 >> 12;
             BattleFx_SummonOdinZantetsukenMoveSplitQuadHalf(g_BattleSummonOdinZSplitOffsetA, g_BattleSummonOdinZSplitScale, g_BattleSummonOdinZDrawListTaskSlot, 0);
             BattleFx_SummonOdinZantetsukenMoveSplitQuadHalf(g_BattleSummonOdinZSplitOffsetB, g_BattleSummonOdinZSplitScale, g_BattleSummonOdinZDrawListTaskSlot, 1);
         } else {
@@ -1907,7 +1907,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenSplitActorTask(void)
             if (frame < 2) {
                 g_BattleSummonOdinZSplitOffsetA += g_BattleSummonOdinZSplitSpeed;
                 g_BattleSummonOdinZSplitOffsetB -= g_BattleSummonOdinZSplitSpeed;
-                g_BattleSummonOdinZSplitSpeed = g_BattleSummonOdinZSplitSpeed * 0xFF0 >> 0xC;
+                g_BattleSummonOdinZSplitSpeed = g_BattleSummonOdinZSplitSpeed * 0xFF0 >> 12;
                 g_BattleSummonOdinZSplitColor -= g_BattleSummonOdinZSplitColorStep;
                 BattleFx_SummonOdinZantetsukenMoveSplitQuadHalf(g_BattleSummonOdinZSplitOffsetA, g_BattleSummonOdinZSplitScale, g_BattleSummonOdinZDrawListTaskSlot, 0);
                 BattleFx_SummonOdinZantetsukenMoveSplitQuadHalf(g_BattleSummonOdinZSplitOffsetB, g_BattleSummonOdinZSplitScale, g_BattleSummonOdinZDrawListTaskSlot, 1);
@@ -1988,17 +1988,17 @@ void __cdecl BattleFx_SummonOdinZantetsukenQueueActorOffscreenRequest(int actorI
                 ratio = 0x25;
                 offsetX = 0;
                 originY = 0;
-                widthPx = 0x140;
-                screenHeight = 0xF0;
+                widthPx = 320;
+                screenHeight = 240;
                 extent = 0xA6;
                 break;
             case MAIN_GRAPHICS_MODE_320X240_CENTERED:
                 zeroField = 0;
                 ratio = 0x25;
                 offsetX = 0xA0;
-                originY = 0x78;
-                widthPx = 0x140;
-                screenHeight = 0xF0;
+                originY = 120;
+                widthPx = 320;
+                screenHeight = 240;
                 extent = 0xA6;
                 break;
             case MAIN_GRAPHICS_MODE_640X480:
@@ -2006,8 +2006,8 @@ void __cdecl BattleFx_SummonOdinZantetsukenQueueActorOffscreenRequest(int actorI
                 ratio = 0x4A;
                 offsetX = 0;
                 originY = 0;
-                widthPx = 0x280;
-                screenHeight = 0x1E0;
+                widthPx = 640;
+                screenHeight = 480;
                 extent = 0x14C;
             }
             request->viewportX = rect->posX;
@@ -2023,8 +2023,8 @@ void __cdecl BattleFx_SummonOdinZantetsukenQueueActorOffscreenRequest(int actorI
                 request->viewportHeightOverride = 0;
                 request->projOffsetX = zeroField;
                 request->projOffsetY = 0;
-                request->viewportX = capture->posX - 0x80;
-                request->viewportY = capture->posY - 0x80;
+                request->viewportX = capture->posX - 128;
+                request->viewportY = capture->posY - 128;
                 *(GfxMatrix4x4 *)request->modelMatrix = *(GfxMatrix4x4 *)g_BattleActorRecords[actorIndex].worldMatrix;
                 *(BattleModelDrawState *)request->placement = *(BattleModelDrawState *)(actorIndex * 0x74 + (char *)&g_BattleSummonOdinZTrackBuffer);
                 request->placementOutPos = 0;
@@ -2035,8 +2035,8 @@ void __cdecl BattleFx_SummonOdinZantetsukenQueueActorOffscreenRequest(int actorI
                 request->viewportHeightOverride = 0;
                 request->projOffsetX = zeroField;
                 request->projOffsetY = 0;
-                request->viewportX = capture->posX - 0x40;
-                request->viewportY = capture->posY - 0x40;
+                request->viewportX = capture->posX - 64;
+                request->viewportY = capture->posY - 64;
                 *(GfxMatrix4x4 *)request->modelMatrix = *(GfxMatrix4x4 *)g_BattleActorRecords[actorIndex].worldMatrix;
                 *(BattleModelDrawState *)request->placement = *(BattleModelDrawState *)(actorIndex * 0x74 + (char *)&g_BattleSummonOdinZTrackBuffer);
                 request->placementOutPos = 0;
@@ -2047,8 +2047,8 @@ void __cdecl BattleFx_SummonOdinZantetsukenQueueActorOffscreenRequest(int actorI
                 request->viewportHeightOverride = 0;
                 request->projOffsetX = zeroField;
                 request->projOffsetY = 0;
-                request->viewportX = capture->posX - 0x40;
-                request->viewportY = capture->posY - 0x40;
+                request->viewportX = capture->posX - 64;
+                request->viewportY = capture->posY - 64;
                 *(GfxMatrix4x4 *)request->modelMatrix = *(GfxMatrix4x4 *)g_BattleActorRecords[actorIndex].worldMatrix;
                 *(BattleModelDrawState *)request->placement = *(BattleModelDrawState *)(actorIndex * 0x74 + (char *)&g_BattleSummonOdinZTrackBuffer);
                 request->placementOutPos = 0;
@@ -2094,9 +2094,9 @@ void __cdecl BattleFx_SummonOdinZantetsukenInitSplitActorQuads(BattleFxActorOffs
         }
         g_BattleSummonOdinZMatrixBuffer[rowIdx][0].v1 = 0;
         g_BattleSummonOdinZMatrixBuffer[rowIdx][0].v0 = 0;
-        g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v0 = (scale * -0x80 >> 0xC) + 0x80;
+        g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v0 = (scale * -0x80 >> 12) + 0x80;
         g_BattleSummonOdinZMatrixBuffer[rowIdx][0].v2 = g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v0;
-        g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v1 = (scale * 0x7F >> 0xC) + 0x80;
+        g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v1 = (scale * 0x7F >> 12) + 0x80;
         g_BattleSummonOdinZMatrixBuffer[rowIdx][0].v3 = g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v1;
         g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v3 = 0xFF;
         g_BattleSummonOdinZMatrixBuffer[rowIdx][1].v2 = 0xFF;
@@ -2126,9 +2126,9 @@ void __cdecl BattleFx_SummonOdinZantetsukenInitSplitActorQuads(BattleFxActorOffs
     g_BattleSummonOdinZAnimState[0].x1 = g_BattleSummonOdinZAnimState[0].x3;
     g_BattleSummonOdinZAnimState[0].y1 = center->posY - extentMinus;
     g_BattleSummonOdinZAnimState[0].y0 = g_BattleSummonOdinZAnimState[0].y1;
-    g_BattleSummonOdinZAnimState[1].y0 = center->posY + (scale * -extentMinus >> 0xC);
+    g_BattleSummonOdinZAnimState[1].y0 = center->posY + (scale * -extentMinus >> 12);
     g_BattleSummonOdinZAnimState[0].y2 = g_BattleSummonOdinZAnimState[1].y0;
-    g_BattleSummonOdinZAnimState[1].y1 = center->posY + (scale * extentHigh >> 0xC);
+    g_BattleSummonOdinZAnimState[1].y1 = center->posY + (scale * extentHigh >> 12);
     g_BattleSummonOdinZAnimState[0].y3 = g_BattleSummonOdinZAnimState[1].y1;
     g_BattleSummonOdinZAnimState[1].y3 = center->posY + extentHigh;
     g_BattleSummonOdinZAnimState[1].y2 = g_BattleSummonOdinZAnimState[1].y3;
@@ -2146,7 +2146,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenMoveSplitQuadHalf(int extent, int sca
     if (scale < 0) {
         extent = -extent;
     }
-    deltaY = scale * extent >> 0xC;
+    deltaY = scale * extent >> 12;
     g_BattleSummonOdinZMatrixBuffer[row][column].x0 =
         g_BattleSummonOdinZMatrixBuffer[row][column].x2 =
             g_BattleSummonOdinZAnimState[column].x0 + extent;
@@ -2166,7 +2166,7 @@ void __cdecl BattleFx_SummonOdinZantetsukenToggleMaskedActorBit1(void)
 {
     int i;
 
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         if ((g_BattleSummonOdinZWordB0 & 1 << i) != 0) {
             g_BattleActorStates[i].flags ^= 2;
         }

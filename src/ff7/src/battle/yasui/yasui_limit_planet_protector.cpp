@@ -129,14 +129,14 @@ void __cdecl BattleFx_LimitPlanetProtectorFadingSpritePoolTask(void)
     activeCount = 0;
     angleBlock->y = 0;
     angleBlock->x = 0;
-    for (spriteIdx = 0; spriteIdx < 0x96; spriteIdx++) {
+    for (spriteIdx = 0; spriteIdx < 150; spriteIdx++) {
         if (pPoolSprite->fadeLevel > 0) {
             SetRotMatrix(&g_BattleCameraTransform);
             SetTransMatrix(&g_BattleCameraTransform);
             RotTransPoint((void *)((char *)pPoolSprite + 4), (void *)(matrixAddress + 0x12), (void *)mtxTrans);
             angleBlock->z = pPoolSprite->rotZ;
             RotMatrix((SVECTOR *)angleBlock, (void *)matrixAddress);
-            scaleBlock->nextValue = pPoolSprite->baseLevel * ((pPoolSprite->fadeLevel << 0xC) / 8) >> 0xC;
+            scaleBlock->nextValue = pPoolSprite->baseLevel * ((pPoolSprite->fadeLevel << 12) / 8) >> 12;
             scaleBlock->value = scaleBlock->nextValue;
             scaleBlock->prevValue = scaleBlock->value;
             ScaleMatrix((void *)matrixAddress, scaleBlock);
@@ -164,7 +164,7 @@ void __cdecl BattleFx_LimitPlanetProtectorClearParticleRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0x96; i++) {
+    for (i = 0; i < 150; i++) {
         ((YasuiLimitPlanetProtectorParticle *)&g_YasuiLimitPlanetProtectorParticlePool)[i].state = 0;
     }
 }
@@ -181,7 +181,7 @@ void __cdecl BattleFx_LimitPlanetProtectorDelayedSoundTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x20) {
+    if (task->frameCounter == 32) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_YasuiLimitPlanetProtectorState[1]), 0x7D);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -224,42 +224,42 @@ void __cdecl BattleFx_LimitPlanetProtectorTimelineTask(void)
         g_BattleFxTimelineState.red = 0x80;
         g_BattleFxTimelineState.channel1 = 0x60;
         g_BattleFxTimelineState.channel2 = 0;
-        Battle_StartFixedPointRamp(0x800, 0xA);
+        Battle_StartFixedPointRamp(0x800, 10);
     }
-    if (taskPtr->step >= 0x19 && taskPtr->step < 0x32 && (taskPtr->step - 0x19) % 5 == 0) {
+    if (taskPtr->step >= 25 && taskPtr->step < 50 && (taskPtr->step - 0x19) % 5 == 0) {
         particle = (BattleFxPlanetProtectorParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitPlanetProtectorSpiralSpritePoolEmitterTask);
         particle->posA = taskPtr->posA;
-        particle->posY = -(rand() % 0x3E8 + 0x1194);
+        particle->posY = -(rand() % 1000 + 4500);
         particle->posB = taskPtr->posB;
-        particle->startRadius = 0x1388;
-        particle->startAngle = ((taskPtr->step - 0x19) / 5 << 0xC) / 5;
-        particle->riseSpeed = 0x226;
-        particle->radius = rand() % 0x1000 + 0x800;
+        particle->startRadius = 5000;
+        particle->startAngle = ((taskPtr->step - 0x19) / 5 << 12) / 5;
+        particle->riseSpeed = 550;
+        particle->radius = rand() % 4096 + 2048;
         particle->ownerSlot = rand() & 1;
         particle->phase = rand() & 0xFFF;
     }
-    if (taskPtr->step == 0x46) {
-        for (burstIndex = 0; burstIndex < 0x14; burstIndex++) {
+    if (taskPtr->step == 70) {
+        for (burstIndex = 0; burstIndex < 20; burstIndex++) {
             particle = (BattleFxPlanetProtectorParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitPlanetProtectorDampedSpriteParticleTask);
             particle->ownerSlot = rand() % 5 + 5;
-            particle->radius = rand() % 0x1000 + 0x800;
-            paramsPtr->offsetX = rand() % 0x800 - 0x400;
+            particle->radius = rand() % 4096 + 2048;
+            paramsPtr->offsetX = rand() % 2048 - 1024;
             paramsPtr->velocityY = rand() & 0xFFF;
             paramsPtr->offsetZ = 0;
             RotMatrix((SVECTOR *)paramsPtr, (void *)matrixAddr);
             paramsPtr->offsetX = 0;
-            paramsPtr->velocityY = -(rand() % 0xC8 + 0x12C);
+            paramsPtr->velocityY = -(rand() % 200 + 300);
             paramsPtr->offsetZ = 0;
             TransformVectorToInt16((void *)matrixAddr, (void *)paramsPtr, (char *)particle + 0xC);
             *(Int64Pair *)((char *)particle + 4) = *(Int64Pair *)((char *)taskPtr + 4);
             particle->phase = rand() & 0xFFF;
         }
     }
-    if (taskPtr->step == 0x46) {
+    if (taskPtr->step == 70) {
         Battle_PostActorHitOrHurtMessage(taskPtr->recordType);
     }
-    if (taskPtr->step == 0x46) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (taskPtr->step == 70) {
+        Battle_StartFixedPointRamp(0, 10);
         taskPtr->recordType = 0xFFFF;
     }
     (taskPtr->step)++;
@@ -292,23 +292,23 @@ void __cdecl BattleFx_LimitPlanetProtectorSpiralSpritePoolEmitterTask(void)
         spiralAngle = signedHeading;
         particle = (BattleFxPlanetProtectorSpiralParticle *)BattleFx_LimitPlanetProtectorClaimParticleRecord();
         particle->fadeLevel = pairIndex + 7;
-        particle->posX = taskPtr->centerX + (taskPtr->radius * SinFixed(spiralAngle) >> 0xC);
+        particle->posX = taskPtr->centerX + (taskPtr->radius * SinFixed(spiralAngle) >> 12);
         particle->posY = taskPtr->posY;
-        particle->posZ = taskPtr->centerZ + (taskPtr->radius * CosFixed(spiralAngle) >> 0xC);
+        particle->posZ = taskPtr->centerZ + (taskPtr->radius * CosFixed(spiralAngle) >> 12);
         particle->scale = taskPtr->scale;
         particle->phase = taskPtr->phase;
-        if (taskPtr->radius > 0x1F4) {
-            taskPtr->radius = taskPtr->radius * 0xD00 >> 0xC;
+        if (taskPtr->radius > 500) {
+            taskPtr->radius = taskPtr->radius * 0xD00 /* 0.8125 */ >> 12;
         }
         taskPtr->angle += (short)(0x21555 / taskPtr->radius);
         taskPtr->posY += taskPtr->riseSpeed;
-        if (taskPtr->riseSpeed > 0x1E) {
-            taskPtr->riseSpeed = taskPtr->riseSpeed * 0xE00 >> 0xC;
+        if (taskPtr->riseSpeed > 30) {
+            taskPtr->riseSpeed = taskPtr->riseSpeed * 0xE00 /* 0.875 */ >> 12;
         }
         taskPtr->phase += 0x100;
     }
     (taskPtr->frameCount)++;
-    if (taskPtr->frameCount >= 0x14) {
+    if (taskPtr->frameCount >= 20) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -321,7 +321,7 @@ int __cdecl BattleFx_LimitPlanetProtectorClaimParticleRecord(void)
 {
     int i;
 
-    for (i = 0; i < 0x96; i++) {
+    for (i = 0; i < 150; i++) {
         if (((YasuiLimitPlanetProtectorParticle *)&g_YasuiLimitPlanetProtectorParticlePool)[i].state <= 0) {
             return (int)&g_YasuiLimitPlanetProtectorParticlePool + i * 0x10;
         }
@@ -379,10 +379,10 @@ void __cdecl BattleFx_LimitPlanetProtectorDampedSpriteParticleTask(void)
         particle->posX += particle->velocityX;
         particle->posY += particle->velocityY;
         particle->posZ += particle->velocityZ;
-        particle->velocityX = particle->velocityX * 0xE00 >> 0xC;
-        particle->velocityY = particle->velocityY * 0xE00 >> 0xC;
-        particle->velocityZ = particle->velocityZ * 0xE00 >> 0xC;
+        particle->velocityX = particle->velocityX * 0xE00 /* 0.875 */ >> 12;
+        particle->velocityY = particle->velocityY * 0xE00 /* 0.875 */ >> 12;
+        particle->velocityZ = particle->velocityZ * 0xE00 /* 0.875 */ >> 12;
     }
-    particle->angle += 0x100;
+    particle->angle += 0x100 /* 22.5 deg */;
 }
 } /* extern "C" */

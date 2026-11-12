@@ -1706,7 +1706,7 @@ int g_ChocoboRacerLut1[90] = {
 // FUNCTION: FF7 0x0076f920
 void __cdecl Mini_ChocoboRaceCreateCourseSpriteObjects(PfileLoadOptions *loadOptions, GfxEngineContext *engine, int variant)
 {
-    char fname[0x80];
+    char fname[128];
     int *models;
     int i;
 
@@ -1716,7 +1716,7 @@ void __cdecl Mini_ChocoboRaceCreateCourseSpriteObjects(PfileLoadOptions *loadOpt
         loadOptions->file.callback = 0;
     }
     if (variant == 0) {
-        g_ChocoboSpriteRecordCount = 0x24;
+        g_ChocoboSpriteRecordCount = 36;
         if (g_ChocoboRetailFlag == 0) {
             if (g_ChocoboUiScalingMode == 2) {
                 models = (int *)&g_pChocoboSpriteNames6;
@@ -1754,7 +1754,7 @@ void __cdecl Mini_ChocoboRaceCreateCourseSpriteObjects(PfileLoadOptions *loadOpt
     }
     for (i = 0; i < g_ChocoboSpriteRecordCount; i++) {
         if (variant == 0) {
-            if (i != 3 && i != 6 && i != 0x21) {
+            if (i != 3 && i != 6 && i != 33) {
                 Pfile_InitLoadOptionsWithBlend(BLEND_NONE, loadOptions);
                 if (g_ChocoboRetailFlag != 0) {
                     loadOptions->file.fromArchive = 1;

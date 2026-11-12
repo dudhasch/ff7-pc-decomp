@@ -22,7 +22,7 @@ extern "C" {
 
 #define g_FieldPaletteGridStride (*(unsigned short *)((char *)&g_FieldPaletteGridHeight + 2))
 // GLOBAL: FF7 0x00cffc70
-FieldLayer *g_FieldLayers[0x2a] = {0};
+FieldLayer *g_FieldLayers[42] = {0};
 unsigned char g_bssPad_00cffd18[8] = {0};
 // The pixel format Field_BuildBrightnessTables builds its four LUTs through (Trans_BuildScaledLut and
 // the two Trans_BuildDoubleBrightLut* read it whole, through UnpackPixelToArgb8888 and
@@ -464,7 +464,7 @@ void __cdecl Field_ClearBackSurfaceBltFillOrLock(void)
 }
 
 /*
- * Locks g_pFieldBackSurface, zeroes its 0x1E0 rows with the memset intrinsic, and unlocks it.
+ * Locks g_pFieldBackSurface, zeroes its 480 rows with the memset intrinsic, and unlocks it.
  * Nothing happens when the lock fails.
  */
 // FUNCTION: FF7 0x006425b1
@@ -477,7 +477,7 @@ void __cdecl Field_ClearBackSurface(void)
     if (Field_LockSurfaceBits((LPDIRECTDRAWSURFACE)g_pFieldBackSurface, &bits, &pitch) == 0) {
         return;
     }
-    memset(bits, 0, pitch * 0x1E0);
+    memset(bits, 0, pitch * 480);
     Field_UnlockSurface((LPDIRECTDRAWSURFACE)g_pFieldBackSurface);
 }
 
@@ -596,7 +596,7 @@ int __cdecl Field_AllocSurfaceBuffer16(int width, int height)
     int buffer;
 
     // STRING: FF7 0x00907df0
-    buffer = (int)(GameHeapAllocRaw(width * height << 1, "C:\\FF7\\field\\src\\ad_ddraw.cpp", 0x398));
+    buffer = (int)(GameHeapAllocRaw(width * height << 1, "C:\\FF7\\field\\src\\ad_ddraw.cpp", 920));
     if (buffer == 0) {
         return 0;
     } else {
@@ -622,8 +622,8 @@ void __cdecl Field_ClearBackSurfaceTopAndBottomBands(void)
         memset((void *)cursor, 0, 0x500);
         cursor += pitch;
     }
-    cursor = baseBits + pitch * 0x1d0;
-    for (rowIndex = 0x1d0; rowIndex < 0x1e0; rowIndex++) {
+    cursor = baseBits + pitch * 464;
+    for (rowIndex = 464; rowIndex < 480; rowIndex++) {
         memset((void *)cursor, 0, 0x500);
         cursor += pitch;
     }
@@ -650,8 +650,8 @@ void __cdecl Field_CopyTexturePageToPrimarySurface(int page)
     }
     dest = surfaceFlags;
     source = (int)g_FieldLayers[page]->pixels;
-    for (rowIndex = 0; rowIndex < 0x100; rowIndex++) {
-        memcpy((void *)dest, (void *)source, 0x200);
+    for (rowIndex = 0; rowIndex < 256; rowIndex++) {
+        memcpy((void *)dest, (void *)source, 512);
         dest += pitch[0];
         source += 0x200;
     }

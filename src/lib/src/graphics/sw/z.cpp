@@ -17,10 +17,10 @@ void __cdecl Gfx_RasterFreeZBuffer(GfxRasterZBuffer *zBuffer)
     if (zBuffer != 0) {
         if (zBuffer->ownsBuffer != 0) {
             // STRING: FF7 0x00917c20
-            GameHeapFree((void *)zBuffer->buffer, "C:\\lib\\src\\graphics\\sw\\z.cpp", 0x12);
+            GameHeapFree((void *)zBuffer->buffer, "C:\\lib\\src\\graphics\\sw\\z.cpp", 18);
         }
         // STRING: FF7 0x00917c40
-        GameHeapFree(zBuffer, "C:\\lib\\src\\graphics\\sw\\z.cpp", 0x15);
+        GameHeapFree(zBuffer, "C:\\lib\\src\\graphics\\sw\\z.cpp", 21);
     }
 }
 
@@ -33,7 +33,7 @@ int __cdecl Gfx_RasterCreateZBuffer(int width, int height, int bytesPerPixel, in
     GfxRasterZBuffer *zbuf;
 
     // STRING: FF7 0x00917c60
-    zbuf = (GfxRasterZBuffer *)GameHeapAlloc(1, 0x30, "C:\\lib\\src\\graphics\\sw\\z.cpp", 0x1D);
+    zbuf = (GfxRasterZBuffer *)GameHeapAlloc(1, 48, "C:\\lib\\src\\graphics\\sw\\z.cpp", 29);
     if (zbuf != 0) {
         zbuf->depthScale = 1;
         zbuf->clearValue = format;
@@ -42,7 +42,7 @@ int __cdecl Gfx_RasterCreateZBuffer(int width, int height, int bytesPerPixel, in
         zbuf->stride = width * bytesPerPixel;
         zbuf->ownsBuffer = 1;
         // STRING: FF7 0x00917c80
-        zbuf->buffer = (int)GameHeapAlloc(width * height, bytesPerPixel, "C:\\lib\\src\\graphics\\sw\\z.cpp", 0x28);
+        zbuf->buffer = (int)GameHeapAlloc(width * height, bytesPerPixel, "C:\\lib\\src\\graphics\\sw\\z.cpp", 40);
         if (zbuf->buffer == 0) {
             Gfx_RasterFreeZBuffer(zbuf);
             zbuf = 0;
@@ -61,7 +61,7 @@ int __cdecl Gfx_RasterCreateZBufferWithStore(int width, int height, int bytesPer
     GfxRasterZBuffer *zbuf;
 
     // STRING: FF7 0x00917ca0
-    zbuf = (GfxRasterZBuffer *)GameHeapAlloc(1, 0x30, "C:\\lib\\src\\graphics\\sw\\z.cpp", 0x37);
+    zbuf = (GfxRasterZBuffer *)GameHeapAlloc(1, 48, "C:\\lib\\src\\graphics\\sw\\z.cpp", 55);
     if (zbuf != 0) {
         zbuf->depthScale = 1;
         zbuf->clearValue = format;

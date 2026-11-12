@@ -190,23 +190,23 @@ void __cdecl BattleFx_SpecialJokerCardTimelineTask(void)
         }
         frame.slot->distance = frame.distance;
         frame.slot->velocityY = 0xFED4;
-        frame.slot->scale = 0x2000;
+        frame.slot->scale = 0x2000 /* 2.0 */;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleSpecialJokerCardTargetPos), 0x1D5);
     }
-    if (frame.current->step == 0x18) {
+    if (frame.current->step == 24) {
         frame.slot = (BattleFxDiamondCardSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialJokerCardOscillatingModelTask);
         frame.slot->posY = 0xFEF6;
-        frame.slot->velocityY = 0x21;
+        frame.slot->velocityY = 33;
         frame.slot->angle = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x1D6);
     }
-    if (frame.current->step == 0x48) {
+    if (frame.current->step == 72) {
         Battle_GetBoneWorldPos(g_BattleSpecialJokerCardDrawListHandle, g_BattleActorRecords[g_BattleSpecialJokerCardDrawListHandle].targetBone, (short *)((char *)frame.current + 4));
         frame.vector[0] = frame.current->posX - g_BattleCameraPosition.cameraPosX;
         frame.vector[1] = 0;
         frame.vector[2] = frame.current->posZ - g_BattleCameraPosZ;
         frame.distance = NormalizeVectorFixed(&frame.vector[0], &frame.vector[0]);
-        frame.distance = SqrtToInt(frame.distance) / 0xC;
+        frame.distance = SqrtToInt(frame.distance) / 12;
         frame.angle = ComputeAngleBetweenVectors(&g_BattleSpecialJokerCardNegativeZUnitVector, (VECTOR *)(&frame.vector[0]), (VECTOR *)(&frame.axis[0]));
         Gte_BuildAxisAngleMatrix(frame.angle, (PsxMatrix *)(&frame.matrix[0]), (VECTOR *)(&frame.axis[0]));
         TransformVectorToInt32((PsxMatrix *)(&frame.matrix[0]), &g_BattleSpecialJokerCardNegativeZUnitVector, &frame.vector[0]);
@@ -217,14 +217,14 @@ void __cdecl BattleFx_SpecialJokerCardTimelineTask(void)
         frame.slot->posX = g_BattleCameraPosition.cameraPosX;
         frame.slot->posY = frame.current->posY;
         frame.slot->posZ = g_BattleCameraPosZ;
-        frame.slot->offsetX = frame.distance * frame.vector[0] >> 0xC;
+        frame.slot->offsetX = frame.distance * frame.vector[0] >> 12;
         frame.slot->velocityY = 0;
-        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 0xC;
+        frame.slot->offsetZ = frame.distance * frame.vector[2] >> 12;
         frame.slot->angle = frame.angle;
         frame.slot->scale = 0x2666;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)frame.current + 4), 0x1D7);
     }
-    if (frame.current->step >= 0x5A) {
+    if (frame.current->step >= 90) {
         frame.current->ownerSlot = 0xFFFF;
     }
     (frame.current->step)++;
@@ -259,7 +259,7 @@ void __cdecl BattleFx_SpecialJokerCardSpinningModelTask(void)
     if (frame.slot->frameCount <= 8) {
         frame.axisAngle = frame.slot->frameCount << 7;
     } else {
-        frame.axisAngle = 0x400;
+        frame.axisAngle = 0x400 /* 90 deg */;
     }
     frame.headingX.vx = 0;
     frame.headingX.vy = (((short *)&g_BattleSpecialJokerCardTargetPos)[3]);
@@ -273,7 +273,7 @@ void __cdecl BattleFx_SpecialJokerCardSpinningModelTask(void)
     TransformVectorToInt16(&frame.axisMatrix, &frame.offsetX, &frame.offsetX.vx);
     frame.rotX.vx = 0;
     frame.rotX.vy = 0;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.drawMatrix);
     ConcatMatrixInPlace(&frame.axisMatrix, &frame.drawMatrix);
     frame.drawMatrix.t[0] = frame.slot->posX + frame.offsetX.vx;
@@ -290,11 +290,11 @@ void __cdecl BattleFx_SpecialJokerCardSpinningModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialJokerCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCount >= 0x12) {
+    if (frame.slot->frameCount >= 18) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -331,7 +331,7 @@ void __cdecl BattleFx_SpecialJokerCardOscillatingModelTask(void)
 #pragma pack(pop)
 
     frame.slot = (BattleFxOscillatingModel *)BATTLE_CURRENT_TASK_SLOT;
-    frame.rotX.vx = 0x400;
+    frame.rotX.vx = 0x400 /* 90 deg */;
     frame.rotX.vy = 0;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.drawMatrix);
@@ -349,11 +349,11 @@ void __cdecl BattleFx_SpecialJokerCardOscillatingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialJokerCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->phase >= 0x30) {
+    if (frame.slot->phase >= 48) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -365,10 +365,10 @@ void __cdecl BattleFx_SpecialJokerCardOscillatingModelTask(void)
         if (frame.slot->velocity < 2) {
             frame.slot->velocity = 1;
         }
-    } else if (frame.slot->phase < 0x28) {
+    } else if (frame.slot->phase < 40) {
         frame.sinAngle = frame.slot->phase - 8 << 7;
-        frame.slot->offset = SinFixed(frame.sinAngle) * 0x18 >> 0xC;
-        if (frame.slot->phase >= 0x16 && frame.slot->phase < 0x22) {
+        frame.slot->offset = SinFixed(frame.sinAngle) * 0x18 >> 12;
+        if (frame.slot->phase >= 22 && frame.slot->phase < 34) {
             frame.slot->angle -= 0xAA;
         }
     } else {
@@ -404,7 +404,7 @@ void __cdecl BattleFx_SpecialJokerCardAcceleratingModelTask(void)
     frame.slot = (BattleFxSpecialAcceleratingSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.rotX.vx = 0;
     frame.rotX.vy = frame.slot->angleY;
-    frame.rotX.vz = 0x800;
+    frame.rotX.vz = 0x800 /* 180 deg */;
     RotMatrixXYZ(&frame.rotX, &frame.drawMatrix);
     frame.drawMatrix.t[0] = frame.slot->posA;
     frame.drawMatrix.t[1] = frame.slot->posY;
@@ -420,24 +420,24 @@ void __cdecl BattleFx_SpecialJokerCardAcceleratingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleSpecialJokerCardLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.slot->timer >= 0xC) {
+    if (frame.slot->timer >= 12) {
         frame.modelDraw->flags = 8;
-        frame.modelDraw->fadeLevel = 0x80 - (frame.slot->timer - 0xC << 4);
+        frame.modelDraw->fadeLevel = 128 - (frame.slot->timer - 12 << 4);
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialJokerCardLoadedResTable);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->timer >= 0x14) {
+    if (frame.slot->timer >= 20) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->timer == 0xA) {
+    if (frame.slot->timer == 10) {
         frame.screenPan = Battle_ComputeScreenPanFromPosition((char *)frame.slot + 4);
-        if (frame.screenPan > 0x40) {
+        if (frame.screenPan > 64) {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialJokerCardDrawListHandle, 0x118);
         } else {
             BattleFx_HitMarkSpawnAtActorBone(g_BattleSpecialJokerCardDrawListHandle, 0x18);
@@ -495,7 +495,7 @@ void __cdecl BattleFx_SpecialJokerCardDelayedImpactTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter == 0x5A) {
+    if (task->frameCounter == 90) {
         BattleFx_SpecialJokerCardSpawnBeginImpactTask(g_BattleSpecialJokerCardDrawListHandle, g_BattleSpecialJokerCardActorIdx);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -547,18 +547,18 @@ void __cdecl BattleFx_SpecialJokerCardImpactTimelineTask(void)
         q = Battle_AllocSceneMessage(1);
         *(Int64Pair *)((char *)q + 4) = *(Int64Pair *)((char *)rec + 4);
         *(short *)((char *)q + 0x10) = rec->thicknessScale;
-    } else if (rec->stage == 0x11) {
+    } else if (rec->stage == 17) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)rec + 4), 0x1A4);
-    } else if (rec->stage == 0x20) {
+    } else if (rec->stage == 32) {
         Battle_AllocSceneMessage(2);
     }
-    if (rec->stage >= 0x32) {
+    if (rec->stage >= 50) {
         rec->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (rec->stage == 0x24) {
+    if (rec->stage == 36) {
         Battle_PostActorHitOrHurtMessage(g_BattleSpecialJokerCardDrawListHandle);
     }
     (rec->stage)++;

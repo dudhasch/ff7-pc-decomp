@@ -134,17 +134,17 @@ void __cdecl BattleFx_SpecialSabotageTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (pTimeline->timelineStep < 0x16) {
+    if (pTimeline->timelineStep < 22) {
         sprite = (BattleFxSabotageVariantSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSabotageVariantSpriteTask);
         Battle_GetBoneWorldPos(pTimeline->actor, rand() % g_BattleActorRecords[pTimeline->actor].boneCount, (short *)&sprite->posX);
-        sprite->posX += (short)(rand() % 0x190 - 0xC8);
-        sprite->posY += (short)(rand() % 0x190 - 0xC8);
-        sprite->posZ += (short)(rand() % 0x190 - 0xC8);
+        sprite->posX += (short)(rand() % 400 - 200);
+        sprite->posY += (short)(rand() % 400 - 200);
+        sprite->posZ += (short)(rand() % 400 - 200);
         sprite->scale = rand() % 0x1000 + 0x1800;
         sprite->variant = rand() % 2;
     }
     (pTimeline->timelineStep)++;
-    if (pTimeline->timelineStep == 0x1E) {
+    if (pTimeline->timelineStep == 30) {
         Battle_PostActorHitOrHurtMessage(pTimeline->actor);
         pTimeline->ownerSlot = BATTLE_TASK_FREE;
     }

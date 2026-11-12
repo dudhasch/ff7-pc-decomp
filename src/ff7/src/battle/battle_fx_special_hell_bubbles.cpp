@@ -146,7 +146,7 @@ void __cdecl BattleFx_SpecialRegisterHellBubblesPerTargetCallback(int targetInde
 
     Battle_CreateBitPatternCallbackTask(targetIndex, sourceIndex, 4, BattleFx_SpecialSpawnHellBubblesPerTarget);
     Battle_PlaySfxPannedToActor(0x11F, (short)sourceIndex, 0x40);
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleSpecHellBubblesParticleRecords[i].active = 0;
     }
 }
@@ -167,7 +167,7 @@ void __cdecl BattleFx_SpecialSpawnHellBubblesPerTarget(int actor, int sourceInde
 }
 
 /*
- * Timeline task of one target: starts the particle emitter and the fading spinning model, then the quad strip and sprites around the impact point, and ends after 0x46 frames.
+ * Timeline task of one target: starts the particle emitter and the fading spinning model, then the quad strip and sprites around the impact point, and ends after 70 frames.
  */
 // FUNCTION: FF7 0x0053f05e
 void __cdecl BattleFx_SpecialHellBubblesTimelineTask(void)
@@ -192,27 +192,27 @@ void __cdecl BattleFx_SpecialHellBubblesTimelineTask(void)
         child->posX = taskSlot->startX;
         child->jitteredX = taskSlot->baseX;
         child->posY = taskSlot->startY;
-        child->stepX = (taskSlot->endX - taskSlot->startX) / 0x14;
+        child->stepX = (taskSlot->endX - taskSlot->startX) / 20;
         child->baseX = 0;
-        child->stepY = (taskSlot->endY - taskSlot->startY) / 0x14;
+        child->stepY = (taskSlot->endY - taskSlot->startY) / 20;
         child->rotY = heading;
         child->phase = 0;
         child = (BattleFxHellBubblesTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBubblesFadingSpinModelTask);
         child->posX = taskSlot->startX;
         child->jitteredX = taskSlot->baseX;
         child->posY = taskSlot->startY;
-        child->stepY = 0x400;
+        child->stepY = 1024;
         child->baseX = heading - 0x400;
         curDeltaX = taskSlot->endX - taskSlot->startX;
         resolvedDeltaY = taskSlot->endY - taskSlot->startY;
         dist = SqrtToInt(curDeltaX * curDeltaX + resolvedDeltaY * resolvedDeltaY);
-        child->posZ = dist * 0x1500 / 0xAF0;
+        child->posZ = dist * 5376 / 2800;
         child->phase = 0;
     }
-    if (taskSlot->timer == 0x3C) {
+    if (taskSlot->timer == 60) {
         Battle_PostActorHitOrHurtMessage(taskSlot->actorIndex);
     }
-    if (taskSlot->timer == 0x1E) {
+    if (taskSlot->timer == 30) {
         child = (BattleFxHellBubblesTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBubblesQuadStripTask);
         child->posX = taskSlot->endX;
         child->jitteredX = taskSlot->jitterBaseX;
@@ -222,17 +222,17 @@ void __cdecl BattleFx_SpecialHellBubblesTimelineTask(void)
         g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         g_BattleFxTimelineState.channel2 = 0x20;
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
     }
-    if (taskSlot->timer > 0x14 && taskSlot->timer < 0x28) {
+    if (taskSlot->timer > 20 && taskSlot->timer < 40) {
         child = (BattleFxHellBubblesTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBubblesAnimatedSpriteEntry2Task);
-        child->posX = taskSlot->endX + rand() % 0x578 + -0x2BC;
-        child->jitteredX = taskSlot->jitterBaseX + rand() % 0x578 + -0x2BC;
-        child->posY = taskSlot->endY + rand() % 0x578 + -0x2BC;
+        child->posX = taskSlot->endX + rand() % 1400 + -700;
+        child->jitteredX = taskSlot->jitterBaseX + rand() % 1400 + -700;
+        child->posY = taskSlot->endY + rand() % 1400 + -700;
     }
     (taskSlot->timer)++;
-    if (taskSlot->timer == 0x46) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (taskSlot->timer == 70) {
+        Battle_StartFixedPointRamp(0, 10);
         taskSlot->step = BATTLE_TASK_FREE;
     }
 }
@@ -249,7 +249,7 @@ void __cdecl BattleFx_SpecialHellBubblesAnimatedSpriteEntry2Task(void)
     task = (BattleFxHellBubblesQuadStrip *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecHellBubblesSpriteReq1.resPtr) = Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecHellBubblesLoadedResTable);
     g_BattleSpecHellBubblesSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecHellBubblesLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000 /* 1.0 */, 0);
     g_BattleSpecHellBubblesSpriteReq1.frame = task->frame;
     g_BattleSpecHellBubblesPoolActiveFlag = BattleFx_SubmitSpriteDraw(&g_BattleSpecHellBubblesSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHellBubblesPoolActiveFlag);
     if (g_BattleIsPaused == 0 && (g_BattleSpecHellBubblesSpriteReq1.resPtr) != 0) {
@@ -270,22 +270,22 @@ void __cdecl BattleFx_SpecialHellBubblesQuadStripTask(void)
     BattleFxHellBubblesQuadStrip *task;
 
     task = (BattleFxHellBubblesQuadStrip *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->posX, g_BattleSpecHellBubblesTargetMask, -0x3E8);
+    BattleFx_InstallBillboardMatrix(&task->posX, g_BattleSpecHellBubblesTargetMask, -1000);
     RefreshGlobalTransformState();
     BattleFx_SpecialHellBubblesDrawPsxTexturedQuadStrip(8, task->stripOffset, 0x100, g_BattleSpecHellBubblesDrawListHead);
     task->stripOffset += 0x100;
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frame < 0xF) {
+    if (task->frame < 15) {
         g_BattleSpecHellBubblesDrawListHead += 0x10;
     }
-    if (task->frame > 0x20) {
+    if (task->frame > 32) {
         g_BattleSpecHellBubblesTargetMask -= 0x12C;
         g_BattleSpecHellBubblesDrawListHead -= 0x1E;
     }
     (task->frame)++;
-    if (task->frame == 0x28) {
+    if (task->frame == 40) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -323,16 +323,16 @@ void __cdecl BattleFx_SpecialHellBubblesDrawPsxTexturedQuadStrip(short amplitude
     frame.attrWord = 0x7908;
     frame.renderBlock = (BattleFxHellBubblesQuadStripRenderStateBlock *)Gfx_GetPsxPacketScratchPtr();
     *(char *)((char *)frame.renderBlock + 7) |= 2;
-    for (frame.stripIndex = 0; frame.stripIndex < 0x20; frame.stripIndex++) {
-        frame.waveCur = SinFixed(phase + frame.stripIndex * angleStep) * amplitude >> 0xC;
-        frame.waveNext = SinFixed(phase + (frame.stripIndex + 1) * angleStep) * amplitude >> 0xC;
-        frame.topLeftX.vx = frame.waveCur - 0x78;
-        frame.topRightX.vx = frame.waveCur + 0x78;
-        frame.botLeftX.vx = frame.waveNext - 0x78;
-        frame.botRightX.vx = frame.waveNext + 0x78;
-        frame.topRightX.vy = ((frame.stripIndex * 0xF0) / 32) - 0x78;
+    for (frame.stripIndex = 0; frame.stripIndex < 32; frame.stripIndex++) {
+        frame.waveCur = SinFixed(phase + frame.stripIndex * angleStep) * amplitude >> 12;
+        frame.waveNext = SinFixed(phase + (frame.stripIndex + 1) * angleStep) * amplitude >> 12;
+        frame.topLeftX.vx = frame.waveCur - 120;
+        frame.topRightX.vx = frame.waveCur + 120;
+        frame.botLeftX.vx = frame.waveNext - 120;
+        frame.botRightX.vx = frame.waveNext + 120;
+        frame.topRightX.vy = ((frame.stripIndex * 240) / 32) - 120;
         frame.topLeftX.vy = frame.topRightX.vy;
-        frame.botRightX.vy = (((frame.stripIndex + 1) * 0xF0) / 32) - 0x78;
+        frame.botRightX.vy = (((frame.stripIndex + 1) * 240) / 32) - 120;
         frame.botLeftX.vy = frame.botRightX.vy;
         frame.topLeftX.vx <<= 3;
         frame.topRightX.vx <<= 3;
@@ -354,9 +354,9 @@ void __cdecl BattleFx_SpecialHellBubblesDrawPsxTexturedQuadStrip(short amplitude
             frame.renderBlock->u0 = 0;
             frame.renderBlock->u3 = 0xF0;
             frame.renderBlock->u1 = 0xF0;
-            frame.renderBlock->bandTop = (frame.stripIndex * 0xF0) / 32;
+            frame.renderBlock->bandTop = (frame.stripIndex * 240) / 32;
             frame.renderBlock->v0 = frame.renderBlock->bandTop;
-            frame.renderBlock->bandBottom = ((frame.stripIndex + 1) * 0xF0) / 32;
+            frame.renderBlock->bandBottom = ((frame.stripIndex + 1) * 240) / 32;
             frame.renderBlock->v2 = frame.renderBlock->bandBottom;
             frame.renderBlock->texturePage = frame.bandParam;
             frame.renderBlock->clut = frame.attrWord;
@@ -386,20 +386,20 @@ void __cdecl BattleFx_SpecialHellBubblesParticleEmitterTask(void)
         return;
     }
     taskPtr->angle += 8;
-    if (taskPtr->age > 0 && taskPtr->age < 0x19) {
+    if (taskPtr->age > 0 && taskPtr->age < 25) {
         for (i = 0; i < 4; i++) {
             claimed = (BattleFxClaimedParticleRecord *)BattleFx_SpecialHellBubblesClaimParticleRecord();
             if (claimed != 0) {
-                claimed->radius = rand() % 0x320;
+                claimed->radius = rand() % 800;
                 claimed->angle = (rand() % 4096);
             }
         }
     }
     i = 0;
-    for (activeCnt = 0; i < 0xC8; i++) {
+    for (activeCnt = 0; i < 200; i++) {
         if (g_BattleSpecHellBubblesParticleRecords[i].active != 0) {
             activeCnt++;
-            *(short *)((char *)&g_BattleSpecHellBubblesParticleRecordsAngle4 + i * 8) -= 0x80;
+            *(short *)((char *)&g_BattleSpecHellBubblesParticleRecordsAngle4 + i * 8) -= 128;
             (g_BattleSpecHellBubblesParticleRecords[i].phase)++;
             if (g_BattleSpecHellBubblesParticleRecords[i].phase == 0x19) {
                 g_BattleSpecHellBubblesParticleRecords[i].active = 0;
@@ -407,7 +407,7 @@ void __cdecl BattleFx_SpecialHellBubblesParticleEmitterTask(void)
         }
     }
     (taskPtr->age)++;
-    if (taskPtr->age > 0x19 && activeCnt == 0) {
+    if (taskPtr->age > 25 && activeCnt == 0) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -421,7 +421,7 @@ int __cdecl BattleFx_SpecialHellBubblesClaimParticleRecord(void)
 {
     short i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSpecHellBubblesParticleRecords[i].active == 0) {
             g_BattleSpecHellBubblesParticleRecords[i].active = 1;
             *(short *)((char *)&g_BattleSpecHellBubblesParticleRecordsPhase6 + i * 8) = 0;
@@ -462,11 +462,11 @@ void __cdecl BattleFx_SpecialHellBubblesDrawParticleSprites(BattleFxHellBubblesP
     frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
     frame.rotMatrix.t[0] = frame.rotMatrix.t[1];
     frame.particleIndex = 0;
-    for (frame.activeCount = 0; frame.particleIndex < 0xC8; frame.particleIndex++) {
+    for (frame.activeCount = 0; frame.particleIndex < 200; frame.particleIndex++) {
         if (g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].active != 0) {
             frame.activeCount++;
-            frame.posX.vx = CosFixed(g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].angle) * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].radius * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase / 0x14 * (emitter->angle + 0x100) >> 0x14;
-            frame.posX.vy = SinFixed(g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].angle) * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].radius * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase / 0x14 * (emitter->angle + 0x100) >> 0x14;
+            frame.posX.vx = CosFixed(g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].angle) * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].radius * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase / 20 * (emitter->angle + 256) >> 20;
+            frame.posX.vy = SinFixed(g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].angle) * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].radius * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase / 20 * (emitter->angle + 256) >> 20;
             frame.posX.vz = 0;
             SetRotMatrix(&frame.rotMatrix);
             SetTransMatrix(&frame.rotMatrix);
@@ -474,10 +474,10 @@ void __cdecl BattleFx_SpecialHellBubblesDrawParticleSprites(BattleFxHellBubblesP
             frame.posX.vx += (short)(emitter->baseA + emitter->ampA * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase);
             frame.posX.vy += (short)(emitter->baseB + emitter->ampB * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase);
             frame.posX.vz += (short)(emitter->baseC + emitter->ampC * g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase);
-            if (g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase < 0x11) {
+            if (g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase < 17) {
                 frame.frameValue = 8;
             } else {
-                frame.frameValue = 0x19 - g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase;
+                frame.frameValue = 25 - g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase;
             }
             frame.frameIndex = *(short *)&frame.frameValue;
             BattleFx_InstallBillboardMatrix(&frame.posX, (g_BattleSpecHellBubblesParticleRecords[frame.particleIndex].phase << 6) + 0x800, 0);
@@ -490,7 +490,7 @@ void __cdecl BattleFx_SpecialHellBubblesDrawParticleSprites(BattleFxHellBubblesP
 }
 
 /*
- * Draws the spinning model that grows and fades over 0x2D frames.
+ * Draws the spinning model that grows and fades over 45 frames.
  */
 // FUNCTION: FF7 0x0053fce6
 void __cdecl BattleFx_SpecialHellBubblesFadingSpinModelTask(void)
@@ -528,11 +528,11 @@ void __cdecl BattleFx_SpecialHellBubblesFadingSpinModelTask(void)
     if (frame.spinSlot->frameCounter < 8) {
         g_BattleSpecHellBubblesParticleLoopIndex++;
     }
-    if (frame.spinSlot->frameCounter > 0x25) {
+    if (frame.spinSlot->frameCounter > 37) {
         g_BattleSpecHellBubblesParticleLoopIndex--;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x2D) {
+    if (frame.spinSlot->frameCounter == 45) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

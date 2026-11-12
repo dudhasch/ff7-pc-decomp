@@ -32,7 +32,7 @@ extern "C" int g_CoasterVolumeLeft = 127;
 // GLOBAL: FF7 0x00901418
 extern "C" CoasterSoundCommand *g_pCoasterSoundBuffer = g_CoasterSoundCommandBuffer;
 // GLOBAL: FF7 0x00901420
-int g_CoasterSfxTable[0x17] = {10, 24, 45, 69, 118, 133, 142, 152, 191, 263, 269, 270, 271, 286, 358, 375, 405, 539, 555, 557, 565, 566, 673};
+int g_CoasterSfxTable[23] = {10, 24, 45, 69, 118, 133, 142, 152, 191, 263, 269, 270, 271, 286, 358, 375, 405, 539, 555, 557, 565, 566, 673};
 // GLOBAL: FF7 0x0090147c
 int g_coasterSubVolumeFactor = 2;
 // GLOBAL: FF7 0x00901480
@@ -125,12 +125,12 @@ void __cdecl Mini_CoasterLoadData(void)
     Mini_CoasterResolveTrackTables();
     Mini_CoasterResetActorPool();
     Mini_CoasterBuildClipPlanes();
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         g_CoasterModelHandles[i] = Mini_CoasterBuildModelFromTemplate(i);
     }
     g_CoasterTrackCursor = 0;
     g_CoasterRidePosition = 0;
-    g_CoasterRideSpeed = 0x2710;
+    g_CoasterRideSpeed = 10000;
     g_CoasterScore = 0;
     g_CoasterFadeNearDepth = 0x28AA;
     g_CoasterFadeFarDepth = 0x37DC;
@@ -157,7 +157,7 @@ void __cdecl Mini_CoasterReleaseSfxAndPsxData(void)
 {
     int i;
 
-    for (i = 0x16; i >= 0; i--) {
+    for (i = 22; i >= 0; i--) {
         Sfx_ReleaseCachedBuffer(g_CoasterSfxTable[i], 0xf);
     }
     Mini_CoasterFreePsxDataSet(&g_CoasterPsxDataSet);

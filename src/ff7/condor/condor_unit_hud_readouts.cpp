@@ -51,7 +51,7 @@ void __cdecl Mini_CondorStepCounterEffects(void)
     int effectIndex;
     short tick;
 
-    for (effectIndex = 0; effectIndex < 0x10; effectIndex++) {
+    for (effectIndex = 0; effectIndex < 16; effectIndex++) {
         if (g_CondorCounterEffects[effectIndex].counter != 0) {
             (g_CondorCounterEffects[effectIndex].counter)++;
             tick = g_CondorCounterEffects[effectIndex].counter & 0x7FFF;
@@ -62,7 +62,7 @@ void __cdecl Mini_CondorStepCounterEffects(void)
                     Mini_CondorSetSpriteSlotPalette(effectIndex + 0x3B, 4);
                 }
             }
-            if (tick >= 0x24) {
+            if (tick >= 36) {
                 g_CondorCounterEffects[effectIndex].counter = 0;
             } else {
                 g_CondorSpriteEntries[effectIndex + 0x3B].posX = g_CondorCounterEffects[effectIndex].posX;
@@ -96,7 +96,7 @@ short __cdecl Mini_CondorFindInactiveCounterEffectSlot(void)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         if (g_CondorCounterEffects[i].counter == 0) {
             return (short)i;
         }
@@ -110,8 +110,8 @@ short __cdecl Mini_CondorFindInactiveCounterEffectSlot(void)
 // FUNCTION: FF7 0x00607b42
 void __cdecl Mini_CondorSetRecordTwoDigits(int slot, int number)
 {
-    g_CondorCounterEffects[slot].tensDigit = number % 0x64 / 0xA;
-    g_CondorCounterEffects[slot].onesDigit = number % 0xA;
+    g_CondorCounterEffects[slot].tensDigit = number % 100 / 10;
+    g_CondorCounterEffects[slot].onesDigit = number % 10;
     g_CondorPendingCommandCount++;
 }
 
@@ -203,7 +203,7 @@ void __cdecl Mini_CondorDrawSpriteSlot(int spriteIndex, int xPos, int yPos)
             doubledTexV = slotPointer->texV << 1;
             scaledHeight = slotPointer->height << 1;
             vEnd = scaledHeight + slotPointer->texV * 2;
-            if (uEnd <= 0x100 && vEnd <= 0x100) {
+            if (uEnd <= 256 && vEnd <= 256) {
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + 0x14, slotPointer->width << 1, slotPointer->height << 1, doubledTextureU, doubledTexV, rawDoubledWidth, scaledHeight, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[0].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[0].batched = 1;
                 return;
@@ -213,18 +213,18 @@ void __cdecl Mini_CondorDrawSpriteSlot(int spriteIndex, int xPos, int yPos)
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[3].batched = 1;
                 return;
             }
-            if (doubledTextureU >= 0x100 && vEnd <= 0x100) {
+            if (doubledTextureU >= 0x100 && vEnd <= 256) {
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + 0x14, slotPointer->width << 1, slotPointer->height << 1, doubledTextureU - 0x100, doubledTexV, rawDoubledWidth, scaledHeight, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[1].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[1].batched = 1;
                 return;
             }
-            if (uEnd <= 0x100 && doubledTexV >= 0x100) {
+            if (uEnd <= 256 && doubledTexV >= 0x100) {
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + 0x14, slotPointer->width << 1, slotPointer->height << 1, doubledTextureU, doubledTexV - 0x100, rawDoubledWidth, scaledHeight, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[2].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[2].batched = 1;
                 return;
             }
-            if (vEnd <= 0x100) {
-                excessX = uEnd - 0x100;
+            if (vEnd <= 256) {
+                excessX = uEnd - 256;
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + 0x14, (slotPointer->width << 1) - excessX, slotPointer->height << 1, doubledTextureU, doubledTexV, rawDoubledWidth - excessX, scaledHeight, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[0].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[0].batched = 1;
                 res = Gfx_EmitTexturedRectFlipped(viewX * 2 + (slotPointer->width << 1) - excessX, screenY * 2 + 0x14, excessX, slotPointer->height << 1, 0, doubledTexV, excessX, scaledHeight, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[1].renderObject);
@@ -232,15 +232,15 @@ void __cdecl Mini_CondorDrawSpriteSlot(int spriteIndex, int xPos, int yPos)
                 return;
             }
             if (doubledTexV >= 0x100) {
-                excessX = uEnd - 0x100;
+                excessX = uEnd - 256;
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + 0x14, (slotPointer->width << 1) - excessX, slotPointer->height << 1, doubledTextureU, doubledTexV - 0x100, rawDoubledWidth - excessX, scaledHeight, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[2].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[2].batched = 1;
                 res = Gfx_EmitTexturedRectFlipped(viewX * 2 + (slotPointer->width << 1) - excessX, screenY * 2 + 0x14, excessX, slotPointer->height << 1, 0, doubledTexV - 0x100, excessX, scaledHeight, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[3].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[3].batched = 1;
                 return;
             }
-            if (uEnd <= 0x100) {
-                overflowY = vEnd - 0x100;
+            if (uEnd <= 256) {
+                overflowY = vEnd - 256;
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + 0x14, slotPointer->width << 1, (slotPointer->height << 1) - overflowY, doubledTextureU, doubledTexV, rawDoubledWidth, scaledHeight - overflowY, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[0].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[0].batched = 1;
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + (slotPointer->height << 1) + 0x14 - overflowY, slotPointer->width << 1, overflowY, doubledTextureU, 0, rawDoubledWidth, overflowY, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[2].renderObject);
@@ -248,7 +248,7 @@ void __cdecl Mini_CondorDrawSpriteSlot(int spriteIndex, int xPos, int yPos)
                 return;
             }
             if (doubledTextureU >= 0x100) {
-                overflowY = vEnd - 0x100;
+                overflowY = vEnd - 256;
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + 0x14, slotPointer->width << 1, (slotPointer->height << 1) - overflowY, doubledTextureU - 0x100, doubledTexV, rawDoubledWidth, scaledHeight - overflowY, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[1].renderObject);
                 g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[1].batched = 1;
                 res = Gfx_EmitTexturedRectFlipped(viewX << 1, screenY * 2 + (slotPointer->height << 1) + 0x14 - overflowY, slotPointer->width << 1, overflowY, doubledTextureU - 0x100, 0, rawDoubledWidth, overflowY, 0x80FFFFFF, slotPointer->paletteIndex, slotPointer->depth, FLOAT_ONE_BITS, g_CondorUnitModelTable[slotPointer->renderSlot - 1].parts[3].renderObject);
@@ -709,7 +709,7 @@ void __cdecl Mini_CondorBuildRecordValueGlyphs(CondorRecordDisplay *recordPtr)
     for (frame.glyphIndex = 0; frame.glyphIndex < 0xA; frame.glyphIndex++) {
         g_CondorGilDigitSprites[frame.glyphIndex] = frame.storage[frame.glyphIndex];
     }
-    g_CondorGilDigitCount = 0xA;
+    g_CondorGilDigitCount = 10;
     g_CondorGilDigitsVisible = 1;
     g_CondorRecordCost = recordPtr->cost;
     g_CondorReadoutValue = recordPtr->cost;
@@ -727,7 +727,7 @@ void __cdecl Mini_CondorBuildRecordValueGlyphs(CondorRecordDisplay *recordPtr)
     for (frame.glyphIndex = 0; frame.glyphIndex < 0xA; frame.glyphIndex++) {
         g_CondorCostDigitSprites[frame.glyphIndex] = frame.storage[frame.glyphIndex];
     }
-    g_CondorCostDigitCount = 0xA;
+    g_CondorCostDigitCount = 10;
     g_CondorCostDigitsVisible = 1;
 }
 
@@ -760,8 +760,8 @@ void __cdecl Mini_CondorRefreshActiveRecordDisplay(void)
     frame.blankC = 0;
     g_CondorDigitStarted = 0;
     g_CondorReadoutValue = g_CondorRecordTable.records[g_CondorSelectedRecord].counter;
-    frame.counterHundreds = Mini_CondorExtractDecimalDigit(0x64);
-    frame.counterTens = Mini_CondorExtractDecimalDigit(0xA);
+    frame.counterHundreds = Mini_CondorExtractDecimalDigit(100);
+    frame.counterTens = Mini_CondorExtractDecimalDigit(10);
     frame.counterOnes = Mini_CondorExtractDecimalDigit(1);
     frame.counterGlyph = 0xC;
     g_CondorDigitStarted = 0;
@@ -772,7 +772,7 @@ void __cdecl Mini_CondorRefreshActiveRecordDisplay(void)
     for (frame.glyphIndex = 0; frame.glyphIndex < 0xA; frame.glyphIndex++) {
         g_CondorCounterDigitSprites[frame.glyphIndex] = frame.storage[frame.glyphIndex];
     }
-    g_CondorCounterDigitCount = 0xA;
+    g_CondorCounterDigitCount = 10;
     g_CondorCounterDigitsVisible = 1;
     Mini_CondorSetSelectedReadout(g_CondorRecordTable.records[g_CondorSelectedRecord].unitIndexSigned, g_CondorSelectedRecord);
 }
@@ -829,17 +829,17 @@ short __cdecl Mini_CondorDrawDisplayBackground(void)
         case CONDOR_DISPLAY_FULL:
             SetRect(&frame.rectZ, g_CondorViewportX, g_CondorViewportY, g_CondorViewportWidth + g_CondorViewportX - g_CondorViewportOffsetX, g_CondorViewportHeight + g_CondorViewportInset);
             SetRect(&frame.rectR, (unsigned short)g_CondorSnapshotX, (unsigned short)g_CondorSnapshotY, (unsigned short)g_CondorSnapshotX + 0x140, (unsigned short)g_CondorSnapshotY + 0xDC);
-            Mini_CondorDrawTiledFadeOverlay(&frame.rectR.fadeRect, &frame.rectZ, 0x80);
+            Mini_CondorDrawTiledFadeOverlay(&frame.rectR.fadeRect, &frame.rectZ, 128);
             break;
         case CONDOR_DISPLAY_DIMMED:
             SetRect(&frame.rectZ, g_CondorViewportX, g_CondorViewportY, g_CondorViewportWidth + g_CondorViewportX - g_CondorViewportOffsetX, g_CondorViewportHeight + g_CondorViewportInset);
             SetRect(&frame.rectR, (unsigned short)g_CondorSnapshotX, (unsigned short)g_CondorSnapshotY, (unsigned short)g_CondorSnapshotX + 0x140, (unsigned short)g_CondorSnapshotY + 0xDC);
-            Mini_CondorDrawTiledFadeOverlay(&frame.rectR.fadeRect, &frame.rectZ, 0x50);
+            Mini_CondorDrawTiledFadeOverlay(&frame.rectR.fadeRect, &frame.rectZ, 80);
             break;
         case CONDOR_DISPLAY_DARK:
             SetRect(&frame.rectZ, g_CondorViewportX, g_CondorViewportY, g_CondorViewportWidth + g_CondorViewportX - g_CondorViewportOffsetX, g_CondorViewportHeight + g_CondorViewportInset);
             SetRect(&frame.rectR, (unsigned short)g_CondorSnapshotX, (unsigned short)g_CondorSnapshotY, (unsigned short)g_CondorSnapshotX + 0x140, (unsigned short)g_CondorSnapshotY + 0xDC);
-            Mini_CondorDrawTiledFadeOverlay(&frame.rectR.fadeRect, &frame.rectZ, 0x30);
+            Mini_CondorDrawTiledFadeOverlay(&frame.rectR.fadeRect, &frame.rectZ, 48);
         }
         return 1;
     }
@@ -904,7 +904,7 @@ void __cdecl Mini_CondorRampFadeUpTo80(void)
     short val;
 
     val = g_CondorFadeAlpha & 0xFF;
-    if (val < 0x80) {
+    if (val < 128) {
         g_CondorFadeAlpha += 0x10;
     } else {
         Mini_CondorCompleteDisplayModeRequest();
@@ -1045,16 +1045,16 @@ void __cdecl Mini_CondorDrawTiledFadeOverlay(CondorFadeRect *clipRect, CondorOri
     }
     box.color = (shade << 16) | 0x80000000 | (shade << 8) | shade;
     for (index = 0; index < 8; index++) {
-        if (g_CondorFadeTileOffsets[index][0] + 0x100 < clipRect->x || g_CondorFadeTileOffsets[index][0] > clipRect->width) {
+        if (g_CondorFadeTileOffsets[index][0] + 256 < clipRect->x || g_CondorFadeTileOffsets[index][0] > clipRect->width) {
             continue;
         }
-        if (g_CondorFadeTileOffsets[index][1] + 0x100 < clipRect->y || g_CondorFadeTileOffsets[index][1] > clipRect->height) {
+        if (g_CondorFadeTileOffsets[index][1] + 256 < clipRect->y || g_CondorFadeTileOffsets[index][1] > clipRect->height) {
             continue;
         }
         left = g_CondorFadeTileOffsets[index][0] > clipRect->x ? g_CondorFadeTileOffsets[index][0] : clipRect->x;
         top = g_CondorFadeTileOffsets[index][1] > clipRect->y ? g_CondorFadeTileOffsets[index][1] : clipRect->y;
-        width = (g_CondorFadeTileOffsets[index][0] + 0x100 < clipRect->width ? g_CondorFadeTileOffsets[index][0] + 0x100 : clipRect->width) - left;
-        hgt = (g_CondorFadeTileOffsets[index][1] + 0x100 < clipRect->height ? g_CondorFadeTileOffsets[index][1] + 0x100 : clipRect->height) - top;
+        width = (g_CondorFadeTileOffsets[index][0] + 256 < clipRect->width ? g_CondorFadeTileOffsets[index][0] + 256 : clipRect->width) - left;
+        hgt = (g_CondorFadeTileOffsets[index][1] + 256 < clipRect->height ? g_CondorFadeTileOffsets[index][1] + 0x100 : clipRect->height) - top;
         box.tex = 0;
         box.batch = ((CondorRenderObject *)&g_CondorRenderObjects)[index].renderObject;
         box.fz = 0.98f;

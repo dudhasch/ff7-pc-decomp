@@ -80,11 +80,11 @@ short __cdecl Field_RepackPixelWordMode2(int input, int mode)
         } else {
             compLow = 0xFF - (input & 0xFFFF) & 0x1F;
             compMid = 0xFF - ((input & 0xFFFF & 0x3E0) >> 5);
-            highComp = 0xFF - ((input & 0xFFFF & 0x7C00) >> 0xA);
+            highComp = 0xFF - ((input & 0xFFFF & 0x7C00) >> 10);
             if (g_FieldTileDumpPaletteFlag == 0) {
                 packed = compLow << 0xA | compMid << 5 | highComp;
             } else {
-                packed = compLow << 0xB | compMid << 1 | highComp >> 0xA;
+                packed = compLow << 0xB | compMid << 1 | highComp >> 10;
             }
         }
     }
@@ -174,12 +174,12 @@ void __cdecl Field_AllocPalettePool(int count)
     Field_FreeAdPalBuffer();
     if (g_FieldPalettePoolBuffer == 0) {
         // STRING: FF7 0x00907fc4
-        g_FieldPalettePoolBuffer = (FieldPalettePoolRecord *)GameHeapAllocRaw(count * 0x40c, "C:\\FF7\\field\\src\\ad_pal.cpp", 0xa6);
+        g_FieldPalettePoolBuffer = (FieldPalettePoolRecord *)GameHeapAllocRaw(count * 0x40c, "C:\\FF7\\field\\src\\ad_pal.cpp", 166);
         if (g_FieldPalettePoolBuffer != 0) {
             for (i = 0; i < count; i++) {
                 g_FieldPalettePoolBuffer[i].count = count;
                 g_FieldPalettePoolBuffer[i].usedSlots = 0;
-                g_FieldPalettePoolBuffer[i].capacity = 0x100;
+                g_FieldPalettePoolBuffer[i].capacity = 256;
             }
         }
     }
@@ -193,7 +193,7 @@ void __cdecl Field_FreeAdPalBuffer(void)
 {
     if (g_FieldPalettePoolBuffer != 0) {
         // STRING: FF7 0x00907fe0
-        GameHeapFree(g_FieldPalettePoolBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 0xb6);
+        GameHeapFree(g_FieldPalettePoolBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 182);
         g_FieldPalettePoolBuffer = 0;
     }
 }
@@ -223,9 +223,9 @@ int __cdecl Field_BuildPaletteRecords(unsigned short width, unsigned short heigh
         g_AdPalWords.second = 2;
         return 1;
     }
-    g_FieldPaletteExtraRowsBuffer = GameHeapAllocRaw(0x406,
+    g_FieldPaletteExtraRowsBuffer = GameHeapAllocRaw(1030,
                                     // STRING: FF7 0x00907ffc
-                                    "C:\\FF7\\field\\src\\ad_pal.cpp", 0xcd);
+                                    "C:\\FF7\\field\\src\\ad_pal.cpp", 205);
     if (g_FieldPaletteExtraRowsBuffer == 0)
         return 0;
     g_FieldTileStateDc0 = 1;
@@ -239,7 +239,7 @@ int __cdecl Field_BuildPaletteRecords(unsigned short width, unsigned short heigh
     g_FieldPaletteGridStride = width;
     if (g_FieldPaletteGridBuffer != 0) {
         // STRING: FF7 0x00908018
-        GameHeapFree(g_FieldPaletteGridBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 0xdc);
+        GameHeapFree(g_FieldPaletteGridBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 220);
         g_FieldPaletteGridBuffer = 0;
     }
     if (g_FieldTileStateDbc != 0 && g_FieldReloadPending != 0) {
@@ -253,7 +253,7 @@ int __cdecl Field_BuildPaletteRecords(unsigned short width, unsigned short heigh
                     if (f.count == 0) {
                         source[f.p * width + f.q] = f.first;
                         if (f.q == 0) {
-                            g_FieldPalettePoolBuffer[f.p].capacity = 0x100;
+                            g_FieldPalettePoolBuffer[f.p].capacity = 256;
                         } else {
                             g_FieldPalettePoolBuffer[f.p].capacity = (int)f.q;
                         }
@@ -273,7 +273,7 @@ int __cdecl Field_BuildPaletteRecords(unsigned short width, unsigned short heigh
     }
     g_FieldPaletteGridBuffer = (FieldPaletteGridCell *)GameHeapAllocRaw(height * width * 12 + 1,
                                     // STRING: FF7 0x00908034
-                                    "C:\\FF7\\field\\src\\ad_pal.cpp", 0x100);
+                                    "C:\\FF7\\field\\src\\ad_pal.cpp", 256);
     if (g_FieldPaletteGridBuffer == 0)
         return 0;
     for (f.p = 0; f.p < height; f.p++) {
@@ -407,11 +407,11 @@ int __cdecl Field_BuildPackedColorRecords(unsigned short columns, unsigned short
     g_FieldPackedPaletteRows.colsOrMode = columns;
     if (g_FieldPackedPaletteBuffer != 0) {
         // STRING: FF7 0x00908050
-        GameHeapFree(g_FieldPackedPaletteBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x1C1);
+        GameHeapFree(g_FieldPackedPaletteBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 449);
         g_FieldPackedPaletteBuffer = 0;
     }
     // STRING: FF7 0x0090806c
-    g_FieldPackedPaletteBuffer = (FieldPackedColorRecord *)GameHeapAllocRaw(rows * columns * 0xC + 1, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x1C5);
+    g_FieldPackedPaletteBuffer = (FieldPackedColorRecord *)GameHeapAllocRaw(rows * columns * 0xC + 1, "C:\\FF7\\field\\src\\ad_pal.cpp", 453);
     if (g_FieldPackedPaletteBuffer == 0) {
         return 0;
     } else {
@@ -461,17 +461,17 @@ void __cdecl Field_FreePaletteWorkBuffers(void)
 {
     if (g_FieldPaletteExtraRowsBuffer != 0) {
         // STRING: FF7 0x00908088
-        GameHeapFree(g_FieldPaletteExtraRowsBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x1f6);
+        GameHeapFree(g_FieldPaletteExtraRowsBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 502);
         g_FieldPaletteExtraRowsBuffer = 0;
     }
     if (g_FieldPaletteGridBuffer != 0) {
         // STRING: FF7 0x009080a4
-        GameHeapFree(g_FieldPaletteGridBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x1fb);
+        GameHeapFree(g_FieldPaletteGridBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 507);
         g_FieldPaletteGridBuffer = 0;
     }
     if (g_FieldPackedPaletteBuffer != 0) {
         // STRING: FF7 0x009080c0
-        GameHeapFree(g_FieldPackedPaletteBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x200);
+        GameHeapFree(g_FieldPackedPaletteBuffer, "C:\\FF7\\field\\src\\ad_pal.cpp", 512);
         g_FieldPackedPaletteBuffer = 0;
     }
 }
@@ -512,22 +512,22 @@ void __cdecl Field_FreeBrightnessTables(void)
     }
     if (g_FieldBrightnessLutHalf != 0) {
         // STRING: FF7 0x009080dc
-        GameHeapFree(g_FieldBrightnessLutHalf, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x223);
+        GameHeapFree(g_FieldBrightnessLutHalf, "C:\\FF7\\field\\src\\ad_pal.cpp", 547);
         g_FieldBrightnessLutHalf = 0;
     }
     if (g_FieldBrightnessLutQuarter != 0) {
         // STRING: FF7 0x009080f8
-        GameHeapFree(g_FieldBrightnessLutQuarter, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x228);
+        GameHeapFree(g_FieldBrightnessLutQuarter, "C:\\FF7\\field\\src\\ad_pal.cpp", 552);
         g_FieldBrightnessLutQuarter = 0;
     }
     if (g_FieldBrightnessLutDoubleSaturate != 0) {
         // STRING: FF7 0x00908114
-        GameHeapFree(g_FieldBrightnessLutDoubleSaturate, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x22d);
+        GameHeapFree(g_FieldBrightnessLutDoubleSaturate, "C:\\FF7\\field\\src\\ad_pal.cpp", 557);
         g_FieldBrightnessLutDoubleSaturate = 0;
     }
     if (g_FieldBrightnessLutDoubleWrap != 0) {
         // STRING: FF7 0x00908130
-        GameHeapFree(g_FieldBrightnessLutDoubleWrap, "C:\\FF7\\field\\src\\ad_pal.cpp", 0x232);
+        GameHeapFree(g_FieldBrightnessLutDoubleWrap, "C:\\FF7\\field\\src\\ad_pal.cpp", 562);
         g_FieldBrightnessLutDoubleWrap = 0;
     }
 }

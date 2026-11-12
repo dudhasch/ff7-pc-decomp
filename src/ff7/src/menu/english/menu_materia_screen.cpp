@@ -42,7 +42,7 @@ unsigned char g_MenuMateriaHelpPrompt[144] = {0x24, 0x4f, 0x00, 0x59, 0x4f, 0x55
 //       "Long range attack" "Attack all" "Counter attack" "Attack-All" "Continuous Attack"
 //       "HP MP change"
 // GLOBAL: FF7 0x00920ba8
-unsigned char g_MenuMateriaLabelTable[0x348] = {
+unsigned char g_MenuMateriaLabelTable[840] = {
     0x37, 0x50, 0x4e, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x21, 0x52, 0x4d, 0x0e, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x21, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x00, 0x4c, 0x49, 0x53, 0x54, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -144,7 +144,7 @@ unsigned char g_bssPad_00dd12b4[4] = {0};
 struct MenuMateriaCursorBlock g_MenuMateriaCursorBlock = {0};
 // The rest of that first MenuCursor (its scrollState), indexed with the blocks.
 // GLOBAL: FF7 0x00dd12e8
-unsigned char g_MenuMateriaSubCursorBlock[0x8] = {0};
+unsigned char g_MenuMateriaSubCursorBlock[8] = {0};
 // GLOBAL: FF7 0x00dd12f0
 int g_MenuMateriaActiveSlot = 0;
 // GLOBAL: FF7 0x00dd12f4
@@ -262,7 +262,7 @@ int g_MenuMateriaExchangeCursor = 0;
 // GLOBAL: FF7 0x00dd1644
 MenuMateriaSubRects *g_pMenuMateriaSubRects = 0;
 // GLOBAL: FF7 0x00dd1648
-unsigned char g_MenuMateriaExchangeSlots[0xc] = {0};
+unsigned char g_MenuMateriaExchangeSlots[12] = {0};
 // GLOBAL: FF7 0x00dd1654
 unsigned char g_MenuMateriaInitializedFlag = 0;
 unsigned char g_bssPad_00dd1658[4] = {0};
@@ -466,7 +466,7 @@ void __cdecl Menu_DrawMateriaActionCostPanel2x(int baseX, int baseY, int entryIn
     BattleAbilitySlot *entry;
 
     baseX += 0x14;
-    Menu_DrawAtlasQuad2x(baseX + 5, baseY, 0, 0x10, 0x28, 0x10,
+    Menu_DrawAtlasQuad2x(baseX + 5, baseY, 0, 0x10, 40, 16,
                          1, 0, 0, 0.0f);
     switch (mode) {
     case BATTLE_ABILITY_LIST_MAGIC:
@@ -495,7 +495,7 @@ void __cdecl Menu_DrawMateriaActionCostPanel2x(int baseX, int baseY, int entryIn
                                       entry[entryIndex].quadraCount, 2, 7, 0.0f);
                 } else {
                     Menu_DrawAtlasQuad2x(baseX + 0x20, baseY + 0x40,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         0x90, 0x60, 16, 8, 6, 0, 0,
                                          0.0f);
                 }
                 Menu_DrawAtlasQuad2x(baseX + 0x3a, baseY + 0x40,
@@ -507,7 +507,7 @@ void __cdecl Menu_DrawMateriaActionCostPanel2x(int baseX, int baseY, int entryIn
                                       entry[entryIndex].allCount, 2, 7, 0.0f);
                 } else {
                     Menu_DrawAtlasQuad2x(baseX + 0x20, baseY + 0x5a,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         0x90, 0x60, 16, 8, 6, 0, 0,
                                          0.0f);
                 }
                 Menu_DrawAtlasQuad2x(baseX + 0x3a, baseY + 0x5a,
@@ -583,7 +583,7 @@ void __cdecl Menu_DrawMateriaScreenMagicList1x(unsigned char *attacks)
                         g_pMenuMateriaSubRects->frame.x + 0x3d + colIndex * 0x41,
                         g_pMenuMateriaSubRects->frame.y + 9 + loopRows[1] * 0x11 +
                             *(int *)&g_MenuMateriaMagicBuffer[0x10] * 9,
-                        0x80, 8, 8, 8, 2, 0, 0, 0.21f);
+                        128, 8, 8, 8, 2, 0, 0, 0.21f);
                 }
             }
         }
@@ -610,7 +610,7 @@ void __cdecl Menu_DrawMateriaActionCostPanel1x(int baseX, int baseY, int entryIn
     BattleAbilitySlot *entry;
 
     baseX += 10;
-    Menu_DrawAtlasQuad1x(baseX + 3, baseY, 0, 0x10, 0x28, 0x10,
+    Menu_DrawAtlasQuad1x(baseX + 3, baseY, 0, 16, 40, 16,
                          1, 0, 0, 0.01f);
     switch (mode) {
     case BATTLE_ABILITY_LIST_MAGIC:
@@ -641,11 +641,11 @@ void __cdecl Menu_DrawMateriaActionCostPanel1x(int baseX, int baseY, int entryIn
                                         0.0f);
                 } else {
                     Menu_DrawAtlasQuad1x(baseX + 0x10, baseY + 0x20,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         144, 96, 16, 8, 6, 0, 0,
                                          0.0f);
                 }
                 Menu_DrawAtlasQuad1x(baseX + 0x1d, baseY + 0x20,
-                                     0x78, 8, 8, 8, 7, 0, 0, 0.0f);
+                                     120, 8, 8, 8, 7, 0, 0, 0.0f);
             }
             if (entry[entryIndex].allCount != 0) {
                 if (entry[entryIndex].allCount != 0xff) {
@@ -654,11 +654,11 @@ void __cdecl Menu_DrawMateriaActionCostPanel1x(int baseX, int baseY, int entryIn
                                         0.0f);
                 } else {
                     Menu_DrawAtlasQuad1x(baseX + 0x10, baseY + 0x2d,
-                                         0x90, 0x60, 0x10, 8, 6, 0, 0,
+                                         144, 96, 16, 8, 6, 0, 0,
                                          0.0f);
                 }
                 Menu_DrawAtlasQuad1x(baseX + 0x1d, baseY + 0x2d,
-                                     0x78, 8, 8, 8, 7, 0, 0, 0.0f);
+                                     120, 8, 8, 8, 7, 0, 0, 0.0f);
             }
         }
         Menu_DrawDecimalNumber1x(baseX, baseY + 0x14,
@@ -668,7 +668,7 @@ void __cdecl Menu_DrawMateriaActionCostPanel1x(int baseX, int baseY, int entryIn
         baseX + 0x16, baseY + 0x14,
         g_MenuPartyStats[partyIndex].mp,
         3, 7, 0.0f);
-    Menu_DrawAtlasQuad1x(baseX + 0x12, baseY + 0x14, 0xd8, 0,
+    Menu_DrawAtlasQuad1x(baseX + 0x12, baseY + 0x14, 216, 0,
                          4, 8, 1, 0, 0, 0.0f);
 }
 
@@ -890,7 +890,7 @@ void __cdecl Menu_MateriaScreenInit(int arg)
     g_MenuMateriaPartyIndex = g_MenuPartyMemberIndex;
     MenuCursor_Init((MenuCursor *)&g_MenuMateriaCursorBlock, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0);
     MenuCursor_Init((MenuCursor *)&g_MenuMateriaActiveSlot, 0, 0, 8, 2, 0, 0, 8, 2, 0, 0, 0, 0, 0, 0);
-    MenuCursor_Init((MenuCursor *)&g_MenuMateriaPartySlot, 0, 0, 1, 0xa, 0, 0, 1, 0xc8, 0, 0, 0, 0,
+    MenuCursor_Init((MenuCursor *)&g_MenuMateriaPartySlot, 0, 0, 1, 10, 0, 0, 1, 200, 0, 0, 0, 0,
                     0, 1);
     if (g_MenuIsSmallViewport320x240 != 1) {
         g_MenuMateriaWindowPtr = (MenuMateriaWindow *)&g_MenuMateriaWindowRects2x;
@@ -923,70 +923,70 @@ void __cdecl Menu_DrawMateriaScreenCursors2x(unsigned int flags)
     memberStats = &g_MenuPartyStats[g_MenuMateriaPartyIndex];
     switch (g_MenuMateriaState) {
     case MATERIA_MENU_SELECT_CHECK_ARRANGE:
-        Menu_DrawMoreTextArrow2x(0xF0, g_MenuMateriaCursorBlock.row * 0x33 + 0x3E, 0.101f);
+        Menu_DrawMoreTextArrow2x(240, g_MenuMateriaCursorBlock.row * 51 + 0x3E, 0.101f);
         break;
     case MATERIA_MENU_SELECT_SLOT:
-        Menu_DrawMoreTextArrow2x(g_MenuMateriaActiveSlot * 0x1C + 0x13D, g_MenuMateriaEquipSlot * 0x33 + 0x3E, 0.101f);
+        Menu_DrawMoreTextArrow2x(g_MenuMateriaActiveSlot * 28 + 0x13D, g_MenuMateriaEquipSlot * 51 + 0x3E, 0.101f);
         break;
     case MATERIA_MENU_SELECT_STOCK_MATERIA:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow2x(g_MenuMateriaActiveSlot * 0x1C + 0x13D, g_MenuMateriaEquipSlot * 0x33 + 0x3E, 0.101f);
+            Menu_DrawMoreTextArrow2x(g_MenuMateriaActiveSlot * 28 + 0x13D, g_MenuMateriaEquipSlot * 51 + 0x3E, 0.101f);
         }
-        Menu_DrawMoreTextArrow2x(0x16A, g_MenuMateriaCharIndex * 0x1A + 0xD6, 0.101f);
+        Menu_DrawMoreTextArrow2x(362, g_MenuMateriaCharIndex * 26 + 0xD6, 0.101f);
         break;
     case MATERIA_MENU_CHECK_COMMANDS:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow2x(0xF0, g_MenuMateriaCursorBlock.row * 0x33 + 0x3E, 0);
+            Menu_DrawMoreTextArrow2x(240, g_MenuMateriaCursorBlock.row * 51 + 0x3E, 0);
         }
-        cursorX = g_pMenuMateriaSubRects->listX + g_MenuMateriaCommandRow * 0x49 + -0x21;
+        cursorX = g_pMenuMateriaSubRects->listX + g_MenuMateriaCommandRow * 73 + -33;
         if (g_MenuMateriaCommandRow != 0) {
-            cursorX += 0xD;
+            cursorX += 13;
         }
-        Menu_DrawMoreTextArrow2x(cursorX, g_pMenuMateriaSubRects->listY + g_MenuMateriaCommandCol * 0x1A + 0x11, 0);
+        Menu_DrawMoreTextArrow2x(cursorX, g_pMenuMateriaSubRects->listY + g_MenuMateriaCommandCol * 26 + 0x11, 0);
         textId = memberStats->commands[g_MenuMateriaCommandCol + g_MenuMateriaCommandRow * 4].commandId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString2x(0x1B, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString2x(27, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_CHECK_MAGIC:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow2x(0xF0, g_MenuMateriaCursorBlock.row * 0x33 + 0x3E, 0.1f);
+            Menu_DrawMoreTextArrow2x(240, g_MenuMateriaCursorBlock.row * 51 + 0x3E, 0.1f);
         }
-        Menu_DrawMoreTextArrow2x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaMagicCount * 0x82 + -5, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaMagicSelected * 0x22 + 0x11, 0.1f);
+        Menu_DrawMoreTextArrow2x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaMagicCount * 130 + -5, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaMagicSelected * 34 + 0x11, 0.1f);
         textId = memberStats->abilities[g_MenuMateriaMagicCount + g_MenuMateriaMagicSelected * 3 + *(int *)&g_MenuMateriaMagicBuffer[0] * 3].attackId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString2x(0x1B, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_MAGIC, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString2x(27, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_MAGIC, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_CHECK_SUMMON:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow2x(0xF0, g_MenuMateriaCursorBlock.row * 0x33 + 0x3E, 0.1f);
+            Menu_DrawMoreTextArrow2x(240, g_MenuMateriaCursorBlock.row * 51 + 0x3E, 0.1f);
         }
-        Menu_DrawMoreTextArrow2x(g_pMenuMateriaSubRects->frame.x + 0x32, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaStockSelected * 0x22 + 0x11, 0.1f);
+        Menu_DrawMoreTextArrow2x(g_pMenuMateriaSubRects->frame.x + 0x32, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaStockSelected * 34 + 0x11, 0.1f);
         textId = memberStats->abilities[0x38 + g_MenuMateriaStockSelected + g_MenuMateriaStockScroll].attackId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString2x(0x1B, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_SUMMON, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString2x(27, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_SUMMON, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_CHECK_ENEMY_SKILL:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow2x(0xF0, g_MenuMateriaCursorBlock.row * 0x33 + 0x3E, 0.1f);
+            Menu_DrawMoreTextArrow2x(240, g_MenuMateriaCursorBlock.row * 51 + 0x3E, 0.1f);
         }
-        Menu_DrawMoreTextArrow2x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaDetailAp * 0xC8, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaDetailLevel * 0x22 + 0x11, 0.1f);
+        Menu_DrawMoreTextArrow2x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaDetailAp * 200, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaDetailLevel * 34 + 0x11, 0.1f);
         textId = memberStats->abilities[0x48 + g_MenuMateriaDetailAp + g_MenuMateriaDetailLevel * 2 + g_MenuMateriaNextLevelAp * 2].attackId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString2x(0x1B, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ENEMY_SKILL, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString2x(27, g_MenuMateriaWindowPtr->frames[1].y + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ENEMY_SKILL, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_TRASH_SELECT:
-        Menu_DrawMoreTextArrow2x(0x16A, g_MenuMateriaStatModIndex * 0x1A + 0xD6, 0.001f);
+        Menu_DrawMoreTextArrow2x(362, g_MenuMateriaStatModIndex * 26 + 0xD6, 0.001f);
     case MATERIA_MENU_ARRANGE_MENU:
         if (g_MenuMateriaState == MATERIA_MENU_TRASH_SELECT) {
             if ((flags & 2) != 0) {
-                Menu_DrawMoreTextArrow2x(g_MenuMateriaWindowPtr->frames[5].x - 0x1E, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 0x1A + 0xB, 0.001f);
+                Menu_DrawMoreTextArrow2x(g_MenuMateriaWindowPtr->frames[5].x - 0x1E, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 26 + 0xB, 0.001f);
             }
         } else {
-            Menu_DrawMoreTextArrow2x(g_MenuMateriaWindowPtr->frames[5].x - 0x1E, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 0x1A + 0xB, 0.001f);
+            Menu_DrawMoreTextArrow2x(g_MenuMateriaWindowPtr->frames[5].x - 0x1E, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 26 + 0xB, 0.001f);
         }
         for (labelIndex = 0; labelIndex < 4; labelIndex++) {
             Menu_DrawEncodedString2x(g_MenuMateriaWindowPtr->frames[5].x + 0xD, g_MenuMateriaWindowPtr->frames[5].y + labelIndex * 0x1A + 9, &g_MenuMateriaLabelTable[(labelIndex + 0xA) * 0x14], 7, 0.01f);
@@ -995,9 +995,9 @@ void __cdecl Menu_DrawMateriaScreenCursors2x(unsigned int flags)
         break;
     case MATERIA_MENU_TRASH_CONFIRM:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow2x(0x15B, g_MenuMateriaStatModIndex * 0x1A + 0xD6, 0);
+            Menu_DrawMoreTextArrow2x(347, g_MenuMateriaStatModIndex * 26 + 0xD6, 0);
         }
-        Menu_DrawMoreTextArrow2x(g_MenuMateriaWindowPtr->frames[6].x + 0x35, g_MenuMateriaWindowPtr->frames[6].y + g_MenuMateriaStatDelta2 * 0x1A + 0x33, 0);
+        Menu_DrawMoreTextArrow2x(g_MenuMateriaWindowPtr->frames[6].x + 0x35, g_MenuMateriaWindowPtr->frames[6].y + g_MenuMateriaStatDelta2 * 26 + 0x33, 0);
         Menu_DrawEncodedString2x(g_MenuMateriaWindowPtr->frames[6].x + 0xD, g_MenuMateriaWindowPtr->frames[6].y + 0xD, g_MenuMateriaHelpPrompt, 7, 0);
         Menu_DrawEncodedString2x(g_MenuMateriaWindowPtr->frames[6].x + 0x6B, g_MenuMateriaWindowPtr->frames[6].y + 0x2D, g_MenuMateriaHelpPrompt + 0x24, 7, 0);
         Menu_DrawEncodedString2x(g_MenuMateriaWindowPtr->frames[6].x + 0x6B, g_MenuMateriaWindowPtr->frames[6].y + 0x49, g_MenuMateriaHelpPrompt + 0x48, 7, 0);
@@ -1019,70 +1019,70 @@ void __cdecl Menu_DrawMateriaScreenCursors1x(unsigned int flags)
     memberStats = &g_MenuPartyStats[g_MenuMateriaPartyIndex];
     switch (g_MenuMateriaState) {
     case MATERIA_MENU_SELECT_CHECK_ARRANGE:
-        Menu_DrawMoreTextArrow1x(0x78, g_MenuMateriaCursorBlock.row * 0x1A + 0x1F, 0.101f);
+        Menu_DrawMoreTextArrow1x(120, g_MenuMateriaCursorBlock.row * 26 + 0x1F, 0.101f);
         break;
     case MATERIA_MENU_SELECT_SLOT:
-        Menu_DrawMoreTextArrow1x(g_MenuMateriaActiveSlot * 0xE + 0x9D, g_MenuMateriaEquipSlot * 0x1A + 0x1F, 0.101f);
+        Menu_DrawMoreTextArrow1x(g_MenuMateriaActiveSlot * 14 + 0x9D, g_MenuMateriaEquipSlot * 26 + 0x1F, 0.101f);
         break;
     case MATERIA_MENU_SELECT_STOCK_MATERIA:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow1x(g_MenuMateriaActiveSlot * 0xE + 0x9D, g_MenuMateriaEquipSlot * 0x1A + 0x1F, 0.101f);
+            Menu_DrawMoreTextArrow1x(g_MenuMateriaActiveSlot * 14 + 0x9D, g_MenuMateriaEquipSlot * 26 + 0x1F, 0.101f);
         }
-        Menu_DrawMoreTextArrow1x(0xB5, g_MenuMateriaCharIndex * 0xD + 0x6B, 0.101f);
+        Menu_DrawMoreTextArrow1x(181, g_MenuMateriaCharIndex * 13 + 0x6B, 0.101f);
         break;
     case MATERIA_MENU_CHECK_COMMANDS:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow1x(0x78, g_MenuMateriaCursorBlock.row * 0x1A + 0x1F, 0);
+            Menu_DrawMoreTextArrow1x(120, g_MenuMateriaCursorBlock.row * 26 + 0x1F, 0);
         }
-        cursorX = g_pMenuMateriaSubRects->listX + g_MenuMateriaCommandRow * 0x25 + -0x11;
+        cursorX = g_pMenuMateriaSubRects->listX + g_MenuMateriaCommandRow * 37 + -17;
         if (g_MenuMateriaCommandRow != 0) {
             cursorX += 7;
         }
-        Menu_DrawMoreTextArrow1x(cursorX, g_pMenuMateriaSubRects->listY + g_MenuMateriaCommandCol * 0xD + 9, 0.01f);
+        Menu_DrawMoreTextArrow1x(cursorX, g_pMenuMateriaSubRects->listY + g_MenuMateriaCommandCol * 13 + 9, 0.01f);
         textId = memberStats->commands[g_MenuMateriaCommandCol + g_MenuMateriaCommandRow * 4].commandId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString1x(0xE, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString1x(14, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_COMMAND, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_CHECK_MAGIC:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow1x(0x78, g_MenuMateriaCursorBlock.row * 0x1A + 0x1F, 0.1f);
+            Menu_DrawMoreTextArrow1x(120, g_MenuMateriaCursorBlock.row * 26 + 0x1F, 0.1f);
         }
-        Menu_DrawMoreTextArrow1x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaMagicCount * 0x41 + -3, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaMagicSelected * 0x11 + 9, 0.1f);
+        Menu_DrawMoreTextArrow1x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaMagicCount * 65 + -3, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaMagicSelected * 17 + 9, 0.1f);
         textId = memberStats->abilities[g_MenuMateriaMagicCount + g_MenuMateriaMagicSelected * 3 + *(int *)&g_MenuMateriaMagicBuffer[0] * 3].attackId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString1x(0xE, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_MAGIC, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString1x(14, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_MAGIC, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_CHECK_SUMMON:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow1x(0x78, g_MenuMateriaCursorBlock.row * 0x1A + 0x1F, 0.1f);
+            Menu_DrawMoreTextArrow1x(120, g_MenuMateriaCursorBlock.row * 26 + 0x1F, 0.1f);
         }
-        Menu_DrawMoreTextArrow1x(g_pMenuMateriaSubRects->frame.x + 0x19, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaStockSelected * 0x11 + 9, 0.1f);
+        Menu_DrawMoreTextArrow1x(g_pMenuMateriaSubRects->frame.x + 0x19, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaStockSelected * 17 + 9, 0.1f);
         textId = memberStats->abilities[0x38 + g_MenuMateriaStockSelected + g_MenuMateriaStockScroll].attackId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString1x(0xE, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_SUMMON, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString1x(14, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_SUMMON, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_CHECK_ENEMY_SKILL:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow1x(0x78, g_MenuMateriaCursorBlock.row * 0x1A + 0x1F, 0.1f);
+            Menu_DrawMoreTextArrow1x(120, g_MenuMateriaCursorBlock.row * 26 + 0x1F, 0.1f);
         }
-        Menu_DrawMoreTextArrow1x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaDetailAp * 0x64, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaDetailLevel * 0x11 + 9, 0.1f);
+        Menu_DrawMoreTextArrow1x(g_pMenuMateriaSubRects->frame.x + g_MenuMateriaDetailAp * 100, g_pMenuMateriaSubRects->frame.y + g_MenuMateriaDetailLevel * 17 + 9, 0.1f);
         textId = memberStats->abilities[0x48 + g_MenuMateriaDetailAp + g_MenuMateriaDetailLevel * 2 + g_MenuMateriaNextLevelAp * 2].attackId;
         if (textId != 0xFF) {
-            Menu_DrawEncodedString1x(0xE, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ENEMY_SKILL, textId, 0), 7, 0.101f);
+            Menu_DrawEncodedString1x(14, g_MenuMateriaWindowPtr->frames[1].y + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ENEMY_SKILL, textId, 0), 7, 0.101f);
         }
         break;
     case MATERIA_MENU_TRASH_SELECT:
-        Menu_DrawMoreTextArrow1x(0xB5, g_MenuMateriaStatModIndex * 0xD + 0x6B, 0.001f);
+        Menu_DrawMoreTextArrow1x(181, g_MenuMateriaStatModIndex * 13 + 0x6B, 0.001f);
     case MATERIA_MENU_ARRANGE_MENU:
         if (g_MenuMateriaState == MATERIA_MENU_TRASH_SELECT) {
             if ((flags & 2) != 0) {
-                Menu_DrawMoreTextArrow1x(g_MenuMateriaWindowPtr->frames[5].x - 0xF, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 0xD + 6, 0.001f);
+                Menu_DrawMoreTextArrow1x(g_MenuMateriaWindowPtr->frames[5].x - 0xF, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 13 + 6, 0.001f);
             }
         } else {
-            Menu_DrawMoreTextArrow1x(g_MenuMateriaWindowPtr->frames[5].x - 0xF, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 0xD + 6, 0.001f);
+            Menu_DrawMoreTextArrow1x(g_MenuMateriaWindowPtr->frames[5].x - 0xF, g_MenuMateriaWindowPtr->frames[5].y + g_MenuMateriaAbilitySelected * 13 + 6, 0.001f);
         }
         for (labelIndex = 0; labelIndex < 4; labelIndex++) {
             Menu_DrawEncodedString1x(g_MenuMateriaWindowPtr->frames[5].x + 7, g_MenuMateriaWindowPtr->frames[5].y + labelIndex * 0xD + 5, &g_MenuMateriaLabelTable[(labelIndex + 0xA) * 0x14], 7, 0.01f);
@@ -1091,9 +1091,9 @@ void __cdecl Menu_DrawMateriaScreenCursors1x(unsigned int flags)
         break;
     case MATERIA_MENU_TRASH_CONFIRM:
         if ((flags & 2) != 0) {
-            Menu_DrawMoreTextArrow1x(0xAE, g_MenuMateriaStatModIndex * 0xD + 0x6B, 0);
+            Menu_DrawMoreTextArrow1x(174, g_MenuMateriaStatModIndex * 13 + 0x6B, 0);
         }
-        Menu_DrawMoreTextArrow1x(g_MenuMateriaWindowPtr->frames[6].x + 0x1B, g_MenuMateriaWindowPtr->frames[6].y + g_MenuMateriaStatDelta2 * 0xD + 0x1A, 0);
+        Menu_DrawMoreTextArrow1x(g_MenuMateriaWindowPtr->frames[6].x + 0x1B, g_MenuMateriaWindowPtr->frames[6].y + g_MenuMateriaStatDelta2 * 13 + 0x1A, 0);
         Menu_DrawEncodedString1x(g_MenuMateriaWindowPtr->frames[6].x + 7, g_MenuMateriaWindowPtr->frames[6].y + 7, g_MenuMateriaHelpPrompt, 7, 0);
         Menu_DrawEncodedString1x(g_MenuMateriaWindowPtr->frames[6].x + 0x36, g_MenuMateriaWindowPtr->frames[6].y + 0x17, g_MenuMateriaHelpPrompt + 0x24, 7, 0);
         Menu_DrawEncodedString1x(g_MenuMateriaWindowPtr->frames[6].x + 0x36, g_MenuMateriaWindowPtr->frames[6].y + 0x25, g_MenuMateriaHelpPrompt + 0x48, 7, 0);
@@ -1114,7 +1114,7 @@ void __cdecl Menu_DrawMateriaScreenSelectedMateriaName2x(void)
         case EQUIP_WEAPON:
             if (g_MenuMateriaActorEquipPtr[g_MenuMateriaMemberIndex].weaponMateria[g_MenuMateriaActiveSlot] != -1) {
                 Menu_DrawEncodedString2x(
-                    0x10, g_MenuMateriaWindowPtr->frames[1].y + 0xd,
+                    16, g_MenuMateriaWindowPtr->frames[1].y + 0xd,
                     Menu_LookupEntryNameByMode(
                         MENU_MATERIA_NAME_MATERIA, g_MenuMateriaActorEquipPtr[g_MenuMateriaMemberIndex].weaponMateria[g_MenuMateriaActiveSlot] &
                                0xff),
@@ -1127,7 +1127,7 @@ void __cdecl Menu_DrawMateriaScreenSelectedMateriaName2x(void)
         case EQUIP_ARMOR:
             if (g_MenuMateriaActorEquipPtr[g_MenuMateriaMemberIndex].armorMateria[g_MenuMateriaActiveSlot] != -1) {
                 Menu_DrawEncodedString2x(
-                    0x10, g_MenuMateriaWindowPtr->frames[1].y + 0xd,
+                    16, g_MenuMateriaWindowPtr->frames[1].y + 0xd,
                     Menu_LookupEntryNameByMode(
                         MENU_MATERIA_NAME_MATERIA, g_MenuMateriaActorEquipPtr[g_MenuMateriaMemberIndex].armorMateria[g_MenuMateriaActiveSlot] &
                                0xff),
@@ -1143,7 +1143,7 @@ void __cdecl Menu_DrawMateriaScreenSelectedMateriaName2x(void)
         Menu_EmptyTextHook(0x80);
         if (gSavemap.materia[g_MenuMateriaCharIndex + g_MenuMateriaItemIndex] != -1) {
             Menu_DrawEncodedString2x(
-                0x10, g_MenuMateriaWindowPtr->frames[1].y + 0xd,
+                16, g_MenuMateriaWindowPtr->frames[1].y + 0xd,
                 Menu_LookupEntryNameByMode(
                     MENU_MATERIA_NAME_MATERIA, gSavemap.materia[g_MenuMateriaCharIndex + g_MenuMateriaItemIndex] &
                            0xff),
@@ -1396,20 +1396,20 @@ void __cdecl Menu_DrawMateriaStatModifierRows2x(void)
     for (drawn = n = 0; n < 8; n++) {
         if (g_MenuMateriaDetailPtr->statModifier[n] != 0) {
             if (Menu_MateriaScreenValueIsNegative(g_MenuMateriaDetailPtr->statModifier[n]) != 0) {
-                DrawIconGlyph16_2x(0x12c, drawn * 0x18 + 0x14a, 0xe1, 7, 0.1f);
+                DrawIconGlyph16_2x(300, drawn * 24 + 0x14a, 0xe1, 7, 0.1f);
                 colour = 2;
             } else {
-                DrawIconGlyph16_2x(0x12c, drawn * 0x18 + 0x14a, 0xb3, 7, 0.1f);
+                DrawIconGlyph16_2x(300, drawn * 24 + 0x14a, 0xb3, 7, 0.1f);
                 colour = 6;
             }
             Menu_DrawDecimalNumberZeroPad2x(
-                0x139, drawn * 0x18 + 0x14a,
+                313, drawn * 24 + 0x14a,
                 Menu_MateriaScreenAbsValue(g_MenuMateriaDetailPtr->statModifier[n]), 2, colour,
                 0.1f);
-            Menu_DrawEncodedString2x(0xc8, drawn * 0x18 + 0x146,
+            Menu_DrawEncodedString2x(200, drawn * 0x18 + 0x146,
                               &g_MenuMateriaLabelTable[(n + 0x14) * 0x14], 7, 0.1f);
             if (n > 5) {
-                DrawIconGlyph16_2x(0x151, drawn * 0x18 + 0x148, 0xd3, 7, 0.1f);
+                DrawIconGlyph16_2x(337, drawn * 24 + 0x148, 0xd3, 7, 0.1f);
             }
             drawn++;
         }
@@ -1627,20 +1627,20 @@ void __cdecl Menu_DrawMateriaStatModifierRows1x(void)
     for (drawn = n = 0; n < 8; n++) {
         if (g_MenuMateriaDetailPtr->statModifier[n] != 0) {
             if (Menu_MateriaScreenValueIsNegative(g_MenuMateriaDetailPtr->statModifier[n]) != 0) {
-                DrawIconGlyph16_1x(0x96, drawn * 0xc + 0xa5, 0xe1, 7, 0.1f);
+                DrawIconGlyph16_1x(150, drawn * 12 + 0xa5, 0xe1, 7, 0.1f);
                 colour = 2;
             } else {
-                DrawIconGlyph16_1x(0x96, drawn * 0xc + 0xa5, 0xb3, 7, 0.1f);
+                DrawIconGlyph16_1x(150, drawn * 12 + 0xa5, 0xb3, 7, 0.1f);
                 colour = 6;
             }
             Menu_DrawDecimalNumberZeroPad1x(
-                0x9d, drawn * 0xc + 0xa5,
+                157, drawn * 12 + 0xa5,
                 Menu_MateriaScreenAbsValue(g_MenuMateriaDetailPtr->statModifier[n]), 2, colour,
                 0.1f);
-            Menu_DrawEncodedString1x(0x64, drawn * 0xc + 0xa3,
+            Menu_DrawEncodedString1x(100, drawn * 0xc + 0xa3,
                                  &g_MenuMateriaLabelTable[(n + 0x14) * 0x14], 7, 0.1f);
             if (n > 5) {
-                DrawIconGlyph16_1x(0xa9, drawn * 0xc + 0xa4, 0xd3, 7, 0.1f);
+                DrawIconGlyph16_1x(169, drawn * 12 + 0xa4, 0xd3, 7, 0.1f);
             }
             drawn++;
         }
@@ -1657,25 +1657,25 @@ void __cdecl Menu_DrawMateriaScreenStockList2x(int listIndex)
     int typeColour;
     int rowCount;
 
-    Menu_FlushAndSetScissor2x(0, 0xC5, 0x280, 0x115);
+    Menu_FlushAndSetScissor2x(0, 197, 640, 277);
     rowCount = (((MenuMateriaSubCursor *)&g_MenuMateriaSubCursorBlock)[listIndex].rowBonus != 0) + 0xA;
     for (row = 0; row < rowCount; row++) {
         if (gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] != -1) {
-            Menu_DrawEncodedString2x(0x1AB, row * 0x1A + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 6 + 0xD2, Kernel_LookupMateriaNameText(gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] & 0xFF), 7, 0.2f);
+            Menu_DrawEncodedString2x(427, row * 0x1A + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 6 + 0xD2, Kernel_LookupMateriaNameText(gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] & 0xFF), 7, 0.2f);
         }
     }
-    g_MenuMateriaScrollBar.visibleRows = 0xA;
-    g_MenuMateriaScrollBar.totalRows = 0xC8;
+    g_MenuMateriaScrollBar.visibleRows = 10;
+    g_MenuMateriaScrollBar.totalRows = 200;
     g_MenuMateriaScrollBarPos.scrollTop = *(short *)&((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop;
-    g_MenuMateriaScrollBarPos.x = 0x26A;
-    g_MenuMateriaScrollBarSize.y = 0xC5;
-    g_MenuMateriaScrollBarSize.width = 0x11;
-    g_MenuMateriaScrollBarHeight = 0x115;
+    g_MenuMateriaScrollBarPos.x = 618;
+    g_MenuMateriaScrollBarSize.y = 197;
+    g_MenuMateriaScrollBarSize.width = 17;
+    g_MenuMateriaScrollBarHeight = 277;
     Menu_DrawScrollBar2x(&g_MenuMateriaScrollBar.visibleRows, 0.2f);
     for (row = 0; row < rowCount; row++) {
         typeColour = Menu_GetMateriaTypeColorIndex(gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] & 0xFF);
         if (gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] != -1) {
-            Menu_DrawAtlasQuad2x(0x193, row * 0x1A + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 6 + 0xD2, 0x80, 0x20, 0x10, 0x10, typeColour, 0, 0, 0.2f);
+            Menu_DrawAtlasQuad2x(403, row * 0x1A + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 6 + 0xD2, 0x80, 0x20, 16, 16, typeColour, 0, 0, 0.2f);
         }
     }
     Menu_FlushAndResetScissor2x();
@@ -1691,25 +1691,25 @@ void __cdecl Menu_DrawMateriaScreenStockList1x(int listIndex)
     int typeColour;
     int rowCount;
 
-    Menu_FlushAndSetScissor1x(0, 0x63, 0x140, 0x8B);
+    Menu_FlushAndSetScissor1x(0, 99, 320, 139);
     rowCount = (((MenuMateriaSubCursor *)&g_MenuMateriaSubCursorBlock)[listIndex].rowBonus != 0) + 0xA;
     for (row = 0; row < rowCount; row++) {
         if (gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] != -1) {
-            Menu_DrawEncodedString1x(0xD6, row * 0xD + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 3 + 0x69, Kernel_LookupMateriaNameText(gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] & 0xFF), 7, 0.2f);
+            Menu_DrawEncodedString1x(214, row * 0xD + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 3 + 0x69, Kernel_LookupMateriaNameText(gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] & 0xFF), 7, 0.2f);
         }
     }
-    g_MenuMateriaScrollBar.visibleRows = 0xA;
-    g_MenuMateriaScrollBar.totalRows = 0xC8;
+    g_MenuMateriaScrollBar.visibleRows = 10;
+    g_MenuMateriaScrollBar.totalRows = 200;
     g_MenuMateriaScrollBarPos.scrollTop = *(short *)&((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop;
-    g_MenuMateriaScrollBarPos.x = 0x135;
-    g_MenuMateriaScrollBarSize.y = 0x63;
+    g_MenuMateriaScrollBarPos.x = 309;
+    g_MenuMateriaScrollBarSize.y = 99;
     g_MenuMateriaScrollBarSize.width = 9;
-    g_MenuMateriaScrollBarHeight = 0x8B;
+    g_MenuMateriaScrollBarHeight = 139;
     Menu_DrawScrollBar1x(&g_MenuMateriaScrollBar.visibleRows, 0.2f);
     for (row = 0; row < rowCount; row++) {
         typeColour = Menu_GetMateriaTypeColorIndex(gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] & 0xFF);
         if (gSavemap.materia[row + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollTop] != -1) {
-            Menu_DrawAtlasQuad1x(0xCA, row * 0xD + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 3 + 0x69, 0x80, 0x20, 0x10, 0x10, typeColour, 0, 0, 0.2f);
+            Menu_DrawAtlasQuad1x(202, row * 0xD + ((MenuCursor *)&g_MenuMateriaCursorBlock)[listIndex].scrollAnim * 3 + 0x69, 128, 32, 16, 16, typeColour, 0, 0, 0.2f);
         }
     }
     Menu_FlushAndResetScissor1x();
@@ -2323,7 +2323,7 @@ short __cdecl Menu_MateriaSortIterativeQuicksort(int base, unsigned int count, s
             rightStack[stackTop] = count;
             stackTop++;
         }
-        if (stackTop >= 0x40) {
+        if (stackTop >= 64) {
             return 0;
         }
     }
@@ -2355,22 +2355,22 @@ void __cdecl Menu_MateriaSortCompareStockEntries(unsigned int indexA, unsigned i
     unsigned char colB;
 
     if ((*list)[indexA & 0xffff] == -1) {
-        colA = 0x80;
+        colA = 128;
         keyA = 0;
     } else {
         colA =
             (unsigned char)Menu_GetMateriaTypeColorIndex((*list)[indexA & 0xffff]);
         keyA = ((unsigned int)(*list)[indexA & 0xffff] >> 8) +
-               (((*list)[indexA & 0xffff] & 0xff) << 0x18);
+               (((*list)[indexA & 0xffff] & 0xff) << 24);
     }
     if ((*list)[indexB & 0xffff] == -1) {
-        colB = 0x80;
+        colB = 128;
         keyB = 0;
     } else {
         colB =
             (unsigned char)Menu_GetMateriaTypeColorIndex((*list)[indexB & 0xffff]);
         keyB = ((unsigned int)(*list)[indexB & 0xffff] >> 8) +
-               (((*list)[indexB & 0xffff] & 0xff) << 0x18);
+               (((*list)[indexB & 0xffff] & 0xff) << 24);
     }
     Menu_MateriaSortCompareKeys(colA, colB, keyA, keyB);
 }
@@ -2430,7 +2430,7 @@ void __cdecl Menu_ClearPartySingleTargetAllCounts(void)
 
     for (partyIdx = 0; partyIdx < 3; partyIdx++) {
         base = g_MenuPartyStats[partyIdx].spells;
-        for (spellIndex = 0; spellIndex < 0x38; spellIndex++) {
+        for (spellIndex = 0; spellIndex < 56; spellIndex++) {
             if (base[spellIndex].attackId != 0xff && base[spellIndex].allCount != 0 &&
                 ((base[spellIndex].targetFlags & 4) == 0 ||
                  (base[spellIndex].targetFlags & 8) == 0)) {
@@ -2454,15 +2454,15 @@ void __cdecl Menu_DrawMateriaSlotRow(int x, int y, unsigned char *slotTypes, int
         if (slotTypes[i] != 0) {
             if ((materiaIds[i] & 0xff) != 0xff) {
                 tintKind = Menu_GetMateriaTypeColorIndex(materiaIds[i] & 0xff);
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x80,
-                                     0x20, 0x10, 0x10, tintKind, 1, 0, 0.2f);
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x80,
+                                     0x20, 16, 16, tintKind, 1, 0, 0.2f);
             }
             if (slotTypes[i] > 4) {
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x80,
-                                     0x30, 0x10, 0x10, 1, 0, 0, 0.201f);
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x80,
+                                     0x30, 16, 16, 1, 0, 0, 0.201f);
             } else {
-                Menu_DrawAtlasQuad2x(x + i * 0x1c, y, 0x70,
-                                     0x20, 0x10, 0x10, 1, 0, 0, 0.201f);
+                Menu_DrawAtlasQuad2x(x + i * 28, y, 0x70,
+                                     0x20, 16, 16, 1, 0, 0, 0.201f);
             }
         }
     }
@@ -2470,8 +2470,8 @@ void __cdecl Menu_DrawMateriaSlotRow(int x, int y, unsigned char *slotTypes, int
         if (slotTypes[i] != 0 &&
             (slotTypes[i] == 3 ||
              slotTypes[i] == 7)) {
-            Menu_DrawAtlasQuad2x(x + i * 0x1c - 0xc, y, 0x70,
-                                 0x30, 0x10, 0x10, 1, 0, 0, 0.2001f);
+            Menu_DrawAtlasQuad2x(x + i * 28 - 0xc, y, 0x70,
+                                 0x30, 16, 16, 1, 0, 0, 0.2001f);
         }
     }
     rect[0] = x - 3;
@@ -2495,15 +2495,15 @@ void __cdecl Menu_DrawMateriaSlotRow1x(int x, int y, unsigned char *slotTypes, i
         if (slotTypes[i] != 0) {
             if ((materiaIds[i] & 0xff) != 0xff) {
                 hueIdx = Menu_GetMateriaTypeColorIndex(materiaIds[i] & 0xff);
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x80,
-                                     0x20, 0x10, 0x10, hueIdx, 1, 0, 0.2f);
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 128,
+                                     32, 16, 16, hueIdx, 1, 0, 0.2f);
             }
             if (slotTypes[i] > 4) {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x80,
-                                     0x30, 0x10, 0x10, 1, 0, 0, 0.201f);
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 128,
+                                     48, 16, 16, 1, 0, 0, 0.201f);
             } else {
-                Menu_DrawAtlasQuad1x(x + i * 0xe, y, 0x70,
-                                     0x20, 0x10, 0x10, 1, 0, 0, 0.201f);
+                Menu_DrawAtlasQuad1x(x + i * 14, y, 112,
+                                     32, 16, 16, 1, 0, 0, 0.201f);
             }
         }
     }
@@ -2511,8 +2511,8 @@ void __cdecl Menu_DrawMateriaSlotRow1x(int x, int y, unsigned char *slotTypes, i
         if (slotTypes[i] != 0 &&
             (slotTypes[i] == 3 ||
              slotTypes[i] == 7)) {
-            Menu_DrawAtlasQuad1x(x + i * 0xe - 7, y, 0x70,
-                                 0x30, 0x10, 0x10, 1, 0, 0, 0.2001f);
+            Menu_DrawAtlasQuad1x(x + i * 14 - 7, y, 112,
+                                 48, 16, 16, 1, 0, 0, 0.2001f);
         }
     }
     rect[0] = x - 2;
@@ -2528,8 +2528,8 @@ void __cdecl Menu_DrawMateriaSlotRow1x(int x, int y, unsigned char *slotTypes, i
 // FUNCTION: FF7 0x0070eb87
 void __cdecl Menu_DrawMateriaScreenCharacterPanel2x(void)
 {
-    Menu_DrawCharStatBlock2x(0x67, 0x1E, g_MenuMateriaPartyIndex, 0.2f);
-    Menu_DrawCharPortrait2x(0x11, 0x13, g_MenuMateriaPartyIndex, 0.11f);
+    Menu_DrawCharStatBlock2x(103, 30, g_MenuMateriaPartyIndex, 0.2f);
+    Menu_DrawCharPortrait2x(17, 19, g_MenuMateriaPartyIndex, 0.11f);
 }
 
 /*
@@ -2538,8 +2538,8 @@ void __cdecl Menu_DrawMateriaScreenCharacterPanel2x(void)
 // FUNCTION: FF7 0x0070ebbb
 void __cdecl Menu_DrawMateriaScreenCharacterPanel1x(void)
 {
-    Menu_DrawCharStatBlock1x(0x34, 0xF, g_MenuMateriaPartyIndex, 0.2f);
-    Menu_DrawCharPortrait1x(9, 0xA, g_MenuMateriaPartyIndex, 0.11f);
+    Menu_DrawCharStatBlock1x(52, 15, g_MenuMateriaPartyIndex, 0.2f);
+    Menu_DrawCharPortrait1x(9, 10, g_MenuMateriaPartyIndex, 0.11f);
 }
 
 /*
@@ -2561,7 +2561,7 @@ void __cdecl Menu_MateriaExchangeInitPartyList(void)
         }
     }
     g_MenuMateriaInitializedFlag = (unsigned char)visibleCount;
-    MenuCursor_Init((MenuCursor *)&g_MenuMateriaStatDelta3, 0, 0, 1, 0xa, 0, 0, 1, 0xc8, 0, 0, 0,
+    MenuCursor_Init((MenuCursor *)&g_MenuMateriaStatDelta3, 0, 0, 1, 10, 0, 0, 1, 200, 0, 0, 0,
                     0, 0, 1);
     MenuCursor_Init((MenuCursor *)&g_MenuMateriaExchangeSlotCursor, 0, 0, 8, 2, 0, 0, 8, 2, 0, 0, 0, 0, 0,
                     0);
@@ -2595,15 +2595,15 @@ void __cdecl Menu_DrawMateriaExchangeList2x(unsigned int flags)
         switch (g_MenuMateriaSelectedSlot) {
         case MENU_MATERIA_EXCHANGE_PANE_SLOTS:
             if ((flags & 2) && g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop >= 0) {
-                Menu_DrawMoreTextArrow2x(g_MenuMateriaScrollMax * 0x1b + 0x45,
-                                    g_MenuMateriaScrollTop * 0x1a + 0x87 +
-                                        (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 0x5c + g_MenuMateriaCursorParam4 * 0xb,
+                Menu_DrawMoreTextArrow2x(g_MenuMateriaScrollMax * 27 + 0x45,
+                                    g_MenuMateriaScrollTop * 26 + 0x87 +
+                                        (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 92 + g_MenuMateriaCursorParam4 * 11,
                                     0.0f);
             }
             break;
         case MENU_MATERIA_EXCHANGE_PANE_ROWS:
             if ((flags & 2) && g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop >= 0) {
-                Menu_DrawMoreTextArrow2x(0xc, g_MenuMateriaScrollTop * 0x1a + 0x78 + (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 0x5e + g_MenuMateriaCursorParam4 * 0xb, 0.0f);
+                Menu_DrawMoreTextArrow2x(12, g_MenuMateriaScrollTop * 26 + 0x78 + (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 94 + g_MenuMateriaCursorParam4 * 11, 0.0f);
             }
             break;
         }
@@ -2611,34 +2611,34 @@ void __cdecl Menu_DrawMateriaExchangeList2x(unsigned int flags)
     g_MateriaDescribeModeFlag = 1;
     switch (g_MenuMateriaCursorParam1) {
     case MENU_MATERIA_EXCHANGE_PANE_SLOTS:
-        Menu_DrawMoreTextArrow2x(g_MenuMateriaExchangeSlotCursor * 0x1c + 0x48,
-                            g_MenuMateriaStatDelta9 * 0x1a + 0x8b + g_MenuMateriaExchangeRow * 0x5e, 0.01f);
+        Menu_DrawMoreTextArrow2x(g_MenuMateriaExchangeSlotCursor * 28 + 0x48,
+                            g_MenuMateriaStatDelta9 * 26 + 0x8b + g_MenuMateriaExchangeRow * 94, 0.01f);
         Menu_EmptyTextHook(0x80);
         switch (g_MenuMateriaStatDelta9) {
         case EQUIP_WEAPON:
             if (v.record->weaponMateria[g_MenuMateriaExchangeSlotCursor] != -1) {
-                Menu_DrawEncodedString2x(0x10, 0x40, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, v.record->weaponMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
-                v.colour = Menu_DrawMateriaNameAndApStars2x(0x1b, 0xd, v.record->weaponMateria[g_MenuMateriaExchangeSlotCursor]);
+                Menu_DrawEncodedString2x(16, 64, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, v.record->weaponMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
+                v.colour = Menu_DrawMateriaNameAndApStars2x(27, 13, v.record->weaponMateria[g_MenuMateriaExchangeSlotCursor]);
             }
             break;
         case EQUIP_ARMOR:
             if (v.record->armorMateria[g_MenuMateriaExchangeSlotCursor] != -1) {
-                Menu_DrawEncodedString2x(0x10, 0x40, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, v.record->armorMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
-                v.colour = Menu_DrawMateriaNameAndApStars2x(0x1b, 0xd, v.record->armorMateria[g_MenuMateriaExchangeSlotCursor]);
+                Menu_DrawEncodedString2x(16, 64, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, v.record->armorMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
+                v.colour = Menu_DrawMateriaNameAndApStars2x(27, 13, v.record->armorMateria[g_MenuMateriaExchangeSlotCursor]);
             }
             break;
         }
         break;
     case MENU_MATERIA_EXCHANGE_PANE_STOCK:
         Menu_DrawMoreTextArrow2x(g_MenuMateriaWindowPtr->frames[9].x - 0x12,
-                            g_MenuMateriaWindowPtr->frames[9].y + 0x11 + g_MenuMateriaStatDelta4 * 0x24, 0.01f);
+                            g_MenuMateriaWindowPtr->frames[9].y + 0x11 + g_MenuMateriaStatDelta4 * 36, 0.01f);
         if (gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5] != -1) {
-            Menu_DrawEncodedString2x(0x10, 0x40, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5] & 0xff), 7, 0.01f);
-            v.colour = Menu_DrawMateriaNameAndApStars2x(0x1b, 0xd, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5]);
+            Menu_DrawEncodedString2x(16, 64, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5] & 0xff), 7, 0.01f);
+            v.colour = Menu_DrawMateriaNameAndApStars2x(27, 13, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5]);
         }
         break;
     case MENU_MATERIA_EXCHANGE_PANE_ROWS:
-        Menu_DrawMoreTextArrow2x(0xf, g_MenuMateriaSortOrder * 0x1a + 0x72 + g_MenuMateriaExchangeRow * 0x5e, 0.01f);
+        Menu_DrawMoreTextArrow2x(15, g_MenuMateriaSortOrder * 26 + 0x72 + g_MenuMateriaExchangeRow * 94, 0.01f);
         break;
     }
     Menu_DrawMateriaExchangeStockList2x();
@@ -2646,11 +2646,11 @@ void __cdecl Menu_DrawMateriaExchangeList2x(unsigned int flags)
     Menu_DrawWindowFrame2x(&g_MenuMateriaWindowPtr->frames[8], 0.1f);
     Menu_DrawWindowFrame2x(&g_MenuMateriaWindowPtr->frames[9], 0.2f);
     v.rows = (g_MenuMateriaCursorParam5 != MENU_MATERIA_EXCHANGE_SCROLL_NONE) + 4;
-    Menu_FlushAndSetScissor2x(0, 0x67, 0x280, 0x179);
+    Menu_FlushAndSetScissor2x(0, 103, 640, 377);
     for (v.rowIdx = 0; v.rowIdx < v.rows; v.rowIdx++) {
         v.slot = g_MenuMateriaExchangeScrollTop + v.rowIdx;
         v.rowX = 0;
-        v.rowY = v.rowIdx * 0x5e + 0x67 + g_MenuMateriaCursorParam4 * 0xb;
+        v.rowY = v.rowIdx * 94 + 103 + g_MenuMateriaCursorParam4 * 11;
         if (g_MenuMateriaExchangeSlots[v.slot] != 0xff) {
             Menu_DrawMateriaSlotRow(v.rowX + 0x70, v.rowY + 0x20,
                                     g_KernelWeaponDataArray[g_MenuMateriaActorEquipPtr[g_MenuMateriaExchangeSlots[v.slot]].weapon].materiaSlotTable,
@@ -2662,7 +2662,7 @@ void __cdecl Menu_DrawMateriaExchangeList2x(unsigned int flags)
             Menu_DrawEncodedString2x(v.rowX + 0x37, v.rowY + 0x22, g_MenuMateriaLabelTable, 5, 0.2f);
             Menu_DrawEncodedString2x(v.rowX + 0x37, v.rowY + 0x3c, &g_MenuMateriaLabelTable[1 * 0x14], 5, 0.2f);
         }
-        Menu_SetRectShorts(v.rect, v.rowX, v.rowY, 0x167, 0x5f);
+        Menu_SetRectShorts(v.rect, v.rowX, v.rowY, 359, 95);
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)v.rect, 0.3f);
     }
     Menu_FlushAndResetScissor2x();
@@ -2671,9 +2671,9 @@ void __cdecl Menu_DrawMateriaExchangeList2x(unsigned int flags)
         g_MenuMateriaScrollBar.totalRows = g_MenuMateriaInitializedFlag;
         g_MenuMateriaScrollBarPos.scrollTop = (short)g_MenuMateriaExchangeScrollTop;
         g_MenuMateriaScrollBarPos.x = g_MenuMateriaWindowPtr->frames[10].x + 9;
-        g_MenuMateriaScrollBarSize.y = 0x6d;
-        g_MenuMateriaScrollBarSize.width = 0x11;
-        g_MenuMateriaScrollBarHeight = 0x16d;
+        g_MenuMateriaScrollBarSize.y = 109;
+        g_MenuMateriaScrollBarSize.width = 17;
+        g_MenuMateriaScrollBarHeight = 365;
         Menu_DrawScrollBar2x(&g_MenuMateriaScrollBar.visibleRows, 0.4f);
     }
     Menu_DrawWindowFrame2x(&g_MenuMateriaWindowPtr->frames[10], 0.4f);
@@ -2691,27 +2691,27 @@ void __cdecl Menu_DrawMateriaExchangeStockList2x(void)
     int positionX;
     int visibleRows;
 
-    Menu_FlushAndSetScissor2x(0, 0, 0x280, 0x1E0);
-    positionX = 0x1AB;
-    topY = 0x74;
-    visibleRows = (g_MenuMateriaStatDelta7 != 0) + 0xA;
+    Menu_FlushAndSetScissor2x(0, 0, 640, 480);
+    positionX = 427;
+    topY = 116;
+    visibleRows = (g_MenuMateriaStatDelta7 != 0) + 10;
     for (row = 0; row < visibleRows; row++) {
         if (gSavemap.materia[row + g_MenuMateriaStatDelta5] != -1) {
-            Menu_DrawEncodedString2x(positionX, topY + row * 0x24 + g_MenuMateriaStatDelta6 * 9, Kernel_LookupMateriaNameText(gSavemap.materia[row + g_MenuMateriaStatDelta5] & 0xFF), 7, 0.2f);
+            Menu_DrawEncodedString2x(positionX, topY + row * 36 + g_MenuMateriaStatDelta6 * 9, Kernel_LookupMateriaNameText(gSavemap.materia[row + g_MenuMateriaStatDelta5] & 0xFF), 7, 0.2f);
         }
     }
-    g_MenuMateriaScrollBar.visibleRows = 0xA;
-    g_MenuMateriaScrollBar.totalRows = 0xC8;
+    g_MenuMateriaScrollBar.visibleRows = 10;
+    g_MenuMateriaScrollBar.totalRows = 200;
     g_MenuMateriaScrollBarPos.scrollTop = *(short *)&g_MenuMateriaStatDelta5;
-    g_MenuMateriaScrollBarPos.x = 0x26A;
-    g_MenuMateriaScrollBarSize.y = 0x6D;
-    g_MenuMateriaScrollBarSize.width = 0x11;
-    g_MenuMateriaScrollBarHeight = 0x16D;
+    g_MenuMateriaScrollBarPos.x = 618;
+    g_MenuMateriaScrollBarSize.y = 109;
+    g_MenuMateriaScrollBarSize.width = 17;
+    g_MenuMateriaScrollBarHeight = 365;
     Menu_DrawScrollBar2x(&g_MenuMateriaScrollBar.visibleRows, 0.2f);
     for (row = 0; row < visibleRows; row++) {
         typeColor = Menu_GetMateriaTypeColorIndex(gSavemap.materia[row + g_MenuMateriaStatDelta5] & 0xFF);
         if (gSavemap.materia[row + g_MenuMateriaStatDelta5] != -1) {
-            Menu_DrawAtlasQuad2x(positionX - 0x1B, (topY - 2) + row * 0x24 + g_MenuMateriaStatDelta6 * 9, 0x80, 0x20, 0x10, 0x10, typeColor, 0, 0, 0.2f);
+            Menu_DrawAtlasQuad2x(positionX - 0x1B, (topY - 2) + row * 36 + g_MenuMateriaStatDelta6 * 9, 0x80, 0x20, 16, 16, typeColor, 0, 0, 0.2f);
         }
     }
     Menu_FlushAndResetScissor2x();
@@ -2730,15 +2730,15 @@ unsigned int __cdecl Menu_DrawMateriaNameAndApStars2x(int x, int y, unsigned int
     code = item & 0xff;
     Menu_DrawEncodedString2x(x + 0x1b, y, Kernel_LookupMateriaNameText(item & 0xff), 7, 0.01f);
     colour = Menu_GetMateriaTypeColorIndex(item & 0xff);
-    Menu_DrawAtlasQuad2x(x, y - 2, 0x80, 0x20, 0x10, 0x10, colour, 0, 0, 0.01f);
+    Menu_DrawAtlasQuad2x(x, y - 2, 0x80, 0x20, 16, 16, colour, 0, 0, 0.01f);
     Kernel_ApplyMateriaToActor(item);
     if (code != 0x30 && code != 0x49 && code != 0x5a && code != 0x2c) {
         for (n = 0; n < g_MenuMateriaDetailPtr->maxLevel; n++) {
             if (n < g_MenuMateriaDetailPtr->level) {
-                Menu_DrawAtlasQuad2x(n * 0x19 + 0x11b, 0xd, 0x90, 0x20, 0x10, 0x10,
+                Menu_DrawAtlasQuad2x(n * 25 + 0x11b, 13, 0x90, 0x20, 16, 16,
                                      colour, 0, 0, 0.01f);
             } else {
-                Menu_DrawAtlasQuad2x(n * 0x19 + 0x11b, 0xd, 0x90, 0x30, 0x10, 0x10,
+                Menu_DrawAtlasQuad2x(n * 25 + 0x11b, 13, 0x90, 0x30, 16, 16,
                                      colour, 0, 0, 0.01f);
             }
         }
@@ -2772,15 +2772,15 @@ void __cdecl Menu_DrawMateriaExchangeList1x(unsigned int flags)
         switch (g_MenuMateriaSelectedSlot) {
         case MENU_MATERIA_EXCHANGE_PANE_SLOTS:
             if ((flags & 2) && g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop >= 0) {
-                Menu_DrawMoreTextArrow1x(g_MenuMateriaScrollMax * 0xe + 0x22,
-                                    g_MenuMateriaScrollTop * 0xd + 0x43 +
-                                        (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 0x2e + g_MenuMateriaCursorParam4 * 5,
+                Menu_DrawMoreTextArrow1x(g_MenuMateriaScrollMax * 14 + 0x22,
+                                    g_MenuMateriaScrollTop * 13 + 0x43 +
+                                        (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 46 + g_MenuMateriaCursorParam4 * 5,
                                     0.0f);
             }
             break;
         case MENU_MATERIA_EXCHANGE_PANE_ROWS:
             if ((flags & 2) && g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop >= 0) {
-                Menu_DrawMoreTextArrow1x(6, g_MenuMateriaScrollTop * 0xd + 0x3c + (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 0x2f + g_MenuMateriaCursorParam4 * 5, 0.0f);
+                Menu_DrawMoreTextArrow1x(6, g_MenuMateriaScrollTop * 13 + 0x3c + (g_MenuMateriaExchangeCursor - g_MenuMateriaExchangeScrollTop) * 47 + g_MenuMateriaCursorParam4 * 5, 0.0f);
             }
             break;
         }
@@ -2788,34 +2788,34 @@ void __cdecl Menu_DrawMateriaExchangeList1x(unsigned int flags)
     g_MateriaDescribeModeFlag = 1;
     switch (g_MenuMateriaCursorParam1) {
     case MENU_MATERIA_EXCHANGE_PANE_SLOTS:
-        Menu_DrawMoreTextArrow1x(g_MenuMateriaExchangeSlotCursor * 0xe + 0x24,
-                            g_MenuMateriaStatDelta9 * 0xd + 0x46 + g_MenuMateriaExchangeRow * 0x2f, 0.01f);
+        Menu_DrawMoreTextArrow1x(g_MenuMateriaExchangeSlotCursor * 14 + 0x24,
+                            g_MenuMateriaStatDelta9 * 13 + 0x46 + g_MenuMateriaExchangeRow * 47, 0.01f);
         Menu_EmptyTextHook(0x80);
         switch (g_MenuMateriaStatDelta9) {
         case EQUIP_WEAPON:
             if (state.record->weaponMateria[g_MenuMateriaExchangeSlotCursor] != -1) {
-                Menu_DrawEncodedString1x(8, 0x20, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, state.record->weaponMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
-                state.colour = Menu_DrawMateriaNameAndApStars1x(0xe, 7, state.record->weaponMateria[g_MenuMateriaExchangeSlotCursor]);
+                Menu_DrawEncodedString1x(8, 32, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, state.record->weaponMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
+                state.colour = Menu_DrawMateriaNameAndApStars1x(14, 7, state.record->weaponMateria[g_MenuMateriaExchangeSlotCursor]);
             }
             break;
         case EQUIP_ARMOR:
             if (state.record->armorMateria[g_MenuMateriaExchangeSlotCursor] != -1) {
-                Menu_DrawEncodedString1x(8, 0x20, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, state.record->armorMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
-                state.colour = Menu_DrawMateriaNameAndApStars1x(0xe, 7, state.record->armorMateria[g_MenuMateriaExchangeSlotCursor]);
+                Menu_DrawEncodedString1x(8, 32, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, state.record->armorMateria[g_MenuMateriaExchangeSlotCursor] & 0xff), 7, 0.01f);
+                state.colour = Menu_DrawMateriaNameAndApStars1x(14, 7, state.record->armorMateria[g_MenuMateriaExchangeSlotCursor]);
             }
             break;
         }
         break;
     case MENU_MATERIA_EXCHANGE_PANE_STOCK:
         Menu_DrawMoreTextArrow1x(g_MenuMateriaWindowPtr->frames[9].x - 9,
-                            g_MenuMateriaWindowPtr->frames[9].y + 9 + g_MenuMateriaStatDelta4 * 0x12, 0.01f);
+                            g_MenuMateriaWindowPtr->frames[9].y + 9 + g_MenuMateriaStatDelta4 * 18, 0.01f);
         if (gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5] != -1) {
-            Menu_DrawEncodedString1x(8, 0x20, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5] & 0xff), 7, 0.01f);
-            state.colour = Menu_DrawMateriaNameAndApStars1x(0xe, 7, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5]);
+            Menu_DrawEncodedString1x(8, 32, Menu_LookupEntryNameByMode(MENU_MATERIA_NAME_MATERIA, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5] & 0xff), 7, 0.01f);
+            state.colour = Menu_DrawMateriaNameAndApStars1x(14, 7, gSavemap.materia[g_MenuMateriaStatDelta4 + g_MenuMateriaStatDelta5]);
         }
         break;
     case MENU_MATERIA_EXCHANGE_PANE_ROWS:
-        Menu_DrawMoreTextArrow1x(8, g_MenuMateriaSortOrder * 0xd + 0x39 + g_MenuMateriaExchangeRow * 0x2f, 0.01f);
+        Menu_DrawMoreTextArrow1x(8, g_MenuMateriaSortOrder * 13 + 0x39 + g_MenuMateriaExchangeRow * 47, 0.01f);
         break;
     }
     Menu_DrawMateriaExchangeStockList1x();
@@ -2823,11 +2823,11 @@ void __cdecl Menu_DrawMateriaExchangeList1x(unsigned int flags)
     Menu_DrawWindowFrame1x(&g_MenuMateriaWindowPtr->frames[8], 0.1f);
     Menu_DrawWindowFrame1x(&g_MenuMateriaWindowPtr->frames[9], 0.2f);
     state.rows = (g_MenuMateriaCursorParam5 != MENU_MATERIA_EXCHANGE_SCROLL_NONE) + 4;
-    Menu_FlushAndSetScissor1x(0, 0x33, 0x140, 0xbd);
+    Menu_FlushAndSetScissor1x(0, 51, 320, 189);
     for (state.i = 0; state.i < state.rows; state.i++) {
         state.slot = g_MenuMateriaExchangeScrollTop + state.i;
         state.x = 0;
-        state.y = state.i * 0x2f + 0x34 + g_MenuMateriaCursorParam4 * 5;
+        state.y = state.i * 47 + 52 + g_MenuMateriaCursorParam4 * 5;
         if (g_MenuMateriaExchangeSlots[state.slot] != 0xff) {
             Menu_DrawMateriaSlotRow1x(state.x + 0x38, state.y + 0x10,
                                       g_KernelWeaponDataArray[g_MenuMateriaActorEquipPtr[g_MenuMateriaExchangeSlots[state.slot]].weapon].materiaSlotTable,
@@ -2839,7 +2839,7 @@ void __cdecl Menu_DrawMateriaExchangeList1x(unsigned int flags)
             Menu_DrawEncodedString1x(state.x + 0x1c, state.y + 0x11, g_MenuMateriaLabelTable, 5, 0.2f);
             Menu_DrawEncodedString1x(state.x + 0x1c, state.y + 0x1e, &g_MenuMateriaLabelTable[1 * 0x14], 5, 0.2f);
         }
-        Menu_SetRectShorts(state.rect, state.x, state.y, 0xb4, 0x2f);
+        Menu_SetRectShorts(state.rect, state.x, state.y, 180, 47);
         Menu_DrawWindowFrame1x((EnglishWindowFrame *)state.rect, 0.3f);
     }
     Menu_FlushAndResetScissor1x();
@@ -2848,9 +2848,9 @@ void __cdecl Menu_DrawMateriaExchangeList1x(unsigned int flags)
         g_MenuMateriaScrollBar.totalRows = g_MenuMateriaInitializedFlag;
         g_MenuMateriaScrollBarPos.scrollTop = (short)g_MenuMateriaExchangeScrollTop;
         g_MenuMateriaScrollBarPos.x = g_MenuMateriaWindowPtr->frames[10].x + 5;
-        g_MenuMateriaScrollBarSize.y = 0x37;
+        g_MenuMateriaScrollBarSize.y = 55;
         g_MenuMateriaScrollBarSize.width = 9;
-        g_MenuMateriaScrollBarHeight = 0xb7;
+        g_MenuMateriaScrollBarHeight = 183;
         Menu_DrawScrollBar1x(&g_MenuMateriaScrollBar.visibleRows, 0.4f);
     }
     Menu_DrawWindowFrame1x(&g_MenuMateriaWindowPtr->frames[10], 0.4f);
@@ -2868,27 +2868,27 @@ void __cdecl Menu_DrawMateriaExchangeStockList1x(void)
     int positionX;
     int visibleRows;
 
-    Menu_FlushAndSetScissor1x(0, 0, 0x140, 0xF0);
-    positionX = 0xD6;
-    topY = 0x3A;
-    visibleRows = (g_MenuMateriaStatDelta7 != 0) + 0xA;
+    Menu_FlushAndSetScissor1x(0, 0, 320, 240);
+    positionX = 214;
+    topY = 58;
+    visibleRows = (g_MenuMateriaStatDelta7 != 0) + 10;
     for (row = 0; row < visibleRows; row++) {
         if (gSavemap.materia[row + g_MenuMateriaStatDelta5] != -1) {
-            Menu_DrawEncodedString1x(positionX, topY + row * 0x12 + g_MenuMateriaStatDelta6 * 5, Kernel_LookupMateriaNameText(gSavemap.materia[row + g_MenuMateriaStatDelta5] & 0xFF), 7, 0.2f);
+            Menu_DrawEncodedString1x(positionX, topY + row * 18 + g_MenuMateriaStatDelta6 * 5, Kernel_LookupMateriaNameText(gSavemap.materia[row + g_MenuMateriaStatDelta5] & 0xFF), 7, 0.2f);
         }
     }
-    g_MenuMateriaScrollBar.visibleRows = 0xA;
-    g_MenuMateriaScrollBar.totalRows = 0xC8;
+    g_MenuMateriaScrollBar.visibleRows = 10;
+    g_MenuMateriaScrollBar.totalRows = 200;
     g_MenuMateriaScrollBarPos.scrollTop = *(short *)&g_MenuMateriaStatDelta5;
-    g_MenuMateriaScrollBarPos.x = 0x135;
-    g_MenuMateriaScrollBarSize.y = 0x37;
+    g_MenuMateriaScrollBarPos.x = 309;
+    g_MenuMateriaScrollBarSize.y = 55;
     g_MenuMateriaScrollBarSize.width = 9;
-    g_MenuMateriaScrollBarHeight = 0xB7;
+    g_MenuMateriaScrollBarHeight = 183;
     Menu_DrawScrollBar1x(&g_MenuMateriaScrollBar.visibleRows, 0.2f);
     for (row = 0; row < visibleRows; row++) {
         typeColor = Menu_GetMateriaTypeColorIndex(gSavemap.materia[row + g_MenuMateriaStatDelta5] & 0xFF);
         if (gSavemap.materia[row + g_MenuMateriaStatDelta5] != -1) {
-            Menu_DrawAtlasQuad1x(positionX - 0xE, (topY - 2) + row * 0x12 + g_MenuMateriaStatDelta6 * 5, 0x80, 0x20, 0x10, 0x10, typeColor, 0, 0, 0.2f);
+            Menu_DrawAtlasQuad1x(positionX - 0xE, (topY - 2) + row * 18 + g_MenuMateriaStatDelta6 * 5, 128, 32, 16, 16, typeColor, 0, 0, 0.2f);
         }
     }
     Menu_FlushAndResetScissor1x();
@@ -2907,15 +2907,15 @@ unsigned int __cdecl Menu_DrawMateriaNameAndApStars1x(int x, int y, unsigned int
     code = item & 0xff;
     Menu_DrawEncodedString1x(x + 0xe, y, Kernel_LookupMateriaNameText(item & 0xff), 7, 0.01f);
     colour = Menu_GetMateriaTypeColorIndex(item & 0xff);
-    Menu_DrawAtlasQuad1x(x, y - 1, 0x80, 0x20, 0x10, 0x10, colour, 0, 0, 0.01f);
+    Menu_DrawAtlasQuad1x(x, y - 1, 128, 32, 16, 16, colour, 0, 0, 0.01f);
     Kernel_ApplyMateriaToActor(item);
     if (code != 0x30 && code != 0x49 && code != 0x5a && code != 0x2c) {
         for (n = 0; n < g_MenuMateriaDetailPtr->maxLevel; n++) {
             if (n < g_MenuMateriaDetailPtr->level) {
-                Menu_DrawAtlasQuad1x(n * 0xd + 0x8e, 7, 0x90, 0x20, 0x10, 0x10,
+                Menu_DrawAtlasQuad1x(n * 13 + 0x8e, 7, 144, 32, 16, 16,
                                      colour, 0, 0, 0.01f);
             } else {
-                Menu_DrawAtlasQuad1x(n * 0xd + 0x8e, 7, 0x90, 0x30, 0x10, 0x10,
+                Menu_DrawAtlasQuad1x(n * 13 + 0x8e, 7, 144, 48, 16, 16,
                                      colour, 0, 0, 0.01f);
             }
         }

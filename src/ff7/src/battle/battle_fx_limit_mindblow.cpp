@@ -220,20 +220,20 @@ void __cdecl BattleFx_LimitMindblowTimelineTask(void)
     if (frame.step < 0) { /* empty first arm: lib/codegen.h */
     } else {
         frame.step = frame.step;
-        if (frame.step < 0x16) {
+        if (frame.step < 22) {
             if (frame.step == 0) {
                 frame.particle = (BattleFxLimitMindblowParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMindblowSpinningModelPairTask);
                 frame.particle->actorIndex = frame.mindSlot->actorIndex;
                 frame.particle->matrixIndex = frame.mindSlot->slotIndex;
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[frame.mindSlot->slotIndex].posX), 0x28);
             }
-            if (frame.step < 0xE) {
+            if (frame.step < 14) {
                 Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleCameraTransform, g_BattleActorTransformRecords[frame.mindSlot->slotIndex].auxNode, &frame.cameraMatrix);
                 for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
                     frame.particle = (BattleFxLimitMindblowParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMindblowDriftingSpriteTask);
                     frame.offsetX.vy = 0;
                     frame.offsetX.vx = frame.offsetX.vy;
-                    frame.offsetX.vz = -(rand() % 0x3E8 + 0x3E8);
+                    frame.offsetX.vz = -(rand() % 1000 + 1000);
                     frame.rotX.vx = (rand() & 0x3FF) - 0x200;
                     frame.rotX.vy = (rand() & 0x3FF) - 0x200;
                     frame.rotX.vz = 0;
@@ -252,23 +252,23 @@ void __cdecl BattleFx_LimitMindblowTimelineTask(void)
                     frame.particle->stepY = (frame.driftMatrix.t[1] - frame.pointY) / 8;
                     frame.particle->stepZ = (frame.driftMatrix.t[2] - frame.pointZ) / 8;
                     frame.particle->kind = rand() % 3;
-                    frame.particle->scale = 0x1000;
+                    frame.particle->scale = 0x1000 /* 1.0 */;
                 }
             }
         } else {
-            frame.step -= 0x16;
+            frame.step -= 22;
             if (frame.step < 7) {
                 if (frame.step == 0) {
                     BattleFx_FadeOutScreenFlashRamp(2);
                     Battle_PostActorHitOrHurtMessage(frame.mindSlot->actorIndex);
                 }
                 if (frame.step < 3) {
-                    for (frame.spawnIndex = 0; frame.spawnIndex < 0x14; frame.spawnIndex++) {
+                    for (frame.spawnIndex = 0; frame.spawnIndex < 20; frame.spawnIndex++) {
                         frame.particle = (BattleFxLimitMindblowParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMindblowDampedSpriteParticleTask);
                         Battle_GetBoneWorldPos(frame.mindSlot->actorIndex, g_BattleActorRecords[frame.mindSlot->actorIndex].targetBone, &frame.particle->originX);
                         frame.offsetX.vy = 0;
                         frame.offsetX.vx = frame.offsetX.vy;
-                        frame.offsetX.vz = 0xFFFFFED4 - rand() % 0x1F4;
+                        frame.offsetX.vz = 0xFFFFFED4 - rand() % 500;
                         frame.rotX.vx = (rand() & 0x3FF) - 0x200;
                         frame.rotX.vy = g_BattleActorRecords[frame.mindSlot->slotIndex].yaw + (rand() & 0x3FF) + -0x200;
                         frame.rotX.vz = 0;
@@ -280,7 +280,7 @@ void __cdecl BattleFx_LimitMindblowTimelineTask(void)
                 }
             } else {
                 frame.step -= 7;
-                if (frame.step < 0xF) { /* empty first arm: lib/codegen.h */
+                if (frame.step < 15) { /* empty first arm: lib/codegen.h */
                 } else {
                     frame.mindSlot->ownerSlot = BATTLE_TASK_FREE;
                 }
@@ -305,8 +305,8 @@ void __cdecl BattleFx_LimitMindblowSpinningModelPairTask(void)
     selfPtr = (BattleFxMindSpinModelPair *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitMindblowModelRequest.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleLimitMindblowLoadedResTable);
     frameIdx = selfPtr->frame;
-    if (frameIdx < 0x16) {
-        growZ.vz = frameIdx * 0x1C0 / 0x16 + 0x40;
+    if (frameIdx < 22) {
+        growZ.vz = frameIdx * 448 / 22 + 64;
         growZ.vy = growZ.vz;
         growZ.vx = growZ.vy;
         if (g_BattleIsPaused == 0) {
@@ -328,7 +328,7 @@ void __cdecl BattleFx_LimitMindblowSpinningModelPairTask(void)
         g_BattleLimitMindblowModelRequest.flags = 8;
         g_BattleLimitMindblowModelRequest.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleLimitMindblowLoadedResTable);
         g_BattleLimitMindblowDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleLimitMindblowModelRequest, g_BattleCurrentOrderingTable + 0x60, 0xC, g_BattleLimitMindblowDrawHandle);
-        if (frameIdx == 0x15) {
+        if (frameIdx == 21) {
             BattleFx_StartScreenFlashRamp(1);
             selfPtr->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -398,8 +398,8 @@ void __cdecl BattleFx_LimitMindblowDampedSpriteParticleTask(void)
         g_BattleLimitMindblowSpriteRequest3.dampedColorR = g_BattleLimitMindblowSpriteRequest3.dampedColorG;
     } else {
         age -= 5;
-        if (age < 0xA) {
-            g_BattleLimitMindblowSpriteRequest3.dampedColorB = age * -0x80 / 0xA + 0x80;
+        if (age < 10) {
+            g_BattleLimitMindblowSpriteRequest3.dampedColorB = age * -0x80 / 10 + 0x80;
             g_BattleLimitMindblowSpriteRequest3.dampedColorG = g_BattleLimitMindblowSpriteRequest3.dampedColorB;
             g_BattleLimitMindblowSpriteRequest3.dampedColorR = g_BattleLimitMindblowSpriteRequest3.dampedColorG;
         } else {
@@ -415,9 +415,9 @@ void __cdecl BattleFx_LimitMindblowDampedSpriteParticleTask(void)
         task->posX += task->velocityX;
         task->posY += task->velocityY;
         task->posZ += task->velocityZ;
-        task->velocityX = task->velocityX * 0xF00 >> 0xC;
-        task->velocityY = task->velocityY * 0xF00 >> 0xC;
-        task->velocityZ = task->velocityZ * 0xF00 >> 0xC;
+        task->velocityX = task->velocityX * 0xF00 /* 0.9375 */ >> 12;
+        task->velocityY = task->velocityY * 0xF00 /* 0.9375 */ >> 12;
+        task->velocityZ = task->velocityZ * 0xF00 /* 0.9375 */ >> 12;
         if (task->posY > 0) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }

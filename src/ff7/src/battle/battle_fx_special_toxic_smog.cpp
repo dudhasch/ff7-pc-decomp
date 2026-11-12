@@ -185,14 +185,14 @@ void __cdecl BattleFx_SpecialToxicSmogTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.timelineSlot->frameCounter < 0xC) {
+    if (frame.timelineSlot->frameCounter < 12) {
         frame.spawnSlot = (BattleFxToxicSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialToxicSmogDriftingRibbonSpriteTask);
         frame.spawnSlot->posX = frame.timelineSlot->startX;
         frame.spawnSlot->posY = frame.timelineSlot->startY;
         frame.spawnSlot->posZ = frame.timelineSlot->startZ;
         frame.randAngle = rand() & 0xFFF;
-        frame.jitterX.vx = CosFixed(frame.randAngle) * 0x50 >> 0xC;
-        frame.jitterX.vy = SinFixed(frame.randAngle) * 0x50 >> 0xC;
+        frame.jitterX.vx = CosFixed(frame.randAngle) * 0x50 >> 12;
+        frame.jitterX.vy = SinFixed(frame.randAngle) * 0x50 >> 12;
         frame.jitterX.vz = 0;
         frame.angleX.vz = 0;
         frame.angleX.vx = frame.angleX.vz;
@@ -204,48 +204,48 @@ void __cdecl BattleFx_SpecialToxicSmogTimelineTask(void)
         SetRotMatrix(&frame.rotMatrix);
         SetTransMatrix(&frame.rotMatrix);
         RotTransPointToInt16(&frame.jitterX, (short *)&frame.jitterX, &frame.transDepth);
-        frame.spawnSlot->velocityX = (frame.timelineSlot->endX - frame.timelineSlot->startX) / 0x1E + frame.jitterX.vx;
-        frame.spawnSlot->velocityY = (frame.timelineSlot->endY - frame.timelineSlot->startY) / 0x1E + frame.jitterX.vy;
-        frame.spawnSlot->velocityZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 0x1E + frame.jitterX.vz;
-        frame.spawnSlot->phaseOrResIndex = 0x32;
+        frame.spawnSlot->velocityX = (frame.timelineSlot->endX - frame.timelineSlot->startX) / 30 + frame.jitterX.vx;
+        frame.spawnSlot->velocityY = (frame.timelineSlot->endY - frame.timelineSlot->startY) / 30 + frame.jitterX.vy;
+        frame.spawnSlot->velocityZ = (frame.timelineSlot->endZ - frame.timelineSlot->startZ) / 30 + frame.jitterX.vz;
+        frame.spawnSlot->phaseOrResIndex = 50;
     }
-    if (frame.timelineSlot->frameCounter > 0x1E && frame.timelineSlot->frameCounter < 0x28) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    if (frame.timelineSlot->frameCounter > 30 && frame.timelineSlot->frameCounter < 40) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if (((g_BattleSpecialToxicSmogRibbonBuffer.targetMask) & 1 << frame.actorIndex) != 0) {
                 frame.spawnSlot = (BattleFxToxicSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialToxicSmogAnimatedSpriteTask);
                 Battle_GetBoneWorldPos(frame.actorIndex, g_BattleActorRecords[frame.actorIndex].targetBone, &frame.spawnSlot->posX);
-                frame.spawnSlot->posX += (short)(rand() % 0x320 - 0x190);
-                frame.spawnSlot->posY += (short)(rand() % 0x320 - 0x190);
-                frame.spawnSlot->posZ += (short)(rand() % 0x320 - 0x190);
+                frame.spawnSlot->posX += (short)(rand() % 800 - 400);
+                frame.spawnSlot->posY += (short)(rand() % 800 - 400);
+                frame.spawnSlot->posZ += (short)(rand() % 800 - 400);
                 frame.spawnSlot = (BattleFxToxicSmogTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialToxicSmogSecondaryAnimatedSpriteTask)];
                 Battle_GetBoneWorldPos(frame.actorIndex, g_BattleActorRecords[frame.actorIndex].targetBone, &frame.spawnSlot->posX);
-                frame.spawnSlot->posX += (short)(rand() % 0x4B0 - 0x258);
-                frame.spawnSlot->posY += (short)(rand() % 0x4B0 - 0x258);
-                frame.spawnSlot->posZ += (short)(rand() % 0x4B0 - 0x258);
+                frame.spawnSlot->posX += (short)(rand() % 1200 - 600);
+                frame.spawnSlot->posY += (short)(rand() % 1200 - 600);
+                frame.spawnSlot->posZ += (short)(rand() % 1200 - 600);
             }
         }
     }
-    if (frame.timelineSlot->frameCounter == 0x1E) {
+    if (frame.timelineSlot->frameCounter == 30) {
         frame.spawnSlot = (BattleFxToxicSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialToxicSmogSpinFadeSpriteTask);
         frame.spawnSlot->posX = 0;
         frame.spawnSlot->posY = 0;
-        frame.spawnSlot->posZ = 0x7D0;
+        frame.spawnSlot->posZ = 2000;
         frame.spawnSlot->velocityZ = 0;
         frame.spawnSlot->velocityY = 0;
         frame.spawnSlot->velocityX = 0;
     }
-    if (frame.timelineSlot->frameCounter == 0x1E) {
+    if (frame.timelineSlot->frameCounter == 30) {
         frame.spawnSlot = (BattleFxToxicSmogTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialToxicSmogSpinGrowFadeModelTask);
     }
-    if (frame.timelineSlot->frameCounter == 0x50) {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    if (frame.timelineSlot->frameCounter == 80) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if (((g_BattleSpecialToxicSmogRibbonBuffer.targetMask) & 1 << frame.actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.actorIndex);
             }
         }
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x64) {
+    if (frame.timelineSlot->frameCounter == 100) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -262,7 +262,7 @@ void __cdecl BattleFx_SpecialToxicSmogAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[0].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialToxicSmogLoadedRes);
     ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[0].drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialToxicSmogLoadedRes);
-    matrix = (PsxMatrix *)BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000, 0);
+    matrix = (PsxMatrix *)BattleFx_InstallBillboardMatrix((short *)task->data, 0x2000 /* 2.0 */, 0);
     if (matrix->t[2] > 0) {
         ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[0].frame = task->frameCounter;
         g_BattleSpecialToxicSmogDrawListHandle = BattleFx_SubmitSpriteDraw(&((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[0], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialToxicSmogDrawListHandle);
@@ -286,7 +286,7 @@ void __cdecl BattleFx_SpecialToxicSmogSecondaryAnimatedSpriteTask(void)
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
     ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[1].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecialToxicSmogLoadedRes);
     ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[1].drawObj = Battle3d_GetSceneRenderObject(3, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1000 /* 1.0 */, 0);
     ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[1].frame = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[1], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[1].spriteGroup != 0) {
@@ -308,7 +308,7 @@ void __cdecl BattleFx_SpecialToxicSmogSpinFadeSpriteTask(void)
     task = (BattleFxToxicSmogSpinFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
     ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[2].spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(5, g_BattleSpecialToxicSmogLoadedRes);
     ((BattleFxSpriteRequest *)g_BattleSpecialToxicSmogSpriteReq1)[2].drawObj = Gfx_ModelTableGetSpriteObject(5, g_BattleSpecialToxicSmogLoadedRes);
-    BattleFx_SpecialToxicSmogInstallRotatedScaledMatrix(&task->pos, &task->rotX, 0x1000);
+    BattleFx_SpecialToxicSmogInstallRotatedScaledMatrix(&task->pos, &task->rotX, 0x1000 /* 1.0 */);
     g_BattleSpecialToxicSmogColor1.blue = g_BattleSpecialToxicSmogRibbonBuffer.ribbonIndex * 6;
     g_BattleSpecialToxicSmogColor1.green = g_BattleSpecialToxicSmogColor1.blue;
     g_BattleSpecialToxicSmogColor1.red = g_BattleSpecialToxicSmogColor1.green;
@@ -317,14 +317,14 @@ void __cdecl BattleFx_SpecialToxicSmogSpinFadeSpriteTask(void)
         return;
     }
     task->angle += 0x10;
-    if (task->age < 0x10) {
+    if (task->age < 16) {
         g_BattleSpecialToxicSmogRibbonBuffer.ribbonIndex++;
     }
-    if (task->age > 0x2C) {
+    if (task->age > 44) {
         g_BattleSpecialToxicSmogRibbonBuffer.ribbonIndex--;
     }
     (task->age)++;
-    if (task->age == 0x3C) {
+    if (task->age == 60) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -366,20 +366,20 @@ void __cdecl BattleFx_SpecialToxicSmogDriftingRibbonSpriteTask(void)
     pRibbon = (BattleFxToxicSmogDriftRibbon *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialToxicSmogColor1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecialToxicSmogLoadedRes);
     g_BattleSpecialToxicSmogColor1.drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecialToxicSmogLoadedRes);
-    if (pRibbon->frameCount < 0x1B) {
+    if (pRibbon->frameCount < 27) {
         raw = 8;
     } else {
         raw = 0x23 - pRibbon->frameCount;
     }
     fadeAlpha = raw;
-    mtx = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&pRibbon->posX, 0x1800, 0);
+    mtx = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&pRibbon->posX, 0x1800 /* 1.5 */, 0);
     RefreshGlobalTransformState();
     if (mtx->t[2] > 0) {
         BattleFx_SpecialToxicSmogDrawWavyRibbon(8, (short)pRibbon->wavePhase, 0x320, fadeAlpha << 2);
     }
-    BattleFx_InstallBillboardMatrix(&pRibbon->posX, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix(&pRibbon->posX, 0x1800 /* 1.5 */, 0);
     g_BattleSpecialToxicSmogColor2.frame = pRibbon->frameCount % g_BattleSpecialToxicSmogColor1.spriteGroup->header->frameCount;
-    g_BattleSpecialToxicSmogColor2.blue = fadeAlpha * 0xC;
+    g_BattleSpecialToxicSmogColor2.blue = fadeAlpha * 12;
     g_BattleSpecialToxicSmogColor2.green = g_BattleSpecialToxicSmogColor2.blue;
     g_BattleSpecialToxicSmogColor2.red = g_BattleSpecialToxicSmogColor2.green;
     g_BattleSpecialToxicSmogDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialToxicSmogColor1.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialToxicSmogDrawListHandle);
@@ -391,7 +391,7 @@ void __cdecl BattleFx_SpecialToxicSmogDriftingRibbonSpriteTask(void)
     pRibbon->posY += pRibbon->velocityY;
     pRibbon->posZ += pRibbon->velocityZ;
     (pRibbon->frameCount)++;
-    if (pRibbon->frameCount == 0x23) {
+    if (pRibbon->frameCount == 35) {
         pRibbon->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -430,15 +430,15 @@ void __cdecl BattleFx_SpecialToxicSmogDrawWavyRibbon(int amplitude, short phase,
     frame.renderBlock = (BattleFxToxicSmogRibbonState *)Gfx_GetPsxPacketScratchPtr();
     *(char *)((char *)frame.renderBlock + 7) |= 2;
     for (frame.segment = 0; frame.segment < 8; frame.segment++) {
-        frame.sinStart = SinFixed(phase + frame.segment * ((short)angleStep)) * ((short)amplitude) >> 0xC;
-        frame.sinEnd = SinFixed(phase + (frame.segment + 1) * ((short)angleStep)) * ((short)amplitude) >> 0xC;
-        frame.startLeftX.vx = frame.sinStart - 0x3F;
-        frame.startRightX.vx = frame.sinStart + 0x3F;
-        frame.endLeftX.vx = frame.sinEnd - 0x3F;
-        frame.endRightX.vx = frame.sinEnd + 0x3F;
-        frame.startRightX.vy = ((frame.segment * 0x7F) / 8) - 0x3F;
+        frame.sinStart = SinFixed(phase + frame.segment * ((short)angleStep)) * ((short)amplitude) >> 12;
+        frame.sinEnd = SinFixed(phase + (frame.segment + 1) * ((short)angleStep)) * ((short)amplitude) >> 12;
+        frame.startLeftX.vx = frame.sinStart - 63;
+        frame.startRightX.vx = frame.sinStart + 63;
+        frame.endLeftX.vx = frame.sinEnd - 63;
+        frame.endRightX.vx = frame.sinEnd + 63;
+        frame.startRightX.vy = ((frame.segment * 127) / 8) - 63;
         frame.startLeftX.vy = frame.startRightX.vy;
-        frame.endRightX.vy = (((frame.segment + 1) * 0x7F) / 8) - 0x3F;
+        frame.endRightX.vy = (((frame.segment + 1) * 127) / 8) - 63;
         frame.endLeftX.vy = frame.endRightX.vy;
         frame.startLeftX.vx <<= 3;
         frame.startRightX.vx <<= 3;
@@ -460,9 +460,9 @@ void __cdecl BattleFx_SpecialToxicSmogDrawWavyRibbon(int amplitude, short phase,
             frame.renderBlock->u0 = 0x80;
             frame.renderBlock->u3 = 0xFF;
             frame.renderBlock->u1 = 0xFF;
-            frame.renderBlock->v1 = (frame.segment * 0x7F) / 8;
+            frame.renderBlock->v1 = (frame.segment * 127) / 8;
             frame.renderBlock->v0 = frame.renderBlock->v1;
-            frame.renderBlock->v3 = ((frame.segment + 1) * 0x7F) / 8;
+            frame.renderBlock->v3 = ((frame.segment + 1) * 127) / 8;
             frame.renderBlock->v2 = frame.renderBlock->v3;
             frame.renderBlock->tpage = frame.blockTag;
             frame.renderBlock->clut = frame.paletteWord;
@@ -513,11 +513,11 @@ void __cdecl BattleFx_SpecialToxicSmogSpinGrowFadeModelTask(void)
     if (frame.slot->frameCounter < 8) {
         g_BattleSpecialToxicSmogState++;
     }
-    if (frame.slot->frameCounter > 0x2A) {
+    if (frame.slot->frameCounter > 42) {
         g_BattleSpecialToxicSmogState--;
     }
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x32) {
+    if (frame.slot->frameCounter == 50) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

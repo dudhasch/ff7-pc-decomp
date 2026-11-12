@@ -172,7 +172,7 @@ void __cdecl BattleFx_LimitBeginSledFang(int targetMask, int actorIdx, int isAlt
     g_BattleFxActiveDrawListPtr = Gfx_GetPsxPacketScratchPtr();
     g_BattleLimitSledFangTargetMask = targetMask;
     i = 0;
-    for (found = 0; i < 0xA; i++) {
+    for (found = 0; i < 10; i++) {
         if ((targetMask & 1 << i) != 0) {
             found++;
             if (found == 1) {
@@ -214,7 +214,7 @@ void __cdecl BattleFx_LimitSledFangSpawnTimeline(void)
     g_BattleLimitSledFangQuadPrimitive1.colorARed = 0;
     g_BattleLimitSledFangQuadPrimitive1.colorAGreen = 0;
     g_BattleLimitSledFangQuadPrimitive1.colorABlue = 8;
-    g_BattleLimitSledFangQuadPrimitive1.frameDelta = -0x30;
+    g_BattleLimitSledFangQuadPrimitive1.frameDelta = -48;
     g_BattleLimitSledFangQuadPrimitive1.baseValue = 0x40;
     g_BattleLimitSledFangTrail2.colorR = 0x28;
     g_BattleLimitSledFangTrail2.colorG = 0x28;
@@ -222,7 +222,7 @@ void __cdecl BattleFx_LimitSledFangSpawnTimeline(void)
     g_BattleLimitSledFangTrail2.colorARed = 0;
     g_BattleLimitSledFangTrail2.colorAGreen = 0;
     g_BattleLimitSledFangTrail2.colorABlue = 8;
-    g_BattleLimitSledFangTrail2.frameDelta = -0x90;
+    g_BattleLimitSledFangTrail2.frameDelta = -144;
     g_BattleLimitSledFangTrail2.baseValue = 0x52;
     BattleFx_LimitSledFangClearTrailRings();
 }
@@ -242,7 +242,7 @@ void __cdecl BattleFx_LimitSledFangClearTrailRings(void)
         g_BattleLimitSledFangTrailRingRecords[ring].headIndex = 0;
         g_BattleLimitSledFangTrailRingRecords[ring].tailIndex = 0;
         g_BattleLimitSledFangTrailRingRecords[ring].battleLimitSldFangTrailPointIndex = 0;
-        for (slot = 0; slot < 0x18; slot++) {
+        for (slot = 0; slot < 24; slot++) {
             g_BattleLimitSledFangTrailRingRecords[ring].points[slot] = 0;
         }
     }
@@ -275,11 +275,11 @@ void __cdecl BattleFx_LimitSledFangTimelineTask(void)
         return;
     }
     frame.sldFangState = (BattleFxLimitSledFangState *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.sldFangState->frameIndex == 0xC) {
+    if (frame.sldFangState->frameIndex == 12) {
         frame.ringIndex = frame.sldFangState->nextRingIndex;
         for (frame.trailIndex = 0; frame.trailIndex < 3; frame.trailIndex++) {
             frame.trailSlot = (BattleFxLimitSledFangTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSledFangSlashTrailTask);
-            frame.trailSlot->baseAngle = frame.trailIndex * 0x550;
+            frame.trailSlot->baseAngle = frame.trailIndex * 1360;
             frame.trailSlot->offsetY = 0x78;
             frame.trailSlot->offsetZ = 0xFDA8;
             frame.trailSlot->ringIndex = *(short *)&frame.ringIndex;
@@ -291,7 +291,7 @@ void __cdecl BattleFx_LimitSledFangTimelineTask(void)
         frame.sldFangState->nextRingIndex = *(short *)&frame.ringIndex;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x186);
     }
-    if (frame.sldFangState->frameIndex == 0x1B) {
+    if (frame.sldFangState->frameIndex == 27) {
         Battle_GetBoneWorldPos(g_BattleLimitSledFangActorIdx, g_BattleActorRecords[g_BattleLimitSledFangActorIdx].targetBone, (short *)&frame.boneX);
         frame.trailSlot = (BattleFxLimitSledFangTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSledFangSpawnImpactParticlesTask);
         frame.trailSlot->posX = frame.sldFangState->posX;
@@ -324,10 +324,10 @@ void __cdecl BattleFx_LimitSledFangPushTrailPoint(BattleLimitSledFangTrailRing *
     ringBuffer->points[writeIdx] = pointValue;
     writeIdx++;
     num++;
-    if (num >= 0x18) {
-        num = 0x18;
+    if (num >= 24) {
+        num = 24;
     }
-    if (writeIdx >= 0x18) {
+    if (writeIdx >= 24) {
         writeIdx = 0;
     }
     if (writeIdx == tailIdx) {
@@ -336,7 +336,7 @@ void __cdecl BattleFx_LimitSledFangPushTrailPoint(BattleLimitSledFangTrailRing *
         if (num < 0) {
             num = 0;
         }
-        if (tailIdx >= 0x18) {
+        if (tailIdx >= 24) {
             tailIdx = 0;
         }
     }
@@ -380,10 +380,10 @@ void __cdecl BattleFx_LimitSledFangSlashTrailTask(void)
         pContext->originX = 0xFE84;
         readPos = ring->battleLimitSldFangTrailPointIndex - 1;
         if (readPos < 0) {
-            readPos = 0x17;
+            readPos = 23;
         }
         *(Int64Pair *)&pContext->edgeBX = *(Int64Pair *)&pPoints[readPos];
-        if (task->frame < 0xA) {
+        if (task->frame < 10) {
             pPoints[ring->battleLimitSldFangTrailPointIndex].posX = pContext->edgeAX + pContext->edgeBX >> 1;
             pPoints[ring->battleLimitSldFangTrailPointIndex].posZ = 0xFE84;
             pPoints[ring->battleLimitSldFangTrailPointIndex].posY = pContext->edgeAY + pContext->edgeBY >> 1;
@@ -425,20 +425,20 @@ void __cdecl BattleFx_LimitSledFangSlashTrailTask(void)
     count = ring->headIndex - 1;
     readPos = ring->battleLimitSldFangTrailPointIndex - 1;
     if (readPos < 0) {
-        readPos = 0x17;
+        readPos = 23;
     }
     *(Int64Pair *)&pContext->posX = *(Int64Pair *)ring->points[readPos];
-    pContext->posX += (short)(ofsZ * pContext->dirX >> 0xC);
-    pContext->posY += (short)(ofsZ * pContext->dirY >> 0xC);
-    pContext->posZ += (short)(ofsZ * pContext->dirZ >> 0xC);
+    pContext->posX += (short)(ofsZ * pContext->dirX >> 12);
+    pContext->posY += (short)(ofsZ * pContext->dirY >> 12);
+    pContext->posZ += (short)(ofsZ * pContext->dirZ >> 12);
     BattleFx_LimitSledFangProjectTrailEdgePoints(pContext, &pContext->posX, (GfxPsxShortVertexSlot *)&pContext->posX);
     for (segment = 1; segment <= count; readPos--, segment++) {
         if (readPos < 0) {
-            readPos = 0x17;
+            readPos = 23;
         }
         prevIndex = readPos - 1;
         if (prevIndex < 0) {
-            prevIndex = 0x17;
+            prevIndex = 23;
         }
         framePhase += phaseDelta;
         pContext->posX = 0;
@@ -469,13 +469,13 @@ void __cdecl BattleFx_LimitSledFangSlashTrailTask(void)
         BattleFx_LimitSledFangProjectTrailEdgePoints(pContext, &pContext->posX, (GfxPsxShortVertexSlot *)&pContext->tipX);
         BattleFx_LimitSledFangDrawTrailSegmentQuad(pContext, count - segment, count);
     }
-    if (task->frame >= 0x18) {
+    if (task->frame >= 24) {
         task->slotTag = 0xFFFF;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frame > 0xF) {
+    if (task->frame > 15) {
         ring->headIndex -= 2;
     }
     (task->frame)++;
@@ -569,24 +569,24 @@ void __cdecl BattleFx_LimitSledFangSpawnImpactParticlesTask(void)
         frame.angleX.vz = 0;
         RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
         for (frame.i = 0; frame.i < 8; frame.i++) {
-            frame.dirX.vx = ((rand()) % 4096) - 0x800;
-            frame.dirX.vy = ((rand()) % 4096) - 0x800;
-            frame.dirX.vz = -(((rand()) % 2048) + 0x800);
+            frame.dirX.vx = ((rand()) % 4096) - 2048;
+            frame.dirX.vy = ((rand()) % 4096) - 2048;
+            frame.dirX.vz = -(((rand()) % 2048) + 2048);
             NormalizeVectorFixed(&frame.dirX, &frame.dirX);
             TransformVectorToInt32(&frame.rotMatrix, &frame.dirX, &frame.dirX);
             ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].active = 0;
-            frame.tmpRand = rand() % 0x104;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posX = frame.impact->posX + (frame.tmpRand * frame.dirX.vx >> 0xC);
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posY = frame.impact->posY + (frame.tmpRand * frame.dirX.vy >> 0xC);
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posZ = frame.impact->posZ + (frame.tmpRand * frame.dirX.vz >> 0xC);
-            frame.tmpRand = rand() % 0x78 + 0x122;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityX = frame.tmpRand * frame.dirX.vx >> 0xC;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityY = frame.tmpRand * frame.dirX.vy >> 0xC;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityZ = frame.tmpRand * frame.dirX.vz >> 0xC;
-            frame.tmpRand = rand() % 0xC00 + 0xC00;
-            ((BattleFxSledFangParticleScale *)&g_BattleLimitSledFangUnusedFlag)[frame.particleIndex].scale = frame.scaleBase * frame.tmpRand >> 0xC;
+            frame.tmpRand = rand() % 260;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posX = frame.impact->posX + (frame.tmpRand * frame.dirX.vx >> 12);
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posY = frame.impact->posY + (frame.tmpRand * frame.dirX.vy >> 12);
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posZ = frame.impact->posZ + (frame.tmpRand * frame.dirX.vz >> 12);
+            frame.tmpRand = rand() % 120 + 290;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityX = frame.tmpRand * frame.dirX.vx >> 12;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityY = frame.tmpRand * frame.dirX.vy >> 12;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityZ = frame.tmpRand * frame.dirX.vz >> 12;
+            frame.tmpRand = rand() % 3072 + 3072;
+            ((BattleFxSledFangParticleScale *)&g_BattleLimitSledFangUnusedFlag)[frame.particleIndex].scale = frame.scaleBase * frame.tmpRand >> 12;
             frame.particleIndex++;
-            if (frame.particleIndex >= 0xDE) {
+            if (frame.particleIndex >= 222) {
                 frame.particleIndex = 0;
             }
         }
@@ -634,11 +634,11 @@ void __cdecl BattleFx_LimitSledFangDrawParticlesTask(void)
         ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[particle].velocityY -= (short)(((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[particle].velocityY >> 4);
         ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[particle].velocityZ -= (short)(((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[particle].velocityZ >> 4);
         particle++;
-        if (particle >= 0xDE) {
+        if (particle >= 222) {
             particle = 0;
         }
     }
-    if (task->frameIndex >= 0xB) {
+    if (task->frameIndex >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -673,7 +673,7 @@ void __cdecl BattleFx_LimitBloodFangSpawnTimeline(void)
     g_BattleLimitSledFangQuadPrimitive1.colorARed = 8;
     g_BattleLimitSledFangQuadPrimitive1.colorAGreen = 0;
     g_BattleLimitSledFangQuadPrimitive1.colorABlue = 0;
-    g_BattleLimitSledFangQuadPrimitive1.frameDelta = -0x30;
+    g_BattleLimitSledFangQuadPrimitive1.frameDelta = -48;
     g_BattleLimitSledFangQuadPrimitive1.baseValue = 0x40;
     g_BattleLimitSledFangTrail2.colorR = 0xA0;
     g_BattleLimitSledFangTrail2.colorG = 0x28;
@@ -681,7 +681,7 @@ void __cdecl BattleFx_LimitBloodFangSpawnTimeline(void)
     g_BattleLimitSledFangTrail2.colorARed = 8;
     g_BattleLimitSledFangTrail2.colorAGreen = 0;
     g_BattleLimitSledFangTrail2.colorABlue = 0;
-    g_BattleLimitSledFangTrail2.frameDelta = -0x90;
+    g_BattleLimitSledFangTrail2.frameDelta = -144;
     g_BattleLimitSledFangTrail2.baseValue = 0x52;
     BattleFx_LimitSledFangClearTrailRings();
 }
@@ -713,7 +713,7 @@ void __cdecl BattleFx_LimitBloodFangTimelineTask(void)
         return;
     }
     frame.timeline = (BattleFxBloodFangTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.timeline->step == 0xC) {
+    if (frame.timeline->step == 12) {
         frame.trailIndex = frame.timeline->nextTrailIndex;
         for (frame.phaseIndex = 0; frame.phaseIndex < 3; frame.phaseIndex++) {
             frame.altRecord = (BattleFxBloodFangRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSledFangSlashTrailTask);
@@ -729,7 +729,7 @@ void __cdecl BattleFx_LimitBloodFangTimelineTask(void)
         frame.timeline->nextTrailIndex = *(short *)&frame.trailIndex;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x186);
     }
-    if (frame.timeline->step == 0x15) {
+    if (frame.timeline->step == 21) {
         frame.trailIndex = frame.timeline->nextTrailIndex;
         for (frame.phaseIndex = 0; frame.phaseIndex < 3; frame.phaseIndex++) {
             frame.altRecord = (BattleFxBloodFangRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBloodFangSlashTrailTask);
@@ -744,15 +744,15 @@ void __cdecl BattleFx_LimitBloodFangTimelineTask(void)
         }
         frame.timeline->nextTrailIndex = *(short *)&frame.trailIndex;
     }
-    if (frame.timeline->step == 0x1B) {
+    if (frame.timeline->step == 27) {
         Battle_GetBoneWorldPos(g_BattleLimitSledFangActorIdx, g_BattleActorRecords[g_BattleLimitSledFangActorIdx].targetBone, (short *)&frame.targetBonePos);
         frame.altRecord = (BattleFxBloodFangRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSledFangSpawnSpritesAndParticlesTask);
         frame.altRecord->posX = frame.timeline->posX;
         frame.altRecord->posY = frame.sampledY;
         frame.altRecord->posZ = frame.timeline->posZ;
-        frame.phaseIndex = g_BattleActorRecords[g_BattleLimitSledFangActorIdx].radius + 0x100;
-        if (frame.phaseIndex > 0x76C) {
-            frame.phaseIndex = 0x76C;
+        frame.phaseIndex = g_BattleActorRecords[g_BattleLimitSledFangActorIdx].radius + 256;
+        if (frame.phaseIndex > 1900) {
+            frame.phaseIndex = 1900;
         }
         frame.altRecord->angle = *(short *)&frame.phaseIndex;
         frame.timeline->slotTag = 0xFFFF;
@@ -795,7 +795,7 @@ void __cdecl BattleFx_LimitBloodFangSlashTrailTask(void)
         pContext->originX = 0xFE84;
         readPos = ring->battleLimitSldFangTrailPointIndex - 1;
         if (readPos < 0) {
-            readPos = 0x17;
+            readPos = 23;
         }
         *(Int64Pair *)&pContext->edgeBX = *(Int64Pair *)&pPoints[readPos];
         if (task->frame < 2) {
@@ -838,25 +838,25 @@ void __cdecl BattleFx_LimitBloodFangSlashTrailTask(void)
     yOff = task->offsetY;
     ofsZ = task->offsetZ;
     count = ring->headIndex - 1;
-    if (count > 0xF) {
-        count = 0xF;
+    if (count > 15) {
+        count = 15;
     }
     readPos = ring->battleLimitSldFangTrailPointIndex - 1;
     if (readPos < 0) {
-        readPos = 0x17;
+        readPos = 23;
     }
     *(Int64Pair *)&pContext->posX = *(Int64Pair *)ring->points[readPos];
-    pContext->posX += (short)(ofsZ * pContext->dirX >> 0xC);
-    pContext->posY += (short)(ofsZ * pContext->dirY >> 0xC);
-    pContext->posZ += (short)(ofsZ * pContext->dirZ >> 0xC);
+    pContext->posX += (short)(ofsZ * pContext->dirX >> 12);
+    pContext->posY += (short)(ofsZ * pContext->dirY >> 12);
+    pContext->posZ += (short)(ofsZ * pContext->dirZ >> 12);
     BattleFx_LimitSledFangProjectTrailEdgePoints(pContext, &pContext->posX, (GfxPsxShortVertexSlot *)&pContext->posX);
     for (segment = 1; segment <= count; readPos--, segment++) {
         if (readPos < 0) {
-            readPos = 0x17;
+            readPos = 23;
         }
         prevIndex = readPos - 1;
         if (prevIndex < 0) {
-            prevIndex = 0x17;
+            prevIndex = 23;
         }
         framePhase += phaseDelta;
         pContext->posX = 0;
@@ -887,7 +887,7 @@ void __cdecl BattleFx_LimitBloodFangSlashTrailTask(void)
         BattleFx_LimitSledFangProjectTrailEdgePoints(pContext, &pContext->posX, (GfxPsxShortVertexSlot *)&pContext->tipX);
         BattleFx_LimitSledFangDrawTrailSegmentQuad(pContext, count - segment, count);
     }
-    if (task->frame >= 0x10) {
+    if (task->frame >= 16) {
         task->slotTag = 0xFFFF;
     }
     if (g_BattleIsPaused != 0) {
@@ -938,61 +938,61 @@ void __cdecl BattleFx_LimitSledFangSpawnSpritesAndParticlesTask(void)
         frame.angleX.vz = 0;
         RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
         TransformVectorToInt32(&frame.rotMatrix, (int *)&g_BattleLimitSledFangVector2, &frame.dirX);
-        frame.spawnRadius = 0x600;
+        frame.spawnRadius = 1536;
         for (frame.i = 0; frame.i < 4; frame.i++) {
             frame.spriteTask = (BattleFxLimitSledFangSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSledFangFlatMovingSpriteTask);
-            frame.spriteDirX.vx = ((rand()) % 4096) - 0x800;
+            frame.spriteDirX.vx = ((rand()) % 4096) - 2048;
             frame.spriteDirX.vy = 0;
             frame.spriteDirX.vz = ((rand()) % 2048);
             NormalizeVectorFixed(&frame.spriteDirX, &frame.spriteDirX);
             TransformVectorToInt32(&frame.rotMatrix, &frame.spriteDirX, &frame.spriteDirX);
             frame.tmpRand = (frame.spawnRadius >> 1) + rand() % frame.spawnRadius;
-            frame.spriteTask->posX = frame.spawnRecord->posX + (frame.tmpRand * frame.spriteDirX.vx >> 0xC);
+            frame.spriteTask->posX = frame.spawnRecord->posX + (frame.tmpRand * frame.spriteDirX.vx >> 12);
             frame.spriteTask->posY = 0xFFB0;
-            frame.spriteTask->posZ = frame.spawnRecord->posZ + (frame.tmpRand * frame.spriteDirX.vz >> 0xC);
-            frame.tmpRand = rand() % 0xA0 + 0x64;
-            frame.spriteTask->velocityX = frame.tmpRand * frame.dirX.vx >> 0xC;
+            frame.spriteTask->posZ = frame.spawnRecord->posZ + (frame.tmpRand * frame.spriteDirX.vz >> 12);
+            frame.tmpRand = rand() % 160 + 100;
+            frame.spriteTask->velocityX = frame.tmpRand * frame.dirX.vx >> 12;
             frame.spriteTask->velocityY = 0;
-            frame.spriteTask->velocityZ = frame.tmpRand * frame.dirX.vz >> 0xC;
-            frame.tmpRand = rand() % 0xC00 + 0xA00;
-            frame.spriteTask->scale = frame.scaleBase * frame.tmpRand >> 0xC;
+            frame.spriteTask->velocityZ = frame.tmpRand * frame.dirX.vz >> 12;
+            frame.tmpRand = rand() % 3072 + 2560;
+            frame.spriteTask->scale = frame.scaleBase * frame.tmpRand >> 12;
         }
     }
     if (frame.spawnRecord->stage >= 0 && frame.spawnRecord->stage <= 2) {
         frame.scaleBase = 0xDDD;
         frame.particleIndex = g_BattleLimitSledFangTrailInitFlag;
         frame.particleTask = (BattleFxSledFangSprites *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSledFangDrawParticlesTask);
-        frame.particleTask->particleCount = 0xB;
+        frame.particleTask->particleCount = 11;
         frame.particleTask->firstParticleIndex = *(short *)&frame.particleIndex;
         frame.angleX.vx = 0;
         frame.angleX.vy = g_BattleActorRecords[g_BattleLimitSledFangActorIdx].yaw;
         frame.angleX.vz = 0;
         RotMatrixXYZ(&frame.angleX, &frame.rotMatrix);
-        for (frame.i = 0; frame.i < 0xB; frame.i++) {
-            frame.dirX.vx = ((rand()) % 4096) - 0x800;
-            frame.dirX.vy = ((rand()) % 4096) - 0x800;
-            frame.dirX.vz = -(((rand()) % 2048) + 0x800);
+        for (frame.i = 0; frame.i < 11; frame.i++) {
+            frame.dirX.vx = ((rand()) % 4096) - 2048;
+            frame.dirX.vy = ((rand()) % 4096) - 2048;
+            frame.dirX.vz = -(((rand()) % 2048) + 2048);
             NormalizeVectorFixed(&frame.dirX, &frame.dirX);
             TransformVectorToInt32(&frame.rotMatrix, &frame.dirX, &frame.dirX);
             ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].active = 0;
-            frame.tmpRand = rand() % 0x104;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posX = frame.spawnRecord->posX + (frame.tmpRand * frame.dirX.vx >> 0xC);
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posY = frame.spawnRecord->posY + (frame.tmpRand * frame.dirX.vy >> 0xC);
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posZ = frame.spawnRecord->posZ + (frame.tmpRand * frame.dirX.vz >> 0xC);
-            frame.tmpRand = rand() % 0x78 + 0x122;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityX = frame.tmpRand * frame.dirX.vx >> 0xC;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityY = frame.tmpRand * frame.dirX.vy >> 0xC;
-            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityZ = frame.tmpRand * frame.dirX.vz >> 0xC;
-            frame.tmpRand = rand() % 0xC00 + 0xC00;
-            ((BattleFxSledFangParticleScale *)&g_BattleLimitSledFangUnusedFlag)[frame.particleIndex].scale = frame.scaleBase * frame.tmpRand >> 0xC;
+            frame.tmpRand = rand() % 260;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posX = frame.spawnRecord->posX + (frame.tmpRand * frame.dirX.vx >> 12);
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posY = frame.spawnRecord->posY + (frame.tmpRand * frame.dirX.vy >> 12);
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].posZ = frame.spawnRecord->posZ + (frame.tmpRand * frame.dirX.vz >> 12);
+            frame.tmpRand = rand() % 120 + 290;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityX = frame.tmpRand * frame.dirX.vx >> 12;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityY = frame.tmpRand * frame.dirX.vy >> 12;
+            ((BattleFxSledFangParticleRecord *)&g_BattleLimitSledFangParticles)[frame.particleIndex].velocityZ = frame.tmpRand * frame.dirX.vz >> 12;
+            frame.tmpRand = rand() % 3072 + 3072;
+            ((BattleFxSledFangParticleScale *)&g_BattleLimitSledFangUnusedFlag)[frame.particleIndex].scale = frame.scaleBase * frame.tmpRand >> 12;
             frame.particleIndex++;
-            if (frame.particleIndex >= 0xDE) {
+            if (frame.particleIndex >= 222) {
                 frame.particleIndex = 0;
             }
         }
         g_BattleLimitSledFangTrailInitFlag = frame.particleIndex;
     }
-    if (frame.spawnRecord->stage >= 0xE) {
+    if (frame.spawnRecord->stage >= 14) {
         frame.spawnRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.spawnRecord->stage)++;
@@ -1022,7 +1022,7 @@ void __cdecl BattleFx_LimitSledFangFlatMovingSpriteTask(void)
     (g_BattleLimitSledFangSpriteRequest1.spriteEntry) = Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitSledFangLoadedResTable);
     g_BattleLimitSledFangSpriteRequest1.resource = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitSledFangLoadedResTable);
     g_BattleLimitSledFangSpriteRequest1.step = frame.sprite->step;
-    frame.angleX.vx = 0x400;
+    frame.angleX.vx = 0x400 /* 90 deg */;
     frame.angleX.vy = 0;
     frame.angleX.vz = 0;
     RotMatrixXYZ(&frame.angleX, &frame.spriteMatrix);

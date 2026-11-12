@@ -191,36 +191,36 @@ void __cdecl BattleFx_SpecialAcidShowerTimelineTask(void)
         dropRecPtr->posZ = trackPtr->startZ;
         loopDeltaX = trackPtr->endX - dropRecPtr->posX;
         dz = trackPtr->endZ - dropRecPtr->posZ;
-        dropRecPtr->frameCount = SqrtToInt(loopDeltaX * loopDeltaX + dz * dz) / 0x18;
+        dropRecPtr->frameCount = SqrtToInt(loopDeltaX * loopDeltaX + dz * dz) / 24;
     }
-    if (trackPtr->frame == 0x20) {
+    if (trackPtr->frame == 32) {
         Battle_PlaySfxPannedToActor(0x10B, (short)trackPtr->actorIndex, 0);
     }
-    if (trackPtr->frame == 0x30) {
+    if (trackPtr->frame == 48) {
         dropRecPtr = (BattleFxAcidShowerDropRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAcidShowerImpactModelTask);
         dropRecPtr->posX = trackPtr->endX;
         dropRecPtr->posY = trackPtr->endY;
         dropRecPtr->posZ = trackPtr->endZ;
     }
-    if (trackPtr->frame > 0x28 && trackPtr->frame < 0x30) {
+    if (trackPtr->frame > 40 && trackPtr->frame < 48) {
         theta = (trackPtr->frame - 0x28 << 9) - 0x400;
         dropRecPtr = (BattleFxAcidShowerDropRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAcidShowerAnimatedSpriteTask);
         Battle_GetBoneWorldPos(trackPtr->actorIndex, g_BattleActorRecords[trackPtr->actorIndex].targetBone, &dropRecPtr->posX);
-        dropRecPtr->posX += (short)(CosFixed(theta) * 0x320 >> 0xC);
-        dropRecPtr->posY += (short)(SinFixed(theta) * 0x320 >> 0xC);
+        dropRecPtr->posX += (short)(CosFixed(theta) * 0x320 >> 12);
+        dropRecPtr->posY += (short)(SinFixed(theta) * 0x320 >> 12);
         dropRecPtr->active = 1;
         dropRecPtr = (BattleFxAcidShowerDropRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAcidShowerAnimatedSpriteTask);
         Battle_GetBoneWorldPos(trackPtr->actorIndex, g_BattleActorRecords[trackPtr->actorIndex].targetBone, &dropRecPtr->posX);
-        dropRecPtr->posX += (short)(rand() % 0x258 - 0x12C);
-        dropRecPtr->posY += (short)(rand() % 0x258 - 0x12C);
-        dropRecPtr->posZ += (short)(rand() % 0x258 - 0x12C);
+        dropRecPtr->posX += (short)(rand() % 600 - 300);
+        dropRecPtr->posY += (short)(rand() % 600 - 300);
+        dropRecPtr->posZ += (short)(rand() % 600 - 300);
         dropRecPtr->active = 0;
     }
-    if (trackPtr->frame == 0x5A) {
+    if (trackPtr->frame == 90) {
         Battle_PostActorHitOrHurtMessage(trackPtr->actorIndex);
     }
     (trackPtr->frame)++;
-    if (trackPtr->frame == 0x64) {
+    if (trackPtr->frame == 100) {
         trackPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -261,7 +261,7 @@ void __cdecl BattleFx_SpecialAcidShowerAnimatedSpriteTask(void)
 /*
  * Impact model at the target: drawn turned by g_BattleSpecAcidShowerSpriteReq3.impactRotation, scaled by
  * 0x800 + 0xC8 per frame (4.12 fixed point) and faded in with its frame counter. For its first 0x23
- * frames it spawns two falling sprites a frame with random outward velocities; it ends after 0x3C frames.
+ * frames it spawns two falling sprites a frame with random outward velocities; it ends after 60 frames.
  */
 // FUNCTION: FF7 0x00525756
 void __cdecl BattleFx_SpecialAcidShowerImpactModelTask(void)
@@ -290,7 +290,7 @@ void __cdecl BattleFx_SpecialAcidShowerImpactModelTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&frame.impactSlot->posX, frame.impactMatrix.t, &frame.screenDepth);
-    frame.impactMatrix.m[2][2] = frame.impactSlot->frameCounter * 0xC8 + 0x800;
+    frame.impactMatrix.m[2][2] = frame.impactSlot->frameCounter * 200 + 0x800;
     frame.impactMatrix.m[1][1] = frame.impactMatrix.m[2][2];
     frame.impactMatrix.m[0][0] = frame.impactMatrix.m[1][1];
     RotMatrix(&g_BattleSpecAcidShowerSpriteReq3.impactRotation, &frame.angleMatrix);
@@ -303,28 +303,28 @@ void __cdecl BattleFx_SpecialAcidShowerImpactModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.impactSlot->frameCounter < 0x23) {
+    if (frame.impactSlot->frameCounter < 35) {
         for (frame.axisIndex = 0; frame.axisIndex < 2; frame.axisIndex++) {
             frame.fallingSprite = (BattleFxAcidShowerFallingSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAcidShowerFallingSpriteTask);
             frame.fallingSprite->posX = frame.impactSlot->posX;
             frame.fallingSprite->posY = 0;
             frame.fallingSprite->posZ = frame.impactSlot->posZ;
             frame.spawnAngle = ((rand()) % 4096);
-            frame.fallingSprite->velocityX = SinFixed(frame.spawnAngle) * 0x3C >> 0xC;
-            frame.fallingSprite->velocityZ = CosFixed(frame.spawnAngle) * 0x3C >> 0xC;
-            frame.fallingSprite->velocityY = 0xFFFFFF6A - rand() % 0x32;
+            frame.fallingSprite->velocityX = SinFixed(frame.spawnAngle) * 0x3C >> 12;
+            frame.fallingSprite->velocityZ = CosFixed(frame.spawnAngle) * 0x3C >> 12;
+            frame.fallingSprite->velocityY = 0xFFFFFF6A - rand() % 50;
             frame.fallingSprite->scale = (rand() % 3 << 8) + 0x600;
         }
     }
     (frame.impactSlot->frameCounter)++;
-    if (frame.impactSlot->frameCounter == 0x3C) {
+    if (frame.impactSlot->frameCounter == 60) {
         frame.impactSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
  * Falling billboard sprite using animation 2 of g_BattleSpecAcidShowerLoadedResTable at the sprite's
- * scale. Brightness is flat at 8 for the first 0x16 frames and then ramps down as 0x1E - frame; it
+ * scale. Brightness is flat at 8 for the first 22 frames and then ramps down as 0x1E - frame; it
  * is shifted left 4 into the three colour bytes of the sprite request. While g_BattleIsPaused is
  * zero the position advances by the velocity, 0xA is added to the Y velocity, and the slot is freed
  * after a fixed 0x1E-frame life.
@@ -339,7 +339,7 @@ void __cdecl BattleFx_SpecialAcidShowerFallingSpriteTask(void)
     g_BattleSpecAcidShowerModelParams.fallingSpriteGroup = Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecAcidShowerLoadedResTable);
     g_BattleSpecAcidShowerModelParams.fallingDrawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecAcidShowerLoadedResTable);
     BattleFx_InstallBillboardMatrix(&sprite->posX, (short)sprite->scale, 0);
-    if (sprite->frameCount < 0x16) {
+    if (sprite->frameCount < 22) {
         brightness = 8;
     } else {
         brightness = 0x1E - sprite->frameCount;
@@ -354,9 +354,9 @@ void __cdecl BattleFx_SpecialAcidShowerFallingSpriteTask(void)
     sprite->posX += sprite->velocityX;
     sprite->posY += sprite->velocityY;
     sprite->posZ += sprite->velocityZ;
-    sprite->velocityY += 0xA;
+    sprite->velocityY += 10;
     (sprite->frameCount)++;
-    if (sprite->frameCount == 0x1E) {
+    if (sprite->frameCount == 30) {
         sprite->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -364,7 +364,7 @@ void __cdecl BattleFx_SpecialAcidShowerFallingSpriteTask(void)
 /*
  * Spiral emitter on the path toward the target: each frame spawns a sprite pair at its position, with a
  * radius that swells and shrinks with the frame and a velocity of scaledPathLength turned by the path
- * heading and a small wobble. It ends after 0x20 frames.
+ * heading and a small wobble. It ends after 32 frames.
  */
 // FUNCTION: FF7 0x00525b1f
 void __cdecl BattleFx_SpecialAcidShowerSpiralEmitterTask(void)
@@ -387,7 +387,7 @@ void __cdecl BattleFx_SpecialAcidShowerSpiralEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.spiralRadius = (SinFixed(frame.emitter->frameCounter << 6) * 0x140 >> 0xC) + 0x140;
+    frame.spiralRadius = (SinFixed(frame.emitter->frameCounter << 6) * 0x140 >> 12) + 320;
     frame.spritePair = (BattleFxAcidShowerSpiralSpritePairSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialAcidShowerSpiralSpritePairTask);
     frame.spritePair->posX = frame.emitter->posX;
     frame.spritePair->posZ = frame.emitter->posZ;
@@ -401,7 +401,7 @@ void __cdecl BattleFx_SpecialAcidShowerSpiralEmitterTask(void)
     frame.pointX.vz = frame.emitter->scaledPathLength;
     frame.rotX.vx = 0;
     frame.rotX.vy = (-SinFixed(frame.emitter->frameCounter * 0x88)) / 16;
-    frame.rotX.vz = 0x200;
+    frame.rotX.vz = 0x200 /* 45 deg */;
     RotMatrixZYX(&frame.rotX, &frame.spinMatrix);
     RotateMatrixY(frame.emitter->angleY, &frame.spinMatrix);
     frame.spinMatrix.t[2] = 0;
@@ -411,7 +411,7 @@ void __cdecl BattleFx_SpecialAcidShowerSpiralEmitterTask(void)
     SetTransMatrix(&frame.spinMatrix);
     RotTransPointToInt16(&frame.pointX, &frame.spritePair->velocityX, &frame.pointDepth);
     (frame.emitter->frameCounter)++;
-    if (frame.emitter->frameCounter == 0x20) {
+    if (frame.emitter->frameCounter == 32) {
         frame.emitter->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -438,11 +438,11 @@ void __cdecl BattleFx_SpecialAcidShowerSpiralSpritePairTask(void)
     g_BattleSpecAcidShowerSpriteReq3.centreSprite.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecAcidShowerLoadedResTable);
     g_BattleSpecAcidShowerSpriteReq3.orbitSpriteGroup = Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecAcidShowerLoadedResTable);
     g_BattleSpecAcidShowerSpriteReq3.orbitDrawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecAcidShowerLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&frame.spritePair->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.spritePair->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecAcidShowerSpriteReq3.centreSprite.frame = frame.spritePair->spiralPhase;
     g_BattleSpecAcidShowerDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecAcidShowerSpriteReq3.centreSprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecAcidShowerDrawListHead);
-    frame.drawX.vx = frame.spritePair->posX + (CosFixed(frame.spritePair->angle) * frame.spritePair->radius >> 0xC);
-    frame.drawX.vy = frame.spritePair->posZ + (SinFixed(frame.spritePair->angle) * frame.spritePair->radius >> 0xC);
+    frame.drawX.vx = frame.spritePair->posX + (CosFixed(frame.spritePair->angle) * frame.spritePair->radius >> 12);
+    frame.drawX.vy = frame.spritePair->posZ + (SinFixed(frame.spritePair->angle) * frame.spritePair->radius >> 12);
     frame.drawX.vz = frame.spritePair->posY;
     BattleFx_InstallBillboardMatrix(&frame.drawX, (short)frame.spritePair->scale, 0);
     g_BattleSpecAcidShowerDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecAcidShowerSpriteReq3.orbitSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecAcidShowerDrawListHead);
@@ -452,7 +452,7 @@ void __cdecl BattleFx_SpecialAcidShowerSpiralSpritePairTask(void)
     frame.spritePair->posX += frame.spritePair->velocityX;
     frame.spritePair->posZ += frame.spritePair->velocityZ;
     frame.spritePair->posY += frame.spritePair->velocityY;
-    frame.spritePair->angle += 0x100;
+    frame.spritePair->angle += 0x100 /* 22.5 deg */;
     if (g_BattleSpecAcidShowerSpriteReq3.centreSprite.spriteGroup != 0) {
         (frame.spritePair->frameCounter)++;
         if (frame.spritePair->frameCounter >> 1 >= g_BattleSpecAcidShowerSpriteReq3.centreSprite.spriteGroup->header->frameCount) {

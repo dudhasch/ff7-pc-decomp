@@ -100,8 +100,8 @@ void __cdecl Battle_SummonEffectTask(void)
     switch (g_BattleTaskSlotBuffer.mainSlots[g_BattleActiveTaskSlotIdx].frameCounter) {
     case BATTLE_TASK_FRAME_FIRST:
         (g_BattleTaskSlotBuffer.mainSlots[g_BattleActiveTaskSlotIdx].frameCounter)++;
-        ((BattleSummonWaitSlot *)BATTLE_CURRENT_TASK_SLOT)->waitFrames = 0xE;
-        g_BattleScriptWaitFrames = 0xE;
+        ((BattleSummonWaitSlot *)BATTLE_CURRENT_TASK_SLOT)->waitFrames = 14;
+        g_BattleScriptWaitFrames = 14;
         SfxRetriggerCachedBuffer(0x29);
         for (actorIdx = 0; actorIdx < 3; actorIdx++) {
             g_BattleActorRecords[actorIdx].stateFlags = g_BattleActorRecords[actorIdx].stateFlags | 2;
@@ -117,7 +117,7 @@ void __cdecl Battle_SummonEffectTask(void)
             g_BattleActorRecords[1].drawFlags = *(unsigned char *)&g_BattleActorRecords[1].drawFlags | 2;
             g_BattleActorRecords[2].drawFlags = *(unsigned char *)&g_BattleActorRecords[2].drawFlags | 2;
             (g_BattleTaskSlotBuffer.mainSlots[g_BattleActiveTaskSlotIdx].frameCounter)++;
-            ((BattleSummonWaitSlot *)BATTLE_CURRENT_TASK_SLOT)->waitFrames = 0x2D;
+            ((BattleSummonWaitSlot *)BATTLE_CURRENT_TASK_SLOT)->waitFrames = 45;
             if (g_BattleSkipFreeEffectGroupTag0 != 0) { /* empty first arm: lib/codegen.h */
             } else {
                 Battle_EffectFreeGroupTag0();
@@ -202,16 +202,16 @@ void __cdecl Battle_SummonFreezeNonTargetActors(void)
     int actorIdx;
     int otherIdx;
 
-    for (actorIdx = 4; actorIdx < 0xA; actorIdx++) {
+    for (actorIdx = 4; actorIdx < 10; actorIdx++) {
         *(char *)((char *)&g_BattleSummonSavedDrawFlags + actorIdx) = g_BattleActorRecords[actorIdx].drawFlags;
         g_BattleActorRecords[actorIdx].stateFlags = g_BattleActorRecords[actorIdx].stateFlags | 2;
     }
-    for (actorIdx = 4; actorIdx < 0xA; actorIdx++) {
+    for (actorIdx = 4; actorIdx < 10; actorIdx++) {
         if ((*(unsigned char *)((char *)&g_BattleSummonSavedDrawFlags + actorIdx) & 4) != 0) {
             g_BattleActorRecords[actorIdx].stateFlags = g_BattleActorRecords[actorIdx].stateFlags & 0xFFFFFFFD;
         }
         if ((g_BattleEffectScratch.targetMask & 1 << actorIdx) != 0) {
-            for (otherIdx = 4; otherIdx < 0xA; otherIdx++) {
+            for (otherIdx = 4; otherIdx < 10; otherIdx++) {
                 if (g_BattleActorSpawnPos[actorIdx].posX == g_BattleActorSpawnPos[otherIdx].posX && g_BattleActorSpawnPos[actorIdx].posZ == g_BattleActorSpawnPos[otherIdx].posZ) {
                     g_BattleActorRecords[otherIdx].stateFlags = g_BattleActorRecords[otherIdx].stateFlags & 0xFFFFFFFD;
                 }
@@ -354,8 +354,8 @@ void __cdecl Battle3d_Slot3ActorWaitEffectTask(void)
                 Battle_ResolveEnemyActorFlagsBySelectedMask();
             }
             g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx].frameCounter = 1;
-            ((BattleSummonWaitSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx])->waitFrames = 0xE;
-            g_BattleScriptWaitFrames = 0xE;
+            ((BattleSummonWaitSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx])->waitFrames = 14;
+            g_BattleScriptWaitFrames = 14;
         }
         break;
     default:
@@ -378,15 +378,15 @@ void __cdecl Battle_ResolveEnemyActorFlagsBySelectedMask(void)
     int actorIdx;
     int otherIdx;
 
-    for (actorIdx = 4; actorIdx < 0xA; actorIdx++) {
+    for (actorIdx = 4; actorIdx < 10; actorIdx++) {
         if ((g_BattleEffectScratch.targetMask & 1 << actorIdx) == 0 && (*(unsigned char *)((char *)&g_BattleSummonSavedDrawFlags + actorIdx) & 4) == 0) {
             g_BattleActorRecords[actorIdx].stateFlags = g_BattleActorRecords[actorIdx].stateFlags | 4;
             g_BattleActorRecords[actorIdx].drawFlags = *(unsigned char *)&g_BattleActorRecords[actorIdx].drawFlags & 0xFFFFFFFB;
         }
     }
-    for (actorIdx = 4; actorIdx < 0xA; actorIdx++) {
+    for (actorIdx = 4; actorIdx < 10; actorIdx++) {
         if ((g_BattleEffectScratch.targetMask & 1 << actorIdx) != 0) {
-            for (otherIdx = 4; otherIdx < 0xA; otherIdx++) {
+            for (otherIdx = 4; otherIdx < 10; otherIdx++) {
                 if (actorIdx != otherIdx && g_BattleActorSpawnPos[actorIdx].posX == g_BattleActorSpawnPos[otherIdx].posX && g_BattleActorSpawnPos[actorIdx].posZ == g_BattleActorSpawnPos[otherIdx].posZ) {
                     g_BattleActorRecords[otherIdx].stateFlags = g_BattleActorRecords[otherIdx].stateFlags & -5;
                     g_BattleActorRecords[otherIdx].drawFlags = *(unsigned char *)&g_BattleActorRecords[otherIdx].drawFlags & -5;
@@ -443,8 +443,8 @@ void __cdecl Battle3d_Slot3ActorTimedTask(void)
     case BATTLE_TASK_FRAME_FIRST:
         g_BattleActorRecords[3].stateFlags = g_BattleActorRecords[3].stateFlags | 2;
         g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx].frameCounter = 1;
-        ((BattleSummonWaitSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx])->waitFrames = 0xE;
-        g_BattleScriptWaitFrames = 0xE;
+        ((BattleSummonWaitSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx])->waitFrames = 14;
+        g_BattleScriptWaitFrames = 14;
         break;
     default:
         if (((BattleSummonWaitSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx])->waitFrames == 0) {
@@ -507,12 +507,12 @@ void __cdecl Battle_ResetEffectModelActor(void)
     g_BattleActorRecords[3].scaleX = 0;
     g_BattleActorRecords[3].scaleY = 0;
     g_BattleActorRecords[3].modelFlags = 0;
-    g_BattleActorRecords[3].scale = 0x1000;
+    g_BattleActorRecords[3].scale = 0x1000 /* 1.0 */;
     g_BattleActorStates[3].motionState = 0;
     g_BattleActorStates[3].heightBias = 0;
-    g_BattleActorStates[3].ratioX = 0x1C0;
-    g_BattleActorStates[3].ratioY = 0x200;
-    g_BattleActorStates[3].ratioZ = 0x1C0;
+    g_BattleActorStates[3].ratioX = 448;
+    g_BattleActorStates[3].ratioY = 512;
+    g_BattleActorStates[3].ratioZ = 448;
     g_BattleActorStates[3].ratioExtra = 0;
     for (i = 0; i < 6; i++) {
         ((short *)&g_BattleActorStates[3].cameraOffsets[0])[i] = ((short *)&g_BattleStatusOverlayOffsets.views[0])[i];
@@ -528,7 +528,7 @@ void __cdecl Battle_ResetEffectModelActor(void)
     g_BattleActorRecords[3].rotX = g_BattleActorRecords[3].rotZ;
     g_BattleActorRecords[3].yaw = 0;
     /* The original clears these 16 bytes of slot 3 starting at scaleY's high byte. */
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         *((char *)&g_BattleActorRecords + 0x50ef + i) = 0;
     }
     g_BattleActorRecords[3].drawFlags = 0x80;

@@ -53,7 +53,7 @@ int DsEnumerateDevices(void **out)
     g_SoundDsDeviceCount = 0;
     DsCheckError(DirectSoundEnumerateA(DsEnumDevicesCallback, 0),
                  // STRING: FF7 0x00968920
-                 "C:\\lib\\src\\sound\\dx_snd.cpp", 0x11);
+                 "C:\\lib\\src\\sound\\dx_snd.cpp", 17);
     return g_SoundDsDeviceCount;
 }
 
@@ -71,17 +71,17 @@ void __cdecl DsFreeEnumeratedDevices(void)
     for (i = 0; i < g_SoundDsDeviceCount; i++) {
         if (g_SoundDsDeviceSlots[i].buffer != 0) {
             // STRING: FF7 0x0096893c
-            GameHeapFree(g_SoundDsDeviceSlots[i].buffer, "C:\\lib\\src\\sound\\dx_snd.cpp", 0x1E);
+            GameHeapFree(g_SoundDsDeviceSlots[i].buffer, "C:\\lib\\src\\sound\\dx_snd.cpp", 30);
             g_SoundDsDeviceSlots[i].buffer = 0;
         }
         if (g_SoundDsDeviceSlots[i].description != 0) {
             // STRING: FF7 0x00968958
-            GameHeapFree(g_SoundDsDeviceSlots[i].description, "C:\\lib\\src\\sound\\dx_snd.cpp", 0x23);
+            GameHeapFree(g_SoundDsDeviceSlots[i].description, "C:\\lib\\src\\sound\\dx_snd.cpp", 35);
             g_SoundDsDeviceSlots[i].description = 0;
         }
         if (g_SoundDsDeviceSlots[i].module != 0) {
             // STRING: FF7 0x00968974
-            GameHeapFree(g_SoundDsDeviceSlots[i].module, "C:\\lib\\src\\sound\\dx_snd.cpp", 0x28);
+            GameHeapFree(g_SoundDsDeviceSlots[i].module, "C:\\lib\\src\\sound\\dx_snd.cpp", 40);
             g_SoundDsDeviceSlots[i].module = 0;
         }
     }
@@ -97,17 +97,17 @@ BOOL __stdcall DsEnumDevicesCallback(GUID *guid, const char *description, const 
     if (guid) {
         g_SoundDsDeviceSlots[g_SoundDsDeviceCount].buffer = (GUID *)GameHeapAllocRaw(16,
                                                                                          // STRING: FF7 0x00968990
-                                                                                         "C:\\lib\\src\\sound\\dx_snd.cpp", 0x33);
+                                                                                         "C:\\lib\\src\\sound\\dx_snd.cpp", 51);
         memcpy(g_SoundDsDeviceSlots[g_SoundDsDeviceCount].buffer, guid, sizeof(GUID));
     }
     g_SoundDsDeviceSlots[g_SoundDsDeviceCount].description = (char *)GameHeapAllocRaw(strlen(description) + 1,
                                                                                      // STRING: FF7 0x009689ac
-                                                                                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0x36);
+                                                                                     "C:\\lib\\src\\sound\\dx_snd.cpp", 54);
     if (g_SoundDsDeviceSlots[g_SoundDsDeviceCount].description)
         strcpy(g_SoundDsDeviceSlots[g_SoundDsDeviceCount].description, description);
     g_SoundDsDeviceSlots[g_SoundDsDeviceCount].module = (char *)GameHeapAllocRaw(strlen(module) + 1,
                                                                                      // STRING: FF7 0x009689c8
-                                                                                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0x38);
+                                                                                     "C:\\lib\\src\\sound\\dx_snd.cpp", 56);
     if (g_SoundDsDeviceSlots[g_SoundDsDeviceCount].module)
         strcpy(g_SoundDsDeviceSlots[g_SoundDsDeviceCount].module, module);
     g_SoundDsDeviceCount++;
@@ -123,10 +123,10 @@ int DsOpenDevice(HWND window, GUID *guid)
     int result = 0;
     if (DsCheckError(DirectSoundCreate(guid, &g_SoundDirectSound, 0),
                      // STRING: FF7 0x009689e4
-                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0x44)) {
+                     "C:\\lib\\src\\sound\\dx_snd.cpp", 68)) {
         if (DsCheckError(g_SoundDirectSound->SetCooperativeLevel(window, DSSCL_EXCLUSIVE),
                          // STRING: FF7 0x00968a00
-                         "C:\\lib\\src\\sound\\dx_snd.cpp", 0x49))
+                         "C:\\lib\\src\\sound\\dx_snd.cpp", 73))
             result = 1;
         else {
             g_SoundDirectSound->Release();
@@ -159,7 +159,7 @@ DSCAPS *DsGetDeviceCaps(void)
     if (g_SoundDirectSound) {
         if (!DsCheckError(g_SoundDirectSound->GetCaps(&g_SoundDsCaps),
                           // STRING: FF7 0x00968a1c
-                          "C:\\lib\\src\\sound\\dx_snd.cpp", 0x6c))
+                          "C:\\lib\\src\\sound\\dx_snd.cpp", 108))
             return 0;
     }
     return &g_SoundDsCaps;
@@ -184,14 +184,14 @@ IDirectSoundBuffer *DsCreatePrimaryBuffer(WAVEFORMATEX *format)
         frame.desc.dwReserved = 0;
         if (DsCheckError(g_SoundDirectSound->CreateSoundBuffer(&frame.desc, &frame.buffer, 0),
                          // STRING: FF7 0x00968a38
-                         "C:\\lib\\src\\sound\\dx_snd.cpp", 0x83)) {
+                         "C:\\lib\\src\\sound\\dx_snd.cpp", 131)) {
             if (format)
                 DsCheckError(frame.buffer->SetFormat(format),
                              // STRING: FF7 0x00968a54
-                             "C:\\lib\\src\\sound\\dx_snd.cpp", 0x87);
+                             "C:\\lib\\src\\sound\\dx_snd.cpp", 135);
             DsCheckError(frame.buffer->Play(0, 0, DSBPLAY_LOOPING),
                          // STRING: FF7 0x00968a70
-                         "C:\\lib\\src\\sound\\dx_snd.cpp", 0x8b);
+                         "C:\\lib\\src\\sound\\dx_snd.cpp", 139);
         } else
             frame.buffer = 0;
     }
@@ -218,7 +218,7 @@ IDirectSoundBuffer *DsCreateSoundBuffer(unsigned int size, WAVEFORMATEX *format)
         frame.desc.dwReserved = 0;
         if (!DsCheckError(g_SoundDirectSound->CreateSoundBuffer(&frame.desc, &frame.buffer, 0),
                           // STRING: FF7 0x00968a8c
-                          "C:\\lib\\src\\sound\\dx_snd.cpp", 0xa5))
+                          "C:\\lib\\src\\sound\\dx_snd.cpp", 165))
             frame.buffer = 0;
     }
     return frame.buffer;
@@ -234,7 +234,7 @@ IDirectSoundBuffer *DsDuplicateSoundBuffer(IDirectSoundBuffer *source)
     if (source && g_SoundDirectSound) {
         if (DsCheckError(g_SoundDirectSound->DuplicateSoundBuffer(source, &buffer),
                          // STRING: FF7 0x00968aa8
-                         "C:\\lib\\src\\sound\\dx_snd.cpp", 0xb6))
+                         "C:\\lib\\src\\sound\\dx_snd.cpp", 182))
             return buffer;
     }
     return 0;
@@ -249,7 +249,7 @@ void __cdecl DsReleaseBuffer(DsNativeBuffer *buffer)
     if (buffer != 0) {
         DsCheckError(buffer->Release(),
                      // STRING: FF7 0x00968ac4
-                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0xC4);
+                     "C:\\lib\\src\\sound\\dx_snd.cpp", 196);
     }
 }
 
@@ -266,10 +266,10 @@ int DsLockBuffer(IDirectSoundBuffer *buffer, unsigned int size, void **first, un
         case DSERR_BUFFERLOST:
             if (DsCheckError(buffer->Restore(),
                              // STRING: FF7 0x00968ae0
-                             "C:\\lib\\src\\sound\\dx_snd.cpp", 0xd3)) {
+                             "C:\\lib\\src\\sound\\dx_snd.cpp", 211)) {
                 DsCheckError(buffer->Lock(offset, size, first, firstSize, second, secondSize, 0),
                              // STRING: FF7 0x00968afc
-                             "C:\\lib\\src\\sound\\dx_snd.cpp", 0xd6);
+                             "C:\\lib\\src\\sound\\dx_snd.cpp", 214);
                 return 1;
             }
         case DS_OK:
@@ -288,7 +288,7 @@ void __cdecl DsUnlockBuffer(DsNativeBuffer *buffer, void *first, unsigned int fi
     if (buffer != 0) {
         DsCheckError(buffer->Unlock(first, firstSize, second, secondSize),
                      // STRING: FF7 0x00968b18
-                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0xE8);
+                     "C:\\lib\\src\\sound\\dx_snd.cpp", 232);
     }
 }
 
@@ -301,7 +301,7 @@ void __cdecl DsSetCurrentPosition(DsNativeBuffer *buffer, unsigned int position)
     if (buffer != 0) {
         DsCheckError(buffer->SetCurrentPosition(position),
                      // STRING: FF7 0x00968b34
-                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0xF3);
+                     "C:\\lib\\src\\sound\\dx_snd.cpp", 243);
     }
 }
 
@@ -317,7 +317,7 @@ unsigned int __cdecl DsGetCurrentPlayPosition(DsNativeBuffer *buffer)
     if (buffer != 0) {
         DsCheckError(buffer->GetCurrentPosition(&position, 0),
                      // STRING: FF7 0x00968b50
-                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0xFD);
+                     "C:\\lib\\src\\sound\\dx_snd.cpp", 253);
     }
     return position;
 }
@@ -335,7 +335,7 @@ int DsPlayBuffer(IDirectSoundBuffer *buffer, unsigned int flags)
         case DSERR_BUFFERLOST:
             DsCheckError(buffer->Restore(),
                          // STRING: FF7 0x00968b6c
-                         "C:\\lib\\src\\sound\\dx_snd.cpp", 0x10e);
+                         "C:\\lib\\src\\sound\\dx_snd.cpp", 270);
             return -1;
         case DS_OK:
             return 1;
@@ -353,7 +353,7 @@ void __cdecl DsStopBuffer(DsNativeBuffer *buffer)
     if (buffer != 0) {
         DsCheckError(buffer->Stop(),
                      // STRING: FF7 0x00968b88
-                     "C:\\lib\\src\\sound\\dx_snd.cpp", 0x11D);
+                     "C:\\lib\\src\\sound\\dx_snd.cpp", 285);
     }
 }
 
@@ -368,7 +368,7 @@ int DsSetPanMillibels(IDirectSoundBuffer *buffer, int pan)
     if (buffer)
         return DsCheckError(buffer->SetPan(pan),
                             // STRING: FF7 0x00968ba4
-                            "C:\\lib\\src\\sound\\dx_snd.cpp", 0x128);
+                            "C:\\lib\\src\\sound\\dx_snd.cpp", 296);
     return 0;
 }
 
@@ -383,7 +383,7 @@ int DsSetVolumeMillibels(IDirectSoundBuffer *buffer, int volume)
     if (buffer)
         return DsCheckError(buffer->SetVolume(volume),
                             // STRING: FF7 0x00968bc0
-                            "C:\\lib\\src\\sound\\dx_snd.cpp", 0x135);
+                            "C:\\lib\\src\\sound\\dx_snd.cpp", 309);
     return 0;
 }
 
@@ -398,7 +398,7 @@ int DsSetFrequency(IDirectSoundBuffer *buffer, unsigned int frequency)
     if (buffer)
         return DsCheckError(buffer->SetFrequency(frequency),
                             // STRING: FF7 0x00968bdc
-                            "C:\\lib\\src\\sound\\dx_snd.cpp", 0x142);
+                            "C:\\lib\\src\\sound\\dx_snd.cpp", 322);
     return 0;
 }
 } // extern "C"

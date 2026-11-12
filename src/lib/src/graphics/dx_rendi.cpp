@@ -29,7 +29,7 @@ void __cdecl Gfx_DestroyPresetStateTable(struct GfxPresetPolygonSetTable *table)
     GfxPolygonSet *polySet;
 
     if (table != 0) {
-        for (idx = 0; idx < 0x16; idx++) {
+        for (idx = 0; idx < 22; idx++) {
             polySet = table->enabledSets[idx];
             if (polySet != 0) {
                 Gfx_FreePHundred(polySet->groupState);
@@ -44,7 +44,7 @@ void __cdecl Gfx_DestroyPresetStateTable(struct GfxPresetPolygonSetTable *table)
         Gfx_FreePHundred(table->untextured0);
         Gfx_FreePHundred(table->untextured1);
         // STRING: FF7 0x009107d8
-        GameHeapFree(table, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x2D);
+        GameHeapFree(table, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 45);
     }
 }
 
@@ -75,13 +75,13 @@ int __cdecl Gfx_CreatePresetPolygonSetTable(struct GfxEngineContext *context)
 
     flags = GFX_D3D_SUPPORTED_STATE_MASK;
     // STRING: FF7 0x009107fc
-    result = (GfxPresetPolygonSetTable *)GameHeapAlloc(1, 0xE4, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x3A);
+    result = (GfxPresetPolygonSetTable *)GameHeapAlloc(1, 228, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 58);
     if (result != 0) {
         Pfile_InitLoadOptions(&opts);
         pTexturedSet = 0;
         untexSet = 0;
         bitVal = 1;
-        for (idx = 0; idx < 0x16; idx++) {
+        for (idx = 0; idx < 22; idx++) {
             if ((bitVal & flags) != 0) {
                 texRecord = (PolygonHundredState *)Gfx_AllocPHundred();
                 flatRecord = (PolygonHundredState *)Gfx_AllocPHundred();
@@ -611,7 +611,7 @@ void __cdecl Gfx_SubmitPolygonSetFallback(GfxPolygonSet *drawGroup, GfxEngineCon
                                                 drawMode = D3DEXECUTE_UNCLIPPED;
                                             }
                                             // STRING: FF7 0x00910820
-                                            CheckDirectDrawResult(slotFn->Execute(basePolySet, device, drawMode), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x3DB);
+                                            CheckDirectDrawResult(slotFn->Execute(basePolySet, device, drawMode), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 987);
                                         }
                                     }
                                     list = (GfxDrawStateNode *)(list->next);
@@ -645,7 +645,7 @@ void __cdecl Gfx_SubmitPolygonSetFallback(GfxPolygonSet *drawGroup, GfxEngineCon
                                             modeUnit = D3DEXECUTE_UNCLIPPED;
                                         }
                                         // STRING: FF7 0x00910844
-                                        CheckDirectDrawResult(slotFn->Execute(basePolySet, device, modeUnit), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x436);
+                                        CheckDirectDrawResult(slotFn->Execute(basePolySet, device, modeUnit), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 1078);
                                     }
                                     list = (GfxDrawStateNode *)(list->next);
                                 } while (list != 0);
@@ -677,7 +677,7 @@ void __cdecl Gfx_SubmitPolygonSetFallback(GfxPolygonSet *drawGroup, GfxEngineCon
                             passMode = D3DEXECUTE_UNCLIPPED;
                         }
                         // STRING: FF7 0x00910868
-                        CheckDirectDrawResult(slotFn->Execute(basePolySet, device, passMode), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x4A3);
+                        CheckDirectDrawResult(slotFn->Execute(basePolySet, device, passMode), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 1187);
                     }
                 }
             }
@@ -883,7 +883,7 @@ void __cdecl D3D5SubmitPolygonSet(struct GfxPolygonSet *drawGroup, struct GfxEng
                                                             break;
                                                         default:
                                                             // STRING: FF7 0x0091088c
-                                                            CheckDirectDrawResult(callState, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x634);
+                                                            CheckDirectDrawResult(callState, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 1588);
                                                             callState = 0;
                                                         }
                                                     } while (callState != 0);
@@ -969,7 +969,7 @@ void __cdecl D3D5SubmitPolygonSet(struct GfxPolygonSet *drawGroup, struct GfxEng
                                                             break;
                                                         default:
                                                             // STRING: FF7 0x009108b0
-                                                            CheckDirectDrawResult(drawResult, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x6F2);
+                                                            CheckDirectDrawResult(drawResult, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 1778);
                                                             drawResult = 0;
                                                         }
                                                     } while (drawResult != 0);
@@ -1027,7 +1027,7 @@ void __cdecl D3D5SubmitPolygonSet(struct GfxPolygonSet *drawGroup, struct GfxEng
                                                         break;
                                                     default:
                                                         // STRING: FF7 0x009108d4
-                                                        CheckDirectDrawResult(primResult, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x783);
+                                                        CheckDirectDrawResult(primResult, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 1923);
                                                         primResult = 0;
                                                     }
                                                 } while (primResult != 0);
@@ -1082,7 +1082,7 @@ void __cdecl D3D5SubmitPolygonSet(struct GfxPolygonSet *drawGroup, struct GfxEng
                                     break;
                                 default:
                                     // STRING: FF7 0x009108f8
-                                    CheckDirectDrawResult(status, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x82C);
+                                    CheckDirectDrawResult(status, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 2092);
                                     status = 0;
                                 }
                             } while (status != 0);
@@ -1212,7 +1212,7 @@ int __cdecl Gfx_BeginSceneD3D(int passMode, GfxEngineContext *context)
                 device = (ComDirect3DDevice2 *)context->d3dDevice2;
                 if (device != 0) {
                     // STRING: FF7 0x00910930
-                    if (CheckDirectDrawResult(device->BeginScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x8D3) != 0) {
+                    if (CheckDirectDrawResult(device->BeginScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 2259) != 0) {
                         result = 1;
                     }
                 }
@@ -1221,7 +1221,7 @@ int __cdecl Gfx_BeginSceneD3D(int passMode, GfxEngineContext *context)
             ddObject = (ComDirect3DDevice *)context->d3dDevice;
             if (ddObject != 0) {
                 // STRING: FF7 0x00910954
-                if (CheckDirectDrawResult(ddObject->BeginScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x8DE) != 0) {
+                if (CheckDirectDrawResult(ddObject->BeginScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 2270) != 0) {
                     result = 1;
                 }
             }
@@ -1247,7 +1247,7 @@ void __cdecl Gfx_EndSceneD3D(GfxEngineContext *context)
             device = (ComDirect3DDevice2 *)context->d3dDevice2;
             if (device != 0) {
                 // STRING: FF7 0x00910978
-                if (CheckDirectDrawResult(device->EndScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x8F7) != 0) {
+                if (CheckDirectDrawResult(device->EndScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 2295) != 0) {
                     context->sceneActive = 0;
                 }
             }
@@ -1255,7 +1255,7 @@ void __cdecl Gfx_EndSceneD3D(GfxEngineContext *context)
             ddObject = (ComDirect3DDevice *)context->d3dDevice;
             if (ddObject != 0) {
                 // STRING: FF7 0x0091099c
-                if (CheckDirectDrawResult(ddObject->EndScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x901) != 0) {
+                if (CheckDirectDrawResult(ddObject->EndScene(), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 2305) != 0) {
                     context->sceneActive = 0;
                 }
             }
@@ -1314,7 +1314,7 @@ void __cdecl D3DExecuteBufferDrawNode(GfxD3DExecuteDrawNode *drawNode, struct Gf
                 mode = 2;
             }
             // STRING: FF7 0x009109c0
-            CheckDirectDrawResult(((ComDirect3DDevice *)(legacyObj))->Execute(bufferIdx, context->viewport, mode), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x96C);
+            CheckDirectDrawResult(((ComDirect3DDevice *)(legacyObj))->Execute(bufferIdx, context->viewport, mode), "C:\\lib\\src\\graphics\\dx_rendi.cpp", 2412);
         }
     }
 }
@@ -1359,7 +1359,7 @@ void __cdecl D3D5DrawBatchNode(SwDeferredDrawNode *batchNode, struct GfxEngineCo
                     break;
                 default:
                     // STRING: FF7 0x009109e4
-                    CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 0x9CD);
+                    CheckDirectDrawResult(res, "C:\\lib\\src\\graphics\\dx_rendi.cpp", 2509);
                     res = 0;
                 }
             } while (res != 0);

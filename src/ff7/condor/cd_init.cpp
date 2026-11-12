@@ -32,7 +32,7 @@ char g_CondorDefaultDataDirString[6] = "data\\";
 // records. The span runs to the next named definition of the TU; the TU's pieces inside
 // 0xc60550..0xc60558 are aliases.
 // GLOBAL: FF7 0x00c60550
-unsigned char g_CondorRenderObjectSlots[0x8] = {0};
+unsigned char g_CondorRenderObjectSlots[8] = {0};
 
 // GLOBAL: FF7 0x00c60558
 unsigned char g_CondorRenderObjectSlotsTail[124] = {0};
@@ -119,7 +119,7 @@ void __cdecl Mini_CondorResetRowTables(void)
     CondorRecord *unit;
     CondorEffectSequence *seq;
     int slotIdx, recIdx;
-    g_CondorCameraX = 0x60;
+    g_CondorCameraX = 96;
     g_CondorCameraY = 0;
     g_CondorInitResetShort = 0;
     unit = g_CondorRecordTable.records;
@@ -245,7 +245,7 @@ int __cdecl Mini_CondorLoadFile(void *fileName)
             return 0;
         size = Field_FileSize(fp);
         // STRING: FF7 0x00901654
-        dataPtr = (char *)(GameHeapAllocRaw(size + 2, "C:\\FF7\\condor\\cd_init.cpp", 0xCC));
+        dataPtr = (char *)(GameHeapAllocRaw(size + 2, "C:\\FF7\\condor\\cd_init.cpp", 204));
         if (dataPtr == 0)
             return 0;
         Field_FileRead(fp, dataPtr, size);
@@ -258,7 +258,7 @@ int __cdecl Mini_CondorLoadFile(void *fileName)
         if (pHandle) {
             size = GetLgpEntrySize((int)pHandle, LGP_ARCHIVE_CONDOR);
             // STRING: FF7 0x00901670
-            dataPtr = (char *)(GameHeapAllocRaw(size + 2, "C:\\FF7\\condor\\cd_init.cpp", 0xDD));
+            dataPtr = (char *)(GameHeapAllocRaw(size + 2, "C:\\FF7\\condor\\cd_init.cpp", 221));
             if (dataPtr == 0)
                 return 0;
             ReadLgpEntry(pHandle, LGP_ARCHIVE_CONDOR, dataPtr, size);
@@ -287,8 +287,8 @@ void __cdecl Mini_CondorReadIdHeaderAndLoadVertTable(int header, int base)
     int auxBuf;
     int padField; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
-    g_CondorCameraX = 0x60;
-    g_CondorCameraY = 0x198;
+    g_CondorCameraX = 96;
+    g_CondorCameraY = 408;
     anchor = base;
     bufA = base + 0x9800;
     auxBuf = base + 0xD000;
@@ -639,27 +639,27 @@ void __cdecl Mini_CondorReleaseTexturesAndDataFiles(void)
     }
     if (g_pCondorDataBin != 0) {
         // STRING: FF7 0x00901874
-        GameHeapFree((void *)(g_pCondorDataBin), "C:\\FF7\\condor\\cd_init.cpp", 0x450);
+        GameHeapFree((void *)(g_pCondorDataBin), "C:\\FF7\\condor\\cd_init.cpp", 1104);
         g_pCondorDataBin = 0;
     }
     if (g_CondorHelpTimBuffer != 0) {
         // STRING: FF7 0x00901890
-        GameHeapFree(g_CondorHelpTimBuffer, "C:\\FF7\\condor\\cd_init.cpp", 0x455);
+        GameHeapFree(g_CondorHelpTimBuffer, "C:\\FF7\\condor\\cd_init.cpp", 1109);
         g_CondorHelpTimBuffer = 0;
     }
     if (g_CondorAuxFileBuffer != 0) {
         // STRING: FF7 0x009018ac
-        GameHeapFree((void *)(g_CondorAuxFileBuffer), "C:\\FF7\\condor\\cd_init.cpp", 0x45A);
+        GameHeapFree((void *)(g_CondorAuxFileBuffer), "C:\\FF7\\condor\\cd_init.cpp", 1114);
         g_CondorAuxFileBuffer = 0;
     }
     if (g_pCondorIdBin != 0) {
         // STRING: FF7 0x009018c8
-        GameHeapFree((void *)(g_pCondorIdBin), "C:\\FF7\\condor\\cd_init.cpp", 0x45F);
+        GameHeapFree((void *)(g_pCondorIdBin), "C:\\FF7\\condor\\cd_init.cpp", 1119);
         g_pCondorIdBin = 0;
     }
     if (g_pCondorCameraBin != 0) {
         // STRING: FF7 0x009018e4
-        GameHeapFree(g_pCondorCameraBin, "C:\\FF7\\condor\\cd_init.cpp", 0x464);
+        GameHeapFree(g_pCondorCameraBin, "C:\\FF7\\condor\\cd_init.cpp", 1124);
         g_pCondorCameraBin = 0;
     }
     if ((g_CondorTextureRenderObjects.renderObject08) != 0) {
@@ -831,7 +831,7 @@ int __cdecl Mini_CondorLoadUnitTable(char *fileName, CondorRegionRecord *unitTab
     // STRING: FF7 0x00901a20
     (void)"\n";
     // STRING: FF7 0x00901a24
-    GameHeapFree(g_CondorUnitTableBuffer, "C:\\FF7\\condor\\cd_init.cpp", 0x565);
+    GameHeapFree(g_CondorUnitTableBuffer, "C:\\FF7\\condor\\cd_init.cpp", 1381);
     g_CondorUnitTableBuffer = 0;
     return 1;
 }

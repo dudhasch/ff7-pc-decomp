@@ -129,8 +129,8 @@ void __cdecl BattleFx_SpecialFullExplosionSetupTask(void)
     task->ownerSlot = BATTLE_TASK_FREE;
     task = (BattleFxFullExplosionSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFullExplosionTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleSpecFullExplosionTargetMask, (short *)((char *)task + 4));
-    task->launchSpeed = 0xFAC0;
-    task->radius = 0x9A0;
+    task->launchSpeed = 0xFAC0 /* -1344 */;
+    task->radius = 2464;
     task->diameter = task->radius << 1;
     task->velocity = -(task->launchSpeed >> 1);
     task->scaledVelocity = task->velocity * 2 + task->velocity;
@@ -156,35 +156,35 @@ void __cdecl BattleFx_SpecialFullExplosionTimelineTask(void)
         return;
     }
     explosion = (BattleFxFullExplosionExplosionState *)BATTLE_CURRENT_TASK_SLOT;
-    if (explosion->step > 1 && explosion->step < 0x25) {
+    if (explosion->step > 1 && explosion->step < 37) {
         cursor = g_BattleSpecFullExplosionSourceActor;
         pSprite = BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFullExplosionPooledSpriteEntry0Task);
         ((BattleFxBerserkFadeSprite *)pSprite)->ringIndex = cursor;
-        fraction = (explosion->timer << 0xC) / 0xB4;
+        fraction = (explosion->timer << 12) / 180;
         puffCount = (rand() & 1) + 1;
         for (puffIndex = 0; puffIndex < puffCount; puffIndex++) {
             sizeRoll = rand() % 0x1400 + 0x800;
             g_BattleSpecFullExplosionExplosionCoords[cursor].posX = explosion->baseX + rand() % explosion->jitterRange - explosion->jitterOffset;
             g_BattleSpecFullExplosionExplosionCoords[cursor].posY = explosion->baseY - rand() % explosion->liftRange + explosion->liftOffset;
             g_BattleSpecFullExplosionExplosionCoords[cursor].posZ = explosion->baseZ + rand() % explosion->jitterRange - explosion->jitterOffset;
-            g_BattleSpecFullExplosionExplosionCoords[cursor].scale = fraction * sizeRoll >> 0xC;
+            g_BattleSpecFullExplosionExplosionCoords[cursor].scale = fraction * sizeRoll >> 12;
             cursor++;
-            if (cursor >= 0x1BC) {
+            if (cursor >= 444) {
                 cursor = 0;
             }
         }
         pSprite = BATTLE_NEW_TASK_SLOT(BattleFx_SpecialFullExplosionPooledSpriteEntry1Task);
         ((BattleFxBerserkFadeSprite *)pSprite)->ringIndex = cursor;
-        fraction = (explosion->timer << 0xC) / 0xC8;
+        fraction = (explosion->timer << 12) / 200;
         puffCount = (rand() & 1) + 1;
         for (puffIndex = 0; puffIndex < puffCount; puffIndex++) {
             sizeRoll = rand() % 0x1100 + 0x700;
             g_BattleSpecFullExplosionExplosionCoords[cursor].posX = explosion->baseX + rand() % explosion->jitterRange - explosion->jitterOffset;
             g_BattleSpecFullExplosionExplosionCoords[cursor].posY = explosion->baseY - rand() % explosion->liftRange + explosion->liftOffset;
             g_BattleSpecFullExplosionExplosionCoords[cursor].posZ = explosion->baseZ + rand() % explosion->jitterRange - explosion->jitterOffset;
-            g_BattleSpecFullExplosionExplosionCoords[cursor].scale = fraction * sizeRoll >> 0xC;
+            g_BattleSpecFullExplosionExplosionCoords[cursor].scale = fraction * sizeRoll >> 12;
             cursor++;
-            if (cursor >= 0x1BC) {
+            if (cursor >= 444) {
                 cursor = 0;
             }
         }
@@ -193,14 +193,14 @@ void __cdecl BattleFx_SpecialFullExplosionTimelineTask(void)
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)explosion + 4), 0x7C);
         }
     }
-    if (explosion->step == 0x2C) {
-        for (puffIndex = 0; puffIndex < 0xA; puffIndex++) {
+    if (explosion->step == 44) {
+        for (puffIndex = 0; puffIndex < 10; puffIndex++) {
             if ((g_BattleSpecFullExplosionTargetMask & 1 << puffIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(puffIndex);
             }
         }
     }
-    if (explosion->step >= 0x34) {
+    if (explosion->step >= 52) {
         explosion->ownerSlot = BATTLE_TASK_FREE;
     }
     (explosion->step)++;
@@ -235,11 +235,11 @@ void __cdecl BattleFx_SpecialFullExplosionPooledSpriteEntry0Task(void)
                                         -(g_BattleSpecFullExplosionExplosionCoords[entry].scale >> 4));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecFullExplosionSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         entry++;
-        if (entry >= 0x1BC) {
+        if (entry >= 444) {
             entry = 0;
         }
     }
-    if (pSprite->frame >= 0xF) {
+    if (pSprite->frame >= 15) {
         pSprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -277,7 +277,7 @@ void __cdecl BattleFx_SpecialFullExplosionPooledSpriteEntry1Task(void)
         BattleFx_InstallBillboardMatrix(&g_BattleSpecFullExplosionExplosionCoords[entry].posX, g_BattleSpecFullExplosionExplosionCoords[entry].scale, -(g_BattleSpecFullExplosionExplosionCoords[entry].scale >> 4));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecFullExplosionSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         entry++;
-        if (entry >= 0x1BC) {
+        if (entry >= 444) {
             entry = 0;
         }
     }

@@ -108,27 +108,27 @@ void __cdecl BattleFx_BlueTrineSetupTask(void)
     Battle_GetActorMaskCentroid(g_BattleBlueTrineTargetMask, (short *)((int)task + 4));
     task->posY = 0xFC80;
     scaleTarget = 0x6C0;
-    scaleShifted = scaleTarget << 0xC;
+    scaleShifted = scaleTarget << 12;
     task->spinX = 0;
-    task->spinStepX = 0xFFD8;
+    task->spinStepX = 0xFFD8 /* -40 */;
     task->spinY = 0;
     task->spinStepY = 8;
     task->spinZ = 0;
-    task->spinStepZ = 0xFFD8;
+    task->spinStepZ = 0xFFD8 /* -40 */;
     task->scale = 0;
-    task->scaleStep = scaleShifted / 0x2EE / 0x12;
+    task->scaleStep = scaleShifted / 750 / 18;
     pFadeModel = (BattleFxBlueTrineSpinState *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueTrineSpinGrowFadeModelTask);
     *(Int64Pair *)((char *)pFadeModel + 4) = *(Int64Pair *)((char *)task + 4);
     scaleTarget = 0x2D0;
-    scaleShifted = scaleTarget << 0xC;
+    scaleShifted = scaleTarget << 12;
     pFadeModel->spinX = 0;
-    pFadeModel->spinStepX = 0x28;
+    pFadeModel->spinStepX = 40;
     pFadeModel->spinY = 0;
-    pFadeModel->spinStepY = 0xFFF8;
+    pFadeModel->spinStepY = 0xFFF8 /* -8 */;
     pFadeModel->spinZ = 0;
-    pFadeModel->spinStepZ = 0x28;
+    pFadeModel->spinStepZ = 40;
     pFadeModel->scale = 0;
-    pFadeModel->scaleStep = scaleShifted / 0x2EE / 0x12;
+    pFadeModel->scaleStep = scaleShifted / 750 / 18;
 }
 
 // Animates the spinning, growing and flashing model of Shadow Flare. It builds a matrix from the
@@ -172,11 +172,11 @@ void __cdecl BattleFx_BlueTrineSpinGrowFlashModelTask(void)
     frame.modelReq->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleBlueTrineLoadedResTable);
     frame.modelReq->flags = 8;
     frame.modelReq->uvScroll = 0;
-    frame.modelReq->fadeLevel = 0x80;
+    frame.modelReq->fadeLevel = 128;
     frame.modelReq->stateFlags = 0x20;
     frame.modelReq->texturePageBits = 0;
-    if (frame.trainnSlot->frameCounter >= 0x2C) {
-        frame.modelReq->fadeLevel -= (short)((frame.trainnSlot->frameCounter - 0x2C) * 0xA);
+    if (frame.trainnSlot->frameCounter >= 44) {
+        frame.modelReq->fadeLevel -= (short)((frame.trainnSlot->frameCounter - 44) * 10);
         if (frame.modelReq->fadeLevel < 0) {
             frame.modelReq->fadeLevel = 0;
         }
@@ -186,16 +186,16 @@ void __cdecl BattleFx_BlueTrineSpinGrowFlashModelTask(void)
         g_BattleFxTimelineState.channel1 = 0x30;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         g_BattleFxTimelineState.channel2 = 0;
-        frame.flashAmount = frame.trainnSlot->frameCounter * 0x180;
-    } else if (frame.trainnSlot->frameCounter >= 0x34) {
-        frame.flashAmount = 0xC00 - (frame.trainnSlot->frameCounter - 0x34) * 0x180;
+        frame.flashAmount = frame.trainnSlot->frameCounter * 384;
+    } else if (frame.trainnSlot->frameCounter >= 52) {
+        frame.flashAmount = 3072 - (frame.trainnSlot->frameCounter - 52) * 384;
         if (frame.flashAmount < 0) {
             frame.flashAmount = 0;
         }
     } else {
-        frame.flashAmount = 0xC00;
+        frame.flashAmount = 3072;
     }
-    if (frame.trainnSlot->frameCounter >= 0x3C) {
+    if (frame.trainnSlot->frameCounter >= 60) {
         frame.flashAmount = 0;
         g_BattleFxTimelineState.channel1 = *(char *)&frame.flashAmount;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
@@ -205,7 +205,7 @@ void __cdecl BattleFx_BlueTrineSpinGrowFlashModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.trainnSlot->frameCounter == 0x31) {
+    if (frame.trainnSlot->frameCounter == 49) {
         for (frame.targetIndex = 0; frame.targetIndex < 0xA; frame.targetIndex++) {
             if ((g_BattleBlueTrineTargetMask & 1 << frame.targetIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.targetIndex);
@@ -215,7 +215,7 @@ void __cdecl BattleFx_BlueTrineSpinGrowFlashModelTask(void)
     frame.trainnSlot->spinX += frame.trainnSlot->spinStepX;
     frame.trainnSlot->spinY += frame.trainnSlot->spinStepY;
     frame.trainnSlot->spinZ += frame.trainnSlot->spinStepZ;
-    if (frame.trainnSlot->frameCounter < 0x12) {
+    if (frame.trainnSlot->frameCounter < 18) {
         frame.trainnSlot->scale += frame.trainnSlot->scaleStep;
     }
     (frame.trainnSlot->frameCounter)++;
@@ -260,17 +260,17 @@ void __cdecl BattleFx_BlueTrineSpinGrowFadeModelTask(void)
     frame.modelReq->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleBlueTrineLoadedResTable);
     frame.modelReq->flags = 8;
     frame.modelReq->uvScroll = 0;
-    frame.modelReq->fadeLevel = 0x80;
+    frame.modelReq->fadeLevel = 128;
     frame.modelReq->stateFlags = 0x20;
     frame.modelReq->texturePageBits = 0;
-    if (frame.trainnSlot->frameCounter >= 0x2C) {
-        frame.modelReq->fadeLevel -= (short)((frame.trainnSlot->frameCounter - 0x2C) * 0xA);
+    if (frame.trainnSlot->frameCounter >= 44) {
+        frame.modelReq->fadeLevel -= (short)((frame.trainnSlot->frameCounter - 44) * 10);
         if (frame.modelReq->fadeLevel < 0) {
             frame.modelReq->fadeLevel = 0;
         }
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.trainnSlot->frameCounter >= 0x3C) {
+    if (frame.trainnSlot->frameCounter >= 60) {
         frame.trainnSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -279,7 +279,7 @@ void __cdecl BattleFx_BlueTrineSpinGrowFadeModelTask(void)
     frame.trainnSlot->spinX += frame.trainnSlot->spinStepX;
     frame.trainnSlot->spinY += frame.trainnSlot->spinStepY;
     frame.trainnSlot->spinZ += frame.trainnSlot->spinStepZ;
-    if (frame.trainnSlot->frameCounter < 0x12) {
+    if (frame.trainnSlot->frameCounter < 18) {
         frame.trainnSlot->scale += frame.trainnSlot->scaleStep;
     }
     (frame.trainnSlot->frameCounter)++;

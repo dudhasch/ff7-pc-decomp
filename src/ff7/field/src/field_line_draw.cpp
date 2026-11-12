@@ -208,24 +208,24 @@ void __cdecl Field_StepLineDrawRecords(void)
     } else if (*(unsigned char *)&g_FieldLineDrawIntensity != 0xFF) {
         g_FieldLineDrawIntensity++;
     }
-    for (i = 0; i < 0x40; i++) {
+    for (i = 0; i < 64; i++) {
         if (g_FieldLineDrawScratch[i].stepState == 0) {
             if (i < *(unsigned char *)&g_FieldLineDrawIntensity >> 2) {
                 g_FieldLineDrawScratch[i].active = 1;
                 (g_FieldLineDrawScratch[i].randomIndex)++;
                 g_FieldLineDrawScratch[i].stepState = 7;
-                g_FieldLineDrawScratch[i].lowerX = (g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 0xC) + (short)(g_FieldRandomTable[*(unsigned char *)&g_FieldLineDrawScratch[i].randomIndex] * 0xC) + -0x600;
-                g_FieldLineDrawScratch[i].lowerY = (g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 0xC) + (short)(g_FieldRandomTable[(g_FieldLineDrawScratch[i].randomIndex * 3 & 0xFF)] * 0xC) + -0x600;
+                g_FieldLineDrawScratch[i].lowerX = (g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 12) + (short)(g_FieldRandomTable[*(unsigned char *)&g_FieldLineDrawScratch[i].randomIndex] * 0xC) + -1536;
+                g_FieldLineDrawScratch[i].lowerY = (g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 12) + (short)(g_FieldRandomTable[(g_FieldLineDrawScratch[i].randomIndex * 3 & 0xFF)] * 12) + -1536;
                 g_FieldLineDrawScratch[i].upperX = g_FieldLineDrawScratch[i].lowerX;
                 g_FieldLineDrawScratch[i].upperY = g_FieldLineDrawScratch[i].lowerY;
-                g_FieldLineDrawScratch[i].baseZ = (g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 0xC) - 0x300;
+                g_FieldLineDrawScratch[i].baseZ = (g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 12) - 0x300;
             } else {
                 g_FieldLineDrawScratch[i].stepState = 1;
                 g_FieldLineDrawScratch[i].active = 0;
             }
         }
         g_FieldLineDrawScratch[i].lowerZ = g_FieldLineDrawScratch[i].baseZ + ((g_FieldLineDrawScratch[i].stepState & 7) << 7);
-        g_FieldLineDrawScratch[i].upperZ = g_FieldLineDrawScratch[i].baseZ + ((g_FieldLineDrawScratch[i].stepState & 7) << 7) + 0x100;
+        g_FieldLineDrawScratch[i].upperZ = g_FieldLineDrawScratch[i].baseZ + ((g_FieldLineDrawScratch[i].stepState & 7) << 7) + 256;
         (g_FieldLineDrawScratch[i].stepState)--;
     }
 }

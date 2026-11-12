@@ -118,70 +118,70 @@ void __cdecl BattleFx_MagicSpawnStopPerTarget(int actor)
     pSpawn->angle = 0;
     pSpawn->yaw = g_BattleActorRecords[actor].yaw;
     extent = g_BattleActorRecords[actor].radius + 0x100;
-    if (extent > 0x76C) {
+    if (extent > 1900) {
         extent = 0x76C;
     }
     pSpawn->base = extent;
-    if (extent > 0x4F2) {
+    if (extent > 1266) {
         extent = 0x4F2;
     }
-    fixedExtent = extent << 0xC;
+    fixedExtent = extent << 12;
     pSpawn->ramp = 0;
-    pSpawn->extent = fixedExtent / 0x3E8;
+    pSpawn->extent = fixedExtent / 1000;
     pSpawn->currentExtent = pSpawn->extent;
     pSpawn->currentExtent = pSpawn->currentExtent / 4;
-    pSpawn->extent = pSpawn->extent / 0xA;
+    pSpawn->extent = pSpawn->extent / 10;
     pSpawn->targetIndex = actor;
     sideEntry = (BattleFxMagicStopEntry *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicStopSideModelTask);
     sideEntry->worldPos = pSpawn->worldPos;
     sideEntry->scale = 0;
     sideEntry->yaw = pSpawn->yaw;
-    sideEntry->offset = extent * 0xC8 / 0x3E8;
+    sideEntry->offset = extent * 200 / 1000;
     sideEntry->position = pSpawn->base + sideEntry->offset;
-    sideEntry->offset = sideEntry->offset / 0xA;
+    sideEntry->offset = sideEntry->offset / 10;
     sideEntry->extentTarget = 0;
-    sideEntry->extent = fixedExtent / 0x460;
+    sideEntry->extent = fixedExtent / 1120;
     sideEntry->extentStep = sideEntry->extent;
     sideEntry->extentStep = sideEntry->extentStep / 8;
-    sideEntry->extent = sideEntry->extent / 0xA;
+    sideEntry->extent = sideEntry->extent / 10;
     sideEntry = (BattleFxMagicStopEntry *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicStopAngleGatedModelTask);
     sideEntry->worldPos = pSpawn->worldPos;
-    sideEntry->scale = 0x800;
+    sideEntry->scale = 0x800 /* 0.5 */;
     sideEntry->yaw = pSpawn->yaw;
-    sideEntry->offset = extent * 0x108 / 0x3E8;
+    sideEntry->offset = extent * 264 / 1000;
     sideEntry->position = pSpawn->base + sideEntry->offset;
-    sideEntry->offset = sideEntry->offset / 0xA;
-    sideEntry->extent = fixedExtent / 0x3E8;
+    sideEntry->offset = sideEntry->offset / 10;
+    sideEntry->extent = fixedExtent / 1000;
     sideEntry->extentTarget = sideEntry->extent;
     sideEntry->extentStep = sideEntry->extentTarget / 8;
     sideEntry->extentTarget <<= 1;
     sideEntry->extentSaved = sideEntry->extentTarget;
-    sideEntry->extent = sideEntry->extent / 0xA;
+    sideEntry->extent = sideEntry->extent / 10;
     sideEntry = (BattleFxMagicStopEntry *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicStopSideModelTask);
     sideEntry->worldPos = pSpawn->worldPos;
     sideEntry->scale = 0;
     sideEntry->yaw = pSpawn->yaw;
-    sideEntry->offset = extent * 0xC8 / 0x3E8;
+    sideEntry->offset = extent * 200 / 1000;
     sideEntry->position = pSpawn->base - sideEntry->offset;
-    sideEntry->offset = sideEntry->offset / 0xA;
+    sideEntry->offset = sideEntry->offset / 10;
     sideEntry->extentTarget = 0;
-    sideEntry->extent = fixedExtent / 0x460;
+    sideEntry->extent = fixedExtent / 1120;
     sideEntry->extentStep = sideEntry->extent;
     sideEntry->extentStep = sideEntry->extentStep / 8;
-    sideEntry->extent = sideEntry->extent / 0xA;
+    sideEntry->extent = sideEntry->extent / 10;
     sideEntry = (BattleFxMagicStopEntry *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicStopAngleGatedModelTask);
     sideEntry->worldPos = pSpawn->worldPos;
-    sideEntry->scale = 0x800;
+    sideEntry->scale = 0x800 /* 0.5 */;
     sideEntry->yaw = pSpawn->yaw;
-    sideEntry->offset = extent * 0x108 / 0x3E8;
+    sideEntry->offset = extent * 264 / 1000;
     sideEntry->position = pSpawn->base - sideEntry->offset;
-    sideEntry->offset = sideEntry->offset / 0xA;
-    sideEntry->extent = fixedExtent / 0x3E8;
+    sideEntry->offset = sideEntry->offset / 10;
+    sideEntry->extent = fixedExtent / 1000;
     sideEntry->extentTarget = sideEntry->extent;
     sideEntry->extentStep = sideEntry->extentTarget / 8;
     sideEntry->extentTarget <<= 1;
     sideEntry->extentSaved = sideEntry->extentTarget;
-    sideEntry->extent = sideEntry->extent / 0xA;
+    sideEntry->extent = sideEntry->extent / 10;
 }
 
 /* Animates central rotating clock hand model for Stop. */
@@ -234,19 +234,19 @@ void __cdecl BattleFx_MagicStopCentralModelTask(void)
     frame.drawModel->stateFlags = 0;
     frame.drawModel->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.centralRecord->timer >= 0x23) {
+    if (frame.centralRecord->timer >= 35) {
         frame.centralRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.centralRecord->timer == 0x19) {
+    if (frame.centralRecord->timer == 25) {
         Battle_PostActorHitOrHurtMessage(frame.centralRecord->allocType);
     }
     if (frame.centralRecord->timer < 4) {
         frame.centralRecord->ramp += frame.centralRecord->rampAccel;
     }
-    if (frame.centralRecord->timer >= 0x19) {
+    if (frame.centralRecord->timer >= 25) {
         frame.centralRecord->angle += 0x80;
         frame.centralRecord->ramp -= frame.centralRecord->rampDrag;
     }
@@ -304,20 +304,20 @@ void __cdecl BattleFx_MagicStopSideModelTask(void)
         frame.drawModel->modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleMagicStopLoadedResTable);
         frame.drawModel->flags = 0x28;
         frame.drawModel->uvScroll = 0;
-        frame.drawModel->fadeLevel = 0x80;
+        frame.drawModel->fadeLevel = 128;
         frame.drawModel->stateFlags = 0x20;
         frame.drawModel->texturePageBits = 0;
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-        if (frame.sideRecord->timer >= 0x23) {
+        if (frame.sideRecord->timer >= 35) {
             frame.sideRecord->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
             return;
         }
-        if (frame.sideRecord->timer < 0xB) {
+        if (frame.sideRecord->timer < 11) {
             frame.sideRecord->ramp += frame.sideRecord->rampAccel;
         }
-        if (frame.sideRecord->timer >= 0x19) {
+        if (frame.sideRecord->timer >= 25) {
             frame.sideRecord->spinAngle += 0x80;
             frame.sideRecord->ramp -= frame.sideRecord->rampDrag;
             frame.sideRecord->offsetDistance -= frame.sideRecord->offsetDistanceStep;
@@ -349,7 +349,7 @@ void __cdecl BattleFx_MagicStopAngleGatedModelTask(void)
 #pragma pack(pop)
 
     frame.gatedRecord = (BattleFxAngleGatedModel *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.gatedRecord->phase < 0xF) {
+    if (frame.gatedRecord->phase < 15) {
         if (g_BattleIsPaused == 0) {
             (frame.gatedRecord->phase)++;
         }
@@ -387,7 +387,7 @@ void __cdecl BattleFx_MagicStopAngleGatedModelTask(void)
         frame.drawModel->flags = 0xA8;
         for (frame.angleIndex = 0; frame.angleIndex < 4; frame.angleIndex++) {
             frame.tmpValue = g_BattleMagicStopAngles[frame.angleIndex] + (frame.gatedRecord->phase - 0xF << 8);
-            if (frame.tmpValue < 0x800 || frame.tmpValue >= 0x1000) {
+            if (frame.tmpValue < 2048 || frame.tmpValue >= 4096) {
                 continue;
             }
             frame.rotX.vz = *(short *)&frame.tmpValue;
@@ -410,17 +410,17 @@ void __cdecl BattleFx_MagicStopAngleGatedModelTask(void)
             frame.drawModel->fadeLevel = g_BattleMagicStopSubAngles[frame.angleIndex];
             g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.drawModel, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         }
-        if (frame.gatedRecord->phase >= 0x23) {
+        if (frame.gatedRecord->phase >= 35) {
             frame.gatedRecord->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
             return;
         }
-        if (frame.gatedRecord->phase < 0x17) {
-            frame.gatedRecord->spinAngle += 0x100;
+        if (frame.gatedRecord->phase < 23) {
+            frame.gatedRecord->spinAngle += 0x100 /* 22.5 deg */;
             frame.gatedRecord->scale -= frame.gatedRecord->scaleStep;
         }
-        if (frame.gatedRecord->phase >= 0x19) {
+        if (frame.gatedRecord->phase >= 25) {
             frame.gatedRecord->spinAngle += 0x80;
             frame.gatedRecord->scale -= frame.gatedRecord->lateScaleStep;
             frame.gatedRecord->sideDistance -= frame.gatedRecord->sideDistanceStep;

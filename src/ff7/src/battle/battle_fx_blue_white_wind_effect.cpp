@@ -135,19 +135,19 @@ void __cdecl BattleFx_BlueWhiteWindSpawnRadialSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0xA) {
+    if (task->frameCounter < 10) {
         ((SVECTOR *)&g_BattleBlueWhiteWind_AnglePair)->vy = rand() & 0xFFF;
         for (particleIdx = 0; particleIdx < g_BattleBlueWhiteWind_ParticleCount; particleIdx++) {
             nodePtr = (BattleWhiteWindFadingSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueWhiteWindFadingSpriteTask);
             nodePtr->origin = ((BattleWhiteWindFadingSpriteSlot *)task)->origin;
             nodePtr->scale = rand() % 0xC00 + 0x400;
             nodePtr->angle = g_BattleBlueWhiteWind_AnglePair;
-            nodePtr->radialSpeed = rand() % 0x258 + 0xC8 << 4;
+            nodePtr->radialSpeed = rand() % 600 + 200 << 4;
             nodePtr->spinStep = rand() % 0x64 - 0x32;
-            ((SVECTOR *)&g_BattleBlueWhiteWind_AnglePair)->vy += (short)(0x1000 / g_BattleBlueWhiteWind_ParticleCount);
+            ((SVECTOR *)&g_BattleBlueWhiteWind_AnglePair)->vy += (short)(4096 / g_BattleBlueWhiteWind_ParticleCount);
         }
     } else {
-        for (particleIdx = 0; particleIdx < 0xA; particleIdx++) {
+        for (particleIdx = 0; particleIdx < 10; particleIdx++) {
             if ((g_BattleBlueWhiteWind_TargetMask & 1 << particleIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(particleIdx);
             }
@@ -205,7 +205,7 @@ void __cdecl BattleFx_BlueWhiteWindFadingSpriteTask(void)
     frame.fadeState = (BattleFxWhiteWindFadeState *)Gfx_GetPsxScratchpadPtr(0);
     frame.rotMatrix = (PsxMatrix *)((int)frame.fadeState + 8);
     frame.phase = frame.sprite->frame;
-    if (frame.phase < 0xD) {
+    if (frame.phase < 13) {
         frame.shadeR = 0x80;
         frame.shadeG = frame.shadeR;
         frame.shadeB = frame.shadeG;
@@ -232,8 +232,8 @@ void __cdecl BattleFx_BlueWhiteWindFadingSpriteTask(void)
         frame.sprite->posX += (short)(frame.fadeState->velocityX >> 4);
         frame.sprite->posY += (short)(frame.fadeState->velocityY >> 4);
         frame.sprite->posZ += (short)(frame.fadeState->velocityZ >> 4);
-        frame.sprite->fadeLevel -= (short)(frame.sprite->fadeLevel << 9 >> 0xC);
-        frame.sprite->angleZ += (short)(-0x400 - frame.sprite->angleZ << 9 >> 0xC);
+        frame.sprite->fadeLevel -= (short)(frame.sprite->fadeLevel << 9 >> 12);
+        frame.sprite->angleZ += (short)(-0x400 - frame.sprite->angleZ << 9 >> 12);
         frame.sprite->angleX += frame.sprite->spinStep;
     }
 }

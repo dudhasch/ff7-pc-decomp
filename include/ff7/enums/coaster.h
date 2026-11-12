@@ -24,7 +24,7 @@ enum CoasterBehaviour {
     COASTER_BEHAVIOUR_LEAP_SPRAY = 0x0F,        /* random drops under gravity for 200 frames */
     COASTER_BEHAVIOUR_LEAP_TRAIL = 0x10,        /* rises and falls back after 20 frames */
     COASTER_BEHAVIOUR_PATH_DELAYED = 0x11,      /* follows its path once the track passes params[3] */
-    COASTER_BEHAVIOUR_HOMING = 0x64,            /* closes on the car over 0x80 frames; reaching it costs 5 points */
+    COASTER_BEHAVIOUR_HOMING = 0x64,            /* closes on the car over 128 frames; reaching it costs 5 points */
     COASTER_BEHAVIOUR_SPARK_EMITTER = 0xC9,     /* emits a HIT_SPARK each frame for 20 frames */
     COASTER_BEHAVIOUR_HIT_SPARK = 0xCA,         /* the spark of a beam hit */
     COASTER_BEHAVIOUR_EXPLOSION_DEBRIS = 0xCB,  /* the debris of a destroyed target */

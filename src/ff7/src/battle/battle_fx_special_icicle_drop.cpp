@@ -137,12 +137,12 @@ void __cdecl BattleFx_SpecialBeginIcicleDrop(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel1 = 0;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
     g_BattleFxTimelineState.channel2 = 0x40;
-    Battle_StartFixedPointRamp(0x1000, 0xA);
+    Battle_StartFixedPointRamp(0x1000, 10);
 }
 
 /*
  * Two-state toggle step for the current task slot: each frame it flips the slot's toggle between 0 and 1 with an
- * XOR. When g_BattleSecondaryTaskActiveCount has fallen to 1 or below it calls Battle_StartFixedPointRamp(0, 0xA) and
+ * XOR. When g_BattleSecondaryTaskActiveCount has fallen to 1 or below it calls Battle_StartFixedPointRamp(0, 10) and
  * frees the slot.
  */
 // FUNCTION: FF7 0x0053858e
@@ -153,7 +153,7 @@ void __cdecl BattleFx_SpecialIcicleDropRampDownWhenIdleTask(void)
     task = (BattleFxIcicleDropRamp *)BATTLE_CURRENT_TASK_SLOT;
     task->toggle ^= 1;
     if (g_BattleSecondaryTaskActiveCount <= 1) {
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -210,29 +210,29 @@ void __cdecl BattleFx_SpecialIcicleDropTimelineTask(void)
         activeAngle = rand() % 0x1000;
         for (chunkIndex = 0; chunkIndex < 5; chunkIndex++) {
             newSlotPtr = (BattleFxIcicleDropDebrisState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialIcicleDropFallingModelTask);
-            newSlotPtr->posX = q->baseX + (CosFixed(activeAngle) * 0x1F4 >> 0xC);
-            newSlotPtr->posZ = q->baseZ + (SinFixed(activeAngle) * 0x1F4 >> 0xC);
-            newSlotPtr->posY = 0xFFFFF448 - rand() % 0x7D0;
-            newSlotPtr->velocityY = 0x64;
+            newSlotPtr->posX = q->baseX + (CosFixed(activeAngle) * 0x1F4 >> 12);
+            newSlotPtr->posZ = q->baseZ + (SinFixed(activeAngle) * 0x1F4 >> 12);
+            newSlotPtr->posY = 0xFFFFF448 - rand() % 2000;
+            newSlotPtr->velocityY = 100;
             newSlotPtr->angle = activeAngle;
             newSlotPtr->spinAngle = 0;
             newSlotPtr->variant = rand() % 3;
             activeAngle += (short)(rand() % 0xC8 + 0x2D0);
         }
     }
-    if (q->frame == 0xA) {
+    if (q->frame == 10) {
         newSlotPtr = (BattleFxIcicleDropDebrisState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialIcicleDropExpandingModelTask);
         newSlotPtr->posX = q->baseX;
         newSlotPtr->posZ = q->baseZ;
         newSlotPtr->posY = 0;
     }
-    if (q->frame >= 0xA && q->frame < 0xE) {
+    if (q->frame >= 10 && q->frame < 14) {
         for (chunkIndex = 0; chunkIndex < 2; chunkIndex++) {
             activeAngle = rand() % 0x1000;
             newSlotPtr = (BattleFxIcicleDropDebrisState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialIcicleDropDriftAnimatedSpriteTask);
-            newSlotPtr->velocityX = CosFixed(activeAngle) * 0x64 >> 0xC;
-            newSlotPtr->velocityZ = SinFixed(activeAngle) * 0x64 >> 0xC;
-            newSlotPtr->velocityY = -rand() % 0x64;
+            newSlotPtr->velocityX = CosFixed(activeAngle) * 0x64 >> 12;
+            newSlotPtr->velocityZ = SinFixed(activeAngle) * 0x64 >> 12;
+            newSlotPtr->velocityY = -rand() % 100;
             newSlotPtr->posX = q->baseX + newSlotPtr->velocityX * 4;
             newSlotPtr->posZ = q->baseZ + newSlotPtr->velocityZ * 4;
             newSlotPtr->posY = 0;
@@ -240,20 +240,20 @@ void __cdecl BattleFx_SpecialIcicleDropTimelineTask(void)
         for (chunkIndex = 0; chunkIndex < 2; chunkIndex++) {
             activeAngle = rand() % 0x1000;
             newSlotPtr = (BattleFxIcicleDropDebrisState *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialIcicleDropFallingRotatingSpriteTask)];
-            newSlotPtr->velocityX = CosFixed(activeAngle) * 0x64 >> 0xC;
-            newSlotPtr->velocityZ = SinFixed(activeAngle) * 0x64 >> 0xC;
-            newSlotPtr->velocityY = 0xFFFFFED4 - rand() % 0xC8;
+            newSlotPtr->velocityX = CosFixed(activeAngle) * 0x64 >> 12;
+            newSlotPtr->velocityZ = SinFixed(activeAngle) * 0x64 >> 12;
+            newSlotPtr->velocityY = 0xFFFFFED4 - rand() % 200;
             newSlotPtr->posX = q->baseX + newSlotPtr->velocityX * 4;
             newSlotPtr->posZ = q->baseZ + newSlotPtr->velocityZ * 4;
             newSlotPtr->posY = 0;
             newSlotPtr->variant = chunkIndex;
         }
     }
-    if (q->frame == 0x1E) {
+    if (q->frame == 30) {
         Battle_PostActorHitOrHurtMessage(q->actorIndex);
     }
     (q->frame)++;
-    if (q->frame == 0x2D) {
+    if (q->frame == 45) {
         q->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -280,13 +280,13 @@ void __cdecl BattleFx_SpecialIcicleDropFallingRotatingSpriteTask(void)
     frame.tmpZero = 0;
     frame.rotAngleX = frame.tmpZero;
     frame.spinAngle = frame.spriteSlot->frameCounter << 8;
-    BattleFx_SpecialIcicleDropInstallRotatedScaledMatrix(&frame.spriteSlot->posX, &frame.rotAngleX, 0x1800);
+    BattleFx_SpecialIcicleDropInstallRotatedScaledMatrix(&frame.spriteSlot->posX, &frame.rotAngleX, 0x1800 /* 1.5 */);
     g_BattleSpecIcicleDropResourceDefRows.drawObj = Gfx_ModelTableGetSpriteObject(g_BattleSpecIcicleDropModelIndices[frame.spriteSlot->modelIndex], g_BattleSpecIcicleDropLoadedResTable);
     g_BattleSpecIcicleDropResourceDefRows.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_BattleSpecIcicleDropModelIndices[frame.spriteSlot->modelIndex], g_BattleSpecIcicleDropLoadedResTable);
-    if (frame.spriteSlot->frameCounter < 0xC) {
+    if (frame.spriteSlot->frameCounter < 12) {
         frame.fadeLevel = 8;
     } else {
-        frame.fadeLevel = 0x14 - frame.spriteSlot->frameCounter;
+        frame.fadeLevel = 20 - frame.spriteSlot->frameCounter;
     }
     g_BattleSpecIcicleDropSpriteReq1.blue = frame.fadeLevel << 4;
     g_BattleSpecIcicleDropSpriteReq1.green = g_BattleSpecIcicleDropSpriteReq1.blue;
@@ -295,12 +295,12 @@ void __cdecl BattleFx_SpecialIcicleDropFallingRotatingSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.spriteSlot->velocityY += 0x28;
+    frame.spriteSlot->velocityY += 40;
     frame.spriteSlot->posX += frame.spriteSlot->velocityX;
     frame.spriteSlot->posY += frame.spriteSlot->velocityY;
     frame.spriteSlot->posZ += frame.spriteSlot->velocityZ;
     (frame.spriteSlot->frameCounter)++;
-    if (frame.spriteSlot->frameCounter == 0x14) {
+    if (frame.spriteSlot->frameCounter == 20) {
         frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -348,7 +348,7 @@ void __cdecl BattleFx_SpecialIcicleDropDriftAnimatedSpriteTask(void)
     BattleFxEnergyOrbDriftSprite *task;
 
     task = (BattleFxEnergyOrbDriftSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecIcicleDropSpriteReq2.frame = task->frameIndex;
     g_BattleSpecIcicleDropSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecIcicleDropLoadedResTable);
     g_BattleSpecIcicleDropSpriteReq2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecIcicleDropLoadedResTable);
@@ -395,7 +395,7 @@ void __cdecl BattleFx_SpecialIcicleDropFallingModelTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     g_BattleSpecIcicleDropSpriteReq3.modelDraw.modelGroup = Gfx_ModelTableGetRenderObject(g_BattleSpecIcicleDropSpriteReq3.modelIds[frame.modelSlot->modelIndex], g_BattleSpecIcicleDropLoadedResTable);
-    if (frame.modelSlot->frameCounter < 0x11) {
+    if (frame.modelSlot->frameCounter < 17) {
         frame.scaleLevel = 8;
     } else {
         frame.scaleLevel = 0x19 - frame.modelSlot->frameCounter;
@@ -405,14 +405,14 @@ void __cdecl BattleFx_SpecialIcicleDropFallingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.modelSlot->posY < 0x64) {
-        frame.modelSlot->velocityY += 0x32;
+    if (frame.modelSlot->posY < 100) {
+        frame.modelSlot->velocityY += 50;
         frame.modelSlot->posY += frame.modelSlot->velocityY;
     } else {
         frame.modelSlot->spinAngle += 0x40;
     }
     (frame.modelSlot->frameCounter)++;
-    if (frame.modelSlot->frameCounter == 0x19) {
+    if (frame.modelSlot->frameCounter == 25) {
         frame.modelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -444,14 +444,14 @@ void __cdecl BattleFx_SpecialIcicleDropExpandingModelTask(void)
     SetRotMatrix(&matrix);
     SetTransMatrix(&matrix);
     SetDrawColorRGB(0, 0, 0);
-    g_BattleSpecIcicleDropSpriteReq3.expandFadeLevel = expanding->growStep * 0x111;
+    g_BattleSpecIcicleDropSpriteReq3.expandFadeLevel = expanding->growStep * 273;
     g_BattleSpecIcicleDropSpriteReq3.expandModelGroup = Gfx_ModelTableGetRenderObject(3, g_BattleSpecIcicleDropLoadedResTable);
     g_BattleSpecIcicleDropPacketCursor = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecIcicleDropSpriteReq3.expandModelGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecIcicleDropPacketCursor);
     if (g_BattleIsPaused != 0) {
         return;
     }
     (expanding->growStep)++;
-    if (expanding->growStep == 0xF) {
+    if (expanding->growStep == 15) {
         expanding->ownerSlot = BATTLE_TASK_FREE;
     }
 }

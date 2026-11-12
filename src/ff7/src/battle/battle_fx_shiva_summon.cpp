@@ -873,7 +873,7 @@ int g_BattleSummonShivaRingGrowth = 0;
 unsigned char g_bssPad_00bcb924[4] = {0};
 // The billboard matrix is three objects: m[0][0], m[1][1], then m[2][2] with the translation.
 // GLOBAL: FF7 0x00bcb928
-unsigned char g_BattleSummonShivaBillboardMatrix[0x4] = {0};
+unsigned char g_BattleSummonShivaBillboardMatrix[4] = {0};
 unsigned char g_bssPad_00bcb92c[4] = {0};
 // GLOBAL: FF7 0x00bcb930
 short g_BattleSummonShivaBillboardScaleY = 0;
@@ -951,7 +951,7 @@ void __cdecl BattleFx_SummonBeginShiva(int targetMask, int actorIdx)
 
     Battle_GetActorMaskCentroid(g_BattleSummonShivaDrawListHandle = targetMask, &centroidBuf.vx);
     if (centroidBuf.vz < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonShivaRingColor.ringStep = 0x800;
+        g_BattleSummonShivaRingColor.ringStep = 2048;
         g_BattleSummonShivaTransformMatrix2.matrix.t[2] = centroidBuf.vz + 0x1388;
     } else {
         g_BattleSummonShivaTransformMatrix2.matrix.t[2] = centroidBuf.vz - 0x1388;
@@ -1263,7 +1263,7 @@ void __cdecl BattleFx_SummonShivaClearParticleRecords(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleSummonShivaFragmentVertices[i].timer = 0;
     }
 }
@@ -1276,7 +1276,7 @@ void __cdecl BattleFx_SummonShivaClearSpriteCallbacks(void)
 {
     int i;
 
-    for (i = 0; i < 0x1F4; i++) {
+    for (i = 0; i < 500; i++) {
         g_BattleSummonShivaParticleRecords[i] = 0;
     }
 }
@@ -1295,7 +1295,7 @@ void __cdecl BattleFx_SummonShivaRunSpriteCallbacksTask(void)
 
     frame.slot = BATTLE_CURRENT_TASK_SLOT;
     frame.active = 0;
-    for (frame.fragmentIndex = 0; frame.fragmentIndex < 0x1f4; frame.fragmentIndex++) {
+    for (frame.fragmentIndex = 0; frame.fragmentIndex < 500; frame.fragmentIndex++) {
         if (g_BattleSummonShivaParticleRecords[frame.fragmentIndex] != 0) {
             g_BattleSummonShivaParticleRecords[frame.fragmentIndex]((int)&g_BattleSummonShivaFragmentMatrices[frame.fragmentIndex]);
             if (g_BattleSummonShivaFragmentMatrices[frame.fragmentIndex].state == -1) {
@@ -1332,7 +1332,7 @@ void __cdecl BattleFx_SummonShivaTimelineTask(void)
         g_pBattleSummonShivaColorScratch = (BattleFxShivaFragmentIndex *)Gfx_GetPsxScratchpadPtr(0);
     }
     MultiplyMatrix(&g_BattleCameraTransform, &g_BattleSummonShivaTransformMatrix2.matrix, &g_BattleSummonShivaCameraScriptDelay);
-    Battle3d_GetActorAttachMatrix(3, 0x2F, (PsxMatrix *)((int)actor + 0xB00));
+    Battle3d_GetActorAttachMatrix(3, 47, (PsxMatrix *)((int)actor + 0xB00));
     Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleSummonShivaCameraScriptDelay, (void *)((int)actor + 0xB00), (PsxMatrix *)&g_pBattleSummonShivaColorScratch->matrix);
     TransformVectorToInt16((void *)&g_pBattleSummonShivaColorScratch->matrix, &g_BattleSummonShivaRotXYZ.byte, (void *)g_pBattleSummonShivaColorScratch);
     (g_BattleSummonShivaFragmentColor.fragmentColor) = g_pBattleSummonShivaColorScratch->colorOffset + g_pBattleSummonShivaColorScratch->matrix.transX;
@@ -1349,7 +1349,7 @@ void __cdecl BattleFx_SummonShivaTimelineTask(void)
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
     } else {
         phaseFrame -= 5;
-        if (phaseFrame < 0x1E) {
+        if (phaseFrame < 30) {
             if (phaseFrame == 0) {
                 BattleFx_SummonShivaSetForceFieldTable((BattleFxShivaForceFieldEntry *)&g_BattleSummonShivaEasingType);
                 Battle_AllocateResourceSlot(BattleFx_SummonShivaSpawnParticleRecordsTask);
@@ -1362,36 +1362,36 @@ void __cdecl BattleFx_SummonShivaTimelineTask(void)
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            phaseFrame -= 0x1E;
-            if (phaseFrame < 0x1E) { /* empty first arm: lib/codegen.h */
+            phaseFrame -= 30;
+            if (phaseFrame < 30) { /* empty first arm: lib/codegen.h */
             } else {
-                phaseFrame -= 0x1E;
-                if (phaseFrame < 0x14) { /* empty first arm: lib/codegen.h */
+                phaseFrame -= 30;
+                if (phaseFrame < 20) { /* empty first arm: lib/codegen.h */
                 } else {
-                    phaseFrame -= 0x14;
-                    if (phaseFrame < 0x19) {
+                    phaseFrame -= 20;
+                    if (phaseFrame < 25) {
                         if (phaseFrame == 0) {
                             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_2, 0x40, 1);
                         }
                     } else {
-                        phaseFrame -= 0x19;
-                        if (phaseFrame < 0xA) {
+                        phaseFrame -= 25;
+                        if (phaseFrame < 10) {
                             if (phaseFrame == 0) {
                                 BattleFx_SummonShivaSetForceFieldTable((BattleFxShivaForceFieldEntry *)&g_BattleSummonShivaEasingParam);
                                 Battle_AllocateResourceSlot(BattleFx_SummonShivaUpdateAttachPointTableTask);
                             }
                         } else {
-                            phaseFrame -= 0xA;
+                            phaseFrame -= 10;
                             if (phaseFrame < 0) { /* empty first arm: lib/codegen.h */
                             } else {
                                 phaseFrame = phaseFrame;
-                                if (phaseFrame < 0x32) {
+                                if (phaseFrame < 50) {
                                     if (phaseFrame == 0) {
                                         pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonShivaSpawnShrinkingModelsTask);
                                     }
                                 } else {
-                                    phaseFrame -= 0x32;
-                                    if (phaseFrame < 0x1E) {
+                                    phaseFrame -= 50;
+                                    if (phaseFrame < 30) {
                                         if (phaseFrame == 0) {
                                             BattleFx_SummonShivaSetForceFieldTable((BattleFxShivaForceFieldEntry *)&g_BattleSummonShivaEasingMode);
                                             pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonShivaSpawnModelBurstTask);
@@ -1403,8 +1403,8 @@ void __cdecl BattleFx_SummonShivaTimelineTask(void)
                                             Sfx_ReleaseCachedBuffer(0x266, 0);
                                         }
                                     } else {
-                                        phaseFrame -= 0x1E;
-                                        if (phaseFrame < 0x23) {
+                                        phaseFrame -= 30;
+                                        if (phaseFrame < 35) {
                                             if (phaseFrame == 0) {
                                                 pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonShivaSpawnTriangleFragmentsTask);
                                                 pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonShivaSpawnOrientedSpritesTask);
@@ -1415,10 +1415,10 @@ void __cdecl BattleFx_SummonShivaTimelineTask(void)
                                                 Sfx_ReleaseCachedBuffer(0x268, 1);
                                             }
                                         } else {
-                                            phaseFrame -= 0x23;
-                                            if (phaseFrame < 0x14) {
+                                            phaseFrame -= 35;
+                                            if (phaseFrame < 20) {
                                                 if (phaseFrame == 0) {
-                                                    for (i = 0; i < 0xA; i++) {
+                                                    for (i = 0; i < 10; i++) {
                                                         if ((g_BattleSummonShivaDrawListHandle & 1 << i) != 0) {
                                                             Battle_PostActorHitOrHurtMessage(i);
                                                         }
@@ -1475,20 +1475,20 @@ void __cdecl BattleFx_SummonShivaSpawnParticleRecordsTask(void)
         g_BattleSummonShivaCameraScriptPtr = (BattleFxShivaParticleRecord2 *)Gfx_GetPsxScratchpadPtr(0);
     }
     if (g_BattleIsPaused == 0) {
-        if (taskPtr->frameCounter < 0xA5) {
+        if (taskPtr->frameCounter < 165) {
             for (i = 0; i < 1; i++) {
-                g_BattleSummonShivaCameraScriptPtr->spawnOffsetX = rand() % 0x1770 - 0xBB8;
+                g_BattleSummonShivaCameraScriptPtr->spawnOffsetX = rand() % 6000 - 3000;
                 g_BattleSummonShivaCameraScriptPtr->spawnOffsetY = 0xEC78;
-                g_BattleSummonShivaCameraScriptPtr->spawnOffsetZ = rand() % 0x1770 - 0xBB8;
+                g_BattleSummonShivaCameraScriptPtr->spawnOffsetZ = rand() % 6000 - 3000;
                 record = (BattleSummonShivaFragmentVertex *)BattleFx_SummonShivaClaimParticleRecord((Int64Pair *)g_BattleSummonShivaCameraScriptPtr, (Int64Pair *)&g_BattleSummonShivaParticleState, 0x64);
                 record->update = BattleFx_SummonShivaDrawParticleSprite;
             }
         }
-        if (taskPtr->frameCounter >= 0x69 && taskPtr->frameCounter < 0xA5) {
+        if (taskPtr->frameCounter >= 105 && taskPtr->frameCounter < 165) {
             for (i = 0; i < 5; i++) {
-                g_BattleSummonShivaCameraScriptPtr->spawnOffsetX = rand() % 0x2710 - 0x1388;
-                g_BattleSummonShivaCameraScriptPtr->spawnOffsetY = rand() % 0x2710 - 0x1B58;
-                g_BattleSummonShivaCameraScriptPtr->spawnOffsetZ = rand() % 0x2710 - 0x1388;
+                g_BattleSummonShivaCameraScriptPtr->spawnOffsetX = rand() % 10000 - 5000;
+                g_BattleSummonShivaCameraScriptPtr->spawnOffsetY = rand() % 10000 - 7000;
+                g_BattleSummonShivaCameraScriptPtr->spawnOffsetZ = rand() % 10000 - 5000;
                 record = (BattleSummonShivaFragmentVertex *)BattleFx_SummonShivaClaimParticleRecord((Int64Pair *)g_BattleSummonShivaCameraScriptPtr, (Int64Pair *)&g_BattleSummonShivaParticleState, 0x14);
                 record->update = BattleFx_SummonShivaDrawParticleDot;
             }
@@ -1564,7 +1564,7 @@ void __cdecl BattleFx_SummonShivaApplyForceFieldsToParticle(BattleFxShivaParticl
                 dirVec->x = particle->posX - g_pBattleSummonShivaActiveForceFields[entryIndex].centerX;
                 dirVec->y = particle->posY - g_pBattleSummonShivaActiveForceFields[entryIndex].centerY;
                 dirVec->z = particle->posZ - g_pBattleSummonShivaActiveForceFields[entryIndex].centerZ;
-                while (abs(dirVec->x) > 0x7FFF || (abs(dirVec->y) > 0x7FFF || abs(dirVec->z) > 0x7FFF)) {
+                while (abs(dirVec->x) > 32767 || (abs(dirVec->y) > 32767 || abs(dirVec->z) > 32767)) {
                     dirVec->x = (dirVec->x) / 2;
                     dirVec->y = (dirVec->y) / 2;
                     dirVec->z = (dirVec->z) / 2;
@@ -1575,9 +1575,9 @@ void __cdecl BattleFx_SummonShivaApplyForceFieldsToParticle(BattleFxShivaParticl
                     dot = pForceField->forceX * g_pBattleSummonShivaActiveForceFields[entryIndex].dirX + pForceField->forceY * g_pBattleSummonShivaActiveForceFields[entryIndex].dirY + pForceField->forceZ * g_pBattleSummonShivaActiveForceFields[entryIndex].dirZ;
                     if (dot > 0) {
                         dot = (dot >> 8) / SqrtToInt(length);
-                        particle->velocityX += (short)((g_pBattleSummonShivaActiveForceFields[entryIndex].dirX + pForceField->forceX) * dot >> 0xA);
-                        particle->velocityY += (short)((g_pBattleSummonShivaActiveForceFields[entryIndex].dirY + pForceField->forceY) * dot >> 0xA);
-                        particle->velocityZ += (short)((g_pBattleSummonShivaActiveForceFields[entryIndex].dirZ + pForceField->forceZ) * dot >> 0xA);
+                        particle->velocityX += (short)((g_pBattleSummonShivaActiveForceFields[entryIndex].dirX + pForceField->forceX) * dot >> 10);
+                        particle->velocityY += (short)((g_pBattleSummonShivaActiveForceFields[entryIndex].dirY + pForceField->forceY) * dot >> 10);
+                        particle->velocityZ += (short)((g_pBattleSummonShivaActiveForceFields[entryIndex].dirZ + pForceField->forceZ) * dot >> 10);
                     }
                 }
                 break;
@@ -1586,9 +1586,9 @@ void __cdecl BattleFx_SummonShivaApplyForceFieldsToParticle(BattleFxShivaParticl
                 dirVec->y = g_pBattleSummonShivaActiveForceFields[entryIndex].centerY - particle->posY;
                 dirVec->z = g_pBattleSummonShivaActiveForceFields[entryIndex].centerZ - particle->posZ;
                 VectorNormalToSVector((int *)dirVec, (short *)pForceField);
-                particle->velocityX += (short)(pForceField->forceX * g_pBattleSummonShivaActiveForceFields[entryIndex].dirX >> 0xC);
-                particle->velocityY += (short)(pForceField->forceY * g_pBattleSummonShivaActiveForceFields[entryIndex].dirY >> 0xC);
-                particle->velocityZ += (short)(pForceField->forceZ * g_pBattleSummonShivaActiveForceFields[entryIndex].dirZ >> 0xC);
+                particle->velocityX += (short)(pForceField->forceX * g_pBattleSummonShivaActiveForceFields[entryIndex].dirX >> 12);
+                particle->velocityY += (short)(pForceField->forceY * g_pBattleSummonShivaActiveForceFields[entryIndex].dirY >> 12);
+                particle->velocityZ += (short)(pForceField->forceZ * g_pBattleSummonShivaActiveForceFields[entryIndex].dirZ >> 12);
                 break;
             case BATTLE_SHIVA_FORCE_CONSTANT:
                 particle->velocityX += g_pBattleSummonShivaActiveForceFields[entryIndex].dirX;
@@ -1621,7 +1621,7 @@ int __cdecl BattleFx_SummonShivaClaimParticleRecord(Int64Pair *firstPair, Int64P
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSummonShivaFragmentVertices[i].timer == 0) {
             g_BattleSummonShivaFragmentVertices[i].pos = *firstPair;
             g_BattleSummonShivaFragmentVertices[i].vel = *secondPair;
@@ -1639,9 +1639,9 @@ int __cdecl BattleFx_SummonShivaClaimParticleRecord(Int64Pair *firstPair, Int64P
 // FUNCTION: FF7 0x00590615
 void __cdecl BattleFx_SummonShivaDrawParticleSprite(void *particle, int extra, int age)
 {
-    g_BattleSummonShivaColorTable1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSummonShivaRingAlpha);
-    g_BattleSummonShivaColorTable1.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSummonShivaRingAlpha);
-    BattleFx_SummonShivaInstallBillboardMatrix(particle, 0x1000, 0);
+    g_BattleSummonShivaColorTable1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSummonShivaRingAlpha);
+    g_BattleSummonShivaColorTable1.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSummonShivaRingAlpha);
+    BattleFx_SummonShivaInstallBillboardMatrix(particle, 4096, 0);
     g_BattleSummonShivaBufferPtr = BattleFx_SubmitSpriteDraw(&g_BattleSummonShivaColorTable1.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonShivaBufferPtr);
 }
 
@@ -1662,9 +1662,9 @@ int __cdecl BattleFx_SummonShivaInstallBillboardMatrix(void *vertexPtr, short ri
     RotTransPoint(vertexPtr, &g_BattleSummonShivaBillboardTail.transX, &transformedPoint);
     if (offsetScale != 0) {
         NormalizeVectorFixed(&g_BattleSummonShivaBillboardTail.transX, &dir);
-        g_BattleSummonShivaBillboardTail.transX += dir.vx * offsetScale >> 0xC;
-        g_BattleSummonShivaBillboardTail.transY += dir.vy * offsetScale >> 0xC;
-        g_BattleSummonShivaBillboardTail.transZ += dir.vz * offsetScale >> 0xC;
+        g_BattleSummonShivaBillboardTail.transX += dir.vx * offsetScale >> 12;
+        g_BattleSummonShivaBillboardTail.transY += dir.vy * offsetScale >> 12;
+        g_BattleSummonShivaBillboardTail.transZ += dir.vz * offsetScale >> 12;
     }
     SetRotMatrix(&g_BattleSummonShivaBillboardMatrix);
     SetTransMatrix(&g_BattleSummonShivaBillboardMatrix);
@@ -1691,7 +1691,7 @@ void __cdecl BattleFx_SummonShivaDrawParticleDot(void *vertexPtr, int extra, int
     if ((clipFlags & 0x60000) == 0) {
         packet->tag = 0x3000000;
         color = (0x14 - age) * 8 + 0x14;
-        color = color | color << 8 | color << 0x10;
+        color = color | color << 8 | color << 16;
         packet->colorWord = color | 0x62000000;
         packet->dotSize = 0x20002;
         Gfx_SetBlendFactorPair(0, FLOAT_ONE_BITS);
@@ -1714,17 +1714,17 @@ void __cdecl BattleFx_SummonShivaBlackModelFadeTask(void)
     local.slot = BATTLE_CURRENT_TASK_SLOT;
     ((BattleSummonShivaFadeRecord *)&g_BattleSummonShivaColorTable2)->alpha = Gfx_ModelTableGetRenderObject(6, g_BattleSummonShivaRingAlpha);
     local.frame = local.slot->frameCounter;
-    if (local.frame < 0x1E) {
-        local.scale = (local.frame << 0xC) / 0x1E;
+    if (local.frame < 30) {
+        local.scale = (local.frame << 12) / 30;
         ((BattleSummonShivaFadeRecord *)&g_BattleSummonShivaColorTable2)->scale = 0x1000 - local.scale;
     } else {
-        local.frame -= 0x1E;
-        if (local.frame < 0x32) {
+        local.frame -= 30;
+        if (local.frame < 50) {
             ((BattleSummonShivaFadeRecord *)&g_BattleSummonShivaColorTable2)->scale = 0;
         } else {
-            local.frame -= 0x32;
-            if (local.frame < 0x14) {
-                local.scale = (local.frame << 0xC) / 0x14;
+            local.frame -= 50;
+            if (local.frame < 20) {
+                local.scale = (local.frame << 12) / 20;
                 ((BattleSummonShivaFadeRecord *)&g_BattleSummonShivaColorTable2)->scale = (short)local.scale;
             } else {
                 local.slot->ownerSlot = BATTLE_TASK_FREE;
@@ -1732,7 +1732,7 @@ void __cdecl BattleFx_SummonShivaBlackModelFadeTask(void)
             }
         }
     }
-    BattleFx_SummonShivaInstallBillboardMatrix(local.slot->data, 0x3000, 0x1F4);
+    BattleFx_SummonShivaInstallBillboardMatrix(local.slot->data, 12288, 0x1F4);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSummonShivaBufferPtr = BattleFx_SubmitModelDraw(
         (BattleFxModelDraw *)(((int)&g_BattleSummonShivaColorTable2 + 8)), g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, 0,
@@ -1771,7 +1771,7 @@ void __cdecl BattleFx_SummonShivaSpawnShrinkingModelsTask(void)
         child->angleC = rand() & 0xFFF;
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0x28) {
+    if (task->frameCounter >= 40) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1790,17 +1790,17 @@ void __cdecl BattleFx_SummonShivaExpandingFadeModelTask(void)
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSummonShivaColorTable2.expandingTableValue = Gfx_ModelTableGetRenderObject(7, g_BattleSummonShivaRingAlpha);
     time = taskPtr->frameCounter;
-    if (time < 0x32) {
-        ramp = (time << 0xC) / 0x32;
-        size = (ramp * 0xB80 >> 0xC) + 0x80;
+    if (time < 50) {
+        ramp = (time << 12) / 50;
+        size = (ramp * 0xB80 >> 12) + 128;
         g_BattleSummonShivaColorTable2.expandingFadeShort = 0;
     } else {
-        time -= 0x32;
-        if (time < 0xF) {
-            ramp = (time << 0xC) / 0xF;
+        time -= 50;
+        if (time < 15) {
+            ramp = (time << 12) / 15;
             g_BattleSummonShivaColorTable2.expandingFadeShort = ramp;
             ramp = BattleFx_ShivaApplyCameraEasing(ramp, 0x3C0);
-            size = (ramp * 0x3400 >> 0xC) + 0xC00;
+            size = (ramp * 0x3400 /* 3.25 */ >> 12) + 3072;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -1832,7 +1832,7 @@ void __cdecl BattleFx_SummonShivaShrinkingModelTask(void)
     g_BattleSummonShivaColorTable2.shrinkingTableValue = Gfx_ModelTableGetRenderObject(8, g_BattleSummonShivaRingAlpha);
     time = taskPtr->frameCount;
     if (time < 8) {
-        ramp = (time << 0xC) / 8;
+        ramp = (time << 12) / 8;
         g_BattleSummonShivaColorTable2.shrinkingShort = 0x1000 - ramp;
     } else {
         time -= 8;
@@ -1847,8 +1847,8 @@ void __cdecl BattleFx_SummonShivaShrinkingModelTask(void)
     g_BattleSummonShivaCameraMatrix->matrix.transX = (g_BattleSummonShivaFragmentColor.fragmentColor);
     g_BattleSummonShivaCameraMatrix->matrix.transY = g_BattleSummonShivaFragmentColor.colorOffset;
     g_BattleSummonShivaCameraMatrix->matrix.transZ = g_BattleSummonShivaFragmentAlpha;
-    ramp = (taskPtr->frameCount << 0xC) / 0xA;
-    g_BattleSummonShivaCameraMatrix->scaleZ = (ramp * -0x3000 >> 0xC) + 0x3000;
+    ramp = (taskPtr->frameCount << 12) / 10;
+    g_BattleSummonShivaCameraMatrix->scaleZ = (ramp * -0x3000 /* 3.0 */ >> 12) + 0x3000;
     g_BattleSummonShivaCameraMatrix->scaleY = g_BattleSummonShivaCameraMatrix->scaleZ;
     g_BattleSummonShivaCameraMatrix->scaleX = g_BattleSummonShivaCameraMatrix->scaleY;
     ScaleMatrix(&g_BattleSummonShivaCameraMatrix->matrix, g_BattleSummonShivaCameraMatrix);
@@ -1884,24 +1884,24 @@ void __cdecl BattleFx_SummonShivaSpawnModelBurstTask(void)
         return;
     }
     accumulator = (task->frameCount << 0xA & 0xFF) + 0x400;
-    while (accumulator >= 0x100) {
+    while (accumulator >= 256) {
         pPiece = (BattleFxShivaModelBurstRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonShivaModelBurstPieceTask);
         pPiece->posX = 0;
         pPiece->posY = 0xF448;
-        pPiece->posZ = 0x3E8;
+        pPiece->posZ = 1000;
         g_BattleSummonShivaCameraTargetActor->vecX = rand() & 0xFFF;
-        g_BattleSummonShivaCameraTargetActor->wheelAngle = 0x400;
+        g_BattleSummonShivaCameraTargetActor->wheelAngle = 0x400 /* 90 deg */;
         if (DEAD_IN_RETAIL != 0) {
-            pitch = 0x200;
+            pitch = 0x200 /* 45 deg */;
         } else {
             pitch = rand() % 0x400 - 0x200;
         }
         g_BattleSummonShivaCameraTargetActor->spinSpeed = pitch;
         RotMatrix((SVECTOR *)g_BattleSummonShivaCameraTargetActor, (char *)g_BattleSummonShivaCameraTargetActor + 8);
         if (DEAD_IN_RETAIL != 0) {
-            velocity = 0x7D0;
+            velocity = 2000;
         } else {
-            velocity = rand() % 0x1F4 + 0x5DC;
+            velocity = rand() % 500 + 1500;
         }
         g_BattleSummonShivaCameraTargetActor->vecX = velocity;
         g_BattleSummonShivaCameraTargetActor->wheelAngle = 0;
@@ -1913,13 +1913,13 @@ void __cdecl BattleFx_SummonShivaSpawnModelBurstTask(void)
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x100;
         } else {
-            bytes = rand() % 0xC0 + 0x40;
+            bytes = rand() % 192 + 64;
         }
         pPiece->scale = bytes;
         accumulator -= 0x100;
     }
     (task->frameCount)++;
-    if (task->frameCount >= 0x1E) {
+    if (task->frameCount >= 30) {
         task->stage = BATTLE_TASK_FREE;
     }
 }
@@ -1954,7 +1954,7 @@ void __cdecl BattleFx_SummonShivaModelBurstPieceTask(void)
     g_BattleSummonShivaBufferPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonShivaColorTable3.burstPieceTableValue, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonShivaBufferPtr);
     if (g_BattleIsPaused == 0) {
         (piece->timer)++;
-        if (piece->timer >= 0xF) {
+        if (piece->timer >= 15) {
             piece->ownerSlot = BATTLE_TASK_FREE;
         } else {
             piece->posX -= piece->velX;
@@ -1963,9 +1963,9 @@ void __cdecl BattleFx_SummonShivaModelBurstPieceTask(void)
             g_BattleSummonShivaRingState += 0xA0;
             while (g_BattleSummonShivaRingState >= 0x100) {
                 sprite = (BattleFxPositionedSpriteSlot *)(BattleFx_SummonShivaClaimSpriteCallbackSlot((int)BattleFx_SummonShivaDrawAnimatedSprite));
-                sprite->posX = piece->posX + rand() % 0xC8 + -0x64;
-                sprite->posY = piece->posY + rand() % 0xC8 + -0x64;
-                sprite->posZ = piece->posZ + rand() % 0xC8 + -0x64;
+                sprite->posX = piece->posX + rand() % 200 + -100;
+                sprite->posY = piece->posY + rand() % 200 + -100;
+                sprite->posZ = piece->posZ + rand() % 200 + -100;
                 g_BattleSummonShivaRingState -= 0x100;
             }
         }
@@ -1980,7 +1980,7 @@ int __cdecl BattleFx_SummonShivaClaimSpriteCallbackSlot(int callback)
 {
     int slotIndex;
 
-    for (slotIndex = 0; slotIndex < 0x1F4; slotIndex++) {
+    for (slotIndex = 0; slotIndex < 500; slotIndex++) {
         if (g_BattleSummonShivaParticleRecords[slotIndex] == 0) {
             g_BattleSummonShivaParticleRecords[slotIndex] = (void (__cdecl *)(int))callback;
             g_BattleSummonShivaFragmentMatrices[slotIndex].state = 0;
@@ -1999,7 +1999,7 @@ void __cdecl BattleFx_SummonShivaDrawAnimatedSprite(BattleFxShivaSpriteRecord *s
 {
     g_BattleSummonShivaColorTable2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(9, g_BattleSummonShivaRingAlpha);
     g_BattleSummonShivaColorTable2.drawObj = Gfx_ModelTableGetSpriteObject(9, g_BattleSummonShivaRingAlpha);
-    BattleFx_SummonShivaInstallBillboardMatrix((char *)spriteRecord + 4, 0x2000, 0);
+    BattleFx_SummonShivaInstallBillboardMatrix((char *)spriteRecord + 4, 8192, 0);
     g_BattleSummonShivaColorTable3.frameIndex = spriteRecord->frameIndex;
     g_BattleSummonShivaBufferPtr = BattleFx_SubmitSpriteDraw(&g_BattleSummonShivaColorTable2.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonShivaBufferPtr);
     if (g_BattleIsPaused == 0 && g_BattleSummonShivaColorTable2.spriteGroup != 0) {
@@ -2032,9 +2032,9 @@ void __cdecl BattleFx_SummonShivaSpawnTriangleFragmentsTask(void)
         newTask->posZ = 0;
         newTask->posY = 0;
         newTask->posX = 0;
-        newTask->velX = rand() % 0x100 - 0x80;
-        newTask->velY = rand() % 0x100 - 0x80;
-        newTask->velZ = rand() % 0x100 - 0x80;
+        newTask->velX = rand() % 256 - 128;
+        newTask->velY = rand() % 256 - 128;
+        newTask->velZ = rand() % 256 - 128;
         Gte_BuildLookBasisFromDirection(&g_BattleSummonShivaForceFieldTable.fragmentDirections[i].vx, g_BattleSummonShivaSpriteCallbacks.fragmentMatrices[i].m[0]);
         g_BattleSummonShivaSpriteCallbacks.fragmentMatrices[i].t[0] = g_BattleSummonShivaForceFieldTable.fragmentDirections[i].vx + 0;
         g_BattleSummonShivaSpriteCallbacks.fragmentMatrices[i].t[1] = g_BattleSummonShivaForceFieldTable.fragmentDirections[i].vy + 0;
@@ -2083,9 +2083,9 @@ int __cdecl BattleFx_SummonShivaInitTriangleFragments(int resourceBlock, int rec
         g_pBattleSummonShivaNormalScratch->edgeBY = pVertexS->vy - vertexQ->vy;
         g_pBattleSummonShivaNormalScratch->edgeBZ = pVertexS->vz - vertexQ->vz;
         CrossProductInt((VECTOR *)&g_pBattleSummonShivaNormalScratch->edgeAX, (VECTOR *)&g_pBattleSummonShivaNormalScratch->edgeBX, &g_pBattleSummonShivaNormalScratch->crossX);
-        g_BattleSummonShivaTriangleRecords[recordIndex].velX = -g_pBattleSummonShivaNormalScratch->crossX * 0x60 >> 0xC;
-        g_BattleSummonShivaTriangleRecords[recordIndex].velY = -g_pBattleSummonShivaNormalScratch->crossY * 0x60 >> 0xC;
-        g_BattleSummonShivaTriangleRecords[recordIndex].velZ = -g_pBattleSummonShivaNormalScratch->crossZ * 0x60 >> 0xC;
+        g_BattleSummonShivaTriangleRecords[recordIndex].velX = -g_pBattleSummonShivaNormalScratch->crossX * 0x60 >> 12;
+        g_BattleSummonShivaTriangleRecords[recordIndex].velY = -g_pBattleSummonShivaNormalScratch->crossY * 0x60 >> 12;
+        g_BattleSummonShivaTriangleRecords[recordIndex].velZ = -g_pBattleSummonShivaNormalScratch->crossZ * 0x60 >> 12;
         g_BattleSummonShivaTriangleRecords[recordIndex].angleZ = 0;
         g_BattleSummonShivaTriangleRecords[recordIndex].angleY = 0;
         g_BattleSummonShivaTriangleRecords[recordIndex].angleX = 0;
@@ -2118,18 +2118,18 @@ void __cdecl BattleFx_SummonShivaTriangleFragmentsTask(void)
     g_BattleSummonShivaForceFieldTable.triangleModelOffset = g_BattleSummonShivaModelOffsets[taskPtr->fragmentIndex];
     g_BattleSummonShivaForceFieldTable.triangleTableValue = Gfx_ModelTableGetRenderObject(((int *)&g_BattleSummonShivaTransformMatrix1)[taskPtr->fragmentIndex], (GfxTableCursor *)((int)g_BattleSummonShivaRingAlpha));
     time = taskPtr->frameCount;
-    if (time < 0x19) {
+    if (time < 25) {
         g_BattleSummonShivaForceFieldTable.triangleFirstShort = 0;
         g_BattleSummonShivaForceFieldTable.triangleSecondShort = 0;
         if (time < 5) {
-            ramp = (time << 0xC) / 5;
-            g_BattleSummonShivaTargetCentroidZ->zCurrent = ramp * 0x1200 >> 0xC;
+            ramp = (time << 12) / 5;
+            g_BattleSummonShivaTargetCentroidZ->zCurrent = ramp * 0x1200 /* 1.125 */ >> 12;
             g_BattleSummonShivaTargetCentroidZ->zPrev = g_BattleSummonShivaTargetCentroidZ->zCurrent;
             g_BattleSummonShivaTargetCentroidZ->zPrev2 = g_BattleSummonShivaTargetCentroidZ->zPrev;
         } else {
-            g_BattleSummonShivaTargetCentroidZ->zCurrent = 0x1200;
-            g_BattleSummonShivaTargetCentroidZ->zPrev = 0x1200;
-            g_BattleSummonShivaTargetCentroidZ->zPrev2 = 0x1200;
+            g_BattleSummonShivaTargetCentroidZ->zCurrent = 4608;
+            g_BattleSummonShivaTargetCentroidZ->zPrev = 4608;
+            g_BattleSummonShivaTargetCentroidZ->zPrev2 = 4608;
         }
         MultiplyMatrix(&g_BattleSummonShivaCameraScriptDelay, (void *)taskPtr->matrixPtr, &g_BattleSummonShivaTargetCentroidZ->matrix);
         ScaleMatrix(&g_BattleSummonShivaTargetCentroidZ->matrix, &g_BattleSummonShivaTargetCentroidZ->zPrev2);
@@ -2137,13 +2137,13 @@ void __cdecl BattleFx_SummonShivaTriangleFragmentsTask(void)
         SetTransMatrix(&g_BattleSummonShivaTargetCentroidZ->matrix);
         g_BattleSummonShivaBufferPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonShivaForceFieldTable.triangleTableValue, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonShivaBufferPtr);
     } else {
-        time -= 0x19;
-        if (time < 0x1E) {
-            ramp = (time << 0xC) / 0x1E;
+        time -= 25;
+        if (time < 30) {
+            ramp = (time << 12) / 30;
             if (time == 0) {
-                g_BattleSummonShivaTargetCentroidZ->zCurrent = 0x1200;
-                g_BattleSummonShivaTargetCentroidZ->zPrev = 0x1200;
-                g_BattleSummonShivaTargetCentroidZ->zPrev2 = 0x1200;
+                g_BattleSummonShivaTargetCentroidZ->zCurrent = 4608;
+                g_BattleSummonShivaTargetCentroidZ->zPrev = 4608;
+                g_BattleSummonShivaTargetCentroidZ->zPrev2 = 4608;
                 ScaleMatrix((void *)taskPtr->matrixPtr, &g_BattleSummonShivaTargetCentroidZ->zPrev2);
             }
             RotMatrix((SVECTOR *)((int)taskPtr + 4), &g_BattleSummonShivaTargetCentroidZ->matrix);
@@ -2157,8 +2157,8 @@ void __cdecl BattleFx_SummonShivaTriangleFragmentsTask(void)
             SetDrawColorRGB(0, 0, 0);
             g_BattleSummonShivaForceFieldTable.triangleFirstShort = ramp;
             g_BattleSummonShivaForceFieldTable.triangleSecondShort = ramp;
-            Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xC, (GfxTableCursor *)((int)g_BattleSummonShivaRingAlpha))));
-            Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xD, (GfxTableCursor *)((int)g_BattleSummonShivaRingAlpha))));
+            Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(12, (GfxTableCursor *)((int)g_BattleSummonShivaRingAlpha))));
+            Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(13, (GfxTableCursor *)((int)g_BattleSummonShivaRingAlpha))));
             g_BattleSummonShivaBufferPtr = BattleFx_SummonShivaSubmitPerTriangleModel((BattleFxShivaTriangleModelBlock *)&g_BattleSummonShivaForceFieldTable.triangleModelOffset, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonShivaBufferPtr, taskPtr->variant * 0x1E + (int)&g_BattleSummonShivaParticleIndex);
         } else {
             taskPtr->fragmentIndex = 0xFFFF;
@@ -2263,9 +2263,9 @@ void __cdecl BattleFx_SummonShivaUpdateTriangleFragmentMatrices(int resourceBloc
             g_BattleSummonShivaTriangleRecords[triIndex].posX += g_BattleSummonShivaTriangleRecords[triIndex].velX;
             g_BattleSummonShivaTriangleRecords[triIndex].posY += g_BattleSummonShivaTriangleRecords[triIndex].velY;
             g_BattleSummonShivaTriangleRecords[triIndex].posZ += g_BattleSummonShivaTriangleRecords[triIndex].velZ;
-            g_BattleSummonShivaTriangleRecords[triIndex].velX = g_BattleSummonShivaTriangleRecords[triIndex].velX * 0xE00 >> 0xC;
-            g_BattleSummonShivaTriangleRecords[triIndex].velY = g_BattleSummonShivaTriangleRecords[triIndex].velY * 0xE00 >> 0xC;
-            g_BattleSummonShivaTriangleRecords[triIndex].velZ = g_BattleSummonShivaTriangleRecords[triIndex].velZ * 0xE00 >> 0xC;
+            g_BattleSummonShivaTriangleRecords[triIndex].velX = g_BattleSummonShivaTriangleRecords[triIndex].velX * 0xE00 /* 0.875 */ >> 12;
+            g_BattleSummonShivaTriangleRecords[triIndex].velY = g_BattleSummonShivaTriangleRecords[triIndex].velY * 0xE00 /* 0.875 */ >> 12;
+            g_BattleSummonShivaTriangleRecords[triIndex].velZ = g_BattleSummonShivaTriangleRecords[triIndex].velZ * 0xE00 /* 0.875 */ >> 12;
         }
         positionPtr->posX = g_BattleSummonShivaTriangleRecords[triIndex].posX;
         positionPtr->posY = g_BattleSummonShivaTriangleRecords[triIndex].posY;
@@ -2295,7 +2295,7 @@ void __cdecl BattleFx_SummonShivaSpawnOrientedSpritesTask(void)
     }
     for (spriteIndex = 0; spriteIndex < 4; spriteIndex++) {
         sprite = (BattleFxShivaOrientedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonShivaOrientedSpriteTask);
-        g_BattleSummonShivaSpriteCallbacks.timelineState->vecX = g_BattleSummonShivaForceFieldTable.fragmentDirections[spriteIndex].vx + rand() % 0x640 + -0x320;
+        g_BattleSummonShivaSpriteCallbacks.timelineState->vecX = g_BattleSummonShivaForceFieldTable.fragmentDirections[spriteIndex].vx + rand() % 1600 + -800;
         g_BattleSummonShivaSpriteCallbacks.timelineState->wheelAngle = 0;
         g_BattleSummonShivaSpriteCallbacks.timelineState->spinSpeed = g_BattleSummonShivaForceFieldTable.fragmentDirections[spriteIndex].vz + rand() % 0x640 + -0x320;
         Gte_BuildLookBasisFromDirection((short *)g_BattleSummonShivaSpriteCallbacks.timelineState, (short *)&g_BattleSummonShivaFieldRecords[g_BattleSummonShivaRingGrowth]);
@@ -2306,7 +2306,7 @@ void __cdecl BattleFx_SummonShivaSpawnOrientedSpritesTask(void)
         g_BattleSummonShivaFieldRecords[g_BattleSummonShivaRingGrowth].transZ = (int)g_BattleSummonShivaSpriteCallbacks.timelineState->spinSpeed;
         sprite->fieldRecordPtr = &g_BattleSummonShivaFieldRecords[g_BattleSummonShivaRingGrowth];
         if (DEAD_IN_RETAIL != 0) {
-            spriteScale = 0x6000;
+            spriteScale = 0x6000 /* 6.0 */;
         } else {
             spriteScale = rand() % 8192 + 0x4000;
         }
@@ -2314,7 +2314,7 @@ void __cdecl BattleFx_SummonShivaSpawnOrientedSpritesTask(void)
         g_BattleSummonShivaRingGrowth++;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0xF) {
+    if (taskPtr->frameCounter >= 15) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2332,8 +2332,8 @@ void __cdecl BattleFx_SummonShivaOrientedSpriteTask(void)
         g_BattleSummonShivaCameraShakeOffsetInit |= 1;
         g_BattleSummonShivaCameraShakeOffset = (BattleFxShivaCameraScratch *)(Gfx_GetPsxScratchpadPtr(0));
     }
-    g_BattleSummonShivaForceFieldTable.orientedValueFirst = Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSummonShivaRingAlpha);
-    g_BattleSummonShivaForceFieldTable.orientedValueSecond = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSummonShivaRingAlpha);
+    g_BattleSummonShivaForceFieldTable.orientedValueFirst = Gfx_ModelTableGetLoadedRecord(10, g_BattleSummonShivaRingAlpha);
+    g_BattleSummonShivaForceFieldTable.orientedValueSecond = Gfx_ModelTableGetSpriteObject(10, g_BattleSummonShivaRingAlpha);
     MultiplyMatrix(&g_BattleSummonShivaCameraScriptDelay, task->matrix, &g_BattleSummonShivaCameraShakeOffset->matrix);
     Gte_OrthonormaliseFromYAxis((BattleOrthoMatrix *)&g_BattleSummonShivaCameraShakeOffset->matrix);
     g_BattleSummonShivaCameraShakeOffset->scaleZ = task->sample;
@@ -2367,7 +2367,7 @@ void __cdecl BattleFx_SummonShivaUpdateAttachPointTableTask(void)
         g_BattleSummonShivaCameraShakeAmplitudeInit |= 1;
         g_BattleSummonShivaCameraShakeAmplitude = (BattleFxMatrixVector *)Gfx_GetPsxScratchpadPtr(0);
     }
-    Battle3d_GetActorAttachMatrix(3, 0x30, (PsxMatrix *)((int)actor + 0xB34));
+    Battle3d_GetActorAttachMatrix(3, 48, (PsxMatrix *)((int)actor + 0xB34));
     Battle_ComposeMatrixRelativeToCamera((short *)&g_BattleSummonShivaCameraScriptDelay, (void *)((int)actor + 0xB34), (PsxMatrix *)g_BattleSummonShivaCameraShakeAmplitude);
     g_pBattleSummonShivaActiveForceFields[1].centerX = g_BattleSummonShivaCameraShakeAmplitude->x;
     g_pBattleSummonShivaActiveForceFields[0].centerX = g_pBattleSummonShivaActiveForceFields[1].centerX;
@@ -2378,7 +2378,7 @@ void __cdecl BattleFx_SummonShivaUpdateAttachPointTableTask(void)
     TransformVectorToInt16(g_BattleSummonShivaCameraShakeAmplitude, &g_BattleSummonShivaRotXYZ.cameraShakeVector, &g_pBattleSummonShivaActiveForceFields[1].dirX);
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        if (task->frameCounter >= 0x3C) {
+        if (task->frameCounter >= 60) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2407,10 +2407,10 @@ void __cdecl BattleFx_SummonShivaMoveSummonActorTask(void)
         return;
     }
     time = taskPtr->frameCounter;
-    if (time < 0x22) { /* empty first arm: lib/codegen.h */
+    if (time < 34) { /* empty first arm: lib/codegen.h */
     } else {
-        time -= 0x22;
-        if (time < 0x4B) {
+        time -= 34;
+        if (time < 75) {
             if (time == 0) {
                 ring = (BattleFxSummonShivaRingRecord *)Battle_AllocSceneMessage(1);
                 TransformVectorToInt16(&g_BattleSummonShivaTransformMatrix2.matrix, &g_BattleSummonShivaTargetOffset.vector, (void *)g_BattleSummonShivaTargetCentroidX);
@@ -2418,13 +2418,13 @@ void __cdecl BattleFx_SummonShivaMoveSummonActorTask(void)
                 ring->posY = g_BattleSummonShivaTargetCentroidX->centroidY + g_BattleSummonShivaTransformMatrix2.matrix.t[1];
                 ring->posZ = g_BattleSummonShivaTargetCentroidX->centroidZ + g_BattleSummonShivaTransformMatrix2.matrix.t[2];
                 ring->colorWord = g_BattleSummonShivaRingColor.ringStep + 0x800;
-                actor->fadeStep = 0x1800;
+                actor->fadeStep = 6144;
             }
-            ramp = (time << 0xC) / 0x4B;
-            g_BattleSummonShivaTargetOffset.vector.vy = (ramp * 0x7D0 >> 0xC) - 0xBB8;
+            ramp = (time << 12) / 75;
+            g_BattleSummonShivaTargetOffset.vector.vy = (ramp * 0x7D0 >> 12) - 3000;
         } else {
-            time -= 0x4B;
-            if (time < 0x5A && time == 0x59) {
+            time -= 75;
+            if (time < 90 && time == 89) {
                 Battle_AllocSceneMessage(2);
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
             }

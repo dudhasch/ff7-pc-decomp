@@ -90,9 +90,9 @@ void __cdecl BattleFx_MagicSpawnQuakePerTarget(int actor)
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &task->posX);
     task->posY = 0;
     task->extent = 0;
-    task->radius = g_BattleActorRecords[actor].radius + 0xE0;
-    if (task->radius > 0x76C) {
-        task->radius = 0x76C;
+    task->radius = g_BattleActorRecords[actor].radius + 224;
+    if (task->radius > 1900) {
+        task->radius = 1900;
     }
     task->radius = task->radius / 8;
     task->targetIndex = actor;
@@ -123,7 +123,7 @@ void __cdecl BattleFx_MagicQuakeGrowShrinkModelTask(void)
     frame.modelMatrix.t[0] = frame.growRecord->posX;
     frame.modelMatrix.t[1] = frame.growRecord->posY;
     frame.modelMatrix.t[2] = frame.growRecord->posZ;
-    frame.growScale = (frame.growRecord->value << 0xC) / 0x258;
+    frame.growScale = (frame.growRecord->value << 12) / 600;
     frame.scaleVec.vz = frame.growScale;
     frame.scaleVec.vy = frame.scaleVec.vz;
     frame.scaleVec.vx = frame.scaleVec.vy;
@@ -135,22 +135,22 @@ void __cdecl BattleFx_MagicQuakeGrowShrinkModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicQuakeLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.growRecord->stage >= 0x16) {
+    if (frame.growRecord->stage >= 22) {
         frame.growRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.growRecord->stage == 0xE) {
+    if (frame.growRecord->stage == 14) {
         Battle_PostActorHitOrHurtMessage(frame.growRecord->recordType);
     }
     if (frame.growRecord->stage < 8) {
         frame.growRecord->value += frame.growRecord->step;
-    } else if (frame.growRecord->stage >= 0xE) {
+    } else if (frame.growRecord->stage >= 14) {
         frame.growRecord->value -= frame.growRecord->step;
     }
     (frame.growRecord->stage)++;

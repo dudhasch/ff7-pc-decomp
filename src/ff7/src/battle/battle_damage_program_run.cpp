@@ -51,7 +51,7 @@ void __cdecl Battle_BuildDamageProgramTable(void)
     byteIndex = 0;
     start = 0;
     for (; byteIndex < 0x1E; byteIndex++) {
-        if (entryCount < 0x10) {
+        if (entryCount < 16) {
             if (byteIndex == (unsigned int)start) {
                 g_anDamageProgramEntry[entryCount] = byteIndex;
                 entryCount++;

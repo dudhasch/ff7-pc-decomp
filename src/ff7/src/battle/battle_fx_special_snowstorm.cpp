@@ -132,16 +132,16 @@ void __cdecl BattleFx_SpecialEnterSnowstorm(int targetMask, int actorIdx)
     g_BattleSpecialSnowstormCounter = 0;
     switch (g_BattleUiScalingMode) {
     case MAIN_GRAPHICS_MODE_320X240:
-        g_BattleSpecialSnowstormFieldWidth = 0x140;
-        g_BattleSpecialSnowstormFieldHeight = 0xa0;
+        g_BattleSpecialSnowstormFieldWidth = 320;
+        g_BattleSpecialSnowstormFieldHeight = 160;
         break;
     case MAIN_GRAPHICS_MODE_320X240_CENTERED:
-        g_BattleSpecialSnowstormFieldWidth = g_BattleViewportOriginX + 0x140;
-        g_BattleSpecialSnowstormFieldHeight = g_BattleViewportOriginY + 0xa0;
+        g_BattleSpecialSnowstormFieldWidth = g_BattleViewportOriginX + 320;
+        g_BattleSpecialSnowstormFieldHeight = g_BattleViewportOriginY + 160;
         break;
     case MAIN_GRAPHICS_MODE_640X480:
-        g_BattleSpecialSnowstormFieldWidth = 0x280;
-        g_BattleSpecialSnowstormFieldHeight = 0x140;
+        g_BattleSpecialSnowstormFieldWidth = 640;
+        g_BattleSpecialSnowstormFieldHeight = 320;
         break;
     }
     BattleFx_SpecialBeginSnowstorm(targetMask, actorIdx);
@@ -174,7 +174,7 @@ void __cdecl BattleFx_SpecialSpawnSnowstormPerTarget(int actor, int actorId)
     Battle_GetBoneWorldPos(actorId, g_BattleActorRecords[actorId].bone33, &taskPointer->sourcePos);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &taskPointer->targetPos);
     taskPointer->targetIndex = (short)actor;
-    for (i = 0; i < 0x190; i++) {
+    for (i = 0; i < 400; i++) {
         ((BattleSpecialSnowstormParticle *)&g_BattleSpecialSnowstormParticleData)[i].x = rand() % g_BattleSpecialSnowstormFieldWidth;
         ((BattleSpecialSnowstormParticle *)&g_BattleSpecialSnowstormParticleData)[i].y = rand() % g_BattleSpecialSnowstormFieldHeight;
     }
@@ -214,41 +214,41 @@ void __cdecl BattleFx_SpecialSnowstormTimelineTask(void)
         frame.deltaX.vz = frame.timelineSlot->targetZ - frame.timelineSlot->startZ;
         Gte_BuildLookBasisFromDirection(&frame.deltaX.vx, (short *)&g_BattleSpecialSnowstormLookBasis);
         frame.distance = SqrtToInt(frame.deltaX.vx * frame.deltaX.vx + frame.deltaX.vy * frame.deltaX.vy + frame.deltaX.vz * frame.deltaX.vz);
-        frame.spawnSlot->scale = frame.distance * 0x1500 / 0xAF0;
+        frame.spawnSlot->scale = frame.distance * 0x1500 / 2800;
     }
     if (frame.timelineSlot->frameCounter == 8) {
         frame.spawnSlot = (BattleFxSnowstormTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSnowstormFadeSpriteTask);
         frame.spawnSlot->posX = 0xFF9C;
         frame.spawnSlot->posY = 0xFF9C;
-        frame.spawnSlot->posZ = 0x7D0;
+        frame.spawnSlot->posZ = 2000;
         Battle_PlaySfxPannedToActor(0xB0, -1, 0x40);
         g_BattleStageHideFlags |= 7;
     }
-    if (frame.timelineSlot->frameCounter >= 0xF && frame.timelineSlot->frameCounter < 0x1E && frame.timelineSlot->frameCounter % 5 == 0) {
+    if (frame.timelineSlot->frameCounter >= 15 && frame.timelineSlot->frameCounter < 30 && frame.timelineSlot->frameCounter % 5 == 0) {
         frame.spawnSlot = (BattleFxSnowstormTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSnowstormExpandingRisingModelTask);
-        frame.spawnSlot->velocityX = SinFixed(g_BattleSpecialSnowstormArcTan + 0x800) * 0x3C >> 0xC;
-        frame.spawnSlot->velocityZ = CosFixed(g_BattleSpecialSnowstormArcTan + 0x800) * 0x3C >> 0xC;
-        frame.spawnSlot->posX = frame.timelineSlot->targetX - frame.spawnSlot->velocityX * 0xA;
-        frame.spawnSlot->posY = frame.timelineSlot->targetY + 0x190;
-        frame.spawnSlot->posZ = frame.timelineSlot->targetZ - frame.spawnSlot->velocityZ * 0xA;
+        frame.spawnSlot->velocityX = SinFixed(g_BattleSpecialSnowstormArcTan + 2048) * 0x3C >> 12;
+        frame.spawnSlot->velocityZ = CosFixed(g_BattleSpecialSnowstormArcTan + 2048) * 0x3C >> 12;
+        frame.spawnSlot->posX = frame.timelineSlot->targetX - frame.spawnSlot->velocityX * 10;
+        frame.spawnSlot->posY = frame.timelineSlot->targetY + 400;
+        frame.spawnSlot->posZ = frame.timelineSlot->targetZ - frame.spawnSlot->velocityZ * 10;
     }
-    if (frame.timelineSlot->frameCounter == 0x2D) {
+    if (frame.timelineSlot->frameCounter == 45) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
         Battle_PlaySfxPannedToActor(0x95, (short)frame.timelineSlot->actorIndex, 0x40);
     }
-    if (frame.timelineSlot->frameCounter > 0x29 && frame.timelineSlot->frameCounter < 0x31) {
+    if (frame.timelineSlot->frameCounter > 41 && frame.timelineSlot->frameCounter < 49) {
         for (frame.i = 0; frame.i < 2; frame.i++) {
             frame.spawnSlot = (BattleFxSnowstormTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSnowstormAnimatedSpriteTask)];
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)((int)frame.spawnSlot + 4));
-            frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
         }
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x41) {
+    if (frame.timelineSlot->frameCounter == 65) {
         g_BattleStageHideFlags &= 0xF8;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -264,7 +264,7 @@ void __cdecl BattleFx_SpecialSnowstormAnimatedSpriteTask(void)
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
     g_BattleSpecialSnowstormSpriteField8 = Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecialSnowstormLoadedRes);
     g_BattleSpecialSnowstormSpriteField4 = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecialSnowstormLoadedRes);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1000 /* 1.0 */, 0);
     g_BattleSpecialSnowstormColor1.frameIndex = task->frameCounter;
     g_BattleSpecialSnowstormRenderState = BattleFx_SubmitSpriteDraw(&g_BattleSpecialSnowstormSpriteField8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialSnowstormRenderState);
     if (g_BattleIsPaused == 0 && g_BattleSpecialSnowstormSpriteField8 != 0) {
@@ -315,7 +315,7 @@ void __cdecl BattleFx_SpecialSnowstormFadeSpriteTask(void)
     frame.mat21 = 0;
     frame.mat22 = 0x1000;
     memset(&frame.transX, 0, 12);
-    frame.scaleX.vz = 0xC00;
+    frame.scaleX.vz = 0xC00 /* 0.75 */;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     ScaleMatrix(&frame.mat00, &frame.scaleX);
@@ -336,11 +336,11 @@ void __cdecl BattleFx_SpecialSnowstormFadeSpriteTask(void)
     if (frame.fadeSlot->frameCounter < 8) {
         g_BattleSpecialSnowstormAngle++;
     }
-    if (frame.fadeSlot->frameCounter > 0x25) {
+    if (frame.fadeSlot->frameCounter > 37) {
         g_BattleSpecialSnowstormAngle--;
     }
     (frame.fadeSlot->frameCounter)++;
-    if (frame.fadeSlot->frameCounter == 0x2D) {
+    if (frame.fadeSlot->frameCounter == 45) {
         frame.fadeSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -365,7 +365,7 @@ void __cdecl BattleFx_SpecialSnowstormParticleFieldTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    for (local.i = 0; local.i < 0x190; local.i++) {
+    for (local.i = 0; local.i < 400; local.i++) {
         local.step = local.i % 2 * 2 + 2;
         ((BattleSpecialSnowstormParticle *)&g_BattleSpecialSnowstormParticleData)[local.i].x =
             (((BattleSpecialSnowstormParticle *)&g_BattleSpecialSnowstormParticleData)[local.i].x + local.step) %
@@ -377,11 +377,11 @@ void __cdecl BattleFx_SpecialSnowstormParticleFieldTask(void)
     if (local.slot->frameCounter < 8) {
         g_BattleSpecialSnowstormCounter++;
     }
-    if (local.slot->frameCounter > 0x2A) {
+    if (local.slot->frameCounter > 42) {
         g_BattleSpecialSnowstormCounter--;
     }
     (local.slot->frameCounter)++;
-    if (local.slot->frameCounter == 0x32) {
+    if (local.slot->frameCounter == 50) {
         local.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -397,7 +397,7 @@ void __cdecl BattleFx_SpecialSnowstormDrawParticleField(short intensity)
     int r; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
     q = 0x40;
-    for (idx = 0; idx < 0x190; idx++) {
+    for (idx = 0; idx < 400; idx++) {
         g_BattleSpecialSnowstormParticleConfig.phase = ((BattleSpecialSnowstormParticle *)&g_BattleSpecialSnowstormParticleData)[idx].x;
         g_BattleSpecialSnowstormParticleConfig.age = ((BattleSpecialSnowstormParticle *)&g_BattleSpecialSnowstormParticleData)[idx].y;
         g_BattleSpecialSnowstormScaleVector.y = (*(short *)&g_BattleUiScale);
@@ -447,7 +447,7 @@ void __cdecl BattleFx_SpecialSnowstormShrinkingOrientedModelTask(void)
         return;
     }
     (frame.shrinkSlot->frameCounter)++;
-    if (frame.shrinkSlot->frameCounter == 0x1E) {
+    if (frame.shrinkSlot->frameCounter == 30) {
         frame.shrinkSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -503,7 +503,7 @@ void __cdecl BattleFx_SpecialSnowstormExpandingRisingModelTask(void)
     frame.mat22 = 0x1000;
     frame.risingSlot = (BattleFxColdBreathRisingGrowingModelSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialSnowstormAnimParams.modelRecord = Gfx_ModelTableGetRenderObject(1, g_BattleSpecialSnowstormLoadedRes);
-    if (frame.risingSlot->frameCounter < 0xC) {
+    if (frame.risingSlot->frameCounter < 12) {
         frame.rampValue = 8;
     } else {
         frame.rampValue = 0x14 - frame.risingSlot->frameCounter;
@@ -525,11 +525,11 @@ void __cdecl BattleFx_SpecialSnowstormExpandingRisingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.risingSlot->posY += 0x28;
+    frame.risingSlot->posY += 40;
     frame.risingSlot->posX += frame.risingSlot->velocityX;
     frame.risingSlot->posZ += frame.risingSlot->velocityZ;
     (frame.risingSlot->frameCounter)++;
-    if (frame.risingSlot->frameCounter == 0x14) {
+    if (frame.risingSlot->frameCounter == 20) {
         frame.risingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

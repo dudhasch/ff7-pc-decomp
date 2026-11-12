@@ -89,13 +89,13 @@ void __cdecl Field_AllocHumanBuffers(void)
     // BUG: none of the four allocations is tested; a failed one leaves a null human-actor
     // buffer pointer behind.
     // STRING: FF7 0x009068c4
-    g_pHumanActorBuffer0 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(0xa0, "C:\\FF7\\field\\src\\ad_human.CPP", 0x2f);
+    g_pHumanActorBuffer0 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(160, "C:\\FF7\\field\\src\\ad_human.CPP", 47);
     // STRING: FF7 0x009068e4
-    g_pHumanActorBuffer1 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(0xa0, "C:\\FF7\\field\\src\\ad_human.CPP", 0x30);
+    g_pHumanActorBuffer1 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(160, "C:\\FF7\\field\\src\\ad_human.CPP", 48);
     // STRING: FF7 0x00906904
-    g_pHumanActorBuffer2 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(0xa0, "C:\\FF7\\field\\src\\ad_human.CPP", 0x31);
+    g_pHumanActorBuffer2 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(160, "C:\\FF7\\field\\src\\ad_human.CPP", 49);
     // STRING: FF7 0x00906924
-    g_pHumanActorBuffer3 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(0xa0, "C:\\FF7\\field\\src\\ad_human.CPP", 0x32);
+    g_pHumanActorBuffer3 = (struct FieldHumanActorBuffer0 *)GameHeapAllocRaw(160, "C:\\FF7\\field\\src\\ad_human.CPP", 50);
 }
 
 /*
@@ -107,22 +107,22 @@ void __cdecl Field_FreeHumanBuffers(void)
 {
     if (g_pHumanActorBuffer0 != 0) {
         // STRING: FF7 0x00906944
-        GameHeapFree(g_pHumanActorBuffer0, "C:\\FF7\\field\\src\\ad_human.CPP", 0x39);
+        GameHeapFree(g_pHumanActorBuffer0, "C:\\FF7\\field\\src\\ad_human.CPP", 57);
         g_pHumanActorBuffer0 = 0;
     }
     if (g_pHumanActorBuffer1 != 0) {
         // STRING: FF7 0x00906964
-        GameHeapFree(g_pHumanActorBuffer1, "C:\\FF7\\field\\src\\ad_human.CPP", 0x3e);
+        GameHeapFree(g_pHumanActorBuffer1, "C:\\FF7\\field\\src\\ad_human.CPP", 62);
         g_pHumanActorBuffer1 = 0;
     }
     if (g_pHumanActorBuffer2 != 0) {
         // STRING: FF7 0x00906984
-        GameHeapFree(g_pHumanActorBuffer2, "C:\\FF7\\field\\src\\ad_human.CPP", 0x43);
+        GameHeapFree(g_pHumanActorBuffer2, "C:\\FF7\\field\\src\\ad_human.CPP", 67);
         g_pHumanActorBuffer2 = 0;
     }
     if (g_pHumanActorBuffer3 != 0) {
         // STRING: FF7 0x009069a4
-        GameHeapFree(g_pHumanActorBuffer3, "C:\\FF7\\field\\src\\ad_human.CPP", 0x48);
+        GameHeapFree(g_pHumanActorBuffer3, "C:\\FF7\\field\\src\\ad_human.CPP", 72);
         g_pHumanActorBuffer3 = 0;
     }
 }
@@ -149,7 +149,7 @@ void __cdecl Field_ClearHumanBufferRecords(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         g_pHumanActorBuffer3[i].clearedWord0 = 0;
         g_pHumanActorBuffer3[i].clearedWord1 = 0;
         g_pHumanActorBuffer3[i].clearedWord2 = 0;
@@ -227,7 +227,7 @@ void __cdecl Field_PlacePlayerOnWalkmesh(void)
         }
         g_FieldEntityState[g_FieldPlayerEntityIndex].solidRange = g_FieldActorState.state.fieldScale * 0x22 >> 9;
         g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale << 10 >> 9;
-        g_FieldEntityState[g_FieldPlayerEntityIndex].animSpeed = 0x10;
+        g_FieldEntityState[g_FieldPlayerEntityIndex].animSpeed = 16;
     }
     for (i = 0; i < g_FieldHumanAnimState.modelListCountCopy; i++) {
         g_FieldEntityState[i].moveDirAdd = 0;
@@ -405,14 +405,14 @@ void __cdecl Field_UpdateEntities(int input)
                 Field_SetPlayerHeadingOffsetFromInput(input, (short)(g_FieldPlayerEntityIndex));
                 if ((input & INPUT_CROSS) != 0) {
                     if ((char)g_FieldActorState.state.speedBoost == 0) {
-                        g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale << 0xC >> 9;
+                        g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale << 12 >> 9;
                     } else {
                         g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale * 0x1800 >> 9;
                     }
                 } else if ((char)g_FieldActorState.state.speedBoost == 0) {
-                    g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale << 0xA >> 9;
+                    g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale << 10 >> 9;
                 } else {
-                    g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale * 0xC00 >> 0xA;
+                    g_FieldEntityState[g_FieldPlayerEntityIndex].moveSpeed = g_FieldActorState.state.fieldScale * 0xC00 >> 10;
                 }
                 if ((input & (INPUT_UP | INPUT_RIGHT | INPUT_DOWN | INPUT_LEFT)) != 0) {
                     if ((input & INPUT_UP) != 0) {
@@ -485,7 +485,7 @@ void __cdecl Field_UpdateEntities(int input)
                 Field_VecSub16To32(&vector, (FieldVec16 *)&g_pFieldWalkmeshVertices[(unsigned short)g_FieldEntityState[entityIdx].moveEndI * 3 + 2], (FieldVec16 *)&g_pFieldWalkmeshVertices[(unsigned short)g_FieldEntityState[entityIdx].moveEndI * 3 + 1]);
                 posX.x = (g_FieldEntityState[entityIdx].moveEndX) / 4096;
                 posX.y = (g_FieldEntityState[entityIdx].moveEndY) / 4096;
-                g_FieldEntityState[entityIdx].moveEndZ = Field_PointHeightInTriangle(&deltaX, &vector, &posX, (FieldVec16 *)&g_pFieldWalkmeshVertices[(unsigned short)g_FieldEntityState[entityIdx].moveEndI * 3]) << 0xC;
+                g_FieldEntityState[entityIdx].moveEndZ = Field_PointHeightInTriangle(&deltaX, &vector, &posX, (FieldVec16 *)&g_pFieldWalkmeshVertices[(unsigned short)g_FieldEntityState[entityIdx].moveEndI * 3]) << 12;
                 g_FieldEntityState[entityIdx].moveB = (g_FieldEntityState[entityIdx].moveEndZ - g_FieldEntityState[entityIdx].moveStartZ) / g_FieldEntityState[entityIdx].moveSteps - (g_FieldEntityState[entityIdx].moveSteps * -16000) / 2;
                 g_FieldEntityState[entityIdx].moveStep = 0;
                 g_FieldEntityState[entityIdx].actionState = FIELD_MOVE_STATE_RUNNING;
@@ -716,25 +716,25 @@ void __cdecl Field_FlagNearestFacedEntityOnInputEdge(void)
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     if ((g_FieldActorState.state.activeKeys2_32 & INPUT_CIRCLE) != 0 && (g_FieldActorState.state.oldActiveKeys2_32 & INPUT_CIRCLE) == 0) {
-        frame.current.vx = g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 0xC;
-        frame.current.vy = g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 0xC;
-        frame.current.vz = g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 0xC;
+        frame.current.vx = g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 12;
+        frame.current.vy = g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 12;
+        frame.current.vz = g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 12;
         for (frame.index = 0; frame.index < g_FieldActorState.state.modelCount; frame.index++) {
-            frame.angles[frame.index] = 0x100;
+            frame.angles[frame.index] = 0x100 /* 22.5 deg */;
             if (frame.index != g_FieldPlayerEntityIndex && (char)g_FieldEntityState[frame.index].talkOff == 0) {
-                frame.other.vx = g_FieldEntityState[frame.index].posX >> 0xC;
-                frame.other.vy = g_FieldEntityState[frame.index].posY >> 0xC;
-                frame.other.vz = g_FieldEntityState[frame.index].posZ >> 0xC;
+                frame.other.vx = g_FieldEntityState[frame.index].posX >> 12;
+                frame.other.vy = g_FieldEntityState[frame.index].posY >> 12;
+                frame.other.vz = g_FieldEntityState[frame.index].posZ >> 12;
                 if (frame.current.vx == frame.other.vx && frame.current.vy == frame.other.vy) {
                     continue;
                 }
-                if (frame.current.vz - frame.other.vz > -0x100 && frame.current.vz - frame.other.vz < 0x100) {
+                if (frame.current.vz - frame.other.vz > -256 && frame.current.vz - frame.other.vz < 256) {
                     frame.angles[frame.index] = g_FieldEntityState[g_FieldPlayerEntityIndex].dir - (Field_HeadingBetweenPoints((FieldPointTo *)&frame.current, (FieldPointTo *)&frame.other, &frame.distance) & 0xFF) & 0xFF;
                     if (frame.angles[frame.index] > 0x80) {
                         frame.angles[frame.index] = 0x100 - frame.angles[frame.index];
                     }
                     if (frame.distance >= g_FieldEntityState[frame.index].talkRange + g_FieldEntityState[g_FieldPlayerEntityIndex].solidRange) {
-                        frame.angles[frame.index] = 0x100;
+                        frame.angles[frame.index] = 0x100 /* 22.5 deg */;
                     }
                 }
             }
@@ -832,18 +832,18 @@ int __cdecl Field_AimEntityAtWalkTarget(FieldEntityWalkAim *aim, short radiusBia
         VECTOR to, from;
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
-    frame.from.vx = aim->fromX >> 0xC;
-    frame.from.vy = aim->fromY >> 0xC;
-    frame.to.vx = aim->toX >> 0xC;
-    frame.to.vy = aim->toY >> 0xC;
+    frame.from.vx = aim->fromX >> 12;
+    frame.from.vy = aim->fromY >> 12;
+    frame.to.vx = aim->toX >> 12;
+    frame.to.vy = aim->toY >> 12;
     frame.deltaX = frame.to.vx - frame.from.vx;
     frame.deltaY = frame.to.vy - frame.from.vy;
     frame.distance = frame.deltaX * frame.deltaX + frame.deltaY * frame.deltaY;
-    frame.limit = (aim->radius + radiusBias) * (aim->radius + radiusBias) + 0x1000;
+    frame.limit = (aim->radius + radiusBias) * (aim->radius + radiusBias) + 4096;
     if (radiusBias != 0 && frame.distance <= frame.limit) {
         return 0;
     } else {
-        frame.speedSquared = aim->speed * aim->speed >> 0x10;
+        frame.speedSquared = aim->speed * aim->speed >> 16;
         if (frame.distance < frame.speedSquared || frame.distance < 4) {
             aim->fromX = aim->toX;
             aim->fromY = aim->toY;
@@ -882,8 +882,8 @@ int __cdecl Field_WalkmeshSlideToPoint(unsigned short *triangle, FieldVec3i *pos
     sideTest2 = 0;
     retVal = 0;
     retVal = 0;
-    xy[0] = position->x / 0x1000;
-    xy[1] = position->y / 0x1000;
+    xy[0] = position->x / 4096;
+    xy[1] = position->y / 4096;
     xy[2] = 0;
     g_FieldWalkmeshEdge = -1;
     while (1) { /* Constant condition kept for /Od branch/register layout; see lib/codegen.h. */
@@ -1017,25 +1017,25 @@ int __cdecl Field_StepEntityOnWalkmesh(short entityIndex)
     gradientX.y = gradientX.y / 256;
     gradientX.z = gradientX.z / 256;
     NormalizeVectorFixed(&gradientX, &gradientX);
-    gradientX.x = (gradientX.z << 0xC) / SquareRoot12((gradientX.x * gradientX.x / 4096) + (gradientX.z * gradientX.z / 4096));
-    gradientX.y = (gradientX.z << 0xC) / SquareRoot12((gradientX.y * gradientX.y / 4096) + (gradientX.z * gradientX.z / 4096));
-    if (gradientX.x > 0x1000) {
-        gradientX.x = 0x1000;
+    gradientX.x = (gradientX.z << 12) / SquareRoot12((gradientX.x * gradientX.x / 4096) + (gradientX.z * gradientX.z / 4096));
+    gradientX.y = (gradientX.z << 12) / SquareRoot12((gradientX.y * gradientX.y / 4096) + (gradientX.z * gradientX.z / 4096));
+    if (gradientX.x > 4096) {
+        gradientX.x = 4096;
     }
-    if (gradientX.x < -0x1000) {
-        gradientX.x = -0x1000;
+    if (gradientX.x < -4096) {
+        gradientX.x = -4096;
     }
-    if (gradientX.y > 0x1000) {
-        gradientX.y = 0x1000;
+    if (gradientX.y > 4096) {
+        gradientX.y = 4096;
     }
-    if (gradientX.y < -0x1000) {
-        gradientX.y = -0x1000;
+    if (gradientX.y < -4096) {
+        gradientX.y = -4096;
     }
-    if (gradientX.z > 0x1000) {
-        gradientX.z = 0x1000;
+    if (gradientX.z > 4096) {
+        gradientX.z = 4096;
     }
-    if (gradientX.z < -0x1000) {
-        gradientX.z = -0x1000;
+    if (gradientX.z < -4096) {
+        gradientX.z = -4096;
     }
     absNormalX8 = gradientX.x;
     if (absNormalX8 < 0) {
@@ -1066,8 +1066,8 @@ int __cdecl Field_StepEntityOnWalkmesh(short entityIndex)
         posX.x = g_FieldEntityState[entityIndex].posX + posX.x;
         posX.y = g_FieldEntityState[entityIndex].posY + posX.y;
         posX.z = g_FieldEntityState[entityIndex].posZ;
-        normSlideX.normalX = (short)Field_SineByteAngle(g_FieldEntityState[entityIndex].moveDir + 0x20) * g_FieldEntityState[entityIndex].solidRange;
-        normSlideX.normalY = -(short)Field_CosineByteAngle(g_FieldEntityState[entityIndex].moveDir + 0x20) * g_FieldEntityState[entityIndex].solidRange;
+        normSlideX.normalX = (short)Field_SineByteAngle(g_FieldEntityState[entityIndex].moveDir + 32) * g_FieldEntityState[entityIndex].solidRange;
+        normSlideX.normalY = -(short)Field_CosineByteAngle(g_FieldEntityState[entityIndex].moveDir + 32) * g_FieldEntityState[entityIndex].solidRange;
         probePos.x = posX.x + normSlideX.normalX;
         probePos.y = posX.y + normSlideX.normalY;
         probePos.z = posX.z;
@@ -1078,8 +1078,8 @@ int __cdecl Field_StepEntityOnWalkmesh(short entityIndex)
             leftBump = 0;
         }
         tri = g_FieldEntityState[entityIndex].posI;
-        normSlideX.normalX = (short)Field_SineByteAngle(g_FieldEntityState[entityIndex].moveDir - 0x20) * g_FieldEntityState[entityIndex].solidRange;
-        normSlideX.normalY = -(short)Field_CosineByteAngle(g_FieldEntityState[entityIndex].moveDir - 0x20) * g_FieldEntityState[entityIndex].solidRange;
+        normSlideX.normalX = (short)Field_SineByteAngle(g_FieldEntityState[entityIndex].moveDir - 32) * g_FieldEntityState[entityIndex].solidRange;
+        normSlideX.normalY = -(short)Field_CosineByteAngle(g_FieldEntityState[entityIndex].moveDir - 32) * g_FieldEntityState[entityIndex].solidRange;
         probePos.x = posX.x + normSlideX.normalX;
         probePos.y = posX.y + normSlideX.normalY;
         probePos.z = posX.z;
@@ -1153,9 +1153,9 @@ int __cdecl Field_StepEntityOnWalkmesh(short entityIndex)
     if (slideCenter == 0 && leftSlide == 0 && slideRightAmt == 0 && bumpStatus == 0 && leftBump == 0 && rightHit == 0 && finalResult == 0) {
         g_FieldEntityState[entityIndex].posX = posX.x;
         g_FieldEntityState[entityIndex].posY = posX.y;
-        g_FieldEntityState[entityIndex].posZ = posX.z << 0xC;
+        g_FieldEntityState[entityIndex].posZ = posX.z << 12;
         if ((char)g_FieldEntityState[entityIndex].scriptedMoveMode == FIELD_SCRIPTED_MOVE_NONE && entityIndex == g_FieldPlayerEntityIndex) {
-            g_FieldEntityState[entityIndex].animSpeed = 0x10;
+            g_FieldEntityState[entityIndex].animSpeed = 16;
             if ((g_FieldActorState.state.activeKeys32 & INPUT_CROSS) != 0) {
                 if (g_pFieldModelSlots[entityIndex].animationCount > (short)g_FieldActorState.state.runAnimId) {
                     g_FieldEntityState[entityIndex].activeAnimId = g_FieldActorState.state.runAnimIdLo;
@@ -1196,10 +1196,10 @@ int __cdecl Field_TestEntityCollision(short entityIndex, FieldTriggerCrossingPoi
     selfRadius = g_FieldEntityState[entityIndex].solidRange;
     for (otherIdx = 0; otherIdx < g_FieldActorState.state.modelCount; otherIdx++) {
         if (otherIdx != entityIndex && (char)g_FieldEntityState[otherIdx].solidOff == 0) {
-            dH = (g_FieldEntityState[otherIdx].posZ >> 0xC) - position->posZ;
-            if (dH > -0x7F && dH < 0x80) {
-                deltaX = g_FieldEntityState[otherIdx].posX - position->posX >> 0xC;
-                deltaY = g_FieldEntityState[otherIdx].posY - position->posY >> 0xC;
+            dH = (g_FieldEntityState[otherIdx].posZ >> 12) - position->posZ;
+            if (dH > -127 && dH < 128) {
+                deltaX = g_FieldEntityState[otherIdx].posX - position->posX >> 12;
+                deltaY = g_FieldEntityState[otherIdx].posY - position->posY >> 12;
                 radiusSq = (selfRadius + g_FieldEntityState[otherIdx].solidRange) / 2;
                 radiusSq *= radiusSq;
                 distSq = deltaX * deltaX + deltaY * deltaY;
@@ -1261,13 +1261,13 @@ char __cdecl Field_TestScriptLineTriggersWithCrossing(FieldScriptTriggerLine *tr
     all.state.currentPtr = (FieldTriggerCrossingPoint *)&all.state.current;
     all.state.movedPtr = (FieldTriggerCrossingPoint *)&all.state.moved;
     all.state.closestPtr = (FieldTriggerCrossingPoint *)&all.state.closest;
-    all.state.currentPtr->posX = triggerLine->posX >> 0xC;
-    all.state.currentPtr->posY = triggerLine->posY >> 0xC;
-    all.state.currentPtr->posZ = triggerLine->posZ >> 0xC;
-    all.state.movedPtr->posX = movedPos->posX >> 0xC;
-    all.state.movedPtr->posY = movedPos->posY >> 0xC;
-    all.state.movedPtr->posZ = triggerLine->posZ >> 0xC;
-    for (all.state.index = 0; all.state.index < 0x20; all.state.index++, segments++) {
+    all.state.currentPtr->posX = triggerLine->posX >> 12;
+    all.state.currentPtr->posY = triggerLine->posY >> 12;
+    all.state.currentPtr->posZ = triggerLine->posZ >> 12;
+    all.state.movedPtr->posX = movedPos->posX >> 12;
+    all.state.movedPtr->posY = movedPos->posY >> 12;
+    all.state.movedPtr->posZ = triggerLine->posZ >> 12;
+    for (all.state.index = 0; all.state.index < 32; all.state.index++, segments++) {
         if ((char)segments->isActive == 1) {
             segments->isOnLine = 0;
             all.state.distance = Field_ClosestPointOnSegment((short *)segments, all.state.currentPtr, all.state.closestPtr);
@@ -1286,7 +1286,7 @@ char __cdecl Field_TestScriptLineTriggersWithCrossing(FieldScriptTriggerLine *tr
                 }
                 if (all.state.currentPtr->posX != all.state.closestPtr->posX || all.state.currentPtr->posY != all.state.currentPtr->posY) {
                     segments->proximityAngle = Field_HeadingBetweenPoints((FieldPointTo *)all.state.currentPtr, (FieldPointTo *)all.state.closestPtr, &all.state.distance);
-                    if ((segments->proximityAngle - triggerLine->direction + 0x40 & 0xFF) < 0x80) {
+                    if ((segments->proximityAngle - triggerLine->direction + 0x40 & 0xFF) < 128) {
                         segments->requestPushScript = 1;
                         segments->isOnLine = 1;
                     }
@@ -1325,10 +1325,10 @@ void __cdecl Field_TestScriptLineTriggers(FieldScriptLineTrigger *triggerLine, i
     frame.closestPtr = (FieldTriggerCrossingPoint *)&frame.closest;
     if (g_FieldLockedSkipsLines != 0 && (char)g_FieldActorState.state.characterLock == 1) { /* empty first arm: lib/codegen.h */
     } else {
-        frame.currentPtr->posX = triggerLine->x >> 0xC;
-        frame.currentPtr->posY = triggerLine->y >> 0xC;
-        frame.currentPtr->posZ = triggerLine->z >> 0xC;
-        for (frame.index = 0; frame.index < 0x20; frame.index++, segments += 0x18) {
+        frame.currentPtr->posX = triggerLine->x >> 12;
+        frame.currentPtr->posY = triggerLine->y >> 12;
+        frame.currentPtr->posZ = triggerLine->z >> 12;
+        for (frame.index = 0; frame.index < 32; frame.index++, segments += 0x18) {
             if ((char)((FieldLine *)segments)->isActive == 1) {
                 frame.distance = Field_ClosestPointOnSegment((short *)segments, frame.currentPtr, frame.closestPtr);
                 if (frame.distance != -1 && frame.distance < triggerLine->radius * triggerLine->radius) {
@@ -1359,7 +1359,7 @@ void __cdecl Field_ResetScriptLineTalkFlags(int records)
 {
     int index;
 
-    for (index = 0; index < 0x20; index++, records += 0x18) {
+    for (index = 0; index < 32; index++, records += 24) {
         ((FieldLine *)records)->isOnLine = 0;
     }
 }
@@ -1378,13 +1378,13 @@ void __cdecl Field_TestGateways(FieldEntity *entity, FieldGateway *gateways, Fie
     frame.currentPtr = (FieldTriggerCrossingPoint *)&frame.current;
     frame.movedPtr = (FieldTriggerCrossingPoint *)&frame.moved;
     frame.closestPtr = (FieldTriggerCrossingPoint *)&frame.closest;
-    frame.currentPtr->posX = entity->posX >> 0xC;
-    frame.currentPtr->posY = entity->posY >> 0xC;
-    frame.currentPtr->posZ = entity->posZ >> 0xC;
-    frame.movedPtr->posX = movedPos->x >> 0xC;
-    frame.movedPtr->posY = movedPos->y >> 0xC;
-    frame.movedPtr->posZ = entity->posZ >> 0xC;
-    for (frame.index = 0; frame.index < 0xC; frame.index++, gateways++) {
+    frame.currentPtr->posX = entity->posX >> 12;
+    frame.currentPtr->posY = entity->posY >> 12;
+    frame.currentPtr->posZ = entity->posZ >> 12;
+    frame.movedPtr->posX = movedPos->x >> 12;
+    frame.movedPtr->posY = movedPos->y >> 12;
+    frame.movedPtr->posZ = entity->posZ >> 12;
+    for (frame.index = 0; frame.index < 12; frame.index++, gateways++) {
         if (gateways->eventCmdParam != 0x7FFF) {
             frame.distance = Field_ClosestPointOnSegment((short *)gateways, frame.currentPtr, frame.closestPtr);
             if (frame.distance != -1 && frame.distance < entity->solidRange * entity->solidRange) {
@@ -1461,13 +1461,13 @@ void __cdecl Field_TestDoorTriggers(FieldEntity *entity, FieldDoorTriggerRecord 
     frame.currentPtr = (FieldTriggerCrossingPoint *)&frame.current;
     frame.movedPtr = (FieldTriggerCrossingPoint *)&frame.moved;
     frame.closestPtr = (FieldTriggerCrossingPoint *)&frame.closest;
-    frame.currentPtr->posX = entity->posX >> 0xC;
-    frame.currentPtr->posY = entity->posY >> 0xC;
-    frame.currentPtr->posZ = entity->posZ >> 0xC;
-    frame.movedPtr->posX = movedPos->x >> 0xC;
-    frame.movedPtr->posY = movedPos->y >> 0xC;
-    frame.movedPtr->posZ = entity->posZ >> 0xC;
-    for (frame.index = 0; frame.index < 0xC; frame.index++, doors++) {
+    frame.currentPtr->posX = entity->posX >> 12;
+    frame.currentPtr->posY = entity->posY >> 12;
+    frame.currentPtr->posZ = entity->posZ >> 12;
+    frame.movedPtr->posX = movedPos->x >> 12;
+    frame.movedPtr->posY = movedPos->y >> 12;
+    frame.movedPtr->posZ = entity->posZ >> 12;
+    for (frame.index = 0; frame.index < 12; frame.index++, doors++) {
         if (doors->byteIndex != 0xFF) {
             frame.distance = Field_ClosestPointOnSegment((short *)doors, frame.currentPtr, frame.closestPtr);
             if (frame.distance != -1 && frame.distance < entity->solidRange * entity->solidRange) {
@@ -1478,7 +1478,7 @@ void __cdecl Field_TestDoorTriggers(FieldEntity *entity, FieldDoorTriggerRecord 
                     }
                 } else {
                     *(char *)&frame.angle = Field_HeadingBetweenPoints((FieldPointTo *)frame.currentPtr, (FieldPointTo *)frame.closestPtr, &frame.distance);
-                    if (((frame.angle & 0xFF) - entity->moveDir + 0x40 & 0xFF) < 0x80) {
+                    if (((frame.angle & 0xFF) - entity->moveDir + 0x40 & 0xFF) < 128) {
                         /* Retail caller prototype (int, char) -> short preserved for /Od argument promotion on `Field_SetDoorTriggerBit`. */
                         if ((short)((short(__cdecl *)(int, char))Field_SetDoorTriggerBit)((int)doors, *(char *)&doors->mode) == 1) {
                             Field_PlayDoorTriggerSoundEffect(frame.soundIds[doors->soundIndex]);
@@ -1513,7 +1513,7 @@ void __cdecl Field_InitDoorTriggers(int doors)
 {
     int index;
 
-    for (index = 0; index < 0xC; index++, doors += 0x10) {
+    for (index = 0; index < 12; index++, doors += 0x10) {
         if (((FieldDoorTriggerRecord *)doors)->byteIndex != 0xFF) {
             switch (((FieldDoorTriggerRecord *)doors)->mode) {
             case FIELD_DOOR_TRIGGER_SET:

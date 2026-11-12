@@ -144,7 +144,7 @@ void __cdecl BattleFx_MagicIce3SetupTask(void)
     BattleFxIce3Task *task;
 
     actorIdx = 0;
-    for (count = 0; actorIdx < 0xA; actorIdx++) {
+    for (count = 0; actorIdx < 10; actorIdx++) {
         if ((g_BattleMagicIce3TargetMask & 1 << actorIdx) != 0) {
             count++;
             if (count == 1) {
@@ -156,14 +156,14 @@ void __cdecl BattleFx_MagicIce3SetupTask(void)
     task->ownerSlot = BATTLE_TASK_FREE;
     desc = (BattleFxMagicIce3Fragment *)Gfx_GetPsxScratchpadPtr(0);
     desc->dataBlock = (int)&g_BattleMagicIce3MeshDesc;
-    desc->duration = 0xA;
-    desc->distBias = 0xC;
+    desc->duration = 10;
+    desc->distBias = 12;
     if (count == 1) {
         task = (BattleFxIce3Task *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3TargetTimelineTask);
         Battle_GetBoneWorldPos(solo, g_BattleActorRecords[solo].targetBone, &task->pos.x);
-        task->radius = g_BattleActorRecords[solo].radius + 0x100;
-        if (task->radius > 0x66C) {
-            task->radius = 0x66C;
+        task->radius = g_BattleActorRecords[solo].radius + 256;
+        if (task->radius > 1644) {
+            task->radius = 1644;
         }
         task->stageIndex = 0;
         task->isGroup = 0;
@@ -173,7 +173,7 @@ void __cdecl BattleFx_MagicIce3SetupTask(void)
         task = (BattleFxIce3Task *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3GroupTimelineTask);
         Battle_GetActorMaskCentroid(g_BattleMagicIce3TargetMask, &task->pos.x);
         task->pos.y = 0xFB00;
-        task->radius = 0x700;
+        task->radius = 1792;
         g_BattleMagicIce3Centroid = task->pos;
         BattleFx_MagicIce3InitGroupShatterModel((BattleFxMagicIce3Fragment *)desc);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputePanForEntity(g_BattleMagicIce3TargetMask), 0xA3);
@@ -228,7 +228,7 @@ int __cdecl BattleFx_MagicIce3InitSingleTargetFragmentMotion(BattleFxMagicIce3Fr
         g_BattleMagicIce3FragmentBuffer[bufIndex].positionX = vertSumX;
         g_BattleMagicIce3FragmentBuffer[bufIndex].positionY = yTally;
         g_BattleMagicIce3FragmentBuffer[bufIndex].positionZ = vertexZ;
-        yTally += 0x898;
+        yTally += 2200;
         yTally = yTally * yTally / ratio;
         g_BattleMagicIce3FragmentBuffer[bufIndex].yTally = yTally;
         g_BattleMagicIce3FragmentBuffer[bufIndex].fadeCounter = 0;
@@ -237,15 +237,15 @@ int __cdecl BattleFx_MagicIce3InitSingleTargetFragmentMotion(BattleFxMagicIce3Fr
         g_BattleMagicIce3FragmentBuffer[bufIndex].rotationX = 0;
         rnd = rand();
         if ((rnd & 0x800) != 0) {
-            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityX = (rnd & 7) * 0xC;
+            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityX = (rnd & 7) * 12;
         } else {
-            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityX = -((rnd & 7) * 0xC);
+            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityX = -((rnd & 7) * 12);
         }
         g_BattleMagicIce3FragmentBuffer[bufIndex].velocityY = 0;
         if ((rnd & 0x204080) != 0) {
-            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityZ = (rnd >> 3 & 7) * 0xC;
+            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityZ = (rnd >> 3 & 7) * 12;
         } else {
-            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityZ = -((rnd >> 3 & 7) * 0xC);
+            g_BattleMagicIce3FragmentBuffer[bufIndex].velocityZ = -((rnd >> 3 & 7) * 12);
         }
         g_BattleMagicIce3FragmentBuffer[bufIndex].accelerationY = -((yTally + distBias) * ((rnd & 3) + 2));
         bufIndex++;
@@ -298,19 +298,19 @@ int __cdecl BattleFx_MagicIce3InitFragmentMotionFromNormals(BattleFxMagicIce3Fra
         g_BattleMagicIce3FragmentBuffer[bufIdx].positionZ = 0;
         g_BattleMagicIce3FragmentBuffer[bufIdx].positionY = 0;
         g_BattleMagicIce3FragmentBuffer[bufIdx].positionX = 0;
-        if (faceIdx < 0x80) {
+        if (faceIdx < 128) {
             fragment->normalX = -fragment->normalX;
             fragment->normalY = -fragment->normalY;
             fragment->normalZ = -fragment->normalZ;
         }
-        rnd = rand() % 0x78 + 0x118;
-        g_BattleMagicIce3FragmentBuffer[bufIdx].rotationX = fragment->normalX * rnd >> 0xC;
-        g_BattleMagicIce3FragmentBuffer[bufIdx].rotationY = fragment->normalY * rnd >> 0xC;
-        g_BattleMagicIce3FragmentBuffer[bufIdx].rotationZ = fragment->normalZ * rnd >> 0xC;
-        rnd = rand() % 0xC + 9;
-        g_BattleMagicIce3FragmentBuffer[bufIdx].velocityX = fragment->normalX * rnd >> 0xC;
-        g_BattleMagicIce3FragmentBuffer[bufIdx].velocityY = fragment->normalY * rnd >> 0xC;
-        g_BattleMagicIce3FragmentBuffer[bufIdx].velocityZ = fragment->normalZ * rnd >> 0xC;
+        rnd = rand() % 120 + 280;
+        g_BattleMagicIce3FragmentBuffer[bufIdx].rotationX = fragment->normalX * rnd >> 12;
+        g_BattleMagicIce3FragmentBuffer[bufIdx].rotationY = fragment->normalY * rnd >> 12;
+        g_BattleMagicIce3FragmentBuffer[bufIdx].rotationZ = fragment->normalZ * rnd >> 12;
+        rnd = rand() % 12 + 9;
+        g_BattleMagicIce3FragmentBuffer[bufIdx].velocityX = fragment->normalX * rnd >> 12;
+        g_BattleMagicIce3FragmentBuffer[bufIdx].velocityY = fragment->normalY * rnd >> 12;
+        g_BattleMagicIce3FragmentBuffer[bufIdx].velocityZ = fragment->normalZ * rnd >> 12;
         bufIdx++;
         entryPtr++;
     }
@@ -334,21 +334,21 @@ void __cdecl BattleFx_MagicIce3TargetTimelineTask(void)
     wave = selfPtr->index;
     if (selfPtr->step == g_BattleMagicIce3FrameThresholds[wave] && wave < 6) {
         clampedRatio = selfPtr->ratio;
-        if (clampedRatio > 0x3E8) {
+        if (clampedRatio > 1000) {
             clampedRatio = 0x3E8;
         }
-        scaled = (clampedRatio << 0xC) / 0x4E2;
+        scaled = (clampedRatio << 12) / 1250;
         for (loop = 0; loop < 6; loop++) {
             if (wave < 3) {
                 child = (BattleFxIce3Target *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3ConvergingFadeModelTask);
-                child->duration = rand() % 0x7D0 + 0xFA0;
+                child->duration = rand() % 2000 + 4000;
                 child->stepDivisor = (&g_BattleMagicIce3CoordOffsets2.values)[wave] + (child->duration & 3);
                 child->stepSize = child->duration / child->stepDivisor;
             } else {
                 child = (BattleFxIce3Target *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3ConvergingModelTask);
-                child->duration = rand() % 0x7D0 + 0xFA0;
+                child->duration = rand() % 2000 + 4000;
                 child->stepSize = child->duration / ((&g_BattleMagicIce3CoordOffsets2.values)[wave] + (child->duration & 3));
-                child->stepDivisor = 0x18 - g_BattleMagicIce3FrameThresholds[wave];
+                child->stepDivisor = 24 - g_BattleMagicIce3FrameThresholds[wave];
             }
             child->pos = selfPtr->pos;
             child->angleX = (&g_BattleMagicIce3SineTable[0x404])[loop] + (&g_BattleMagicIce3CoordOffsets3.values)[wave];
@@ -358,9 +358,9 @@ void __cdecl BattleFx_MagicIce3TargetTimelineTask(void)
         wave++;
         selfPtr->index = wave;
     }
-    if (selfPtr->step == 0x18) {
+    if (selfPtr->step == 24) {
         BattleFx_StartScreenFlashRamp(1);
-    } else if (selfPtr->step == 0x1A) {
+    } else if (selfPtr->step == 26) {
         BattleFx_FadeOutScreenFlashRamp(4);
         if (selfPtr->active != 0) {
             child = (BattleFxIce3Target *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3GroupShatterModelTask);
@@ -368,15 +368,15 @@ void __cdecl BattleFx_MagicIce3TargetTimelineTask(void)
             child = (BattleFxIce3Target *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3SingleTargetShatterModelTask);
         }
         child->pos = selfPtr->pos;
-        child->ratio = (selfPtr->ratio << 0xC) / 0x3E8;
+        child->ratio = (selfPtr->ratio << 12) / 1000;
         selfPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     if (selfPtr->active == 0) {
-        if (selfPtr->step < 0xA) {
+        if (selfPtr->step < 10) {
             g_BattleFxTimelineState.channel2 = 0;
             g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
             g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-            g_BattleFxTimelineState.startValue = selfPtr->step * 0xCC;
+            g_BattleFxTimelineState.startValue = selfPtr->step * 204;
         } else {
             g_BattleFxTimelineState.startValue = 0x800;
         }
@@ -405,7 +405,7 @@ void __cdecl BattleFx_MagicIce3SingleTargetShatterModelTask(void)
 
     frame.slot = (BattleMagicIce3SingleShatter *)BATTLE_CURRENT_TASK_SLOT;
     SetDrawColorRGB(0, 0, 0);
-    if (frame.slot->frame < 0xB) {
+    if (frame.slot->frame < 11) {
         frame.rotX.vx = 0;
         frame.rotX.vy = 0;
         frame.rotX.vz = 0;
@@ -422,7 +422,7 @@ void __cdecl BattleFx_MagicIce3SingleTargetShatterModelTask(void)
         SetTransMatrix(&frame.rotMatrix);
         RefreshGlobalTransformState();
         if (frame.slot->frame < 8) {
-            frame.fadeLevel = 0x1000 - (frame.slot->frame << 9);
+            frame.fadeLevel = 4096 - (frame.slot->frame << 9);
             if (frame.fadeLevel < 0) {
                 frame.fadeLevel = 0;
             }
@@ -451,15 +451,15 @@ void __cdecl BattleFx_MagicIce3SingleTargetShatterModelTask(void)
         frame.shatterBlock->base = frame.slot->pos.pair;
         g_BattleFxActiveDrawListPtr = BattleFx_MagicIce3DrawSingleTargetShatterModel(frame.shatterBlock, frame.slot->frame - 5);
     }
-    if (frame.slot->frame >= 0x17) {
-        frame.fadeLevel = 0x800 - (frame.slot->frame - 0x17) * 0xCC;
+    if (frame.slot->frame >= 23) {
+        frame.fadeLevel = 2048 - (frame.slot->frame - 23) * 204;
         if (frame.fadeLevel < 0) {
             frame.fadeLevel = 0;
         }
     } else {
-        frame.fadeLevel = 0x800;
+        frame.fadeLevel = 2048;
     }
-    if (frame.slot->frame >= 0x21) {
+    if (frame.slot->frame >= 33) {
         frame.fadeLevel = 0;
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -467,7 +467,7 @@ void __cdecl BattleFx_MagicIce3SingleTargetShatterModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frame == 0xF) {
+    if (frame.slot->frame == 15) {
         for (frame.targetIndex = 0; frame.targetIndex < 0xA; frame.targetIndex++) {
             if ((g_BattleMagicIce3TargetMask & 1 << frame.targetIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.targetIndex);
@@ -510,7 +510,7 @@ int __cdecl BattleFx_MagicIce3DrawSingleTargetShatterFragments(BattleIce3Shatter
 
     numFragments = *(int *)entryBlock;
     fragCurrent = shatter->fragmentIndex;
-    shiftAmount8 = 0xE - shatter->otShift;
+    shiftAmount8 = 14 - shatter->otShift;
     u = shatter->scaleX;
     auxFadeStart = shatter->fadeStartFrame;
     readCurrent = (BattleFxShatterEntry *)(entryBlock + 4);
@@ -532,9 +532,9 @@ int __cdecl BattleFx_MagicIce3DrawSingleTargetShatterFragments(BattleIce3Shatter
         shatter->fragment2X -= shatter->velocityX;
         shatter->fragment2Y -= shatter->velocityY;
         shatter->fragment2Z -= shatter->velocityZ;
-        shatter->matrix.t[0] = (shatter->velocityX * u >> 0xC) + shatter->baseX;
-        shatter->matrix.t[1] = (shatter->velocityY * u >> 0xC) + shatter->baseY;
-        shatter->matrix.t[2] = (shatter->velocityZ * u >> 0xC) + shatter->baseZ;
+        shatter->matrix.t[0] = (shatter->velocityX * u >> 12) + shatter->baseX;
+        shatter->matrix.t[1] = (shatter->velocityY * u >> 12) + shatter->baseY;
+        shatter->matrix.t[2] = (shatter->velocityZ * u >> 12) + shatter->baseZ;
         if (g_BattleMagicIce3FragmentBuffer[fragCurrent].yTally < threshold) {
             shatter->matrix.t[1] += g_BattleMagicIce3FragmentBuffer[fragCurrent].velocityY;
             if (g_BattleIsPaused == 0) {
@@ -556,7 +556,7 @@ int __cdecl BattleFx_MagicIce3DrawSingleTargetShatterFragments(BattleIce3Shatter
         if (g_BattleMagicIce3FragmentBuffer[fragCurrent].fadeCounter <= auxFadeStart) {
             shade = 0;
         } else {
-            shade = (g_BattleMagicIce3FragmentBuffer[fragCurrent].fadeCounter - auxFadeStart) * 0x249;
+            shade = (g_BattleMagicIce3FragmentBuffer[fragCurrent].fadeCounter - auxFadeStart) * 585;
         }
         Gfx_PsxStoreFrontFacing(&shatter->fragmentCount);
         if (shatter->fragmentCount > 0) {
@@ -586,15 +586,15 @@ void __cdecl BattleFx_MagicIce3BuildScaledEulerRotationMatrix(BattleFxEulerAngle
     scaleA = scaleVec->scaleX;
     scaleB = scaleVec->scaleY;
     zScale = scaleVec->scaleZ;
-    matrix->m00 = (cosRoll * cosRotY >> 0xC) * scaleA >> 0xC;
-    matrix->m10 = ((sinZ * workCosX >> 0xC) - ((cosRoll * negSinY >> 0xC) * sinPitch >> 0xC)) * scaleA >> 0xC;
-    matrix->m20 = ((sinZ * sinPitch >> 0xC) + ((cosRoll * negSinY >> 0xC) * workCosX >> 0xC)) * scaleA >> 0xC;
-    matrix->m01 = (-sinZ * cosRotY >> 0xC) * scaleB >> 0xC;
-    matrix->m11 = ((cosRoll * workCosX >> 0xC) + ((sinZ * negSinY >> 0xC) * sinPitch >> 0xC)) * scaleB >> 0xC;
-    matrix->m21 = ((cosRoll * sinPitch >> 0xC) - ((sinZ * negSinY >> 0xC) * workCosX >> 0xC)) * scaleB >> 0xC;
-    matrix->m02 = -negSinY * zScale >> 0xC;
-    matrix->m12 = (-cosRotY * sinPitch >> 0xC) * zScale >> 0xC;
-    matrix->m22 = (cosRotY * workCosX >> 0xC) * zScale >> 0xC;
+    matrix->m00 = (cosRoll * cosRotY >> 12) * scaleA >> 12;
+    matrix->m10 = ((sinZ * workCosX >> 12) - ((cosRoll * negSinY >> 12) * sinPitch >> 12)) * scaleA >> 12;
+    matrix->m20 = ((sinZ * sinPitch >> 12) + ((cosRoll * negSinY >> 12) * workCosX >> 12)) * scaleA >> 12;
+    matrix->m01 = (-sinZ * cosRotY >> 12) * scaleB >> 12;
+    matrix->m11 = ((cosRoll * workCosX >> 12) + ((sinZ * negSinY >> 12) * sinPitch >> 12)) * scaleB >> 12;
+    matrix->m21 = ((cosRoll * sinPitch >> 12) - ((sinZ * negSinY >> 12) * workCosX >> 12)) * scaleB >> 12;
+    matrix->m02 = -negSinY * zScale >> 12;
+    matrix->m12 = (-cosRotY * sinPitch >> 12) * zScale >> 12;
+    matrix->m22 = (cosRotY * workCosX >> 12) * zScale >> 12;
 }
 
 /* Computes trigonometric sine from table lookup for Blizzaga. */
@@ -689,7 +689,7 @@ void __cdecl BattleFx_MagicIce3GroupShatterModelTask(void)
         SetRotMatrix(&frame.matrix);
         SetTransMatrix(&frame.matrix);
         if (frame.shatterSlot->phase < 2) {
-            frame.fadeLevel = 0x1000 - (frame.shatterSlot->phase << 0xB);
+            frame.fadeLevel = 4096 - (frame.shatterSlot->phase << 11);
             if (frame.fadeLevel < 0) {
                 frame.fadeLevel = 0;
             }
@@ -718,15 +718,15 @@ void __cdecl BattleFx_MagicIce3GroupShatterModelTask(void)
         frame.shatterDraw->pos = frame.shatterSlot->pos.pair;
         g_BattleFxActiveDrawListPtr = BattleFx_MagicIce3DrawGroupShatterModel((BattleFxMagicIce3ShatterDraw *)frame.shatterDraw, frame.shatterSlot->phase - 2);
     }
-    if (frame.shatterSlot->phase >= 0x17) {
-        frame.fadeLevel = 0x800 - (frame.shatterSlot->phase - 0x17) * 0xCC;
+    if (frame.shatterSlot->phase >= 23) {
+        frame.fadeLevel = 2048 - (frame.shatterSlot->phase - 23) * 204;
         if (frame.fadeLevel < 0) {
             frame.fadeLevel = 0;
         }
     } else {
-        frame.fadeLevel = 0x800;
+        frame.fadeLevel = 2048;
     }
-    if (frame.shatterSlot->phase >= 0x22) {
+    if (frame.shatterSlot->phase >= 34) {
         frame.fadeLevel = 0;
         frame.shatterSlot->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -754,7 +754,7 @@ int __cdecl BattleFx_MagicIce3DrawGroupShatterModel(BattleFxMagicIce3ShatterDraw
     cursor = meshBase + *(int *)shatter->dataBlock;
     shatter->highWordMask = *(int *)cursor & 0xFFFF0000;
     shatter->fragIx = 0;
-    shatter->matrix.m[2][2] = shatter->scaleX << 0xC >> 0xC;
+    shatter->matrix.m[2][2] = shatter->scaleX << 12 >> 12;
     shatter->matrix.m[1][1] = shatter->matrix.m[2][2];
     shatter->matrix.m[0][0] = shatter->matrix.m[1][1];
     shatter->matrix.m[2][1] = 0;
@@ -876,7 +876,7 @@ void __cdecl BattleFx_MagicIce3ConvergingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicIce3LoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
@@ -934,11 +934,11 @@ void __cdecl BattleFx_MagicIce3ConvergingFadeModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicIce3LoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.convergeFadeSlot->frameCounter >= frame.convergeFadeSlot->fadeStart) {
-        frame.modelDraw->fadeLevel -= (short)((frame.convergeFadeSlot->frameCounter - frame.convergeFadeSlot->fadeStart) * 0x15);
+        frame.modelDraw->fadeLevel -= (short)((frame.convergeFadeSlot->frameCounter - frame.convergeFadeSlot->fadeStart) * 21);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     if (frame.convergeFadeSlot->frameCounter >= frame.convergeFadeSlot->fadeStart + 6) {
@@ -981,7 +981,7 @@ void __cdecl BattleFx_MagicIce3GroupTimelineTask(void)
             }
         }
     }
-    if (task->frameCount == 0x14) {
+    if (task->frameCount == 20) {
         targetPtr = (BattleMagicIce3GroupSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicIce3TargetTimelineTask);
         targetPtr->pos = task->pos;
         targetPtr->ratio = task->radius;
@@ -989,15 +989,15 @@ void __cdecl BattleFx_MagicIce3GroupTimelineTask(void)
         targetPtr->thresholdIndex = 0;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, Battle_ComputePanForEntity(g_BattleMagicIce3TargetMask), 0x79);
     }
-    if (task->frameCount < 0xA) {
+    if (task->frameCount < 10) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        g_BattleFxTimelineState.startValue = task->frameCount * 0xCC;
+        g_BattleFxTimelineState.startValue = task->frameCount * 204;
     } else {
         g_BattleFxTimelineState.startValue = 0x800;
     }
-    if (task->frameCount >= 0x32) {
+    if (task->frameCount >= 50) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCount)++;
@@ -1058,7 +1058,7 @@ void __cdecl BattleFx_MagicIce3SpiralRibbonTask(void)
         Gfx_ShadePsxTriVertexColors((CVECTOR *)&frame.ribbon->colorBase, (CVECTOR *)&frame.ribbon->colorPrimary, (CVECTOR *)&frame.ribbon->colorSecondary, frame.shadeLevel, (CVECTOR *)&frame.ribbon->colorBase, (CVECTOR *)&frame.ribbon->colorPrimary, (CVECTOR *)&frame.ribbon->colorSecondary);
         Gfx_ShadePsxVertexColor((CVECTOR *)&frame.ribbon->colorTertiary, frame.shadeLevel, (CVECTOR *)&frame.ribbon->colorTertiary);
     } else if (frame.ribbonSlot->frameCounter < 6) {
-        frame.shadeLevel = 0x1000 - frame.ribbonSlot->frameCounter * 0x2AA;
+        frame.shadeLevel = 0x1000 - frame.ribbonSlot->frameCounter * 682;
         SetDrawColorRGB(0, 0, 0);
         Gfx_ShadePsxTriVertexColors((CVECTOR *)&frame.ribbon->colorBase, (CVECTOR *)&frame.ribbon->colorPrimary, (CVECTOR *)&frame.ribbon->colorSecondary, frame.shadeLevel, (CVECTOR *)&frame.ribbon->colorBase, (CVECTOR *)&frame.ribbon->colorPrimary, (CVECTOR *)&frame.ribbon->colorSecondary);
         Gfx_ShadePsxVertexColor((CVECTOR *)&frame.ribbon->colorTertiary, frame.shadeLevel, (CVECTOR *)&frame.ribbon->colorTertiary);
@@ -1097,9 +1097,9 @@ void __cdecl BattleFx_MagicIce3SpiralRibbonTask(void)
         StoreDeferredDrawArgs(&frame.ribbon->rotIn0, &frame.ribbon->pos0, &frame.ribbon->pos2);
         ApplyDeferredDrawArgs();
         if (frame.segmentIndex < frame.halfCount) {
-            frame.shadeLevel = (frame.segmentIndex + 1 << 0xC) / frame.halfCount;
+            frame.shadeLevel = (frame.segmentIndex + 1 << 12) / frame.halfCount;
         } else {
-            frame.shadeLevel = (frame.segmentCount - frame.segmentIndex << 0xC) / frame.halfCount;
+            frame.shadeLevel = (frame.segmentCount - frame.segmentIndex << 12) / frame.halfCount;
         }
         StoreDeferredDrawArgs(&frame.ribbon->rotIn1, &frame.ribbon->pos1, &frame.ribbon->rotIn2);
         ApplyDeferredDrawArgs();

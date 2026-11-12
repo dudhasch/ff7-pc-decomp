@@ -173,7 +173,7 @@ void __cdecl Mini_ChocoboRaceUpdateCameraTargets(void)
         g_ChocoboCameraEyeGoal.camPosX = g_ChocoboSelectedRacerState.posX - (SinFixed(g_ChocoboSelectedRacerState.heading) >> ((ChocoboCameraInitEntry *)g_ChocoboCameraInitValues)[g_ChocoboCameraInitIndex].angle);
         g_ChocoboCameraEyeGoal.camPosZ = g_ChocoboSelectedRacerState.posZ - (-CosFixed(g_ChocoboSelectedRacerState.heading) >> ((ChocoboCameraInitEntry *)g_ChocoboCameraInitValues)[g_ChocoboCameraInitIndex].angle);
         g_ChocoboRaceCameraLookGoal.posX = ((g_ChocoboRacers[g_ChocoboViewedRacer].posX + g_ChocoboSelectedRacerState.posX) / 2);
-        g_ChocoboRaceCameraLookGoal.posY = ((g_ChocoboRacers[g_ChocoboViewedRacer].posY + g_ChocoboSelectedRacerState.posY) / 2) + 0xC8;
+        g_ChocoboRaceCameraLookGoal.posY = ((g_ChocoboRacers[g_ChocoboViewedRacer].posY + g_ChocoboSelectedRacerState.posY) / 2) + 200;
         g_ChocoboRaceCameraLookGoal.posZ = ((g_ChocoboRacers[g_ChocoboViewedRacer].posZ + g_ChocoboSelectedRacerState.posZ) / 2);
         break;
     case CHOCOBO_CAMERA_EVENT_ORBIT:
@@ -195,13 +195,13 @@ void __cdecl Mini_ChocoboRaceUpdateCameraTargets(void)
         g_ChocoboCameraEyeGoal.camPosX = g_ChocoboRacers[g_ChocoboViewedRacer].posX;
         g_ChocoboCameraEyeGoal.camPosY = g_ChocoboRacers[g_ChocoboViewedRacer].posY;
         g_ChocoboCameraEyeGoal.camPosZ = g_ChocoboRacers[g_ChocoboViewedRacer].posZ;
-        g_ChocoboCameraEyeGoal.camPosY += 0x320;
+        g_ChocoboCameraEyeGoal.camPosY += 800;
         g_ChocoboCameraEyeGoal.camPosX -= (short)(CosFixed(g_ChocoboFrameCounter << 4) / 6);
         g_ChocoboCameraEyeGoal.camPosZ -= (short)(SinFixed(g_ChocoboFrameCounter << 4) / 6);
         g_ChocoboRaceCameraLookGoal.posX = g_ChocoboRacers[g_ChocoboViewedRacer].posX;
         g_ChocoboRaceCameraLookGoal.posY = g_ChocoboRacers[g_ChocoboViewedRacer].posY;
         g_ChocoboRaceCameraLookGoal.posZ = g_ChocoboRacers[g_ChocoboViewedRacer].posZ;
-        g_ChocoboRaceCameraLookGoal.posY += 0xC8;
+        g_ChocoboRaceCameraLookGoal.posY += 200;
     }
     Mini_ChocoboRaceApplySmoothedCameraMatrix();
 }
@@ -297,7 +297,7 @@ void __cdecl Mini_ChocoboRaceApplySmoothedCameraMatrix(void)
 // FUNCTION: FF7 0x007722f6
 void __cdecl Mini_ChocoboRaceSetSceneryAnimationStep(short sceneryIndex)
 {
-    if (sceneryIndex > 0x80) {
+    if (sceneryIndex > 128) {
         ((ChocoboScenerySlot *)(g_ChocoboTrackData->scenerySlots))[sceneryIndex - 0x80].animStep = 0xFFFF;
     } else {
         ((ChocoboScenerySlot *)(g_ChocoboTrackData->scenerySlots))[sceneryIndex].animStep = 1;

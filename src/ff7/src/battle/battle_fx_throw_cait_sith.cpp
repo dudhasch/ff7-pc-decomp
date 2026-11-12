@@ -344,7 +344,7 @@ void __cdecl Battle_ThrowFxWeaponBlock101Index9(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004cda3a
 void __cdecl Battle_ThrowFxWeaponBlock101Index10(int targetMask, int actorIdx)
 {
-    g_BattleThrowCaitSithWeaponIndex = 0xA;
+    g_BattleThrowCaitSithWeaponIndex = 10;
     g_BattleThrowCaitSithWeaponFlag = 0;
     Battle_ThrowFxSpawnWeapons101to113(targetMask, actorIdx);
 }
@@ -353,7 +353,7 @@ void __cdecl Battle_ThrowFxWeaponBlock101Index10(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004cda63
 void __cdecl Battle_ThrowFxWeaponBlock101Index11(int targetMask, int actorIdx)
 {
-    g_BattleThrowCaitSithWeaponIndex = 0xB;
+    g_BattleThrowCaitSithWeaponIndex = 11;
     g_BattleThrowCaitSithWeaponFlag = 0;
     Battle_ThrowFxSpawnWeapons101to113(targetMask, actorIdx);
 }
@@ -362,7 +362,7 @@ void __cdecl Battle_ThrowFxWeaponBlock101Index11(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x004cda8c
 void __cdecl Battle_ThrowFxWeaponBlock101Index12(int targetMask, int actorIdx)
 {
-    g_BattleThrowCaitSithWeaponIndex = 0xC;
+    g_BattleThrowCaitSithWeaponIndex = 12;
     g_BattleThrowCaitSithWeaponFlag = 0;
     Battle_ThrowFxSpawnWeapons101to113(targetMask, actorIdx);
 }
@@ -437,24 +437,24 @@ void __cdecl BattleFx_ThrowCaitSithWeaponsTimelineTask(void)
         g_BattleThrowCaitSithDeltaVectorY = g_BattleThrowCaitSithTargetPos[1] - g_BattleThrowCaitSithSourcePos.y;
         g_BattleThrowCaitSithDeltaVectorZ = g_BattleThrowCaitSithTargetPos[2] - g_BattleThrowCaitSithSourcePos.z;
         norm = NormalizeVectorFixed(&g_BattleThrowCaitSithDeltaVectorX, &g_BattleThrowCaitSithDeltaVectorX);
-        speed = SqrtToInt(norm) / 0x14;
+        speed = SqrtToInt(norm) / 20;
         pProjectile = (BattleFxCaitSithThrownWeapon *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowCaitSithWeaponsThrownModelTask);
         *(Int64Pair *)((char *)pProjectile + 4) = *(Int64Pair *)&g_BattleThrowCaitSithSourcePos;
-        pProjectile->offsetX = speed * g_BattleThrowCaitSithDeltaVectorX >> 0xC;
-        pProjectile->offsetY = speed * g_BattleThrowCaitSithDeltaVectorY >> 0xC;
-        pProjectile->offsetZ = speed * g_BattleThrowCaitSithDeltaVectorZ >> 0xC;
+        pProjectile->offsetX = speed * g_BattleThrowCaitSithDeltaVectorX >> 12;
+        pProjectile->offsetY = speed * g_BattleThrowCaitSithDeltaVectorY >> 12;
+        pProjectile->offsetZ = speed * g_BattleThrowCaitSithDeltaVectorZ >> 12;
         pProjectile->angleRate = 0x66;
         pProjectile->angle = 0x66;
-        pProjectile->countdownStart = rand() % 0xC8 + 0xB4;
+        pProjectile->countdownStart = rand() % 200 + 180;
         pProjectile->countdown = pProjectile->countdownStart;
-        pProjectile->lifetime = rand() % 0x96 + 0xA0;
+        pProjectile->lifetime = rand() % 150 + 160;
         pProjectile->rotationZ = pProjectile->lifetime;
     }
-    if (task->frameCounter == 0x15) {
+    if (task->frameCounter == 21) {
         Battle_PostActorHitOrHurtMessage(g_BattleThrowCaitSithTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(g_BattleThrowCaitSithTargetPos), 0xE1);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -482,8 +482,8 @@ void __cdecl BattleFx_ThrowCaitSithWeaponsThrownModelTask(void)
 
     frame.throwRecord = (BattleFxBarretWeaponTumble *)BATTLE_CURRENT_TASK_SLOT;
     frame.angleBetween = ComputeAngleBetweenVectors((VECTOR *)&g_BattleThrowCaitSithTransformedVector, (VECTOR *)&g_BattleThrowCaitSithDeltaVectorX, &frame.axisVector);
-    frame.stepCount = frame.angleBetween / 0xBE + 1;
-    frame.bobOffset = (SinFixed(frame.throwRecord->angle) * -0x2BC >> 0xC) * frame.stepCount;
+    frame.stepCount = frame.angleBetween / 190 + 1;
+    frame.bobOffset = (SinFixed(frame.throwRecord->angle) * -0x2BC >> 12) * frame.stepCount;
     frame.rotX.vx = frame.throwRecord->angleX;
     frame.rotX.vy = 0;
     frame.rotX.vz = frame.throwRecord->angleZ;
@@ -508,14 +508,14 @@ void __cdecl BattleFx_ThrowCaitSithWeaponsThrownModelTask(void)
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.throwRecord->timer >= 0x1A) {
+    if (frame.throwRecord->timer >= 26) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowCaitSithWeaponIndex + 0xD, g_BattleThrowCaitSithLoadedResTable);
-        frame.modelDraw->fadeLevel = frame.throwRecord->timer - 0x1A << 0xA;
+        frame.modelDraw->fadeLevel = frame.throwRecord->timer - 26 << 10;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.throwRecord->timer >= 0x1E) {
+    if (frame.throwRecord->timer >= 30) {
         frame.throwRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -525,7 +525,7 @@ void __cdecl BattleFx_ThrowCaitSithWeaponsThrownModelTask(void)
     frame.throwRecord->posY += frame.throwRecord->velocityY;
     frame.throwRecord->posZ += frame.throwRecord->velocityZ;
     frame.throwRecord->angle += frame.throwRecord->angleRate;
-    if (frame.throwRecord->timer == 0x14) {
+    if (frame.throwRecord->timer == 20) {
         frame.throwRecord->angle = 0;
     }
     frame.throwRecord->angleX += frame.throwRecord->angleXRate;

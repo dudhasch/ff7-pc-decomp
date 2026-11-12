@@ -251,14 +251,14 @@ void *Battle_Init3dData(void)
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     // STRING: FF7 0x007c2100
-    frame.scene = (Battle3dScene *)GameHeapAlloc(1, 0x4F4, "C:\\FF7\\src\\Battle\\b3ddata.cpp", 0x12B);
+    frame.scene = (Battle3dScene *)GameHeapAlloc(1, 1268, "C:\\FF7\\src\\Battle\\b3ddata.cpp", 299);
     if (frame.scene != 0) {
         frame.scene->model = (struct PolygonRsdModel *)Battle_LoadShadowModel(0);
         frame.scene->modelRequest = (int)Battle_LoadShadowModel(1);
         // STRING: FF7 0x007c2120
         frame.scene->markModel = (int)Battle_LoadLmdModelByName(0, 6, "MARK.DAT", 0);
         frame.options = frame.config;
-        ZeroFillMemory32(0x2C, (void *)frame.options);
+        ZeroFillMemory32(44, (void *)frame.options);
         frame.options[0] = 1;
         frame.options[1] = 50;
         frame.options[2] = 100;
@@ -318,7 +318,7 @@ void __cdecl Battle3d_DestroySceneObject(Battle3dScene *scene)
         BattleStage_FreeStageDatModel((BattleStageDat *)(scene->stageDatModel));
         scene->stageDatModel = 0;
         // STRING: FF7 0x007c2194
-        GameHeapFree(scene, "C:\\FF7\\src\\Battle\\b3ddata.cpp", 0x1B1);
+        GameHeapFree(scene, "C:\\FF7\\src\\Battle\\b3ddata.cpp", 433);
     }
 }
 
@@ -444,11 +444,11 @@ void __cdecl Battle_DestroyScene(void)
         BattleModel_FreeBank((BattleLimitAnimBank *)(g_BattleModelBankSlots[i]));
         g_BattleModelBankSlots[i] = 0;
     }
-    ZeroFillMemory32(0x10D38, &g_BattleActorRecords[0].modelId);
-    ZeroFillMemory32(0x488, &g_BattleActorStates[0].status);
-    ZeroFillMemory32(0x270, &g_BattleHitDisplayTable[0].battleActorIndex);
-    ZeroFillMemory32(0x4E, &g_BattleHitTargetActors);
-    ZeroFillMemory32(0xA, &g_BattleSummonSavedDrawFlags);
+    ZeroFillMemory32(68920, &g_BattleActorRecords[0].modelId);
+    ZeroFillMemory32(1160, &g_BattleActorStates[0].status);
+    ZeroFillMemory32(624, &g_BattleHitDisplayTable[0].battleActorIndex);
+    ZeroFillMemory32(78, &g_BattleHitTargetActors);
+    ZeroFillMemory32(10, &g_BattleSummonSavedDrawFlags);
     g_BattleSecondaryTaskActiveCount = 0;
     g_BattleActiveTaskSlotIdx = 0;
     g_BattleSecondaryResourceCount = 0;
@@ -558,7 +558,7 @@ int __cdecl Battle3d_FadeLevelToAlpha(int fadeLevel)
     int shifted;
 
     shifted = fadeLevel >> 4;
-    if (shifted >= 0x100) {
+    if (shifted >= 256) {
         shifted = 0;
     } else {
         shifted = 0xFF - shifted;
@@ -604,7 +604,7 @@ void __cdecl Battle3d_GetActorAttachMatrix(int actorIndex, int attachIndex, PsxM
     if (attachIndex == -1) {
         *(PsxMatrix *)outMatrix = *(PsxMatrix *)((actorIndex << 6) + (char *)g_BattleActorTransformRecords[0].auxNode);
     } else {
-        srcMatrix = (int)g_BattleActorRecords[0].attachMatrices + actorIndex * 0x1AEC + (attachIndex << 6);
+        srcMatrix = (int)g_BattleActorRecords[0].attachMatrices + actorIndex * 6892 + (attachIndex << 6);
         GteFloat4x4TransposedToPsxMatrix(outMatrix, (float *)srcMatrix);
     }
 }
@@ -633,7 +633,7 @@ int __cdecl Battle_GetActorAnimAngle(int actorIndex)
         if (g_BattleActorRecords[actorIndex].useSecondAngleTable != 0) {
             idxBias = 8;
         } else {
-            idxBias = 0x34;
+            idxBias = 52;
         }
         entryIndex = g_BattleActorRecords[actorIndex].animFrame + idxBias;
         if (g_BattleActorRecords[actorIndex].useSecondAngleTable != 0) {
@@ -755,23 +755,23 @@ void __cdecl Battle3d_DrawActorRangeUnsuppressed(int pass, int startIndex, int c
 }
 
 /*
- * Zeroes the ten-entry actor draw table at g_BattleActorDrawTable by calling Battle3d_ClearDrawTable(0xA,
+ * Zeroes the ten-entry actor draw table at g_BattleActorDrawTable by calling Battle3d_ClearDrawTable(10,
  * &g_BattleActorDrawTable), that is 10 records of 16 bytes.
  */
 // FUNCTION: FF7 0x004297a5
 void __cdecl Battle3d_ResetActorDrawTable(void)
 {
-    Battle3d_ClearDrawTable(0xA, (BattleActorDrawEntry *)&g_BattleActorDrawTable);
+    Battle3d_ClearDrawTable(10, (BattleActorDrawEntry *)&g_BattleActorDrawTable);
 }
 
 /*
- * Calls Battle_DrawActorRange(pass, 0, 0xA, &g_BattleActorDrawTable), running the full ten-entry actor draw
+ * Calls Battle_DrawActorRange(pass, 0, 10, &g_BattleActorDrawTable), running the full ten-entry actor draw
  * table from index 0 for the pass pass.
  */
 // FUNCTION: FF7 0x004297b9
 void __cdecl Battle3d_SweepActorDrawTable(int pass)
 {
-    Battle_DrawActorRange(pass, 0, 0xA, (BattleActorDrawEntry *)&g_BattleActorDrawTable);
+    Battle_DrawActorRange(pass, 0, 10, (BattleActorDrawEntry *)&g_BattleActorDrawTable);
 }
 
 /*

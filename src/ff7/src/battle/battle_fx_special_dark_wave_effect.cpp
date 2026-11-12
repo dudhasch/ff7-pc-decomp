@@ -179,20 +179,20 @@ void __cdecl BattleFx_SpecialDarkWaveTimelineTask(void)
         frame.spawnSlot->posY = frame.timelineSlot->posY;
         frame.spawnSlot->posZ = frame.timelineSlot->posZ;
         frame.spawnSlot->angleY = ArcTangentFixed(frame.timelineSlot->velocityX - frame.timelineSlot->posX, frame.timelineSlot->velocityZ - frame.timelineSlot->posZ);
-        frame.spawnSlot->velocityX = (frame.timelineSlot->velocityX - frame.timelineSlot->posX) / 0xF;
-        frame.spawnSlot->velocityY = (frame.timelineSlot->velocityY - frame.timelineSlot->posY) / 0xF;
-        frame.spawnSlot->velocityZ = (frame.timelineSlot->velocityZ - frame.timelineSlot->posZ) / 0xF;
-        frame.spawnSlot->verticalDrift = 0x14;
+        frame.spawnSlot->velocityX = (frame.timelineSlot->velocityX - frame.timelineSlot->posX) / 15;
+        frame.spawnSlot->velocityY = (frame.timelineSlot->velocityY - frame.timelineSlot->posY) / 15;
+        frame.spawnSlot->velocityZ = (frame.timelineSlot->velocityZ - frame.timelineSlot->posZ) / 15;
+        frame.spawnSlot->verticalDrift = 20;
     }
-    if (frame.timelineSlot->frameCounter == 0x23) {
+    if (frame.timelineSlot->frameCounter == 35) {
         for (frame.angleStep = 0; frame.angleStep < 0x10; frame.angleStep++) {
             frame.spawnSlot = (BattleFxDarkWaveTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDarkWaveRadialBurstSpriteTask);
             frame.spawnSlot->posX = frame.timelineSlot->velocityX;
             frame.spawnSlot->posY = frame.timelineSlot->velocityY;
             frame.spawnSlot->posZ = frame.timelineSlot->velocityZ;
             frame.angle = (rand() % 4096);
-            frame.offsetCos.vx = CosFixed(frame.angle) * 0x3C >> 0xC;
-            frame.offsetCos.vy = SinFixed(frame.angle) * 0x3C >> 0xC;
+            frame.offsetCos.vx = CosFixed(frame.angle) * 0x3C >> 12;
+            frame.offsetCos.vy = SinFixed(frame.angle) * 0x3C >> 12;
             frame.offsetCos.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -209,17 +209,17 @@ void __cdecl BattleFx_SpecialDarkWaveTimelineTask(void)
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
         Battle_PlaySfxPannedToActor(0xFA, (short)frame.timelineSlot->actorIndex, 0x40);
     }
-    if (frame.timelineSlot->frameCounter == 0x21) {
+    if (frame.timelineSlot->frameCounter == 33) {
         for (frame.angleStep = 0; frame.angleStep < 3; frame.angleStep++) {
             frame.spawnSlot = (BattleFxDarkWaveTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDarkWaveScatteredAnimatedSpriteTask);
             Battle_GetBoneWorldPos(frame.timelineSlot->actorIndex, g_BattleActorRecords[frame.timelineSlot->actorIndex].targetBone, (short *)((char *)frame.spawnSlot + 4));
-            frame.spawnSlot->posX += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posY += (short)(rand() % 0x3E8 - 0x1F4);
-            frame.spawnSlot->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+            frame.spawnSlot->posX += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posY += (short)(rand() % 1000 - 500);
+            frame.spawnSlot->posZ += (short)(rand() % 1000 - 500);
         }
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x2D) {
+    if (frame.timelineSlot->frameCounter == 45) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -239,10 +239,10 @@ void __cdecl BattleFx_SpecialDarkWaveScatteredAnimatedSpriteTask(void)
     int q; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
 
     p = BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((char *)p + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((char *)p + 4), 0x2000 /* 2.0 */, 0);
     (g_BattleSpecDarkWaveSpriteReq1.frame) = p->frameCounter;
-    (g_BattleSpecDarkWaveSpriteReq1.drawObj) = Gfx_ModelTableGetSpriteObject(0xD, g_BattleSpecDarkWaveLoadedResTable);
-    (g_BattleSpecDarkWaveSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xD, g_BattleSpecDarkWaveLoadedResTable);
+    (g_BattleSpecDarkWaveSpriteReq1.drawObj) = Gfx_ModelTableGetSpriteObject(13, g_BattleSpecDarkWaveLoadedResTable);
+    (g_BattleSpecDarkWaveSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(13, g_BattleSpecDarkWaveLoadedResTable);
     g_BattleSpecDarkWaveDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecDarkWaveSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecDarkWaveDrawListHead);
     if (g_BattleIsPaused == 0) {
         (p->frameCounter)++;
@@ -268,11 +268,11 @@ void __cdecl BattleFx_SpecialDarkWaveRadialBurstSpriteTask(void)
     PsxMatrix *billboard;
 
     burstPtr = (BattleFxEnergyOrbDriftSprite *)BATTLE_CURRENT_TASK_SLOT;
-    billboard = (PsxMatrix *)BattleFx_InstallBillboardMatrix((void *)((char *)burstPtr + 4), 0x4000, 0);
+    billboard = (PsxMatrix *)BattleFx_InstallBillboardMatrix((void *)((char *)burstPtr + 4), 0x4000 /* 4.0 */, 0);
     (g_BattleSpecDarkWaveSpriteReq2.frame) = burstPtr->frameIndex;
     if (billboard->t[2] > 0) {
-        (g_BattleSpecDarkWaveSpriteReq2.drawObj) = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecDarkWaveLoadedResTable);
-        (g_BattleSpecDarkWaveSpriteReq2.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecDarkWaveLoadedResTable);
+        (g_BattleSpecDarkWaveSpriteReq2.drawObj) = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecDarkWaveLoadedResTable);
+        (g_BattleSpecDarkWaveSpriteReq2.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecDarkWaveLoadedResTable);
         g_BattleSpecDarkWaveDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecDarkWaveSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecDarkWaveDrawListHead);
     }
     if (g_BattleIsPaused == 0) {
@@ -293,7 +293,7 @@ void __cdecl BattleFx_SpecialDarkWaveRadialBurstSpriteTask(void)
  * front of it; from frame 0x14 trails twelve sprites of entry 0xB back along the heading,
  * alternately 0x64 and 0xC8 apart. While unpaused it also scatters ten small PSX primitives (code
  * 0x02, colour 0x80/0x40/0x20) within 0xC8 of that point, moves the record by an eighth of its
- * velocity plus a falling term (timer, decremented each frame) for the first 0x14 frames and by
+ * velocity plus a falling term (timer, decremented each frame) for the first 20 frames and by
  * the full velocity minus 10 in y after that, and retires it at frame 0x21. q, r and h are slots
  * the original's frame reserves.
  */
@@ -320,8 +320,8 @@ void __cdecl BattleFx_SpecialDarkWaveProjectileTask(void)
     int depthOut;
 
     projectilePtr = (BattleFxDarkWaveProjectile *)BATTLE_CURRENT_TASK_SLOT;
-    rotation[0] = -0x400;
-    rotation[1] = -0x400;
+    rotation[0] = -0x400 /* 90 deg */;
+    rotation[1] = -0x400 /* 90 deg */;
     rotation[2] = 0;
     RotMatrixXYZ(rotation, matrix);
     RotateMatrixY(projectilePtr->angleY, matrix);
@@ -332,12 +332,12 @@ void __cdecl BattleFx_SpecialDarkWaveProjectileTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, matrix, viewMtx);
     SetRotMatrix((void *)viewMtx);
     SetTransMatrix(viewMtx);
-    if (projectilePtr->phase < 0xA) {
+    if (projectilePtr->phase < 10) {
         frameIdx = 0;
-    } else if (projectilePtr->phase >= 0x13) {
+    } else if (projectilePtr->phase >= 19) {
         frameIdx = 9;
     } else {
-        frameIdx = projectilePtr->phase - 0xA;
+        frameIdx = projectilePtr->phase - 10;
     }
     ((BattleFxModelDrawRequest *)&g_BattleSpecDarkWaveModelReq)->modelHandle = Gfx_ModelTableGetRenderObject(((int *)&g_BattleSpecDarkWaveModelIndices)[frameIdx], g_BattleSpecDarkWaveLoadedResTable);
     SetDrawColorRGB(0, 0, 0);
@@ -353,22 +353,22 @@ void __cdecl BattleFx_SpecialDarkWaveProjectileTask(void)
     SetRotMatrix((void *)matrix);
     SetTransMatrix(matrix);
     RotTransPointToInt16(nextHeadPoint, nextHeadPoint, &depthOut);
-    BattleFx_InstallBillboardMatrix(nextHeadPoint, 0x2000, 0);
-    g_BattleSpecDarkWaveSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSpecDarkWaveLoadedResTable);
-    g_BattleSpecDarkWaveSpriteReq3.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecDarkWaveLoadedResTable);
+    BattleFx_InstallBillboardMatrix(nextHeadPoint, 0x2000 /* 2.0 */, 0);
+    g_BattleSpecDarkWaveSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(10, g_BattleSpecDarkWaveLoadedResTable);
+    g_BattleSpecDarkWaveSpriteReq3.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecDarkWaveLoadedResTable);
     g_BattleSpecDarkWaveSpriteReq3.frame = projectilePtr->phase % g_BattleSpecDarkWaveSpriteReq3.spriteGroup->header->frameCount;
     g_BattleSpecDarkWaveDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecDarkWaveSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecDarkWaveDrawListHead);
-    if (projectilePtr->phase >= 0x14) {
+    if (projectilePtr->phase >= 20) {
         trailPt[0] = nextHeadPoint[0];
         trailPt[1] = nextHeadPoint[1];
         trailPt[2] = nextHeadPoint[2];
-        trailStepX = -SinFixed(projectilePtr->angleY) * (projectilePtr->phase % 2 * 0x64 + 0x64) >> 0xC;
-        trailStepZ = -CosFixed(projectilePtr->angleY) * (projectilePtr->phase % 2 * 0x64 + 0x64) >> 0xC;
-        for (i = 0; i < 0xC; i++) {
-            BattleFx_InstallBillboardMatrix(trailPt, 0x2000, 0);
+        trailStepX = -SinFixed(projectilePtr->angleY) * (projectilePtr->phase % 2 * 100 + 100) >> 12;
+        trailStepZ = -CosFixed(projectilePtr->angleY) * (projectilePtr->phase % 2 * 100 + 100) >> 12;
+        for (i = 0; i < 12; i++) {
+            BattleFx_InstallBillboardMatrix(trailPt, 0x2000 /* 2.0 */, 0);
             g_BattleSpecDarkWaveSpriteReq4.frame = i >> 1;
-            g_BattleSpecDarkWaveSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecDarkWaveLoadedResTable);
-            g_BattleSpecDarkWaveSpriteReq3.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecDarkWaveLoadedResTable);
+            g_BattleSpecDarkWaveSpriteReq3.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecDarkWaveLoadedResTable);
+            g_BattleSpecDarkWaveSpriteReq3.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecDarkWaveLoadedResTable);
             g_BattleSpecDarkWaveDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecDarkWaveSpriteReq4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecDarkWaveDrawListHead);
             trailPt[0] += trailStepX;
             trailPt[2] += trailStepZ;
@@ -380,10 +380,10 @@ void __cdecl BattleFx_SpecialDarkWaveProjectileTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (i = 0; i < 0xA; i++) {
-        trailPt[0] = nextHeadPoint[0] + rand() % 0x190 - 0xC8;
-        trailPt[1] = nextHeadPoint[1] + rand() % 0x190 - 0xC8;
-        trailPt[2] = nextHeadPoint[2] + rand() % 0x190 - 0xC8;
+    for (i = 0; i < 10; i++) {
+        trailPt[0] = nextHeadPoint[0] + rand() % 400 - 200;
+        trailPt[1] = nextHeadPoint[1] + rand() % 400 - 200;
+        trailPt[2] = nextHeadPoint[2] + rand() % 400 - 200;
         spark = (BattleFxPolyF4Prim *)stepPrimBuf;
         spark->tag = spark->tag & 0xFFFFFF | 0x2000000;
         spark->primCode = 0x68;
@@ -396,15 +396,15 @@ void __cdecl BattleFx_SpecialDarkWaveProjectileTask(void)
             Gfx_DrawPsxPrimitive(spark);
         }
     }
-    if (projectilePtr->phase < 0x14) {
+    if (projectilePtr->phase < 20) {
         projectilePtr->posX += projectilePtr->velocityX >> 3;
         projectilePtr->posY += (projectilePtr->velocityY >> 3) + projectilePtr->timer;
         projectilePtr->posZ += projectilePtr->velocityZ >> 3;
         projectilePtr->timer -= 1;
     }
-    if (projectilePtr->phase >= 0x14) {
+    if (projectilePtr->phase >= 20) {
         projectilePtr->posX += projectilePtr->velocityX;
-        projectilePtr->posY += projectilePtr->velocityY - 0xA;
+        projectilePtr->posY += projectilePtr->velocityY - 10;
         projectilePtr->posZ += projectilePtr->velocityZ;
     }
     (projectilePtr->phase)++;

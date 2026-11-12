@@ -51,14 +51,14 @@ void __cdecl Battle_CommitHpMpChange(void)
             if (g_pBattleCommandCtx->targetSlot < 3 && g_pBattleCommandCtx->attackerSlot >= 4 && healing == 0 && ((BattleCommandTargetState *)(g_pBattleCommandCtx->targetStatePtr))->limitLevelIndex < 4 && (g_BattleState.actors[g_pBattleCommandCtx->targetSlot].timingFlags & 8) == 0) {
                 gauge = ((BattleCommandTargetState *)(g_pBattleCommandCtx->targetStatePtr))->limitGauge;
                 multiplier = 0x100;
-                gaugeGain = g_pBattleCommandCtx->damage * 0x12C / (unsigned int)combatantPtr->maxHp;
+                gaugeGain = g_pBattleCommandCtx->damage * 300 / (unsigned int)combatantPtr->maxHp;
                 if ((g_pBattleCommandCtx->targetStatus & BATTLE_STATUS_FURY) != 0) {
                     multiplier <<= 1;
                 } else if ((g_pBattleCommandCtx->targetStatus & BATTLE_STATUS_SADNESS) != 0) {
                     multiplier >>= 1;
                 }
                 gauge += gaugeGain * multiplier / ((BattleCommandTargetState *)(g_pBattleCommandCtx->targetStatePtr))->divisor;
-                if (gauge > 0xFF) {
+                if (gauge > 255) {
                     gauge = 0xFF;
                 }
                 ((BattleCommandTargetState *)(g_pBattleCommandCtx->targetStatePtr))->limitGauge = gauge;

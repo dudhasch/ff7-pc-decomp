@@ -46,7 +46,7 @@ short g_YasuiLimitSealEvilBillboardTransform[16] = {4096, 0, 0, 0, 0, -4096, 0, 
 
 // clang-format off
 // GLOBAL: FF7 0x00a54628
-void (__cdecl *g_YasuiLimitSealEvilParticleCallbacks[0xAA])(int) = {0};
+void (__cdecl *g_YasuiLimitSealEvilParticleCallbacks[170])(int) = {0};
 // GLOBAL: FF7 0x00a548d0
 int g_YasuiLimitSealEvilSpriteDrawSlot = 0;
 // GLOBAL: FF7 0x00a548d4
@@ -116,7 +116,7 @@ void __cdecl BattleFx_LimitBeginSealEvil(int targetMask, int actorIdx)
 
     g_YasuiLimitSealEvilTargetMask = targetMask;
     q = Battle_PopCountActorMask(g_YasuiLimitSealEvilTargetMask);
-    g_YasuiLimitSealEvilOrientedCount = 0xE / q;
+    g_YasuiLimitSealEvilOrientedCount = 14 / q;
     g_YasuiLimitSealEvilBillboardCount = g_YasuiLimitSealEvilOrientedCount;
     BattleFx_LimitSealEvilClearParticleTable();
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 0, BattleFx_LimitSpawnSealEvilPerTarget);
@@ -132,7 +132,7 @@ void __cdecl BattleFx_LimitSealEvilClearParticleTable(void)
 {
     int i;
 
-    for (i = 0; i < 0xAA; i++) {
+    for (i = 0; i < 170; i++) {
         g_YasuiLimitSealEvilParticleCallbacks[i] = 0;
     }
 }
@@ -149,7 +149,7 @@ void __cdecl BattleFx_LimitSealEvilParticlePoolTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     activeCount = 0;
-    for (particleIdx = 0; particleIdx < 0xAA; particleIdx++) {
+    for (particleIdx = 0; particleIdx < 170; particleIdx++) {
         if (g_YasuiLimitSealEvilParticleCallbacks[particleIdx] != 0) {
             g_YasuiLimitSealEvilParticleCallbacks[particleIdx](particleIdx * 0x1C + (int)&g_YasuiLimitSealEvilParticlePool);
             if (g_YasuiLimitSealEvilParticlePool[particleIdx].state == -1) {
@@ -194,10 +194,10 @@ void __cdecl BattleFx_LimitSealEvilPerTargetTimelineTask(void)
         child = (BattleFxSealEvilBurstParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitSealEvilParticleBurstTask);
         *(Int64Pair *)&child->posX = *(Int64Pair *)&task->posX;
     }
-    if (task->step == 0xF) {
+    if (task->step == 15) {
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
     }
-    if (task->step == 0x23) {
+    if (task->step == 35) {
         task->actorIndex = 0xFFFF;
     }
     (task->step)++;
@@ -227,7 +227,7 @@ void __cdecl BattleFx_LimitSealEvilParticleBurstTask(void)
         dirVec->vy = rand() & 0xFFF;
         dirVec->vz = -(rand() & 0x7FF);
         RotMatrix((SVECTOR *)dirVec, (void *)matrix);
-        dirVec->vx = rand() % 0x1F4 + 0x1F4;
+        dirVec->vx = rand() % 500 + 500;
         dirVec->vy = 0;
         dirVec->vz = 0;
         TransformVectorToInt16((void *)matrix, (void *)dirVec, (void *)dirVec);
@@ -237,7 +237,7 @@ void __cdecl BattleFx_LimitSealEvilParticleBurstTask(void)
         partPtr->velocityX = -dirVec->vx;
         partPtr->velocityY = -dirVec->vy;
         partPtr->velocityZ = -dirVec->vz;
-        partPtr->lifetime = rand() % 0x1000 + 0x1000;
+        partPtr->lifetime = rand() % 4096 + 4096;
         partPtr->variant = rand() % 3;
     }
     for (i = 0; i < g_YasuiLimitSealEvilOrientedCount; i++) {
@@ -246,7 +246,7 @@ void __cdecl BattleFx_LimitSealEvilParticleBurstTask(void)
         dirVec->vy = rand() & 0xFFF;
         dirVec->vz = -(rand() & 0x7FF);
         RotMatrix((SVECTOR *)dirVec, (void *)matrix);
-        dirVec->vx = rand() % 0x1F4 + 0x1F4;
+        dirVec->vx = rand() % 500 + 500;
         dirVec->vy = 0;
         dirVec->vz = 0;
         TransformVectorToInt16((void *)matrix, (void *)dirVec, (void *)dirVec);
@@ -256,15 +256,15 @@ void __cdecl BattleFx_LimitSealEvilParticleBurstTask(void)
         partPtr->velocityX = -dirVec->vx;
         partPtr->velocityY = -dirVec->vy;
         partPtr->velocityZ = -dirVec->vz;
-        partPtr->lifetime = rand() % 0x1000 + 0x1000;
+        partPtr->lifetime = rand() % 4096 + 4096;
         partPtr->variant = rand() % 3;
         Gte_BuildLookBasisFromDirection((short *)dirVec, (short *)matrix);
         ConcatMatrixPreservingTranslation((void *)matrix, &g_YasuiLimitSealEvilBillboardTransform, (void *)(g_YasuiLimitSealEvilMatrixPoolIdx * 0x1E + (char *)&g_YasuiLimitSealEvilParticleMatrixPool));
         partPtr->matrix = g_YasuiLimitSealEvilMatrixPoolIdx * 0x1E + (int)&g_YasuiLimitSealEvilParticleMatrixPool;
-        g_YasuiLimitSealEvilMatrixPoolIdx = (g_YasuiLimitSealEvilMatrixPoolIdx + 1) % 0x96;
+        g_YasuiLimitSealEvilMatrixPoolIdx = (g_YasuiLimitSealEvilMatrixPoolIdx + 1) % 150;
     }
     (pBurst->frameCount)++;
-    if (pBurst->frameCount >= 0xF) {
+    if (pBurst->frameCount >= 15) {
         pBurst->variant = 0xFFFF;
     }
 }
@@ -277,7 +277,7 @@ int __cdecl BattleFx_LimitSealEvilClaimParticleRecord(int callback)
 {
     int i;
 
-    for (i = 0; i < 0xAA; i++) {
+    for (i = 0; i < 170; i++) {
         if (g_YasuiLimitSealEvilParticleCallbacks[i] == 0) {
             g_YasuiLimitSealEvilParticleCallbacks[i] = (void (__cdecl *)(int))callback;
             g_YasuiLimitSealEvilParticlePool[i].state = 0;
@@ -390,18 +390,18 @@ void __cdecl BattleFx_LimitSealEvilTimelineTask(void)
     if (task->frameCounter == 0) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(g_YasuiLimitSealEvilTargetMask), 0x241);
     }
-    if (task->frameCounter == 0x19) {
+    if (task->frameCounter == 25) {
         BattleFx_StartScreenFlashRamp(1);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x189);
-    } else if (task->frameCounter == 0x1A) {
+    } else if (task->frameCounter == 26) {
         BattleFx_FadeOutScreenFlashRamp(5);
-    } else if (task->frameCounter == 0x1E) {
+    } else if (task->frameCounter == 30) {
         BattleFx_StartScreenFlashRamp(1);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x189);
-    } else if (task->frameCounter == 0x1F) {
-        BattleFx_FadeOutScreenFlashRamp(0xA);
+    } else if (task->frameCounter == 31) {
+        BattleFx_FadeOutScreenFlashRamp(10);
     }
-    if (task->frameCounter == 0x23) {
+    if (task->frameCounter == 35) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;

@@ -46,7 +46,7 @@ __declspec(dllimport) int __stdcall GetProcAddress(int, const char *);
 // FUNCTION: FF7 0x00666ab0
 void __cdecl InitGraphicsDriverDesc(int driverType, GfxDriverDesc *driverDesc)
 {
-    ZeroFillMemory32(0x24, driverDesc);
+    ZeroFillMemory32(36, driverDesc);
     driverDesc->driverType = driverType;
     // STRING: FF7 0x0090c9c0
     driverDesc->dllName = (int)"new_dll_graphics_driver";

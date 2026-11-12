@@ -208,7 +208,7 @@ struct MidiTempoFrame {
 __inline void MidiFreeStreamBuffer(void)
 {
     // STRING: FF7 0x00967644
-    GameHeapFree((void *)g_MidiStreamBuffer, "C:\\lib\\src\\sound\\midi1.cpp", 0x49B);
+    GameHeapFree((void *)g_MidiStreamBuffer, "C:\\lib\\src\\sound\\midi1.cpp", 1179);
     g_MidiStreamBuffer = 0;
 }
 
@@ -452,7 +452,7 @@ void __cdecl MidiShutdown(void)
     // STRING: FF7 0x0096701c
     Gfx_DebugPrint("resetting MIDI driver volume");
     MidiStreamOpenDevice();
-    g_MidiDriverVolume |= g_MidiDriverVolume << 0x10;
+    g_MidiDriverVolume |= g_MidiDriverVolume << 16;
     MidiApplyDriverVolume(g_MidiDriverVolume);
     MidiStreamCloseDevice();
     // STRING: FF7 0x0096703c
@@ -594,13 +594,13 @@ int __cdecl MidiLoadSongFromLgp(int song)
     frame.file = (int)FindLgpFile(frame.path, LGP_ARCHIVE_MIDI);
     if (frame.file) {
         g_MidiSongSize = GetLgpEntrySize(frame.file, LGP_ARCHIVE_MIDI);
-        if (g_MidiSongSize > 0x14C00) {
+        if (g_MidiSongSize > 84992) {
             // STRING: FF7 0x00967154
             Gfx_DebugPrint("MIDI LGP ERROR: file size exceeds maxmimum MIDI file size\n");
             g_MidiSongSize = 0x14C00;
         }
         // STRING: FF7 0x00967190
-        g_MidiStreamBuffer = (int)GameHeapAllocRaw(g_MidiSongSize, "C:\\lib\\src\\sound\\midi1.cpp", 0x245);
+        g_MidiStreamBuffer = (int)GameHeapAllocRaw(g_MidiSongSize, "C:\\lib\\src\\sound\\midi1.cpp", 581);
         if (g_MidiStreamBuffer) {
             if (ReadLgpEntry((void *)frame.file, LGP_ARCHIVE_MIDI, (void *)g_MidiStreamBuffer, g_MidiSongSize)) {
                 frame.result = 1;
@@ -688,10 +688,10 @@ int __cdecl MidiStartPlayback(void)
                 if (g_MidiUseVolumeCurve != 0) {
                     frame.scaledVolume = g_MidiVolumeCurve[frame.volumeWord];
                 } else {
-                    frame.scaledVolume = (unsigned int)(frame.volumeWord * 0xFFFF) / (unsigned int)0x7F;
+                    frame.scaledVolume = (unsigned int)(frame.volumeWord * 65535) / (unsigned int)0x7F;
                 }
                 frame.volumeWord = frame.scaledVolume;
-                frame.volumeWord |= frame.volumeWord << 0x10;
+                frame.volumeWord |= frame.volumeWord << 16;
                 if (MidiApplyDriverVolume(frame.volumeWord) == 0) {
                     MidiStreamCloseDevice();
                     return 0;
@@ -700,7 +700,7 @@ int __cdecl MidiStartPlayback(void)
             frame.propertySize = 8;
             frame.timeDivision = *(unsigned short *)&g_MidiTimeDivision;
             // STRING: FF7 0x009671c0
-            if (MmCheckError(midiStreamProperty(g_MidiStreamHandle, (void *)&frame.propertySize, 0x80000001), "C:\\lib\\src\\sound\\midi1.cpp", 0x2AA) == 0) {
+            if (MmCheckError(midiStreamProperty(g_MidiStreamHandle, (void *)&frame.propertySize, 0x80000001), "C:\\lib\\src\\sound\\midi1.cpp", 682) == 0) {
                 MidiStreamCloseDevice();
                 return 0;
             }
@@ -740,7 +740,7 @@ int __cdecl MidiStartPlayback(void)
             }
             g_MidiPlaybackState = MIDI_PLAYBACK_PLAYING;
             // STRING: FF7 0x009671dc
-            if (MmCheckError(midiStreamRestart(g_MidiStreamHandle), "C:\\lib\\src\\sound\\midi1.cpp", 0x2E7) == 0) {
+            if (MmCheckError(midiStreamRestart(g_MidiStreamHandle), "C:\\lib\\src\\sound\\midi1.cpp", 743) == 0) {
                 MidiUnprepareBuffers(frame.primedCount);
                 return 0;
             }
@@ -764,7 +764,7 @@ int __cdecl MidiSubmitStreamBuffer(MidiStreamBuffer *buffer)
 
     header = buffer;
     header->dataPtr = (int)buffer + 0x40;
-    header->dataSize = 0x400;
+    header->dataSize = 1024;
     header->bytesRecorded = buffer->filledBytes;
     header->flags = 0;
     header->bufferBase = (int)buffer;
@@ -773,7 +773,7 @@ int __cdecl MidiSubmitStreamBuffer(MidiStreamBuffer *buffer)
             midiOutUnprepareHeader(g_MidiStreamHandle, (void *)header, 0x40);
             retryHdr = buffer;
             retryHdr->dataPtr = (int)buffer + 0x40;
-            retryHdr->dataSize = 0x400;
+            retryHdr->dataSize = 1024;
             retryHdr->bytesRecorded = buffer->filledBytes;
             retryHdr->flags = 0;
             retryHdr->bufferBase = (int)buffer;
@@ -1016,10 +1016,10 @@ void __cdecl MidiSetVolume(int level)
         if (g_MidiUseVolumeCurve != 0) {
             frame.selected = g_MidiVolumeCurve[frame.volume];
         } else {
-            frame.selected = (unsigned int)(frame.volume * 0xFFFF) / (unsigned int)0x7F;
+            frame.selected = (unsigned int)(frame.volume * 65535) / (unsigned int)0x7F;
         }
         frame.volume = frame.selected;
-        frame.volume |= frame.volume << 0x10;
+        frame.volume |= frame.volume << 16;
         MidiApplyDriverVolume(frame.volume);
     }
 }
@@ -1047,7 +1047,7 @@ void __cdecl MidiSetVolumeTrans(int volume, int step)
         sprintf(buffer, "MIDI set volume trans: %d->%d; step=%d\n", g_MidiVolume, volume, step);
         Gfx_DebugPrint(buffer);
         g_MidiTargetVolume = volume;
-        if (step >= 0xA) {
+        if (step >= 10) {
             g_MidiVolumeFadeRate = (int)((g_MidiTargetVolume - g_MidiVolume) / (step / 60.0));
         } else {
             MidiSetVolume(volume);
@@ -1211,7 +1211,7 @@ int __cdecl MidiFillStreamBuffer(MidiStreamBuffer *stream)
     if (g_MidiStreamEnded != 0) {
         return result;
     } else {
-        while (stream->filledBytes < 0x338) {
+        while (stream->filledBytes < 824) {
             if (MidiConvertNextEvent(stream) != 0) {
                 result = 1;
             }
@@ -1488,7 +1488,7 @@ void __cdecl MidiUpdateVolumeFade(void)
     if (g_MidiInitialized == 0 || g_MidiFailed != 0) { /* empty first arm: lib/codegen.h */
     } else {
         if (g_MidiVolumeFadeActive != 0) {
-            change = (now - g_MidiVolumeFadeLastTime) * g_MidiVolumeFadeRate / 0x3E8;
+            change = (now - g_MidiVolumeFadeLastTime) * g_MidiVolumeFadeRate / 1000;
             if (change == 0) {
                 change = g_MidiVolumeFadeRate > 0 ? 1 : -1;
             }
@@ -1500,10 +1500,10 @@ void __cdecl MidiUpdateVolumeFade(void)
             if (g_MidiUseVolumeCurve != 0) {
                 curveVal = g_MidiVolumeCurve[scaledVolume];
             } else {
-                curveVal = (unsigned int)(scaledVolume * 0xFFFF) / (unsigned int)0x7F;
+                curveVal = (unsigned int)(scaledVolume * 65535) / (unsigned int)0x7F;
             }
             scaledVolume = curveVal;
-            scaledVolume |= scaledVolume << 0x10;
+            scaledVolume |= scaledVolume << 16;
             MidiApplyDriverVolume(scaledVolume);
             if (g_MidiVolume == g_MidiTargetVolume) {
                 g_MidiVolumeFadeActive = 0;
@@ -1545,7 +1545,7 @@ int __cdecl MidiApplyDriverVolume(int value)
     EnterCriticalSection(MIDI_LOCK);
     if (g_MidiStreamHandle != 0) {
         // STRING: FF7 0x009674a4
-        result = MmCheckError(midiOutSetVolume(g_MidiStreamHandle, value), "C:\\lib\\src\\sound\\midi1.cpp", 0x640);
+        result = MmCheckError(midiOutSetVolume(g_MidiStreamHandle, value), "C:\\lib\\src\\sound\\midi1.cpp", 1600);
     }
     LeaveCriticalSection(MIDI_LOCK);
     return result;
@@ -1568,7 +1568,7 @@ int __cdecl MidiStreamSetTempo(int tempo)
     EnterCriticalSection(MIDI_LOCK);
     if (g_MidiStreamHandle != 0) {
         // STRING: FF7 0x009674c0
-        frame.result = MmCheckError(midiStreamProperty(g_MidiStreamHandle, &frame.size, 0x80000002), "C:\\lib\\src\\sound\\midi1.cpp", 0x650);
+        frame.result = MmCheckError(midiStreamProperty(g_MidiStreamHandle, &frame.size, 0x80000002), "C:\\lib\\src\\sound\\midi1.cpp", 1616);
     }
     LeaveCriticalSection(MIDI_LOCK);
     return frame.result;
@@ -1584,7 +1584,7 @@ int __cdecl MidiStreamOpenDevice(void)
     int result = 0;
     EnterCriticalSection(MIDI_LOCK);
     // STRING: FF7 0x009674dc
-    if (MmCheckError(midiStreamOpen(&g_MidiStreamHandle, &g_MidiDeviceId, 1, MidiStreamCallback, 0, 0x30000), "C:\\lib\\src\\sound\\midi1.cpp", 0x65c))
+    if (MmCheckError(midiStreamOpen(&g_MidiStreamHandle, &g_MidiDeviceId, 1, MidiStreamCallback, 0, 0x30000), "C:\\lib\\src\\sound\\midi1.cpp", 1628))
         result = 1;
     LeaveCriticalSection(MIDI_LOCK);
     return result;
@@ -1612,7 +1612,7 @@ int __cdecl MidiStreamStopChecked(void)
         g_MidiStreamEnded = 1;
         g_MidiStopPending = 1;
         // STRING: FF7 0x009674f8
-        frame.result = MmCheckError(midiStreamStop(g_MidiStreamHandle), "C:\\lib\\src\\sound\\midi1.cpp", 0x677);
+        frame.result = MmCheckError(midiStreamStop(g_MidiStreamHandle), "C:\\lib\\src\\sound\\midi1.cpp", 1655);
         if (frame.result == 0)
             g_MidiStopPending = 0;
     }
@@ -1635,7 +1635,7 @@ int __cdecl MidiStreamCloseDevice(void)
         g_MidiStreamEnded = 1;
         g_MidiClosePending = 1;
         // STRING: FF7 0x00967514
-        result = MmCheckError(midiStreamClose(g_MidiStreamHandle), "C:\\lib\\src\\sound\\midi1.cpp", 0x68c);
+        result = MmCheckError(midiStreamClose(g_MidiStreamHandle), "C:\\lib\\src\\sound\\midi1.cpp", 1676);
         if (result == 0)
             g_MidiClosePending = 0;
     }
@@ -1687,7 +1687,7 @@ void __cdecl MidiSendGmReset(void)
         int header[16];
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
     // STRING: FF7 0x00967530
-    if (MmCheckError(midiOutOpen(&frame.handle, g_MidiDeviceId, 0, 0, 0), "C:\\lib\\src\\sound\\midi1.cpp", 0x6ad)) {
+    if (MmCheckError(midiOutOpen(&frame.handle, g_MidiDeviceId, 0, 0, 0), "C:\\lib\\src\\sound\\midi1.cpp", 1709)) {
         frame.header[0] = ((int)&g_MidiGmResetSysex);
         frame.header[1] = 6;
         frame.header[2] = 0;
@@ -1696,13 +1696,13 @@ void __cdecl MidiSendGmReset(void)
         frame.header[5] = 0;
         frame.header[6] = 0;
         // STRING: FF7 0x0096754c
-        MmCheckError(midiOutPrepareHeader(frame.handle, frame.header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 0x6b7);
+        MmCheckError(midiOutPrepareHeader(frame.handle, frame.header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 1719);
         // STRING: FF7 0x00967568
-        MmCheckError(midiOutLongMsg(frame.handle, frame.header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 0x6b8);
+        MmCheckError(midiOutLongMsg(frame.handle, frame.header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 1720);
         // STRING: FF7 0x00967584
-        MmCheckError(midiOutUnprepareHeader(frame.handle, frame.header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 0x6b9);
+        MmCheckError(midiOutUnprepareHeader(frame.handle, frame.header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 1721);
         // STRING: FF7 0x009675a0
-        MmCheckError(midiOutClose(frame.handle), "C:\\lib\\src\\sound\\midi1.cpp", 0x6ba);
+        MmCheckError(midiOutClose(frame.handle), "C:\\lib\\src\\sound\\midi1.cpp", 1722);
         frame.handle = 0;
     }
 }
@@ -1769,14 +1769,14 @@ int __cdecl MidiSendEventBlock(int *handle, int *header, int data, int size)
     header[4] = 0;
     header[3] = 0;
     // STRING: FF7 0x009675bc
-    if (!MmCheckError(midiOutPrepareHeader(*handle, header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 0x6f0))
+    if (!MmCheckError(midiOutPrepareHeader(*handle, header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 1776))
         return 0;
     // STRING: FF7 0x009675d8
-    if (!MmCheckError(midiStreamOut(*handle, header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 0x6f6)) {
+    if (!MmCheckError(midiStreamOut(*handle, header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 1782)) {
         // STRING: FF7 0x009675f4
         OutputDebugStringA("unpreparing header...\n");
         // STRING: FF7 0x0096760c
-        MmCheckError(midiOutUnprepareHeader(*handle, header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 0x6f9);
+        MmCheckError(midiOutUnprepareHeader(*handle, header, 64), "C:\\lib\\src\\sound\\midi1.cpp", 1785);
         return 0;
     }
     return 1;
@@ -1794,7 +1794,7 @@ void __cdecl MidiUnprepareBuffers(int count)
 
     for (i = 0; i < count; i++) {
         // STRING: FF7 0x00967628
-        MmCheckError(midiOutUnprepareHeader((int)&g_MidiStreamHandle, (void *)&midiStreamBuffers[count], 0x40), "C:\\lib\\src\\sound\\midi1.cpp", 0x705);
+        MmCheckError(midiOutUnprepareHeader((int)&g_MidiStreamHandle, (void *)&midiStreamBuffers[count], 0x40), "C:\\lib\\src\\sound\\midi1.cpp", 1797);
     }
     g_MidiFreeBufferCount = 6;
 }

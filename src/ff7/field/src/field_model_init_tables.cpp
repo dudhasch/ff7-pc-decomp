@@ -308,7 +308,7 @@ void __cdecl Field_InitModelRuntimeTables(void)
 {
     int i;
 
-    for (i = 0; i < 0x12; i++) {
+    for (i = 0; i < 18; i++) {
         g_FieldModelLightCaches[i].isActive = 1;
     }
     g_FieldTrigTable = (*(FieldTrigTable *)&g_FieldTrigTableRom);

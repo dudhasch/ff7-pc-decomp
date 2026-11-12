@@ -49,7 +49,7 @@ int __cdecl Kernel_UpdateLimitUnlocks(SavemapCharacter *charRecord, int killDelt
     unlockMask = charRecord->limits;
     previousLimits = unlockMask;
     killSum += killDelta;
-    if (killSum > 0xFFFF) {
+    if (killSum > 65535) {
         killSum = 0xFFFF;
     }
     if (characterId < 9) {
@@ -67,7 +67,7 @@ int __cdecl Kernel_UpdateLimitUnlocks(SavemapCharacter *charRecord, int killDelt
     if (idx < 3) {
         useCnt = charRecord->limitUses[idx];
         useCnt += useDelta;
-        if (useCnt > 0xFFFF) {
+        if (useCnt > 65535) {
             useCnt = 0xFFFF;
         }
         if (characterId < 9) {

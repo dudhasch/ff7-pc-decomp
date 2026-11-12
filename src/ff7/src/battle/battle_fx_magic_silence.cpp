@@ -102,16 +102,16 @@ void __cdecl BattleFx_MagicSpawnSilencePerTarget(int actor)
     pSpawn->spinAngle = 0;
     pSpawn->yaw = g_BattleActorRecords[actor].yaw;
     extent = g_BattleActorRecords[actor].radius + 0xE0;
-    if (extent > 0x76C) {
+    if (extent > 1900) {
         extent = 0x76C;
     }
     pSpawn->extent = extent;
-    pSpawn->extentStep = extent / 0x10;
-    if (extent > 0x4F2) {
+    pSpawn->extentStep = extent / 16;
+    if (extent > 1266) {
         extent = 0x4F2;
     }
     pSpawn->scale = 0;
-    pSpawn->scaleStep = (extent << 0xC) / 0xFA / 8;
+    pSpawn->scaleStep = (extent << 12) / 250 / 8;
     pSpawn->targetIndex = actor;
 }
 
@@ -161,28 +161,28 @@ void __cdecl BattleFx_MagicSilenceGrowingModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicSilenceLoadedResTable);
     frame.modelDraw->flags = 0;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.bubbleRecord->timer >= 0xC) {
+    if (frame.bubbleRecord->timer >= 12) {
         frame.modelDraw->flags = 8;
-        frame.modelDraw->fadeLevel -= (short)(frame.bubbleRecord->timer * 8 + -0x60);
+        frame.modelDraw->fadeLevel -= (short)(frame.bubbleRecord->timer * 8 + -96);
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleMagicSilenceLoadedResTable);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.bubbleRecord->timer >= 0x1C) {
+    if (frame.bubbleRecord->timer >= 28) {
         frame.bubbleRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.bubbleRecord->timer == 0x14) {
+    if (frame.bubbleRecord->timer == 20) {
         Battle_PostActorHitOrHurtMessage(frame.bubbleRecord->targetIndex);
     }
     if (frame.bubbleRecord->timer < 8) {
-        frame.bubbleRecord->spinAngle += 0x200;
+        frame.bubbleRecord->spinAngle += 0x200 /* 45 deg */;
         frame.bubbleRecord->scale += frame.bubbleRecord->scaleStep;
-    } else if (frame.bubbleRecord->timer >= 0xC) {
+    } else if (frame.bubbleRecord->timer >= 12) {
         frame.bubbleRecord->extent -= frame.bubbleRecord->extentStep;
     }
     (frame.bubbleRecord->timer)++;

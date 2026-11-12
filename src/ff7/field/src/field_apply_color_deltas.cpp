@@ -72,7 +72,7 @@ void __cdecl Field_ApplyColorDeltaToPolygonSet(short red, short green, short blu
     int index;
     int vertexRecord;
 
-    redBits = red << 0x10;
+    redBits = red << 16;
     greenPart = green << 8;
     blueVal = blue;
     if (polySet != 0) {
@@ -106,7 +106,7 @@ void __cdecl Field_AddBgraColorSaturated(int redLane, int greenLane, int blueLan
 
     color = *(int *)srcPtr;
     total = (color & 0xFF0000) + redLane;
-    if (total > 0xFFFFFF) {
+    if (total > 16777215) {
         color |= 0xFF0000;
     } else if (total < 0) {
         color &= 0xFF00FFFF;
@@ -114,7 +114,7 @@ void __cdecl Field_AddBgraColorSaturated(int redLane, int greenLane, int blueLan
         color = color & 0xFF00FFFF | total & 0xFF0000;
     }
     total = (color & 0xFF00) + greenLane;
-    if (total > 0xFFFF) {
+    if (total > 65535) {
         color |= 0xFF00;
     } else if (total < 0) {
         color &= 0xFFFF00FF;
@@ -122,7 +122,7 @@ void __cdecl Field_AddBgraColorSaturated(int redLane, int greenLane, int blueLan
         color = color & 0xFFFF00FF | total & 0xFF00;
     }
     total = (color & 0xFF) + blueLane;
-    if (total > 0xFF) {
+    if (total > 255) {
         color |= 0xFF;
     } else if (total < 0) {
         color &= 0xFFFFFF00;

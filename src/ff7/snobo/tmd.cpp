@@ -201,7 +201,7 @@ unsigned char SnowboardCourseLoader::loadTmd(int name)
         return 0;
     entrySize = GetLgpEntrySize((int)q, LGP_ARCHIVE_SNOWBOARD);
     // STRING: FF7 0x00962b0c
-    buffer = GameHeapAllocRaw(entrySize, "C:\\FF7\\snobo\\tmd.cpp", 0x10A);
+    buffer = GameHeapAllocRaw(entrySize, "C:\\FF7\\snobo\\tmd.cpp", 266);
     if (buffer == 0)
         return 0;
     if (ReadLgpEntry(q, LGP_ARCHIVE_SNOWBOARD, buffer, entrySize) == 0) {
@@ -236,7 +236,7 @@ unsigned char SnowboardCourseLoader::loadTmd(int name)
 void SnowboardCourseLoader::freeTmd()
 {
     // STRING: FF7 0x00962b24
-    GameHeapFree(tmdBuffer, "C:\\FF7\\snobo\\tmd.cpp", 0x142);
+    GameHeapFree(tmdBuffer, "C:\\FF7\\snobo\\tmd.cpp", 322);
     tmdBuffer = 0;
 }
 
@@ -790,7 +790,7 @@ void SnowboardRaceSpriteRenderer::draw(int sprite, int advance)
     local.tables[3] = g_SnoboSmokeUvFrame3;
     if (g_SnoboStatePtr->renderFrame == 0 ||
         ((SnowboardRaceSprite *)sprite)->state > 2 ||
-        ((SnowboardRaceSprite *)sprite)->fadeLevel < 0x80)
+        ((SnowboardRaceSprite *)sprite)->fadeLevel < 128)
         return;
     if (g_SnoboModeFlag == 0) {
         if ((g_SnoboStatePtr->segmentPtr->chainBitTable[g_SnoboStatePtr->chainIndex] & 0x10) != 0)

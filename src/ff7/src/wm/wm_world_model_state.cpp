@@ -74,7 +74,7 @@ int g_WorldLeaderModelId = 0;
 // clang-format on
 
 /*
- * Reset the world-map minimap state: 0x2B entries of 0xFF at g_WorldStageModelRecord
+ * Reset the world-map minimap state: 43 entries of 0xFF at g_WorldStageModelRecord
  * and 0x2B of zero at g_WorldOverlayModelRecord, then eleven scalars cleared. The
  * scalars come in two chains -- `g_WorldStageModelCount = 0` feeding g_WorldLeaderModelLoading
  * and g_WorldLeaderModelCount, and `g_WorldStageModelIndex = 0` feeding
@@ -85,7 +85,7 @@ void __cdecl World_ResetModelRecordState(void)
 {
     int i;
 
-    for (i = 0; i < 0x2B; i++) {
+    for (i = 0; i < 43; i++) {
         g_WorldStageModelRecord[i] = 0xFF;
         g_WorldOverlayModelRecord[i] = 0;
     }
@@ -104,7 +104,7 @@ void __cdecl World_ResetModelRecordState(void)
 
 /*
  * Tear down whatever World_ResetModelRecordState set up, but only the part above index 0x20: the
- * first 0x20 entries of g_WorldStageModelRecord are left alone, which is what
+ * first 32 entries of g_WorldStageModelRecord are left alone, which is what
  * World_CopyStageModelSlotTable below refills from the table at g_WorldModelSlotTable.
  * The two loops have different bounds and the same body shape, so they are two loops and not one
  * with a conditional.
@@ -117,10 +117,10 @@ void __cdecl World_ClearOverlayModelState(void)
     if (g_WorldStageModelCount != 0) {
         g_WorldStageModelCount = 0;
         g_WorldStageModelIndex = 3;
-        for (i = 0; i < 0x2B; i++) {
+        for (i = 0; i < 43; i++) {
             g_WorldOverlayModelRecord[i] = 0;
         }
-        for (i = 0x20; i < 0x2B; i++) {
+        for (i = 32; i < 43; i++) {
             g_WorldStageModelRecord[i] = 0xFF;
         }
     }
@@ -180,7 +180,7 @@ WorldModelRecord *__cdecl World_GetModelRecord(short model)
                    : 0;
     }
     if (g_WorldStageModelCount != 0) {
-        frame.variantIndex = g_WorldStageModelRecord[model] - 0xd;
+        frame.variantIndex = g_WorldStageModelRecord[model] - 13;
         if (g_WorldOverlayModelRecord[model] == 0) {
             frame.local_2_unused = (void *)(*(int *)((char *)g_WorldStageVariantFlag + 0x10) + frame.variantIndex * 0x24);
             g_WorldOverlayModelRecord[model] = 1;
@@ -260,7 +260,7 @@ void __cdecl World_CopyStageModelSlotTable(void)
 {
     int i;
 
-    for (i = 3; i < 0x20; i++) {
+    for (i = 3; i < 32; i++) {
         g_WorldStageModelRecord[i] = (char)g_WorldModelSlotTable[(g_WorldOverlayModelActive << 5) + i];
     }
     g_WorldLeaderModelLoading = 1;

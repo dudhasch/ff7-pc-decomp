@@ -116,9 +116,9 @@ void __cdecl Submarine_CollectFlaggedGridCells(int maxCount)
     do {
         record = &g_SubmarineGridCellTable[recordIdx];
         if ((record->flags & SUBMARINE_CELL_FLAGGED) != 0) {
-            g_SubmarineFlaggedCells[outCount].cellX = ((recordIdx % 64) << 6) - 0x7E0;
-            g_SubmarineFlaggedCells[outCount].cellHeight = record->raisedHeight - 0x20;
-            g_SubmarineFlaggedCells[outCount].cellY = 0x800 - (((recordIdx) / 64) << 6) - 0x20;
+            g_SubmarineFlaggedCells[outCount].cellX = ((recordIdx % 64) << 6) - 2016;
+            g_SubmarineFlaggedCells[outCount].cellHeight = record->raisedHeight - 32;
+            g_SubmarineFlaggedCells[outCount].cellY = 2048 - (((recordIdx) / 64) << 6) - 32;
             g_SubmarineFlaggedCells[outCount].recordIndex = recordIdx;
             outCount++;
             if (outCount > maxCount) {
@@ -126,7 +126,7 @@ void __cdecl Submarine_CollectFlaggedGridCells(int maxCount)
             }
         }
         recordIdx++;
-    } while (recordIdx < 0x1000);
+    } while (recordIdx < 4096);
 }
 
 // Sets up camera-relative geometry and an advancing radial band, then examines eight indexed
@@ -228,9 +228,9 @@ void __cdecl Submarine_EmitRadialBandTerrainBatches(void)
     frame.bandState->pairTable = g_SubmarineFlaggedCells;
     frame.bandState->offsetTable = g_SubmarineOffsetTable;
     frame.bandState->indexTable = (int *)g_SubmarineIndexTable;
-    frame.bandState->originX = g_SubmarineState.player.posX >> 0xC;
-    frame.bandState->originY = g_SubmarineState.player.posY >> 0xC;
-    frame.bandState->originZ = g_SubmarineState.player.posZ >> 0xC;
+    frame.bandState->originX = g_SubmarineState.player.posX >> 12;
+    frame.bandState->originY = g_SubmarineState.player.posY >> 12;
+    frame.bandState->originZ = g_SubmarineState.player.posZ >> 12;
     GtePsxMatrixToFloat4x4Transposed(GetInstalledRotMatrixPtr(), &frame.rotMatrix);
     ComposeWithScreenMatrix(&frame.rotMatrix, &frame.composedMat);
     frame.bandState->bandStep = g_SubmarineState.currentBandStep;
@@ -275,16 +275,16 @@ void __cdecl Submarine_EmitRadialBandTerrainBatches(void)
             frame.dxSq += frame.dySq + frame.dzSq;
             frame.dySq = Bit_CountLeadingSignBits(frame.dxSq);
             frame.dySq = frame.dySq >> 1 << 1;
-            frame.dzSq = (0x1F - frame.dySq) / 2;
-            if (frame.dySq == 0x20) {
+            frame.dzSq = (31 - frame.dySq) / 2;
+            if (frame.dySq == 32) {
                 frame.dxSq = 0;
             }
-            if (frame.dySq < 0x18) {
-                frame.dxSq >>= 0x18 - frame.dySq;
+            if (frame.dySq < 24) {
+                frame.dxSq >>= 24 - frame.dySq;
             } else {
                 frame.dxSq <<= frame.dySq - 0x18;
             }
-            frame.dxSq = g_SubmarineModelIndicesA[frame.dxSq - 64] << frame.dzSq >> 0xC;
+            frame.dxSq = g_SubmarineModelIndicesA[frame.dxSq - 64] << frame.dzSq >> 12;
             frame.bandState->savedLevel = frame.dxSq;
             if (frame.dxSq >= frame.bandState->bandBase) {
                 continue;
@@ -296,18 +296,18 @@ void __cdecl Submarine_EmitRadialBandTerrainBatches(void)
             if (frame.distRemain > frame.bandState->bandStep) {
                 continue;
             }
-            frame.colorByte0 = frame.triColor << 0x18 >> 0x18;
-            frame.colorByte1 = frame.triColor << 0x10 >> 0x18;
-            *(char *)&frame.colorByte2 = frame.triColor << 8 >> 0x18;
-            frame.point0.x = (float)(frame.bandState->offsetTable[frame.packedIdx << 0x18 >> 0x18].offsetX + frame.posX);
-            frame.point0.y = (float)(frame.bandState->offsetTable[frame.packedIdx << 0x18 >> 0x18].offsetY + frame.posY);
-            frame.point0.z = (float)(frame.bandState->offsetTable[frame.packedIdx << 0x18 >> 0x18].offsetZ + frame.posZ);
-            frame.point1.x = (float)(frame.bandState->offsetTable[frame.packedIdx << 0x10 >> 0x18].offsetX + frame.posX);
-            frame.point1.y = (float)(frame.bandState->offsetTable[frame.packedIdx << 0x10 >> 0x18].offsetY + frame.posY);
-            frame.point1.z = (float)(frame.bandState->offsetTable[frame.packedIdx << 0x10 >> 0x18].offsetZ + frame.posZ);
-            frame.point2.x = (float)(frame.bandState->offsetTable[frame.packedIdx << 8 >> 0x18].offsetX + frame.posX);
-            frame.point2.y = (float)(frame.bandState->offsetTable[frame.packedIdx << 8 >> 0x18].offsetY + frame.posY);
-            frame.point2.z = (float)(frame.bandState->offsetTable[frame.packedIdx << 8 >> 0x18].offsetZ + frame.posZ);
+            frame.colorByte0 = frame.triColor << 24 >> 24;
+            frame.colorByte1 = frame.triColor << 16 >> 24;
+            *(char *)&frame.colorByte2 = frame.triColor << 8 >> 24;
+            frame.point0.x = (float)(frame.bandState->offsetTable[frame.packedIdx << 24 >> 24].offsetX + frame.posX);
+            frame.point0.y = (float)(frame.bandState->offsetTable[frame.packedIdx << 24 >> 24].offsetY + frame.posY);
+            frame.point0.z = (float)(frame.bandState->offsetTable[frame.packedIdx << 24 >> 24].offsetZ + frame.posZ);
+            frame.point1.x = (float)(frame.bandState->offsetTable[frame.packedIdx << 16 >> 24].offsetX + frame.posX);
+            frame.point1.y = (float)(frame.bandState->offsetTable[frame.packedIdx << 16 >> 24].offsetY + frame.posY);
+            frame.point1.z = (float)(frame.bandState->offsetTable[frame.packedIdx << 16 >> 24].offsetZ + frame.posZ);
+            frame.point2.x = (float)(frame.bandState->offsetTable[frame.packedIdx << 8 >> 24].offsetX + frame.posX);
+            frame.point2.y = (float)(frame.bandState->offsetTable[frame.packedIdx << 8 >> 24].offsetY + frame.posY);
+            frame.point2.z = (float)(frame.bandState->offsetTable[frame.packedIdx << 8 >> 24].offsetZ + frame.posZ);
             TransformPointByMatrix4x4(&frame.composedMat, &frame.point0, &frame.xform0);
             if (frame.xform0.w > 0.0) {
                 TransformPointByMatrix4x4(&frame.composedMat, &frame.point1, &frame.xform1);
@@ -344,7 +344,7 @@ void __cdecl Submarine_EmitRadialBandTerrainBatches(void)
         }
         if (frame.tmpInit != 0) {
             frame.emitted = 0;
-            frame.cellTopY = (float)((frame.posY >> 6 << 6) + 0x40);
+            frame.cellTopY = (float)((frame.posY >> 6 << 6) + 64);
             frame.cellCol = frame.cellCopy.recordIndex % 64;
             frame.cellRow = (frame.cellCopy.recordIndex - frame.cellCol) / 64;
             frame.pt[0][2].v = *(SubmarineVec3Int *)&((SubmarineGridVertex (*)[64])&g_SubmarineGridVertexBuffer)[frame.cellRow][frame.cellCol];
@@ -395,7 +395,7 @@ void __cdecl Submarine_EmitRadialBandTerrainBatches(void)
             frame.pt[3][0].f.y = frame.pt[3][1].f.y;
             frame.pt[3][3].f.y = frame.cellTopY;
             frame.pt[3][2].f.y = frame.pt[3][3].f.y;
-            if (frame.cellCol == 0x3F) {
+            if (frame.cellCol == 63) {
                 frame.pt[3][2].f.x = frame.pt[0][0].f.x + 64.0f;
                 frame.pt[3][0].f.x = frame.pt[3][2].f.x;
                 frame.pt[1][3].f.x = frame.pt[3][0].f.x;
@@ -417,7 +417,7 @@ void __cdecl Submarine_EmitRadialBandTerrainBatches(void)
                 frame.pt[3][1].f.z = frame.pt[3][2].f.z;
                 frame.pt[3][0].f.z = frame.pt[3][1].f.z;
             }
-            if (frame.cellRow == 0x3F) {
+            if (frame.cellRow == 63) {
                 frame.pt[2][2].f.z = frame.pt[3][0].f.z - 64.0f;
                 frame.pt[2][0].f.z = frame.pt[2][2].f.z;
                 frame.pt[0][3].f.z = frame.pt[2][0].f.z;

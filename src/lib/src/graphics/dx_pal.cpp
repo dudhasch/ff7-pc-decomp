@@ -43,7 +43,7 @@ int __cdecl D3DCreatePaletteObject(int bitDepth, struct GfxPaletteRecord *palett
             break;
         }
         // STRING: FF7 0x00913050
-        if (CheckDirectDrawResult(((ComDirectDraw *)(GetEngineContext())->ddObject)->CreatePalette(flags, (void *)paletteDesc->d3dEntries, &paletteDesc->releaseCallback, 0), "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x2c))
+        if (CheckDirectDrawResult(((ComDirectDraw *)(GetEngineContext())->ddObject)->CreatePalette(flags, (void *)paletteDesc->d3dEntries, &paletteDesc->releaseCallback, 0), "C:\\lib\\src\\graphics\\dx_pal.cpp", 44))
             created = 1;
         else
             created = 0;
@@ -62,7 +62,7 @@ int __cdecl D3DSurfaceSetPalette(struct GfxPaletteRecord *surface, int vtableSlo
     result = 0;
     if (surface != 0 && vtableSlot != 0) {
         // STRING: FF7 0x00913070
-        if (CheckDirectDrawResult(((ComDirectDrawSurface *)(vtableSlot))->SetPalette(surface->releaseCallback), "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x40) != 0) {
+        if (CheckDirectDrawResult(((ComDirectDrawSurface *)(vtableSlot))->SetPalette(surface->releaseCallback), "C:\\lib\\src\\graphics\\dx_pal.cpp", 64) != 0) {
             result = 1;
         }
     }
@@ -145,16 +145,16 @@ void __cdecl Gfx_FreePaletteRecord(GfxPaletteRecord *paletteRecord)
 {
     if (paletteRecord != 0) {
         // STRING: FF7 0x00913090
-        GameHeapFree((void *)paletteRecord->floatEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x8A);
+        GameHeapFree((void *)paletteRecord->floatEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 138);
         // STRING: FF7 0x009130b0
-        GameHeapFree((void *)paletteRecord->colorEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x8B);
+        GameHeapFree((void *)paletteRecord->colorEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 139);
         // STRING: FF7 0x009130d0
-        GameHeapFree((void *)paletteRecord->rampEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x8C);
+        GameHeapFree((void *)paletteRecord->rampEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 140);
         // STRING: FF7 0x009130f0
-        GameHeapFree((void *)paletteRecord->block, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x8D);
+        GameHeapFree((void *)paletteRecord->block, "C:\\lib\\src\\graphics\\dx_pal.cpp", 141);
         if (paletteRecord->ownsEntries != 0 && paletteRecord->srcEntries != 0) {
             // STRING: FF7 0x00913110
-            GameHeapFree((void *)paletteRecord->srcEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x91);
+            GameHeapFree((void *)paletteRecord->srcEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 145);
         }
         if (paletteRecord->d3dEntries != 0) {
             if (paletteRecord->releaseCallback != 0) {
@@ -162,12 +162,12 @@ void __cdecl Gfx_FreePaletteRecord(GfxPaletteRecord *paletteRecord)
                 paletteRecord->releaseCallback = 0;
             }
             // STRING: FF7 0x00913130
-            GameHeapFree((void *)paletteRecord->d3dEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x9C);
+            GameHeapFree((void *)paletteRecord->d3dEntries, "C:\\lib\\src\\graphics\\dx_pal.cpp", 156);
         }
         // STRING: FF7 0x00913150
-        GameHeapFree((void *)paletteRecord->arraysPtr, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x9F);
+        GameHeapFree((void *)paletteRecord->arraysPtr, "C:\\lib\\src\\graphics\\dx_pal.cpp", 159);
         // STRING: FF7 0x00913170
-        GameHeapFree(paletteRecord, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xA0);
+        GameHeapFree(paletteRecord, "C:\\lib\\src\\graphics\\dx_pal.cpp", 160);
     }
 }
 
@@ -185,7 +185,7 @@ int __cdecl Gfx_CreatePaletteRecord(int flags, int bitDepth, int entriesPerGroup
 
     state = 1;
     // STRING: FF7 0x00913190
-    recordPtr = (GfxPaletteRecord *)GameHeapAlloc(1, 0x40, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xAB);
+    recordPtr = (GfxPaletteRecord *)GameHeapAlloc(1, 64, "C:\\lib\\src\\graphics\\dx_pal.cpp", 171);
     if (recordPtr != 0) {
         recordPtr->flags = flags;
         recordPtr->bitDepth = bitDepth;
@@ -200,11 +200,11 @@ int __cdecl Gfx_CreatePaletteRecord(int flags, int bitDepth, int entriesPerGroup
             allocCount = 1 << bitDepth;
         }
         // STRING: FF7 0x009131b0
-        recordPtr->d3dEntries = (int)GameHeapAlloc(allocCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xC0);
+        recordPtr->d3dEntries = (int)GameHeapAlloc(allocCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 192);
         // STRING: FF7 0x009131d0
-        recordPtr->rampEntries = (int)GameHeapAlloc(allocCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xC1);
+        recordPtr->rampEntries = (int)GameHeapAlloc(allocCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 193);
         // STRING: FF7 0x009131f0
-        recordPtr->block = (int)GameHeapAlloc(allocCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xC2);
+        recordPtr->block = (int)GameHeapAlloc(allocCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 194);
         if (recordPtr->d3dEntries != 0 && recordPtr->rampEntries != 0 && recordPtr->block != 0) {
             if (srcEntries != 0) {
                 recordPtr->srcEntries = srcEntries;
@@ -212,7 +212,7 @@ int __cdecl Gfx_CreatePaletteRecord(int flags, int bitDepth, int entriesPerGroup
             } else {
                 recordPtr->ownsEntries = 1;
                 // STRING: FF7 0x00913210
-                recordPtr->srcEntries = (int)GameHeapAlloc(entryCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xCD);
+                recordPtr->srcEntries = (int)GameHeapAlloc(entryCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 205);
                 if (recordPtr->srcEntries != 0) {
                     state = 0;
                 } else {
@@ -221,7 +221,7 @@ int __cdecl Gfx_CreatePaletteRecord(int flags, int bitDepth, int entriesPerGroup
             }
             if (state == 0 && (recordPtr->flags & GFX_PALETTE_FLOAT_ENTRIES) != 0) {
                 // STRING: FF7 0x00913230
-                recordPtr->floatEntries = (int)GameHeapAlloc(entryCount, 0x10, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xDA);
+                recordPtr->floatEntries = (int)GameHeapAlloc(entryCount, 16, "C:\\lib\\src\\graphics\\dx_pal.cpp", 218);
                 if (recordPtr->floatEntries != 0) {
                     if (srcEntries != 0) {
                         Gfx_ConvertPaletteEntriesToFloat(entryCount, 0, srcEntries, 0, recordPtr->floatEntries);
@@ -233,7 +233,7 @@ int __cdecl Gfx_CreatePaletteRecord(int flags, int bitDepth, int entriesPerGroup
             }
             if (state == 0 && (recordPtr->flags & GFX_PALETTE_COLOR_ENTRIES) != 0) {
                 // STRING: FF7 0x00913250
-                recordPtr->colorEntries = (int)GameHeapAlloc(entryCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 0xEC);
+                recordPtr->colorEntries = (int)GameHeapAlloc(entryCount, 4, "C:\\lib\\src\\graphics\\dx_pal.cpp", 236);
                 if (recordPtr->colorEntries != 0) {
                     if (srcEntries != 0) {
                         for (i = 0; i < entryCount; i++) {
@@ -281,7 +281,7 @@ int __cdecl D3DPaletteSetEntries(int bufferIndex, int count, int startEntry, Gfx
     if (palette != 0) {
         flags = 0;
         // STRING: FF7 0x00913270
-        if (CheckDirectDrawResult(((ComDirectDrawPalette *)(palette->ddPalette))->SetEntries(flags, startEntry, count, palette->entryBuffer + bufferIndex * 4), "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x133) != 0) {
+        if (CheckDirectDrawResult(((ComDirectDrawPalette *)(palette->ddPalette))->SetEntries(flags, startEntry, count, palette->entryBuffer + bufferIndex * 4), "C:\\lib\\src\\graphics\\dx_pal.cpp", 307) != 0) {
             result = 1;
         }
     }
@@ -322,7 +322,7 @@ int __cdecl D3DTexturePaletteChanged(int entryOffset, int count, int startEntry,
         }
         if (D3DPaletteSetEntries(entryOffset, count, startEntry, (struct GfxPaletteState *)palette) != 0 && engine->fallbackFlag == 0) {
             // STRING: FF7 0x00913290
-            if (CheckDirectDrawResult(((ComDirect3DTexture2 *)(texture->d3dTexture))->PaletteChanged(startEntry, count), "C:\\lib\\src\\graphics\\dx_pal.cpp", 0x174) != 0) {
+            if (CheckDirectDrawResult(((ComDirect3DTexture2 *)(texture->d3dTexture))->PaletteChanged(startEntry, count), "C:\\lib\\src\\graphics\\dx_pal.cpp", 372) != 0) {
                 if (g_GfxPaletteUpdateFlag != 0 && engine->useDirect3D5 != 0) {
                     ((ComDirect3DDevice2 *)(engine->d3dDevice2))->SetRenderState(D3DRENDERSTATE_TEXTUREHANDLE, texture->handle);
                 }

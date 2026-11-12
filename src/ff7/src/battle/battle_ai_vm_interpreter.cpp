@@ -138,14 +138,14 @@ int __cdecl Battle_AiVm_CollapseToScalar(int slot)
     collapsed = 0;
     if (g_BattleAiVm->operandType[slot] == BATTLE_AI_OPERAND_LANES) {
         firstValue = 0;
-        for (laneIndex = 0; laneIndex < 0xA; laneIndex++) {
+        for (laneIndex = 0; laneIndex < 10; laneIndex++) {
             if ((1 << laneIndex & g_BattleAiVm->laneMask[slot]) != 0) {
                 firstValue = g_BattleAiVm->var[slot][laneIndex];
                 break;
             }
         }
         g_BattleAiVm->laneMask[slot] = BATTLE_ACTOR_MASK_ALL;
-        for (laneIndex = 0; laneIndex < 0xA; laneIndex++) {
+        for (laneIndex = 0; laneIndex < 10; laneIndex++) {
             g_BattleAiVm->var[slot][laneIndex] = firstValue;
         }
         collapsed = 1;
@@ -302,7 +302,7 @@ void __cdecl Battle_AiVm_Run(int actorIndex, unsigned char *bytecode, int partyO
             g_BattleAiVm->var[0][0] = 0;
             switch (g_BattleAiVm->opArg) {
             case BATTLE_AI_CONST_24BIT:
-                g_BattleAiVm->var[0][0] |= *(g_BattleAiVmBytecodePtr + g_BattleAiVm->pc + 2) << 0x10;
+                g_BattleAiVm->var[0][0] |= *(g_BattleAiVmBytecodePtr + g_BattleAiVm->pc + 2) << 16;
                 frame.sizeIndex++;
             case BATTLE_AI_CONST_16BIT:
                 g_BattleAiVm->var[0][0] |= *(g_BattleAiVmBytecodePtr + g_BattleAiVm->pc + 1) << 8;

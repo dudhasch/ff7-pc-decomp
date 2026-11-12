@@ -2399,7 +2399,7 @@ typedef struct BattleFxShivaTriangleMotion {
     short angleY;
     short angleZ;
     unsigned char pad_16[0x2];
-    short spinX;  /* +0x18: random spin, rand() % 0x100 - 0x80 */
+    short spinX;  /* +0x18: random spin, rand() % 256 - 128 */
     short spinY;
     short spinZ;
     unsigned char pad_1E[0x2];

@@ -143,12 +143,12 @@ void __cdecl Battle_AttackOpSpendGilForPower(void)
     int index;
     int enemyMask;
 
-    spend = g_pBattleCommandCtx->attackIdBase * 0xA;
+    spend = g_pBattleCommandCtx->attackIdBase * 10;
     if (g_pBattleCommandCtx->attackIdBase == 0xFFFF) {
         highestHp = 0;
         enemyCount = 0;
         enemyMask = g_BattleScene.targetMaskBits & BATTLE_ACTOR_MASK_ENEMIES;
-        for (index = 4; index < 0xA; index++) {
+        for (index = 4; index < 10; index++) {
             if ((enemyMask & 1 << index) != 0) {
                 if ((unsigned int)highestHp < (unsigned int)g_aCombatants[index].curHp) {
                     highestHp = g_aCombatants[index].curHp;
@@ -156,12 +156,12 @@ void __cdecl Battle_AttackOpSpendGilForPower(void)
                 enemyCount++;
             }
         }
-        if (highestHp > 0x2710) {
+        if (highestHp > 10000) {
             highestHp = 0x2710;
         }
-        spend = highestHp * enemyCount * 0xA;
+        spend = highestHp * enemyCount * 10;
     }
-    if (spend > 0x927C0) {
+    if (spend > 600000) {
         spend = 0x927C0;
     }
     if ((g_pBattleCommandCtx->attackFlags & 0x400000) == 0) {
@@ -170,7 +170,7 @@ void __cdecl Battle_AttackOpSpendGilForPower(void)
         }
         gSavemap.gil -= spend;
     }
-    g_pBattleCommandCtx->attackIdBase = spend / 0xA;
+    g_pBattleCommandCtx->attackIdBase = spend / 10;
     g_pBattleCommandCtx->power = g_pBattleCommandCtx->attackIdBase;
     g_pBattleCommandCtx->stepPower = g_pBattleCommandCtx->attackIdBase;
 }
@@ -364,7 +364,7 @@ void __cdecl Kernel_ApplyAttackToAction(void)
             learnedId = limitBytes[limitSlot];
             if (learnedId + 0x80 == g_pBattleCommandCtx->attackId) {
                 limitOrdinal = 0;
-                for (entryIdx = 0; entryIdx < 0xC; entryIdx++) {
+                for (entryIdx = 0; entryIdx < 12; entryIdx++) {
                     kernelId = Kernel_GetLimitAttackId(unitIndex, entryIdx);
                     if (kernelId != 0x7F) {
                         if (kernelId == learnedId) {
@@ -415,7 +415,7 @@ void __cdecl Kernel_ApplyAttackToAction(void)
     if (special36 == 0) {
         if (g_pBattleCommandCtx->attackerSlot >= 4) {
             enemyRecord = &g_BattleState.enemyRecords[g_pBattleCommandCtx->enemyRecordIndex];
-            for (enemySlot = 0; enemySlot < 0x10; enemySlot++) {
+            for (enemySlot = 0; enemySlot < 16; enemySlot++) {
                 if (g_pBattleCommandCtx->attackId == enemyRecord->attackIds[enemySlot]) {
                     g_pBattleCommandCtx->stepId = enemyRecord->attackStepIds[enemySlot];
                     overrideParam = enemyRecord->attackAnimParams[enemySlot];
@@ -602,7 +602,7 @@ void __cdecl Battle_AttackOpRunAiEventOnTargets(void)
 {
     int i;
 
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         if ((g_pBattleCommandCtx->targetMask & 1 << i) != 0) {
             Battle_RunAiScriptEvent(i, g_pBattleCommandCtx->attackIdBase, 0);
         }
@@ -700,7 +700,7 @@ void __cdecl Battle_AttackOpShowSenseReadout(void)
     for (frame.actorIndex = 0; frame.actorIndex < 3; frame.actorIndex++) {
         frame.rememberedIds[frame.actorIndex] = 0xFFFFFFFF;
     }
-    for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
         if ((frame.targetMask & 1 << frame.actorIndex) != 0 && (unsigned int)g_aCombatants[frame.actorIndex].maxHp >= (unsigned int)0x7530) {
             frame.targetMask &= ~(1 << frame.actorIndex);
         }
@@ -708,7 +708,7 @@ void __cdecl Battle_AttackOpShowSenseReadout(void)
     if (frame.targetMask == 0) {
         Battle_PostBattleMessageFormatted(g_pBattleCommandCtx->attackerSlot, 0x76, frame.msgFlags, &frame.msgArg0);
     } else {
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             frame.weaknessMasks[frame.actorIndex] = 0;
             if ((frame.targetMask & 1 << frame.actorIndex) != 0) {
                 frame.uniqueId = g_aCombatants[frame.actorIndex].uniqueId;
@@ -742,7 +742,7 @@ void __cdecl Battle_AttackOpShowSenseReadout(void)
         if (frame.messageTiming < 4) {
             frame.messageTiming = 4;
         }
-        for (frame.actorIndex = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+        for (frame.actorIndex = 0; frame.actorIndex < 10; frame.actorIndex++) {
             if ((frame.targetMask & 1 << frame.actorIndex) != 0) {
                 frame.targetIndex = frame.actorIndex;
                 Battle_PostEvent(BATTLE_EVENT_QUEUE_ACTION, frame.actorIndex, BATTLE_ACTION_EVENT_SET_TIMING_FLAG_40, 0);
@@ -823,16 +823,16 @@ void __cdecl Battle_AttackOpReplayLastActions(void)
             case BATTLE_COMMAND_MIME:
                 break;
             case BATTLE_COMMAND_LIMIT:
-                for (frame.limitIndex = 0; frame.limitIndex < 0xC; frame.limitIndex++) {
+                for (frame.limitIndex = 0; frame.limitIndex < 12; frame.limitIndex++) {
                     if (Kernel_GetLimitAttackId(frame.unitIndex, frame.limitIndex) == frame.paramWord) {
                         break;
                     }
                 }
-                if (frame.limitIndex == 0xC) {
+                if (frame.limitIndex == 12) {
                     g_pBattleCommandCtx->stepPower = frame.paramWord;
                     frame.adjustedAttack = frame.paramWord + 0x80;
                     frame.messageId = 0x57;
-                    frame.effectStep = 0x35;
+                    frame.effectStep = 53;
                     break;
                 }
             default:

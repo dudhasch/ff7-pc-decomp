@@ -61,7 +61,7 @@ void __cdecl Gfx_RasterClipLineToViewportBounds(int startX, int startY, int endX
     int swapTemp;
 
     outLine->visible = 1;
-    if (UNFOLDED(0) != 0 && (startX > 0x10000 || (startX < -0x10000 || (endX > 0x10000 || (endX < -0x10000 || (startY > 0x10000 || (startY < -0x10000 || (endY > 0x10000 || endY < -0x10000)))))))) { /* empty first arm: lib/codegen.h */
+    if (UNFOLDED(0) != 0 && (startX > 65536 || (startX < -65536 || (endX > 65536 || (endX < -65536 || (startY > 65536 || (startY < -65536 || (endY > 65536 || endY < -65536)))))))) { /* empty first arm: lib/codegen.h */
     } else {
         dyValue = endY - startY;
         outLine->dyValue = dyValue;

@@ -95,7 +95,7 @@ void __cdecl BattleFx_MagicEnterBarrier(int targetMask, int actorIdx)
 // FUNCTION: FF7 0x005b439a
 void __cdecl BattleFx_MagicBeginBarrier(int targetMask, int actorIdx)
 {
-    g_BattleMagicBarrier_Scale = 0x3000;
+    g_BattleMagicBarrier_Scale = 0x3000 /* 3.0 */;
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 4, BattleFx_MagicSpawnBarrierPerTarget);
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputePanForEntity(targetMask), 0x5E);
 }
@@ -110,10 +110,10 @@ void __cdecl BattleFx_MagicSpawnBarrierPerTarget(int actor)
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &effectSlot->posX);
     effectSlot->posX -= (short)(SinFixed(g_BattleActorRecords[actor].yaw) *
                                              g_BattleActorRecords[actor].radius >>
-                                         0xC);
+                                         12);
     effectSlot->posZ -= (short)(CosFixed(g_BattleActorRecords[actor].yaw) *
                                                g_BattleActorRecords[actor].radius >>
-                                           0xC);
+                                           12);
     effectSlot->rot = *(Int64Pair *)&g_BattleActorRecords[actor].rotX;
     effectSlot->actorIndex = actor;
 }
@@ -208,7 +208,7 @@ void __cdecl BattleFx_MagicBarrierGrowFadeModelTask(void)
     pScales = &work->scale;
     t = taskSlot->frameCount + taskSlot->frameOffset + -0x11;
     if (t < 0) {
-        pScales->scaleNext = g_BattleMagicBarrier_Scale * 0xC00 >> 0xC;
+        pScales->scaleNext = g_BattleMagicBarrier_Scale * 0xC00 /* 0.75 */ >> 12;
         pScales->scaleCur = pScales->scaleNext;
         pScales->scalePrev = pScales->scaleCur;
         fade = 0;
@@ -220,10 +220,10 @@ void __cdecl BattleFx_MagicBarrierGrowFadeModelTask(void)
             return;
         }
         bits = taskSlot->flags | 8;
-        pScales->scaleNext = ((t * 0xC00 / 8) + 0xC00) * g_BattleMagicBarrier_Scale >> 0xC;
+        pScales->scaleNext = ((t * 0xC00 / 8) + 0xC00) * g_BattleMagicBarrier_Scale >> 12;
         pScales->scaleCur = pScales->scaleNext;
         pScales->scalePrev = pScales->scaleCur;
-        fade = (t << 0xC) / 8;
+        fade = (t << 12) / 8;
         g_BattleMagicBarrier_ModelReq1.modelHandle = Gfx_ModelTableGetRenderObject(2, g_BattleMagicBarrier_ResourceHandle);
     }
     SetDrawColorRGB(0, 0, 0);
@@ -270,11 +270,11 @@ void __cdecl BattleFx_MagicBarrierDualGrowFadeModelTask(void)
             frame.scale1->scaleCur = frame.scale1->scaleNext;
             frame.scale1->scalePrev = frame.scale1->scaleCur;
         } else {
-            frame.scale1->scaleNext = g_BattleMagicBarrier_Scale * 0xc00 >> 12;
+            frame.scale1->scaleNext = g_BattleMagicBarrier_Scale * 0xc00 /* 0.75 */ >> 12;
             frame.scale1->scaleCur = frame.scale1->scaleNext;
             frame.scale1->scalePrev = frame.scale1->scaleCur;
         }
-        frame.scale2->scaleNext = g_BattleMagicBarrier_Scale * 0xc00 >> 12;
+        frame.scale2->scaleNext = g_BattleMagicBarrier_Scale * 0xc00 /* 0.75 */ >> 12;
         frame.scale2->scaleCur = frame.scale2->scaleNext;
         frame.scale2->scalePrev = frame.scale2->scaleCur;
         frame.flags = frame.slot->flags;

@@ -156,7 +156,7 @@ void __cdecl BattleFx_LimitBeginNightmare(int targetMask, int actorIdx)
     g_BattleFxActiveDrawListPtr = Gfx_GetPsxPacketScratchPtr();
     g_YasuiLimitNightmareTargetMask = targetMask;
     actorIndex = 0;
-    for (targetCnt = 0; actorIndex < 0xA; actorIndex++) {
+    for (targetCnt = 0; actorIndex < 10; actorIndex++) {
         if ((targetMask & 1 << actorIndex) != 0) {
             targetCnt++;
             if (targetCnt == 1) {
@@ -182,9 +182,9 @@ void __cdecl BattleFx_LimitNightmareSpawnTimeline(void)
     task->ownerSlot = BATTLE_TASK_FREE;
     task = (BattleFxBlueDeathForceTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitNightmareTimelineTask);
     Battle_GetBoneWorldPos(g_YasuiLimitNightmareTargetActor, g_BattleActorRecords[g_YasuiLimitNightmareTargetActor].targetBone, &task->posX);
-    size = g_BattleActorRecords[g_YasuiLimitNightmareTargetActor].radius + 0x1B0;
-    if (size > 0x76C) {
-        size = 0x76C;
+    size = g_BattleActorRecords[g_YasuiLimitNightmareTargetActor].radius + 432;
+    if (size > 1900) {
+        size = 1900;
     }
     task->radius = size;
     pUvScratch = (BattleFxNightmareUvScratch *)Gfx_GetPsxScratchpadPtr(0);
@@ -266,7 +266,7 @@ int __cdecl BattleFx_LimitNightmareAssignQuadUvsByAngle(BattleFxNightmareUvScrat
         if (quadUv->crossY > 0) {
             angleValue = 0x1000 - angleValue;
         }
-        if (sumY < -0x22B) {
+        if (sumY < -555) {
             g_YasuiLimitNightmareQuadSortTable1[uvCursor].f.angle = (short)angleValue;
             g_YasuiLimitNightmareQuadSortTable1[uvCursor].f.quadIndex = (char)i;
             g_YasuiLimitNightmareQuadSortTable1[uvCursor].f.hemisphere = 1;
@@ -294,15 +294,15 @@ int __cdecl BattleFx_LimitNightmareAssignQuadUvsByAngle(BattleFxNightmareUvScrat
         }
     }
     uvCursor = 0xFF;
-    remCount = 0x100 % angleValue;
+    remCount = 256 % angleValue;
     cursor = (BattleFxNightmareUvQuadOffsets *)(block + 4);
     for (i = 0; i < angleValue; i++) {
         sumX = g_YasuiLimitNightmareQuadSortTable1[i].f.quadIndex;
         sumY = g_YasuiLimitNightmareQuadSortTable2[i].f.quadIndex;
         if (i < angleValue - remCount) {
-            secondCount = uvCursor - 0x100 / angleValue;
+            secondCount = uvCursor - 256 / angleValue;
         } else {
-            secondCount = uvCursor - 0x100 / angleValue - 1;
+            secondCount = uvCursor - 256 / angleValue - 1;
             if (secondCount < 0) {
                 secondCount = 0;
             }
@@ -346,7 +346,7 @@ void __cdecl BattleFx_LimitNightmareTimelineTask(void)
         return;
     }
     task = (BattleFxNightmareSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->phase >= 0xD && task->phase < 0x15) {
+    if (task->phase >= 13 && task->phase < 21) {
         if (task->phase == 0xD) {
             BattleFx_StartScreenFlashRamp(1);
         }
@@ -359,19 +359,19 @@ void __cdecl BattleFx_LimitNightmareTimelineTask(void)
         *(Int64Pair *)&particle->velocityX = *(Int64Pair *)&task->posX;
         particle->velocityY = 0;
         particle->phase = 0;
-        particle->speed = 0x120;
-        particle->scale = (task->elapsed << 0xC) / 0x28F;
-        particle->scaleStep = (particle->scale >> 1) / 0x16;
+        particle->speed = 288;
+        particle->scale = (task->elapsed << 12) / 655;
+        particle->scaleStep = (particle->scale >> 1) / 22;
         particle->angle = 0;
-        particle->scaleStepY = (particle->scale / 3 << 1) / 0x16;
+        particle->scaleStepY = (particle->scale / 3 << 1) / 22;
     }
-    if (task->phase >= 0x24 && task->phase <= 0x38) {
+    if (task->phase >= 36 && task->phase <= 56) {
         scaleVal = task->elapsed / 3 << 1;
         spreadRange = scaleVal;
         if (scaleVal > 0x4F2) {
             scaleVal = 0x4F2;
         }
-        scaleVal = (scaleVal << 0xC) / 0x100;
+        scaleVal = (scaleVal << 12) / 256;
         for (burstIndex = 0; burstIndex < 2; burstIndex++) {
             particle = (BattleFxLimitNightmareParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitNightmareAnimatedSpriteTask);
             *(Int64Pair *)&particle->velocityX = *(Int64Pair *)&task->posX;
@@ -379,25 +379,25 @@ void __cdecl BattleFx_LimitNightmareTimelineTask(void)
             particle->velocityY += (short)(rand() % (spreadRange << 1) - spreadRange);
             particle->velocityZ += (short)(rand() % (spreadRange << 1) - spreadRange);
             scaleJitter = rand() % 0x900 + 0x600;
-            particle->uniformScale = scaleVal * scaleJitter >> 0xC;
+            particle->uniformScale = scaleVal * scaleJitter >> 12;
             particle->stepOrTexRow = rand() % 3 << 6;
         }
     }
-    if (task->phase >= 0x32 && task->phase <= 0x40 && (task->phase & 1) != 0) {
+    if (task->phase >= 50 && task->phase <= 64 && (task->phase & 1) != 0) {
         particle = (BattleFxLimitNightmareParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitNightmareSpinningGradientModelTask);
         *(Int64Pair *)&particle->velocityX = *(Int64Pair *)&task->posX;
-        particle->phase = rand() % 0x1000;
-        particle->speed = rand() % 0xAA + 0x80;
+        particle->phase = rand() % 4096;
+        particle->speed = rand() % 170 + 128;
         if ((particle->phase & 1) != 0) {
             particle->speed = -particle->speed;
         }
         particle->scale = rand() % 0x400 - 0x200;
         particle->angle = (task->phase * 0x2BC & 0xFFF) + rand() % 0x1F4;
-        scaleVal = (task->elapsed << 0xC) / 0x546;
+        scaleVal = (task->elapsed << 12) / 1350;
         scaleJitter = rand() % 0x600 + 0xB00;
-        particle->uniformScale = scaleVal * scaleJitter >> 0xC;
+        particle->uniformScale = scaleVal * scaleJitter >> 12;
         particle->stepOrTexRow = scaleVal >> 4;
-        particle->lifetime = rand() % 9 + 0x11;
+        particle->lifetime = rand() % 9 + 17;
     }
     if (task->phase == 0x3C) {
         spreadRange = task->elapsed + (task->elapsed >> 1);
@@ -406,14 +406,14 @@ void __cdecl BattleFx_LimitNightmareTimelineTask(void)
             *(Int64Pair *)&particle->velocityX = *(Int64Pair *)&task->posX;
             particle->velocityY = 0xFF94;
             particle->startDelay = rand() % 8 + burstIndex;
-            particle->phase = rand() % 0x1000;
-            particle->speed = rand() % 0x78 + 0x46;
+            particle->phase = rand() % 4096;
+            particle->speed = rand() % 120 + 70;
             if ((particle->phase & 1) != 0) {
                 particle->speed = -particle->speed;
             }
             particle->scale = spreadRange + rand() % 0xC8;
             particle->uniformScale = 0x1851;
-            particle->stepOrTexRow = -(rand() % 0x32 + 0x1C);
+            particle->stepOrTexRow = -(rand() % 50 + 28);
             particle->lifetime = burstIndex;
             particle->timer = 0;
             g_YasuiLimitNightmareTrailRingBuffers[burstIndex].count = 0;
@@ -434,8 +434,8 @@ void __cdecl BattleFx_LimitNightmareTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        flashVal = task->phase * 0x155;
-    } else if (task->phase >= 0x4D) {
+        flashVal = task->phase * 341;
+    } else if (task->phase >= 77) {
         flashVal = 0x800 - (task->phase - 0x4D << 8);
     } else {
         flashVal = 0x800;
@@ -443,7 +443,7 @@ void __cdecl BattleFx_LimitNightmareTimelineTask(void)
     if (task->phase == 0x41) {
         Battle_PostActorHitOrHurtMessage(g_YasuiLimitNightmareTargetActor);
     }
-    if (task->phase >= 0x55) {
+    if (task->phase >= 85) {
         flashVal = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -537,12 +537,12 @@ void __cdecl BattleFx_LimitNightmareTrailingModelTask(void)
     pModelDraw->stateFlags = 0;
     pModelDraw->texturePageBits = 0;
     if (task->stage < 4) {
-        pModelDraw->fadeLevel = 0x1000 - (task->stage << 9);
-        tintByte = (char)(task->stage * 0xE);
-    } else if (task->stage >= 0x14) {
-        ringIndex = task->stage - 0x14;
+        pModelDraw->fadeLevel = 4096 - (task->stage << 9);
+        tintByte = (char)(task->stage * 14);
+    } else if (task->stage >= 20) {
+        ringIndex = task->stage - 20;
         pModelDraw->fadeLevel = (short)(ringIndex << 9);
-        tintByte = (char)(0x70 - ringIndex * 0xE);
+        tintByte = (char)(0x70 - ringIndex * 14);
     } else {
         pModelDraw->fadeLevel = 0;
         tintByte = 0x70;
@@ -564,7 +564,7 @@ void __cdecl BattleFx_LimitNightmareTrailingModelTask(void)
         BattleFx_InstallBillboardMatrix((short *)ringBuffer->points[ringIndex], (short)prevPoint, -(prevPoint >> 4));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_YasuiLimitNightmareSpriteRequest.limitSparkVectorAt16, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     }
-    if (task->stage >= 0x1C) {
+    if (task->stage >= 28) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -573,10 +573,10 @@ void __cdecl BattleFx_LimitNightmareTrailingModelTask(void)
     task->trailY += task->trailYStep;
     task->trailYStep += task->trailYStep >> 6;
     task->stepY += task->accel;
-    if (task->stage < 0xC) {
+    if (task->stage < 12) {
         task->accel += task->accel >> 4;
     } else {
-        task->accel += (short)(task->accel / 0xC);
+        task->accel += (short)(task->accel / 12);
     }
     (task->stage)++;
 }
@@ -873,14 +873,14 @@ void __cdecl BattleFx_LimitNightmareExpandingModelTask(void)
     g_BattleFxActiveDrawListPtr = BattleFx_LimitNightmareDrawPsxMesh((BattleFxLimitNightmarePsxMesh *)frame.mesh, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
     frame.mesh->flags = 0x28;
     frame.mesh->uvScroll = 0;
-    frame.mesh->expandRemaining = 0x80;
+    frame.mesh->expandRemaining = 128;
     frame.mesh->attrMask = 0x20;
     frame.mesh->pad_0E = 0;
-    if (frame.task->timer >= 0x18) {
-        frame.mesh->expandRemaining -= (short)((frame.task->timer - 0x18) * 0xA);
+    if (frame.task->timer >= 24) {
+        frame.mesh->expandRemaining -= (short)((frame.task->timer - 24) * 10);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_LimitNightmareDrawPsxMesh((BattleFxLimitNightmarePsxMesh *)frame.mesh, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.task->timer >= 0x24) {
+    if (frame.task->timer >= 36) {
         frame.task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -889,7 +889,7 @@ void __cdecl BattleFx_LimitNightmareExpandingModelTask(void)
     frame.task->positionA += frame.task->velocityA;
     frame.task->velocityA -= (short)(frame.task->velocityA >> 6);
     frame.task->positionB += frame.task->velocityB;
-    if (frame.task->timer < 0x16) {
+    if (frame.task->timer < 22) {
         frame.task->positionC += frame.task->velocityC;
     }
     if (frame.task->timer == 0) {

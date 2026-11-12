@@ -163,10 +163,10 @@ void __cdecl BattleFx_LimitGauntletTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter == 0x14) {
+    if (taskPtr->frameCounter == 20) {
         SfxPlaySoundGroup(Battle_ComputePanForEntity(g_BattleLimitGauntletTargetMask), 0);
     }
-    if (taskPtr->frameCounter == 0x1E) {
+    if (taskPtr->frameCounter == 30) {
         childTaskPtr = (BattleFxLimitGauntletTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGauntletScalingModelTask);
         childTaskPtr->centroidXLow = ((BattleLimitGauntletCentroidX *)&g_BattleLimitGauntletCentroidX)->centroidXLow;
         childTaskPtr->centroidXHigh = ((BattleLimitGauntletCentroidX *)&g_BattleLimitGauntletCentroidX)->centroidXHigh;
@@ -174,10 +174,10 @@ void __cdecl BattleFx_LimitGauntletTimelineTask(void)
         g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         g_BattleFxTimelineState.channel2 = 0x40;
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
     }
-    if (taskPtr->frameCounter >= 0x14 && taskPtr->frameCounter < 0x50) {
-        for (i9 = 0; i9 < (0x50 - taskPtr->frameCounter) / 0xA; i9++) {
+    if (taskPtr->frameCounter >= 20 && taskPtr->frameCounter < 80) {
+        for (i9 = 0; i9 < (0x50 - taskPtr->frameCounter) / 10; i9++) {
             childTaskPtr = (BattleFxLimitGauntletTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGauntletGouraudLineTask);
             childTaskPtr->centroidXLow = ((BattleLimitGauntletCentroidX *)&g_BattleLimitGauntletCentroidX)->centroidXLow;
             childTaskPtr->centroidXHigh = ((BattleLimitGauntletCentroidX *)&g_BattleLimitGauntletCentroidX)->centroidXHigh;
@@ -187,23 +187,23 @@ void __cdecl BattleFx_LimitGauntletTimelineTask(void)
             childTaskPtr->rotZ = 0;
         }
     }
-    if (taskPtr->frameCounter == 0x28) {
+    if (taskPtr->frameCounter == 40) {
         childTaskPtr = (BattleFxLimitGauntletTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGauntletGrowingModelTask);
         childTaskPtr->centroidXLow = ((BattleLimitGauntletCentroidX *)&g_BattleLimitGauntletCentroidX)->centroidXLow;
         childTaskPtr->centroidXHigh = ((BattleLimitGauntletCentroidX *)&g_BattleLimitGauntletCentroidX)->centroidXHigh;
         childTaskPtr->centroidZ = g_BattleLimitGauntletCentroidZ;
     }
-    if (taskPtr->frameCounter == 0x50) {
-        for (i9 = 0; i9 < 0xA; i9++) {
+    if (taskPtr->frameCounter == 80) {
+        for (i9 = 0; i9 < 10; i9++) {
             if ((g_BattleLimitGauntletTargetMask & 1 << i9) != 0) {
                 Battle_PostActorHitOrHurtMessage(i9);
             }
         }
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter == 0x64) {
+    if (taskPtr->frameCounter == 100) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
         Sfx_ReleaseCachedBuffer(0x130, 0xF);
         Sfx_ReleaseCachedBuffer(0x145, 0xF);
     }
@@ -251,19 +251,19 @@ void __cdecl BattleFx_LimitGauntletGrowingModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.growRecord->frame < 0x1E) {
+    if (frame.growRecord->frame < 30) {
         g_BattleLimitGauntletScaleAlpha += 0x258;
     } else {
-        frame.growRecord->posY -= 0x12C;
+        frame.growRecord->posY -= 300;
     }
     if (frame.growRecord->frame < 8) {
         g_BattleLimitGauntletFadeStep1++;
     }
-    if (frame.growRecord->frame > 0x2A) {
+    if (frame.growRecord->frame > 42) {
         g_BattleLimitGauntletFadeStep1--;
     }
     (frame.growRecord->frame)++;
-    if (frame.growRecord->frame == 0x32) {
+    if (frame.growRecord->frame == 50) {
         frame.growRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -311,11 +311,11 @@ void __cdecl BattleFx_LimitGauntletScalingModelTask(void)
     if (frame.scaleRecord->step < 8) {
         g_BattleLimitGauntletFadeStep2 += 2;
     }
-    if (frame.scaleRecord->step >= 0x2C) {
+    if (frame.scaleRecord->step >= 44) {
         g_BattleLimitGauntletFadeStep2--;
     }
     (frame.scaleRecord->step)++;
-    if (frame.scaleRecord->step == 0x3C) {
+    if (frame.scaleRecord->step == 60) {
         frame.scaleRecord->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -354,11 +354,11 @@ void __cdecl BattleFx_LimitGauntletGouraudLineTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     RefreshGlobalTransformState();
-    frame.end1X.vz = (0xA - frame.lineState->frameIndex) * 0x320;
+    frame.end1X.vz = (10 - frame.lineState->frameIndex) * 800;
     frame.end1X.vy = 0;
     frame.end1X.vx = frame.end1X.vy;
     RotTransPointToInt16(&frame.end1X, (short *)&frame.end1X, &frame.projFlags);
-    frame.end2X.vz = (0xA - frame.lineState->frameIndex) * 0xC8;
+    frame.end2X.vz = (10 - frame.lineState->frameIndex) * 200;
     frame.end2X.vy = 0;
     frame.end2X.vx = frame.end2X.vy;
     RotTransPointToInt16(&frame.end2X, (short *)&frame.end2X, &frame.projFlags);
@@ -390,7 +390,7 @@ void __cdecl BattleFx_LimitGauntletGouraudLineTask(void)
         return;
     }
     (frame.lineState->frameIndex)++;
-    if (frame.lineState->frameIndex == 0xA) {
+    if (frame.lineState->frameIndex == 10) {
         frame.lineState->ownerSlot = BATTLE_TASK_FREE;
     }
 }

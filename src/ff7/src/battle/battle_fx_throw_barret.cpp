@@ -248,7 +248,7 @@ void __cdecl Battle_ThrowFxWeaponBlock32Index9(int targetMask, int actorIndex)
 // FUNCTION: FF7 0x004d2a5a
 void __cdecl Battle_ThrowFxWeaponBlock32Index10(int targetMask, int actorIndex)
 {
-    g_BattleThrowBarretWeaponIndex = 0xA;
+    g_BattleThrowBarretWeaponIndex = 10;
     g_BattleThrowBarretWeaponFlag = BATTLE_BARRET_THROW_STRAIGHT;
     Battle_ThrowFxSpawnWeapons32to47(targetMask, actorIndex);
 }
@@ -257,7 +257,7 @@ void __cdecl Battle_ThrowFxWeaponBlock32Index10(int targetMask, int actorIndex)
 // FUNCTION: FF7 0x004d2a83
 void __cdecl Battle_ThrowFxWeaponBlock32Index11(int targetMask, int actorIndex)
 {
-    g_BattleThrowBarretWeaponIndex = 0xB;
+    g_BattleThrowBarretWeaponIndex = 11;
     g_BattleThrowBarretWeaponFlag = BATTLE_BARRET_THROW_TUMBLING;
     Battle_ThrowFxSpawnWeapons32to47(targetMask, actorIndex);
 }
@@ -266,7 +266,7 @@ void __cdecl Battle_ThrowFxWeaponBlock32Index11(int targetMask, int actorIndex)
 // FUNCTION: FF7 0x004d2aac
 void __cdecl Battle_ThrowFxWeaponBlock32Index12(int targetMask, int actorIndex)
 {
-    g_BattleThrowBarretWeaponIndex = 0xC;
+    g_BattleThrowBarretWeaponIndex = 12;
     g_BattleThrowBarretWeaponFlag = BATTLE_BARRET_THROW_STRAIGHT;
     Battle_ThrowFxSpawnWeapons32to47(targetMask, actorIndex);
 }
@@ -275,7 +275,7 @@ void __cdecl Battle_ThrowFxWeaponBlock32Index12(int targetMask, int actorIndex)
 // FUNCTION: FF7 0x004d2ad5
 void __cdecl Battle_ThrowFxWeaponBlock32Index13(int targetMask, int actorIndex)
 {
-    g_BattleThrowBarretWeaponIndex = 0xD;
+    g_BattleThrowBarretWeaponIndex = 13;
     g_BattleThrowBarretWeaponFlag = BATTLE_BARRET_THROW_TUMBLING;
     Battle_ThrowFxSpawnWeapons32to47(targetMask, actorIndex);
 }
@@ -284,7 +284,7 @@ void __cdecl Battle_ThrowFxWeaponBlock32Index13(int targetMask, int actorIndex)
 // FUNCTION: FF7 0x004d2afe
 void __cdecl Battle_ThrowFxWeaponBlock32Index14(int targetMask, int actorIndex)
 {
-    g_BattleThrowBarretWeaponIndex = 0xE;
+    g_BattleThrowBarretWeaponIndex = 14;
     g_BattleThrowBarretWeaponFlag = BATTLE_BARRET_THROW_TUMBLING;
     Battle_ThrowFxSpawnWeapons32to47(targetMask, actorIndex);
 }
@@ -374,23 +374,23 @@ void __cdecl BattleFx_ThrowBarretWeaponsStraightTimelineTask(void)
         g_BattleThrowBarretDeltaVectorY = g_BattleThrowBarretTargetPos.vy - g_BattleThrowBarretSourcePos.y;
         g_BattleThrowBarretDeltaVectorZ = g_BattleThrowBarretTargetPos.vz - g_BattleThrowBarretSourcePos.z;
         norm = NormalizeVectorFixed(&g_BattleThrowBarretDeltaVectorX, &g_BattleThrowBarretDeltaVectorX);
-        speed = SqrtToInt(norm) / 0xC;
+        speed = SqrtToInt(norm) / 12;
         pProjectile = (BattleFxBarretThrowStraight *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowBarretWeaponsStraightProjectileTask);
         *(Int64Pair *)((char *)pProjectile + 4) = *(Int64Pair *)&g_BattleThrowBarretSourcePos;
-        pProjectile->offsetX = speed * g_BattleThrowBarretDeltaVectorX >> 0xC;
-        pProjectile->offsetY = speed * g_BattleThrowBarretDeltaVectorY >> 0xC;
-        pProjectile->offsetZ = speed * g_BattleThrowBarretDeltaVectorZ >> 0xC;
+        pProjectile->offsetX = speed * g_BattleThrowBarretDeltaVectorX >> 12;
+        pProjectile->offsetY = speed * g_BattleThrowBarretDeltaVectorY >> 12;
+        pProjectile->offsetZ = speed * g_BattleThrowBarretDeltaVectorZ >> 12;
         pProjectile->angleVelocity = 0xAA;
         pProjectile->angle = 0xAA;
         g_BattleThrowBarretTargetAngles.vx = pProjectile->baseX - pProjectile->offsetX;
         g_BattleThrowBarretTargetAngles.vy = pProjectile->baseY - pProjectile->offsetY;
         g_BattleThrowBarretTargetAngles.vz = pProjectile->baseZ - pProjectile->offsetZ;
     }
-    if (task->frameCounter == 0xD) {
+    if (task->frameCounter == 13) {
         Battle_PostActorHitOrHurtMessage(g_BattleThrowBarretTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowBarretTargetPos.vx), 0x1E4);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -423,10 +423,10 @@ void __cdecl BattleFx_ThrowBarretWeaponsStraightProjectileTask(void)
 #pragma pack(pop)
 
     frame.projectile = (BattleFxBarretStraightProjectile *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.projectile->frameCount < 0xC) {
+    if (frame.projectile->frameCount < 12) {
         frame.angle = ComputeAngleBetweenVectors((VECTOR *)&g_BattleThrowBarretTransformedVector, (VECTOR *)&g_BattleThrowBarretDeltaVectorX, &frame.axis);
-        frame.stepCount = frame.angle / 0xBE + 1;
-        frame.heightOffset = (SinFixed(frame.projectile->angle) * -0x190 >> 0xC) * frame.stepCount;
+        frame.stepCount = frame.angle / 190 + 1;
+        frame.heightOffset = (SinFixed(frame.projectile->angle) * -0x190 >> 12) * frame.stepCount;
     } else {
         frame.heightOffset = frame.projectile->angle;
     }
@@ -453,7 +453,7 @@ void __cdecl BattleFx_ThrowBarretWeaponsStraightProjectileTask(void)
     SetRotMatrix(&frame.rotMatrix);
     frame.tmpX.vx = 0;
     frame.tmpX.vy = 0;
-    frame.tmpX.vz = 0x50;
+    frame.tmpX.vz = 80;
     TransformVectorToInt32((PsxMatrix *)&frame.rotMatrix, &frame.tmpX, &frame.tmpX);
     frame.drawX += frame.tmpX.vx;
     frame.drawY += frame.tmpX.vy;
@@ -466,13 +466,13 @@ void __cdecl BattleFx_ThrowBarretWeaponsStraightProjectileTask(void)
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.projectile->frameCount >= 0x18) {
+    if (frame.projectile->frameCount >= 24) {
         frame.modelDraw->flags |= 8;
-        frame.modelDraw->fadeLevel = (frame.projectile->frameCount - 0x18) * 0x2AA;
+        frame.modelDraw->fadeLevel = (frame.projectile->frameCount - 24) * 682;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.projectile->frameCount >= 0x1E) {
+    if (frame.projectile->frameCount >= 30) {
         frame.projectile->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -482,7 +482,7 @@ void __cdecl BattleFx_ThrowBarretWeaponsStraightProjectileTask(void)
     frame.projectile->posY += frame.projectile->velocityY;
     frame.projectile->posZ += frame.projectile->velocityZ;
     frame.projectile->angle += frame.projectile->angleVelocity;
-    if (frame.projectile->frameCount == 0xC) {
+    if (frame.projectile->frameCount == 12) {
         frame.projectile->angle = 0;
         frame.projectile->angleVelocity = -(rand() % 0x1E + 0x3C);
     }
@@ -510,24 +510,24 @@ void __cdecl BattleFx_ThrowBarretWeaponsTumblingTimelineTask(void)
         g_BattleThrowBarretDeltaVectorY = g_BattleThrowBarretTargetPos.vy - g_BattleThrowBarretSourcePos.y;
         g_BattleThrowBarretDeltaVectorZ = g_BattleThrowBarretTargetPos.vz - g_BattleThrowBarretSourcePos.z;
         norm = NormalizeVectorFixed(&g_BattleThrowBarretDeltaVectorX, &g_BattleThrowBarretDeltaVectorX);
-        speed = SqrtToInt(norm) / 0x12;
+        speed = SqrtToInt(norm) / 18;
         pProjectile = (BattleFxBarretThrowTumble *)BATTLE_NEW_TASK_SLOT(BattleFx_ThrowBarretWeaponsTumblingProjectileTask);
         *(Int64Pair *)((char *)pProjectile + 4) = *(Int64Pair *)&g_BattleThrowBarretSourcePos;
-        pProjectile->offsetX = speed * g_BattleThrowBarretDeltaVectorX >> 0xC;
-        pProjectile->offsetY = speed * g_BattleThrowBarretDeltaVectorY >> 0xC;
-        pProjectile->offsetZ = speed * g_BattleThrowBarretDeltaVectorZ >> 0xC;
+        pProjectile->offsetX = speed * g_BattleThrowBarretDeltaVectorX >> 12;
+        pProjectile->offsetY = speed * g_BattleThrowBarretDeltaVectorY >> 12;
+        pProjectile->offsetZ = speed * g_BattleThrowBarretDeltaVectorZ >> 12;
         pProjectile->angleRate = 0x71;
         pProjectile->angle = 0x71;
-        pProjectile->lifetime = rand() % 0xC8 + 0xB4;
+        pProjectile->lifetime = rand() % 200 + 180;
         pProjectile->spinAngleX = pProjectile->lifetime;
-        pProjectile->tumbleRate = rand() % 0x96 + 0xA0;
+        pProjectile->tumbleRate = rand() % 150 + 160;
         pProjectile->spinAngleZ = pProjectile->tumbleRate;
     }
-    if (task->frameCounter == 0x12) {
+    if (task->frameCounter == 18) {
         Battle_PostActorHitOrHurtMessage(g_BattleThrowBarretTargetIndex);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleThrowBarretTargetPos.vx), 0x1E4);
     }
-    if (task->frameCounter >= 0x1E) {
+    if (task->frameCounter >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCounter)++;
@@ -557,8 +557,8 @@ void __cdecl BattleFx_ThrowBarretWeaponsTumblingProjectileTask(void)
 
     frame.projectile = (BattleFxBarretWeaponTumble *)BATTLE_CURRENT_TASK_SLOT;
     frame.angle = ComputeAngleBetweenVectors((VECTOR *)&g_BattleThrowBarretTransformedVector, (VECTOR *)&g_BattleThrowBarretDeltaVectorX, &frame.axis);
-    frame.stepCount = frame.angle / 0xBE + 1;
-    frame.heightOffset = (SinFixed(frame.projectile->angle) * -0x258 >> 0xC) * frame.stepCount;
+    frame.stepCount = frame.angle / 190 + 1;
+    frame.heightOffset = (SinFixed(frame.projectile->angle) * -0x258 >> 12) * frame.stepCount;
     frame.rotX.vx = frame.projectile->angleX;
     frame.rotX.vy = 0;
     frame.rotX.vz = frame.projectile->angleZ;
@@ -570,7 +570,7 @@ void __cdecl BattleFx_ThrowBarretWeaponsTumblingProjectileTask(void)
     SetRotMatrix(&frame.rotMatrix);
     frame.offsetX.vx = 0;
     frame.offsetX.vy = 0;
-    frame.offsetX.vz = 0x50;
+    frame.offsetX.vz = 80;
     TransformVectorToInt32(&frame.rotMatrix, &frame.offsetX, &frame.offsetX);
     frame.rotMatrix.t[0] += frame.offsetX.vx;
     frame.rotMatrix.t[1] += frame.offsetX.vy;
@@ -583,14 +583,14 @@ void __cdecl BattleFx_ThrowBarretWeaponsTumblingProjectileTask(void)
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.projectile->timer >= 0x18) {
+    if (frame.projectile->timer >= 24) {
         frame.modelDraw->flags |= 8;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(g_BattleThrowBarretWeaponIndex + 0xF, g_BattleThrowBarretLoadedResTable);
-        frame.modelDraw->fadeLevel = (frame.projectile->timer - 0x18) * 0x2AA;
+        frame.modelDraw->fadeLevel = (frame.projectile->timer - 24) * 682;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.projectile->timer >= 0x1E) {
+    if (frame.projectile->timer >= 30) {
         frame.projectile->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -600,7 +600,7 @@ void __cdecl BattleFx_ThrowBarretWeaponsTumblingProjectileTask(void)
     frame.projectile->posY += frame.projectile->velocityY;
     frame.projectile->posZ += frame.projectile->velocityZ;
     frame.projectile->angle += frame.projectile->angleRate;
-    if (frame.projectile->timer == 0x12) {
+    if (frame.projectile->timer == 18) {
         frame.projectile->angle = 0;
     }
     frame.projectile->angleX += frame.projectile->angleXRate;

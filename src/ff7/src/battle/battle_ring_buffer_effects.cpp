@@ -90,7 +90,7 @@ void __cdecl BattleFx_ScreenFlashRampTask(void)
             g_BattleScreenFlashRampTaskHandle = 0;
             return;
         }
-        if (frame.slot->value > 0xffff) {
+        if (frame.slot->value > 65535) {
             frame.slot->value = 0xffff;
             frame.slot->step = 0;
         }
@@ -121,8 +121,8 @@ void __cdecl Battle_StartFixedPointRamp(int targetValue, int duration)
         return;
     }
     g_BattleFixedPointRampTaskHandle = (BattleFixedPointRamp *)BATTLE_NEW_TASK_SLOT(Battle_FixedPointRampTaskHandler);
-    g_BattleFixedPointRampTaskHandle->value = g_BattleFxTimelineState.startValue << 0x10;
-    g_BattleFixedPointRampTaskHandle->step = ((targetValue << 0x10) - g_BattleFixedPointRampTaskHandle->value) / duration;
+    g_BattleFixedPointRampTaskHandle->value = g_BattleFxTimelineState.startValue << 16;
+    g_BattleFixedPointRampTaskHandle->step = ((targetValue << 16) - g_BattleFixedPointRampTaskHandle->value) / duration;
     g_BattleFixedPointRampTaskHandle->duration = duration;
 }
 
@@ -137,7 +137,7 @@ void __cdecl Battle_FixedPointRampTaskHandler(void)
     task = (BattleFxRampTask *)BATTLE_CURRENT_TASK_SLOT;
     if (g_BattleIsPaused == 0) {
         task->value += task->step;
-        g_BattleFxTimelineState.startValue = task->value >> 0x10;
+        g_BattleFxTimelineState.startValue = task->value >> 16;
         (task->timer)--;
         if (task->timer == 0) {
             g_BattleFixedPointRampTaskHandle = 0;
@@ -263,7 +263,7 @@ int __cdecl Battle_GetActorScaledEffectSize(int actorIndex)
     int scaleValue;
 
     scaleValue = g_BattleActorRecords[actorIndex].radius;
-    effectBytes = (scaleValue << 4) * g_BattleActorRecords[actorIndex].scale >> 0xC;
+    effectBytes = (scaleValue << 4) * g_BattleActorRecords[actorIndex].scale >> 12;
     return effectBytes;
 }
 
@@ -318,10 +318,10 @@ int __cdecl Battle_ComputeScreenPanFromPosition(void *worldPosition)
     RotTransPers((struct SVECTOR *)worldPosition, &screenX, &depth, &perspective);
     if (screenX < 0) {
         screenX = 0;
-    } else if (screenX >= 0x140) {
-        screenX = 0x13F;
+    } else if (screenX >= 320) {
+        screenX = 319;
     }
-    return (screenX << 7) / 0x140;
+    return (screenX << 7) / 320;
 }
 
 /*

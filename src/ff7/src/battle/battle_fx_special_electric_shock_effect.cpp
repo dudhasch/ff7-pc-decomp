@@ -157,7 +157,7 @@ void __cdecl BattleFx_SpecialElectricShockTimelineTask(void)
         pSprite->negRadius = -g_BattleActorRecords[task->targetIndex].radius;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&pSprite->bonePosX), 0x13F);
     }
-    if (task->timelineStep == 0xF) {
+    if (task->timelineStep == 15) {
         Battle_CreateBitPatternCallbackTask(task->bitPattern, task->targetIndex, 0, BattleFx_SpecialSpawnElectricShockPerTarget);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -226,7 +226,7 @@ void __cdecl BattleFx_SpecialElectricShockPerTargetTimelineTask(void)
         *(Int64Pair *)&frame.particle->startX = *(Int64Pair *)(&frame.boneX);
         frame.particle->pushLength = -g_BattleActorRecords[frame.perTarget->actorIndex].radius;
         frame.particle->velocityX = 0;
-        frame.particle->velocityY = 0x400;
+        frame.particle->velocityY = 1024;
         frame.particle->velocityZ = 0;
     }
     if (frame.perTarget->step == 8) {
@@ -287,7 +287,7 @@ void __cdecl BattleFx_SpecialElectricShockTrailSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSpecElectricShockSpriteReq1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecElectricShockLoadedResTable);
     g_BattleSpecElectricShockSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecElectricShockLoadedResTable);
-    matrix = (int)BattleFx_InstallBillboardMatrix((void *)((char *)task + 8), 0xD00, 0);
+    matrix = (int)BattleFx_InstallBillboardMatrix((void *)((char *)task + 8), 0xD00 /* 0.8125 */, 0);
     if (*(int *)((char *)matrix + 0x1A) > 0) {
         g_BattleSpecElectricShockSpriteReq1.frame = task->frameCounter;
         g_BattleSpecElectricShockDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecElectricShockSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecElectricShockDrawListHead);
@@ -315,15 +315,15 @@ void __cdecl BattleFx_SpecialElectricShockShrinkingFadeSpriteTask(void)
 
     local.p = (BattleFxElectricShockFadeRecord *)BATTLE_CURRENT_TASK_SLOT;
     *(int *)&g_BattleSpecElectricShockOffsets24[0x10] = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecElectricShockLoadedResTable);
-    local.scale = local.p->frame * -0x3000 / 0x28 + 0x3000;
+    local.scale = local.p->frame * -0x3000 / 40 + 0x3000;
     local.frame = local.p->frame;
-    if (local.frame < 0x14) {
-        g_BattleSpecElectricShockOffsets24[0xA] = (local.frame << 7) / 0x14;
+    if (local.frame < 20) {
+        g_BattleSpecElectricShockOffsets24[0xA] = (local.frame << 7) / 20;
         g_BattleSpecElectricShockOffsets24[9] = g_BattleSpecElectricShockOffsets24[0xA];
         g_BattleSpecElectricShockOffsets24[8] = g_BattleSpecElectricShockOffsets24[9];
     } else {
-        local.frame -= 0x14;
-        if (local.frame < 0x14) {
+        local.frame -= 20;
+        if (local.frame < 20) {
             g_BattleSpecElectricShockOffsets24[0xA] = 0x80;
             g_BattleSpecElectricShockOffsets24[9] = g_BattleSpecElectricShockOffsets24[0xA];
             g_BattleSpecElectricShockOffsets24[8] = g_BattleSpecElectricShockOffsets24[9];
@@ -373,7 +373,7 @@ void __cdecl BattleFx_SpecialElectricShockRingSpritesTask(void)
         (g_BattleSpecElectricShockSpriteReq2.savedByte1) = g_BattleSpecElectricShockSpriteReq2.req2Byte1;
     } else {
         frame.phase -= 5;
-        if (frame.phase < 0xF) {
+        if (frame.phase < 15) {
             g_BattleSpecElectricShockSpriteReq2.req2Byte2 = 0x80;
             g_BattleSpecElectricShockSpriteReq2.req2Byte1 = g_BattleSpecElectricShockSpriteReq2.req2Byte2;
             (g_BattleSpecElectricShockSpriteReq2.savedByte1) = g_BattleSpecElectricShockSpriteReq2.req2Byte1;
@@ -389,16 +389,16 @@ void __cdecl BattleFx_SpecialElectricShockRingSpritesTask(void)
             }
         }
     }
-    for (frame.pointIndex = 0; frame.pointIndex < 0x10; frame.pointIndex++) {
-        frame.pointX.vx = SinFixed((frame.pointIndex << 0xC) / 16) * 0x1F4 >> 0xC;
-        frame.pointX.vy = CosFixed((frame.pointIndex << 0xC) / 16) * 0x1F4 >> 0xC;
+    for (frame.pointIndex = 0; frame.pointIndex < 16; frame.pointIndex++) {
+        frame.pointX.vx = SinFixed((frame.pointIndex << 12) / 16) * 0x1F4 >> 12;
+        frame.pointX.vy = CosFixed((frame.pointIndex << 12) / 16) * 0x1F4 >> 12;
         frame.pointX.vz = 0;
         RotMatrix((SVECTOR *)((int)frame.ringSlot + 0x10), &frame.rotMatrix);
         TransformVectorToInt16(&frame.rotMatrix, &frame.pointX, &frame.pointX.vx);
         frame.pointX.vx += frame.ringSlot->velA;
         frame.pointX.vy += frame.ringSlot->velB;
         frame.pointX.vz += frame.ringSlot->velC;
-        BattleFx_InstallBillboardMatrix(&frame.pointX, 0x600, frame.ringSlot->pushLength);
+        BattleFx_InstallBillboardMatrix(&frame.pointX, 0x600 /* 0.375 */, frame.ringSlot->pushLength);
         g_BattleSpecElectricShockDrawListHead = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleSpecElectricShockColorParam, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecElectricShockDrawListHead);
     }
     if (g_BattleIsPaused == 0) {
@@ -426,12 +426,12 @@ void __cdecl BattleFx_SpecialElectricShockLargeFadingSpriteTask(void)
         (g_BattleSpecElectricShockSpriteReq3.savedByte1) = g_BattleSpecElectricShockSpriteReq3.req3Byte1;
     } else {
         age -= 5;
-        if (age < 0x23) {
+        if (age < 35) {
             g_BattleSpecElectricShockSpriteReq3.req3Byte2 = 0x80;
             g_BattleSpecElectricShockSpriteReq3.req3Byte1 = g_BattleSpecElectricShockSpriteReq3.req3Byte2;
             (g_BattleSpecElectricShockSpriteReq3.savedByte1) = g_BattleSpecElectricShockSpriteReq3.req3Byte1;
         } else {
-            age -= 0x23;
+            age -= 35;
             if (age < 5) {
                 g_BattleSpecElectricShockSpriteReq3.req3Byte2 = age * -0x80 / 5 + 0x80;
                 g_BattleSpecElectricShockSpriteReq3.req3Byte1 = g_BattleSpecElectricShockSpriteReq3.req3Byte2;
@@ -442,8 +442,8 @@ void __cdecl BattleFx_SpecialElectricShockLargeFadingSpriteTask(void)
             }
         }
     }
-    g_BattleSpecElectricShockSpriteReq3.req3Word4 = task->frameIndex % 0xC;
-    BattleFx_InstallBillboardMatrix((void *)((char *)task + 8), 0x2000, task->pushLength);
+    g_BattleSpecElectricShockSpriteReq3.req3Word4 = task->frameIndex % 12;
+    BattleFx_InstallBillboardMatrix((void *)((char *)task + 8), 0x2000 /* 2.0 */, task->pushLength);
     g_BattleSpecElectricShockSpriteReq2.fadingResourceHandle = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecElectricShockLoadedResTable);
     g_BattleSpecElectricShockSpriteReq2.fadingSpriteHandle = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecElectricShockLoadedResTable);
     if (g_BattleSpecElectricShockSpriteReq2.fadingResourceHandle != 0) {
@@ -474,12 +474,12 @@ void __cdecl BattleFx_SpecialElectricShockSmallFadingSpriteTask(void)
         (g_BattleSpecElectricShockSpriteReq4.savedByte1) = g_BattleSpecElectricShockSpriteReq4.req4Byte1;
     } else {
         age -= 5;
-        if (age < 0xA) {
+        if (age < 10) {
             g_BattleSpecElectricShockSpriteReq4.req4Byte2 = 0x80;
             g_BattleSpecElectricShockSpriteReq4.req4Byte1 = g_BattleSpecElectricShockSpriteReq4.req4Byte2;
             (g_BattleSpecElectricShockSpriteReq4.savedByte1) = g_BattleSpecElectricShockSpriteReq4.req4Byte1;
         } else {
-            age -= 0xA;
+            age -= 10;
             if (age < 5) {
                 g_BattleSpecElectricShockSpriteReq4.req4Byte2 = age * -0x80 / 5 + 0x80;
                 g_BattleSpecElectricShockSpriteReq4.req4Byte1 = g_BattleSpecElectricShockSpriteReq4.req4Byte2;
@@ -490,8 +490,8 @@ void __cdecl BattleFx_SpecialElectricShockSmallFadingSpriteTask(void)
             }
         }
     }
-    g_BattleSpecElectricShockSpriteReq4.req4Word4 = task->frameIndex % 0xC;
-    BattleFx_InstallBillboardMatrix((void *)((char *)task + 8), 0x1000, task->pushLength);
+    g_BattleSpecElectricShockSpriteReq4.req4Word4 = task->frameIndex % 12;
+    BattleFx_InstallBillboardMatrix((void *)((char *)task + 8), 0x1000 /* 1.0 */, task->pushLength);
     g_BattleSpecElectricShockSpriteReq3.req3Handle8 = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecElectricShockLoadedResTable);
     g_BattleSpecElectricShockSpriteReq3.req3Handle12 = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecElectricShockLoadedResTable);
     if (g_BattleSpecElectricShockSpriteReq3.req3Handle8 != 0) {

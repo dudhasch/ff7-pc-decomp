@@ -138,12 +138,12 @@ void __cdecl BattleFx_MagicLimitFlashModel1SineScaleTask(void)
         g_BattleLimitFlashModel1Data = Gfx_GetPsxScratchpadPtr(0);
     }
     g_BattleLimitFlashModel1Scale = SinFixed(task->step << 7) + 0x1000;
-    g_BattleLimitFlashModel1MatrixTail.matrixM22 = task->step << 0xA;
+    g_BattleLimitFlashModel1MatrixTail.matrixM22 = task->step << 10;
     g_BattleLimitFlashModel1Matrix = g_BattleLimitFlashModel1MatrixTail.matrixM22;
     if (task->step < 8) {
         g_BattleLimitFlash_ModelTable.drawFadeLevel = 0;
     } else {
-        g_BattleLimitFlash_ModelTable.drawFadeLevel = (task->step - 8 << 0xC) / 8;
+        g_BattleLimitFlash_ModelTable.drawFadeLevel = (task->step - 8 << 12) / 8;
     }
     g_BattleLimitFlashModel1MatrixTail.transX = task->posX;
     g_BattleLimitFlashModel1MatrixTail.transY = 0;
@@ -193,12 +193,12 @@ void __cdecl BattleFx_MagicLimitFlashModel0GrowTask(void)
         g_BattleLimitFlashModel0Started |= 1;
         g_BattleLimitFlashModel0Data = Gfx_GetPsxScratchpadPtr(0);
     }
-    g_BattleLimitFlash_SpriteData.matrixM22 = task->frameCount * 0x600;
+    g_BattleLimitFlash_SpriteData.matrixM22 = task->frameCount * 1536;
     g_BattleLimitFlash_ModelScales1[0] = g_BattleLimitFlash_SpriteData.matrixM22;
     if (task->frameCount < 8) {
-        g_BattleLimitFlash_ModelScale0 = task->frameCount * 0xC00;
+        g_BattleLimitFlash_ModelScale0 = task->frameCount * 3072;
         g_BattleLimitFlash_ModelTable.drawFadeLevel = 0;
-    } else if (task->frameCount < 0x10) {
+    } else if (task->frameCount < 16) {
         g_BattleLimitFlash_ModelScale0 = 0x6000;
         g_BattleLimitFlash_ModelTable.drawFadeLevel = task->frameCount - 8 << 9;
     }
@@ -238,7 +238,7 @@ void __cdecl BattleFx_MagicLimitFlashModel2ShrinkTask(void)
     g_BattleLimitFlashModel2MatrixTail.matrixM22 = (0xE - task->shrinkStep) << 10;
     g_BattleLimitFlashModel2Matrix = g_BattleLimitFlashModel2MatrixTail.matrixM22;
     if (task->shrinkStep < 8) {
-        g_BattleLimitFlash_ModelTable.drawFadeLevel = ((task->shrinkStep * -0x1000) / 8) + 0x1000;
+        g_BattleLimitFlash_ModelTable.drawFadeLevel = ((task->shrinkStep * -4096) / 8) + 4096;
     } else {
         g_BattleLimitFlash_ModelTable.drawFadeLevel = ((task->shrinkStep - 8) << 12) / 8;
     }
@@ -275,12 +275,12 @@ void __cdecl BattleFx_MagicLimitFlashRadialSpriteEmitterTask(void)
     pSprite->spriteIndex = (task->spriteCounter + spriteOffset) % 5;
     *(Int64Pair *)&pSprite->bonePos = *(Int64Pair *)&task->bonePos;
     angle = rand() & 0xFFF;
-    pSprite->offsetX = SinFixed(angle) * 0xC8 >> 0xC;
-    pSprite->offsetY = CosFixed(angle) * 0xC8 >> 0xC;
+    pSprite->offsetX = SinFixed(angle) * 0xC8 >> 12;
+    pSprite->offsetY = CosFixed(angle) * 0xC8 >> 12;
     pSprite->rotatedX = pSprite->offsetY;
     pSprite->rotatedY = -pSprite->offsetX;
     (task->spriteCounter)++;
-    if (task->spriteCounter > 0x16) {
+    if (task->spriteCounter > 22) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -301,14 +301,14 @@ void __cdecl BattleFx_MagicLimitFlashRadialSpriteTask(void)
     taskPtr = (BattleFxLimitFlashRadialSprite *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
     g_BattleLimitFlash_SpriteData.spriteRecord = Gfx_ModelTableGetLoadedRecord(3, g_pBattleLimitFlashTable);
     g_BattleLimitFlash_SpriteData.sceneField = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    progress = 0x1000 - (taskPtr->frameCount << 0xC) / 8;
+    progress = 0x1000 - (taskPtr->frameCount << 12) / 8;
     sinValue = SinFixed(progress / 2);
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint((SVECTOR *)&taskPtr->bonePos, &xPos.vx, &screenY);
-    matrix = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&taskPtr->bonePos, (progress * -0x500 >> 0xC) + 0xA00, (0x200 - xPos.vz) * progress >> 0xC);
-    matrix->t[0] += (taskPtr->velocityX * progress >> 0xC) + (taskPtr->accelX * sinValue >> 0xB);
-    matrix->t[1] += (taskPtr->velocityY * progress >> 0xC) + (taskPtr->accelY * sinValue >> 0xB);
+    matrix = (PsxMatrix *)BattleFx_InstallBillboardMatrix(&taskPtr->bonePos, (progress * -0x500 /* 0.3125 */ >> 12) + 0xA00, (0x200 - xPos.vz) * progress >> 12);
+    matrix->t[0] += (taskPtr->velocityX * progress >> 12) + (taskPtr->accelX * sinValue >> 11);
+    matrix->t[1] += (taskPtr->velocityY * progress >> 12) + (taskPtr->accelY * sinValue >> 11);
     SetTransMatrix(matrix);
     g_BattleLimitFlash_SpriteData.dimension = g_BattleLimitFlash_SpriteDimensions[taskPtr->dimensionIndex];
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitFlash_SpriteData.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);

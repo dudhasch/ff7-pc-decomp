@@ -116,7 +116,7 @@ unsigned char g_FieldHandTimName[11] = {0};
 unsigned char g_bssPad_00cff234[4] = {0};
 unsigned char g_bssPad_00cff238[16] = {0};
 // GLOBAL: FF7 0x00cff248
-unsigned char g_FieldBgLayer2OffsetY[0x4] = {0};
+unsigned char g_FieldBgLayer2OffsetY[4] = {0};
 // GLOBAL: FF7 0x00cff24c
 int g_FieldBgOriginOffsetY = 0;
 unsigned char g_bssPad_00cff250[4] = {0};
@@ -268,7 +268,7 @@ void __cdecl Field_FreeModelRecord(FieldModelDescriptor *record, void *ctx)
         Pfile_FreeRsdModel(record->rsdModel, ctx);
         // STRING: FF7 0x00905c74
         GameHeapFree(record, "C:\\FF7\\field\\src\\ad_app.cpp",
-                     0xf4);
+                     244);
     }
 }
 
@@ -284,7 +284,7 @@ void *__cdecl Field_AllocModelRecord(void)
     FieldModelDescriptor *block;
 
     // STRING: FF7 0x00905c90
-    block = (FieldModelDescriptor *)GameHeapAlloc(1, 0x10, "C:\\FF7\\field\\src\\ad_app.cpp", 0xfc);
+    block = (FieldModelDescriptor *)GameHeapAlloc(1, 16, "C:\\FF7\\field\\src\\ad_app.cpp", 252);
     if (block != 0) {
         block->primed[0] = 1;
         block->primed[1] = 1;
@@ -302,7 +302,7 @@ void __cdecl Field_ApplyMapConfig(struct GfxEngineContext *ctx)
 {
     int i;
 
-    for (i = 0; i < 0x12; i++) {
+    for (i = 0; i < 18; i++) {
         ((int *)&g_FieldModelCommandGate)[i] = 1;
     }
     *(int *)&ctx->nearPlane = *(int *)&g_FieldMapRecords[g_FieldCurrentMapId].nearPlane;
@@ -316,7 +316,7 @@ void __cdecl Field_ApplyMapConfig(struct GfxEngineContext *ctx)
     g_FieldFxFadeBlue[0] = 0;
     g_FieldFxFadeGreen[0] = g_FieldFxFadeBlue[0];
     g_FieldFxFadeRed[0] = g_FieldFxFadeGreen[0];
-    for (i = 0; i < 0x12; i++) {
+    for (i = 0; i < 18; i++) {
         g_FieldModelOffsetY[i] =
             g_FieldMapRecords[g_FieldCurrentMapId].modelOffsetY[i];
         g_FieldModelOffsetZ[i] =
@@ -531,13 +531,13 @@ void __cdecl Field_FreeModuleResources(void)
 // FUNCTION: FF7 0x0060e0bd
 void __cdecl Field_ModuleEnter(GfxEngineContext *ctx)
 {
-    char olddir[0x100];
-    char w[0x178];
+    char olddir[256];
+    char w[376];
     int ret;
     int unitAttr;
     int attrs;
-    char full[0x80];
-    char name[0x80];
+    char full[128];
+    char name[128];
 
     g_FieldLogicExitState = 0;
     g_FieldFrameCounter = 0;
@@ -562,8 +562,8 @@ void __cdecl Field_ModuleEnter(GfxEngineContext *ctx)
         if (g_EnginePreviousMode != GAME_MODE_FIELD_SERVICE) {
             g_FieldFxStepCounter = 0;
             g_FieldActorState.state.fadeType = 1;
-            g_FieldActorState.state.fadeSpeed = 0x10;
-            g_FieldActorState.state.fadeAdjust = 0x100;
+            g_FieldActorState.state.fadeSpeed = 16;
+            g_FieldActorState.state.fadeAdjust = 256;
             g_FieldActorState.state.red = 0;
             g_FieldActorState.state.green = 0;
             g_FieldActorState.state.blue = 0;
@@ -599,7 +599,7 @@ void __cdecl Field_ModuleEnter(GfxEngineContext *ctx)
             Field_RebuildCameraMatrices(ctx);
             ret = 1;
             Field_ReadSurfacePixelFormat(ctx);
-            GetCurrentDirectoryA(0x100, olddir);
+            GetCurrentDirectoryA(256, olddir);
             if (g_FieldLoadAssets != 0) {
                 Pfile_SetAssetSourceMode(0);
             }
@@ -718,9 +718,9 @@ void __cdecl Field_ModuleFrame(struct GfxEngineContext *ctx)
 {
     FieldClearColor color;
     int state;
-    char mapName[0x80];
-    char message[0x80];
-    char full[0x80];
+    char mapName[128];
+    char message[128];
+    char full[128];
 
     state = 0;
     ReadTimestampCounter(&g_FieldTimestampCounter);
@@ -755,12 +755,12 @@ void __cdecl Field_ModuleFrame(struct GfxEngineContext *ctx)
 
     g_FieldFrameReloadMode = 1;
     g_FieldResumingFromBattle = 0;
-    if (g_FieldFxFadeRed[0] >= 0xc8 &&
-        g_FieldFxFadeGreen[0] >= 0xc8 &&
-        g_FieldFxFadeBlue[0] >= 0xc8) {
-        color.r = g_FieldFxFadeRed[0] / 0xff;
-        color.g = g_FieldFxFadeGreen[0] / 0xff;
-        color.b = g_FieldFxFadeBlue[0] / 0xff;
+    if (g_FieldFxFadeRed[0] >= 200 &&
+        g_FieldFxFadeGreen[0] >= 200 &&
+        g_FieldFxFadeBlue[0] >= 200) {
+        color.r = g_FieldFxFadeRed[0] / 255;
+        color.g = g_FieldFxFadeGreen[0] / 255;
+        color.b = g_FieldFxFadeBlue[0] / 255;
         color.a = 1.0f;
     } else {
         color.r = 0.0f;
@@ -823,9 +823,9 @@ int __cdecl Field_ModuleCatchUpFrame(struct GfxEngineContext *ctx)
 {
     FieldClearColor color;
     int state;
-    char mapName[0x80];
-    char message[0x80];
-    char full[0x80];
+    char mapName[128];
+    char message[128];
+    char full[128];
 
     state = 0;
     ReadTimestampCounter(&g_FieldTimestampCounter);
@@ -858,12 +858,12 @@ int __cdecl Field_ModuleCatchUpFrame(struct GfxEngineContext *ctx)
     } else {
         g_FieldFrameReloadMode = 2;
         g_FieldResumingFromBattle = 0;
-        if (g_FieldFxFadeRed[0] >= 0xc8 &&
-            g_FieldFxFadeGreen[0] >= 0xc8 &&
-            g_FieldFxFadeBlue[0] >= 0xc8) {
-            color.r = g_FieldFxFadeRed[0] / 0xff;
-            color.g = g_FieldFxFadeGreen[0] / 0xff;
-            color.b = g_FieldFxFadeBlue[0] / 0xff;
+        if (g_FieldFxFadeRed[0] >= 200 &&
+            g_FieldFxFadeGreen[0] >= 200 &&
+            g_FieldFxFadeBlue[0] >= 200) {
+            color.r = g_FieldFxFadeRed[0] / 255;
+            color.g = g_FieldFxFadeGreen[0] / 255;
+            color.b = g_FieldFxFadeBlue[0] / 255;
             color.a = 1.0f;
         } else {
             color.r = 0.0f;
@@ -934,7 +934,7 @@ void __cdecl Field_ModuleMouse(int message, int wparam, unsigned int lparam, str
     int cursorY;
 
     curX = lparam & 0xffff;
-    cursorY = (unsigned short)((lparam >> 0x10) & 0xffff);
+    cursorY = (unsigned short)((lparam >> 16) & 0xffff);
     ctx->cursorX = curX;
     ctx->cursorY = cursorY;
     junk = message;
@@ -951,7 +951,7 @@ void __cdecl Field_ModuleMouse(int message, int wparam, unsigned int lparam, str
 // FUNCTION: FF7 0x0060ed79
 void __cdecl Field_ModuleKeyboard(void)
 {
-    char s[0x14];
+    char s[20];
     // STRING: FF7 0x00905d20
     char *filename = "TEST.A";
 }
@@ -1007,7 +1007,7 @@ void __cdecl Field_InitEngineContext(int context, int config)
 // FUNCTION: FF7 0x0060eea1
 void __cdecl Field_RenderFrameNoOp(GfxEngineContext *context)
 {
-    char unused[0xd4];
+    char unused[212];
 
     // The debug texts of the original frame overlay: retail keeps their literals (after APP.CFG and
     // before flevel.siz) and no code; discarded expressions emit them here and generate none.
@@ -1040,14 +1040,14 @@ void __cdecl Field_InitMapConfigTable(void)
     int modelIndex;
 
     g_FieldHoldAnimAfterWait = 0;
-    for (mapIndex = 0; mapIndex < 0x4b0; mapIndex++) {
+    for (mapIndex = 0; mapIndex < 1200; mapIndex++) {
         g_FieldMapRecords[mapIndex].nearPlane = 50.0f;
         g_FieldMapRecords[mapIndex].bgLayer2OffsetY = 0;
         g_FieldMapRecords[mapIndex].bgOriginOffsetY = 0;
         g_FieldMapRecords[mapIndex].animPausedEntity = -1;
         g_FieldMapRecords[mapIndex].holdAnimAfterWait = 0;
         g_FieldMapRecords[mapIndex].lockedSkipsLines = 0;
-        if (mapIndex != 0x5a) {
+        if (mapIndex != 90) {
             g_FieldMapRecords[mapIndex].clearColor.r = 0.0f;
             g_FieldMapRecords[mapIndex].clearColor.g = 0.0f;
             g_FieldMapRecords[mapIndex].clearColor.b = 0.0f;
@@ -1064,27 +1064,27 @@ void __cdecl Field_InitMapConfigTable(void)
             g_FieldMapRecords[mapIndex].modelOffsetZ[modelIndex] = 0;
             g_FieldMapRecords[mapIndex].modelVisible[modelIndex] = 1;
         }
-        if (mapIndex == 0x1d2) {
+        if (mapIndex == 466) {
             g_FieldMapRecords[mapIndex].nearPlane = 1.0f;
             for (modelIndex = 0; modelIndex < 0x12; modelIndex++) {
                 g_FieldMapRecords[mapIndex].modelOffsetY[modelIndex] = 0x1f;
                 g_FieldMapRecords[mapIndex].modelOffsetZ[modelIndex] = -0x10;
             }
         }
-        if (mapIndex == 0x9a) {
+        if (mapIndex == 154) {
             g_FieldMapRecords[mapIndex].modelOffsetZ[0] = 9;
             g_FieldMapRecords[mapIndex].modelOffsetZ[1] = 7;
         }
-        if (mapIndex == 0x9b) {
+        if (mapIndex == 155) {
             g_FieldMapRecords[mapIndex].modelOffsetZ[0] = 9;
         }
-        if (mapIndex == 0xcc) {
+        if (mapIndex == 204) {
             g_FieldMapRecords[mapIndex].modelOffsetY[6] = 0xb;
             g_FieldMapRecords[mapIndex].modelOffsetY[7] = 0xb;
             g_FieldMapRecords[mapIndex].modelOffsetZ[7] = -0x22;
             g_FieldMapRecords[mapIndex].modelOffsetZ[6] = -0x22;
         }
-        if (mapIndex == 0x126) {
+        if (mapIndex == 294) {
             g_FieldMapRecords[mapIndex].modelOffsetZ[0] = 4;
             g_FieldMapRecords[mapIndex].modelOffsetY[0] = -10;
             g_FieldMapRecords[mapIndex].modelOffsetZ[1] = 4;
@@ -1094,7 +1094,7 @@ void __cdecl Field_InitMapConfigTable(void)
             g_FieldMapRecords[mapIndex].modelOffsetZ[3] = 0;
             g_FieldMapRecords[mapIndex].modelOffsetY[3] = -10;
         }
-        if (mapIndex == 0x127) {
+        if (mapIndex == 295) {
             g_FieldMapRecords[mapIndex].modelOffsetZ[0] = 8;
             g_FieldMapRecords[mapIndex].modelOffsetY[0] = -10;
             g_FieldMapRecords[mapIndex].modelOffsetZ[1] = 2;
@@ -1104,11 +1104,11 @@ void __cdecl Field_InitMapConfigTable(void)
             g_FieldMapRecords[mapIndex].modelOffsetZ[3] = 0;
             g_FieldMapRecords[mapIndex].modelOffsetY[3] = -10;
         }
-        if (mapIndex == 0x142) {
+        if (mapIndex == 322) {
             g_FieldMapRecords[mapIndex].modelOffsetZ[4] = 0x19;
             g_FieldMapRecords[mapIndex].modelOffsetZ[5] = 0x19;
         }
-        if (mapIndex == 0x8d) {
+        if (mapIndex == 141) {
             for (modelIndex = 0; modelIndex < 0x12; modelIndex++) {
                 if (modelIndex == 1) {
                     g_FieldMapRecords[mapIndex].modelOffsetY[modelIndex] = 0x16;
@@ -1118,51 +1118,51 @@ void __cdecl Field_InitMapConfigTable(void)
                 g_FieldMapRecords[mapIndex].modelOffsetZ[modelIndex] = 0;
             }
         }
-        if (mapIndex == 0xca) {
+        if (mapIndex == 202) {
             for (modelIndex = 0; modelIndex < 0x12; modelIndex++) {
                 g_FieldMapRecords[mapIndex].modelOffsetZ[modelIndex] = 0xb;
             }
         }
-        if (mapIndex == 0x2c0) {
+        if (mapIndex == 704) {
             g_FieldMapRecords[mapIndex].modelVisible[1] = 0;
             g_FieldMapRecords[mapIndex].modelVisible[2] = 0;
         }
-        if (mapIndex == 0x1bc) {
+        if (mapIndex == 444) {
             for (modelIndex = 0; modelIndex < 0x12; modelIndex++) {
                 g_FieldMapRecords[mapIndex].modelOffsetZ[modelIndex] = 0xa;
             }
         }
-        if (mapIndex == 0x143 || mapIndex == 0x144) {
+        if (mapIndex == 323 || mapIndex == 324) {
             for (modelIndex = 0; modelIndex < 0x12; modelIndex++) {
                 g_FieldMapRecords[mapIndex].modelOffsetZ[modelIndex] = 0xc;
             }
         }
-        if (mapIndex == 0x102) {
+        if (mapIndex == 258) {
             for (modelIndex = 0; modelIndex < 0x12; modelIndex++) {
                 g_FieldMapRecords[mapIndex].modelOffsetZ[modelIndex] = 0x1c;
             }
         }
-        if (mapIndex == 0x8a) {
+        if (mapIndex == 138) {
             g_FieldMapRecords[mapIndex].nearPlane = 16.0f;
         }
-        if (mapIndex == 0x8b) {
+        if (mapIndex == 139) {
             g_FieldMapRecords[mapIndex].nearPlane = 30.0f;
         }
-        if (mapIndex == 0xfd) {
+        if (mapIndex == 253) {
             g_FieldMapRecords[mapIndex].holdAnimAfterWait = 1;
             g_FieldMapRecords[mapIndex].nearPlane = 56.0f;
         }
-        if (mapIndex == 0x2b9) {
+        if (mapIndex == 697) {
             g_FieldMapRecords[mapIndex].holdAnimAfterWait = 1;
         }
-        if (mapIndex == 0x19e) {
+        if (mapIndex == 414) {
             g_FieldMapRecords[mapIndex].holdAnimAfterWait = 1;
         }
     }
-    for (mapIndex = 0; mapIndex < 0x37; mapIndex++) {
+    for (mapIndex = 0; mapIndex < 55; mapIndex++) {
         g_FieldMapRecords[g_FieldMapList_NearPlane512[mapIndex]].nearPlane = 512.0f;
     }
-    for (mapIndex = 0; mapIndex < 0xc; mapIndex++) {
+    for (mapIndex = 0; mapIndex < 12; mapIndex++) {
         g_FieldMapRecords[g_FieldMapList_ClearLightFlag8[mapIndex]].clearLightFlag8 = 1;
     }
     for (mapIndex = 0; mapIndex < 1; mapIndex++) {
@@ -1211,15 +1211,15 @@ int __cdecl Field_LoadFieldSizeTable(void)
     if (f != 0) {
         size = GetLgpEntrySize((int)f, LGP_ARCHIVE_FIELD_LEVEL);
         // STRING: FF7 0x00905e08
-        buf = GameHeapAllocRaw(size, "C:\\FF7\\field\\src\\ad_app.cpp", 0x795);
+        buf = GameHeapAllocRaw(size, "C:\\FF7\\field\\src\\ad_app.cpp", 1941);
         ReadLgpEntry(f, LGP_ARCHIVE_FIELD_LEVEL, buf, size);
         tab = (int *)buf;
-        for (no = 0; no < 0x313; no++) {
+        for (no = 0; no < 787; no++) {
             g_FieldMapRecords[no].fileSize = tab[no] + 0x1e8480;
         }
         if (buf != 0) {
             // STRING: FF7 0x00905e24
-            GameHeapFree(buf, "C:\\FF7\\field\\src\\ad_app.cpp", 0x7a2);
+            GameHeapFree(buf, "C:\\FF7\\field\\src\\ad_app.cpp", 1954);
             buf = 0;
         }
     } else {

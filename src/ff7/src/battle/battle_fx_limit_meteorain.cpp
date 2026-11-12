@@ -288,7 +288,7 @@ int __cdecl BattleFx_LimitMeteorainAssignAngularTextureGradient(BattleFxMeteorai
         NormalizeVectorFixed(&gradientState->centroid.vx, &gradientState->centroid.vx);
         count = ComputeAngleBetweenVectors(&gradientState->refDir, &gradientState->centroid, &gradientState->cross);
         if (gradientState->cross.vy > 0) {
-            count = 0x1000 - count;
+            count = 4096 - count;
         }
         g_BattleLimitMeteorainQuadSortEntries[recordIndex].angle = count;
         g_BattleLimitMeteorainQuadSortEntries[recordIndex].quadPosition = quadPosition;
@@ -311,9 +311,9 @@ int __cdecl BattleFx_LimitMeteorainAssignAngularTextureGradient(BattleFxMeteorai
     for (quadPosition = 0; quadPosition < count; quadPosition++) {
         totalY = g_BattleLimitMeteorainQuadSortEntries[quadPosition].quadPosition;
         if (quadPosition < count - remainder) {
-            recordIndex = prevGradient - 0x100 / count;
+            recordIndex = prevGradient - 256 / count;
         } else {
-            recordIndex = prevGradient - 0x100 / count - 1;
+            recordIndex = prevGradient - 256 / count - 1;
             if (recordIndex < 0) {
                 recordIndex = 0;
             }
@@ -365,36 +365,36 @@ void __cdecl BattleFx_LimitMeteorainTimelineTask(void)
         pNewTask->posY = 0;
         pNewTask->rotYOrSeqStart = 0;
         pNewTask->rotStepOrActor = 0xFEE0;
-        pNewTask->size = (rad << 0xC) / 0x2EE;
+        pNewTask->size = (rad << 12) / 750;
         pNewTask->sizeStep = pNewTask->size / 9;
         pNewTask->ramp = 0;
         pNewTask->sizeStepX2 = pNewTask->size / 9 << 1;
         SfxLoadIntoBuffer(0x30, 0);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->posX), 0x21B);
     }
-    if (task->step == 0x19) {
+    if (task->step == 25) {
         Battle_GetBoneWorldPos(g_BattleLimitMeteorainSourceActor, g_BattleActorRecords[g_BattleLimitMeteorainSourceActor].targetBone, ((short *)&g_BattleLimitMeteorainSourcePos));
         for (rad = 0; rad < 8; rad++) {
             pNewTask = (BattleFxLimitMeteorainTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainRisingSpriteQuadTask);
             *(Int64Pair *)&pNewTask->posX = *(Int64Pair *)&g_BattleLimitMeteorainSourcePos;
-            pNewTask->posX += (short)(rand() % 0x190 - 0xC8);
-            pNewTask->posZ += (short)(rand() % 0x190 - 0xC8);
-            ((short *)&g_BattleLimitMeteorainSourcePos)[1] += (short)(rand() % 0x3C + rad * 4 + 0x96);
+            pNewTask->posX += (short)(rand() % 400 - 200);
+            pNewTask->posZ += (short)(rand() % 400 - 200);
+            ((short *)&g_BattleLimitMeteorainSourcePos)[1] += (short)(rand() % 60 + rad * 4 + 150);
             pNewTask->scale = 0x2000 - (rad << 9);
             pNewTask->velYOrScaleStep = rand() % 0x1E + rad + 0x50;
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&task->posX), 0x30);
     }
-    if (task->step == 0x1C) {
+    if (task->step == 28) {
         rad = ((short *)&g_BattleLimitMeteorainSourcePos)[3] + 0x240;
         targetActor = rad << 3;
         pNewTask = (BattleFxLimitMeteorainTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainShrinkingBlackModelTask);
         Battle_GetBoneWorldPos(g_BattleLimitMeteorainSourceActor, g_BattleActorRecords[g_BattleLimitMeteorainSourceActor].targetBone, &pNewTask->posX);
-        pNewTask->scale = (targetActor << 0xC) / 0x3E8;
-        pNewTask->velYOrScaleStep = (((targetActor - rad) << 0xC) / 0x3E8) / 8;
+        pNewTask->scale = (targetActor << 12) / 1000;
+        pNewTask->velYOrScaleStep = (((targetActor - rad) << 12) / 1000) / 8;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->posX), 0x188);
     }
-    if (task->step == 0x28) {
+    if (task->step == 40) {
         Battle_GetBoneWorldPos(g_BattleLimitMeteorainSourceActor, g_BattleActorRecords[g_BattleLimitMeteorainSourceActor].targetBone, ((short *)&g_BattleLimitMeteorainSourcePos));
         for (rad = 0; rad < 8; rad++) {
             targetActor = g_BattleHitTargetActors[rad];
@@ -403,9 +403,9 @@ void __cdecl BattleFx_LimitMeteorainTimelineTask(void)
             }
             pNewTask = (BattleFxLimitMeteorainTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainTargetTimelineTask);
             Battle_GetBoneWorldPos(targetActor, g_BattleActorRecords[targetActor].targetBone, &pNewTask->posX);
-            limit = g_BattleActorRecords[targetActor].radius + 0x120;
-            if (limit > 0x76C) {
-                limit = 0x76C;
+            limit = g_BattleActorRecords[targetActor].radius + 288;
+            if (limit > 1900) {
+                limit = 1900;
             }
             pNewTask->posX += (short)(rand() % (limit << 1) - limit);
             pNewTask->posY = 0;
@@ -417,17 +417,17 @@ void __cdecl BattleFx_LimitMeteorainTimelineTask(void)
             pNewTask->count = 0;
         }
     }
-    if (task->step < 0x10) {
+    if (task->step < 16) {
         g_BattleFxTimelineState.red = 0x54;
         g_BattleFxTimelineState.channel1 = 0x1C;
         g_BattleFxTimelineState.channel2 = 4;
-        level = task->step * 0x90;
-    } else if (task->step >= 0x43) {
-        level = 0x900 - (task->step - 0x43) * 0x120;
+        level = task->step * 144;
+    } else if (task->step >= 67) {
+        level = 0x900 - (task->step - 0x43) * 288;
     } else {
         level = 0x900;
     }
-    if (task->step >= 0x32 && task->step % 3 == 0) {
+    if (task->step >= 50 && task->step % 3 == 0) {
         rad = g_BattleHitTargetActors[task->sequenceIndex];
         if (rad != 0xFF) {
             ringRec = (BattleFxPoint3s *)Battle_AllocSceneMessage(0xA);
@@ -436,7 +436,7 @@ void __cdecl BattleFx_LimitMeteorainTimelineTask(void)
             (task->sequenceIndex)++;
         }
     }
-    if (task->step >= 0x4B) {
+    if (task->step >= 75) {
         level = 0;
         task->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x30, 0xF);
@@ -483,15 +483,15 @@ void __cdecl BattleFx_LimitMeteorainShrinkingBlackModelTask(void)
     requestPtr->stateFlags = 0;
     requestPtr->texturePageBits = 0;
     if (taskSlot->frame < 6) {
-        requestPtr->fadeLevel = 0x1000 - taskSlot->frame * 0x2AA;
-    } else if (taskSlot->frame >= 0x11) {
-        requestPtr->fadeLevel = (taskSlot->frame - 0x11) * 0x199;
+        requestPtr->fadeLevel = 4096 - taskSlot->frame * 682;
+    } else if (taskSlot->frame >= 17) {
+        requestPtr->fadeLevel = (taskSlot->frame - 17) * 409;
     } else {
         requestPtr->fadeLevel = 0;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(requestPtr, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (taskSlot->frame >= 0x1B) {
+    if (taskSlot->frame >= 27) {
         taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -544,7 +544,7 @@ void __cdecl BattleFx_LimitMeteorainGrowingPsxMeshTask(void)
     Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(7, g_BattleLimitMeteorainModelTable)));
     Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(8, g_BattleLimitMeteorainModelTable)));
     Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(9, g_BattleLimitMeteorainModelTable)));
-    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0xA, g_BattleLimitMeteorainModelTable)));
+    Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(10, g_BattleLimitMeteorainModelTable)));
     frame.meshRecord = (BattleFxLimitMeteorainMeshRecord *)Gfx_GetPsxScratchpadPtr(0);
     frame.meshRecord->meshHeader = &g_BattleLimitMeteorainMeshHeader;
     frame.meshRecord->flags = 0x28;
@@ -552,11 +552,11 @@ void __cdecl BattleFx_LimitMeteorainGrowingPsxMeshTask(void)
     frame.meshRecord->shadeWeight = 0x80;
     frame.meshRecord->drawMode = 0x20;
     frame.meshRecord->clearedWordB = 0;
-    if (frame.growRecord->timer >= 0xC) {
+    if (frame.growRecord->timer >= 12) {
         frame.meshRecord->shadeWeight -= (short)(frame.growRecord->timer - 0xC << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_LimitMeteorainDrawPsxMesh(frame.meshRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.growRecord->timer >= 0x14) {
+    if (frame.growRecord->timer >= 20) {
         frame.growRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -842,30 +842,30 @@ void __cdecl BattleFx_LimitMeteorainTargetTimelineTask(void)
             shotPtr->scale = task->scale;
         }
         if (task->step == 5) {
-            size = task->scale * 0x2BC / 0xA00;
+            size = task->scale * 700 / 2560;
             size += size >> 1;
             effect = (BattleFxMeteorainTargetSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainSpinningFadingModelEntry1Task);
             *(Int64Pair *)&effect->posX = *(Int64Pair *)&task->targetX;
-            effect->phase = rand() % 0x1000;
-            effect->velocity = rand() % 0xF0 + 0x12C;
+            effect->phase = rand() % 4096;
+            effect->velocity = rand() % 240 + 300;
             effect->size = 0;
-            effect->targetSize = ((size << 0xC) / 0x258) / 2;
+            effect->targetSize = ((size << 12) / 600) / 2;
             effect = (BattleFxMeteorainTargetSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainSpinningFadingModelEntry2Task);
             *(Int64Pair *)&effect->posX = *(Int64Pair *)&task->targetX;
-            effect->phase = rand() % 0x1000;
-            effect->velocity = -(rand() % 0xF0 + 0x12C);
+            effect->phase = rand() % 4096;
+            effect->velocity = -(rand() % 240 + 300);
             effect->size = 0;
-            effect->targetSize = ((size << 0xC) / 0x258) / 2;
+            effect->targetSize = ((size << 12) / 600) / 2;
             effect = (BattleFxMeteorainTargetSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainGrowingModelTask);
             *(Int64Pair *)&effect->posX = *(Int64Pair *)&task->targetX;
-            effect->targetSize = (size << 0xC) / 0x2BC / 3;
+            effect->targetSize = (size << 12) / 700 / 3;
             effect->size = effect->targetSize;
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->targetX), 0xFA);
         }
         if (task->step == 7) {
             effect = (BattleFxMeteorainTargetSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainSpriteParticlePool64Task);
             *(Int64Pair *)&effect->posX = *(Int64Pair *)&task->targetX;
-            effect->size = task->scale * 0x500 / 0xA00;
+            effect->size = task->scale * 1280 / 2560;
             effect->sequenceStart = task->sequenceStart;
         }
         if (task->step >= task->sequenceStart * 3 + 0x14) {
@@ -908,7 +908,7 @@ void __cdecl BattleFx_LimitMeteorainProjectileTask(void)
     g_BattleLimitMeteorainScaleZ = frame.projectile->scale;
     g_BattleLimitMeteorainScaleY = g_BattleLimitMeteorainScaleZ;
     g_BattleLimitMeteorainScaleX = g_BattleLimitMeteorainScaleY;
-    frame.modelScale = (frame.projectile->scale << 0xC) / 0xA00;
+    frame.modelScale = (frame.projectile->scale << 12) / 2560;
     g_BattleLimitMeteorainModelReq20.m22 = frame.modelScale;
     g_BattleLimitMeteorainScaleMatrixM11 = g_BattleLimitMeteorainModelReq20.m22;
     g_BattleLimitMeteorainScaleMatrix[0] = g_BattleLimitMeteorainScaleMatrixM11;
@@ -950,10 +950,10 @@ void __cdecl BattleFx_LimitMeteorainProjectileTask(void)
         SetRotMatrix(frame.lookMatrix);
         SetTransMatrix(frame.lookMatrix);
         for (frame.sectorIndex = 0; frame.sectorIndex < 1; frame.sectorIndex++) {
-            frame.angle = (frame.sectorIndex << 0xC) + (rand() % 4096);
-            frame.offsetRecord->offsetX = SinFixed(frame.angle) * 0x3E8 >> 0xC;
-            frame.offsetRecord->offsetY = CosFixed(frame.angle) * 0x3E8 >> 0xC;
-            frame.offsetRecord->jitter = rand() % 0x3E8;
+            frame.angle = (frame.sectorIndex << 12) + (rand() % 4096);
+            frame.offsetRecord->offsetX = SinFixed(frame.angle) * 0x3E8 >> 12;
+            frame.offsetRecord->offsetY = CosFixed(frame.angle) * 0x3E8 >> 12;
+            frame.offsetRecord->jitter = rand() % 1000;
             RotTransPoint((void *)frame.offsetRecord, (int *)frame.posRecord, &frame.depth);
             frame.sparkDot = (BattleFxMeteorainProjectile *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitMeteorainLivewireDotTask);
             frame.sparkDot->posX = frame.posRecord->posX;
@@ -967,7 +967,7 @@ void __cdecl BattleFx_LimitMeteorainProjectileTask(void)
         }
         g_BattleLimitMeteorainSpriteReq.meteo2UvScroll ^= 0x80;
         (g_BattleLimitMeteorainSpinRotXY.rotX) += 0x80;
-        g_BattleLimitMeteorainSpinRotXY.rotY += 0x100;
+        g_BattleLimitMeteorainSpinRotXY.rotY += 0x100 /* 22.5 deg */;
         g_BattleLimitMeteorainSpinRotZ += 0x180;
         (frame.projectile->age)++;
         if (frame.projectile->age >= 6) {
@@ -1042,7 +1042,7 @@ void __cdecl BattleFx_LimitMeteorainSpriteParticlePool64Task(void)
     pParticlePool = (BattleMeteorainParticle *)(task->resourceIndex * 0x600 + (char *)&g_BattleLimitMeteorainParticlePools);
     g_BattleLimitMeteorainModelReq50.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitMeteorainModelTable);
     g_BattleLimitMeteorainModelReq50.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitMeteorainModelTable);
-    for (idx = 0; idx < 0x40; idx++) {
+    for (idx = 0; idx < 64; idx++) {
         if (pParticlePool[idx].active != 0) {
             g_BattleLimitMeteorainModelReq50.frame = pParticlePool[idx].stage;
             BattleFx_InstallBillboardMatrix(&pParticlePool[idx].posX, (short)pParticlePool[idx].scale, -(pParticlePool[idx].scale >> 3));
@@ -1058,16 +1058,16 @@ void __cdecl BattleFx_LimitMeteorainSpriteParticlePool64Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->timer >= 0x10) {
+    if (task->timer >= 16) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (task->timer < 6) {
         spread = task->spreadRadius;
         fullSpread = spread << 1;
         for (idx = 0; idx < 2; idx++) {
-            for (freeSlot = 0; freeSlot < 0x40 && pParticlePool[freeSlot].active != 0; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 64 && pParticlePool[freeSlot].active != 0; freeSlot++) {
             }
-            if (freeSlot >= 0x40) {
+            if (freeSlot >= 64) {
                 break;
             }
             pParticlePool[freeSlot].active = 1;
@@ -1121,14 +1121,14 @@ void __cdecl BattleFx_LimitMeteorainSpinningFadingModelEntry1Task(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleLimitMeteorainModelTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.spinEntry->frameCount >= 8) {
-        frame.modelDraw->fadeLevel = 0x80 - (frame.spinEntry->frameCount - 8 << 4);
+        frame.modelDraw->fadeLevel = 128 - (frame.spinEntry->frameCount - 8 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinEntry->frameCount >= 0x10) {
+    if (frame.spinEntry->frameCount >= 16) {
         frame.spinEntry->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1179,14 +1179,14 @@ void __cdecl BattleFx_LimitMeteorainSpinningFadingModelEntry2Task(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleLimitMeteorainModelTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     if (frame.spinEntry->frameCount >= 8) {
-        frame.modelDraw->fadeLevel = 0x80 - (frame.spinEntry->frameCount - 8 << 4);
+        frame.modelDraw->fadeLevel = 128 - (frame.spinEntry->frameCount - 8 << 4);
     }
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spinEntry->frameCount >= 0x10) {
+    if (frame.spinEntry->frameCount >= 16) {
         frame.spinEntry->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1246,7 +1246,7 @@ void __cdecl BattleFx_LimitMeteorainGrowingModelTask(void)
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.growRecord->frame >= 0xC) {
+    if (frame.growRecord->frame >= 12) {
         frame.growRecord->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

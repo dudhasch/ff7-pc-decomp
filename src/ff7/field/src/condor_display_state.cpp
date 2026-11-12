@@ -134,9 +134,9 @@ int g_FieldWindowTextPointers[4] = {0};
 unsigned char g_FieldRandomIndex = 0;
 unsigned char g_bssPad_00cbf58c[4] = {0};
 // GLOBAL: FF7 0x00cbf590
-unsigned short g_FieldModelDefaultSpeed[0x18] = {0};
+unsigned short g_FieldModelDefaultSpeed[24] = {0};
 // GLOBAL: FF7 0x00cbf5c0
-short g_FieldModelIdleAnimSpeed[0x10] = {0};
+short g_FieldModelIdleAnimSpeed[16] = {0};
 // GLOBAL: FF7 0x00cbf5e0
 short g_FieldWindowDelay[4] = {0};
 // GLOBAL: FF7 0x00cbf5e8
@@ -146,12 +146,12 @@ unsigned char g_bssPad_00cbf5ec[4] = {0};
 short g_FieldWindowSpeed[4] = {0};
 unsigned char g_bssPad_00cbf5f8[8] = {0};
 // GLOBAL: FF7 0x00cbf600
-unsigned char g_FieldEntityLine[0xb8] = {0};
+unsigned char g_FieldEntityLine[184] = {0};
 // GLOBAL: FF7 0x00cbf6b8
 unsigned char g_FieldRequestPosted = 0;
 unsigned char g_bssPad_00cbf6bc[4] = {0};
 // GLOBAL: FF7 0x00cbf6c0
-unsigned short g_FieldScriptPriorityPC[0x30][8] = {0};
+unsigned short g_FieldScriptPriorityPC[48][8] = {0};
 // GLOBAL: FF7 0x00cbf9c0
 char g_FieldAudioDisabled = 0;
 unsigned char g_bssPad_00cbf9c4[4] = {0};
@@ -170,7 +170,7 @@ unsigned char g_FieldMovieRequested = 0;
 // GLOBAL: FF7 0x00cbfb6c
 char g_FieldMoviePending = 0;
 // GLOBAL: FF7 0x00cbfb70
-unsigned char g_FieldEntityModel[0x30] = {0};
+unsigned char g_FieldEntityModel[48] = {0};
 // GLOBAL: FF7 0x00cbfba0
 unsigned char g_FieldEntityScriptTable[64] = {0};
 // GLOBAL: FF7 0x00cbfbe0
@@ -178,7 +178,7 @@ unsigned char g_WindowReplaceBank[4][8] = {0};
 // GLOBAL: FF7 0x00cbfc00
 short g_FieldWindowPos[4] = {0};
 // GLOBAL: FF7 0x00cbfc08
-unsigned short g_FieldPalettes[0x40][16] = {0};
+unsigned short g_FieldPalettes[64][16] = {0};
 unsigned char g_bssPad_00cc0408[4] = {0};
 // GLOBAL: FF7 0x00cc040c
 char g_FieldDialogueLock = 0;
@@ -190,7 +190,7 @@ short g_FieldHandCursorX = 0;
 short g_FieldWindowRevealProgress[4] = {0};
 unsigned char g_bssPad_00cc0420[8] = {0};
 // GLOBAL: FF7 0x00cc0428
-unsigned char g_FieldWindowText[4][0x100] = {0};
+unsigned char g_FieldWindowText[4][256] = {0};
 // How a menu screen is being entered over another module: 1 while the field fades out to the menu
 // (Field_UpdateLogic; the fade's end clears it), 2 once the battle has opened its command menu
 // (Battle_InitOpeningUiState; Battle_ModuleFrame runs the battle UI while it is 2), 4 when the
@@ -200,7 +200,7 @@ unsigned char g_FieldWindowText[4][0x100] = {0};
 short g_MenuEntryState = 0;
 unsigned char g_bssPad_00cc082c[4] = {0};
 // GLOBAL: FF7 0x00cc0830
-unsigned char g_FieldFollowerState[0x30] = {0};
+unsigned char g_FieldFollowerState[48] = {0};
 // GLOBAL: FF7 0x00cc0860
 char g_FieldLineDrawIntensity = 0;
 unsigned char g_bssPad_00cc0864[4] = {0};
@@ -215,7 +215,7 @@ unsigned char g_bssPad_00cc0874[4] = {0};
 // Defined as contiguous objects in this TU's .bss span so each symbol lands at its
 // exact retail address.
 // GLOBAL: FF7 0x00cc0878
-unsigned char g_FieldModelIdleAnimId[0x10] = {0};
+unsigned char g_FieldModelIdleAnimId[16] = {0};
 // GLOBAL: FF7 0x00cc0888
 unsigned char g_PartyStatsDirty = 0;
 // GLOBAL: FF7 0x00cc088c
@@ -233,13 +233,13 @@ unsigned char g_bssPad_00cc08e0[8] = {0};
 // GLOBAL: FF7 0x00cc08e8
 void *g_FieldDialogTextPtr = 0;
 // GLOBAL: FF7 0x00cc08ec
-unsigned char g_FieldDialogTextState[0x4] = {0};
+unsigned char g_FieldDialogTextState[4] = {0};
 // GLOBAL: FF7 0x00cc08f0
 int g_FieldDialogState = 0;
 unsigned char g_bssPad_00cc08f4[4] = {0};
 unsigned char g_bssPad_00cc08f8[8] = {0};
 // GLOBAL: FF7 0x00cc0900
-unsigned short g_FieldScriptWait[0x30] = {0};
+unsigned short g_FieldScriptWait[48] = {0};
 // GLOBAL: FF7 0x00cc0960
 unsigned char g_FieldWindowOwner[4] = {0};
 // GLOBAL: FF7 0x00cc0964
@@ -251,14 +251,14 @@ unsigned char g_FieldHandCursorState = 0;
 short g_FieldWorldMapResult = 0;
 unsigned char g_bssPad_00cc0978[8] = {0};
 // GLOBAL: FF7 0x00cc0980
-unsigned char g_FieldModelAnimMode[0x10] = {0};
+unsigned char g_FieldModelAnimMode[16] = {0};
 // GLOBAL: FF7 0x00cc0990
 unsigned char g_FieldBlinkRandomIndex = 0;
 unsigned char g_bssPad_00cc0994[4] = {0};
 // GLOBAL: FF7 0x00cc0998
 FieldCharEntityMap g_FieldCharEntity = {0};
 // GLOBAL: FF7 0x00cc0b30
-unsigned char g_FieldScriptPriority[0x30] = {0};
+unsigned char g_FieldScriptPriority[48] = {0};
 // GLOBAL: FF7 0x00cc0b60
 struct FieldEntity *g_pFieldEntities = 0;
 // GLOBAL: FF7 0x00cc0b64
@@ -270,11 +270,11 @@ unsigned char g_bssPad_00cc0b6c[4] = {0};
 short g_FieldMovieFrame = 0;
 unsigned char g_bssPad_00cc0b74[4] = {0};
 // GLOBAL: FF7 0x00cc0b78
-unsigned char g_FieldScriptPriorityState[0x30][8] = {0};
+unsigned char g_FieldScriptPriorityState[48][8] = {0};
 // GLOBAL: FF7 0x00cc0cf8
-unsigned short g_FieldScriptPC[0x34] = {0};
+unsigned short g_FieldScriptPC[52] = {0};
 // GLOBAL: FF7 0x00cc0d60
-short g_FieldModelAnimSpeed[0x10] = {0};
+short g_FieldModelAnimSpeed[16] = {0};
 // The battle request the world map writes (WorldMap_MainUpdate's `battle`): bit 31 and bit 29 are
 // flags main's battle-swirl case turns into the encounter state, bits 0..29 the battle scene.
 // GLOBAL: FF7 0x00cc0d80

@@ -27,5 +27,5 @@ void *__cdecl operator new(unsigned int size)
 void __cdecl operator delete(void *block)
 {
     // STRING: FF7 0x0090a820
-    GameHeapFree(block, "C:\\FF7\\snobo\\memory.cpp", 0xB);
+    GameHeapFree(block, "C:\\FF7\\snobo\\memory.cpp", 11);
 }

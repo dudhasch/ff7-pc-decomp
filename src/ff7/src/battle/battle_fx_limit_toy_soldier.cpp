@@ -99,17 +99,17 @@ void __cdecl BattleFx_LimitToySoldierSpawnTimeline(void)
     frame.heading = 0x1000 - (frame.heading + 0x800);
     frame.toySlot = (BattleFxLimitToySoldierSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToySoldierTimelineTask);
     *(Int64Pair *)((char *)frame.toySlot + 4) = *&g_BattleFxLimitToySoldierSourcePos;
-    frame.toySlot->posX += (short)-(SinFixed(frame.heading) * 0x14A >> 0xC);
+    frame.toySlot->posX += (short)-(SinFixed(frame.heading) * 0x14A >> 12);
     frame.toySlot->posY = 0;
-    frame.toySlot->posZ += (short)(CosFixed(frame.heading) * 0x14A >> 0xC);
+    frame.toySlot->posZ += (short)(CosFixed(frame.heading) * 0x14A >> 12);
     frame.toySlot->rotationY = 0x800 - frame.heading;
-    frame.toySlot->stepX = -(SinFixed(frame.heading) * 0x2D >> 0xC);
-    frame.toySlot->stepZ = CosFixed(frame.heading) * 0x2D >> 0xC;
+    frame.toySlot->stepX = -(SinFixed(frame.heading) * 0x2D >> 12);
+    frame.toySlot->stepZ = CosFixed(frame.heading) * 0x2D >> 12;
     frame.rotX.vx = 0;
     frame.rotX.vy = 0x800 - frame.heading;
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, (int *)&g_BattleFxLimitToySoldierLocalMatrix);
-    frame.scaleVector.vz = 0x4000;
+    frame.scaleVector.vz = 0x4000 /* 4.0 */;
     frame.scaleVector.vy = frame.scaleVector.vz;
     frame.scaleVector.vx = frame.scaleVector.vy;
     ScaleMatrix((int *)&g_BattleFxLimitToySoldierLocalMatrix, &frame.scaleVector);
@@ -137,32 +137,32 @@ void __cdecl BattleFx_LimitToySoldierTimelineTask(void)
         *(Int64Pair *)((char *)record + 4) = *(Int64Pair *)((char *)selfPtr + 4);
         *(short *)((char *)record + 0x10) = selfPtr->rotationY;
     }
-    if (selfPtr->frame >= 0x1A && selfPtr->frame < 0x27) {
+    if (selfPtr->frame >= 26 && selfPtr->frame < 39) {
         g_BattleActorRecords[3].posX += selfPtr->velocityX;
         g_BattleActorRecords[3].posZ += selfPtr->velocityZ;
         g_BattleFxLimitToySoldierLocalMatrix.matrixPhase = g_BattleActorRecords[3].posX;
         g_BattleFxLimitToySoldierLocalMatrix.matrixZeroWord = 0;
         g_BattleFxLimitToySoldierLocalMatrix.matrixEmitCounter = g_BattleActorRecords[3].posZ;
     }
-    if (selfPtr->frame == 0x1C || (selfPtr->frame == 0x21 || selfPtr->frame == 0x26)) {
+    if (selfPtr->frame == 28 || (selfPtr->frame == 33 || selfPtr->frame == 38)) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[3].posX), 0xCC);
     }
-    if (selfPtr->frame == 0x3A) {
+    if (selfPtr->frame == 58) {
         child = (int)BATTLE_NEW_TASK_SLOT(BattleFx_LimitToySoldierAnimatedSpritesTask);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[3].posX), 0x1C6);
     }
-    if (selfPtr->frame == 0x46) {
+    if (selfPtr->frame == 70) {
         Battle_AllocSceneMessage(2);
     }
-    if (selfPtr->frame == 0x3C) {
-        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    if (selfPtr->frame == 60) {
+        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
             if ((g_BattleFxLimitToySoldierTargetMask & 1 << actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIndex);
                 BattleFx_HitMarkSpawnAtActorBone(actorIndex, ((rand() % 2) << 8) | 0x29);
             }
         }
     }
-    if (selfPtr->frame >= 0x4B) {
+    if (selfPtr->frame >= 75) {
         selfPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (selfPtr->frame)++;

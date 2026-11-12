@@ -433,7 +433,7 @@ void __cdecl Gl_EmitTrisModelSpaceTexturedPaged(GlDrawState *state, GlDrawNode *
                     break;
                 }
             }
-            vbuf += mesh->stride * k * 0x20;
+            vbuf += mesh->stride * k * 32;
             rem -= k;
             if (dev->isGouraud == 0) {
                 Gl_DrawTrisTransformedTexFlat(

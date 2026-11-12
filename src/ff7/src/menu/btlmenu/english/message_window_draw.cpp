@@ -305,7 +305,7 @@ short __cdecl Menu_DrawMessageText2x(short penX, short penY, short wrapWidth, un
     } f; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 #define TEXT_METRIC (g_pTextSpacing[f.code + f.offset])
     f.phase = 0;
-    for (f.count = 0; f.count < 0x400; f.count++, f.phase++) {
+    for (f.count = 0; f.count < 1024; f.count++, f.phase++) {
         f.first = *text;
         if (g_MenuTextRemaining == 0 || *text == TEXT_END || *text == TEXT_NEW_PAGE || *text == TEXT_NEW_PAGE_ALT)
             break;
@@ -717,7 +717,7 @@ void __cdecl Menu_DrawWindowFrame2x(EnglishWindowFrame *windowFrame, float depth
     if (Menu_IsTextSubsystemReady() == 0) {
         return;
     }
-    if (windowFrame->width > 0x10) {
+    if (windowFrame->width > 16) {
         if (AcquireBatchNode(2, g_MenuWinCBlend4DiffGraphicsObject) != 0) {
             uFirstPosition = 0.0f;
             textureV = 0.75f;
@@ -807,7 +807,7 @@ void __cdecl Menu_DrawWindowFrame2x(EnglishWindowFrame *windowFrame, float depth
             g_MenuWinCBlend4DiffGraphicsObject->paletteIndex = 0;
         }
     }
-    if (windowFrame->height > 0x10) {
+    if (windowFrame->height > 16) {
         if (AcquireBatchNode(2, g_MenuWinCBlend4DiffGraphicsObject) != 0) {
             uFirstPosition = 0.21875f;
             textureV = 0.875f;
@@ -1065,11 +1065,11 @@ void __cdecl Menu_DrawWindowFrame2x(EnglishWindowFrame *windowFrame, float depth
         *g_MenuWinCBlend4DiffGraphicsObject->colorSignedBytePtr = 0;
         g_MenuWinCBlend4DiffGraphicsObject->paletteIndex = 0;
     }
-    if (windowFrame->width > 0xC && windowFrame->height > 0xC) {
+    if (windowFrame->width > 12 && windowFrame->height > 12) {
         innerRemainingX = windowFrame->x + 6;
         topInner = windowFrame->y + 6;
-        contentWidth = windowFrame->width - 0xC;
-        contentHeight = windowFrame->height - 0xC;
+        contentWidth = windowFrame->width - 12;
+        contentHeight = windowFrame->height - 12;
         if (g_MenuMessageWindowActive != 0) {
             if (AcquireBatchNode(1, g_MenuBlendWindowBgGraphicsObject) != 0) {
                 pBlendBgVertex = g_MenuBlendWindowBgGraphicsObject->vertices;
@@ -1206,7 +1206,7 @@ void __cdecl Menu_DrawMessageWindowFrame2x(EnglishMessageWindowRect *rect, float
         colourOfs = idx * 3;
         Menu_PackWindowColor((unsigned char *)((char *)colourBuffer + idx * 4), g_FieldWindowColours[colourOfs], g_FieldWindowColours[colourOfs + 1], g_FieldWindowColours[colourOfs + 2]);
     }
-    if (rect->width > 0x10) {
+    if (rect->width > 16) {
         if (AcquireBatchNode(2, g_MenuWinCBlend4DiffGraphicsObject) != 0) {
             uRemainingOrigin = 0.0f;
             vBase = 0.75f;
@@ -1296,7 +1296,7 @@ void __cdecl Menu_DrawMessageWindowFrame2x(EnglishMessageWindowRect *rect, float
             g_MenuWinCBlend4DiffGraphicsObject->paletteIndex = 0;
         }
     }
-    if (rect->height > 0x10) {
+    if (rect->height > 16) {
         if (AcquireBatchNode(2, g_MenuWinCBlend4DiffGraphicsObject) != 0) {
             uRemainingOrigin = 0.21875f;
             vBase = 0.875f;
@@ -1554,11 +1554,11 @@ void __cdecl Menu_DrawMessageWindowFrame2x(EnglishMessageWindowRect *rect, float
         *g_MenuWinCBlend4DiffGraphicsObject->colorSignedBytePtr = 0;
         g_MenuWinCBlend4DiffGraphicsObject->paletteIndex = 0;
     }
-    if (rect->width > 0xC && rect->height > 0xC) {
+    if (rect->width > 12 && rect->height > 12) {
         bodyLeft = rect->posX + 6;
         bodyTop = rect->posY + 6;
-        innerExtentX = rect->width - 0xC;
-        contentSpanY = rect->height - 0xC;
+        innerExtentX = rect->width - 12;
+        contentSpanY = rect->height - 12;
         if (g_MenuMessageWindowActive != 0) {
             if (AcquireBatchNode(1, g_MenuBlendWindowBgGraphicsObject) != 0) {
                 zBias = 1e-06f;
@@ -1824,7 +1824,7 @@ void __cdecl Menu_DrawCountdownTimer2x(int posX, int posY, unsigned int countdow
         }
         for (digitIdx = 0; digitIdx < 4; digitIdx++) {
             digitValue = (int)countdownValue / g_MenuTimeDivisors[digitIdx];
-            uValue = ((digitValue % 5) * 0x20 + 0x60) * 0.00390625f;
+            uValue = ((digitValue % 5) * 32 + 0x60) * 0.00390625f;
             textureV = digitValue > 4 ? 0.8125f : 0.625f;
             f = 0.125f;
             digitTopLeft = g_MenuWinBBlend4GraphicsObject->vertices;
@@ -1868,18 +1868,18 @@ void __cdecl Menu_DrawCountdownTimer2x(int posX, int posY, unsigned int countdow
             g_MenuWinBBlend4GraphicsObject->vertexCursor += g_MenuWinBBlend4GraphicsObject->cursorStep;
             g_MenuWinBBlend4GraphicsObject->colorIndex += 1;
             if (digitIdx == 1) {
-                posX += 0x10;
+                posX += 16;
             }
             countdownValue = (int)countdownValue % g_MenuTimeDivisors[digitIdx];
-            posX += 0x20;
+            posX += 32;
         }
     }
     if (g_MenuDigitBackdropEnabled != 0) {
         int width;
         int height;
 
-        width = 0x90;
-        height = 0x2A;
+        width = 144;
+        height = 42;
         Menu_DrawTranslucentBlackRect(tempStartX, savedY, width, height);
         g_MenuDoDrawBlackQuad = 1;
     }
@@ -1963,7 +1963,7 @@ void __cdecl Menu_DrawMessageWindowNumber2x(int posX, int posY, int value, int d
                 g_MenuWinBBlend4GraphicsObject->vertexCursor += g_MenuWinBBlend4GraphicsObject->cursorStep;
                 g_MenuWinBBlend4GraphicsObject->colorIndex++;
             }
-            posX += 0x20;
+            posX += 32;
         }
         value = value % g_MenuNumberDivisors[idx];
     }
@@ -2424,7 +2424,7 @@ short __cdecl Menu_DrawMessageText1x(short penX, short penY, short wrapWidth, un
     penX += g_MenuViewportX;
     penY += g_MenuViewportY;
     f.phase = 0;
-    for (f.count = 0; f.count < 0x400; f.count++, f.phase++) {
+    for (f.count = 0; f.count < 1024; f.count++, f.phase++) {
         f.first = *text;
         if (g_MenuTextRemaining == 0 || *text == TEXT_END || *text == TEXT_NEW_PAGE || *text == TEXT_NEW_PAGE_ALT)
             break;
@@ -3856,7 +3856,7 @@ void __cdecl Menu_DrawCountdownTimer1x(int posX, int posY, unsigned int timerVal
         }
         for (digitSlot = 0; digitSlot < 4; digitSlot++) {
             digitVal = (int)timerValue / g_MenuTimeDivisors[digitSlot];
-            uOrigin = ((digitVal % 5) * 0x10 + 0xB0) * 0.00390625f;
+            uOrigin = ((digitVal % 5) * 16 + 176) * 0.00390625f;
             vOrigin = digitVal > 4 ? 0.40625f : 0.3125f;
             f = 0.0625f;
             digitTopLeft = g_MenuWinBlend4GraphicsObject->vertices;
@@ -3903,15 +3903,15 @@ void __cdecl Menu_DrawCountdownTimer1x(int posX, int posY, unsigned int timerVal
                 posX += 8;
             }
             timerValue = (int)timerValue % g_MenuTimeDivisors[digitSlot];
-            posX += 0x10;
+            posX += 16;
         }
     }
     if (g_MenuDigitBackdropEnabled != 0) {
         int width;
         int height;
 
-        width = 0x48;
-        height = 0x15;
+        width = 72;
+        height = 21;
         Menu_DrawTranslucentBlackRect(rectX, rectY, width, height);
         g_MenuDoDrawBlackQuad = 1;
     }
@@ -3946,7 +3946,7 @@ void __cdecl Menu_DrawMessageWindowNumber1x(int x, int y, int value, int digitCo
         digitValue = value / g_MenuNumberDivisors[idx];
         if (8 - idx <= digitCount) {
             if (AcquireBatchNode(1, g_MenuWinBlend4GraphicsObject) != 0) {
-                texturePixelX = (digitValue % 5 << 4) + 0xB0;
+                texturePixelX = (digitValue % 5 << 4) + 176;
                 uCoord = texturePixelX * 0.00390625f;
                 if (digitValue > 4) {
                     texVBits = 0x3ED00000;
@@ -3997,7 +3997,7 @@ void __cdecl Menu_DrawMessageWindowNumber1x(int x, int y, int value, int digitCo
                 g_MenuWinBlend4GraphicsObject->vertexCursor += g_MenuWinBlend4GraphicsObject->cursorStep;
                 g_MenuWinBlend4GraphicsObject->colorBytePtr++;
             }
-            x += 0x10;
+            x += 16;
         }
         value = value % g_MenuNumberDivisors[idx];
     }
@@ -4014,20 +4014,20 @@ void __cdecl Menu_ApplyUiScalingViewportForMode(int mode)
     if (mode == MENU_UI_SCALE_SMALL) {
         g_MenuViewportX = 0;
         g_MenuViewportY = 0;
-        g_MenuViewportWidth = 0x140;
-        g_MenuViewportHeight = 0xf0;
+        g_MenuViewportWidth = 320;
+        g_MenuViewportHeight = 240;
         g_MenuIsSmallViewport320x240 = 1;
     } else if (mode == MENU_UI_SCALE_SMALL_CENTERED) {
-        g_MenuViewportX = 0xa0;
-        g_MenuViewportY = 0x78;
-        g_MenuViewportWidth = 0x140;
-        g_MenuViewportHeight = 0xf0;
+        g_MenuViewportX = 160;
+        g_MenuViewportY = 120;
+        g_MenuViewportWidth = 320;
+        g_MenuViewportHeight = 240;
         g_MenuIsSmallViewport320x240 = 1;
     } else {
         g_MenuViewportX = 0;
         g_MenuViewportY = 0;
-        g_MenuViewportWidth = 0x280;
-        g_MenuViewportHeight = 0x1e0;
+        g_MenuViewportWidth = 640;
+        g_MenuViewportHeight = 480;
         g_MenuIsSmallViewport320x240 = 0;
     }
 }
@@ -4105,7 +4105,7 @@ void __cdecl Menu_DrawPopupMessageBody2x(EnglishWindowFrame *rect, int depth)
     if (Menu_IsTextSubsystemReady() == 0) {
         return;
     }
-    if (rect->width > 0x10) {
+    if (rect->width > 16) {
         if (AcquireBatchNode(2, g_MenuWinCBlend4DiffGraphicsObject) != 0) {
             texRemainingU = 0.0f;
             textureV = 0.75f;
@@ -4195,7 +4195,7 @@ void __cdecl Menu_DrawPopupMessageBody2x(EnglishWindowFrame *rect, int depth)
             g_MenuWinCBlend4DiffGraphicsObject->paletteIndex = 0;
         }
     }
-    if (rect->height > 0x10) {
+    if (rect->height > 16) {
         if (AcquireBatchNode(2, g_MenuWinCBlend4DiffGraphicsObject) != 0) {
             texRemainingU = 0.21875f;
             textureV = 0.875f;
@@ -4453,11 +4453,11 @@ void __cdecl Menu_DrawPopupMessageBody2x(EnglishWindowFrame *rect, int depth)
         *g_MenuWinCBlend4DiffGraphicsObject->colorSignedBytePtr = 0;
         g_MenuWinCBlend4DiffGraphicsObject->paletteIndex = 0;
     }
-    if (rect->width > 0xC && rect->height > 0xC) {
+    if (rect->width > 12 && rect->height > 12) {
         innerMarginX = rect->x + 6;
         innerY = rect->y + 6;
-        innerWidth = rect->width - 0xC;
-        interiorH = rect->height - 0xC;
+        innerWidth = rect->width - 12;
+        interiorH = rect->height - 12;
         if (g_MenuMessageWindowActive != 0) {
             if (AcquireBatchNode(1, g_MenuBlendWindowBgGraphicsObject) != 0) {
                 pVtxBlendTL = g_MenuBlendWindowBgGraphicsObject->vertices;

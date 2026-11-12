@@ -465,7 +465,7 @@ void __cdecl Battle_DmgFormula18_DiceRoll(void)
     } frame;
 #pragma pack(pop)
 
-    frame.diceCount = g_pBattleCommandCtx->attackerLevel / 0xA;
+    frame.diceCount = g_pBattleCommandCtx->attackerLevel / 10;
     if (frame.diceCount < 2) {
         frame.diceCount = 2;
     }
@@ -584,7 +584,7 @@ void __cdecl Battle_DmgFormula1D_MateriaCountTimes1111(void)
             }
         }
     }
-    g_pBattleCommandCtx->damage = sum * 0x457;
+    g_pBattleCommandCtx->damage = sum * 1111;
 }
 
 // The damage formula table Battle_RunDamageProgram indexes by the command's formula number (battle_damage_program_run.cpp);

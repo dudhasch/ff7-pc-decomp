@@ -127,7 +127,7 @@ void __cdecl BattleFx_MagicEnterDemi3(int targetMask, int actorIdx)
 
     BattleFx_MagicLoadResDemi3();
     g_BattleMagicDemi3_DrawListHandle = Gfx_GetPsxPacketScratchPtr();
-    for (index = 0; index < 0x14; index++) {
+    for (index = 0; index < 20; index++) {
         g_BattleMagicDemi3SegmentRecords[index].state = 0xFFFF;
     }
     Battle_CreateBitPatternCallbackTask(targetMask, actorIdx, 8, BattleFx_MagicSpawnDemi3PerTarget);
@@ -196,7 +196,7 @@ void __cdecl BattleFx_MagicDemi3TimelineTask(void)
         frame.output->curve.center = frame.slot->timeline.position;
         frame.output->curve.baseRadius = 1000;
         frame.output->curve.rotation.vx = 0;
-        frame.output->curve.rotation.vy = 0x400;
+        frame.output->curve.rotation.vy = 0x400 /* 90 deg */;
         frame.output->curve.rotation.vz = 0;
     }
     if (frame.time == 8) {
@@ -206,21 +206,21 @@ void __cdecl BattleFx_MagicDemi3TimelineTask(void)
         frame.output->animated.deltaX = 0;
         frame.output->animated.deltaY = -500;
         frame.output->animated.pushLength = -g_BattleActorRecords[frame.slot->timeline.targetIndex].radius;
-        frame.output->animated.scale = 0x2000;
+        frame.output->animated.scale = 0x2000 /* 2.0 */;
         frame.output = (BattleFxGrav3Slot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3AnimatedSpriteTask);
         frame.output->animated.frameOffset = 2;
         frame.output->animated.position = frame.slot->timeline.position;
         frame.output->animated.deltaX = -300;
         frame.output->animated.deltaY = 0;
         frame.output->animated.pushLength = -g_BattleActorRecords[frame.slot->timeline.targetIndex].radius;
-        frame.output->animated.scale = 0x2000;
+        frame.output->animated.scale = 0x2000 /* 2.0 */;
         frame.output = (BattleFxGrav3Slot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3AnimatedSpriteTask);
         frame.output->animated.frameOffset = 4;
         frame.output->animated.position = frame.slot->timeline.position;
         frame.output->animated.deltaX = 300;
         frame.output->animated.deltaY = 200;
         frame.output->animated.pushLength = -g_BattleActorRecords[frame.slot->timeline.targetIndex].radius;
-        frame.output->animated.scale = 0x2000;
+        frame.output->animated.scale = 0x2000 /* 2.0 */;
     }
     if (frame.time == 8) {
         frame.output = (BattleFxGrav3Slot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDemi3GrowingQuadSpriteTask);
@@ -275,7 +275,7 @@ void __cdecl BattleFx_MagicDemi3TrailSpriteTask(void)
     taskPtr = (BattleFxDemi3TrailSprite *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicDemi3_SpriteReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleMagicDemi3_LoadedRes);
     g_BattleMagicDemi3_SpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicDemi3_LoadedRes);
-    billboard = (struct PsxMatrix *)BattleFx_InstallBillboardMatrix(&taskPtr->position.x, 0x1200, 0);
+    billboard = (struct PsxMatrix *)BattleFx_InstallBillboardMatrix(&taskPtr->position.x, 0x1200 /* 1.125 */, 0);
     if (billboard->t[2] > 0) {
         g_BattleMagicDemi3_SpriteReq.frame = taskPtr->frameCounter;
         g_BattleMagicDemi3_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleMagicDemi3_SpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicDemi3_DrawListHandle);
@@ -302,25 +302,25 @@ void __cdecl BattleFx_MagicDemi3GrowingQuadSpriteTask(void)
     task = (BattleFxDemi3GrowingQuadSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleMagicDemi3_SpriteData1.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicDemi3_LoadedRes);
     phaseFrame = task->frameIndex;
-    if (phaseFrame < 0xF) {
+    if (phaseFrame < 15) {
         g_BattleMagicDemi3_SpriteData1.colorB = 0x80;
         g_BattleMagicDemi3_SpriteData1.colorG = g_BattleMagicDemi3_SpriteData1.colorB;
         (g_BattleMagicDemi3_SpriteData1.colorR) = g_BattleMagicDemi3_SpriteData1.colorG;
-        angle = phaseFrame * 0x2400 / 0xF + 0x100;
+        angle = phaseFrame * 0x2400 / 15 + 0x100;
     } else {
-        phaseFrame -= 0xF;
-        if (phaseFrame < 0x14) {
+        phaseFrame -= 15;
+        if (phaseFrame < 20) {
             g_BattleMagicDemi3_SpriteData1.colorB = 0x80;
             g_BattleMagicDemi3_SpriteData1.colorG = g_BattleMagicDemi3_SpriteData1.colorB;
             (g_BattleMagicDemi3_SpriteData1.colorR) = g_BattleMagicDemi3_SpriteData1.colorG;
-            angle = 0x2500;
+            angle = 0x2500 /* 832.5 deg */;
         } else {
-            phaseFrame -= 0x14;
-            if (phaseFrame < 0xF) {
-                g_BattleMagicDemi3_SpriteData1.colorB = phaseFrame * -0x80 / 0xF + 0x80;
+            phaseFrame -= 20;
+            if (phaseFrame < 15) {
+                g_BattleMagicDemi3_SpriteData1.colorB = phaseFrame * -0x80 / 15 + 0x80;
                 g_BattleMagicDemi3_SpriteData1.colorG = g_BattleMagicDemi3_SpriteData1.colorB;
                 (g_BattleMagicDemi3_SpriteData1.colorR) = g_BattleMagicDemi3_SpriteData1.colorG;
-                angle = phaseFrame * 0x1B00 / 0xF + 0x2500;
+                angle = phaseFrame * 0x1B00 / 15 + 0x2500;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -366,7 +366,7 @@ void __cdecl BattleFx_MagicDemi3RotatingSpriteCurveTask(void)
         (g_BattleMagicDemi3_SpriteData2.colorR) = g_BattleMagicDemi3_SpriteData2.colorG;
     } else {
         frame.phase -= 5;
-        if (frame.phase < 0x1E) {
+        if (frame.phase < 30) {
             g_BattleMagicDemi3_SpriteData2.colorB = 0x80;
             g_BattleMagicDemi3_SpriteData2.colorG = g_BattleMagicDemi3_SpriteData2.colorB;
             (g_BattleMagicDemi3_SpriteData2.colorR) = g_BattleMagicDemi3_SpriteData2.colorG;
@@ -382,19 +382,19 @@ void __cdecl BattleFx_MagicDemi3RotatingSpriteCurveTask(void)
             }
         }
     }
-    frame.pulseScale = (SinFixed((frame.curveSprite->ownerSlot + frame.curveSprite->step << 0xC) / 0x1E) << 0xA >> 0xC) + 0xC00;
-    frame.radius = frame.curveSprite->baseRadius * frame.pulseScale >> 0xC;
-    for (frame.spriteIndex = 0; frame.spriteIndex < 0x10; frame.spriteIndex++) {
-        frame.curveAngle = (frame.curveSprite->step << 6) + ((frame.spriteIndex << 0xC) / 16);
-        frame.offsetX.vx = (SinFixed(frame.curveAngle) * CosFixed(frame.curveAngle) >> 0xC) * frame.radius >> 0xC;
-        frame.offsetX.vy = CosFixed(frame.curveAngle) * frame.radius >> 0xC;
+    frame.pulseScale = (SinFixed((frame.curveSprite->ownerSlot + frame.curveSprite->step << 12) / 30) << 10 >> 12) + 0xC00;
+    frame.radius = frame.curveSprite->baseRadius * frame.pulseScale >> 12;
+    for (frame.spriteIndex = 0; frame.spriteIndex < 16; frame.spriteIndex++) {
+        frame.curveAngle = (frame.curveSprite->step << 6) + ((frame.spriteIndex << 12) / 16);
+        frame.offsetX.vx = (SinFixed(frame.curveAngle) * CosFixed(frame.curveAngle) >> 12) * frame.radius >> 12;
+        frame.offsetX.vy = CosFixed(frame.curveAngle) * frame.radius >> 12;
         frame.offsetX.vz = 0;
         RotMatrix(&frame.curveSprite->rotation, &frame.rotMatrix);
         TransformVectorToInt16(&frame.rotMatrix, &frame.offsetX, &frame.offsetX.vx);
         frame.offsetX.vx += frame.curveSprite->center.x;
         frame.offsetX.vy += frame.curveSprite->center.y;
         frame.offsetX.vz += frame.curveSprite->center.z;
-        BattleFx_InstallBillboardMatrix(&frame.offsetX, 0x900, 0);
+        BattleFx_InstallBillboardMatrix(&frame.offsetX, 0x900 /* 0.5625 */, 0);
         g_BattleMagicDemi3_DrawListHandle = BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleMagicDemi3_QuadReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicDemi3_DrawListHandle);
     }
     if (g_BattleIsPaused == 0) {
@@ -430,12 +430,12 @@ void __cdecl BattleFx_MagicDemi3AnimatedSpriteTask(void)
         (g_BattleMagicDemi3_SpriteData3.colorR) = g_BattleMagicDemi3_SpriteData3.colorG;
     } else {
         time -= 5;
-        if (time < 0x28) {
+        if (time < 40) {
             g_BattleMagicDemi3_SpriteData3.colorB = 0x80;
             g_BattleMagicDemi3_SpriteData3.colorG = g_BattleMagicDemi3_SpriteData3.colorB;
             (g_BattleMagicDemi3_SpriteData3.colorR) = g_BattleMagicDemi3_SpriteData3.colorG;
         } else {
-            time -= 0x28;
+            time -= 40;
             if (time < 5) {
                 g_BattleMagicDemi3_SpriteData3.colorB = time * -0x80 / 5 + 0x80;
                 g_BattleMagicDemi3_SpriteData3.colorG = g_BattleMagicDemi3_SpriteData3.colorB;
@@ -446,7 +446,7 @@ void __cdecl BattleFx_MagicDemi3AnimatedSpriteTask(void)
             }
         }
     }
-    g_BattleMagicDemi3_SpriteData3.framePhase = (sprite->frameIndex + sprite->frameOffset) % 0xC;
+    g_BattleMagicDemi3_SpriteData3.framePhase = (sprite->frameIndex + sprite->frameOffset) % 12;
     billboard = (struct PsxMatrix *)BattleFx_InstallBillboardMatrix(&sprite->position.x, (short)sprite->scale, sprite->pushLength);
     billboard->t[0] += sprite->deltaX;
     billboard->t[1] += sprite->deltaY;
@@ -479,29 +479,29 @@ void __cdecl BattleFx_MagicDemi3SegmentEmitterTask(void)
     dirVec = (BattleFxDemi3SegmentScratch *)Gfx_GetPsxScratchpadPtr(0);
     pBasis = &dirVec->basis;
     if (g_BattleIsPaused == 0) {
-        if (task->emitCount < 0x28) {
+        if (task->emitCount < 40) {
             for (burst = 0; burst < 5; burst++) {
-                for (slotIdx = 0; slotIdx < 0x14; slotIdx++) {
+                for (slotIdx = 0; slotIdx < 20; slotIdx++) {
                     if (g_BattleMagicDemi3SegmentRecords[slotIdx].state == -1) {
                         g_BattleMagicDemi3SegmentRecords[slotIdx].time = 0;
                         g_BattleMagicDemi3SegmentRecords[slotIdx].state = 0;
-                        tempInnerRadius = rand() % 0x5DC + 0x1F4;
-                        longRadius = tempInnerRadius + rand() % 0x3E8 + 0x3E8;
+                        tempInnerRadius = rand() % 1500 + 500;
+                        longRadius = tempInnerRadius + rand() % 1000 + 1000;
                         rotation = rand() & 0xFFF;
                         sinValue = SinFixed(rotation);
                         cosVal = CosFixed(rotation);
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].startX = longRadius * sinValue >> 0xC;
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].startY = longRadius * cosVal >> 0xC;
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].endX = tempInnerRadius * sinValue >> 0xC;
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].endY = tempInnerRadius * cosVal >> 0xC;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].startX = longRadius * sinValue >> 12;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].startY = longRadius * cosVal >> 12;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].endX = tempInnerRadius * sinValue >> 12;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].endY = tempInnerRadius * cosVal >> 12;
                         dirVec->scaleX = g_BattleMagicDemi3SegmentRecords[slotIdx].endY - g_BattleMagicDemi3SegmentRecords[slotIdx].startY;
                         dirVec->scaleY = g_BattleMagicDemi3SegmentRecords[slotIdx].startX - g_BattleMagicDemi3SegmentRecords[slotIdx].endX;
                         dirVec->scaleZ = 0;
                         VectorNormalToSVector(&dirVec->scaleX, (short *)pBasis);
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].offsetX = pBasis->componentA + pBasis->componentB >> 0xC;
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].offsetY = pBasis->componentB - pBasis->componentA >> 0xC;
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].offset2X = -pBasis->componentA + pBasis->componentB >> 0xC;
-                        g_BattleMagicDemi3SegmentRecords[slotIdx].offset2Y = -pBasis->componentB - pBasis->componentA >> 0xC;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].offsetX = pBasis->componentA + pBasis->componentB >> 12;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].offsetY = pBasis->componentB - pBasis->componentA >> 12;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].offset2X = -pBasis->componentA + pBasis->componentB >> 12;
+                        g_BattleMagicDemi3SegmentRecords[slotIdx].offset2Y = -pBasis->componentB - pBasis->componentA >> 12;
                         break;
                     }
                 }
@@ -509,7 +509,7 @@ void __cdecl BattleFx_MagicDemi3SegmentEmitterTask(void)
         }
         (task->emitCount)++;
     }
-    matrix = (struct PsxMatrix *)BattleFx_InstallBillboardMatrix(&task->position.x, 0x1000, 0);
+    matrix = (struct PsxMatrix *)BattleFx_InstallBillboardMatrix(&task->position.x, 0x1000 /* 1.0 */, 0);
     RefreshGlobalTransformState();
     if (BattleFx_MagicDemi3DrawSegmentRecords() == 0) {
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -526,7 +526,7 @@ int __cdecl BattleFx_MagicDemi3DrawSegmentRecords(void)
     int activeCnt;
 
     activeCnt = 0;
-    for (i = 0; i < 0x14; i++) {
+    for (i = 0; i < 20; i++) {
         if (g_BattleMagicDemi3SegmentRecords[i].state != -1) {
             BattleFx_MagicDemi3DrawAndStepSegmentRecord(&g_BattleMagicDemi3SegmentRecords[i]);
             activeCnt++;

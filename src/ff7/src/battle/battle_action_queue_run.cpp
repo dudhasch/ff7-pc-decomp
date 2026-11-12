@@ -294,7 +294,7 @@ void __cdecl Battle_ExecuteAction(BattleAction *actionPtr)
                 Battle_RunAiScriptEvent(loopIndex, 7, 0);
             }
         }
-        for (loopIndex = 0; loopIndex < 0x100; loopIndex++) {
+        for (loopIndex = 0; loopIndex < 256; loopIndex++) {
             ((int *)g_pBattleCommandCtx)[loopIndex] = 0;
         }
         g_BattleActionActor = actionPtr->actorIndex;
@@ -367,7 +367,7 @@ void __cdecl Battle_ExecuteAction(BattleAction *actionPtr)
             Battle_FindAbilitySlotForCommand(g_BattleActionActor);
             commandTable = (BattleActionEntry *)g_MenuPartyStats[g_BattleActionActor].commands;
             if ((g_pBattleCommandCtx->attackFlags & BATTLE_ATTACK_FLAG_SUPPORT_CODE) == 0) {
-                for (loopIndex = 0; loopIndex < 0x10; loopIndex++) {
+                for (loopIndex = 0; loopIndex < 16; loopIndex++) {
                     if (commandTable[loopIndex].commandIndex == g_pBattleCommandCtx->commandIndex) {
                         if (g_BattleState.currentActionKind >= 5) {
                             g_pBattleCommandCtx->supportBits = commandTable[loopIndex].supportBits;
@@ -398,7 +398,7 @@ void __cdecl Battle_ExecuteAction(BattleAction *actionPtr)
             g_BattleState.actors[g_BattleActionActor].timingFlags &= 0x7F;
             if (g_BattleState.actors[g_BattleActionActor].hp == BATTLE_LUCKY_7S_HP) {
                 g_BattleState.messageWindowRequest = 0x51;
-                g_BattleState.limitBanner = 0x2F;
+                g_BattleState.limitBanner = 47;
             }
         }
         g_pBattleCommandCtx->stepFlags = g_pBattleCommandCtx->commandIndex;
@@ -577,7 +577,7 @@ void __cdecl Battle_CheckLucky7s(void)
     for (i = 0; i < BATTLE_PARTY_SIZE; i++) {
         if (g_aCombatants[i].curHp == BATTLE_LUCKY_7S_HP) {
             if ((g_BattleState.actors[i].timingFlags & 0x80) == 0) {
-                if (g_BattleState.lucky7Counter++ < 0x40) {
+                if (g_BattleState.lucky7Counter++ < 64) {
                     g_BattleState.actors[i].timingFlags |= 0x80;
                     Battle_EnqueueActionDirect(i, 1, BATTLE_COMMAND_ATTACK, 0, 0);
                 }

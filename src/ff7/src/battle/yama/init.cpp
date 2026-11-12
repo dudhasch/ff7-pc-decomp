@@ -86,7 +86,7 @@ int __cdecl Kernel_LoadKernelBinFiles(void)
     LoadFileBlock((int)path, 0, 0, (void **)&g_Battle_fileBuffer, Kernel_ParseWindowBinSections);
     GameHeapFree((void *)g_Battle_fileBuffer,
                  // STRING: FF7 0x007ba108
-                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 0xde);
+                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 222);
     g_Battle_fileBuffer = 0;
     strcpy(path, g_InitPath_DataPath);
     strcat(path,
@@ -95,7 +95,7 @@ int __cdecl Kernel_LoadKernelBinFiles(void)
     LoadFileBlock((int)path, 0, 0, (void **)&g_Battle_fileBuffer, Kernel_ParseKernelBin);
     GameHeapFree((void *)g_Battle_fileBuffer,
                  // STRING: FF7 0x007ba13c
-                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 0xea);
+                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 234);
     g_Battle_fileBuffer = 0;
     strcpy(path, g_InitPath_DataPath);
     strcat(path,
@@ -135,7 +135,7 @@ static __inline void __cdecl Kernel_LoadKernel2Bin(char *path)
     }
     GameHeapFree(frame.file,
                  // STRING: FF7 0x007ba094
-                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 0x57);
+                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 87);
 }
 
 /*
@@ -168,9 +168,9 @@ static __inline void __cdecl Kernel_ParseWindowBinSections(void)
 {
     int result;
     unsigned short type;
-    g_Battle_sceneBuffer = (int)GameHeapAllocRaw(0x10000,
+    g_Battle_sceneBuffer = (int)GameHeapAllocRaw(65536,
                                     // STRING: FF7 0x007ba0b4
-                                    "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 0x89);
+                                    "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 137);
     BinSectionReaderInit((unsigned char *)((void *)g_Battle_fileBuffer));
     while ((type = BinSectionPeekType()) != 0xffff) {
         switch (type) {
@@ -184,7 +184,7 @@ static __inline void __cdecl Kernel_ParseWindowBinSections(void)
     }
     GameHeapFree((void *)g_Battle_sceneBuffer,
                  // STRING: FF7 0x007ba0d4
-                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 0xad);
+                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 173);
     g_Battle_sceneBuffer = 0;
 }
 
@@ -204,7 +204,7 @@ void __cdecl Kernel_ReloadSavemapTemplate(void)
     BinExtractSectionByType((unsigned char *)((void *)g_Battle_fileBuffer), (unsigned char *)&gSavemap.chars[0], KERNEL_BIN_SECTION_CHARACTER_RECORDS);
     GameHeapFree((void *)g_Battle_fileBuffer,
                  // STRING: FF7 0x007ba184
-                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 0x13f);
+                 "C:\\FF7\\Src\\Battle\\yama\\init.cpp", 319);
     g_Battle_fileBuffer = 0;
 }
 } /* extern "C" */

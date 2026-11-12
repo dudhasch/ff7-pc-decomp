@@ -116,14 +116,14 @@ void __cdecl Menu_MagicScreenInit(void)
     }
     MenuCursor_Init((MenuCursor *)&g_MenuMagicListCol, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0);
     MenuCursor_Init((MenuCursor *)&g_MenuMagicTargetCol, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0);
-    MenuCursor_Init((MenuCursor *)&g_MenuMagicSpellCol, 0, 0, 3, 7, 0, 0, 3, 0x12, 0, 0, 2, 0, 0, 1);
+    MenuCursor_Init((MenuCursor *)&g_MenuMagicSpellCol, 0, 0, 3, 7, 0, 0, 3, 18, 0, 0, 2, 0, 0, 1);
     MenuCursor_Init((MenuCursor *)&g_MenuMagicSummonCol, 0, 0, 2, 7, 0, 0, 2, 8, 0, 0, 2, 0, 0, 1);
-    MenuCursor_Init((MenuCursor *)&g_MenuMagicSkillCol, 0, 0, 2, 7, 0, 0, 2, 0xC, 0, 0, 2, 0, 0, 1);
+    MenuCursor_Init((MenuCursor *)&g_MenuMagicSkillCol, 0, 0, 2, 7, 0, 0, 2, 12, 0, 0, 2, 0, 0, 1);
     g_MenuMagicState = MENU_MAGIC_STATE_COMMAND_LIST;
     g_MenuMagicPartyIndex = g_MenuPartyMemberIndex;
     for (partyIdx = 0; partyIdx < 3; partyIdx++) {
         base = g_MenuPartyStats[partyIdx].spells;
-        for (spellIndex = 0; spellIndex < 0x38; spellIndex++) {
+        for (spellIndex = 0; spellIndex < 56; spellIndex++) {
             if (base[spellIndex].attackId != 0xFF && (base[spellIndex].allCount != 0 && ((base[spellIndex].targetFlags & BTL_TARGETF_DEFAULT_MULTIPLE) == 0 || (base[spellIndex].targetFlags & BTL_TARGETF_TOGGLE_MULTIPLE) == 0))) {
                 base[spellIndex].allCount = 0;
             }
@@ -931,8 +931,8 @@ int __cdecl Menu_MagicScreenIsPartyMemberHpFull(int slot)
 // FUNCTION: FF7 0x007145ca
 void __cdecl Menu_DrawMagicScreenCharacterPanel2x(void)
 {
-    Menu_DrawCharStatBlock2x(0x67, 0x27, g_MenuMagicPartyIndex, 0.2f);
-    Menu_DrawCharPortrait2x(0x10, 0x27, g_MenuMagicPartyIndex, 0.1f);
+    Menu_DrawCharStatBlock2x(103, 39, g_MenuMagicPartyIndex, 0.2f);
+    Menu_DrawCharPortrait2x(16, 39, g_MenuMagicPartyIndex, 0.1f);
 }
 
 /*
@@ -941,7 +941,7 @@ void __cdecl Menu_DrawMagicScreenCharacterPanel2x(void)
 // FUNCTION: FF7 0x007145fe
 void __cdecl Menu_DrawMagicScreenCharacterPanel1x(void)
 {
-    Menu_DrawCharStatBlock1x(0x34, 0x14, g_MenuMagicPartyIndex, 0.2f);
-    Menu_DrawCharPortrait1x(8, 0x14, g_MenuMagicPartyIndex, 0.1f);
+    Menu_DrawCharStatBlock1x(52, 20, g_MenuMagicPartyIndex, 0.2f);
+    Menu_DrawCharPortrait1x(8, 20, g_MenuMagicPartyIndex, 0.1f);
 }
 } /* extern "C" */

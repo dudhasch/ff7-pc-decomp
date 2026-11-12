@@ -127,14 +127,14 @@ void __cdecl BattleFx_SpecialSpawnPollenPerTarget(int actor, int sourceIndex)
     Battle_GetBoneWorldPos(sourceIndex, (&g_BattleActorRecords[sourceIndex].targetBone)[*(short *)&g_BattleSpecPollenResourceModelRows[13]], &slotPtr->startX);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, &slotPtr->endX);
     slotPtr->actorIndex = actor;
-    for (idx = 0; idx < 0xC8; idx++) {
+    for (idx = 0; idx < 200; idx++) {
         g_BattleSpecPollenParticleRecords[idx].active = 0;
     }
 }
 
 /*
  * Timeline of one Kahun hit: starts the particle emitter and the spinning model at the caster, a fade-in/out
- * sprite, and animated sprites around the target, and ends after 0x32 frames.
+ * sprite, and animated sprites around the target, and ends after 50 frames.
  */
 // FUNCTION: FF7 0x0054286e
 void __cdecl BattleFx_SpecialPollenTimelineTask(void)
@@ -159,45 +159,45 @@ void __cdecl BattleFx_SpecialPollenTimelineTask(void)
         spawned->posX = pTimeline->startX;
         spawned->posY = pTimeline->posY;
         spawned->posZ = pTimeline->startZ;
-        spawned->stepX = (pTimeline->endX - pTimeline->startX) / 0x14;
+        spawned->stepX = (pTimeline->endX - pTimeline->startX) / 20;
         spawned->angle = 0;
-        spawned->stepZ = (pTimeline->endZ - pTimeline->startZ) / 0x14;
+        spawned->stepZ = (pTimeline->endZ - pTimeline->startZ) / 20;
         spawned->stage = heading;
         spawned->growth = 0;
         spawned = (BattleFxPollenTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPollenFadingSpinModelTask);
         spawned->posX = pTimeline->startX;
         spawned->posY = pTimeline->posY;
         spawned->posZ = pTimeline->startZ;
-        spawned->stepZ = 0x400;
+        spawned->stepZ = 1024;
         spawned->angle = heading - 0x400;
         xDelta = pTimeline->endX - pTimeline->startX;
         diffZ = pTimeline->endZ - pTimeline->startZ;
         dist = SqrtToInt(xDelta * xDelta + diffZ * diffZ);
-        spawned->scaleValue = dist * 0x1500 / 0xAF0;
+        spawned->scaleValue = dist * 0x1500 / 2800;
         spawned->growth = 0;
     }
     if (pTimeline->timer == 0) {
         spawned = (BattleFxPollenTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPollenFadeInOutSpriteTask);
         spawned->posX = 0;
         spawned->posY = 0xFF9C;
-        spawned->posZ = 0x7D0;
-        spawned->scaleValue = 0xF00;
+        spawned->posZ = 2000;
+        spawned->scaleValue = 0xF00 /* 0.9375 */;
         spawned->stage = 6;
         spawned->fadeTimer = 0;
     }
-    if (pTimeline->timer == 0x28) {
+    if (pTimeline->timer == 40) {
         Battle_PostActorHitOrHurtMessage(pTimeline->actorIndex);
     }
-    if (pTimeline->timer > 0x20 && pTimeline->timer < 0x2C) {
+    if (pTimeline->timer > 32 && pTimeline->timer < 44) {
         for (i = 0; i < 2; i++) {
             spawned = (BattleFxPollenTaskRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPollenAnimatedSpriteTask);
-            spawned->posX = pTimeline->endX + rand() % 0x578 + -0x2BC;
-            spawned->posY = pTimeline->startY + rand() % 0x578 + -0x2BC;
-            spawned->posZ = pTimeline->endZ + rand() % 0x578 + -0x2BC;
+            spawned->posX = pTimeline->endX + rand() % 1400 + -700;
+            spawned->posY = pTimeline->startY + rand() % 1400 + -700;
+            spawned->posZ = pTimeline->endZ + rand() % 1400 + -700;
         }
     }
     (pTimeline->timer)++;
-    if (pTimeline->timer == 0x32) {
+    if (pTimeline->timer == 50) {
         pTimeline->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -214,7 +214,7 @@ void __cdecl BattleFx_SpecialPollenAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecPollenResourceModelRows[14] = Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecPollenLoadedResTable);
     g_BattleSpecPollenResourceModelRows[15] = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecPollenLoadedResTable);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x1800 /* 1.5 */, 0);
     g_BattleSpecPollenSpriteReq1.frame = task->frameCounter;
     g_BattleSpecPollenDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecPollenResourceModelRows[14], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecPollenDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleSpecPollenResourceModelRows[14] != 0) {
@@ -275,7 +275,7 @@ void __cdecl BattleFx_SpecialPollenFadeInOutSpriteTask(void)
     frame.transZ = frame.kahunSlot->posZ;
     SetRotMatrix(&frame.m00);
     SetTransMatrix(&frame.m00);
-    g_BattleSpecPollenSpriteReq2.blue = frame.kahunSlot->fadeTimer * 0xC;
+    g_BattleSpecPollenSpriteReq2.blue = frame.kahunSlot->fadeTimer * 12;
     g_BattleSpecPollenSpriteReq2.green = g_BattleSpecPollenSpriteReq2.blue;
     (g_BattleSpecPollenSpriteReq2.red) = g_BattleSpecPollenSpriteReq2.green;
     g_BattleSpecPollenDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecPollenSpriteReq1.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecPollenDrawListHead);
@@ -287,17 +287,17 @@ void __cdecl BattleFx_SpecialPollenFadeInOutSpriteTask(void)
     if (frame.kahunSlot->frameCounter < 8) {
         (frame.kahunSlot->fadeTimer)++;
     }
-    if (frame.kahunSlot->frameCounter > 0x25) {
+    if (frame.kahunSlot->frameCounter > 37) {
         (frame.kahunSlot->fadeTimer)--;
     }
     (frame.kahunSlot->frameCounter)++;
-    if (frame.kahunSlot->frameCounter == 0x2D) {
+    if (frame.kahunSlot->frameCounter == 45) {
         frame.kahunSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Draws the particle dots, claims 8 new particle records per frame for the first 0x18 frames and ages the
+ * Draws the particle dots, claims 8 new particle records per frame for the first 24 frames and ages the
  * records; the task ends once no record is active.
  */
 // FUNCTION: FF7 0x00542e4a
@@ -313,7 +313,7 @@ void __cdecl BattleFx_SpecialPollenParticleEmitterTask(void)
         return;
     }
     taskPtr->angle += 8;
-    if (taskPtr->age > 0 && taskPtr->age < 0x19) {
+    if (taskPtr->age > 0 && taskPtr->age < 25) {
         for (i = 0; i < 8; i++) {
             claimed = (BattleFxClaimedParticleRecord *)BattleFx_SpecialPollenClaimParticleRecord();
             if (claimed != 0) {
@@ -323,18 +323,18 @@ void __cdecl BattleFx_SpecialPollenParticleEmitterTask(void)
         }
     }
     i = 0;
-    for (alive = 0; i < 0xC8; i++) {
+    for (alive = 0; i < 200; i++) {
         if (g_BattleSpecPollenParticleRecords[i].active != 0) {
             alive++;
             g_BattleSpecPollenParticleRecords[i].angle -= 0x80;
             (g_BattleSpecPollenParticleRecords[i].age)++;
-            if (g_BattleSpecPollenParticleRecords[i].age == 0x19) {
+            if (g_BattleSpecPollenParticleRecords[i].age == 25) {
                 g_BattleSpecPollenParticleRecords[i].active = 0;
             }
         }
     }
     (taskPtr->age)++;
-    if (taskPtr->age > 0x19 && alive == 0) {
+    if (taskPtr->age > 25 && alive == 0) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -348,7 +348,7 @@ int __cdecl BattleFx_SpecialPollenClaimParticleRecord(void)
 {
     short i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSpecPollenParticleRecords[i].active == 0) {
             g_BattleSpecPollenParticleRecords[i].active = 1;
             g_BattleSpecPollenParticleRecords[i].age = 0;
@@ -390,11 +390,11 @@ void __cdecl BattleFx_SpecialPollenDrawPsxParticleDots(BattleFxPollenParticleRec
     frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
     frame.rotMatrix.t[0] = frame.rotMatrix.t[1];
     frame.particleIndex = 0;
-    for (frame.activeCount = 0; frame.particleIndex < 0xC8; frame.particleIndex++) {
+    for (frame.activeCount = 0; frame.particleIndex < 200; frame.particleIndex++) {
         if (g_BattleSpecPollenParticleRecords[frame.particleIndex].active != 0) {
             frame.activeCount++;
-            frame.dotX.vx = CosFixed(g_BattleSpecPollenParticleRecords[frame.particleIndex].angle) * g_BattleSpecPollenParticleRecords[frame.particleIndex].radius * g_BattleSpecPollenParticleRecords[frame.particleIndex].age / 0x14 * (particleRecord->angle + 0x100) >> 0x14;
-            frame.dotX.vy = SinFixed(g_BattleSpecPollenParticleRecords[frame.particleIndex].angle) * g_BattleSpecPollenParticleRecords[frame.particleIndex].radius * g_BattleSpecPollenParticleRecords[frame.particleIndex].age / 0x14 * (particleRecord->angle + 0x100) >> 0x14;
+            frame.dotX.vx = CosFixed(g_BattleSpecPollenParticleRecords[frame.particleIndex].angle) * g_BattleSpecPollenParticleRecords[frame.particleIndex].radius * g_BattleSpecPollenParticleRecords[frame.particleIndex].age / 20 * (particleRecord->angle + 256) >> 20;
+            frame.dotX.vy = SinFixed(g_BattleSpecPollenParticleRecords[frame.particleIndex].angle) * g_BattleSpecPollenParticleRecords[frame.particleIndex].radius * g_BattleSpecPollenParticleRecords[frame.particleIndex].age / 20 * (particleRecord->angle + 256) >> 20;
             frame.dotX.vz = 0;
             SetRotMatrix(&frame.rotMatrix);
             SetTransMatrix(&frame.rotMatrix);
@@ -410,7 +410,7 @@ void __cdecl BattleFx_SpecialPollenDrawPsxParticleDots(BattleFxPollenParticleRec
             frame.dotPacket->command = 0x68;
             frame.dotPacket->command = 0x6A;
             frame.vertexDepth = Gfx_TransformVertexSlot0ReturnDepth(&frame.dotX, &frame.screenPoint, &frame.dotDepth);
-            if (g_BattleSpecPollenParticleRecords[frame.particleIndex].age < 0x11) {
+            if (g_BattleSpecPollenParticleRecords[frame.particleIndex].age < 17) {
                 frame.dotPhase = 8;
             } else {
                 frame.dotPhase = 0x19 - g_BattleSpecPollenParticleRecords[frame.particleIndex].age;
@@ -464,11 +464,11 @@ void __cdecl BattleFx_SpecialPollenFadingSpinModelTask(void)
     if (frame.taskSlot->frameCounter < 8) {
         g_BattleSpecPollenParticleLoopIndex++;
     }
-    if (frame.taskSlot->frameCounter > 0x25) {
+    if (frame.taskSlot->frameCounter > 37) {
         g_BattleSpecPollenParticleLoopIndex--;
     }
     (frame.taskSlot->frameCounter)++;
-    if (frame.taskSlot->frameCounter == 0x2D) {
+    if (frame.taskSlot->frameCounter == 45) {
         frame.taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

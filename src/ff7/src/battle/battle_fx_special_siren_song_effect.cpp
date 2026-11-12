@@ -110,7 +110,7 @@ void __cdecl BattleFx_SpecialSirenSongSetupTask(void)
     task = (BattleFxSirenSongTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSirenSongTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleSpecSirenSongTargetMask, &task->baseX);
     task->baseY = -0x600;
-    task->jitterCenterXZ = 0xA00;
+    task->jitterCenterXZ = 2560;
     task->jitterRangeXZ = task->jitterCenterXZ * 2;
     task->jitterOffsetY = -(task->baseY >> 1);
     task->jitterRangeY = task->jitterOffsetY * 2 + task->jitterOffsetY;
@@ -142,7 +142,7 @@ void __cdecl BattleFx_SpecialSirenSongTimelineTask(void)
         return;
     }
     timelinePtr = (BattleFxSirenSongTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (timelinePtr->timer > 1 && timelinePtr->timer < 0x28) {
+    if (timelinePtr->timer > 1 && timelinePtr->timer < 40) {
         for (loopIndex = 0; loopIndex < 2; loopIndex++) {
             fadeSprite = (BattleFxSirenSongFadeSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSirenSongFadingSpriteTask);
             *(Int64Pair *)&fadeSprite->posX = *(Int64Pair *)&g_BattleSpecSirenSongActorBonePos;
@@ -153,14 +153,14 @@ void __cdecl BattleFx_SpecialSirenSongTimelineTask(void)
             loopDeltaX = destX - g_BattleSpecSirenSongActorBonePos.bonePosX;
             diffY = destY - g_BattleSpecSirenSongActorBonePos.bonePosY;
             dz = destZ - g_BattleSpecSirenSongActorBonePosZ[0];
-            fadeSprite->velocityX = loopDeltaX / 0x15;
-            fadeSprite->velocityY = diffY / 0x15;
-            fadeSprite->velocityZ = dz / 0x15;
+            fadeSprite->velocityX = loopDeltaX / 21;
+            fadeSprite->velocityY = diffY / 21;
+            fadeSprite->velocityZ = dz / 21;
             fadeSprite->rotation = 0;
             speedRoll = (rand() % 4096) + 0x800;
-            fadeSprite->rotationStep = (timelinePtr->scale * speedRoll >> 0xC) / 0xD;
+            fadeSprite->rotationStep = (timelinePtr->scale * speedRoll >> 12) / 13;
             fadeSprite->amplitude = SqrtToInt(lengthSq) >> 5;
-            fadeSprite->angularVelocity = rand() % 0x60 + 0xDC;
+            fadeSprite->angularVelocity = rand() % 96 + 220;
             fadeSprite->angle = fadeSprite->angularVelocity;
         }
     }
@@ -169,7 +169,7 @@ void __cdecl BattleFx_SpecialSirenSongTimelineTask(void)
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         level = timelinePtr->timer << 7;
-    } else if (timelinePtr->timer >= 0x34) {
+    } else if (timelinePtr->timer >= 52) {
         level = 0x400 - (timelinePtr->timer - 0x34 << 7);
         if (level < 0) {
             level = 0;
@@ -177,14 +177,14 @@ void __cdecl BattleFx_SpecialSirenSongTimelineTask(void)
     } else {
         level = 0x400;
     }
-    if (timelinePtr->timer == 0x35) {
-        for (loopIndex = 0; loopIndex < 0xA; loopIndex++) {
+    if (timelinePtr->timer == 53) {
+        for (loopIndex = 0; loopIndex < 10; loopIndex++) {
             if ((g_BattleSpecSirenSongTargetMask & 1 << loopIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(loopIndex);
             }
         }
     }
-    if (timelinePtr->timer >= 0x3C) {
+    if (timelinePtr->timer >= 60) {
         level = 0;
         timelinePtr->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -193,7 +193,7 @@ void __cdecl BattleFx_SpecialSirenSongTimelineTask(void)
 }
 
 /*
- * Per-frame task of a fading Utagoe sprite: draws it, moves it with a wobble in Y, and frees it after 0x16 frames.
+ * Per-frame task of a fading Utagoe sprite: draws it, moves it with a wobble in Y, and frees it after 22 frames.
  */
 // FUNCTION: FF7 0x005311eb
 void __cdecl BattleFx_SpecialSirenSongFadingSpriteTask(void)
@@ -207,7 +207,7 @@ void __cdecl BattleFx_SpecialSirenSongFadingSpriteTask(void)
     g_BattleSpecSirenSongAnimData[4] = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecSirenSongLoadedResTable);
     g_BattleSpecSirenSongAnimData[5] = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecSirenSongLoadedResTable);
     sprite = (BattleFxSirenSongFadeSprite *)BATTLE_CURRENT_TASK_SLOT;
-    if (sprite->step >= 0xE) {
+    if (sprite->step >= 14) {
         level = 0x80 - (sprite->step - 0xE << 4);
     } else {
         level = 0x80;
@@ -217,7 +217,7 @@ void __cdecl BattleFx_SpecialSirenSongFadingSpriteTask(void)
     g_BattleSpecSirenSongColor[0] = g_BattleSpecSirenSongColor[1];
     BattleFx_InstallBillboardMatrix(&sprite->posX, (short)sprite->rotation, -(sprite->rotation >> 2));
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecSirenSongAnimData[4], g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (sprite->step >= 0x16) {
+    if (sprite->step >= 22) {
         sprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -226,12 +226,12 @@ void __cdecl BattleFx_SpecialSirenSongFadingSpriteTask(void)
     sprite->posX += sprite->velocityX;
     sprite->posY += sprite->velocityY;
     sprite->posZ += sprite->velocityZ;
-    frameWobble = (sprite->amplitude * SinFixed(sprite->angle) >> 0xC) - sprite->prevOffset;
+    frameWobble = (sprite->amplitude * SinFixed(sprite->angle) >> 12) - sprite->prevOffset;
     sprite->posY -= frameWobble;
     sprite->prevOffset = frameWobble;
     sprite->amplitude += (short)(sprite->amplitude >> 4);
     sprite->angle += sprite->angularVelocity;
-    if (sprite->step < 0xD) {
+    if (sprite->step < 13) {
         sprite->rotation += sprite->rotationStep;
     }
     (sprite->step)++;

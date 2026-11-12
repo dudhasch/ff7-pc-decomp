@@ -45,7 +45,7 @@ unsigned char g_bssPad_00e37d38[1528] = {0};
 int g_WorldPlayerTerrainTriangle = 0;
 unsigned char g_bssPad_00e38334[4] = {0};
 // GLOBAL: FF7 0x00e38338
-WorldMeshVertex g_WorldMeshVertices[0x80] = {0};
+WorldMeshVertex g_WorldMeshVertices[128] = {0};
 // clang-format on
 
 } /* extern "C" */

@@ -45,11 +45,11 @@ const char * g_WorldAssetSuffixes[6] = {".MAP", ".BOT", ".TXZ", ".EV", ".BSZ", "
 // g_WorldChocoboTerrainMasks is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0x969a40..0x969a58 are aliases.
 // GLOBAL: FF7 0x00969a40
-unsigned char g_WorldChocoboTerrainMasks[0x18] = {0x83, 0x6f, 0x1b, 0x32, 0x87, 0x6f, 0x1b, 0x32, 0xf3, 0x6f, 0x1b, 0x32, 0xf7, 0x7f, 0x5b, 0x32, 0xff, 0x7f, 0x5b, 0x37, 0x00, 0x00, 0x00, 0x00};
+unsigned char g_WorldChocoboTerrainMasks[24] = {0x83, 0x6f, 0x1b, 0x32, 0x87, 0x6f, 0x1b, 0x32, 0xf3, 0x6f, 0x1b, 0x32, 0xf7, 0x7f, 0x5b, 0x32, 0xff, 0x7f, 0x5b, 0x37, 0x00, 0x00, 0x00, 0x00};
 // g_WorldTerrainTable is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0x969a58..0x969a68 are aliases.
 // GLOBAL: FF7 0x00969a58
-unsigned char g_WorldTerrainTable[0x10] = {0xdc, 0x05, 0x00, 0x00, 0x08, 0x07, 0x00, 0x00, 0x08, 0x07, 0x00, 0x00, 0x08, 0x07, 0x00, 0x00};
+unsigned char g_WorldTerrainTable[16] = {0xdc, 0x05, 0x00, 0x00, 0x08, 0x07, 0x00, 0x00, 0x08, 0x07, 0x00, 0x00, 0x08, 0x07, 0x00, 0x00};
 // the four camera-height ints the code reads as g_WorldCameraHeights[g_WorldCameraViewtype]
 // (10000, 7000, 7000, 4000); the last two were the head of the former fill at 0x969A70, whose rest
 // (the asset suffix strings) starts at 0x969A78 now.
@@ -114,7 +114,7 @@ unsigned char g_bssPad_00de6b74[4] = {0};
 // The encounter table enc_w.bin, loaded whole (0x8A0 bytes) by WorldMap_LoadStageResources; World_RollEncounter
 // reads its level rows (word pairs) and the region/terrain records from +0xA0.
 // GLOBAL: FF7 0x00de6b78
-unsigned short g_WorldEncounterTable[0x450] = {0};
+unsigned short g_WorldEncounterTable[1104] = {0};
 // GLOBAL: FF7 0x00de7418
 short g_WorldCurrentCameraRotationX = 0;
 // GLOBAL: FF7 0x00de741c
@@ -257,9 +257,9 @@ int __cdecl World_AllocRenderVertexBlock(int count)
 {
     int block;
 
-    if ((unsigned int)(g_WorldRenderVertexCursor + count * 0x28) < (unsigned int)(g_WorldRenderVertexArenaBase + 0x20800)) {
+    if ((unsigned int)(g_WorldRenderVertexCursor + count * 40) < (unsigned int)(g_WorldRenderVertexArenaBase + 0x20800)) {
         block = g_WorldRenderVertexCursor;
-        g_WorldRenderVertexCursor += count * 0x28;
+        g_WorldRenderVertexCursor += count * 40;
     } else {
         WorldScript_ReportError(1);
     }
@@ -324,7 +324,7 @@ int __cdecl World_GetRenderTableEntryIfActive(void)
     int entry;
 
     clamped = 0x9C4;
-    if (clamped > 0xFFF) {
+    if (clamped > 4095) {
         clamped = 0xFFF;
     }
     if (g_WorldFieldTransitionActive != 0) {
@@ -571,8 +571,8 @@ void __cdecl World_SetViewTransformForPosition(SVECTOR *view)
 {
     SVECTOR viewCopy;
     int unused;
-    char matrix[0x20];
-    char translation[0x10];
+    char matrix[32];
+    char translation[16];
 
     viewCopy = *view;
     viewCopy.vy = (short)-g_WorldCameraDeltaY;
@@ -619,7 +619,7 @@ void __cdecl World_SetCameraMode(int mode)
         }
     }
     g_WorldCameraVar1 = (g_WorldCameraViewtype != 0 ? 0x28 : 0) + 0x78;
-    g_WorldCameraBaseDist = (g_WorldCameraViewtype != 3) * 0x78;
+    g_WorldCameraBaseDist = (g_WorldCameraViewtype != 3) * 120;
 }
 
 /*
@@ -725,7 +725,7 @@ void __cdecl World_BuildModelPsxMatrix(WorldMapModel *model, SVECTOR *rotation, 
 
     frame.rotationMatrix.m[0][0] =
         frame.rotationMatrix.m[1][1] =
-            frame.rotationMatrix.m[2][2] = 0x1000;
+            frame.rotationMatrix.m[2][2] = 0x1000 /* 360 deg */;
     frame.rotationMatrix.m[0][1] =
         frame.rotationMatrix.m[0][2] =
             frame.rotationMatrix.m[1][0] =
@@ -764,16 +764,16 @@ void __cdecl World_BuildModelPsxMatrix(WorldMapModel *model, SVECTOR *rotation, 
 
 /*
  * Starts the submarine's surfacing (WORLD_MAP_STATE_SURFACING, 5): fade step g_WorldExitAltitudeSpeed = 0x14, no field
- * entry, player control off, and the fade request World_BeginFadeToBlack(0x10, 1).
+ * entry, player control off, and the fade request World_BeginFadeToBlack(16, 1).
  */
 // FUNCTION: FF7 0x0074d6bb
 void __cdecl World_BeginSubmarineSurfacing(void)
 {
     g_WorldMode = WORLD_MAP_STATE_SURFACING;
-    g_WorldExitAltitudeSpeed = 0x14;
+    g_WorldExitAltitudeSpeed = 20;
     World_SetFieldEntryFromTable(0);
     WorldMap_SetPlayerControl(0, 0);
-    World_BeginFadeToBlack(0x10, 1);
+    World_BeginFadeToBlack(16, 1);
 }
 
 /*
@@ -786,7 +786,7 @@ void __cdecl World_BeginSubmarineDive(void)
     g_WorldExitAltitudeSpeed = 0xFFFFFFEC;
     World_SetFieldEntryFromTable(0);
     WorldMap_SetPlayerControl(0, 0);
-    World_BeginFadeToBlack(0x10, 1);
+    World_BeginFadeToBlack(16, 1);
 }
 
 /*
@@ -817,7 +817,7 @@ void __cdecl WorldMap_RequestFieldTransition(int fieldId)
         g_WorldMode = WORLD_MAP_STATE_FADE_OUT;
         WorldMap_SetPlayerControl(0, 0);
         World_SetFieldEntryFromTable(fieldId);
-        World_BeginFadeToBlack(0x10, 1);
+        World_BeginFadeToBlack(16, 1);
         g_WorldFieldTransitionRequest = 1;
         World_SetDoubleFrameEnabled(0);
     }
@@ -828,7 +828,7 @@ void __cdecl WorldMap_RequestFieldTransition(int fieldId)
  * WorldMap_RequestFieldTransition, and from state 1 or 2, when no battle lock (g_FieldMoviePending) is
  * set, moves to state 3, disables player control, queues the field entry through World_QueueFieldTransitionRequest,
  * stops a running sound if World_IsFlashSoundActive says one is playing, and enables terrain rendering. With
- * the lock set it instead delays 0x1E frames (g_WorldBattleCountdown) and re-arms the encounter counter.
+ * the lock set it instead delays 30 frames (g_WorldBattleCountdown) and re-arms the encounter counter.
  */
 // FUNCTION: FF7 0x0074d7cd
 void __cdecl WorldMap_RequestBattle(int formation)
@@ -850,7 +850,7 @@ void __cdecl WorldMap_RequestBattle(int formation)
             World_SetTerrainRenderEnabled(1);
             World_SetDoubleFrameEnabled(0);
         } else {
-            g_WorldBattleCountdown = 0x1E;
+            g_WorldBattleCountdown = 30;
             World_ReloadEncounterCounterNormal();
         }
     }
@@ -921,7 +921,7 @@ void __cdecl World_ClearStreamingStallFadeState(void)
 
 /*
  * For WORLD_STREAM_STALL_FADE_OUT disables player control and calls World_BeginFadeToBlack(4,1); for
- * WORLD_STREAM_STALL_RESUME enables player control, calls World_BeginFadeFromBlack(0x10,1) and stores NONE. Stores the resulting value in
+ * WORLD_STREAM_STALL_RESUME enables player control, calls World_BeginFadeFromBlack(16,1) and stores NONE. Stores the resulting value in
  * g_WorldStreamingStallFadeState.
  */
 // FUNCTION: FF7 0x0074d955
@@ -934,7 +934,7 @@ void __cdecl World_SetStreamingStallFadeState(int state)
         break;
     case WORLD_STREAM_STALL_RESUME:
         WorldMap_SetPlayerControl(1, 4);
-        World_BeginFadeFromBlack(0x10, 1);
+        World_BeginFadeFromBlack(16, 1);
         state = WORLD_STREAM_STALL_NONE;
         break;
     }
@@ -1277,15 +1277,15 @@ void __cdecl WorldMap_LoadStageResources(short stage)
     WorldMap_LoadLgpAsset("wm.ta", 0xe000, (int *)&g_WorldTerrainAnimData, 0);
     if (g_WorldMapType > 1)
         (*(int *)&g_WorldTerrainAnimData) = 0;
-    WorldMap_LoadLgpAsset(WorldMap_BuildAssetName(3, g_WorldMapType), 0x7000, g_WorldEventScriptImage, 0);
+    WorldMap_LoadLgpAsset(WorldMap_BuildAssetName(3, g_WorldMapType), 28672, g_WorldEventScriptImage, 0);
     // STRING: FF7 0x00969b0c
-    WorldMap_LoadLgpAsset("mes", 0x1000, g_WorldMsgBuffer, 0);
+    WorldMap_LoadLgpAsset("mes", 4096, g_WorldMsgBuffer, 0);
     // STRING: FF7 0x00969b10
-    WorldMap_LoadLgpAsset("field.tbl", 0x600, &g_WorldFieldTable, 0);
+    WorldMap_LoadLgpAsset("field.tbl", 1536, &g_WorldFieldTable, 0);
     // STRING: FF7 0x00969b1c
-    WorldMap_LoadLgpAsset("atn.tbl", 0x400, g_WorldArcTangentTable, 0);
+    WorldMap_LoadLgpAsset("atn.tbl", 1024, g_WorldArcTangentTable, 0);
     // STRING: FF7 0x00969b24
-    WorldMap_LoadLgpAsset("enc_w.bin", 0x8a0, g_WorldEncounterTable, 0);
+    WorldMap_LoadLgpAsset("enc_w.bin", 2208, g_WorldEncounterTable, 0);
     if (g_WorldMapType == 2) {
         World_InitUnderwaterColorVectorsAndNoise();
         for (s.i = 1; s.i < 2; s.i++)
@@ -1334,7 +1334,7 @@ void __cdecl World_InitRenderVertexBuffersAndSky(void)
     int vertexIdx;
 
     for (bufferIdx = 0; bufferIdx < 2; bufferIdx++) {
-        for (vertexIdx = 0; vertexIdx < 0xD00; vertexIdx++) {
+        for (vertexIdx = 0; vertexIdx < 3328; vertexIdx++) {
             vert = *(int *)((char *)&g_WorldRenderBuffers + bufferIdx * 0x4074) + vertexIdx * 0x28;
             *(int *)vert = *(int *)vert & 0xFFFFFF | 0x9000000;
             *(char *)((char *)vert + 7) = 0x34;
@@ -1418,7 +1418,7 @@ void __cdecl World_DrawSkyPolygonQuad(int frameStep)
     GfxTlVertex *vert3;
 
     clampValue = 0x9C4;
-    if (clampValue > 0xFFF) {
+    if (clampValue > 4095) {
         clampValue = 0xFFF;
     }
     if (g_WorldFieldTransitionActive != 0) {
@@ -1513,8 +1513,8 @@ void __cdecl World_BuildCameraMatrix(short yaw)
     int r;
     int t;
     int translation[3];
-    char zMtx[0x20];
-    char pitchYawMatrix[0x20];
+    char zMtx[32];
+    char pitchYawMatrix[32];
 
     angles.vx = World_UpdateCameraDistanceAndPitch();
     angles.vz = 0;
@@ -1538,8 +1538,8 @@ void __cdecl World_BuildCameraMatrix(short yaw)
     idx = (idx << 8) / (rotated[2] << 4);
     if (idx < 0) {
         idx = 0;
-    } else if (idx >= 0x200) {
-        idx = 0x1FF;
+    } else if (idx >= 512) {
+        idx = 511;
     }
     angles.vx = g_WorldArcTangentTable[idx] + 0x800;
     g_WorldCurrentCameraRotationX = angles.vx;
@@ -1658,7 +1658,7 @@ void __cdecl World_UpdatePlayerControl(void)
             }
             if (g_WorldCameraFront < 0)
                 g_WorldCameraFront += 0x1000;
-            else if (g_WorldCameraFront >= 0x1000)
+            else if (g_WorldCameraFront >= 4096)
                 g_WorldCameraFront -= 0x1000;
             s.tilt = 0;
             if (s.input & INPUT_LEFT)
@@ -1729,7 +1729,7 @@ void __cdecl World_UpdatePlayerControl(void)
             } else {
                 if (g_WorldPlayerFacing != -1) {
                     g_WorldPlayerFacing += 0x800;
-                    if (g_WorldPlayerFacing > 0x800)
+                    if (g_WorldPlayerFacing > 2048)
                         g_WorldPlayerFacing -= 0x1000;
                     if ((s.input & INPUT_DOWN) == 0)
                         g_WorldPlayerFacing >>= 1;
@@ -1787,9 +1787,9 @@ void __cdecl World_UpdatePlayerControl(void)
     if (g_WorldCameraViewtype != 3)
         g_WorldCameraVar2 = (g_WorldCameraVar2 * 3 + g_WorldCameraVar1) >> 2;
     if (g_WorldCameraRotationY < g_WorldCameraFront - 0x800)
-        g_WorldCameraRotationY += 0x1000;
+        g_WorldCameraRotationY += 0x1000 /* 360 deg */;
     else if (g_WorldCameraRotationY > g_WorldCameraFront + 0x800)
-        g_WorldCameraRotationY -= 0x1000;
+        g_WorldCameraRotationY -= 0x1000 /* 360 deg */;
     g_WorldCameraRotationY = UNFOLDED(3) ? (g_WorldMovementMultiplier == 1 ? (g_WorldCameraRotationY * 31 + g_WorldCameraFront) >> 5 : (g_WorldCameraRotationY * 15 + g_WorldCameraFront) >> 4) : (g_WorldMovementMultiplier == 1 ? (g_WorldCameraRotationY * 7 + g_WorldCameraFront) >> 3 : (g_WorldCameraRotationY * 3 + g_WorldCameraFront) >> 2);
 }
 
@@ -1809,8 +1809,8 @@ void __cdecl World_UpdateCameraBlendParameters(void)
         val = 0xA0 - (g_WorldCameraBlendWeight * 0x46 >> 8);
     }
     g_WorldCameraVar2 = val;
-    g_WorldCameraRange = 0x190 - (g_WorldCameraBlendWeight * 0xC8 >> 8);
-    g_WorldCameraPositionZ = 0x2710 - (g_WorldCameraBlendWeight * 0x1770 >> 8);
+    g_WorldCameraRange = 400 - (g_WorldCameraBlendWeight * 0xC8 >> 8);
+    g_WorldCameraPositionZ = 10000 - (g_WorldCameraBlendWeight * 0x1770 >> 8);
     g_WorldCurveStartDepth = 0x1388 - (g_WorldCameraBlendWeight * 0x9C4 >> 8);
 }
 
@@ -1842,10 +1842,10 @@ int __cdecl World_UpdateCameraDistanceAndPitch(void)
         if (g_WorldCameraBlendVelocity == 0) {
             if (g_WorldCameraBlendDirection > 0) {
                 World_SetCameraMode(3);
-                g_WorldHighwindHeightLowerbound = (WorldEntity_GetPlayerModelId() - 3 != 0 ? 0xFFFFF830 : 0) + 0xFA0;
+                g_WorldHighwindHeightLowerbound = (WorldEntity_GetPlayerModelId() - 3 != 0 ? 0xFFFFF830 : 0) + 4000;
             }
             g_WorldCameraFrontWrapped = g_WorldCameraFront;
-            if (g_WorldCameraFrontWrapped >= 0x800) {
+            if (g_WorldCameraFrontWrapped >= 2048) {
                 g_WorldCameraFrontWrapped -= 0x1000;
             }
         }
@@ -2036,7 +2036,7 @@ void __cdecl World_UpdateCameraHeightOffsetForOcclusion(void)
 {
     if (g_WorldMode == WORLD_MAP_STATE_PLAYING && g_WorldMapType != 2) {
         g_WorldCameraWaterSmoothed = ((g_WorldCameraWaterSmoothed * 7) + (g_WorldTerrainHasWater << 8)) >> 3;
-        g_WorldCameraOcclusionFlag = g_WorldCameraWaterSmoothed > 0x80;
+        g_WorldCameraOcclusionFlag = g_WorldCameraWaterSmoothed > 128;
         g_WorldCameraOcclusionRunLength = g_WorldCameraOcclusionFlag ? g_WorldCameraOcclusionRunLength + 1 : 0;
         if (g_WorldCameraPrevOcclusionFlag != g_WorldCameraOcclusionFlag) {
             g_WorldCameraHeightAdjustActive = 0;

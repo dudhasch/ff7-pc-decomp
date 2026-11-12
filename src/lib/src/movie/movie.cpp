@@ -485,7 +485,7 @@ int __cdecl Movie_Open(int moviePath, int loopFlag, int pDirectDraw, int pDirect
                                     hardwareCaps.size = sizeof(hardwareCaps);
                                     emulCaps.size = sizeof(emulCaps);
                                     // STRING: FF7 0x007bff10
-                                    if (CheckDirectDrawResult(((ComDirectDraw *)(state->ddObject))->GetCaps(&hardwareCaps, &emulCaps), "C:\\lib\\src\\movie\\movie.cpp", 0x3AC) != 0 && 0 != 0) {
+                                    if (CheckDirectDrawResult(((ComDirectDraw *)(state->ddObject))->GetCaps(&hardwareCaps, &emulCaps), "C:\\lib\\src\\movie\\movie.cpp", 940) != 0 && 0 != 0) {
                                         // STRING: FF7 0x007bff2c
                                         Gfx_DebugPrint("HAL \n");
                                         Gfx_LogDirectDrawDriverCaps(&hardwareCaps);
@@ -599,8 +599,8 @@ int __cdecl Movie_Open(int moviePath, int loopFlag, int pDirectDraw, int pDirect
                                         return 0;
                                     } else if (g_Movie_useD3D != 0) {
                                         g_Movie_textureDesc.flags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-                                        g_Movie_textureDesc.width = 0x100;
-                                        g_Movie_textureDesc.height = 0x100;
+                                        g_Movie_textureDesc.width = 256;
+                                        g_Movie_textureDesc.height = 256;
                                         g_Movie_textureDesc.caps = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
                                         res = ((ComDirectDraw *)(pDirectDraw2))->CreateSurface(&g_Movie_textureDesc, &g_Movie_pSts1, 0);
                                         if (res < 0) {
@@ -608,7 +608,7 @@ int __cdecl Movie_Open(int moviePath, int loopFlag, int pDirectDraw, int pDirect
                                             Trace_Printf("Failed to create sts1 (0x%8.8X)\n", res);
                                             return 0;
                                         }
-                                        g_Movie_textureDesc.width = 0x40;
+                                        g_Movie_textureDesc.width = 64;
                                         res = ((ComDirectDraw *)(pDirectDraw2))->CreateSurface(&g_Movie_textureDesc, &g_Movie_pSts2, 0);
                                         if (res < 0) {
                                             // STRING: FF7 0x007c0030
@@ -622,7 +622,7 @@ int __cdecl Movie_Open(int moviePath, int loopFlag, int pDirectDraw, int pDirect
                                             Trace_Printf("Failed to create vts2 (0x%8.8X)\n", res);
                                             return 0;
                                         }
-                                        g_Movie_textureDesc.width = 0x100;
+                                        g_Movie_textureDesc.width = 256;
                                         res = ((ComDirectDraw *)(pDirectDraw2))->CreateSurface(&g_Movie_textureDesc, &g_Movie_pVts1, 0);
                                         if (res < 0) {
                                             // STRING: FF7 0x007c0078
@@ -971,7 +971,7 @@ int __cdecl Movie_BltSampleSurface(int pTargetSurface)
         memset(&frame.desc, 0, sizeof(frame.desc));
         frame.desc.size = sizeof(frame.desc);
         frame.desc.size = sizeof(frame.desc);
-        frame.desc.pixelFormatSize = 0x20;
+        frame.desc.pixelFormatSize = 32;
         do {
             frame.status = ((ComDirectDrawSurface *)(g_Movie_pAmSurface))->Lock(0, &frame.desc, 1, 0);
             if (frame.status < 0) {
@@ -984,8 +984,8 @@ int __cdecl Movie_BltSampleSurface(int pTargetSurface)
         if (g_Movie_uiScalingMode == 2) {
             Gfx_CopySurfaceRectDoubled16(frame.width, frame.height, 0, 0, frame.desc.pitch, (int)frame.desc.surface, 0, 0, frame.dimensions[0], frame.dimensions[1]);
         } else if (g_Movie_uiScalingMode == 1) {
-            frame.center = (0x1E0 - frame.height) / 2;
-            Gfx_CopySurfaceRectDwords(frame.width, frame.height, 0, 0, frame.desc.pitch, (int)frame.desc.surface, 0xA0, 0x78, frame.dimensions[0], frame.dimensions[1]);
+            frame.center = (480 - frame.height) / 2;
+            Gfx_CopySurfaceRectDwords(frame.width, frame.height, 0, 0, frame.desc.pitch, (int)frame.desc.surface, 160, 120, frame.dimensions[0], frame.dimensions[1]);
         } else if (g_Movie_uiScalingMode == 0) {
             Gfx_CopySurfaceRectDwords(frame.width, frame.height, 0, 0, frame.desc.pitch, (int)frame.desc.surface, 0, 0, frame.dimensions[0], frame.dimensions[1]);
         }
@@ -996,8 +996,8 @@ int __cdecl Movie_BltSampleSurface(int pTargetSurface)
             frame.status = ((ComMediaSeeking *)(g_MovieMediaSeeking))->GetCurrentPosition(&frame.streamTime[0]);
             frame.status = ((ComMediaSeeking *)(g_MovieMediaSeeking))->SetPositions(&frame.streamTime[0], 1, 0, 0);
         }
-        for (frame.attempts = 0; frame.attempts < 0xA; frame.attempts++) {
-            if (frame.context->fps < 15.0 && Movie_GetCurrentFrame() > 0x32 && g_Movie_allowFrameDrop != 0) {
+        for (frame.attempts = 0; frame.attempts < 10; frame.attempts++) {
+            if (frame.context->fps < 15.0 && Movie_GetCurrentFrame() > 50 && g_Movie_allowFrameDrop != 0) {
                 frame.status = ((ComStreamSample *)(g_Movie_pStreamSample))->Update(3, 0, 0, 0);
             } else {
                 frame.status = ((ComStreamSample *)(g_Movie_pStreamSample))->Update(0, 0, 0, 0);
@@ -1175,7 +1175,7 @@ int __cdecl MovieBltFrameToBackBuffer(int pTargetSurface)
                     Gfx_SetRenderStateCall(RENDER_STATE_LINEAR_FILTER, 0, (struct GfxEngineContext *)frame.context);
                     ((ComDirect3DDevice2 *)(frame.device))->SetRenderState(1, g_Movie_hTex1);
                     // STRING: FF7 0x007c04a8
-                    frame.status = CheckDirectDrawResult(((ComDirect3DDevice2 *)(frame.device))->DrawPrimitive(6, 3, (int)&g_Movie_quadVertices1, 4, 0), "C:\\lib\\src\\movie\\movie.cpp", 0x7D1);
+                    frame.status = CheckDirectDrawResult(((ComDirect3DDevice2 *)(frame.device))->DrawPrimitive(6, 3, (int)&g_Movie_quadVertices1, 4, 0), "C:\\lib\\src\\movie\\movie.cpp", 2001);
                     if (frame.status == D3DERR_INVALIDRAMPTEXTURE) {
                         // STRING: FF7 0x007c04c4
                         Trace_Printf("AMBlt: Invalid ramp texture.\n");
@@ -1212,8 +1212,8 @@ int __cdecl MovieBltFrameToBackBuffer(int pTargetSurface)
                     frame.status = ((ComMediaSeeking *)(g_MovieMediaSeeking))->GetCurrentPosition(&frame.streamTime[0]);
                     frame.status = ((ComMediaSeeking *)(g_MovieMediaSeeking))->SetPositions(&frame.streamTime[0], 1, 0, 0);
                 }
-                for (frame.attempts = 0; frame.attempts < 0xA; frame.attempts++) {
-                    if (frame.context->fps < 15.0 && Movie_GetCurrentFrame() > 0x19 && g_Movie_allowFrameDrop != 0) {
+                for (frame.attempts = 0; frame.attempts < 10; frame.attempts++) {
+                    if (frame.context->fps < 15.0 && Movie_GetCurrentFrame() > 25 && g_Movie_allowFrameDrop != 0) {
                         frame.status = ((ComStreamSample *)(g_Movie_pStreamSample))->Update(3, 0, 0, 0);
                     } else {
                         frame.status = ((ComStreamSample *)(g_Movie_pStreamSample))->Update(0, 0, 0, 0);

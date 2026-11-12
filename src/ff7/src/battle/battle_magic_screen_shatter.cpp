@@ -150,34 +150,34 @@ void __cdecl BattleFx_MagicScreenShatterAcquireOffscreenRequests(void)
 
     frame.firstX = 0;
     frame.firstY = 0;
-    frame.firstWidth = 0xA0;
-    frame.firstHeight = 0xA8;
-    frame.secondX = 0x140;
+    frame.firstWidth = 160;
+    frame.firstHeight = 168;
+    frame.secondX = 320;
     frame.secondY = 0;
-    frame.secondWidth = 0xA0;
-    frame.secondHeight = 0xA8;
+    frame.secondWidth = 160;
+    frame.secondHeight = 168;
     frame.scale = 2;
     switch (g_BattleUiScalingMode) {
     case MAIN_GRAPHICS_MODE_320X240:
-        frame.secondX = 0xA0;
+        frame.secondX = 160;
         frame.scale = 1;
         break;
     case MAIN_GRAPHICS_MODE_320X240_CENTERED:
         frame.firstX = *(short *)&g_BattleViewportOriginX;
         frame.firstY = *(short *)&g_BattleViewportOriginY;
-        frame.secondX = g_BattleViewportOriginX + 0xA0;
+        frame.secondX = g_BattleViewportOriginX + 160;
         frame.secondY = *(short *)&g_BattleViewportOriginY;
         frame.scale = 1;
         break;
     default:
         frame.firstX = 0;
         frame.firstY = 0;
-        frame.firstWidth = 0xA0;
-        frame.firstHeight = 0xA8;
-        frame.secondX = 0x140;
+        frame.firstWidth = 160;
+        frame.firstHeight = 168;
+        frame.secondX = 320;
         frame.secondY = 0;
-        frame.secondWidth = 0xA0;
-        frame.secondHeight = 0xA8;
+        frame.secondWidth = 160;
+        frame.secondHeight = 168;
         frame.scale = 2;
     }
     if (g_pBattle3dScene != 0) {
@@ -231,17 +231,17 @@ void __cdecl BattleFx_MagicScreenShatterInitTileGrid(void)
     int padField; /* Unreferenced stack padding preserved for VC5 /Od frame size (see lib/codegen.h). */
     int tile;
 
-    for (row = 0; row < 0x16; row++) {
-        for (column = 0; column < 0x29; column++) {
-            dx8 = column * 8 + -0xA0;
-            diffY = row * 8 + -0x78;
+    for (row = 0; row < 22; row++) {
+        for (column = 0; column < 41; column++) {
+            dx8 = column * 8 + -160;
+            diffY = row * 8 + -120;
             SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, row)[column].radius = SqrtToInt(dx8 * dx8 + diffY * diffY);
             SHATTER_GRID_ROW(g_BattleMagicScreenShatter_ScreenGrid, row)[column].radius = SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, row)[column].radius;
         }
     }
     tile = 0;
-    for (row = 0; row < 0x15; row++) {
-        for (column = 0; column < 0x28; column++) {
+    for (row = 0; row < 21; row++) {
+        for (column = 0; column < 40; column++) {
             g_BattleMagicScreenShatterTileGrid.tiles[tile].angle.vz = 0;
             g_BattleMagicScreenShatterTileGrid.tiles[tile].angle.vy = 0;
             g_BattleMagicScreenShatterTileGrid.tiles[tile].angle.vx = 0;
@@ -251,9 +251,9 @@ void __cdecl BattleFx_MagicScreenShatterInitTileGrid(void)
             g_BattleMagicScreenShatterTileGrid.tiles[tile].pos.vz = 0;
             g_BattleMagicScreenShatterTileGrid.tiles[tile].pos.vy = 0;
             g_BattleMagicScreenShatterTileGrid.tiles[tile].pos.vx = 0;
-            g_BattleMagicScreenShatterTileGrid.tiles[tile].vel.vx = (rand() & 3) + column * 2 + -0x2A;
-            g_BattleMagicScreenShatterTileGrid.tiles[tile].vel.vy = (rand() & 3) + row * 2 + -0x20;
-            g_BattleMagicScreenShatterTileGrid.tiles[tile].vel.vz = (rand() & 0x7F) - 0x80;
+            g_BattleMagicScreenShatterTileGrid.tiles[tile].vel.vx = (rand() & 3) + column * 2 + -42;
+            g_BattleMagicScreenShatterTileGrid.tiles[tile].vel.vy = (rand() & 3) + row * 2 + -32;
+            g_BattleMagicScreenShatterTileGrid.tiles[tile].vel.vz = (rand() & 0x7F) - 128;
             SHATTER_HEADER(g_BattleScreenShatterTiles, tile).header = SHATTER_HEADER(g_BattleScreenShatterTiles, tile).header & 0xFFFFFF | 0x9000000;
             SHATTER_COLOR(g_BattleMagicScreenShatter_Quad0Color, tile).code = PSX_PRIM_POLY_FT4;
             SHATTER_COLOR(g_BattleMagicScreenShatter_Quad0Color, tile).r = 0x80;
@@ -264,7 +264,7 @@ void __cdecl BattleFx_MagicScreenShatterInitTileGrid(void)
             SHATTER_COLOR(g_BattleMagicScreenShatter_Quad1Color, tile).r = 0x80;
             SHATTER_COLOR(g_BattleMagicScreenShatter_Quad1Color, tile).g = 0x80;
             SHATTER_COLOR(g_BattleMagicScreenShatter_Quad1Color, tile).b = 0x80;
-            if (column < 0x14) {
+            if (column < 20) {
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv2, tile).u = column << 3 & 0xFF;
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv2, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv2, tile).u;
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv0, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv2, tile).u;
@@ -273,7 +273,7 @@ void __cdecl BattleFx_MagicScreenShatterInitTileGrid(void)
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv3, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv3, tile).u;
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv1, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv3, tile).u;
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv1, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv1, tile).u;
-                if (column == 0x13) {
+                if (column == 19) {
                     SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv3, tile).u = column * 8 + 7 & 0xFF;
                     SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv3, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv3, tile).u;
                     SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv1, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv3, tile).u;
@@ -288,7 +288,7 @@ void __cdecl BattleFx_MagicScreenShatterInitTileGrid(void)
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv3, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv3, tile).u;
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv1, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv3, tile).u;
                 SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv1, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv1, tile).u;
-                if (column == 0x14) {
+                if (column == 20) {
                     SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv2, tile).u = column * 8 + -0x9F & 0xFF;
                     SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv2, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv2, tile).u;
                     SHATTER_UV(g_BattleMagicScreenShatter_Quad1Uv0, tile).u = SHATTER_UV(g_BattleMagicScreenShatter_Quad0Uv2, tile).u;
@@ -352,44 +352,44 @@ void __cdecl BattleFx_MagicScreenShatterTimelineTask(void)
     dstQuad = (BattleFxShardQuad *)Gfx_GetPsxScratchpadPtr(0);
     pMatrix = (PsxMatrix *)(dstQuad + 1);
     nextFrame = taskPtr->frameCounter;
-    if (nextFrame < 0x1E) {
+    if (nextFrame < 30) {
         g_BattleMagicScreenShatter_WaveAmplitude += 0x18;
-        for (resolvedRow = 0; resolvedRow < 0x16; resolvedRow++) {
-            for (localColumn = 0; localColumn < 0x29; localColumn++) {
-                tmpDeltaX = localColumn * 8 + -0xA0;
-                stepDeltaY = resolvedRow * 8 + -0x78;
-                deform = g_BattleMagicScreenShatter_WaveAmplitude + (SinFixed(SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].radius * 0x64 - nextFrame * 0x1F4) * g_BattleMagicScreenShatter_WaveAmplitude >> 0xC) + 0x1000;
-                SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].x = (tmpDeltaX * deform >> 0xC) + 0xA0;
-                SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].y = (stepDeltaY * deform >> 0xC) + 0x78;
+        for (resolvedRow = 0; resolvedRow < 22; resolvedRow++) {
+            for (localColumn = 0; localColumn < 41; localColumn++) {
+                tmpDeltaX = localColumn * 8 + -160;
+                stepDeltaY = resolvedRow * 8 + -120;
+                deform = g_BattleMagicScreenShatter_WaveAmplitude + (SinFixed(SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].radius * 100 - nextFrame * 500) * g_BattleMagicScreenShatter_WaveAmplitude >> 12) + 0x1000;
+                SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].x = (tmpDeltaX * deform >> 12) + 160;
+                SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].y = (stepDeltaY * deform >> 12) + 120;
                 SHATTER_GRID_ROW(g_BattleMagicScreenShatter_ScreenGrid, resolvedRow)[localColumn].x = SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].x * g_BattleUiScale + g_BattleViewportOriginX;
                 SHATTER_GRID_ROW(g_BattleMagicScreenShatter_ScreenGrid, resolvedRow)[localColumn].y = SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn].y * g_BattleUiScale + g_BattleViewportOriginY;
             }
         }
         halfCol = 0;
-        for (resolvedRow = 0; resolvedRow < 0x348; resolvedRow++) {
+        for (resolvedRow = 0; resolvedRow < 840; resolvedRow++) {
             *(struct PacketWord *)((char *)&g_BattleMagicScreenShatter_Quad0Xy0 + ((resolvedRow << 7) + g_BattleMagicScreenShatter_PacketBank * 0x28)) = *(struct PacketWord *)g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].cornerPtr;
             *(struct PacketWord *)((char *)&g_BattleMagicScreenShatter_Quad0Xy1 + ((resolvedRow << 7) + g_BattleMagicScreenShatter_PacketBank * 0x28)) = *(struct PacketWord *)g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].rightNeighbor;
             *(struct PacketWord *)((char *)&g_BattleMagicScreenShatter_Quad0Xy2 + ((resolvedRow << 7) + g_BattleMagicScreenShatter_PacketBank * 0x28)) = *(struct PacketWord *)g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].downNeighbor;
             *(struct PacketWord *)((char *)&g_BattleMagicScreenShatter_Quad0Xy3 + ((resolvedRow << 7) + g_BattleMagicScreenShatter_PacketBank * 0x28)) = *(struct PacketWord *)g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].diagNeighbor;
             Gfx_SetBlendFactorPair(0, FLOAT_ONE_BITS);
-            if (halfCol < 0x14) {
+            if (halfCol < 20) {
                 Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Battle3d_GetOffscreenRenderObject(g_BattleMagicScreenShatter_OffscreenSlots.primarySlot)));
             } else {
                 Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Battle3d_GetOffscreenRenderObject(g_BattleMagicScreenShatter_OffscreenSlots.secondarySlot)));
             }
             Gfx_DrawPsxPrimitive((resolvedRow << 7) + g_BattleMagicScreenShatter_PacketBank * 0x28 + (char *)&g_BattleScreenShatterTiles);
             halfCol++;
-            if (halfCol >= 0x28) {
+            if (halfCol >= 40) {
                 halfCol = 0;
             }
         }
     } else {
-        nextFrame -= 0x1E;
-        if (nextFrame < 0x1E) {
+        nextFrame -= 30;
+        if (nextFrame < 30) {
             if (nextFrame == 0) {
                 fillIndex = 0;
-                for (resolvedRow = 0; resolvedRow < 0x15; resolvedRow++) {
-                    for (localColumn = 0; localColumn < 0x28; localColumn++) {
+                for (resolvedRow = 0; resolvedRow < 21; resolvedRow++) {
+                    for (localColumn = 0; localColumn < 40; localColumn++) {
                         g_BattleMagicScreenShatterTileGrid.tiles[fillIndex].cornerPtr = &SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn];
                         g_BattleMagicScreenShatterTileGrid.tiles[fillIndex].rightNeighbor = &SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow)[localColumn + 1];
                         g_BattleMagicScreenShatterTileGrid.tiles[fillIndex].downNeighbor = &SHATTER_GRID_ROW(g_BattleMagicScreenShatter_GridRecords, resolvedRow + 1)[localColumn];
@@ -400,18 +400,18 @@ void __cdecl BattleFx_MagicScreenShatterTimelineTask(void)
             }
             halfCol = 0;
             screenDist = GetGeomScreen() << 2;
-            for (resolvedRow = 0; resolvedRow < 0x348; resolvedRow++) {
-                dstQuad->corner0X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].cornerPtr->x - 0xA0;
-                dstQuad->corner0Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].cornerPtr->y - 0x78;
+            for (resolvedRow = 0; resolvedRow < 840; resolvedRow++) {
+                dstQuad->corner0X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].cornerPtr->x - 160;
+                dstQuad->corner0Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].cornerPtr->y - 120;
                 dstQuad->depth = 0;
-                dstQuad->corner1X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].rightNeighbor->x - 0xA0;
-                dstQuad->corner1Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].rightNeighbor->y - 0x78;
+                dstQuad->corner1X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].rightNeighbor->x - 160;
+                dstQuad->corner1Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].rightNeighbor->y - 120;
                 dstQuad->stripStart = 0;
-                dstQuad->corner2X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].downNeighbor->x - 0xA0;
-                dstQuad->corner2Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].downNeighbor->y - 0x78;
+                dstQuad->corner2X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].downNeighbor->x - 160;
+                dstQuad->corner2Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].downNeighbor->y - 120;
                 dstQuad->stripLevel = 0;
-                dstQuad->corner3X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].diagNeighbor->x - 0xA0;
-                dstQuad->corner3Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].diagNeighbor->y - 0x78;
+                dstQuad->corner3X = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].diagNeighbor->x - 160;
+                dstQuad->corner3Y = g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].diagNeighbor->y - 120;
                 dstQuad->stripEnd = 0;
                 dstQuad->centerX = dstQuad->corner0X + dstQuad->corner1X + dstQuad->corner2X + dstQuad->corner3X >> 2;
                 dstQuad->centerY = dstQuad->corner0Y + dstQuad->corner1Y + dstQuad->corner2Y + dstQuad->corner3Y >> 2;
@@ -440,19 +440,19 @@ void __cdecl BattleFx_MagicScreenShatterTimelineTask(void)
                 g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].angle.vx += g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].spin.vx;
                 g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].angle.vy += g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].spin.vy;
                 g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].angle.vz += g_BattleMagicScreenShatterTileGrid.tiles[resolvedRow].spin.vz;
-                if (halfCol < 0x14) {
+                if (halfCol < 20) {
                     Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Battle3d_GetOffscreenRenderObject(g_BattleMagicScreenShatter_OffscreenSlots.primarySlot)));
                 } else {
                     Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Battle3d_GetOffscreenRenderObject(g_BattleMagicScreenShatter_OffscreenSlots.secondarySlot)));
                 }
                 Gfx_DrawPsxPrimitive((resolvedRow << 7) + g_BattleMagicScreenShatter_PacketBank * 0x28 + (char *)&g_BattleScreenShatterTiles);
                 halfCol++;
-                if (halfCol >= 0x28) {
+                if (halfCol >= 40) {
                     halfCol = 0;
                 }
             }
         } else {
-            nextFrame -= 0x1E;
+            nextFrame -= 30;
             if (nextFrame < 5) {
                 (taskPtr->frameCounter)++;
                 return;
@@ -485,7 +485,7 @@ void __cdecl BattleFx_MagicScreenShatterSetStageAndActorFlagsTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     if (task->frameCounter == 1) {
         g_BattleStageHideFlags |= 7;
-        for (actor = 0; actor < 0xA; actor++) {
+        for (actor = 0; actor < 10; actor++) {
             g_BattleActorRecords[actor].drawFlags |= 2;
             g_BattleActorRecords[actor].drawFlags &= 0x7F;
             g_BattleActorRecords[actor].drawFlags |= 4;

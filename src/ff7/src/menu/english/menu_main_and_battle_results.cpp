@@ -55,7 +55,7 @@ double g_MenuTargetFps = 60.0;
 // g_MenuMateriaSortPriority is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0x91aa98..0x91aaf8 are aliases.
 // GLOBAL: FF7 0x0091aa98
-unsigned char g_MenuMateriaSortPriority[0x60] = {0x1d, 0x1e, 0x21, 0x22, 0x23, 0x45, 0x2b, 0x24, 0x20, 0x26, 0x27, 0x28, 0x54, 0x2a, 0x46, 0x47, 0x1c, 0x04, 0x3f, 0x55, 0x56, 0x41, 0x09, 0x1f, 0x53, 0x4e, 0x30, 0x32, 0x33, 0x36, 0x38, 0x39, 0x3b, 0x3c, 0x3d, 0x50, 0x0f, 0x10, 0x05, 0x35, 0x3e, 0x2d, 0x3a, 0x4f, 0x48, 0x01, 0x02, 0x03, 0x59, 0x0a, 0x0b, 0x12, 0x0c, 0x0d, 0x0e, 0x13, 0x14, 0x15, 0x16, 0x17, 0x11, 0x1a, 0x18, 0x08, 0x37, 0x19, 0x06, 0x07, 0x1b, 0x40, 0x4b, 0x4c, 0x4d, 0x58, 0x25, 0x29, 0x2c, 0x2e, 0x2f, 0x31, 0x34, 0x42, 0x43, 0x44, 0x49, 0x4a, 0x51, 0x52, 0x57, 0x5a, 0x5b, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char g_MenuMateriaSortPriority[96] = {0x1d, 0x1e, 0x21, 0x22, 0x23, 0x45, 0x2b, 0x24, 0x20, 0x26, 0x27, 0x28, 0x54, 0x2a, 0x46, 0x47, 0x1c, 0x04, 0x3f, 0x55, 0x56, 0x41, 0x09, 0x1f, 0x53, 0x4e, 0x30, 0x32, 0x33, 0x36, 0x38, 0x39, 0x3b, 0x3c, 0x3d, 0x50, 0x0f, 0x10, 0x05, 0x35, 0x3e, 0x2d, 0x3a, 0x4f, 0x48, 0x01, 0x02, 0x03, 0x59, 0x0a, 0x0b, 0x12, 0x0c, 0x0d, 0x0e, 0x13, 0x14, 0x15, 0x16, 0x17, 0x11, 0x1a, 0x18, 0x08, 0x37, 0x19, 0x06, 0x07, 0x1b, 0x40, 0x4b, 0x4c, 0x4d, 0x58, 0x25, 0x29, 0x2c, 0x2e, 0x2f, 0x31, 0x34, 0x42, 0x43, 0x44, 0x49, 0x4a, 0x51, 0x52, 0x57, 0x5a, 0x5b, 0x00, 0x00, 0x00, 0x00, 0x00};
 // GLOBAL: FF7 0x0091aaf8
 char g_MenuCommandScreenIdMap[12] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x00};
 // GLOBAL: FF7 0x0091ab04
@@ -82,11 +82,11 @@ int g_MenuScreenFrameCallbacks[22] = {(int)&Menu_DrawMainScreen, (int)&Menu_Item
 // g_MenuMateriaGroupColorMap is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0x91abf0..0x91abf8 are aliases.
 // GLOBAL: FF7 0x0091abf0
-unsigned char g_MenuMateriaGroupColorMap[0x8] = {0x09, 0x05, 0x08, 0x04, 0x0a, 0x00, 0x00, 0x00};
+unsigned char g_MenuMateriaGroupColorMap[8] = {0x09, 0x05, 0x08, 0x04, 0x0a, 0x00, 0x00, 0x00};
 // g_MenuMateriaTypeGroupMap is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0x91abf8..0x91ac08 are aliases.
 // GLOBAL: FF7 0x0091abf8
-unsigned char g_MenuMateriaTypeGroupMap[0x10] = {0x00, 0x00, 0x02, 0x02, 0x00, 0x01, 0x02, 0x02, 0x02, 0x03, 0x03, 0x04, 0x04, 0x00, 0x00, 0x00};
+unsigned char g_MenuMateriaTypeGroupMap[16] = {0x00, 0x00, 0x02, 0x02, 0x00, 0x01, 0x02, 0x02, 0x02, 0x03, 0x03, 0x04, 0x04, 0x00, 0x00, 0x00};
 // GLOBAL: FF7 0x0091ac08
 int g_MenuPlayTimeStep36000 = 36000;
 // GLOBAL: FF7 0x0091ac0c
@@ -182,7 +182,7 @@ short g_MenuTransitionStep = 0;
 // g_BattleAcquiredMateriaIds is indexed by the code as an array. The span runs to the next named definition
 // of the TU; the TU's pieces inside 0xdc1228..0xdc1258 are aliases.
 // GLOBAL: FF7 0x00dc1228
-unsigned char g_BattleAcquiredMateriaIds[0x30] = {0};
+unsigned char g_BattleAcquiredMateriaIds[48] = {0};
 // GLOBAL: FF7 0x00dc1258
 Timestamp64 g_MenuTickResidue = {0};
 /* Contiguous 28-byte GameModule callback block passed to GetActiveModule / RequestModuleSwitch;
@@ -293,7 +293,7 @@ int __cdecl Menu_IsPopupActive(void)
 
 /*
  * Opens a menu popup: sets the active flag, stores the text id state, chooses a
- * lifetime of 0x14 or 0x28 frames from whether the engine context's frame rate
+ * lifetime of 0x14 or 40 frames from whether the engine context's frame rate
  * (`fps`) is under 30, stores textPtr in g_MenuTutorialWindowTextPtr and
  * sets g_MenuPopupStepCounter.
  */
@@ -303,9 +303,9 @@ void __cdecl Menu_OpenPopupMessage(const void *textPtr, int state)
     g_MenuTutorialWindowState = MENU_POPUP_OPENING;
     g_MenuPopupTextColor = state;
     if ((GetEngineContext())->fps < 3e+01) {
-        g_MenuPopupLifetime = 0x14;
+        g_MenuPopupLifetime = 20;
     } else {
-        g_MenuPopupLifetime = 0x28;
+        g_MenuPopupLifetime = 40;
     }
     g_MenuTutorialWindowTextPtr = (unsigned char *)textPtr;
     g_MenuPopupStepCounter = 1;
@@ -330,7 +330,7 @@ void __cdecl Menu_SetPopupPlacement(int centered, int x, int y)
 /*
  * Draws the popup message at g_MenuTutorialWindowTextPtr as an animation
  * keyed by g_MenuTutorialWindowState (enum MenuPopupState). OPENING grows the box
- * over g_MenuPopupStepCounter steps (a third of the text width and 0x11 pixels
+ * over g_MenuPopupStepCounter steps (a third of the text width and 17 pixels
  * per step) and shows the text at step three; SHOWN draws it until its lifetime
  * runs out or a key is pressed; CLOSING shrinks the box again.
  */
@@ -351,7 +351,7 @@ void __cdecl Menu_DrawPopupMessage2x(void)
     switch (g_MenuTutorialWindowState) {
     case MENU_POPUP_OPENING:
         width = textWidth / 3 * g_MenuPopupStepCounter;
-        h = g_MenuPopupStepCounter * 0x11;
+        h = g_MenuPopupStepCounter * 17;
         if (g_MenuPopupCenteredFlag == 0) {
             cx = 0x12c;
             cy = 0xe5;
@@ -376,19 +376,19 @@ void __cdecl Menu_DrawPopupMessage2x(void)
                               g_MenuTutorialWindowTextPtr, g_MenuPopupTextColor,
                               0.0f);
             Menu_SetRectShorts(&rect.x, cx - textWidth / 2 - 0xd, cy - 0x1b,
-                          textWidth + 0x1b, 0x33);
+                          textWidth + 0x1b, 51);
         } else {
             cx = g_MenuPopupX;
             cy = g_MenuPopupY;
             Menu_DrawEncodedString2x(cx + 0xd, cy + 0xd,
                               g_MenuTutorialWindowTextPtr, g_MenuPopupTextColor,
                               0.0f);
-            Menu_SetRectShorts(&rect.x, cx, cy, textWidth + 0x1b, 0x33);
+            Menu_SetRectShorts(&rect.x, cx, cy, textWidth + 0x1b, 51);
         }
         if (g_MenuPopupLifetime != 0) {
             g_MenuPopupLifetime = g_MenuPopupLifetime - 1;
         }
-        if (g_MenuPopupLifetime < 0x14 && 1) {
+        if (g_MenuPopupLifetime < 20 && 1) {
             if (g_MenuPopupCenteredFlag == 0 && g_MenuPopupLifetime == 0) {
                 g_MenuTutorialWindowState = MENU_POPUP_CLOSING;
             } else if (Input_UpdateAndConsume() != 0) {
@@ -398,7 +398,7 @@ void __cdecl Menu_DrawPopupMessage2x(void)
         break;
     case MENU_POPUP_CLOSING:
         width = textWidth / 3 * g_MenuPopupStepCounter;
-        h = g_MenuPopupStepCounter * 0x11;
+        h = g_MenuPopupStepCounter * 17;
         if (g_MenuPopupCenteredFlag == 0) {
             cx = 0x12c;
             cy = 0xe5;
@@ -467,19 +467,19 @@ void __cdecl Menu_DrawPopupMessage1x(void)
                                  g_MenuTutorialWindowTextPtr, g_MenuPopupTextColor,
                                  0.0f);
             Menu_SetRectShorts(&rect.x, cx - textWidth / 2 - 7, cy - 0xe,
-                          textWidth + 0xe, 0x1a);
+                          textWidth + 0xe, 26);
         } else {
             cx = g_MenuPopupX;
             cy = g_MenuPopupY;
             Menu_DrawEncodedString1x(cx + 7, cy + 7,
                                  g_MenuTutorialWindowTextPtr, g_MenuPopupTextColor,
                                  0.0f);
-            Menu_SetRectShorts(&rect.x, cx, cy, textWidth + 0xe, 0x1a);
+            Menu_SetRectShorts(&rect.x, cx, cy, textWidth + 0xe, 26);
         }
         if (g_MenuPopupLifetime != 0) {
             g_MenuPopupLifetime = g_MenuPopupLifetime - 1;
         }
-        if (g_MenuPopupLifetime < 0x14 && 1) {
+        if (g_MenuPopupLifetime < 20 && 1) {
             if (g_MenuPopupCenteredFlag == 0 && g_MenuPopupLifetime == 0) {
                 g_MenuTutorialWindowState = MENU_POPUP_CLOSING;
             } else if (Input_UpdateAndConsume() != 0) {
@@ -747,22 +747,22 @@ void __cdecl Savemap_BuildPartyStatsFromRecord(int partyIndex)
         mag += 0xF;
         fortuneValue += 0xA;
     }
-    if (str > 0xFF) {
+    if (str > 255) {
         str = 0xFF;
     }
-    if (dex > 0xFF) {
+    if (dex > 255) {
         dex = 0xFF;
     }
-    if (vitValue2Stat > 0xFF) {
+    if (vitValue2Stat > 255) {
         vitValue2Stat = 0xFF;
     }
-    if (spirit > 0xFF) {
+    if (spirit > 255) {
         spirit = 0xFF;
     }
-    if (mag > 0xFF) {
+    if (mag > 255) {
         mag = 0xFF;
     }
-    if (fortuneValue > 0xFF) {
+    if (fortuneValue > 255) {
         fortuneValue = 0xFF;
     }
     g_MenuPartyStats[partyIndex].strength = str;
@@ -795,9 +795,9 @@ void __cdecl Menu_DrawCharacterHpMpPanel2x(int originX, int originY, int charInd
     } frame;
 #pragma pack(pop)
 
-    frame.gauge.x = originX + 0x1E;
-    frame.gauge.y = originY + 0x42;
-    frame.gauge.width = 0x69;
+    frame.gauge.x = originX + 30;
+    frame.gauge.y = originY + 66;
+    frame.gauge.width = 105;
     frame.gauge.height = 2;
     frame.gauge.low = gSavemap.chars[charIndex].hp;
     frame.gauge.high = gSavemap.chars[charIndex].hp;
@@ -805,9 +805,9 @@ void __cdecl Menu_DrawCharacterHpMpPanel2x(int originX, int originY, int charInd
     frame.gauge.direction = 0;
     frame.gauge.colour = 0x800080FF;
     Menu_DrawResourceGauge2x(&frame.gauge, depth);
-    frame.gauge.x = originX + 0x1E;
-    frame.gauge.y = originY + 0x58;
-    frame.gauge.width = 0x69;
+    frame.gauge.x = originX + 30;
+    frame.gauge.y = originY + 88;
+    frame.gauge.width = 105;
     frame.gauge.height = 2;
     frame.gauge.low = gSavemap.chars[charIndex].mp;
     frame.gauge.high = gSavemap.chars[charIndex].mp;
@@ -869,9 +869,9 @@ void __cdecl Menu_DrawCharacterHpMpPanel1x(int originX, int originY, int charInd
     } frame;
 #pragma pack(pop)
 
-    frame.gauge.x = originX + 0xF;
-    frame.gauge.y = originY + 0x21;
-    frame.gauge.width = 0x35;
+    frame.gauge.x = originX + 15;
+    frame.gauge.y = originY + 33;
+    frame.gauge.width = 53;
     frame.gauge.height = 1;
     frame.gauge.low = gSavemap.chars[charIndex].hp;
     frame.gauge.high = gSavemap.chars[charIndex].hp;
@@ -879,9 +879,9 @@ void __cdecl Menu_DrawCharacterHpMpPanel1x(int originX, int originY, int charInd
     frame.gauge.direction = 0;
     frame.gauge.colour = 0x800080FF;
     Menu_DrawResourceGauge1x(&frame.gauge, depth);
-    frame.gauge.x = originX + 0xF;
-    frame.gauge.y = originY + 0x2C;
-    frame.gauge.width = 0x35;
+    frame.gauge.x = originX + 15;
+    frame.gauge.y = originY + 44;
+    frame.gauge.width = 53;
     frame.gauge.height = 1;
     frame.gauge.low = gSavemap.chars[charIndex].mp;
     frame.gauge.high = gSavemap.chars[charIndex].mp;
@@ -917,8 +917,8 @@ void __cdecl Menu_DrawCharacterHpMpPanel1x(int originX, int originY, int charInd
     }
     Menu_DrawDecimalNumber1x(originX + 0xF, originY + 0x24, (unsigned short)gSavemap.chars[charIndex].mp, 4, frame.mpColor, depth);
     Menu_DrawDecimalNumber1x(originX + 0x2C, originY + 0x24, gSavemap.chars[charIndex].maxMp, 4, (frame.hpIsZero != 0 ? -5 : 0) + 7, depth);
-    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x24, 0xD8, 0, 4, 8, 1, 0, 0, depth);
-    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x19, 0xD8, 0, 4, 8, 1, 0, 0, depth);
+    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x24, 216, 0, 4, 8, 1, 0, 0, depth);
+    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x19, 216, 0, 4, 8, 1, 0, 0, depth);
 }
 
 /*
@@ -945,9 +945,9 @@ void __cdecl Menu_DrawCharStatBlock2x(int originX, int originY, int partySlot, f
 #pragma pack(pop)
 
     frame.saveSlot = g_CharIdToSaveSlot[gSavemap.party[partySlot]];
-    frame.gauge.x = originX + 0x1E;
-    frame.gauge.y = originY + 0x42;
-    frame.gauge.width = 0x69;
+    frame.gauge.x = originX + 30;
+    frame.gauge.y = originY + 66;
+    frame.gauge.width = 105;
     frame.gauge.height = 2;
     frame.gauge.low = g_MenuPartyStats[partySlot].hp;
     frame.gauge.high = g_MenuPartyStats[partySlot].hp;
@@ -955,9 +955,9 @@ void __cdecl Menu_DrawCharStatBlock2x(int originX, int originY, int partySlot, f
     frame.gauge.direction = 0;
     frame.gauge.colour = 0x800080FF;
     Menu_DrawResourceGauge2x(&frame.gauge, depth);
-    frame.gauge.x = originX + 0x1E;
-    frame.gauge.y = originY + 0x58;
-    frame.gauge.width = 0x69;
+    frame.gauge.x = originX + 30;
+    frame.gauge.y = originY + 88;
+    frame.gauge.width = 105;
     frame.gauge.height = 2;
     frame.gauge.low = g_MenuPartyStats[partySlot].mp;
     frame.gauge.high = g_MenuPartyStats[partySlot].mp;
@@ -1021,9 +1021,9 @@ void __cdecl Menu_DrawCharStatBlock1x(int originX, int originY, int partySlot, f
 #pragma pack(pop)
 
     frame.saveSlot = g_CharIdToSaveSlot[gSavemap.party[partySlot]];
-    frame.gauge.x = originX + 0xF;
-    frame.gauge.y = originY + 0x21;
-    frame.gauge.width = 0x35;
+    frame.gauge.x = originX + 15;
+    frame.gauge.y = originY + 33;
+    frame.gauge.width = 53;
     frame.gauge.height = 1;
     frame.gauge.low = g_MenuPartyStats[partySlot].hp;
     frame.gauge.high = g_MenuPartyStats[partySlot].hp;
@@ -1031,9 +1031,9 @@ void __cdecl Menu_DrawCharStatBlock1x(int originX, int originY, int partySlot, f
     frame.gauge.direction = 0;
     frame.gauge.colour = 0x800080FF;
     Menu_DrawResourceGauge1x(&frame.gauge, depth);
-    frame.gauge.x = originX + 0xF;
-    frame.gauge.y = originY + 0x2C;
-    frame.gauge.width = 0x35;
+    frame.gauge.x = originX + 15;
+    frame.gauge.y = originY + 44;
+    frame.gauge.width = 53;
     frame.gauge.height = 1;
     frame.gauge.low = g_MenuPartyStats[partySlot].mp;
     frame.gauge.high = g_MenuPartyStats[partySlot].mp;
@@ -1063,8 +1063,8 @@ void __cdecl Menu_DrawCharStatBlock1x(int originX, int originY, int partySlot, f
     }
     Menu_DrawDecimalNumber1x(originX + 0xF, originY + 0x24, g_MenuPartyStats[partySlot].mp, 4, frame.mpNumberTone, depth);
     Menu_DrawDecimalNumber1x(originX + 0x2C, originY + 0x24, g_MenuPartyStats[partySlot].maxMp, 4, (frame.hpIsZero != 0 ? -5 : 0) + 7, depth);
-    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x24, 0xD8, 0, 4, 8, 1, 0, 0, depth);
-    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x19, 0xD8, 0, 4, 8, 1, 0, 0, depth);
+    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x24, 216, 0, 4, 8, 1, 0, 0, depth);
+    Menu_DrawAtlasQuad1x(originX + 0x28, originY + 0x19, 216, 0, 4, 8, 1, 0, 0, depth);
     if ((gSavemap.chars[frame.saveSlot].status & BATTLE_STATUS_SADNESS) != 0) {
         Menu_DrawEncodedString1x(originX + 0x1E, originY + 0xD, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_SADNESS * 0x14, 3, depth);
     }
@@ -1186,16 +1186,16 @@ void __cdecl Battle_DrawResultGilAndItemsScreen2x(void)
             }
         }
     } else {
-        if (g_MenuResultFadeLevel > 0xFF && g_MenuBattleEndMode == MENU_BATTLE_END_GIL_ITEMS_FADE_OUT) {
+        if (g_MenuResultFadeLevel > 255 && g_MenuBattleEndMode == MENU_BATTLE_END_GIL_ITEMS_FADE_OUT) {
             g_MenuResultFadeLevel = 0xFF;
             g_MenuBattleEndMode = MENU_BATTLE_END_FADED_OUT;
         }
         Menu_FillViewportQuad((char)g_MenuResultFadeLevel, 0.200000003f);
     }
-    Menu_DrawAtlasQuad2x(0x24F, 0x56, 0xF8, 0x10, 8, 8, 7, 0, 0, 0.400000006f);
-    Menu_DrawDecimalNumber2x(0x1D6, 0x56, gSavemap.gil, 0xA, 7, 0.400000006f);
-    Menu_DrawAtlasQuad2x(0x119, 0x56, 0xF8, 0x10, 8, 8, 7, 0, 0, 0.300000012f);
-    Menu_DrawDecimalNumber2x(0xC4, 0x56, g_BattleRewardTotals.gil, 7, 7, 0.300000012f);
+    Menu_DrawAtlasQuad2x(591, 86, 0xF8, 0x10, 8, 8, 7, 0, 0, 0.400000006f);
+    Menu_DrawDecimalNumber2x(470, 86, gSavemap.gil, 10, 7, 0.400000006f);
+    Menu_DrawAtlasQuad2x(281, 86, 0xF8, 0x10, 8, 8, 7, 0, 0, 0.300000012f);
+    Menu_DrawDecimalNumber2x(196, 86, g_BattleRewardTotals.gil, 7, 7, 0.300000012f);
     if (g_MenuResultGilItemsEnabled != 0) {
         if (g_MenuResultItemRow == MENU_RESULT_ITEM_ROW_TAKE_ALL) {
             arrowXPosition = 0;
@@ -1204,51 +1204,51 @@ void __cdecl Battle_DrawResultGilAndItemsScreen2x(void)
             arrowXPosition = 0;
             arrowYPosition = (g_MenuStatusPanelLayout.row5ArrowTop2x);
         } else {
-            arrowXPosition = 0x21;
-            arrowYPosition = (g_MenuStatusPanelLayout.rowBase2x) + (g_MenuResultItemRow - 1) * 0x43;
+            arrowXPosition = 33;
+            arrowYPosition = (g_MenuStatusPanelLayout.rowBase2x) + (g_MenuResultItemRow - 1) * 67;
         }
         Menu_DrawMoreTextArrow2x(arrowXPosition, arrowYPosition, 0.201000005f);
         for (itemIndex = 0; itemIndex < 4; itemIndex++) {
             if (g_BattleRewardItems[itemIndex].itemId != -1) {
-                Menu_DrawDecimalNumber2x(0x131, itemIndex * 0x43 + 0xB2, g_BattleRewardItems[itemIndex].count, 2, (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
+                Menu_DrawDecimalNumber2x(305, itemIndex * 67 + 0xB2, g_BattleRewardItems[itemIndex].count, 2, (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
                 if (g_BattleRewardItems[itemIndex].selected != 0) {
-                    Menu_DrawDecimalNumber2x(0x256, itemIndex * 0x43 + 0xB2, g_BattleRewardItems[itemIndex].count, 2, 7, 0.300000012f);
+                    Menu_DrawDecimalNumber2x(598, itemIndex * 67 + 0xB2, g_BattleRewardItems[itemIndex].count, 2, 7, 0.300000012f);
                 }
             }
         }
     }
-    Menu_DrawEncodedString2x(0x35, 0x51, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x18, 8), 7, 0.200000003f);
-    Menu_DrawEncodedString2x(0x17A, 0x51, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x19, 8), 7, 0.200000003f);
+    Menu_DrawEncodedString2x(53, 81, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x18, 8), 7, 0.200000003f);
+    Menu_DrawEncodedString2x(378, 81, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x19, 8), 7, 0.200000003f);
     if (g_MenuResultGilItemsEnabled != 0) {
-        Menu_DrawEncodedString2x(0x1B, 0x1A, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x15, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString2x(0x32, 0x85, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1A, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString2x(0x16D, 0x85, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1C, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString2x(0x32, 0x1B1, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1B, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString2x(27, 26, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x15, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString2x(50, 133, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1A, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString2x(365, 133, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1C, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString2x(50, 433, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1B, 8), 7, 0.200000003f);
         for (itemIndex = 0; itemIndex < 4; itemIndex++) {
             if (g_BattleRewardItems[itemIndex].itemId != -1) {
-                Menu_DrawEncodedString2x(0x5F, itemIndex * 0x43 + 0xB2, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
+                Menu_DrawEncodedString2x(95, itemIndex * 0x43 + 0xB2, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
                 if (g_BattleRewardItems[itemIndex].selected != 0) {
-                    Menu_DrawEncodedString2x(0x1A2, itemIndex * 0x43 + 0xB2, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), 7, 0.200000003f);
+                    Menu_DrawEncodedString2x(418, itemIndex * 0x43 + 0xB2, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), 7, 0.200000003f);
                 }
             }
         }
     } else {
-        Menu_DrawEncodedString2x(0x1B, 0x1A, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x16, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString2x(0x28, 0x85, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1D, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString2x(27, 26, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x16, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString2x(40, 133, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1D, 8), 7, 0.200000003f);
     }
-    Menu_SetRectShorts((short *)frameRect, 0, 0, 0x280, 0x45);
+    Menu_SetRectShorts((short *)frameRect, 0, 0, 640, 69);
     Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRect, 0.300000012f);
-    Menu_SetRectShorts((short *)frameRect, 0, 0x45, 0x160, 0x33);
+    Menu_SetRectShorts((short *)frameRect, 0, 69, 352, 51);
     Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRect, 0.300000012f);
-    Menu_SetRectShorts((short *)frameRect, 0x11A, 0x45, 0x166, 0x33);
+    Menu_SetRectShorts((short *)frameRect, 282, 69, 358, 51);
     Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRect, 0.400000006f);
     if (g_MenuResultGilItemsEnabled != 0) {
-        Menu_SetRectShorts((short *)frameRect, 0, 0x78, 0x160, 0x168);
+        Menu_SetRectShorts((short *)frameRect, 0, 120, 352, 360);
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRect, 0.201000005f);
-        Menu_SetRectShorts((short *)frameRect, 0x11A, 0x78, 0x166, 0x168);
+        Menu_SetRectShorts((short *)frameRect, 282, 120, 358, 360);
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRect, 0.300999999f);
     } else {
-        Menu_SetRectShorts((short *)frameRect, 0, 0x78, 0x280, 0x168);
+        Menu_SetRectShorts((short *)frameRect, 0, 120, 640, 360);
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRect, 0.201000005f);
     }
 }
@@ -1336,16 +1336,16 @@ void __cdecl Battle_DrawResultGilAndItemsScreen1x(void)
             }
         }
     } else {
-        if (g_MenuResultFadeLevel > 0xFF && g_MenuBattleEndMode == MENU_BATTLE_END_GIL_ITEMS_FADE_OUT) {
+        if (g_MenuResultFadeLevel > 255 && g_MenuBattleEndMode == MENU_BATTLE_END_GIL_ITEMS_FADE_OUT) {
             g_MenuResultFadeLevel = 0xFF;
             g_MenuBattleEndMode = MENU_BATTLE_END_FADED_OUT;
         }
         Menu_FillViewportQuad((char)g_MenuResultFadeLevel, 0.200000003f);
     }
-    Menu_DrawAtlasQuad1x(0x128, 0x2B, 0xF8, 0x10, 8, 8, 7, 0, 0, 0.400000006f);
-    Menu_DrawDecimalNumber1x(0xEB, 0x2B, gSavemap.gil, 0xA, 7, 0.400000006f);
-    Menu_DrawAtlasQuad1x(0x8D, 0x2B, 0xF8, 0x10, 8, 8, 7, 0, 0, 0.300000012f);
-    Menu_DrawDecimalNumber1x(0x62, 0x2B, g_BattleRewardTotals.gil, 7, 7, 0.300000012f);
+    Menu_DrawAtlasQuad1x(296, 43, 248, 16, 8, 8, 7, 0, 0, 0.400000006f);
+    Menu_DrawDecimalNumber1x(235, 43, gSavemap.gil, 0xA, 7, 0.400000006f);
+    Menu_DrawAtlasQuad1x(141, 43, 248, 16, 8, 8, 7, 0, 0, 0.300000012f);
+    Menu_DrawDecimalNumber1x(98, 43, g_BattleRewardTotals.gil, 7, 7, 0.300000012f);
     if (g_MenuResultGilItemsEnabled != 0) {
         if (g_MenuResultItemRow == MENU_RESULT_ITEM_ROW_TAKE_ALL) {
             arrowXPosition = 0;
@@ -1354,51 +1354,51 @@ void __cdecl Battle_DrawResultGilAndItemsScreen1x(void)
             arrowXPosition = 0;
             arrowYPosition = (g_MenuStatusPanelLayout.row5ArrowTop1x);
         } else {
-            arrowXPosition = 0x11;
-            arrowYPosition = (g_MenuStatusPanelLayout.rowBase1x) + (g_MenuResultItemRow - 1) * 0x22;
+            arrowXPosition = 17;
+            arrowYPosition = (g_MenuStatusPanelLayout.rowBase1x) + (g_MenuResultItemRow - 1) * 34;
         }
         Menu_DrawMoreTextArrow1x(arrowXPosition, arrowYPosition, 0.201000005f);
         for (itemIndex = 0; itemIndex < 4; itemIndex++) {
             if (g_BattleRewardItems[itemIndex].itemId != -1) {
-                Menu_DrawDecimalNumber1x(0x99, itemIndex * 0x22 + 0x59, g_BattleRewardItems[itemIndex].count, 2, (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
+                Menu_DrawDecimalNumber1x(153, itemIndex * 34 + 0x59, g_BattleRewardItems[itemIndex].count, 2, (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
                 if (g_BattleRewardItems[itemIndex].selected != 0) {
-                    Menu_DrawDecimalNumber1x(0x12C, itemIndex * 0x22 + 0x59, g_BattleRewardItems[itemIndex].count, 2, 7, 0.300000012f);
+                    Menu_DrawDecimalNumber1x(300, itemIndex * 34 + 0x59, g_BattleRewardItems[itemIndex].count, 2, 7, 0.300000012f);
                 }
             }
         }
     }
-    Menu_DrawEncodedString1x(0x1B, 0x2A, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x18, 8), 7, 0.200000003f);
-    Menu_DrawEncodedString1x(0xBD, 0x2A, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x19, 8), 7, 0.200000003f);
+    Menu_DrawEncodedString1x(27, 42, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x18, 8), 7, 0.200000003f);
+    Menu_DrawEncodedString1x(189, 42, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x19, 8), 7, 0.200000003f);
     if (g_MenuResultGilItemsEnabled != 0) {
-        Menu_DrawEncodedString1x(0xE, 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x15, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString1x(0x19, 0x43, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1A, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString1x(0xB7, 0x43, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1C, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString1x(0x19, 0xD9, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1B, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString1x(14, 13, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x15, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString1x(25, 67, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1A, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString1x(183, 67, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1C, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString1x(25, 217, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1B, 8), 7, 0.200000003f);
         for (itemIndex = 0; itemIndex < 4; itemIndex++) {
             if (g_BattleRewardItems[itemIndex].itemId != -1) {
-                Menu_DrawEncodedString1x(0x30, itemIndex * 0x22 + 0x59, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
+                Menu_DrawEncodedString1x(48, itemIndex * 0x22 + 0x59, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), (g_BattleRewardItems[itemIndex].selected != 0 ? -7 : 0) + 7, 0.200000003f);
                 if (g_BattleRewardItems[itemIndex].selected != 0) {
-                    Menu_DrawEncodedString1x(0xD1, itemIndex * 0x22 + 0x59, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), 7, 0.200000003f);
+                    Menu_DrawEncodedString1x(209, itemIndex * 0x22 + 0x59, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_ITEM, g_BattleRewardItems[itemIndex].itemId, 8), 7, 0.200000003f);
                 }
             }
         }
     } else {
-        Menu_DrawEncodedString1x(0xE, 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x16, 8), 7, 0.200000003f);
-        Menu_DrawEncodedString1x(0x14, 0x43, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1D, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString1x(14, 13, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x16, 8), 7, 0.200000003f);
+        Menu_DrawEncodedString1x(20, 67, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x1D, 8), 7, 0.200000003f);
     }
-    Menu_SetRectShorts((short *)frameRect, 0, 0, 0x140, 0x23);
+    Menu_SetRectShorts((short *)frameRect, 0, 0, 320, 35);
     Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRect, 0.300000012f);
-    Menu_SetRectShorts((short *)frameRect, 0, 0x23, 0xB0, 0x1A);
+    Menu_SetRectShorts((short *)frameRect, 0, 35, 176, 26);
     Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRect, 0.300000012f);
-    Menu_SetRectShorts((short *)frameRect, 0x8D, 0x23, 0xB3, 0x1A);
+    Menu_SetRectShorts((short *)frameRect, 141, 35, 179, 26);
     Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRect, 0.400000006f);
     if (g_MenuResultGilItemsEnabled != 0) {
-        Menu_SetRectShorts((short *)frameRect, 0, 0x3C, 0xB0, 0xB4);
+        Menu_SetRectShorts((short *)frameRect, 0, 60, 176, 180);
         Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRect, 0.201000005f);
-        Menu_SetRectShorts((short *)frameRect, 0x8D, 0x3C, 0xB3, 0xB4);
+        Menu_SetRectShorts((short *)frameRect, 141, 60, 179, 180);
         Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRect, 0.300999999f);
     } else {
-        Menu_SetRectShorts((short *)frameRect, 0, 0x3C, 0x140, 0xB4);
+        Menu_SetRectShorts((short *)frameRect, 0, 60, 320, 180);
         Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRect, 0.201000005f);
     }
 }
@@ -1440,20 +1440,20 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
         frame.rowUpdateResult = Battle_UpdateExpResultRows(Input_GetPressed(INPUT_ANY));
     }
     frame.labelX = 0;
-    frame.materiaBoxY = 0x45 - g_MenuTransitionTimer * 0x45 / 0x14;
-    frame.expPanelX = 0x126 - g_MenuTransitionTimer * 0x126 / 0x14;
-    frame.expRowY = 0x45;
-    frame.apPanelX = g_MenuTransitionTimer * 0x11A / 0x14;
-    frame.apRowY = 0x45;
+    frame.materiaBoxY = 69 - g_MenuTransitionTimer * 69 / 20;
+    frame.expPanelX = 294 - g_MenuTransitionTimer * 294 / 20;
+    frame.expRowY = 69;
+    frame.apPanelX = g_MenuTransitionTimer * 282 / 20;
+    frame.apRowY = 69;
     if (g_BattleResultExpActive != 0) {
         if (g_MenuNewMateriaDelay == 0 && g_MenuNewMateriaReadIndex < g_MenuNewMateriaCount) {
             SfxPlayOnChannel(0x40, 0x1E1, 2);
-            g_MenuNewMateriaDelay = 0x96;
+            g_MenuNewMateriaDelay = 150;
             g_MenuNewMateriaId = g_BattleAcquiredMateriaIds[g_MenuNewMateriaReadIndex];
             g_MenuNewMateriaReadIndex++;
         }
         if (g_MenuNewMateriaDelay != 0) {
-            Battle_DrawResultNewMateriaBox2x(0xD8, frame.materiaBoxY + 0x1A);
+            Battle_DrawResultNewMateriaBox2x(216, frame.materiaBoxY + 0x1A);
             g_MenuNewMateriaDelay--;
         }
     }
@@ -1464,22 +1464,22 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
     Menu_DrawEncodedString2x(frame.labelX + 0x1B, frame.materiaBoxY + 0x1A, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x10, 8), 7, 0.100000001f);
     Menu_DrawEncodedString2x(frame.expPanelX + 0x39, frame.expRowY + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x13, 8), 7, 0.101000004f);
     Menu_DrawEncodedString2x(frame.apPanelX + 0x78, frame.apRowY + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x14, 8), 7, 0.112999998f);
-    Menu_SetRectShorts(&frame.rect.x, frame.labelX, frame.materiaBoxY, 0x280, 0x45);
+    Menu_SetRectShorts(&frame.rect.x, frame.labelX, frame.materiaBoxY, 640, 69);
     Menu_DrawWindowFrame2x(&frame.rect, 0.101000004f);
-    Menu_SetRectShorts(&frame.rect.x, frame.expPanelX, frame.expRowY, 0x160, 0x33);
+    Menu_SetRectShorts(&frame.rect.x, frame.expPanelX, frame.expRowY, 352, 51);
     Menu_DrawWindowFrame2x(&frame.rect, 0.101000004f);
-    Menu_SetRectShorts(&frame.rect.x, frame.apPanelX, frame.apRowY, 0x166, 0x33);
+    Menu_SetRectShorts(&frame.rect.x, frame.apPanelX, frame.apRowY, 358, 51);
     Menu_DrawWindowFrame2x(&frame.rect, 0.112999998f);
     for (frame.partyIndex = 0; frame.partyIndex < 3; frame.partyIndex++) {
         *(unsigned char *)&frame.saveSlot = g_CharIdToSaveSlot[gSavemap.party[frame.partyIndex]];
-        frame.levelUpOffset = (frame.partyIndex * 0x78 + 0x78) * g_MenuTransitionTimer / 0x14;
+        frame.levelUpOffset = (frame.partyIndex * 120 + 0x78) * g_MenuTransitionTimer / 20;
         if (gSavemap.party[frame.partyIndex] != PARTY_CHAR_NONE && g_BattleRewardTotals.party[frame.partyIndex].displayedLevel != 0) {
             if (g_MenuExpPartySlots[frame.partyIndex].displayedLevel != g_BattleRewardTotals.party[frame.partyIndex].displayedLevel) {
                 SfxPreloadAndPlayOnChannel5(SFX_MENU_HEAL);
-                g_MenuExpPartySlots[frame.partyIndex].countdown = 0x50;
+                g_MenuExpPartySlots[frame.partyIndex].countdown = 80;
             }
             if (g_MenuExpPartySlots[frame.partyIndex].countdown != 0) {
-                Battle_DrawResultLevelUpBox2x(0x3A, frame.levelUpOffset + 0x40);
+                Battle_DrawResultLevelUpBox2x(58, frame.levelUpOffset + 0x40);
                 g_MenuExpPartySlots[frame.partyIndex].countdown--;
             }
             g_MenuExpPartySlots[frame.partyIndex].displayedLevel = g_BattleRewardTotals.party[frame.partyIndex].displayedLevel;
@@ -1491,7 +1491,7 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
                             continue;
                         }
                         SfxPlayOnChannel(0x40, 0x1E1, 2);
-                        g_MenuExpPartySlots[frame.partyIndex].timer = 0x50;
+                        g_MenuExpPartySlots[frame.partyIndex].timer = 80;
                         g_MateriaLevelUpSlotMask[frame.partyIndex] &= (short)~(1 << g_MenuExpPartySlots[frame.partyIndex].materiaBitIndex);
                         g_MenuExpPartySlots[frame.partyIndex].materiaBitIndex++;
                         break;
@@ -1504,7 +1504,7 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
                             continue;
                         }
                         SfxPlayOnChannel(0x40, 0x1E1, 2);
-                        g_MenuExpPartySlots[frame.partyIndex].holdFrames = 0x50;
+                        g_MenuExpPartySlots[frame.partyIndex].holdFrames = 80;
                         g_MenuExpPartySlots[frame.partyIndex].limitBitIndex++;
                         break;
                     }
@@ -1516,11 +1516,11 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
                 } else {
                     frame.leveledFlags = gSavemap.chars[frame.saveSlot & 255].armorMateria[g_MenuExpPartySlots[frame.partyIndex].materiaBitIndex - 9] & 0xFF;
                 }
-                Battle_DrawResultMateriaLevelUpBox2x(0xFB, frame.levelUpOffset + 9, frame.leveledFlags);
+                Battle_DrawResultMateriaLevelUpBox2x(251, frame.levelUpOffset + 9, frame.leveledFlags);
                 g_MenuExpPartySlots[frame.partyIndex].timer--;
             }
             if (g_MenuExpPartySlots[frame.partyIndex].holdFrames != 0) {
-                Battle_DrawResultLimitPanel2x(0xFB, frame.levelUpOffset + 9, frame.partyIndex, g_MenuExpPartySlots[frame.partyIndex].limitBitIndex - 1);
+                Battle_DrawResultLimitPanel2x(251, frame.levelUpOffset + 9, frame.partyIndex, g_MenuExpPartySlots[frame.partyIndex].limitBitIndex - 1);
                 g_MenuExpPartySlots[frame.partyIndex].holdFrames--;
             }
             if (g_MenuPartyStats[frame.partyIndex].hp == 0) {
@@ -1529,34 +1529,34 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
                 frame.rowColor = (g_MenuPartyStats[frame.partyIndex].hp >= g_MenuPartyStats[frame.partyIndex].maxHp / 4) + 6;
             }
             frame.textColor = frame.rowColor;
-            Menu_DrawEncodedString2x(0x179, frame.levelUpOffset + 0x13, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8), frame.textColor, 0.100100003f);
-            Menu_DrawEncodedString2x(0xB2, frame.levelUpOffset + 0x49, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2B, 8), frame.textColor, 0.100100003f);
-            Menu_DrawEncodedString2x(0x133, frame.levelUpOffset + 0x49, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2C, 8), frame.textColor, 0.100100003f);
-            Menu_DrawEncodedString2x(0x8D, frame.levelUpOffset + 0x18, gSavemap.chars[(frame.saveSlot & 255)].name, frame.textColor, 0);
-            Menu_DrawGaugeBar2x(0x1C0, frame.levelUpOffset + 0x34, g_BattleRewardTotals.party[frame.partyIndex].expBar << 1, 0xB, 0x90802020, 0.100100003f);
-            Menu_DrawAtlasQuad2x(0x1C0, frame.levelUpOffset + 0x33, 0x88, 8, 0x40, 8, 7, 0, 0, 0.101099998f);
-            Menu_DrawAtlasQuad2x(0x23A, frame.levelUpOffset + 0x1C, 0xF8, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
-            Menu_DrawAtlasQuad2x(0x23A, frame.levelUpOffset + 0x4F, 0xF8, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
-            Menu_DrawDecimalNumber2x(0x1C2, frame.levelUpOffset + 0x1A, g_BattleRewardTotals.party[frame.partyIndex].displayedExp, 0xA, frame.textColor, 0.100100003f);
-            Menu_DrawDecimalNumber2x(0x1C2, frame.levelUpOffset + 0x4D, g_BattleRewardTotals.party[frame.partyIndex].remainingExp, 0xA, frame.textColor, 0.100100003f);
-            Menu_DrawDecimalNumber2x(0xF0, frame.levelUpOffset + 0x4D, g_BattleRewardTotals.party[frame.partyIndex].displayedLevel, 2, frame.textColor, 0.100100003f);
-            Menu_DrawCharPortrait2x(0x23, frame.levelUpOffset + 9, frame.partyIndex, 0.100000001f);
+            Menu_DrawEncodedString2x(377, frame.levelUpOffset + 0x13, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8), frame.textColor, 0.100100003f);
+            Menu_DrawEncodedString2x(178, frame.levelUpOffset + 0x49, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2B, 8), frame.textColor, 0.100100003f);
+            Menu_DrawEncodedString2x(307, frame.levelUpOffset + 0x49, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2C, 8), frame.textColor, 0.100100003f);
+            Menu_DrawEncodedString2x(141, frame.levelUpOffset + 0x18, gSavemap.chars[(frame.saveSlot & 255)].name, frame.textColor, 0);
+            Menu_DrawGaugeBar2x(448, frame.levelUpOffset + 0x34, g_BattleRewardTotals.party[frame.partyIndex].expBar << 1, 11, 0x90802020, 0.100100003f);
+            Menu_DrawAtlasQuad2x(448, frame.levelUpOffset + 0x33, 0x88, 8, 64, 8, 7, 0, 0, 0.101099998f);
+            Menu_DrawAtlasQuad2x(570, frame.levelUpOffset + 0x1C, 0xF8, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
+            Menu_DrawAtlasQuad2x(570, frame.levelUpOffset + 0x4F, 0xF8, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
+            Menu_DrawDecimalNumber2x(450, frame.levelUpOffset + 0x1A, g_BattleRewardTotals.party[frame.partyIndex].displayedExp, 10, frame.textColor, 0.100100003f);
+            Menu_DrawDecimalNumber2x(450, frame.levelUpOffset + 0x4D, g_BattleRewardTotals.party[frame.partyIndex].remainingExp, 10, frame.textColor, 0.100100003f);
+            Menu_DrawDecimalNumber2x(240, frame.levelUpOffset + 0x4D, g_BattleRewardTotals.party[frame.partyIndex].displayedLevel, 2, frame.textColor, 0.100100003f);
+            Menu_DrawCharPortrait2x(35, frame.levelUpOffset + 9, frame.partyIndex, 0.100000001f);
         }
-        Menu_SetRectShorts(&frame.rect.x, 0, frame.levelUpOffset, 0x280, 0x78);
+        Menu_SetRectShorts(&frame.rect.x, 0, frame.levelUpOffset, 640, 120);
         Menu_DrawWindowFrame2x(&frame.rect, 0.101000004f);
     }
-    if (g_MenuTransitionTimer == 0x14 && g_BattleResultExpActive != 0) {
+    if (g_MenuTransitionTimer == 20 && g_BattleResultExpActive != 0) {
         if (Input_GetPressed(INPUT_ANY) != 0 && frame.rowUpdateResult == 0) {
             g_BattleResultGilItemsFlag = 1;
             g_MenuTransitionStep = 0 - g_MenuTransitionStep;
-            g_MenuResultFadeStep = 0xFFFA;
+            g_MenuResultFadeStep = 0xFFFA /* -6 */;
             g_MenuBattleEndMode = MENU_BATTLE_END_EXP_TO_GIL;
             g_MenuResultFadeLevel = 0xFF;
         }
     }
     g_MenuTransitionTimer += g_MenuTransitionStep;
-    if (g_MenuBattleEndMode == MENU_BATTLE_END_EXP && g_MenuTransitionTimer < 0x14) {
-        g_MenuTransitionTimer = 0x14;
+    if (g_MenuBattleEndMode == MENU_BATTLE_END_EXP && g_MenuTransitionTimer < 20) {
+        g_MenuTransitionTimer = 20;
         if (Input_GetPressed(INPUT_ANY) != 0) {
             g_BattleResultExpActive = 1;
             for (frame.partyIndex = 0; frame.partyIndex < 4; frame.partyIndex++) {
@@ -1564,8 +1564,8 @@ void __cdecl Battle_DrawResultExpScreen2x(void)
             }
         }
     }
-    if (g_MenuTransitionTimer > 0x64) {
-        g_MenuTransitionTimer = 0x64;
+    if (g_MenuTransitionTimer > 100) {
+        g_MenuTransitionTimer = 100;
     }
     if (g_BattleResultExpActive != 0 && frame.rowUpdateResult != 0 && (g_BattleResultScreenState & 2) != 0) {
         SfxPlayOnChannel(0x40, 0x2D, 1);
@@ -1582,7 +1582,7 @@ void __cdecl Battle_DrawResultLevelUpBox2x(int originX, int originY)
     int rect[2];
 
     Menu_DrawEncodedString2x(originX + 0xD, originY + 0xD, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_LEVEL_UP * 0x14, 6, 0);
-    Menu_SetRectShorts((short *)rect, originX, originY, 0x80, 0x2B);
+    Menu_SetRectShorts((short *)rect, originX, originY, 128, 43);
     Menu_DrawWindowFrame2x((EnglishWindowFrame *)rect, 0);
 }
 
@@ -1599,11 +1599,11 @@ void __cdecl Battle_DrawResultMateriaLevelUpBox2x(int x, int y, int materia)
     short junk[8];
 
     color = Menu_GetMateriaTypeColorIndex(materia);
-    Menu_DrawAtlasQuad2x(x + 0xd, y + 0xb, 0x80, 0x20, 0x10, 0x10, color, 0, 0,
+    Menu_DrawAtlasQuad2x(x + 0xd, y + 0xb, 0x80, 0x20, 16, 16, color, 0, 0,
                          0.0f);
     Menu_DrawEncodedString2x(x + 0x28, y + 0xb, Kernel_LookupMateriaNameText(materia), 7, 0.0f);
     Menu_DrawEncodedString2x(x + 0x5d, y + 0x27, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_LEVEL_UP * 0x14, 6, 0.0f);
-    Menu_SetRectShorts(&box.x, x, y, 0xd0, 0x45);
+    Menu_SetRectShorts(&box.x, x, y, 208, 69);
     Menu_DrawWindowFrame2x(&box, 0.0f);
 }
 
@@ -1621,12 +1621,12 @@ void __cdecl Battle_DrawResultNewMateriaBox2x(int x, int y)
     EnglishWindowFrame box;
 
     color = Menu_GetMateriaTypeColorIndex(g_MenuNewMateriaId);
-    Menu_DrawAtlasQuad2x(x + 0xd, y + 0xb, 0x80, 0x20, 0x10, 0x10, color, 0, 0,
+    Menu_DrawAtlasQuad2x(x + 0xd, y + 0xb, 0x80, 0x20, 16, 16, color, 0, 0,
                          0.0f);
     Menu_DrawEncodedString2x(x + 0x35, y + 0x27, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x25, 8), 7,
                       0.0f);
     Menu_DrawEncodedString2x(x + 0x28, y + 0xb, Kernel_LookupMateriaNameText(g_MenuNewMateriaId), 7, 0.0f);
-    Menu_SetRectShorts(&box.x, x, y, 0xd9, 0x4b);
+    Menu_SetRectShorts(&box.x, x, y, 217, 75);
     Menu_DrawWindowFrame2x(&box, 0.0f);
 }
 
@@ -1648,7 +1648,7 @@ void __cdecl Battle_DrawResultLimitPanel2x(int x, int y, int slot, int level)
                               g_CharIdToSaveSlot[gSavemap.party[slot]], level),
                           8),
                       6, 0.0f);
-    Menu_SetRectShorts(&box.x, x, y, 0xd9, 0x4b);
+    Menu_SetRectShorts(&box.x, x, y, 217, 75);
     Menu_DrawWindowFrame2x(&box, 0.0f);
 }
 
@@ -1688,46 +1688,46 @@ void __cdecl Battle_DrawResultExpScreen1x(void)
         frame.rowUpdateResult = Battle_UpdateExpResultRows(Input_GetPressed(INPUT_ANY));
     }
     frame.labelX = 0;
-    frame.materiaBoxY = 0x23 - g_MenuTransitionTimer * 0x23 / 0x14;
-    frame.expPanelX = 0x93 - g_MenuTransitionTimer * 0x93 / 0x14;
-    frame.expRowY = 0x23;
-    frame.apPanelX = g_MenuTransitionTimer * 0x8D / 0x14;
-    frame.apRowY = 0x23;
+    frame.materiaBoxY = 35 - g_MenuTransitionTimer * 35 / 20;
+    frame.expPanelX = 147 - g_MenuTransitionTimer * 147 / 20;
+    frame.expRowY = 35;
+    frame.apPanelX = g_MenuTransitionTimer * 141 / 20;
+    frame.apRowY = 35;
     if (g_BattleResultExpActive != 0) {
         if (g_MenuNewMateriaDelay == 0 && g_MenuNewMateriaReadIndex < g_MenuNewMateriaCount) {
             SfxPlayOnChannel(0x40, 0x1E1, 2);
-            g_MenuNewMateriaDelay = 0x96;
+            g_MenuNewMateriaDelay = 150;
             g_MenuNewMateriaId = g_BattleAcquiredMateriaIds[g_MenuNewMateriaReadIndex];
             g_MenuNewMateriaReadIndex++;
         }
         if (g_MenuNewMateriaDelay != 0) {
-            Battle_DrawResultNewMateriaBox1x(0x6C, frame.materiaBoxY + 0xD);
+            Battle_DrawResultNewMateriaBox1x(108, frame.materiaBoxY + 0xD);
             g_MenuNewMateriaDelay--;
         }
     }
-    Menu_DrawAtlasQuad1x(frame.expPanelX + 0x8D, frame.expRowY + 0xA, 0xF8, 8, 8, 8, 7, 0, 0, 0.101000004f);
+    Menu_DrawAtlasQuad1x(frame.expPanelX + 0x8D, frame.expRowY + 0xA, 248, 8, 8, 8, 7, 0, 0, 0.101000004f);
     Menu_DrawDecimalNumber1x(frame.expPanelX + 0x57, frame.expRowY + 9, g_BattleRewardExp, 9, 7, 0.101000004f);
-    Menu_DrawAtlasQuad1x(frame.apPanelX + 0x8D, frame.apRowY + 0xA, 0xF8, 8, 8, 8, 7, 0, 0, 0.112999998f);
+    Menu_DrawAtlasQuad1x(frame.apPanelX + 0x8D, frame.apRowY + 0xA, 248, 8, 8, 8, 7, 0, 0, 0.112999998f);
     Menu_DrawDecimalNumber1x(frame.apPanelX + 0x57, frame.apRowY + 9, g_BattleRewardAp, 9, 7, 0.112999998f);
     Menu_DrawEncodedString1x(frame.labelX + 0xE, frame.materiaBoxY + 0xD, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x10, 8), 7, 0.100000001f);
     Menu_DrawEncodedString1x(frame.expPanelX + 0x1D, frame.expRowY + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x13, 8), 7, 0.101000004f);
     Menu_DrawEncodedString1x(frame.apPanelX + 0x3C, frame.apRowY + 7, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x14, 8), 7, 0.112999998f);
-    Menu_SetRectShorts(&frame.rect.x, frame.labelX, frame.materiaBoxY, 0x140, 0x23);
+    Menu_SetRectShorts(&frame.rect.x, frame.labelX, frame.materiaBoxY, 320, 35);
     Menu_DrawWindowFrame1x(&frame.rect, 0.101000004f);
-    Menu_SetRectShorts(&frame.rect.x, frame.expPanelX, frame.expRowY, 0xB0, 0x1A);
+    Menu_SetRectShorts(&frame.rect.x, frame.expPanelX, frame.expRowY, 176, 26);
     Menu_DrawWindowFrame1x(&frame.rect, 0.101000004f);
-    Menu_SetRectShorts(&frame.rect.x, frame.apPanelX, frame.apRowY, 0xB3, 0x1A);
+    Menu_SetRectShorts(&frame.rect.x, frame.apPanelX, frame.apRowY, 179, 26);
     Menu_DrawWindowFrame1x(&frame.rect, 0.112999998f);
     for (frame.partyIndex = 0; frame.partyIndex < 3; frame.partyIndex++) {
         *(unsigned char *)&frame.saveSlot = g_CharIdToSaveSlot[gSavemap.party[frame.partyIndex]];
-        frame.levelUpOffset = (frame.partyIndex * 0x3C + 0x3C) * g_MenuTransitionTimer / 0x14;
+        frame.levelUpOffset = (frame.partyIndex * 60 + 0x3C) * g_MenuTransitionTimer / 20;
         if (gSavemap.party[frame.partyIndex] != PARTY_CHAR_NONE && g_BattleRewardTotals.party[frame.partyIndex].displayedLevel != 0) {
             if (g_MenuExpPartySlots[frame.partyIndex].displayedLevel != g_BattleRewardTotals.party[frame.partyIndex].displayedLevel) {
                 SfxPreloadAndPlayOnChannel5(SFX_MENU_HEAL);
-                g_MenuExpPartySlots[frame.partyIndex].countdown = 0x50;
+                g_MenuExpPartySlots[frame.partyIndex].countdown = 80;
             }
             if (g_MenuExpPartySlots[frame.partyIndex].countdown != 0) {
-                Battle_DrawResultLevelUpBox1x(0x1D, frame.levelUpOffset + 0x20);
+                Battle_DrawResultLevelUpBox1x(29, frame.levelUpOffset + 0x20);
                 g_MenuExpPartySlots[frame.partyIndex].countdown--;
             }
             g_MenuExpPartySlots[frame.partyIndex].displayedLevel = g_BattleRewardTotals.party[frame.partyIndex].displayedLevel;
@@ -1739,7 +1739,7 @@ void __cdecl Battle_DrawResultExpScreen1x(void)
                             continue;
                         }
                         SfxPlayOnChannel(0x40, 0x1E1, 2);
-                        g_MenuExpPartySlots[frame.partyIndex].timer = 0x50;
+                        g_MenuExpPartySlots[frame.partyIndex].timer = 80;
                         g_MateriaLevelUpSlotMask[frame.partyIndex] &= (short)~(1 << g_MenuExpPartySlots[frame.partyIndex].materiaBitIndex);
                         g_MenuExpPartySlots[frame.partyIndex].materiaBitIndex++;
                         break;
@@ -1752,7 +1752,7 @@ void __cdecl Battle_DrawResultExpScreen1x(void)
                             continue;
                         }
                         SfxPlayOnChannel(0x40, 0x1E1, 2);
-                        g_MenuExpPartySlots[frame.partyIndex].holdFrames = 0x50;
+                        g_MenuExpPartySlots[frame.partyIndex].holdFrames = 80;
                         g_MenuExpPartySlots[frame.partyIndex].limitBitIndex++;
                         break;
                     }
@@ -1764,11 +1764,11 @@ void __cdecl Battle_DrawResultExpScreen1x(void)
                 } else {
                     frame.leveledFlags = *(&gSavemap.chars[frame.saveSlot & 255].exp + g_MenuExpPartySlots[frame.partyIndex].materiaBitIndex) & 0xFF;
                 }
-                Battle_DrawResultMateriaLevelUpBox1x(0x7D, frame.levelUpOffset + 4, frame.leveledFlags);
+                Battle_DrawResultMateriaLevelUpBox1x(125, frame.levelUpOffset + 4, frame.leveledFlags);
                 g_MenuExpPartySlots[frame.partyIndex].timer--;
             }
             if (g_MenuExpPartySlots[frame.partyIndex].holdFrames != 0) {
-                Battle_DrawResultLimitPanel1x(0x7D, frame.levelUpOffset + 4, frame.partyIndex, g_MenuExpPartySlots[frame.partyIndex].limitBitIndex - 1);
+                Battle_DrawResultLimitPanel1x(125, frame.levelUpOffset + 4, frame.partyIndex, g_MenuExpPartySlots[frame.partyIndex].limitBitIndex - 1);
                 g_MenuExpPartySlots[frame.partyIndex].holdFrames--;
             }
             if (g_MenuPartyStats[frame.partyIndex].hp == 0) {
@@ -1777,34 +1777,34 @@ void __cdecl Battle_DrawResultExpScreen1x(void)
                 frame.rowColor = (g_MenuPartyStats[frame.partyIndex].hp >= g_MenuPartyStats[frame.partyIndex].maxHp / 4) + 6;
             }
             frame.textColor = frame.rowColor;
-            Menu_DrawEncodedString1x(0xBD, frame.levelUpOffset + 0xA, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8), frame.textColor, 0.100100003f);
-            Menu_DrawEncodedString1x(0x59, frame.levelUpOffset + 0x25, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2B, 8), frame.textColor, 0.100100003f);
-            Menu_DrawEncodedString1x(0x9A, frame.levelUpOffset + 0x25, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2C, 8), frame.textColor, 0.100100003f);
-            Menu_DrawEncodedString1x(0x48, frame.levelUpOffset + 0xC, gSavemap.chars[(frame.saveSlot & 255)].name, frame.textColor, 0);
-            Menu_DrawGaugeBar1x(0xE0, frame.levelUpOffset + 0x1A, g_BattleRewardTotals.party[frame.partyIndex].expBar, 6, 0x90802020, 0.100100003f);
-            Menu_DrawAtlasQuad1x(0xE0, frame.levelUpOffset + 0x1A, 0x88, 8, 0x40, 8, 7, 0, 0, 0.101099998f);
-            Menu_DrawAtlasQuad1x(0x11D, frame.levelUpOffset + 0xE, 0xF8, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
-            Menu_DrawAtlasQuad1x(0x11D, frame.levelUpOffset + 0x28, 0xF8, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
-            Menu_DrawDecimalNumber1x(0xE1, frame.levelUpOffset + 0xD, g_BattleRewardTotals.party[frame.partyIndex].displayedExp, 0xA, frame.textColor, 0.100100003f);
-            Menu_DrawDecimalNumber1x(0xE1, frame.levelUpOffset + 0x27, g_BattleRewardTotals.party[frame.partyIndex].remainingExp, 0xA, frame.textColor, 0.100100003f);
-            Menu_DrawDecimalNumber1x(0x78, frame.levelUpOffset + 0x27, g_BattleRewardTotals.party[frame.partyIndex].displayedLevel, 2, frame.textColor, 0.100100003f);
-            Menu_DrawCharPortrait1x(0x12, frame.levelUpOffset + 5, frame.partyIndex, 0.100000001f);
+            Menu_DrawEncodedString1x(189, frame.levelUpOffset + 0xA, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 9, 8), frame.textColor, 0.100100003f);
+            Menu_DrawEncodedString1x(89, frame.levelUpOffset + 0x25, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2B, 8), frame.textColor, 0.100100003f);
+            Menu_DrawEncodedString1x(154, frame.levelUpOffset + 0x25, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x2C, 8), frame.textColor, 0.100100003f);
+            Menu_DrawEncodedString1x(72, frame.levelUpOffset + 0xC, gSavemap.chars[(frame.saveSlot & 255)].name, frame.textColor, 0);
+            Menu_DrawGaugeBar1x(224, frame.levelUpOffset + 0x1A, g_BattleRewardTotals.party[frame.partyIndex].expBar, 6, 0x90802020, 0.100100003f);
+            Menu_DrawAtlasQuad1x(224, frame.levelUpOffset + 0x1A, 136, 8, 64, 8, 7, 0, 0, 0.101099998f);
+            Menu_DrawAtlasQuad1x(285, frame.levelUpOffset + 0xE, 248, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
+            Menu_DrawAtlasQuad1x(285, frame.levelUpOffset + 0x28, 248, 8, 8, 8, frame.textColor, 0, 0, 0.100100003f);
+            Menu_DrawDecimalNumber1x(225, frame.levelUpOffset + 0xD, g_BattleRewardTotals.party[frame.partyIndex].displayedExp, 0xA, frame.textColor, 0.100100003f);
+            Menu_DrawDecimalNumber1x(225, frame.levelUpOffset + 0x27, g_BattleRewardTotals.party[frame.partyIndex].remainingExp, 0xA, frame.textColor, 0.100100003f);
+            Menu_DrawDecimalNumber1x(120, frame.levelUpOffset + 0x27, g_BattleRewardTotals.party[frame.partyIndex].displayedLevel, 2, frame.textColor, 0.100100003f);
+            Menu_DrawCharPortrait1x(18, frame.levelUpOffset + 5, frame.partyIndex, 0.100000001f);
         }
-        Menu_SetRectShorts(&frame.rect.x, 0, frame.levelUpOffset, 0x140, 0x3C);
+        Menu_SetRectShorts(&frame.rect.x, 0, frame.levelUpOffset, 320, 60);
         Menu_DrawWindowFrame1x(&frame.rect, 0.101000004f);
     }
-    if (g_MenuTransitionTimer == 0x14 && g_BattleResultExpActive != 0) {
+    if (g_MenuTransitionTimer == 20 && g_BattleResultExpActive != 0) {
         if (Input_GetPressed(INPUT_ANY) != 0 && frame.rowUpdateResult == 0) {
             g_BattleResultGilItemsFlag = 1;
             g_MenuTransitionStep = 0 - g_MenuTransitionStep;
-            g_MenuResultFadeStep = 0xFFFA;
+            g_MenuResultFadeStep = 0xFFFA /* -6 */;
             g_MenuBattleEndMode = MENU_BATTLE_END_EXP_TO_GIL;
             g_MenuResultFadeLevel = 0xFF;
         }
     }
     g_MenuTransitionTimer += g_MenuTransitionStep;
-    if (g_MenuBattleEndMode == MENU_BATTLE_END_EXP && g_MenuTransitionTimer < 0x14) {
-        g_MenuTransitionTimer = 0x14;
+    if (g_MenuBattleEndMode == MENU_BATTLE_END_EXP && g_MenuTransitionTimer < 20) {
+        g_MenuTransitionTimer = 20;
         if (Input_GetPressed(INPUT_ANY) != 0) {
             g_BattleResultExpActive = 1;
             for (frame.partyIndex = 0; frame.partyIndex < 4; frame.partyIndex++) {
@@ -1812,8 +1812,8 @@ void __cdecl Battle_DrawResultExpScreen1x(void)
             }
         }
     }
-    if (g_MenuTransitionTimer > 0x64) {
-        g_MenuTransitionTimer = 0x64;
+    if (g_MenuTransitionTimer > 100) {
+        g_MenuTransitionTimer = 100;
     }
     if (g_BattleResultExpActive != 0 && frame.rowUpdateResult != 0 && (g_BattleResultScreenState & 2) != 0) {
         SfxPlayOnChannel(0x40, 0x2D, 1);
@@ -1830,7 +1830,7 @@ void __cdecl Battle_DrawResultLevelUpBox1x(int originX, int originY)
     int rect[2];
 
     Menu_DrawEncodedString1x(originX + 7, originY + 7, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_LEVEL_UP * 0x14, 6, 0);
-    Menu_SetRectShorts((short *)rect, originX, originY, 0x40, 0x16);
+    Menu_SetRectShorts((short *)rect, originX, originY, 64, 22);
     Menu_DrawWindowFrame1x((EnglishWindowFrame *)rect, 0);
 }
 
@@ -1847,11 +1847,11 @@ void __cdecl Battle_DrawResultMateriaLevelUpBox1x(int x, int y, int materia)
     short junk[8];
 
     color = Menu_GetMateriaTypeColorIndex(materia);
-    Menu_DrawAtlasQuad1x(x + 0x7, y + 0x6, 0x80, 0x20, 0x10, 0x10, color, 0, 0,
+    Menu_DrawAtlasQuad1x(x + 0x7, y + 0x6, 128, 32, 16, 16, color, 0, 0,
                          0.0f);
     Menu_DrawEncodedString1x(x + 0x14, y + 0x6, Kernel_LookupMateriaNameText(materia), 7, 0.0f);
     Menu_DrawEncodedString1x(x + 0x2f, y + 0x14, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_LEVEL_UP * 0x14, 6, 0.0f);
-    Menu_SetRectShorts(&box.x, x, y, 0x68, 0x23);
+    Menu_SetRectShorts(&box.x, x, y, 104, 35);
     Menu_DrawWindowFrame1x(&box, 0.0f);
 }
 
@@ -1869,12 +1869,12 @@ void __cdecl Battle_DrawResultNewMateriaBox1x(int x, int y)
     EnglishWindowFrame box;
 
     color = Menu_GetMateriaTypeColorIndex(g_MenuNewMateriaId);
-    Menu_DrawAtlasQuad1x(x + 0x7, y + 0x6, 0x80, 0x20, 0x10, 0x10, color, 0, 0,
+    Menu_DrawAtlasQuad1x(x + 0x7, y + 0x6, 128, 32, 16, 16, color, 0, 0,
                          0.0f);
     Menu_DrawEncodedString1x(x + 0x1b, y + 0x14, (unsigned char *)Kernel_LookupUiText(KERNEL_TEXT_BATTLE_MESSAGE, 0x25, 8), 7,
                          0.0f);
     Menu_DrawEncodedString1x(x + 0x14, y + 0x6, Kernel_LookupMateriaNameText(g_MenuNewMateriaId), 7, 0.0f);
-    Menu_SetRectShorts(&box.x, x, y, 0x6d, 0x26);
+    Menu_SetRectShorts(&box.x, x, y, 109, 38);
     Menu_DrawWindowFrame1x(&box, 0.0f);
 }
 
@@ -1896,7 +1896,7 @@ void __cdecl Battle_DrawResultLimitPanel1x(int x, int y, int slot, int level)
                                  g_CharIdToSaveSlot[gSavemap.party[slot]], level),
                              8),
                          6, 0.0f);
-    Menu_SetRectShorts(&box.x, x, y, 0x6d, 0x26);
+    Menu_SetRectShorts(&box.x, x, y, 109, 38);
     Menu_DrawWindowFrame1x(&box, 0.0f);
 }
 
@@ -1998,7 +1998,7 @@ void __cdecl Battle_InitResultScreenState(void)
     g_MenuBattleEndMode = (short)g_MenuModuleId;
     g_BattleResultExpActive = (char)g_MenuBattleEndMode;
     g_BattleResultSavedExpActive = g_BattleResultExpActive;
-    g_MenuTransitionTimer = 0x64;
+    g_MenuTransitionTimer = 100;
     g_MenuTransitionStep = 0xFFFD;
     g_MenuResultGilItemsEnabled = 0;
     for (r = 0; r < 4; r++) {
@@ -2044,15 +2044,15 @@ void __cdecl Menu_SetPhase(int phase, int prev)
     case MENU_PHASE_SCREEN:
         break;
     case MENU_PHASE_OPEN_SCREEN:
-        g_MenuCommandWindowAnimStep = 0x10;
+        g_MenuCommandWindowAnimStep = 16;
         break;
     case MENU_PHASE_SWITCH_SCREEN:
-        g_MenuCommandWindowAnimStep = 0x10;
+        g_MenuCommandWindowAnimStep = 16;
         break;
     case MENU_PHASE_CLOSE_SCREEN:
         g_MenuMainCursors.command.row = g_MenuCommandRow;
         g_MenuCommandOpenScale = 0;
-        g_MenuCommandWindowAnimStep = 0x10;
+        g_MenuCommandWindowAnimStep = 16;
         break;
     }
 }
@@ -2077,8 +2077,8 @@ void __cdecl Menu_DrawCommandWindow2x(int mode)
     done = 0;
     switch (g_MenuPhase) {
     case MENU_PHASE_SCREEN:
-        g_MenuCommandWindowHeight = 0x33;
-        Menu_DrawEncodedString2x(0x1fc, 0xd,
+        g_MenuCommandWindowHeight = 51;
+        Menu_DrawEncodedString2x(508, 13,
                           g_MenuSavedCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                           0.001f);
         break;
@@ -2089,11 +2089,11 @@ void __cdecl Menu_DrawCommandWindow2x(int mode)
             g_MenuScreenInitCallbacks[g_MenuCurrentScreenId](0);
             g_MenuPhase = MENU_PHASE_SCREEN_FADE_IN;
         }
-        dy = g_MenuSavedCommandRow * 0x1a * g_MenuCommandWindowAnimStep / 0x10;
-        Menu_DrawEncodedString2x(0x1fc, dy + 0xd,
+        dy = g_MenuSavedCommandRow * 26 * g_MenuCommandWindowAnimStep / 16;
+        Menu_DrawEncodedString2x(508, dy + 0xd,
                           g_MenuSavedCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                           0.001f);
-        g_MenuCommandWindowHeight = g_MenuCommandWindowAnimStep * 0x11e / 0x10 + 0x33;
+        g_MenuCommandWindowHeight = g_MenuCommandWindowAnimStep * 286 / 16 + 51;
         break;
     case MENU_PHASE_SWITCH_SCREEN:
         if (g_MenuCommandWindowAnimStep != 0) {
@@ -2102,13 +2102,13 @@ void __cdecl Menu_DrawCommandWindow2x(int mode)
             g_MenuPhase = MENU_PHASE_SCREEN_FADE_IN;
             g_MenuScreenInitCallbacks[g_MenuCurrentScreenId](0);
         }
-        Menu_DrawEncodedString2x(0x1fc, 0xd,
+        Menu_DrawEncodedString2x(508, 13,
                           g_MenuCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                           0.001f);
-        g_MenuCommandWindowHeight = 0x33;
+        g_MenuCommandWindowHeight = 51;
         break;
     case MENU_PHASE_SCREEN_FADE_IN:
-        if (g_MenuCommandWindowAnimStep < 0xf) {
+        if (g_MenuCommandWindowAnimStep < 15) {
             g_MenuCommandWindowAnimStep = g_MenuCommandWindowAnimStep + 1;
         } else {
             g_MenuPhase = MENU_PHASE_SCREEN;
@@ -2118,19 +2118,19 @@ void __cdecl Menu_DrawCommandWindow2x(int mode)
                 g_MenuFrameClearFlag = 0;
             }
         }
-        g_MenuCommandWindowHeight = 0x33;
-        Menu_DrawEncodedString2x(0x1fc, 0xd,
+        g_MenuCommandWindowHeight = 51;
+        Menu_DrawEncodedString2x(508, 13,
                           g_MenuSavedCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                           0.001f);
         break;
     case MENU_PHASE_MAIN:
-        g_MenuCommandWindowHeight = 0x138;
+        g_MenuCommandWindowHeight = 312;
         if (g_MenuTopLevelCloseState != MENU_TOP_LEVEL_ACTIVE) {
-            posX = g_MenuTransitionTimer * 0x64 / 0xa - 0x64;
+            posX = g_MenuTransitionTimer * 100 / 10 - 100;
         }
         for (bit = 0; bit < 0xb; bit++) {
             if (g_MenuVisibleMask & (1 << bit)) {
-                Menu_DrawEncodedString2x(0x1fc, posX + bit * 0x1a + 0xd,
+                Menu_DrawEncodedString2x(508, posX + bit * 0x1a + 0xd,
                                   bit * 0x14 + ((unsigned char *)&g_MenuMainLabels),
                                   (g_MenuLockedMask & (1 << bit)) == 0 ? 7 : 0,
                                   0.001f);
@@ -2147,30 +2147,30 @@ void __cdecl Menu_DrawCommandWindow2x(int mode)
         } else {
             g_MenuPhase = MENU_PHASE_EXPAND_COMMANDS;
         }
-        Menu_DrawEncodedString2x(0x1fc, 0xd,
+        Menu_DrawEncodedString2x(508, 13,
                           g_MenuCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                           0.001f);
-        g_MenuCommandWindowHeight = 0x33;
+        g_MenuCommandWindowHeight = 51;
         break;
     case MENU_PHASE_EXPAND_COMMANDS:
-        if (g_MenuCommandWindowAnimStep < 0xf) {
+        if (g_MenuCommandWindowAnimStep < 15) {
             g_MenuCommandWindowAnimStep = g_MenuCommandWindowAnimStep + 1;
         } else {
             g_MenuPhase = MENU_PHASE_MAIN;
             g_MenuFrameClearFlag = 1;
         }
-        dy = g_MenuCommandRow * 0x1a * g_MenuCommandOpenScale / 0x10;
-        Menu_DrawEncodedString2x(0x1fc, dy + 0xd,
+        dy = g_MenuCommandRow * 26 * g_MenuCommandOpenScale / 16;
+        Menu_DrawEncodedString2x(508, dy + 0xd,
                           g_MenuCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                           0.001f);
-        g_MenuCommandWindowHeight = g_MenuCommandOpenScale * 0x105 / 0x10 + 0x33;
+        g_MenuCommandWindowHeight = g_MenuCommandOpenScale * 261 / 16 + 51;
         g_MenuCommandOpenScale = g_MenuCommandOpenScale + 1;
         break;
     }
-    Menu_SetRectShorts(&box.x, 0x1dc, posX, 0xa4, g_MenuCommandWindowHeight);
+    Menu_SetRectShorts(&box.x, 476, posX, 164, g_MenuCommandWindowHeight);
     Menu_DrawWindowFrame2x(&box, 0.001f);
     if (g_MenuPhase != MENU_PHASE_SCREEN && g_MenuPhase != MENU_PHASE_MAIN || g_MenuTopLevelCloseState == MENU_TOP_LEVEL_CLOSED) {
-        c = 0xff - g_MenuCommandWindowAnimStep * 0x10;
+        c = 0xff - g_MenuCommandWindowAnimStep * 16;
         Menu_FillViewportQuad(c, 0.1f);
     }
 }
@@ -2195,8 +2195,8 @@ void __cdecl Menu_DrawCommandWindow1x(int moduleId)
     done = 0;
     switch (g_MenuPhase) {
     case MENU_PHASE_SCREEN:
-        g_MenuCommandWindowHeight = 0x1a;
-        Menu_DrawEncodedString1x(0x106, 7,
+        g_MenuCommandWindowHeight = 26;
+        Menu_DrawEncodedString1x(262, 7,
                              g_MenuSavedCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                              0.001f);
         break;
@@ -2207,11 +2207,11 @@ void __cdecl Menu_DrawCommandWindow1x(int moduleId)
             g_MenuScreenInitCallbacks[g_MenuCurrentScreenId](0);
             g_MenuPhase = MENU_PHASE_SCREEN_FADE_IN;
         }
-        dy = g_MenuSavedCommandRow * 0xd * g_MenuCommandWindowAnimStep / 0x10;
-        Menu_DrawEncodedString1x(0x106, dy + 7,
+        dy = g_MenuSavedCommandRow * 13 * g_MenuCommandWindowAnimStep / 16;
+        Menu_DrawEncodedString1x(262, dy + 7,
                              g_MenuSavedCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                              0.001f);
-        g_MenuCommandWindowHeight = g_MenuCommandWindowAnimStep * 0x8f / 0x10 + 0x1a;
+        g_MenuCommandWindowHeight = g_MenuCommandWindowAnimStep * 143 / 16 + 26;
         break;
     case MENU_PHASE_SWITCH_SCREEN:
         if (g_MenuCommandWindowAnimStep != 0) {
@@ -2220,13 +2220,13 @@ void __cdecl Menu_DrawCommandWindow1x(int moduleId)
             g_MenuPhase = MENU_PHASE_SCREEN_FADE_IN;
             g_MenuScreenInitCallbacks[g_MenuCurrentScreenId](0);
         }
-        Menu_DrawEncodedString1x(0x106, 7,
+        Menu_DrawEncodedString1x(262, 7,
                              g_MenuCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                              0.001f);
-        g_MenuCommandWindowHeight = 0x1a;
+        g_MenuCommandWindowHeight = 26;
         break;
     case MENU_PHASE_SCREEN_FADE_IN:
-        if (g_MenuCommandWindowAnimStep < 0xf) {
+        if (g_MenuCommandWindowAnimStep < 15) {
             g_MenuCommandWindowAnimStep = g_MenuCommandWindowAnimStep + 1;
         } else {
             g_MenuPhase = MENU_PHASE_SCREEN;
@@ -2236,19 +2236,19 @@ void __cdecl Menu_DrawCommandWindow1x(int moduleId)
                 g_MenuFrameClearFlag = 0;
             }
         }
-        g_MenuCommandWindowHeight = 0x1a;
-        Menu_DrawEncodedString1x(0x106, 7,
+        g_MenuCommandWindowHeight = 26;
+        Menu_DrawEncodedString1x(262, 7,
                              g_MenuSavedCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                              0.001f);
         break;
     case MENU_PHASE_MAIN:
-        g_MenuCommandWindowHeight = 0x9c;
+        g_MenuCommandWindowHeight = 156;
         if (g_MenuTopLevelCloseState != MENU_TOP_LEVEL_ACTIVE) {
-            posX = g_MenuTransitionTimer * 0x64 / 0xa - 0x64;
+            posX = g_MenuTransitionTimer * 100 / 10 - 100;
         }
         for (bit = 0; bit < 0xb; bit++) {
             if (g_MenuVisibleMask & (1 << bit)) {
-                Menu_DrawEncodedString1x(0x106, posX + bit * 0xd + 7,
+                Menu_DrawEncodedString1x(262, posX + bit * 0xd + 7,
                                      bit * 0x14 + ((unsigned char *)&g_MenuMainLabels),
                                      (g_MenuLockedMask & (1 << bit)) == 0 ? 7 : 0,
                                      0.001f);
@@ -2265,30 +2265,30 @@ void __cdecl Menu_DrawCommandWindow1x(int moduleId)
         } else {
             g_MenuPhase = MENU_PHASE_EXPAND_COMMANDS;
         }
-        Menu_DrawEncodedString1x(0x106, 7,
+        Menu_DrawEncodedString1x(262, 7,
                              g_MenuCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                              0.001f);
-        g_MenuCommandWindowHeight = 0x1a;
+        g_MenuCommandWindowHeight = 26;
         break;
     case MENU_PHASE_EXPAND_COMMANDS:
-        if (g_MenuCommandWindowAnimStep < 0xf) {
+        if (g_MenuCommandWindowAnimStep < 15) {
             g_MenuCommandWindowAnimStep = g_MenuCommandWindowAnimStep + 1;
         } else {
             g_MenuPhase = MENU_PHASE_MAIN;
             g_MenuFrameClearFlag = 1;
         }
-        dy = g_MenuCommandRow * 0xd * g_MenuCommandOpenScale / 0x10;
-        Menu_DrawEncodedString1x(0x106, dy + 7,
+        dy = g_MenuCommandRow * 13 * g_MenuCommandOpenScale / 16;
+        Menu_DrawEncodedString1x(262, dy + 7,
                              g_MenuCommandRow * 0x14 + ((unsigned char *)&g_MenuMainLabels), 7,
                              0.001f);
-        g_MenuCommandWindowHeight = g_MenuCommandOpenScale * 0x82 / 0x10 + 0x1a;
+        g_MenuCommandWindowHeight = g_MenuCommandOpenScale * 130 / 16 + 26;
         g_MenuCommandOpenScale = g_MenuCommandOpenScale + 1;
         break;
     }
-    Menu_SetRectShorts(&box.x, 0xf6, posX, 0x4a, g_MenuCommandWindowHeight);
+    Menu_SetRectShorts(&box.x, 246, posX, 74, g_MenuCommandWindowHeight);
     Menu_DrawWindowFrame1x(&box, 0.001f);
     if (g_MenuPhase != MENU_PHASE_SCREEN && g_MenuPhase != MENU_PHASE_MAIN || g_MenuTopLevelCloseState == MENU_TOP_LEVEL_CLOSED) {
-        c = 0xff - g_MenuCommandWindowAnimStep * 0x10;
+        c = 0xff - g_MenuCommandWindowAnimStep * 16;
         Menu_FillViewportQuad(c, 0.1f);
     }
 }
@@ -2300,7 +2300,7 @@ void __cdecl Menu_DrawCommandWindow1x(int moduleId)
 // FUNCTION: FF7 0x006ca165
 void __cdecl Menu_MainScreenInit(int mode)
 {
-    MenuCursor_Init(&g_MenuMainCursors.command, 0, 0, 1, 0xB, 0, 0, 1, 0xB, 0, 0, 0, 1, 0, 0);
+    MenuCursor_Init(&g_MenuMainCursors.command, 0, 0, 1, 11, 0, 0, 1, 11, 0, 0, 0, 1, 0, 0);
     MenuCursor_Init(&g_MenuMainCursors.party, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0);
     MenuCursor_Init(&g_MenuMainCursors.swap, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0);
     g_MenuFrameClearFlag = 1;
@@ -2316,7 +2316,7 @@ int __cdecl Menu_PlaytimeToHoursDigits(int playTime)
 {
     int digits;
 
-    if (playTime > 0x57E3F) {
+    if (playTime > 359999) {
         playTime = 0x57E3F;
     }
     digits = playTime / g_MenuPlayTimeStep36000;
@@ -2337,7 +2337,7 @@ int __cdecl Menu_PlaytimeToMinutesDigits(int tenths)
 {
     int digits;
 
-    if (tenths > 0x57e3f) {
+    if (tenths > 359999) {
         tenths = 0x57e3f;
     }
     tenths %= g_MenuPlayTimeStep36000;
@@ -2358,7 +2358,7 @@ int __cdecl Menu_PlaytimeToSecondsDigits(int tenths)
 {
     int digits;
 
-    if (tenths > 0x57e3f) {
+    if (tenths > 359999) {
         tenths = 0x57e3f;
     }
     tenths %= g_MenuPlayTimeStep36000;
@@ -2516,49 +2516,49 @@ void __cdecl Menu_DrawMainScreen(int flags)
         if (Menu_GetPhase() == MENU_PHASE_MAIN && g_MenuTopLevelCloseState == MENU_TOP_LEVEL_ACTIVE) {
             switch (*(char *)&g_MenuMainCursorIndex) {
             case MENU_MAIN_CURSOR_COMMAND:
-                Menu_DrawMoreTextArrow2x(0x1C6, g_MenuMainCursors.command.row * 0x1A + 0x12, 9.99999975e-05f);
+                Menu_DrawMoreTextArrow2x(454, g_MenuMainCursors.command.row * 26 + 0x12, 9.99999975e-05f);
                 break;
             case MENU_MAIN_CURSOR_ORDER:
                 if ((flags & 2) != 0 && g_MenuOrderSwapPicked != 0) {
-                    Menu_DrawMoreTextArrow2x(-5, g_MenuCursorPartySlot * 0x78 + 0x4E, 9.99999975e-05f);
+                    Menu_DrawMoreTextArrow2x(-5, g_MenuCursorPartySlot * 120 + 0x4E, 9.99999975e-05f);
                 }
             case MENU_MAIN_CURSOR_PARTY:
                 if ((flags & 2) != 0) {
-                    Menu_DrawMoreTextArrow2x(0x1C6, g_MenuMainCursors.command.row * 0x1A + 0x12, 9.99999975e-05f);
+                    Menu_DrawMoreTextArrow2x(454, g_MenuMainCursors.command.row * 26 + 0x12, 9.99999975e-05f);
                 }
-                Menu_DrawMoreTextArrow2x(0, g_MenuMainCursors.list[g_MenuMainCursorIndex].row * 0x78 + 0x5A, 0.000111000001f);
+                Menu_DrawMoreTextArrow2x(0, g_MenuMainCursors.list[g_MenuMainCursorIndex].row * 120 + 0x5A, 0.000111000001f);
             }
         }
         Menu_DrawCommandWindow2x(g_MenuMainCursors.command.row);
-        posX = 0x145;
-        posY = 0xA8 - g_MenuTransitionTimer * 0xA8 / 0xA + 0x1A4;
+        posX = 325;
+        posY = 168 - g_MenuTransitionTimer * 168 / 10 + 420;
         Menu_DrawEncodedString2x(posX + 0x10, posY + 0x12, (unsigned char *)gSavemap.location, 7, 0.100000001f);
-        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 0x13B, 0x3A);
+        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 315, 58);
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRectangle, 0.100000001f);
-        posX = 0x30F - g_MenuTransitionTimer * 0x133 / 0xA;
-        posY = 0x15C;
+        posX = 783 - g_MenuTransitionTimer * 307 / 10;
+        posY = 348;
         Menu_DrawDecimalNumber2x(posX + 0x42, posY + 0x10, Menu_PlaytimeToHoursDigits((int)gSavemap.seconds), 2, 7, 0.200000003f);
         DrawIconGlyph16_2x(posX + 0x57, posY + 0x12, 0xD5, (unsigned int)gSavemap.millisecondCounter < (unsigned int)0x8000 ? 7 : 0, 0.200000003f);
         Menu_DrawDecimalNumberZeroPad2x(posX + 0x61, posY + 0x10, Menu_PlaytimeToMinutesDigits((int)gSavemap.seconds), 2, 7, 0.200000003f);
         DrawIconGlyph16_2x(posX + 0x76, posY + 0x12, 0xD5, 7, 0.200000003f);
         Menu_DrawDecimalNumberZeroPad2x(posX + 0x80, posY + 0x10, Menu_PlaytimeToSecondsDigits((int)gSavemap.seconds), 2, 7, 0.200000003f);
         Menu_DrawEncodedString2x(posX + 2, posY + 0xC, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_TIME * 0x14, 7, 0.200000003f);
-        Menu_DrawDecimalNumber2x(posX + 0x20, posY + 0x2E, gSavemap.gil, 0xA, 7, 0.200000003f);
+        Menu_DrawDecimalNumber2x(posX + 0x20, posY + 0x2E, gSavemap.gil, 10, 7, 0.200000003f);
         Menu_DrawEncodedString2x(posX + 6, posY + 0x2A, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_GIL * 0x14, 7, 0.200000003f);
-        Menu_SetRectShorts((short *)frameRectangle, posX - 4, posY, 0xA8, 0x48);
+        Menu_SetRectShorts((short *)frameRectangle, posX - 4, posY, 168, 72);
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRectangle, 0.200000003f);
-        posX = g_MenuTransitionTimer * 0x133 / 0xA - 0x133;
-        posY = 0x18;
+        posX = g_MenuTransitionTimer * 307 / 10 - 307;
+        posY = 24;
         for (slotIdx = 0; slotIdx < 3; slotIdx++) {
             if (gSavemap.party[slotIdx] == PARTY_CHAR_NONE) {
                 continue;
             }
             characterSlot = g_CharIdToSaveSlot[gSavemap.party[slotIdx]];
-            rowPos = slotIdx * 0x78 + 0x24;
-            portraitOffset = ((gSavemap.chars[characterSlot].row & 1) == 0) * 0x30;
+            rowPos = slotIdx * 120 + 36;
+            portraitOffset = ((gSavemap.chars[characterSlot].row & 1) == 0) * 48;
             Menu_DrawCharStatBlock2x(posX + 0xAC, rowPos + 0xD, slotIdx, 0.3f);
             Menu_DrawCharPortrait2x(posX + portraitOffset + 0x23, rowPos + 0xB, slotIdx, 0.3f);
-            Menu_DrawGaugeBar2x(posX + 0x157, rowPos + 0x36, ((unsigned char)gSavemap.chars[characterSlot].levelProgress) << 1, 0xC, 0x90802020, 0.3f);
+            Menu_DrawGaugeBar2x(posX + 0x157, rowPos + 0x36, ((unsigned char)gSavemap.chars[characterSlot].levelProgress) << 1, 12, 0x90802020, 0.3f);
             if (gSavemap.chars[characterSlot].limitBar == 0xFF) {
                 gaugeTint = g_MenuColorFormatBitmasks[flags >> 1 & 7];
             } else if ((gSavemap.chars[characterSlot].status & BATTLE_STATUS_SADNESS) != 0) {
@@ -2568,40 +2568,40 @@ void __cdecl Menu_DrawMainScreen(int flags)
             } else {
                 gaugeTint = 0x90802050;
             }
-            Menu_DrawGaugeBar2x(posX + 0x159, rowPos + 0x5F, gSavemap.chars[characterSlot].limitBar * 0x74 / 256, 0xC, gaugeTint, 0.3f);
-            Menu_DrawAtlasQuad2x(posX + 0x155, rowPos + 0x36, 0x88, 8, 0x40, 8, 7, 0, 0, 0.300999999f);
-            Menu_DrawAtlasQuad2x(posX + 0x155, rowPos + 0x5F, 0x88, 8, 0x40, 8, 7, 0, 0, 0.300999999f);
+            Menu_DrawGaugeBar2x(posX + 0x159, rowPos + 0x5F, gSavemap.chars[characterSlot].limitBar * 116 / 256, 12, gaugeTint, 0.3f);
+            Menu_DrawAtlasQuad2x(posX + 0x155, rowPos + 0x36, 0x88, 8, 64, 8, 7, 0, 0, 0.300999999f);
+            Menu_DrawAtlasQuad2x(posX + 0x155, rowPos + 0x5F, 0x88, 8, 64, 8, 7, 0, 0, 0.300999999f);
             Menu_DrawEncodedString2x(posX + 0x147, rowPos + 0x21, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_NEXT_LEVEL * 0x14, 7, 0.3f);
             Menu_DrawEncodedString2x(posX + 0x147, rowPos + 0x4A, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_LIMIT_LEVEL * 0x14, 7, 0.3f);
             Menu_DrawDecimalNumber2x(posX + 0x1B2, rowPos + 0x4E, gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[slotIdx]]].limitLevel, 1, 7, 0.3f);
         }
-        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 0x208, 0x1A6);
+        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 520, 422);
         Menu_DrawWindowFrame2x((EnglishWindowFrame *)frameRectangle, 0.400000006f);
     } else {
         if (Menu_GetPhase() == MENU_PHASE_MAIN && g_MenuTopLevelCloseState == MENU_TOP_LEVEL_ACTIVE) {
             switch (*(char *)&g_MenuMainCursorIndex) {
             case MENU_MAIN_CURSOR_COMMAND:
-                Menu_DrawMoreTextArrow1x(0xED, g_MenuMainCursors.command.row * 0xD + 9, 9.99999975e-05f);
+                Menu_DrawMoreTextArrow1x(237, g_MenuMainCursors.command.row * 13 + 9, 9.99999975e-05f);
                 break;
             case MENU_MAIN_CURSOR_ORDER:
                 if ((flags & 2) != 0 && g_MenuOrderSwapPicked != 0) {
-                    Menu_DrawMoreTextArrow1x(-2, g_MenuCursorPartySlot * 0x3C + 0x27, 9.99999975e-05f);
+                    Menu_DrawMoreTextArrow1x(-2, g_MenuCursorPartySlot * 60 + 0x27, 9.99999975e-05f);
                 }
             case MENU_MAIN_CURSOR_PARTY:
                 if ((flags & 2) != 0) {
-                    Menu_DrawMoreTextArrow1x(0xED, g_MenuMainCursors.command.row * 0xD + 9, 9.99999975e-05f);
+                    Menu_DrawMoreTextArrow1x(237, g_MenuMainCursors.command.row * 13 + 9, 9.99999975e-05f);
                 }
-                Menu_DrawMoreTextArrow1x(0, g_MenuMainCursors.list[g_MenuMainCursorIndex].row * 0x3C + 0x2D, 0.000111000001f);
+                Menu_DrawMoreTextArrow1x(0, g_MenuMainCursors.list[g_MenuMainCursorIndex].row * 60 + 0x2D, 0.000111000001f);
             }
         }
         Menu_DrawCommandWindow1x(g_MenuMainCursors.command.row);
-        posX = 0xA2;
-        posY = 0x54 - g_MenuTransitionTimer * 0x54 / 0xA + 0xD2;
+        posX = 162;
+        posY = 84 - g_MenuTransitionTimer * 84 / 10 + 210;
         Menu_DrawEncodedString1x(posX + 8, posY + 9, (unsigned char *)gSavemap.location, 7, 0.100000001f);
-        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 0x9E, 0x1D);
+        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 158, 29);
         Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRectangle, 0.100000001f);
-        posX = 0x190 - g_MenuTransitionTimer * 0x9A / 0xA;
-        posY = 0xAE;
+        posX = 400 - g_MenuTransitionTimer * 154 / 10;
+        posY = 174;
         Menu_DrawDecimalNumber1x(posX + 0x1B, posY + 8, Menu_PlaytimeToHoursDigits((int)gSavemap.seconds), 2, 7, 0.200000003f);
         DrawIconGlyph16_1x(posX + 0x26, posY + 9, 0xD5, (unsigned int)gSavemap.millisecondCounter < (unsigned int)0x8000 ? 7 : 0, 0.200000003f);
         Menu_DrawDecimalNumberZeroPad1x(posX + 0x2B, posY + 8, Menu_PlaytimeToMinutesDigits((int)gSavemap.seconds), 2, 7, 0.200000003f);
@@ -2610,17 +2610,17 @@ void __cdecl Menu_DrawMainScreen(int flags)
         Menu_DrawEncodedString1x(posX + 1, posY + 6, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_TIME * 0x14, 7, 0.200000003f);
         Menu_DrawDecimalNumber1x(posX + 0xA, posY + 0x17, gSavemap.gil, 0xA, 7, 0.200000003f);
         Menu_DrawEncodedString1x(posX + 3, posY + 0x15, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_GIL * 0x14, 7, 0.200000003f);
-        Menu_SetRectShorts((short *)frameRectangle, posX - 2, posY, 0x4C, 0x24);
+        Menu_SetRectShorts((short *)frameRectangle, posX - 2, posY, 76, 36);
         Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRectangle, 0.200000003f);
-        posX = g_MenuTransitionTimer * 0x9A / 0xA - 0x9A;
-        posY = 0xC;
+        posX = g_MenuTransitionTimer * 154 / 10 - 154;
+        posY = 12;
         for (slotIdx = 0; slotIdx < 3; slotIdx++) {
             if (gSavemap.party[slotIdx] == PARTY_CHAR_NONE) {
                 continue;
             }
             characterSlot = g_CharIdToSaveSlot[gSavemap.party[slotIdx]];
-            rowPos = slotIdx * 0x3C + 0x12;
-            portraitOffset = ((gSavemap.chars[characterSlot].row & 1) == 0) * 0x18;
+            rowPos = slotIdx * 60 + 18;
+            portraitOffset = ((gSavemap.chars[characterSlot].row & 1) == 0) * 24;
             Menu_DrawCharStatBlock1x(posX + 0x56, rowPos + 7, slotIdx, 0.3f);
             Menu_DrawCharPortrait1x(posX + portraitOffset + 0x12, rowPos + 6, slotIdx, 0.3f);
             Menu_DrawGaugeBar1x(posX + 0xAC, rowPos + 0x1B, ((unsigned char)gSavemap.chars[characterSlot].levelProgress), 6, 0x90802020, 0.3f);
@@ -2633,27 +2633,27 @@ void __cdecl Menu_DrawMainScreen(int flags)
             } else {
                 gaugeTint = 0x90802050;
             }
-            Menu_DrawGaugeBar1x(posX + 0xAD, rowPos + 0x30, gSavemap.chars[characterSlot].limitBar * 0x3A / 256, 6, gaugeTint, 0.3f);
-            Menu_DrawAtlasQuad1x(posX + 0xAB, rowPos + 0x1B, 0x88, 8, 0x40, 8, 7, 0, 0, 0.300999999f);
-            Menu_DrawAtlasQuad1x(posX + 0xAB, rowPos + 0x30, 0x88, 8, 0x40, 8, 7, 0, 0, 0.300999999f);
+            Menu_DrawGaugeBar1x(posX + 0xAD, rowPos + 0x30, gSavemap.chars[characterSlot].limitBar * 58 / 256, 6, gaugeTint, 0.3f);
+            Menu_DrawAtlasQuad1x(posX + 0xAB, rowPos + 0x1B, 136, 8, 64, 8, 7, 0, 0, 0.300999999f);
+            Menu_DrawAtlasQuad1x(posX + 0xAB, rowPos + 0x30, 136, 8, 64, 8, 7, 0, 0, 0.300999999f);
             Menu_DrawEncodedString1x(posX + 0xA4, rowPos + 0x11, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_NEXT_LEVEL * 0x14, 7, 0.3f);
             Menu_DrawEncodedString1x(posX + 0xA4, rowPos + 0x25, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_LIMIT_LEVEL * 0x14, 7, 0.3f);
             Menu_DrawDecimalNumber1x(posX + 0xD9, rowPos + 0x27, gSavemap.chars[g_CharIdToSaveSlot[gSavemap.party[slotIdx]]].limitLevel, 1, 7, 0.3f);
         }
-        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 0x104, 0xD3);
+        Menu_SetRectShorts((short *)frameRectangle, posX, posY, 260, 211);
         Menu_DrawWindowFrame1x((EnglishWindowFrame *)frameRectangle, 0.400000006f);
     }
     switch (g_MenuTopLevelCloseState) {
     case MENU_TOP_LEVEL_OPENING:
         g_MenuTransitionTimer += g_MenuTransitionStep;
-        if (g_MenuTransitionTimer < 0xA) {
-            g_MenuTransitionTimer = 0xA;
+        if (g_MenuTransitionTimer < 10) {
+            g_MenuTransitionTimer = 10;
             g_MenuTopLevelCloseState = MENU_TOP_LEVEL_ACTIVE;
         }
         break;
     case MENU_TOP_LEVEL_CLOSING:
         g_MenuTransitionTimer += g_MenuTransitionStep;
-        if (g_MenuTransitionTimer > 0x46) {
+        if (g_MenuTransitionTimer > 70) {
             g_MenuTopLevelCloseState = MENU_TOP_LEVEL_CLOSED;
         }
     }
@@ -2676,7 +2676,7 @@ int __cdecl Menu_RunTopLevelFrame(int scriptStream)
     int bounds[2];
 
     if (g_MenuTopLevelActive == 0) {
-        Input_SetRepeatRates(0xC8, 0x32);
+        Input_SetRepeatRates(0xC8, 50);
         g_MenuPhase = MENU_PHASE_MAIN;
         g_MenuTopLevelCloseState = MENU_TOP_LEVEL_OPENING;
         g_MenuCommandRow = g_MenuTopLevelCloseState;
@@ -2684,7 +2684,7 @@ int __cdecl Menu_RunTopLevelFrame(int scriptStream)
         g_MenuPreviousScreenId = MENU_SCREEN_MAIN;
         g_MenuCurrentScreenId = MENU_SCREEN_MAIN;
         g_MenuNonTopLevelScreenFlag = 0;
-        g_MenuCommandWindowHeight = (g_MenuIsSmallViewport320x240 != 0 ? -0x9C : 0) + 0x138;
+        g_MenuCommandWindowHeight = (g_MenuIsSmallViewport320x240 != 0 ? -156 : 0) + 312;
         g_MenuTopLevelActive = 1;
         if (scriptStream == 0) {
             Menu_SetPopupPlacement(0, 0, 0);
@@ -2708,7 +2708,7 @@ int __cdecl Menu_RunTopLevelFrame(int scriptStream)
             Battle_LoadCombatantFromSavemap((char)bits);
             Party_RecomputeBattleModifiers();
         }
-        g_MenuTransitionTimer = 0x46;
+        g_MenuTransitionTimer = 70;
         g_MenuTransitionStep = 0xFFFD;
         g_MenuTopLevelCloseState = MENU_TOP_LEVEL_OPENING;
         g_MenuTopLevelFrameCount = g_MenuTopLevelCloseState;
@@ -2718,18 +2718,18 @@ int __cdecl Menu_RunTopLevelFrame(int scriptStream)
     Input_SnapshotToFieldGlobals();
     if (g_ScriptedInputActive != 0 && g_MenuTopLevelCloseState != MENU_TOP_LEVEL_CLOSED && (g_MenuTopLevelFrameCount & 0x10) != 0) {
         if (g_MenuIsSmallViewport320x240 != 1) {
-            positionX = 0x35;
-            drawY = 0x1A2;
+            positionX = 53;
+            drawY = 418;
             Menu_DrawEncodedString2x(positionX + 0xD, drawY + 0xD, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_TUTORIAL * 0x14, 4, 0);
             w = Menu_MeasureEncodedString2x(((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_TUTORIAL * 0x14);
-            Menu_SetRectShorts((short *)bounds, positionX, drawY, w + 0x1B, 0x33);
+            Menu_SetRectShorts((short *)bounds, positionX, drawY, w + 0x1B, 51);
             Menu_DrawWindowFrame2x((EnglishWindowFrame *)bounds, 0);
         } else {
-            positionX = 0x1B;
-            drawY = 0xD1;
+            positionX = 27;
+            drawY = 209;
             Menu_DrawEncodedString1x(positionX + 7, drawY + 7, ((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_TUTORIAL * 0x14, 4, 0);
             w = Menu_MeasureEncodedString1x(((unsigned char *)&g_MenuMainLabels) + MENU_LABEL_TUTORIAL * 0x14);
-            Menu_SetRectShorts((short *)bounds, positionX, drawY, w + 0xE, 0x1A);
+            Menu_SetRectShorts((short *)bounds, positionX, drawY, w + 0xE, 26);
             Menu_DrawWindowFrame1x((EnglishWindowFrame *)bounds, 0);
         }
     }
@@ -3179,7 +3179,7 @@ short __cdecl Savemap_RemoveItem(int itemRef)
     id = itemRef & 0xFFFF & 0x1FF;
     quantity = (itemRef & 0xFFFF) >> 9;
     removed = 0xFFFF;
-    for (i = 0; i < 0x140; i++) {
+    for (i = 0; i < 320; i++) {
         if (gSavemap.items[i] != 0xFFFF && id == (gSavemap.items[i] & 0x1FF)) {
             if (quantity < gSavemap.items[i] >> 9) {
                 removed = itemRef & 0xFFFF | quantity << 9;
@@ -3211,7 +3211,7 @@ unsigned short __cdecl Savemap_FindItem(unsigned short itemRef)
     itemId = itemRef & 0x1FF;
     count = (itemRef) >> 9;
     result = 0xFFFF;
-    for (idx = 0; idx < 0x140; idx++) {
+    for (idx = 0; idx < 320; idx++) {
         if (gSavemap.items[idx] != 0xFFFF && itemId == (gSavemap.items[idx] & 0x1FF)) {
             result = gSavemap.items[idx];
             return (short)result;
@@ -3244,17 +3244,17 @@ void __cdecl Savemap_AddItem(int itemRef)
 
     id = itemRef & 0xFFFF & 0x1FF;
     quantity = (itemRef & 0xFFFF) >> 9;
-    for (i = 0; i < 0x140; i++) {
+    for (i = 0; i < 320; i++) {
         if (gSavemap.items[i] != 0xFFFF && id == (gSavemap.items[i] & 0x1FF)) {
             quantity += gSavemap.items[i] >> 9;
-            if (quantity > 0x63) {
-                quantity = 0x63;
+            if (quantity > 99) {
+                quantity = 99;
             }
             gSavemap.items[i] = quantity << 9 | id;
             return;
         }
     }
-    for (i = 0; i < 0x140; i++) {
+    for (i = 0; i < 320; i++) {
         if (gSavemap.items[i] == 0xFFFF) {
             gSavemap.items[i] = itemRef;
             return;
@@ -3272,7 +3272,7 @@ int __cdecl Savemap_AddMateria(int materia)
 {
     int i;
 
-    for (i = 0; i < 0xc8; i++) {
+    for (i = 0; i < 200; i++) {
         if (gSavemap.materia[i] == -1) {
             gSavemap.materia[i] = materia;
             if (Menu_GetMateriaTypeColorIndex(materia & 0xff) == 0xa) {
@@ -3309,7 +3309,7 @@ void __cdecl Savemap_AddMateriaToStock(int materia)
     int victim;
     unsigned char rank;
 
-    for (idx = 0; idx < 0xC8; idx++) {
+    for (idx = 0; idx < 200; idx++) {
         if (gSavemap.materia[idx] == -1) {
             gSavemap.materia[idx] = materia;
             if (Menu_GetMateriaTypeColorIndex(materia & 0xFF) == 0xA) {
@@ -3324,13 +3324,13 @@ void __cdecl Savemap_AddMateriaToStock(int materia)
     }
     victim = 0xFFFFFFFF;
     rank = 0xFF;
-    for (idx = 0; idx < 0xC8; idx++) {
+    for (idx = 0; idx < 200; idx++) {
         if (g_MenuMateriaSortPriority[(gSavemap.materia[idx] & 0xFF)] < rank) {
             rank = (char)g_MenuMateriaSortPriority[gSavemap.materia[idx] & 0xFF];
             victim = gSavemap.materia[idx];
         }
     }
-    for (idx = 0; idx < 0xC8; idx++) {
+    for (idx = 0; idx < 200; idx++) {
         if (gSavemap.materia[idx] == victim) {
             gSavemap.materia[idx] = materia;
             return;
@@ -3437,11 +3437,11 @@ void __cdecl Savemap_ResetConfigDefaults(void)
     g_MenuPartyLimitRefreshNeeded = 0;
     Menu_RefreshPartyLimitTables();
     Savemap_ReloadActivePartyStats();
-    gSavemap.battleSpeed = 0x80;
-    gSavemap.battleMessageSpeed = 0x80;
-    gSavemap.fieldMessageSpeed = 0x80;
+    gSavemap.battleSpeed = 128;
+    gSavemap.battleMessageSpeed = 128;
+    gSavemap.fieldMessageSpeed = 128;
     gSavemap.options = 0x41;
-    for (q = 0; q < 0x10; q++) {
+    for (q = 0; q < 16; q++) {
         gSavemap.controllerMap[q] = q;
     }
 }
@@ -3741,49 +3741,49 @@ void __cdecl Menu_DrawDebugCounters(void)
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
     frame.context = GetEngineContext();
-    gSavemap.seconds += (int)frame.context->frameCount % 0x3C == 0;
+    gSavemap.seconds += (int)frame.context->frameCount % 60 == 0;
     if (g_MenuIsSmallViewport320x240 != 1) {
-        Menu_DrawDecimalNumber2x(0x140, 0, g_MenuMainCursors.command.row, 2, 7, 0);
-        Menu_DrawDecimalNumber2x(0x168, 0, g_BattleResultScreenState, 0xA, 7, 0);
-        Menu_DrawDecimalNumber2x(0x258, 0, g_MenuRequestedNextScreen, 2, 6, 0);
+        Menu_DrawDecimalNumber2x(320, 0, g_MenuMainCursors.command.row, 2, 7, 0);
+        Menu_DrawDecimalNumber2x(360, 0, g_BattleResultScreenState, 10, 7, 0);
+        Menu_DrawDecimalNumber2x(600, 0, g_MenuRequestedNextScreen, 2, 6, 0);
     } else {
-        Menu_DrawDecimalNumber1x(0xA0, 0, g_MenuMainCursors.command.row, 2, 7, 0);
-        Menu_DrawDecimalNumber1x(0xB4, 0, g_BattleResultScreenState, 0xA, 7, 0);
-        Menu_DrawDecimalNumber1x(0x12C, 0, g_MenuRequestedNextScreen, 2, 6, 0);
+        Menu_DrawDecimalNumber1x(160, 0, g_MenuMainCursors.command.row, 2, 7, 0);
+        Menu_DrawDecimalNumber1x(180, 0, g_BattleResultScreenState, 0xA, 7, 0);
+        Menu_DrawDecimalNumber1x(300, 0, g_MenuRequestedNextScreen, 2, 6, 0);
     }
     if (g_MenuIsSmallViewport320x240 != 1) {
         itoa(g_MenuTopLevelCloseState, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString2x(0, 0xF0, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString2x(0, 240, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuTransitionStep, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString2x(0, 0x10E, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString2x(0, 270, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuCommandWindowAnimStep, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString2x(0, 0x82, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString2x(0, 130, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuPhase, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString2x(0, 0xBE, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString2x(0, 190, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuTransitionTimer, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString2x(0, 0x136, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString2x(0, 310, (unsigned char *)frame.encoded, 0, 0);
         Menu_DrawDecimalNumber2x(0, 0, (int)(frame.context->fps + 0.5), 2, 7, 0);
     } else {
         itoa(g_MenuTopLevelCloseState, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString1x(0, 0x78, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString1x(0, 120, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuTransitionStep, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString1x(0, 0x87, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString1x(0, 135, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuCommandWindowAnimStep, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString1x(0, 0x41, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString1x(0, 65, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuPhase, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString1x(0, 0x5F, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString1x(0, 95, (unsigned char *)frame.encoded, 0, 0);
         itoa(g_MenuTransitionTimer, frame.ascii, 0xA);
         Menu_DebugAsciiToFF7Text(frame.encoded, frame.ascii);
-        Menu_DrawEncodedString1x(0, 0x9B, (unsigned char *)frame.encoded, 0, 0);
+        Menu_DrawEncodedString1x(0, 155, (unsigned char *)frame.encoded, 0, 0);
         Menu_DrawDecimalNumber1x(0, 0, (int)(frame.context->fps + 0.5), 2, 7, 0);
     }
 }

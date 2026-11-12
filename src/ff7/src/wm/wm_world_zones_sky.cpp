@@ -125,7 +125,7 @@ unsigned char g_bssPad_00e2a144[4] = {0};
 // World_InitZolomBodySegmentRecords). The span runs to the next named definition of the TU; the
 // TU's pieces inside 0xe2a148..0xe2a178 are aliases.
 // GLOBAL: FF7 0x00e2a148
-unsigned char g_WorldZoneAmbientColor[0x30] = {0};
+unsigned char g_WorldZoneAmbientColor[48] = {0};
 // GLOBAL: FF7 0x00e2a178
 int g_WorldZoneOuterRadius = 0;
 unsigned char g_bssPad_00e2a17c[4] = {0};
@@ -162,7 +162,7 @@ unsigned char g_WorldUnderwaterGrad[3][2] = {0};
 // The underwater noise table: 256 ints, WorldMap_NextRandomByte() << 2, written by
 // World_InitUnderwaterColorVectorsAndNoise and read by World_BuildUnderwaterNoisePaletteAndGradient.
 // GLOBAL: FF7 0x00e2a6e0
-int g_WorldUnderwaterPalette[0x100] = {0};
+int g_WorldUnderwaterPalette[256] = {0};
 // GLOBAL: FF7 0x00e2aae0
 short g_WorldMeteorSpriteEnabled = 0;
 // GLOBAL: FF7 0x00e2aae4
@@ -182,7 +182,7 @@ unsigned char g_bssPad_00e2ab4c[4] = {0};
 // World_InitUnderwaterColorVectorsAndNoise expands the 256 15-bit colours of g_WorldTerrainFloodBuffer1 into 256 vectors
 // (vx, vy, vz, pad) here; World_BuildUnderwaterNoisePaletteAndGradient transforms them back into g_WorldTerrainFloodBuffer1.
 // GLOBAL: FF7 0x00e2ab50
-unsigned char g_WorldTerrainFloodMarks[0x800] = {0};
+unsigned char g_WorldTerrainFloodMarks[2048] = {0};
 // GLOBAL: FF7 0x00e2b350
 unsigned char g_WorldTerrainFloodBuffer1[0x200] = {0};
 // The world map's 0x209-byte random table (WorldMap_SeedRandomTable, WorldMap_ReshuffleRandomTable,
@@ -190,7 +190,7 @@ unsigned char g_WorldTerrainFloodBuffer1[0x200] = {0};
 // g_WorldTerrainFloodBuffer1) and its last 0x20 bytes (from g_WorldRandomTable[0x1E9]) through
 // WORLD_RANDOM_LAG and WORLD_RANDOM_TAIL (below).
 // GLOBAL: FF7 0x00e2b550
-unsigned char g_WorldRandomTable[0x209] = {0};
+unsigned char g_WorldRandomTable[521] = {0};
 // GLOBAL: FF7 0x00e2b75c
 short g_WorldSteeringTurn = 0;
 // GLOBAL: FF7 0x00e2b760
@@ -207,7 +207,7 @@ unsigned char g_bssPad_00e2b774[4] = {0};
 // The world map's byte colour ramp: 256 BGRA entries.
 // World_BuildUnderwaterNoisePaletteAndGradient writes it at init and wm_world_terrain_geometry.cpp's terrain lighting reads it.
 // GLOBAL: FF7 0x00e2b778
-unsigned char g_WorldTerrainEffectSlots[0x400] = {0};
+unsigned char g_WorldTerrainEffectSlots[1024] = {0};
 // GLOBAL: FF7 0x00e2bb78
 short g_WorldSteeringFacing = 0;
 // GLOBAL: FF7 0x00e2bb7c
@@ -380,20 +380,20 @@ void __cdecl WorldMap_SeedRandomTable(int seed)
 {
     unsigned int accum;
     int wordIdx;
-    unsigned int randomWords[0x209];
+    unsigned int randomWords[521];
     int bit;
 
     accum = 0;
     for (wordIdx = 0; wordIdx <= 0x10; wordIdx++) {
         for (bit = 0; bit < 0x20; bit++) {
-            seed = seed * 0x5D588B65 + 1;
+            seed = seed * 1566083941 + 1;
             accum = (accum >> 1) | (seed & 0x80000000);
         }
         randomWords[wordIdx] = accum;
     }
-    randomWords[0x10] = (randomWords[0x10] << 0x17) ^ (randomWords[0] >> 9) ^ randomWords[0xf];
+    randomWords[0x10] = (randomWords[0x10] << 23) ^ (randomWords[0] >> 9) ^ randomWords[0xf];
     for (wordIdx = 0x11; wordIdx <= 0x208; wordIdx++) {
-        randomWords[wordIdx] = (randomWords[wordIdx - 0x11] << 0x17) ^ (randomWords[wordIdx - 0x10] >> 9) ^
+        randomWords[wordIdx] = (randomWords[wordIdx - 0x11] << 23) ^ (randomWords[wordIdx - 0x10] >> 9) ^
                        randomWords[wordIdx - 1];
     }
     for (wordIdx = 0; wordIdx < 0x209; wordIdx++) {
@@ -402,7 +402,7 @@ void __cdecl WorldMap_SeedRandomTable(int seed)
     WorldMap_ReshuffleRandomTable();
     WorldMap_ReshuffleRandomTable();
     WorldMap_ReshuffleRandomTable();
-    g_WorldRandomTableIndex = 0x208;
+    g_WorldRandomTableIndex = 520;
 }
 
 /*
@@ -414,10 +414,10 @@ void __cdecl WorldMap_ReshuffleRandomTable(void)
 {
     int i;
 
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         *(char *)((char *)&g_WorldRandomTable + i) ^= *(char *)((char *)&WORLD_RANDOM_TAIL + i);
     }
-    for (i = 0x20; i < 0x209; i++) {
+    for (i = 32; i < 521; i++) {
         *(char *)((char *)&g_WorldRandomTable + i) ^= *(char *)((char *)&WORLD_RANDOM_LAG + i);
     }
 }
@@ -431,7 +431,7 @@ void __cdecl WorldMap_ReshuffleRandomTable(void)
 int __cdecl WorldMap_NextRandomByte(void)
 {
     g_WorldRandomTableIndex++;
-    if (g_WorldRandomTableIndex >= 0x209) {
+    if (g_WorldRandomTableIndex >= 521) {
         WorldMap_ReshuffleRandomTable();
         g_WorldRandomTableIndex = 0;
     }
@@ -460,7 +460,7 @@ int __cdecl WorldMap_WrappedDistance(WorldPoint *pointA, WorldPoint *pointB)
         absDx = -(pointA->posX - pointB->posX);
     }
     absX = absDx;
-    if (absX >= 0x24000) {
+    if (absX >= 147456) {
         absX = 0x48000 - absX;
     }
     if (pointA->posY - pointB->posY > 0) {
@@ -475,7 +475,7 @@ int __cdecl WorldMap_WrappedDistance(WorldPoint *pointA, WorldPoint *pointB)
         absDz = -(pointA->posZ - pointB->posZ);
     }
     absZ = absDz;
-    if (absZ >= 0x1C000) {
+    if (absZ >= 114688) {
         absZ = 0x38000 - absZ;
     }
     return absX + absY + absZ;
@@ -489,7 +489,7 @@ int __cdecl WorldMap_WrappedDistance(WorldPoint *pointA, WorldPoint *pointB)
 // FUNCTION: FF7 0x00753d00
 void __cdecl WorldMap_RotateVec3ByYaw(SVECTOR *vec, short yaw)
 {
-    char mtx[0x20];
+    char mtx[32];
     int ignored;
     SVECTOR yawVec;
     int s;
@@ -843,9 +843,9 @@ void __cdecl World_UpdateAndDrawSkyLayers(short angle)
             s.distance = 1;
         s.top = (World_GetSkyHorizonY() - 44) - (s.distance >> 8);
         if (angle - g_WorldSkyScrollAngle > 0x800)
-            angle -= 0x1000;
+            angle -= 0x1000 /* 360 deg */;
         else if (g_WorldSkyScrollAngle - angle > 0x800)
-            angle += 0x1000;
+            angle += 0x1000 /* 360 deg */;
         s.scroll = ((angle - g_WorldSkyScrollAngle) * s.distance) / 10000;
         g_WorldFlashState -= s.scroll;
         if (g_WorldFlashState < 0)
@@ -961,7 +961,7 @@ void __cdecl World_ResetZonesAndDefaultLighting(void)
 {
     int i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 16; i++) {
         g_WorldZolomTrail.zones[i].enabled = 0;
         g_WorldZolomTrail.zones[i].posY = 0;
     }
@@ -993,7 +993,7 @@ void __cdecl World_ApplyDefaultMapLighting(void)
 // FUNCTION: FF7 0x00754ebc
 void __cdecl WorldZone_Select(int zoneIndex, int value)
 {
-    if (zoneIndex >= 0 && zoneIndex < 0x10) {
+    if (zoneIndex >= 0 && zoneIndex < 16) {
         g_pWorldCurrentZone = &g_WorldZolomTrail.zones[zoneIndex];
         if (value != -1) {
             g_pWorldCurrentZone->enabled = value;
@@ -1008,11 +1008,11 @@ void __cdecl WorldZone_Select(int zoneIndex, int value)
 // FUNCTION: FF7 0x00754eef
 void __cdecl WorldZone_SetMeshXZ(int meshColumn, int meshRow)
 {
-    if (g_pWorldCurrentZone != 0 && meshColumn >= 0 && meshColumn < 0x24 && meshRow >= 0 && meshRow < 0x1C) {
+    if (g_pWorldCurrentZone != 0 && meshColumn >= 0 && meshColumn < 36 && meshRow >= 0 && meshRow < 28) {
         g_pWorldCurrentZone->posX &= 0x1FFF;
         g_pWorldCurrentZone->posZ &= 0x1FFF;
-        g_pWorldCurrentZone->posX |= meshColumn << 0xD;
-        g_pWorldCurrentZone->posZ |= meshRow << 0xD;
+        g_pWorldCurrentZone->posX |= meshColumn << 13;
+        g_pWorldCurrentZone->posZ |= meshRow << 13;
     }
 }
 
@@ -1449,7 +1449,7 @@ void __cdecl World_BeginOverlayChannelFadeDown(int channel)
 void __cdecl World_ShowOverlayChannelTimed(int channel)
 {
     World_BeginOverlayChannelFadeUp(channel);
-    g_WorldOverlayChannelTimerTable[channel] = 0x64;
+    g_WorldOverlayChannelTimerTable[channel] = 100;
 }
 
 /*
@@ -1490,7 +1490,7 @@ void __cdecl World_InitUnderwaterColorVectorsAndNoise(void)
         frame.floodMarkCursor->vz = *frame.floodBufferCursor & 0x7c00;
         frame.floodBufferCursor++;
     }
-    for (frame.i = 0; frame.i < 0x100; frame.i++) {
+    for (frame.i = 0; frame.i < 256; frame.i++) {
         g_WorldUnderwaterPalette[frame.i] = WorldMap_NextRandomByte() << 2;
     }
 }
@@ -1599,7 +1599,7 @@ void __cdecl World_InitZolomBodySegmentRecords(void)
     int activeTmp;
     int loopLevel;
 
-    for (count = 0; count < 0x0c; count++) {
+    for (count = 0; count < 12; count++) {
         currRec = &g_WorldOverlayChannels[count];
         currRec->color = 0x80808080;
         if (count < 4) {
@@ -1670,17 +1670,17 @@ void __cdecl World_InitZolomTrailRecords(void)
     VECTOR posBuf;
 
     WorldEntity_GetPlayerPosition(&posBuf);
-    if (posBuf.vz < 0x23A98) {
+    if (posBuf.vz < 146072) {
         for (trail = g_WorldSnakeDataPosition; trail < (WorldZolomTrailPoint *)g_WorldSnakeDataPositionEnd; trail++) {
-            trail->x = 0x2008;
-            trail->z = 0x6338;
+            trail->x = 8200;
+            trail->z = 25400;
             trail->ground = 0;
             trail->heading = 0;
         }
     } else {
         for (trail = g_WorldSnakeDataPosition; trail < (WorldZolomTrailPoint *)g_WorldSnakeDataPositionEnd; trail++) {
-            trail->x = 0x1D4C;
-            trail->z = 0x11F8;
+            trail->x = 7500;
+            trail->z = 4600;
             trail->ground = 0;
             trail->heading = 0;
         }
@@ -1750,7 +1750,7 @@ int __cdecl World_IsZolomActiveAndPlayerInRegion(void)
     int inRegion;
 
     WorldEntity_GetPlayerPosition(&viewPos);
-    if (g_WorldSkyHorizonY != 0 && viewPos.vx >= 0x30000 && viewPos.vx < 0x40000 && viewPos.vz >= 0x1C000 && viewPos.vz < 0x2C000) {
+    if (g_WorldSkyHorizonY != 0 && viewPos.vx >= 196608 && viewPos.vx < 262144 && viewPos.vz >= 114688 && viewPos.vz < 180224) {
         inRegion = 1;
     } else {
         inRegion = 0;
@@ -1786,17 +1786,17 @@ void __cdecl World_UpdateZolom(void)
     if (World_IsZolomActiveAndPlayerInRegion()) {
         if (g_WorldZolomGroundHit == 0) {
             g_pWorldZolomTrailHead->x =
-                (g_pWorldZolomTrailHead->x * 0x3f + 10000) >> 6;
+                (g_pWorldZolomTrailHead->x * 63 + 10000) >> 6;
             g_pWorldZolomTrailHead->z =
-                (g_pWorldZolomTrailHead->z * 0x3f + 15000) >> 6;
+                (g_pWorldZolomTrailHead->z * 63 + 15000) >> 6;
             g_WorldMeteorSpriteEnabled = g_pWorldZolomTrailHead->headingUnsigned + 0x800;
         }
         g_WorldZolomGroundHit = 0;
         frame.zolomDistance =
-            (frame.playerPos.vx - g_pWorldZolomTrailHead->x - 0x34000 > 0
+            (frame.playerPos.vx - g_pWorldZolomTrailHead->x - 212992 > 0
                  ? frame.playerPos.vx - g_pWorldZolomTrailHead->x - 0x34000
                  : -(frame.playerPos.vx - g_pWorldZolomTrailHead->x - 0x34000)) +
-            (frame.playerPos.vz - g_pWorldZolomTrailHead->z - 0x20000 > 0
+            (frame.playerPos.vz - g_pWorldZolomTrailHead->z - 131072 > 0
                  ? frame.playerPos.vz - g_pWorldZolomTrailHead->z - 0x20000
                  : -(frame.playerPos.vz - g_pWorldZolomTrailHead->z - 0x20000));
         if (frame.zolomDistance > 200 ||
@@ -1814,7 +1814,7 @@ void __cdecl World_UpdateZolom(void)
         frame.dwCurrentTerrain = g_WorldZolomPrevTerrain;
     g_WorldZolomPrevPlayerModel = frame.dwCurrentVehicle;
     if (frame.dwCurrentTerrain == WORLD_TERRAIN_SWAMP && g_WorldZolomPrevTerrain == 0)
-        g_WorldZolomPlayerXFlag = frame.playerPos.vx > 0x36000;
+        g_WorldZolomPlayerXFlag = frame.playerPos.vx > 221184;
     g_WorldZolomPrevTerrain = frame.dwCurrentTerrain;
 }
 
@@ -1841,7 +1841,7 @@ void __cdecl World_AdvanceZolomTrailHead(void)
     short turnOffset;
 
     dstStep[0] = dstStep[1] = 0;
-    dstStep[2] = 0x64;
+    dstStep[2] = 100;
     WorldMap_RotateVec3ByYaw((SVECTOR *)dstStep, g_WorldMeteorSpriteEnabled);
     pTrailPoint = g_pWorldZolomTrailHead + 1;
     if (pTrailPoint >= (WorldZolomTrailPoint *)g_WorldSnakeDataPositionEnd) {
@@ -1856,9 +1856,9 @@ void __cdecl World_AdvanceZolomTrailHead(void)
         playerPosition[0] -= 0x34000;
         playerPosition[2] -= 0x20000;
         straightDist = (pTrailPoint->x - playerPosition[0] > 0 ? pTrailPoint->x - playerPosition[0] : -(pTrailPoint->x - playerPosition[0])) + (pTrailPoint->z - playerPosition[2] > 0 ? pTrailPoint->z - playerPosition[2] : -(pTrailPoint->z - playerPosition[2]));
-        turnOffset = straightDist > 0x12C ? 0x493E0 / straightDist : 0;
+        turnOffset = straightDist > 300 ? 0x493E0 / straightDist : 0;
         dstStep[0] = dstStep[1] = 0;
-        dstStep[2] = 0x64;
+        dstStep[2] = 100;
         WorldMap_RotateVec3ByYaw((SVECTOR *)dstStep, g_WorldMeteorSpriteEnabled + turnOffset);
         trialGap = (g_pWorldZolomTrailHead->x + dstStep[0] - playerPosition[0] > 0 ? g_pWorldZolomTrailHead->x + dstStep[0] - playerPosition[0] : -(g_pWorldZolomTrailHead->x + dstStep[0] - playerPosition[0])) + (g_pWorldZolomTrailHead->z + dstStep[2] - playerPosition[2] > 0 ? g_pWorldZolomTrailHead->z + dstStep[2] - playerPosition[2] : -(g_pWorldZolomTrailHead->z + dstStep[2] - playerPosition[2]));
         if (trialGap < straightDist) {
@@ -1867,7 +1867,7 @@ void __cdecl World_AdvanceZolomTrailHead(void)
             pTrailPoint->heading = g_WorldMeteorSpriteEnabled + turnOffset;
         }
         dstStep[0] = dstStep[1] = 0;
-        dstStep[2] = 0x64;
+        dstStep[2] = 100;
         WorldMap_RotateVec3ByYaw((SVECTOR *)dstStep, g_WorldMeteorSpriteEnabled - turnOffset);
         trialGap = (g_pWorldZolomTrailHead->x + dstStep[0] - playerPosition[0] > 0 ? g_pWorldZolomTrailHead->x + dstStep[0] - playerPosition[0] : -(g_pWorldZolomTrailHead->x + dstStep[0] - playerPosition[0])) + (g_pWorldZolomTrailHead->z + dstStep[2] - playerPosition[2] > 0 ? g_pWorldZolomTrailHead->z + dstStep[2] - playerPosition[2] : -(g_pWorldZolomTrailHead->z + dstStep[2] - playerPosition[2]));
         if (trialGap < straightDist) {
@@ -1877,7 +1877,7 @@ void __cdecl World_AdvanceZolomTrailHead(void)
         }
         g_WorldMeteorSpriteEnabled = pTrailPoint->heading;
     } else if (g_WorldZolomTurnCountdown-- <= 0) {
-        g_WorldZolomTurnCountdown = WorldMap_NextRandomByte() + 0x40 >> 2;
+        g_WorldZolomTurnCountdown = WorldMap_NextRandomByte() + 64 >> 2;
         g_WorldZolomRandomOffset = WorldMap_NextRandomByte() - 0x80 >> 2;
     }
     g_pWorldZolomTrailHead = pTrailPoint;
@@ -1988,38 +1988,38 @@ void __cdecl World_PushTerrainFloodCrossingRecord(struct WorldPushTerrainFloodCr
                 edgeBit = 0;
                 switch (g_WorldTerrainFloodState) {
                 case WORLD_FLOOD_CROSS_NEG_X:
-                    if (mesh->vertexData[tri->vertices[0]].vx > 0x1FF6 && mesh->vertexData[tri->vertices[1]].vx > 0x1FF6) {
+                    if (mesh->vertexData[tri->vertices[0]].vx > 8182 && mesh->vertexData[tri->vertices[1]].vx > 8182) {
                         edgeBit = WORLD_FLOOD_EDGE_V0_V1;
-                    } else if (mesh->vertexData[tri->vertices[1]].vx > 0x1FF6 && mesh->vertexData[tri->vertices[2]].vx > 0x1FF6) {
+                    } else if (mesh->vertexData[tri->vertices[1]].vx > 8182 && mesh->vertexData[tri->vertices[2]].vx > 8182) {
                         edgeBit = WORLD_FLOOD_EDGE_V1_V2;
-                    } else if (mesh->vertexData[tri->vertices[2]].vx > 0x1FF6 && mesh->vertexData[tri->vertices[0]].vx > 0x1FF6) {
+                    } else if (mesh->vertexData[tri->vertices[2]].vx > 8182 && mesh->vertexData[tri->vertices[0]].vx > 8182) {
                         edgeBit = WORLD_FLOOD_EDGE_V2_V0;
                     }
                     break;
                 case WORLD_FLOOD_CROSS_NEG_Z:
-                    if (mesh->vertexData[tri->vertices[0]].vz > 0x1FF6 && mesh->vertexData[tri->vertices[1]].vz > 0x1FF6) {
+                    if (mesh->vertexData[tri->vertices[0]].vz > 8182 && mesh->vertexData[tri->vertices[1]].vz > 8182) {
                         edgeBit = WORLD_FLOOD_EDGE_V0_V1;
-                    } else if (mesh->vertexData[tri->vertices[1]].vz > 0x1FF6 && mesh->vertexData[tri->vertices[2]].vz > 0x1FF6) {
+                    } else if (mesh->vertexData[tri->vertices[1]].vz > 8182 && mesh->vertexData[tri->vertices[2]].vz > 8182) {
                         edgeBit = WORLD_FLOOD_EDGE_V1_V2;
-                    } else if (mesh->vertexData[tri->vertices[2]].vz > 0x1FF6 && mesh->vertexData[tri->vertices[0]].vz > 0x1FF6) {
+                    } else if (mesh->vertexData[tri->vertices[2]].vz > 8182 && mesh->vertexData[tri->vertices[0]].vz > 8182) {
                         edgeBit = WORLD_FLOOD_EDGE_V2_V0;
                     }
                     break;
                 case WORLD_FLOOD_CROSS_POS_X:
-                    if (mesh->vertexData[tri->vertices[0]].vx < 0xA && mesh->vertexData[tri->vertices[1]].vx < 0xA) {
+                    if (mesh->vertexData[tri->vertices[0]].vx < 10 && mesh->vertexData[tri->vertices[1]].vx < 10) {
                         edgeBit = WORLD_FLOOD_EDGE_V0_V1;
-                    } else if (mesh->vertexData[tri->vertices[1]].vx < 0xA && mesh->vertexData[tri->vertices[2]].vx < 0xA) {
+                    } else if (mesh->vertexData[tri->vertices[1]].vx < 10 && mesh->vertexData[tri->vertices[2]].vx < 10) {
                         edgeBit = WORLD_FLOOD_EDGE_V1_V2;
-                    } else if (mesh->vertexData[tri->vertices[2]].vx < 0xA && mesh->vertexData[tri->vertices[0]].vx < 0xA) {
+                    } else if (mesh->vertexData[tri->vertices[2]].vx < 10 && mesh->vertexData[tri->vertices[0]].vx < 10) {
                         edgeBit = WORLD_FLOOD_EDGE_V2_V0;
                     }
                     break;
                 case WORLD_FLOOD_CROSS_POS_Z:
-                    if (mesh->vertexData[tri->vertices[0]].vz < 0xA && mesh->vertexData[tri->vertices[1]].vz < 0xA) {
+                    if (mesh->vertexData[tri->vertices[0]].vz < 10 && mesh->vertexData[tri->vertices[1]].vz < 10) {
                         edgeBit = WORLD_FLOOD_EDGE_V0_V1;
-                    } else if (mesh->vertexData[tri->vertices[1]].vz < 0xA && mesh->vertexData[tri->vertices[2]].vz < 0xA) {
+                    } else if (mesh->vertexData[tri->vertices[1]].vz < 10 && mesh->vertexData[tri->vertices[2]].vz < 10) {
                         edgeBit = WORLD_FLOOD_EDGE_V1_V2;
-                    } else if (mesh->vertexData[tri->vertices[2]].vz < 0xA && mesh->vertexData[tri->vertices[0]].vz < 0xA) {
+                    } else if (mesh->vertexData[tri->vertices[2]].vz < 10 && mesh->vertexData[tri->vertices[0]].vz < 10) {
                         edgeBit = WORLD_FLOOD_EDGE_V2_V0;
                     }
                     break;
@@ -2099,7 +2099,7 @@ void __cdecl World_BeginTerrainFloodFill(int mesh, int triangle)
         g_pWorldSelectedTerrainTriangle = 0;
         g_WorldSteeringCycle = 1;
         WorldEntity_GetPlayerPosition(&viewPos);
-        if (viewPos.vx >= 0x36000 && viewPos.vx < 0x40000 && viewPos.vz >= 0x1C000 && viewPos.vz < 0x26000) {
+        if (viewPos.vx >= 221184 && viewPos.vx < 262144 && viewPos.vz >= 114688 && viewPos.vz < 155648) {
             inRange = 1;
         } else {
             inRange = 0;
@@ -2123,7 +2123,7 @@ void __cdecl World_BeginTerrainFloodFill(int mesh, int triangle)
 void __cdecl World_StartTerrainEffectAtPathRecord(int state)
 {
     int model;
-    char xz[0x10];
+    char xz[16];
     int slot;
 
     if (g_WorldSteeringCycle == 2) {
@@ -2442,37 +2442,37 @@ int __cdecl World_TerrainFloodVisitEdgeNeighbor(int vertexA, int vertexB)
         g_WorldTerrainFloodMeshRow = g_pWorldTerrainFloodCursor->chunk->wChunkY;
         g_WorldSkyVertexQuad.posY = 0;
         res = WORLD_FLOOD_VISIT_CROSSED_BORDER;
-        if (xA < 0xA && xB < 0xA) {
+        if (xA < 10 && xB < 10) {
             g_WorldTerrainFloodFinishReq -= 1;
             if (g_WorldTerrainFloodFinishReq < 0) {
                 g_WorldTerrainFloodFinishReq = 0x23;
             }
-            g_WorldSkyVertexQuad.posX = 0x1FF6;
+            g_WorldSkyVertexQuad.posX = 8182;
             g_WorldSkyVertexQuad.posZ = vertexAz + bz >> 1;
             g_WorldTerrainFloodState = WORLD_FLOOD_CROSS_NEG_X;
-        } else if (vertexAz < 0xA && bz < 0xA) {
+        } else if (vertexAz < 10 && bz < 10) {
             g_WorldTerrainFloodMeshRow -= 1;
             if (g_WorldTerrainFloodMeshRow < 0) {
-                g_WorldTerrainFloodMeshRow = 0x1B;
+                g_WorldTerrainFloodMeshRow = 27;
             }
             g_WorldSkyVertexQuad.posX = xA + xB >> 1;
-            g_WorldSkyVertexQuad.posZ = 0x1FF6;
+            g_WorldSkyVertexQuad.posZ = 8182;
             g_WorldTerrainFloodState = WORLD_FLOOD_CROSS_NEG_Z;
-        } else if (xA > 0x1FF6 && xB > 0x1FF6) {
+        } else if (xA > 8182 && xB > 8182) {
             g_WorldTerrainFloodFinishReq += 1;
-            if (g_WorldTerrainFloodFinishReq >= 0x24) {
+            if (g_WorldTerrainFloodFinishReq >= 36) {
                 g_WorldTerrainFloodFinishReq = 0;
             }
-            g_WorldSkyVertexQuad.posX = 0xA;
+            g_WorldSkyVertexQuad.posX = 10;
             g_WorldSkyVertexQuad.posZ = vertexAz + bz >> 1;
             g_WorldTerrainFloodState = WORLD_FLOOD_CROSS_POS_X;
-        } else if (vertexAz > 0x1FF6 && bz > 0x1FF6) {
+        } else if (vertexAz > 8182 && bz > 8182) {
             g_WorldTerrainFloodMeshRow += 1;
-            if (g_WorldTerrainFloodMeshRow >= 0x1C) {
+            if (g_WorldTerrainFloodMeshRow >= 28) {
                 g_WorldTerrainFloodMeshRow = 0;
             }
             g_WorldSkyVertexQuad.posX = xA + xB >> 1;
-            g_WorldSkyVertexQuad.posZ = 0xA;
+            g_WorldSkyVertexQuad.posZ = 10;
             g_WorldTerrainFloodState = WORLD_FLOOD_CROSS_POS_Z;
         } else {
             res = WORLD_FLOOD_VISIT_BLOCKED;
@@ -2512,48 +2512,48 @@ int __cdecl World_TerrainFloodCompareEdgeMidpointDistances(int vertexA, int vert
     if (g_WorldTerrainFloodInRange != 0) {
         refX[0] = 0x3A681;
         positionZ = 0x2195F;
-        if (refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD) > 0) {
-            absDxA8 = refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD);
+        if (refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13) > 0) {
+            absDxA8 = refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13);
         } else {
-            absDxA8 = -(refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD));
+            absDxA8 = -(refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13));
         }
-        if (positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD) > 0) {
-            absDzA = positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD);
+        if (positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13) > 0) {
+            absDzA = positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13);
         } else {
-            absDzA = -(positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD));
+            absDzA = -(positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13));
         }
-        if (refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD) > 0) {
-            srcAbsDxB = refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD);
+        if (refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13) > 0) {
+            srcAbsDxB = refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13);
         } else {
-            srcAbsDxB = -(refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD));
+            srcAbsDxB = -(refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13));
         }
-        if (positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD) > 0) {
-            mainDistZ = positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD);
+        if (positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13) > 0) {
+            mainDistZ = positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13);
         } else {
-            mainDistZ = -(positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD));
+            mainDistZ = -(positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13));
         }
         return absDxA8 + absDzA < srcAbsDxB + mainDistZ;
     } else {
         WorldEntity_GetPlayerPosition((VECTOR *)refX);
-        if (refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD) > 0) {
-            playerDistX1 = refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD);
+        if (refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13) > 0) {
+            playerDistX1 = refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13);
         } else {
-            playerDistX1 = -(refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD));
+            playerDistX1 = -(refX[0] - (vertexTable[vertexA & 0xFF].vx + vertexTable[vertexB & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13));
         }
-        if (positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD) > 0) {
-            playerZGap1 = positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD);
+        if (positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13) > 0) {
+            playerZGap1 = positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13);
         } else {
-            playerZGap1 = -(positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD));
+            playerZGap1 = -(positionZ - (vertexTable[vertexA & 0xFF].vz + vertexTable[vertexB & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13));
         }
-        if (refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD) > 0) {
-            basePlayerXGap = refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD);
+        if (refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13) > 0) {
+            basePlayerXGap = refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13);
         } else {
-            basePlayerXGap = -(refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 0xD));
+            basePlayerXGap = -(refX[0] - (vertexTable[vertexB & 0xFF].vx + vertexTable[vertexC & 0xFF].vx >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkX << 13));
         }
-        if (positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD) > 0) {
-            newAbsPlayerDz = positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD);
+        if (positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13) > 0) {
+            newAbsPlayerDz = positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13);
         } else {
-            newAbsPlayerDz = -(positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 0xD));
+            newAbsPlayerDz = -(positionZ - (vertexTable[vertexB & 0xFF].vz + vertexTable[vertexC & 0xFF].vz >> 1) - (g_pWorldTerrainFloodCursor->chunk->wChunkY << 13));
         }
         return playerDistX1 + playerZGap1 > basePlayerXGap + newAbsPlayerDz;
     }
@@ -2652,7 +2652,7 @@ void __cdecl World_UpdateTerrainFloodPathFollowers(void)
             } else if ((g_WorldTerrainFloodCrossing.slot[followerIdx] & 8) != 0) {
                 if ((g_WorldTerrainFloodCrossing.slot[followerIdx] & 1) != 0) {
                     g_WorldTerrainFloodCrossing.slot[followerIdx] &= 0xFFFFFFFE;
-                    g_WorldRandomSeeds[followerIdx] += ((g_WorldTerrainFloodCrossing.slot[followerIdx] & 2) - 1) * 0xC;
+                    g_WorldRandomSeeds[followerIdx] += ((g_WorldTerrainFloodCrossing.slot[followerIdx] & 2) - 1) * 12;
                     World_GetProbeTriangleCenterXZ(g_WorldRandomSeeds[followerIdx], &g_WorldSkySprites[followerIdx]);
                     if ((unsigned int)g_WorldRandomSeeds[followerIdx] > (unsigned int)&g_WorldZoneFogNearRGB && (unsigned int)g_WorldRandomSeeds[followerIdx] < (unsigned int)g_WorldZoneOuterRadius) {
                         World_GetProbeTriangleCenterXZ((int)((WorldTerrainProbe *)g_WorldRandomSeeds[followerIdx] + (g_WorldTerrainFloodCrossing.slot[followerIdx] & 2) - 1), neighborPosition);
@@ -2663,7 +2663,7 @@ void __cdecl World_UpdateTerrainFloodPathFollowers(void)
                     g_WorldSnakeDataPositionEnd[followerIdx] = 0x7FFF;
                 }
                 stepVec[0] = stepVec[1] = 0;
-                stepVec[2] = 0x78;
+                stepVec[2] = 120;
                 WorldEntity_SetCurrentFacingClearTurn(g_WorldTerrainCurrentBytes[followerIdx]);
                 WorldMap_RotateVec3ByYaw((SVECTOR *)stepVec, g_WorldTerrainCurrentBytes[followerIdx]);
                 WorldEntity_MoveCurrentBy(stepVec[0], stepVec[2]);
@@ -2673,7 +2673,7 @@ void __cdecl World_UpdateTerrainFloodPathFollowers(void)
                 }
                 g_WorldSnakeDataPositionEnd[followerIdx] = distance;
                 if (g_WorldTerrainFloodInRange != 0) {
-                    if ((position[0] - 0x3A681 > 0 ? position[0] - 0x3A681 : -(position[0] - 0x3A681)) + (position[2] - 0x2195F > 0 ? position[2] - 0x2195F : -(position[2] - 0x2195F)) < 0x7D0) {
+                    if ((position[0] - 239233 > 0 ? position[0] - 0x3A681 : -(position[0] - 0x3A681)) + (position[2] - 137567 > 0 ? position[2] - 0x2195F : -(position[2] - 0x2195F)) < 2000) {
                         g_WorldTerrainFloodCrossing.slot[followerIdx] = 0;
                     }
                 }
@@ -2780,7 +2780,7 @@ int __cdecl World_UpdateRandomSteeringCycleAndSpawnEntity(int dwMove, int dwTrig
     }
     g_WorldSteeringCountdown -= (dwMove == 0 && g_WorldSteeringCountdown >= g_WorldSteeringTarget) ? 0 : 1;
     if (g_WorldSteeringCountdown <= 0) {
-        g_WorldSteeringCycleLimit = WorldMap_NextRandomByte() + 0x80;
+        g_WorldSteeringCycleLimit = WorldMap_NextRandomByte() + 128;
         g_WorldSteeringCountdown = g_WorldSteeringCycleLimit;
         g_WorldSteeringTarget = (WorldMap_NextRandomByte() >> 3) + 0x40;
         g_WorldSteeringTurn = ((WorldMap_NextRandomByte() & 2) - 1) << 4;
@@ -2835,7 +2835,7 @@ void __cdecl World_UnpackTerrainCurrentBytes(unsigned int packedBytes)
 // FUNCTION: FF7 0x00758d76
 int __cdecl World_PackTerrainCurrentBytes(void)
 {
-    return g_WorldZolomSegments.records[0].strength | g_WorldZolomSegments.records[1].strength << 8 | g_WorldZolomSegments.records[2].strength << 0x10 | g_WorldTerrainCurrentByte3 << 0x18;
+    return g_WorldZolomSegments.records[0].strength | g_WorldZolomSegments.records[1].strength << 8 | g_WorldZolomSegments.records[2].strength << 0x10 | g_WorldTerrainCurrentByte3 << 24;
 }
 
 /*
@@ -2929,13 +2929,13 @@ WorldTerrainCurrentRecord *__cdecl World_FindTerrainCurrentRecord(short column, 
     WorldTerrainCurrentRecord *result;
     WorldTerrainCurrentRecord *fallback;
 
-    if (column == 5 && row == 0x12) {
+    if (column == 5 && row == 18) {
         result = g_WorldZolomSegments.records;
     } else {
-        if (column == 4 && row == 0x11) {
+        if (column == 4 && row == 17) {
             innerRecord = &g_WorldZolomSegments.records[1];
         } else {
-            if (column == 4 && row == 0xE) {
+            if (column == 4 && row == 14) {
                 fallback = &g_WorldZolomSegments.records[2];
             } else {
                 fallback = 0;
@@ -2981,7 +2981,7 @@ void __cdecl World_UpdateTerrainCurrentStrengths(void)
             WorldEntity_GetPlayerPosition((VECTOR *)posBuffer);
             WorldMap_PositionToMesh(posBuffer, 0, &meshCol, &meshRow);
             current = World_FindTerrainCurrentRecord((short)meshCol, (short)meshRow);
-            if (current != 0 && current->strength < 0x64) {
+            if (current != 0 && current->strength < 100) {
                 current->strength += 0xA;
             }
             World_RequestAmbienceSfx(0xCB);

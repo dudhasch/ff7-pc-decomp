@@ -73,7 +73,7 @@ CoasterRenderer::CoasterRenderer()
     // STRING: FF7 0x00901638
     this->beamTim[2] = (GfxRenderObject *)load(12, 1, "beam3.tim", 0);
     this->currentBeamTim = this->beamTim[0];
-    this->fadeObject = (GfxRenderObject *)load(8, 0, 0, 0x4000);
+    this->fadeObject = (GfxRenderObject *)load(8, 0, 0, 16384);
     this->scratchMatrix = this->matrices[0];
     this->projectionMatrix = this->matrices[1];
     SetIdentityMatrix4x4(this->scratchMatrix);
@@ -753,10 +753,10 @@ void CoasterRenderer::drawCharge()
         GfxTlVertex *baseRightVtx;
     } frame;
     frame.chargeLevel = g_CoasterBeamCharge << 7 >> 7;
-    frame.fillY = g_CoasterDisplayScaleY * 0xDC - g_CoasterBeamCharge * g_CoasterDisplayScaleY + g_CoasterClipTop;
+    frame.fillY = g_CoasterDisplayScaleY * 220 - g_CoasterBeamCharge * g_CoasterDisplayScaleY + g_CoasterClipTop;
     if (AcquireBatchNode(1, (void *)this->chargeObject) != 0) {
         frame.fillLeftVtx = (GfxTlVertex *)this->chargeObject->vertexCursor;
-        frame.fillLeftVtx->x = (float)(g_coasterSubVolumeFactor * 0x14) + g_CoasterClipLeft;
+        frame.fillLeftVtx->x = (float)(g_coasterSubVolumeFactor * 20) + g_CoasterClipLeft;
         frame.fillLeftVtx->y = (float)frame.fillY;
         frame.fillLeftVtx->zBits = 0;
         frame.fillLeftVtx->rhwBits = FLOAT_ONE_BITS;
@@ -765,8 +765,8 @@ void CoasterRenderer::drawCharge()
         frame.fillLeftVtx->uBits = 0;
         frame.fillLeftVtx->vBits = 0;
         frame.baseLeftVtx = (GfxTlVertex *)(this->chargeObject->vertexCursor + 0x20);
-        frame.baseLeftVtx->x = (float)(g_coasterSubVolumeFactor * 0x14) + g_CoasterClipLeft;
-        frame.baseLeftVtx->y = (float)(g_CoasterDisplayScaleY * 0xDC) + g_CoasterClipTop;
+        frame.baseLeftVtx->x = (float)(g_coasterSubVolumeFactor * 20) + g_CoasterClipLeft;
+        frame.baseLeftVtx->y = (float)(g_CoasterDisplayScaleY * 220) + g_CoasterClipTop;
         frame.baseLeftVtx->zBits = 0;
         frame.baseLeftVtx->rhwBits = FLOAT_ONE_BITS;
         frame.baseLeftVtx->color = 0xFF800000;
@@ -774,7 +774,7 @@ void CoasterRenderer::drawCharge()
         frame.baseLeftVtx->uBits = 0;
         frame.baseLeftVtx->vBits = 0;
         frame.fillRightVtx = (GfxTlVertex *)(this->chargeObject->vertexCursor + 0x40);
-        frame.fillRightVtx->x = (float)(g_coasterSubVolumeFactor * 0x1C) + g_CoasterClipLeft;
+        frame.fillRightVtx->x = (float)(g_coasterSubVolumeFactor * 28) + g_CoasterClipLeft;
         frame.fillRightVtx->y = (float)frame.fillY;
         frame.fillRightVtx->zBits = 0;
         frame.fillRightVtx->rhwBits = FLOAT_ONE_BITS;
@@ -783,8 +783,8 @@ void CoasterRenderer::drawCharge()
         frame.fillRightVtx->uBits = 0;
         frame.fillRightVtx->vBits = 0;
         frame.baseRightVtx = (GfxTlVertex *)(this->chargeObject->vertexCursor + 0x60);
-        frame.baseRightVtx->x = (float)(g_coasterSubVolumeFactor * 0x1C) + g_CoasterClipLeft;
-        frame.baseRightVtx->y = (float)(g_CoasterDisplayScaleY * 0xDC) + g_CoasterClipTop;
+        frame.baseRightVtx->x = (float)(g_coasterSubVolumeFactor * 28) + g_CoasterClipLeft;
+        frame.baseRightVtx->y = (float)(g_CoasterDisplayScaleY * 220) + g_CoasterClipTop;
         frame.baseRightVtx->zBits = 0;
         frame.baseRightVtx->rhwBits = FLOAT_ONE_BITS;
         frame.baseRightVtx->color = 0xFF800000;
@@ -811,8 +811,8 @@ void CoasterRenderer::drawPanel5F1838()
     frame.panelColor = 0xFFFFFFFF;
     if (AcquireBatchNode(1, (void *)this->waku2Tim) != 0) {
         frame.topLeftVtx = (GfxTlVertex *)this->waku2Tim->vertexCursor;
-        frame.topLeftVtx->x = (float)(g_coasterSubVolumeFactor * 0x12) + g_CoasterClipLeft;
-        frame.topLeftVtx->y = (float)(g_CoasterDisplayScaleY * 0x56) + g_CoasterClipTop;
+        frame.topLeftVtx->x = (float)(g_coasterSubVolumeFactor * 18) + g_CoasterClipLeft;
+        frame.topLeftVtx->y = (float)(g_CoasterDisplayScaleY * 86) + g_CoasterClipTop;
         frame.topLeftVtx->zBits = 0;
         frame.topLeftVtx->rhwBits = FLOAT_ONE_BITS;
         frame.topLeftVtx->color = frame.panelColor;
@@ -820,8 +820,8 @@ void CoasterRenderer::drawPanel5F1838()
         frame.topLeftVtx->uBits = 0;
         frame.topLeftVtx->vBits = 0;
         frame.bottomLeftVtx = (GfxTlVertex *)(this->waku2Tim->vertexCursor + 0x20);
-        frame.bottomLeftVtx->x = (float)(g_coasterSubVolumeFactor * 0x12) + g_CoasterClipLeft;
-        frame.bottomLeftVtx->y = (float)(g_CoasterDisplayScaleY * 0xE2) + g_CoasterClipTop;
+        frame.bottomLeftVtx->x = (float)(g_coasterSubVolumeFactor * 18) + g_CoasterClipLeft;
+        frame.bottomLeftVtx->y = (float)(g_CoasterDisplayScaleY * 226) + g_CoasterClipTop;
         frame.bottomLeftVtx->zBits = 0;
         frame.bottomLeftVtx->rhwBits = FLOAT_ONE_BITS;
         frame.bottomLeftVtx->color = frame.panelColor;
@@ -829,8 +829,8 @@ void CoasterRenderer::drawPanel5F1838()
         frame.bottomLeftVtx->uBits = 0;
         frame.bottomLeftVtx->vBits = FLOAT_ONE_BITS;
         frame.topRightVtx = (GfxTlVertex *)(this->waku2Tim->vertexCursor + 0x40);
-        frame.topRightVtx->x = (float)(g_coasterSubVolumeFactor * 0x1E) + g_CoasterClipLeft;
-        frame.topRightVtx->y = (float)(g_CoasterDisplayScaleY * 0x56) + g_CoasterClipTop;
+        frame.topRightVtx->x = (float)(g_coasterSubVolumeFactor * 30) + g_CoasterClipLeft;
+        frame.topRightVtx->y = (float)(g_CoasterDisplayScaleY * 86) + g_CoasterClipTop;
         frame.topRightVtx->zBits = 0;
         frame.topRightVtx->rhwBits = FLOAT_ONE_BITS;
         frame.topRightVtx->color = frame.panelColor;
@@ -838,8 +838,8 @@ void CoasterRenderer::drawPanel5F1838()
         frame.topRightVtx->uBits = FLOAT_ONE_BITS;
         frame.topRightVtx->vBits = 0;
         frame.bottomRightVtx = (GfxTlVertex *)(this->waku2Tim->vertexCursor + 0x60);
-        frame.bottomRightVtx->x = (float)(g_coasterSubVolumeFactor * 0x1E) + g_CoasterClipLeft;
-        frame.bottomRightVtx->y = (float)(g_CoasterDisplayScaleY * 0xE2) + g_CoasterClipTop;
+        frame.bottomRightVtx->x = (float)(g_coasterSubVolumeFactor * 30) + g_CoasterClipLeft;
+        frame.bottomRightVtx->y = (float)(g_CoasterDisplayScaleY * 226) + g_CoasterClipTop;
         frame.bottomRightVtx->zBits = 0;
         frame.bottomRightVtx->rhwBits = FLOAT_ONE_BITS;
         frame.bottomRightVtx->color = frame.panelColor;
@@ -865,16 +865,16 @@ void CoasterRenderer::drawPanel5F1A71()
         struct { unsigned char pad_to_4[0x4]; GfxTlVertex *topRightVtx; };
         GfxTlVertex *bottomRightVtx;
     } frame;
-    frame.leftX = g_coasterSubVolumeFactor * 0xC8 + g_CoasterClipLeft;
-    frame.rightX = g_CoasterDisplayScaleY * 0x137 + g_CoasterClipLeft;
-    if (g_CoasterScore >= 0x270F) {
-        frame.rightX += g_coasterSubVolumeFactor * 0xF + g_CoasterClipLeft;
+    frame.leftX = g_coasterSubVolumeFactor * 200 + g_CoasterClipLeft;
+    frame.rightX = g_CoasterDisplayScaleY * 311 + g_CoasterClipLeft;
+    if (g_CoasterScore >= 9999) {
+        frame.rightX += g_coasterSubVolumeFactor * 15 + g_CoasterClipLeft;
     }
     frame.panelColor = 0xFFFFFFFF;
     if (AcquireBatchNode(1, (void *)this->co1Tim) != 0) {
         frame.topLeftVtx = (GfxTlVertex *)this->co1Tim->vertexCursor;
         frame.topLeftVtx->x = (float)frame.leftX;
-        frame.topLeftVtx->y = (float)(g_CoasterDisplayScaleY * 0xC0) + g_CoasterClipTop;
+        frame.topLeftVtx->y = (float)(g_CoasterDisplayScaleY * 192) + g_CoasterClipTop;
         frame.topLeftVtx->zBits = 0;
         frame.topLeftVtx->rhwBits = FLOAT_ONE_BITS;
         frame.topLeftVtx->color = frame.panelColor;
@@ -883,7 +883,7 @@ void CoasterRenderer::drawPanel5F1A71()
         frame.topLeftVtx->vBits = 0;
         frame.bottomLeftVtx = (GfxTlVertex *)(this->co1Tim->vertexCursor + 0x20);
         frame.bottomLeftVtx->x = (float)frame.leftX;
-        frame.bottomLeftVtx->y = (float)(g_CoasterDisplayScaleY * 0xDF) + g_CoasterClipTop;
+        frame.bottomLeftVtx->y = (float)(g_CoasterDisplayScaleY * 223) + g_CoasterClipTop;
         frame.bottomLeftVtx->zBits = 0;
         frame.bottomLeftVtx->rhwBits = FLOAT_ONE_BITS;
         frame.bottomLeftVtx->color = frame.panelColor;
@@ -892,7 +892,7 @@ void CoasterRenderer::drawPanel5F1A71()
         frame.bottomLeftVtx->vBits = FLOAT_ONE_BITS;
         frame.topRightVtx = (GfxTlVertex *)(this->co1Tim->vertexCursor + 0x40);
         frame.topRightVtx->x = (float)frame.rightX;
-        frame.topRightVtx->y = (float)(g_CoasterDisplayScaleY * 0xC0) + g_CoasterClipTop;
+        frame.topRightVtx->y = (float)(g_CoasterDisplayScaleY * 192) + g_CoasterClipTop;
         frame.topRightVtx->zBits = 0;
         frame.topRightVtx->rhwBits = FLOAT_ONE_BITS;
         frame.topRightVtx->color = frame.panelColor;
@@ -901,7 +901,7 @@ void CoasterRenderer::drawPanel5F1A71()
         frame.topRightVtx->vBits = 0;
         frame.bottomRightVtx = (GfxTlVertex *)(this->co1Tim->vertexCursor + 0x60);
         frame.bottomRightVtx->x = (float)frame.rightX;
-        frame.bottomRightVtx->y = (float)(g_CoasterDisplayScaleY * 0xDF) + g_CoasterClipTop;
+        frame.bottomRightVtx->y = (float)(g_CoasterDisplayScaleY * 223) + g_CoasterClipTop;
         frame.bottomRightVtx->zBits = 0;
         frame.bottomRightVtx->rhwBits = FLOAT_ONE_BITS;
         frame.bottomRightVtx->color = frame.panelColor;
@@ -928,8 +928,8 @@ void CoasterRenderer::drawPanel5F1CB5()
     frame.panelColor = 0xFFFFFFFF;
     if (AcquireBatchNode(1, (void *)this->pauseTim) != 0) {
         frame.topLeftVtx = (GfxTlVertex *)this->pauseTim->vertexCursor;
-        frame.topLeftVtx->x = (float)(g_coasterSubVolumeFactor * 0xC8) + g_CoasterClipLeft;
-        frame.topLeftVtx->y = (float)(g_CoasterDisplayScaleY * 0xC0) + g_CoasterClipTop;
+        frame.topLeftVtx->x = (float)(g_coasterSubVolumeFactor * 200) + g_CoasterClipLeft;
+        frame.topLeftVtx->y = (float)(g_CoasterDisplayScaleY * 192) + g_CoasterClipTop;
         frame.topLeftVtx->zBits = 0;
         frame.topLeftVtx->rhwBits = FLOAT_ONE_BITS;
         frame.topLeftVtx->color = frame.panelColor;
@@ -937,8 +937,8 @@ void CoasterRenderer::drawPanel5F1CB5()
         frame.topLeftVtx->uBits = 0;
         frame.topLeftVtx->vBits = 0;
         frame.bottomLeftVtx = (GfxTlVertex *)(this->pauseTim->vertexCursor + 0x20);
-        frame.bottomLeftVtx->x = (float)(g_coasterSubVolumeFactor * 0xC8) + g_CoasterClipLeft;
-        frame.bottomLeftVtx->y = (float)(g_CoasterDisplayScaleY * 0xE0) + g_CoasterClipTop;
+        frame.bottomLeftVtx->x = (float)(g_coasterSubVolumeFactor * 200) + g_CoasterClipLeft;
+        frame.bottomLeftVtx->y = (float)(g_CoasterDisplayScaleY * 224) + g_CoasterClipTop;
         frame.bottomLeftVtx->zBits = 0;
         frame.bottomLeftVtx->rhwBits = FLOAT_ONE_BITS;
         frame.bottomLeftVtx->color = frame.panelColor;
@@ -946,8 +946,8 @@ void CoasterRenderer::drawPanel5F1CB5()
         frame.bottomLeftVtx->uBits = 0;
         frame.bottomLeftVtx->vBits = FLOAT_ONE_BITS;
         frame.topRightVtx = (GfxTlVertex *)(this->pauseTim->vertexCursor + 0x40);
-        frame.topRightVtx->x = (float)(g_coasterSubVolumeFactor * 0x137) + g_CoasterClipLeft;
-        frame.topRightVtx->y = (float)(g_CoasterDisplayScaleY * 0xC0) + g_CoasterClipTop;
+        frame.topRightVtx->x = (float)(g_coasterSubVolumeFactor * 311) + g_CoasterClipLeft;
+        frame.topRightVtx->y = (float)(g_CoasterDisplayScaleY * 192) + g_CoasterClipTop;
         frame.topRightVtx->zBits = 0;
         frame.topRightVtx->rhwBits = FLOAT_ONE_BITS;
         frame.topRightVtx->color = frame.panelColor;
@@ -955,8 +955,8 @@ void CoasterRenderer::drawPanel5F1CB5()
         frame.topRightVtx->uBits = FLOAT_ONE_BITS;
         frame.topRightVtx->vBits = 0;
         frame.bottomRightVtx = (GfxTlVertex *)(this->pauseTim->vertexCursor + 0x60);
-        frame.bottomRightVtx->x = (float)(g_coasterSubVolumeFactor * 0x137) + g_CoasterClipLeft;
-        frame.bottomRightVtx->y = (float)(g_CoasterDisplayScaleY * 0xE0) + g_CoasterClipTop;
+        frame.bottomRightVtx->x = (float)(g_coasterSubVolumeFactor * 311) + g_CoasterClipLeft;
+        frame.bottomRightVtx->y = (float)(g_CoasterDisplayScaleY * 224) + g_CoasterClipTop;
         frame.bottomRightVtx->zBits = 0;
         frame.bottomRightVtx->rhwBits = FLOAT_ONE_BITS;
         frame.bottomRightVtx->color = frame.panelColor;
@@ -985,10 +985,10 @@ void CoasterRenderer::drawScorePanel()
         GfxTlVertex *bottomRightVtx;
     } frame;
     frame.panelColor = 0xFFFFFFFF;
-    frame.leftX = g_coasterSubVolumeFactor * 0xCC + g_CoasterClipLeft;
-    frame.rightX = g_coasterSubVolumeFactor * 0xF3 + g_CoasterClipLeft;
-    frame.topY = g_CoasterDisplayScaleY * 0xC8 + g_CoasterClipTop;
-    frame.bottomY = g_CoasterDisplayScaleY * 0xE8 + g_CoasterClipTop;
+    frame.leftX = g_coasterSubVolumeFactor * 204 + g_CoasterClipLeft;
+    frame.rightX = g_coasterSubVolumeFactor * 243 + g_CoasterClipLeft;
+    frame.topY = g_CoasterDisplayScaleY * 200 + g_CoasterClipTop;
+    frame.bottomY = g_CoasterDisplayScaleY * 232 + g_CoasterClipTop;
     AcquireBatchNode(1, (void *)this->scoreTim);
     frame.topLeftVtx = (GfxTlVertex *)this->scoreTim->vertexCursor;
     frame.topLeftVtx->x = (float)frame.leftX;
@@ -1026,7 +1026,7 @@ void CoasterRenderer::drawScorePanel()
     frame.bottomRightVtx->specular = 0xFF000000;
     frame.bottomRightVtx->uBits = 0x3E3CBCBD;
     frame.bottomRightVtx->vBits = FLOAT_ONE_BITS;
-    this->drawNumber(g_CoasterScore, g_coasterSubVolumeFactor * 0xEC, g_CoasterDisplayScaleY * 0xC8, 0);
+    this->drawNumber(g_CoasterScore, g_coasterSubVolumeFactor * 236, g_CoasterDisplayScaleY * 200, 0);
 }
 /*
  * Renders a multi-digit numeric string on HUD using digit texture glyphs.
@@ -1058,7 +1058,7 @@ void CoasterRenderer::drawNumber(int number, short x, short y, short forceDigits
     frame.color = 0xFFFFFFFF;
     frame.leadingZero = 1;
     frame.remainder = number + 1;
-    if (number > 0x270F) {
+    if (number > 9999) {
         frame.digitCount = 5;
         frame.divisor = 0x2710;
     }
@@ -1075,7 +1075,7 @@ void CoasterRenderer::drawNumber(int number, short x, short y, short forceDigits
             frame.leadingZero = 0;
         }
         if (forceDigits == 1 || (frame.digit != 0 || frame.leadingZero == 0)) {
-            frame.posX = (float)(x + frame.digitIndex * (g_coasterSubVolumeFactor * 0xD)) + g_CoasterClipLeft;
+            frame.posX = (float)(x + frame.digitIndex * (g_coasterSubVolumeFactor * 13)) + g_CoasterClipLeft;
             frame.posY = (float)y + g_CoasterClipTop;
             frame.texLeft = (float)((frame.digit << 4) + 0x30) / 255.0f;
             frame.texRight = (float)((frame.digit << 4) + 0x40) / 255.0f;
@@ -1091,7 +1091,7 @@ void CoasterRenderer::drawNumber(int number, short x, short y, short forceDigits
             frame.vertTopLeft->vBits = 0;
             frame.vertBottomLeft = (GfxTlVertex *)(this->scoreTim->vertexCursor + 0x20);
             frame.vertBottomLeft->x = frame.posX;
-            frame.vertBottomLeft->y = (float)(g_CoasterDisplayScaleY * 0x1D) + frame.posY;
+            frame.vertBottomLeft->y = (float)(g_CoasterDisplayScaleY * 29) + frame.posY;
             frame.vertBottomLeft->zBits = 0;
             frame.vertBottomLeft->rhwBits = FLOAT_ONE_BITS;
             frame.vertBottomLeft->color = frame.color;
@@ -1099,7 +1099,7 @@ void CoasterRenderer::drawNumber(int number, short x, short y, short forceDigits
             frame.vertBottomLeft->u = frame.texLeft;
             frame.vertBottomLeft->vBits = FLOAT_ONE_BITS;
             frame.vertTopRight = (GfxTlVertex *)(this->scoreTim->vertexCursor + 0x40);
-            frame.vertTopRight->x = (float)(g_coasterSubVolumeFactor * 0xF) + frame.posX;
+            frame.vertTopRight->x = (float)(g_coasterSubVolumeFactor * 15) + frame.posX;
             frame.vertTopRight->y = frame.posY;
             frame.vertTopRight->zBits = 0;
             frame.vertTopRight->rhwBits = FLOAT_ONE_BITS;
@@ -1108,8 +1108,8 @@ void CoasterRenderer::drawNumber(int number, short x, short y, short forceDigits
             frame.vertTopRight->u = frame.texRight;
             frame.vertTopRight->vBits = 0;
             frame.vertBottomRight = (GfxTlVertex *)(this->scoreTim->vertexCursor + 0x60);
-            frame.vertBottomRight->x = (float)(g_coasterSubVolumeFactor * 0xF) + frame.posX;
-            frame.vertBottomRight->y = (float)(g_CoasterDisplayScaleY * 0x1D) + frame.posY;
+            frame.vertBottomRight->x = (float)(g_coasterSubVolumeFactor * 15) + frame.posX;
+            frame.vertBottomRight->y = (float)(g_CoasterDisplayScaleY * 29) + frame.posY;
             frame.vertBottomRight->zBits = 0;
             frame.vertBottomRight->rhwBits = FLOAT_ONE_BITS;
             frame.vertBottomRight->color = frame.color;
@@ -1117,7 +1117,7 @@ void CoasterRenderer::drawNumber(int number, short x, short y, short forceDigits
             frame.vertBottomRight->u = frame.texRight;
             frame.vertBottomRight->vBits = FLOAT_ONE_BITS;
         }
-        frame.divisor = frame.divisor / 0xA;
+        frame.divisor = frame.divisor / 10;
     }
 }
 /*

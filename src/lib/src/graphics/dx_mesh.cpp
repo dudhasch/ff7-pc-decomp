@@ -29,7 +29,7 @@ void __cdecl DxMesh_DrawPrimitiveRetry(int vertices, ComDirect3DDevice2 *device,
             break;
         default:
             // STRING: FF7 0x0091951c
-            CheckDirectDrawResult(result, "C:\\lib\\src\\graphics\\dx_mesh.cpp", 0x2B);
+            CheckDirectDrawResult(result, "C:\\lib\\src\\graphics\\dx_mesh.cpp", 43);
             result = 0;
         }
     } while (result != 0);
@@ -53,7 +53,7 @@ void __cdecl DxMesh_DrawIndexedPrimitiveRetry(GfxPolygonBatch *batch, ComDirect3
             break;
         default:
             // STRING: FF7 0x0091953c
-            CheckDirectDrawResult(result, "C:\\lib\\src\\graphics\\dx_mesh.cpp", 0x58);
+            CheckDirectDrawResult(result, "C:\\lib\\src\\graphics\\dx_mesh.cpp", 88);
             result = 0;
         }
     } while (result != 0);

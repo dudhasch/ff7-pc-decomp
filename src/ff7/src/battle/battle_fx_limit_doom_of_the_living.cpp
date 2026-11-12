@@ -201,7 +201,7 @@ void __cdecl BattleFx_LimitBeginDoomOfTheLiving(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel1 = 0;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
     g_BattleFxTimelineState.channel2 = 0x40;
-    Battle_StartFixedPointRamp(0x1000, 0xA);
+    Battle_StartFixedPointRamp(0x1000, 10);
 }
 
 /*
@@ -230,17 +230,17 @@ void __cdecl BattleFx_LimitDoomOfTheLivingTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (g_BattleLimitDoomOfTheLivingSequenceIdx < 0xF && frame.hitumetuSlot->step == (&(g_BattleLimitDoomOfTheLivingTimingTable1.startStep))[g_BattleLimitDoomOfTheLivingSequenceIdx]) {
+    if (g_BattleLimitDoomOfTheLivingSequenceIdx < 15 && frame.hitumetuSlot->step == (&(g_BattleLimitDoomOfTheLivingTimingTable1.startStep))[g_BattleLimitDoomOfTheLivingSequenceIdx]) {
         g_BattleLimitDoomOfTheLivingAttackerActorIdx = frame.hitumetuSlot->actorIndex;
         g_BattleLimitDoomOfTheLivingTargetActorIdx = g_BattleHitTargetActors[g_BattleLimitDoomOfTheLivingSequenceIdx];
         (g_BattleLimitDoomOfTheLivingTargetPos.posX) = g_BattleActorRecords[g_BattleLimitDoomOfTheLivingTargetActorIdx].posX;
         g_BattleLimitDoomOfTheLivingTargetPos.posY = g_BattleActorRecords[g_BattleLimitDoomOfTheLivingTargetActorIdx].posY;
         g_BattleLimitDoomOfTheLivingTargetZ = g_BattleActorRecords[g_BattleLimitDoomOfTheLivingTargetActorIdx].posZ;
         frame.yaw = (rand() % 4096);
-        frame.orbitRadius = g_BattleActorRecords[g_BattleLimitDoomOfTheLivingTargetActorIdx].radius + 0x5DC;
-        (g_BattleLimitDoomOfTheLivingAttackerPos.posX) = (g_BattleLimitDoomOfTheLivingTargetPos.posX) + (SinFixed(frame.yaw) * frame.orbitRadius >> 0xC);
+        frame.orbitRadius = g_BattleActorRecords[g_BattleLimitDoomOfTheLivingTargetActorIdx].radius + 1500;
+        (g_BattleLimitDoomOfTheLivingAttackerPos.posX) = (g_BattleLimitDoomOfTheLivingTargetPos.posX) + (SinFixed(frame.yaw) * frame.orbitRadius >> 12);
         g_BattleLimitDoomOfTheLivingAttackerPos.posY = 0;
-        g_BattleLimitDoomOfTheLivingAttackerZ = g_BattleLimitDoomOfTheLivingTargetZ + (CosFixed(frame.yaw) * frame.orbitRadius >> 0xC);
+        g_BattleLimitDoomOfTheLivingAttackerZ = g_BattleLimitDoomOfTheLivingTargetZ + (CosFixed(frame.yaw) * frame.orbitRadius >> 12);
         g_BattleActorRecords[frame.hitumetuSlot->actorIndex].posX = (g_BattleLimitDoomOfTheLivingAttackerPos.posX);
         g_BattleActorRecords[frame.hitumetuSlot->actorIndex].posY = g_BattleLimitDoomOfTheLivingAttackerPos.posY;
         g_BattleActorRecords[frame.hitumetuSlot->actorIndex].posZ = g_BattleLimitDoomOfTheLivingAttackerZ;
@@ -256,16 +256,16 @@ void __cdecl BattleFx_LimitDoomOfTheLivingTimelineTask(void)
             frame.hitRec = (BattleFxDoomOfTheLivingRecord *)Battle_AllocSceneMessage(0xA);
             frame.hitRec->targetActorIndex = g_BattleLimitDoomOfTheLivingTargetActorIdx;
             frame.hitRec->sequenceIndex = g_BattleLimitDoomOfTheLivingSequenceIdx;
-            BattleFx_HitMarkSpawnScriptAtActorBone(g_BattleLimitDoomOfTheLivingTargetActorIdx, 0x23, 0xC00);
+            BattleFx_HitMarkSpawnScriptAtActorBone(g_BattleLimitDoomOfTheLivingTargetActorIdx, 0x23, 0xC00 /* 0.75 */);
             frame.spriteSlot = (BattleDoomOfTheLivingTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDoomOfTheLivingAnimatedSpriteTask);
             Battle_GetBoneWorldPos(g_BattleLimitDoomOfTheLivingTargetActorIdx, g_BattleActorRecords[g_BattleLimitDoomOfTheLivingTargetActorIdx].targetBone, (short *)&frame.spriteSlot->posX);
             frame.spriteSlot->variant = rand() % 3;
-            for (frame.particleIndex = 0; frame.particleIndex < 0x1E; frame.particleIndex++) {
+            for (frame.particleIndex = 0; frame.particleIndex < 30; frame.particleIndex++) {
                 frame.spriteSlot = (BattleDoomOfTheLivingTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitDoomOfTheLivingFadingParticleSpriteTask);
                 Battle_GetBoneWorldPos(g_BattleLimitDoomOfTheLivingTargetActorIdx, g_BattleActorRecords[g_BattleLimitDoomOfTheLivingTargetActorIdx].targetBone, (short *)&frame.spriteSlot->posX);
                 (g_BattleLimitDoomOfTheLivingTargetPos.posX) = 0;
                 g_BattleLimitDoomOfTheLivingTargetPos.posY = 0;
-                g_BattleLimitDoomOfTheLivingTargetZ = rand() % 0xC8 + 0xC8;
+                g_BattleLimitDoomOfTheLivingTargetZ = rand() % 200 + 200;
                 frame.rotX.vx = (rand() % 4096);
                 frame.rotX.vy = (rand() % 4096);
                 frame.rotX.vz = 0;
@@ -287,8 +287,8 @@ void __cdecl BattleFx_LimitDoomOfTheLivingTimelineTask(void)
         }
     }
     (frame.hitumetuSlot->step)++;
-    if (frame.hitumetuSlot->step == 0xAA) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (frame.hitumetuSlot->step == 170) {
+        Battle_StartFixedPointRamp(0, 10);
         frame.hitumetuSlot->ownerSlot = BATTLE_TASK_FREE;
         Sfx_ReleaseCachedBuffer(0x155, 0xF);
         Sfx_ReleaseCachedBuffer(0x142, 0xF);
@@ -306,7 +306,7 @@ void __cdecl BattleFx_LimitDoomOfTheLivingAnimatedSpriteTask(void)
     task = (BattleFxDoomOfTheLivingAnimSprite *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleLimitDoomOfTheLivingSpriteRequest1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleLimitDoomOfTheLivingLoadedResTable);
     g_BattleLimitDoomOfTheLivingSpriteRequest1.req1Res = Gfx_ModelTableGetSpriteObject(2, g_BattleLimitDoomOfTheLivingLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x3000 /* 3.0 */, 0);
     (g_BattleLimitDoomOfTheLivingSpriteRequest1.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(((int *)&g_BattleLimitDoomOfTheLivingAnimIndices)[task->animIndex], g_BattleLimitDoomOfTheLivingLoadedResTable);
     g_BattleLimitDoomOfTheLivingSpriteRequest1.req1Res = Gfx_ModelTableGetSpriteObject(((int *)&g_BattleLimitDoomOfTheLivingAnimIndices)[task->animIndex], g_BattleLimitDoomOfTheLivingLoadedResTable);
     g_BattleLimitDoomOfTheLivingSpriteRequest1.req1Frame = task->frame;
@@ -330,7 +330,7 @@ void __cdecl BattleFx_LimitDoomOfTheLivingFadingParticleSpriteTask(void)
     task = (BattleFxDoomOfTheLivingParticle *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleLimitDoomOfTheLivingSpriteRequest2.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleLimitDoomOfTheLivingLoadedResTable);
     g_BattleLimitDoomOfTheLivingSpriteRequest2.req2Res = Gfx_ModelTableGetSpriteObject(3, g_BattleLimitDoomOfTheLivingLoadedResTable);
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleLimitDoomOfTheLivingSpriteRequest2.req2Short12 = task->spriteIndex;
     g_BattleLimitDoomOfTheLivingSpriteRequest2.req2Alpha = 0x80 - (task->frame << 4);
     g_BattleLimitDoomOfTheLivingSpriteRequest2.req2AlphaOld1 = g_BattleLimitDoomOfTheLivingSpriteRequest2.req2Alpha;
@@ -368,7 +368,7 @@ void __cdecl BattleFx_LimitDoomOfTheLivingSpawnPulsingModelPairTask(void)
         child->posZ = task->posZ;
     }
     (task->timer)++;
-    if (task->timer == 0xC) {
+    if (task->timer == 12) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -393,9 +393,9 @@ void __cdecl BattleFx_LimitDoomOfTheLivingPulsingModelPairTask(void)
     frame.pulseRecord = (BattleFxDoomOfTheLivingPulseRecord *)BATTLE_CURRENT_TASK_SLOT;
     (((BattleFxTimelineState *)&g_BattleLimitDoomOfTheLivingModelRotAngles)->wheelAngle) = frame.pulseRecord->phase << 9;
     RotMatrixXYZ(&g_BattleLimitDoomOfTheLivingModelRotAngles, &frame.rotMatrix);
-    frame.scaleX.vz = SinFixed(frame.pulseRecord->phase * 0x66) * 0x7F00 >> 0xC;
+    frame.scaleX.vz = SinFixed(frame.pulseRecord->phase * 0x66) * 0x7F00 /* 7.9375 */ >> 12;
     frame.scaleX.vx = frame.scaleX.vz;
-    frame.scaleX.vy = 0x1800 - (SinFixed(frame.pulseRecord->phase * 0x66) << 0xC >> 0xC);
+    frame.scaleX.vy = 0x1800 - (SinFixed(frame.pulseRecord->phase * 0x66) << 12 >> 12);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
     frame.rotMatrix.t[0] = frame.pulseRecord->posX;
     frame.rotMatrix.t[1] = frame.pulseRecord->posY;

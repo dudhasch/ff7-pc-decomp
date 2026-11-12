@@ -157,29 +157,29 @@ void __cdecl BattleFx_SpecialDrainTimelineTask(void)
     if (taskPtr->timer == 0) {
         spawned = (BattleFxDrainTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDrainSpinModelTask);
         spawned->posX = taskPtr->startX;
-        spawned->posY = taskPtr->startY - 0x190;
+        spawned->posY = taskPtr->startY - 400;
         spawned->posZ = taskPtr->startZ;
-        spawned->deltaX = (taskPtr->endX - spawned->posX) / 0x14;
-        spawned->deltaY = (taskPtr->endY - 0x320 - spawned->posY) / 0x14;
-        spawned->deltaZ = (taskPtr->endZ - spawned->posZ) / 0x14;
+        spawned->deltaX = (taskPtr->endX - spawned->posX) / 20;
+        spawned->deltaY = (taskPtr->endY - 800 - spawned->posY) / 20;
+        spawned->deltaZ = (taskPtr->endZ - spawned->posZ) / 20;
     }
-    if (taskPtr->timer == 0x5A) {
+    if (taskPtr->timer == 90) {
         Battle_PostActorHitOrHurtMessage(taskPtr->effectType);
         Battle_PlaySfxPannedToActor(7, (short)taskPtr->targetIndex, 0x40);
     }
-    if (taskPtr->timer > 0x56 && taskPtr->timer < 0x66) {
+    if (taskPtr->timer > 86 && taskPtr->timer < 102) {
         for (i8 = 0; i8 < 4; i8++) {
             spawned = (BattleFxDrainTimelineState *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDrainAnimatedSpriteEntry4Task);
             Battle_GetBoneWorldPos(taskPtr->targetIndex,
                                    rand() % g_BattleActorRecords[taskPtr->targetIndex].boneCount,
                                    (short *)((int)spawned + 4));
-            spawned->posX += (short)(rand() % 0x258 - 0x12C);
-            spawned->posY += (short)(rand() % 0x258 - 0x12C);
-            spawned->posZ += (short)(rand() % 0x258 - 0x12C);
+            spawned->posX += (short)(rand() % 600 - 300);
+            spawned->posY += (short)(rand() % 600 - 300);
+            spawned->posZ += (short)(rand() % 600 - 300);
         }
     }
     (taskPtr->timer)++;
-    if (taskPtr->timer == 0x6E) {
+    if (taskPtr->timer == 110) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -195,7 +195,7 @@ void __cdecl BattleFx_SpecialDrainAnimatedSpriteEntry4Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialDrainSpriteReq1.entry4.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(4, g_BattleSpecialDrainLoadedRes);
     g_BattleSpecialDrainSpriteReq1.entry4.drawObj = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecialDrainLoadedRes);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialDrainSpriteReq1.entry4.frame = task->frameCounter;
     g_BattleSpecialDrainDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialDrainSpriteReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialDrainDrawListHandle);
     if (g_BattleIsPaused == 0 && g_BattleSpecialDrainSpriteReq1.entry4.spriteGroup != 0) {
@@ -256,13 +256,13 @@ void __cdecl BattleFx_SpecialDrainSpinModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.spinSlot->frameCounter < 0x14) {
+    if (frame.spinSlot->frameCounter < 20) {
         frame.spinSlot->posX += frame.spinSlot->velocityX;
         frame.spinSlot->posY += frame.spinSlot->velocityY;
         frame.spinSlot->posZ += frame.spinSlot->velocityZ;
         g_BattleSpecialDrainState += 6;
     }
-    if (frame.spinSlot->frameCounter >= 0x14 && frame.spinSlot->frameCounter < 0x32) {
+    if (frame.spinSlot->frameCounter >= 20 && frame.spinSlot->frameCounter < 50) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 1; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxDrainSpinModelSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDrainSpiralSpriteTask);
             frame.spawnSlot->posX = frame.spinSlot->posX;
@@ -273,20 +273,20 @@ void __cdecl BattleFx_SpecialDrainSpinModelTask(void)
             frame.spawnSlot->weightB = 0x3E8;
         }
     }
-    if (frame.spinSlot->frameCounter >= 0x26 && frame.spinSlot->frameCounter < 0x2C && (frame.spinSlot->frameCounter % 2) == 0) {
+    if (frame.spinSlot->frameCounter >= 38 && frame.spinSlot->frameCounter < 44 && (frame.spinSlot->frameCounter % 2) == 0) {
         frame.spawnSlot = (BattleFxDrainSpinModelSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDrainOrbitingSpriteTask);
         frame.spawnSlot->posX = frame.spinSlot->posX;
-        frame.spawnSlot->posY = frame.spinSlot->posY - 0x1F4;
+        frame.spawnSlot->posY = frame.spinSlot->posY - 500;
         frame.spawnSlot->posZ = frame.spinSlot->posZ;
         frame.spawnSlot->velocityX = -frame.spinSlot->velocityX << 1;
         frame.spawnSlot->velocityY = -frame.spinSlot->velocityY << 1;
         frame.spawnSlot->velocityZ = -frame.spinSlot->velocityZ << 1;
-        frame.spawnSlot->scalePhase = 0x100;
+        frame.spawnSlot->scalePhase = 0x100 /* 0.0625 */;
         frame.spawnSlot->weightB = 0;
         frame.spawnSlot->weightA = 0;
         frame.spawnSlot->scaleDivisor = ((frame.spinSlot->frameCounter - 0x26) / 2) + 5;
     }
-    if (frame.spinSlot->frameCounter > 0x32) {
+    if (frame.spinSlot->frameCounter > 50) {
         g_BattleSpecialDrainState -= 6;
         if (g_BattleSpecialDrainState == 0) {
             frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
@@ -313,10 +313,10 @@ void __cdecl BattleFx_SpecialDrainSpiralSpriteTask(void)
     frame.spiralSlot = (BattleFxDrainSpiralSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialDrainSpriteReq2.spiral.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleSpecialDrainLoadedRes);
     g_BattleSpecialDrainSpriteReq2.spiral.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleSpecialDrainLoadedRes);
-    frame.spiralX.vx = frame.spiralSlot->posX + (SinFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 0xC);
-    frame.spiralX.vz = frame.spiralSlot->posZ + (CosFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 0xC);
+    frame.spiralX.vx = frame.spiralSlot->posX + (SinFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 12);
+    frame.spiralX.vz = frame.spiralSlot->posZ + (CosFixed(frame.spiralSlot->angle) * frame.spiralSlot->radius >> 12);
     frame.spiralX.vy = frame.spiralSlot->posY + frame.spiralSlot->velocityY;
-    BattleFx_InstallBillboardMatrix(&frame.spiralX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.spiralX, 0x2000 /* 2.0 */, 0);
     if (g_BattleSpecialDrainSpriteReq2.spiral.spriteGroup != 0) {
         g_BattleSpecialDrainSpriteReq2.spiral.frame = frame.spiralSlot->frameCounter % g_BattleSpecialDrainSpriteReq2.spiral.spriteGroup->header->frameCount;
     }
@@ -324,11 +324,11 @@ void __cdecl BattleFx_SpecialDrainSpiralSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.spiralSlot->radius -= (short)(frame.spiralSlot->radius / 0xA);
-    frame.spiralSlot->velocityY -= 0x32;
+    frame.spiralSlot->radius -= (short)(frame.spiralSlot->radius / 10);
+    frame.spiralSlot->velocityY -= 50;
     frame.spiralSlot->angle += 0x80;
     (frame.spiralSlot->frameCounter)++;
-    if (frame.spiralSlot->frameCounter == 0x14) {
+    if (frame.spiralSlot->frameCounter == 20) {
         frame.spiralSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -352,8 +352,8 @@ void __cdecl BattleFx_SpecialDrainOrbitingSpriteTask(void)
     frame.orbitSlot = (BattleFxDrainOrbitingSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialDrainSpriteReq2.orbit.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleSpecialDrainLoadedRes);
     g_BattleSpecialDrainSpriteReq2.orbit.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleSpecialDrainLoadedRes);
-    frame.orbitX.vx = frame.orbitSlot->posX + (SinFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 0xC);
-    frame.orbitX.vy = frame.orbitSlot->posY + (CosFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 0xC);
+    frame.orbitX.vx = frame.orbitSlot->posX + (SinFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 12);
+    frame.orbitX.vy = frame.orbitSlot->posY + (CosFixed(frame.orbitSlot->angle) * frame.orbitSlot->radius >> 12);
     frame.orbitX.vz = frame.orbitSlot->posZ;
     BattleFx_InstallBillboardMatrix(&frame.orbitX, frame.orbitSlot->scale * 5 / frame.orbitSlot->scaleDivisor, 0);
     if (g_BattleSpecialDrainSpriteReq2.orbit.spriteGroup != 0) {
@@ -363,31 +363,31 @@ void __cdecl BattleFx_SpecialDrainOrbitingSpriteTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.orbitSlot->frameCounter < 0x1E) {
+    if (frame.orbitSlot->frameCounter < 30) {
         frame.orbitSlot->scale += 0xC0;
     }
-    if (frame.orbitSlot->frameCounter >= 0x1E && frame.orbitSlot->frameCounter < 0x28) {
+    if (frame.orbitSlot->frameCounter >= 30 && frame.orbitSlot->frameCounter < 40) {
         frame.orbitSlot->posX += frame.orbitSlot->velocityX;
         frame.orbitSlot->posY += frame.orbitSlot->velocityY;
         frame.orbitSlot->posZ += frame.orbitSlot->velocityZ;
         frame.orbitSlot->pulseAngle += 0xCC;
-        frame.orbitSlot->radius = SinFixed(frame.orbitSlot->pulseAngle) * 0x190 >> 0xC;
-        frame.orbitSlot->angle += 0x200;
+        frame.orbitSlot->radius = SinFixed(frame.orbitSlot->pulseAngle) * 0x190 >> 12;
+        frame.orbitSlot->angle += 0x200 /* 45 deg */;
         frame.spawnSlot = (BattleFxRadialLivewireSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDrainAnimatedSpriteEntry1Task);
-        frame.spawnSlot->posX = frame.orbitSlot->posX + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posY = frame.orbitSlot->posY + rand() % 0x320 + -0x190;
-        frame.spawnSlot->posZ = frame.orbitSlot->posZ + rand() % 0x320 + -0x190;
+        frame.spawnSlot->posX = frame.orbitSlot->posX + rand() % 800 + -400;
+        frame.spawnSlot->posY = frame.orbitSlot->posY + rand() % 800 + -400;
+        frame.spawnSlot->posZ = frame.orbitSlot->posZ + rand() % 800 + -400;
     }
-    if (frame.orbitSlot->frameCounter > 0x28) {
-        frame.orbitSlot->scale -= 0x100;
+    if (frame.orbitSlot->frameCounter > 40) {
+        frame.orbitSlot->scale -= 0x100 /* 0.0625 */;
         frame.spawnSlot = (BattleFxRadialLivewireSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialDrainRisingLoopingSpriteTask);
-        frame.spawnSlot->posX = frame.orbitSlot->posX + rand() % 0x258 + -0x12C;
-        frame.spawnSlot->posY = frame.orbitSlot->posY + rand() % 0x258 + -0x12C;
-        frame.spawnSlot->posZ = frame.orbitSlot->posZ + rand() % 0x258 + -0x12C;
+        frame.spawnSlot->posX = frame.orbitSlot->posX + rand() % 600 + -300;
+        frame.spawnSlot->posY = frame.orbitSlot->posY + rand() % 600 + -300;
+        frame.spawnSlot->posZ = frame.orbitSlot->posZ + rand() % 600 + -300;
         frame.spawnSlot->scaleOrVariant = rand() & 1;
     }
     (frame.orbitSlot->frameCounter)++;
-    if (frame.orbitSlot->frameCounter == 0x3C) {
+    if (frame.orbitSlot->frameCounter == 60) {
         frame.orbitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -401,7 +401,7 @@ void __cdecl BattleFx_SpecialDrainRisingLoopingSpriteTask(void)
     BattleFxDrainRisingSprite *task;
 
     task = (BattleFxDrainRisingSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialDrainSpriteReq1.rising.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(g_BattleSpecialDrainSpriteReq2.risingEntry[task->requestIndex], g_BattleSpecialDrainLoadedRes);
     g_BattleSpecialDrainSpriteReq1.rising.drawObj = Gfx_ModelTableGetSpriteObject(g_BattleSpecialDrainSpriteReq2.risingEntry[task->requestIndex], g_BattleSpecialDrainLoadedRes);
     if (g_BattleSpecialDrainSpriteReq1.rising.spriteGroup != 0) {
@@ -413,7 +413,7 @@ void __cdecl BattleFx_SpecialDrainRisingLoopingSpriteTask(void)
     }
     task->angle += 0x64;
     (task->frameIndex)++;
-    if (task->frameIndex == 0xA) {
+    if (task->frameIndex == 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -429,7 +429,7 @@ void __cdecl BattleFx_SpecialDrainAnimatedSpriteEntry1Task(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecialDrainSpriteReq2.burst.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleSpecialDrainLoadedRes);
     g_BattleSpecialDrainSpriteReq2.burst.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecialDrainLoadedRes);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2000 /* 2.0 */, 0);
     g_BattleSpecialDrainSpriteReq2.burst.frame = task->frameCounter;
     g_BattleSpecialDrainDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialDrainSpriteReq2.burst, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialDrainDrawListHandle);
     if (g_BattleIsPaused != 0) {

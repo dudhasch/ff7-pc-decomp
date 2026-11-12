@@ -134,7 +134,7 @@ void __cdecl Battle_TickAtbAndGauges(void)
             }
         }
         Battle_AccumulateTimeSlices();
-        for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+        for (actorIdx = 0; actorIdx < 10; actorIdx++) {
             if ((1 << actorIdx & ((g_BattleScene.targetMask | BATTLE_ACTOR_MASK_ENEMIES) & ((*(unsigned short *)&g_BattleScene.aiTargetableMask) | BATTLE_ACTOR_MASK_PARTY))) != 0) {
                 actorAtb = (BattleAtbRecord *)&g_BattleState.actors[actorIdx];
                 gaugeValue = actorAtb->gauge;
@@ -204,7 +204,7 @@ void __cdecl Battle_TickAtbAndGauges(void)
  * battle (Battle_IsSceneInterruptible), and during a Battle Square break (arenaFlags bits 0-1).
  *
  * In Recommended and Wait mode Battle_SignalAtbWaitState sets the freeze flag to 3 while a party
- * command plays and another waits behind it. The clock then runs on for 0x4000 units and stops
+ * command plays and another waits behind it. The clock then runs on for 16384 units and stops
  * until the flag changes.
  */
 // FUNCTION: FF7 0x004324b6
@@ -232,7 +232,7 @@ int __cdecl Battle_IsAtbFrozen(void)
     }
     frozen |= Battle_IsSceneInterruptible();
     frozen |= (gBattleAiGlobals.arenaFlags & 3) != 0;
-    if (g_BattleAtbFreezeAccumulator > 0x4000) {
+    if (g_BattleAtbFreezeAccumulator > 16384) {
         frozen = 1;
     }
     return frozen;
@@ -253,7 +253,7 @@ void __cdecl Battle_EnqueueAction(void *action)
 
     pQueued = (BattleQueuedAction *)action;
     actionType = pQueued->level;
-    for (slotIdx = 0; slotIdx < 0x40; slotIdx++) {
+    for (slotIdx = 0; slotIdx < 64; slotIdx++) {
         if (g_BattleState.queuedActions[slotIdx].level == 0xFF) {
             pQueued->sequence = (*(char *)&g_BattleState.actionEnqueueSequence[actionType]);
             *(Int64Pair *)&g_BattleState.queuedActions[slotIdx] = *(Int64Pair *)pQueued;
@@ -460,7 +460,7 @@ void __cdecl Battle_SnapshotHpMp(void)
 {
     int actor;
 
-    for (actor = 0; actor < 0xA; actor++) {
+    for (actor = 0; actor < 10; actor++) {
         g_BattleState.actors[actor].hp = *(short *)&g_aCombatants[actor].curHp;
         g_BattleState.actors[actor].mp = *(short *)&g_aCombatants[actor].curMp;
     }

@@ -319,9 +319,9 @@ void __cdecl BattleFx_SummonTitanBlendVertexPositions(short *posA, short *posB, 
 // FUNCTION: FF7 0x0059b1da
 int __cdecl BattleFx_SummonEnterTitan(int targetMask, int actorIdx)
 {
-    memcpy(&g_BattleSummonTitanMeshSource1, &g_BattleSummonTitanMeshSource2, 0xDEC);
-    memcpy(&g_BattleSummonTitanMeshSource3, &g_BattleSummonTitanMeshSource4, 0x1054);
-    memcpy(&g_BattleSummonTitanMeshSource5, &g_BattleSummonTitanMeshSource6, 0x380);
+    memcpy(&g_BattleSummonTitanMeshSource1, &g_BattleSummonTitanMeshSource2, 3564);
+    memcpy(&g_BattleSummonTitanMeshSource3, &g_BattleSummonTitanMeshSource4, 4180);
+    memcpy(&g_BattleSummonTitanMeshSource5, &g_BattleSummonTitanMeshSource6, 896);
     g_BattleSummonTitanTiltAngles[2] = 0;
     g_BattleSummonTitanTiltAngles[1] = g_BattleSummonTitanTiltAngles[2];
     g_BattleSummonTitanTiltAngles[0] = g_BattleSummonTitanTiltAngles[1];
@@ -350,7 +350,7 @@ void __cdecl BattleFx_SummonBeginTitan(int targetMask, int actorIdx)
     Battle_GetActorMaskCentroid((g_BattleSummonTitanTargetMask = targetMask), &centroidBuf.vx);
     if (centroidBuf.vz < g_BattleActorRecords[actorIdx].posZ) {
         g_BattleSummonTitanBasisMatrix.t[2] = centroidBuf.vz + 0xBB8;
-        g_BattleSummonTitanStageRotation.angleY = 0x800;
+        g_BattleSummonTitanStageRotation.angleY = 0x800 /* 180 deg */;
     } else {
         g_BattleSummonTitanBasisMatrix.t[2] = centroidBuf.vz - 0xBB8;
     }
@@ -359,10 +359,10 @@ void __cdecl BattleFx_SummonBeginTitan(int targetMask, int actorIdx)
     BattleFx_SummonTitanInitFragmentVelocitiesFromVertexXZ();
     Battle_AllocateResourceSlot(BattleFx_SummonTitanTimelineTask);
     g_BattleSummonTitanTiltActorMask = g_BattleTimelineTargetMask;
-    for (slot = 4; slot < 0xA; slot++) {
+    for (slot = 4; slot < 10; slot++) {
         *(Int64Pair *)&g_BattleSummonTitanActorPositions[slot] = *(Int64Pair *)&g_BattleActorRecords[slot].posX;
         if ((g_BattleTimelineTargetMask & 1 << slot) == 0) {
-            for (otherSlot = 4; otherSlot < 0xA; otherSlot++) {
+            for (otherSlot = 4; otherSlot < 10; otherSlot++) {
                 if (slot != otherSlot && (g_BattleTimelineTargetMask & 1 << otherSlot) != 0 && g_BattleActorRecords[slot].posX == g_BattleActorRecords[otherSlot].posX && g_BattleActorRecords[slot].posZ == g_BattleActorRecords[otherSlot].posZ) {
                     g_BattleSummonTitanTiltActorMask |= 1 << slot;
                 }
@@ -687,30 +687,30 @@ void __cdecl BattleFx_SummonTitanTimelineTask(void)
             if (g_BattleUiScalingMode != 2) {
                 g_BattleSummonTitanJitterParams.posX = *(short *)&g_BattleViewportOriginX;
                 g_BattleSummonTitanJitterParams.posY = *(short *)&g_BattleViewportOriginY;
-                g_BattleSummonTitanJitterParams.posZ = 0x60;
-                g_BattleSummonTitanJitterParams.sourceIndex = 0x80;
+                g_BattleSummonTitanJitterParams.posZ = 96;
+                g_BattleSummonTitanJitterParams.sourceIndex = 128;
             } else {
                 g_BattleSummonTitanJitterParams.posX = *(short *)&g_BattleViewportOriginX;
                 g_BattleSummonTitanJitterParams.posY = *(short *)&g_BattleViewportOriginY;
-                g_BattleSummonTitanJitterParams.posZ = 0xC0;
-                g_BattleSummonTitanJitterParams.sourceIndex = 0x100;
+                g_BattleSummonTitanJitterParams.posZ = 192;
+                g_BattleSummonTitanJitterParams.sourceIndex = 256;
             }
             BattleFx_SummonTitanQueueStageOffscreenRequests(&g_BattleSummonTitanCameraShakeLimits, &g_BattleSummonTitanJitterParams);
         }
     } else {
         frameIndex -= 4;
-        if (frameIndex < 0xF) {
+        if (frameIndex < 15) {
             if (frameIndex == 0) {
                 Battle_AllocateResourceSlot(BattleFx_SummonTitanFragmentingMeshTask);
                 BattleFx_SummonTitanSetCameraShakeWithDecay(0xA, 0);
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
             }
-            if (frameIndex == 0xA) {
+            if (frameIndex == 10) {
                 BattleFx_SummonTitanSetCameraShakeWithDecay(0, 0);
             }
         } else {
-            frameIndex -= 0xF;
-            if (frameIndex < 0x19) {
+            frameIndex -= 15;
+            if (frameIndex < 25) {
                 if (frameIndex == 0) {
                     ringRecord = (BattleFxSummonTitanRingRecord *)Battle_AllocSceneMessage(1);
                     ringRecord->transX = *(short *)&g_BattleSummonTitanBasisMatrix.t[0];
@@ -720,41 +720,41 @@ void __cdecl BattleFx_SummonTitanTimelineTask(void)
                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
                 }
             } else {
-                frameIndex -= 0x19;
-                if (frameIndex < 0x14) { /* empty first arm: lib/codegen.h */
+                frameIndex -= 25;
+                if (frameIndex < 20) { /* empty first arm: lib/codegen.h */
                 } else {
-                    frameIndex -= 0x14;
-                    if (frameIndex < 0xF) {
-                        if (frameIndex == 0xA) {
+                    frameIndex -= 20;
+                    if (frameIndex < 15) {
+                        if (frameIndex == 10) {
                             BattleFx_SummonTitanSetCameraShakeWithDecay(0xA, 0);
                         }
                     } else {
-                        frameIndex -= 0xF;
-                        if (frameIndex < 0xA) { /* empty first arm: lib/codegen.h */
+                        frameIndex -= 15;
+                        if (frameIndex < 10) { /* empty first arm: lib/codegen.h */
                         } else {
-                            frameIndex -= 0xA;
-                            if (frameIndex < 0xA) {
+                            frameIndex -= 10;
+                            if (frameIndex < 10) {
                                 if (frameIndex == 9) {
                                     BattleFx_SummonTitanQueueStageOffscreenRequests(&g_BattleSummonTitanCameraShakeParams, &g_BattleSummonTitanJitterParams);
                                 }
                             } else {
-                                frameIndex -= 0xA;
-                                if (frameIndex < 0x1E) {
+                                frameIndex -= 10;
+                                if (frameIndex < 30) {
                                     if (frameIndex == 0) {
                                         pSubtask = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTitanRotatingFragmentMeshTask);
                                         pSubtask->posX = 0;
                                         pSubtask->posY = 0;
-                                        pSubtask->posZ = 0x1388;
+                                        pSubtask->posZ = 5000;
                                     }
-                                    if (frameIndex == 0xA) {
+                                    if (frameIndex == 10) {
                                         BattleFx_SummonTitanSetCameraShakeWithDecay(0, 0);
                                     }
                                 } else {
-                                    frameIndex -= 0x1E;
+                                    frameIndex -= 30;
                                     if (frameIndex < 5) { /* empty first arm: lib/codegen.h */
                                     } else {
                                         frameIndex -= 5;
-                                        if (frameIndex < 0xF) {
+                                        if (frameIndex < 15) {
                                             if (frameIndex == 0) {
                                                 ringRecord = (BattleFxSummonTitanRingRecord *)Battle_AllocSceneMessage(2);
                                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
@@ -763,16 +763,16 @@ void __cdecl BattleFx_SummonTitanTimelineTask(void)
                                                 Sfx_ReleaseCachedBuffer(0x14E, 1);
                                             }
                                         } else {
-                                            frameIndex -= 0xF;
-                                            if (frameIndex < 0xA) { /* empty first arm: lib/codegen.h */
+                                            frameIndex -= 15;
+                                            if (frameIndex < 10) { /* empty first arm: lib/codegen.h */
                                             } else {
-                                                frameIndex -= 0xA;
+                                                frameIndex -= 10;
                                                 if (frameIndex < 5) { /* empty first arm: lib/codegen.h */
                                                 } else {
                                                     frameIndex -= 5;
-                                                    if (frameIndex < 0xF) {
+                                                    if (frameIndex < 15) {
                                                         if (frameIndex == 0) {
-                                                            for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+                                                            for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                                                                 if ((g_BattleSummonTitanTiltActorMask & 1 << actorIndex) != 0) {
                                                                     *(Int64Pair *)&g_BattleActorRecords[actorIndex].posX = *(Int64Pair *)&g_BattleSummonTitanActorPositions[actorIndex];
                                                                     g_BattleActorRecords[actorIndex].rotX = 0;
@@ -785,10 +785,10 @@ void __cdecl BattleFx_SummonTitanTimelineTask(void)
                                                             Sfx_ReleaseCachedBuffer(0x14B, 0);
                                                         }
                                                     } else {
-                                                        frameIndex -= 0x14;
-                                                        if (frameIndex < 0x14) {
+                                                        frameIndex -= 20;
+                                                        if (frameIndex < 20) {
                                                             if (frameIndex == 0) {
-                                                                for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+                                                                for (actorIndex = 0; actorIndex < 10; actorIndex++) {
                                                                     if ((g_BattleSummonTitanTargetMask & 1 << actorIndex) != 0) {
                                                                         Battle_PostActorHitOrHurtMessage(actorIndex);
                                                                     }
@@ -993,7 +993,7 @@ void __cdecl BattleFx_SummonTitanFragmentingMeshTask(void)
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     if (task->frameCount == 0) {
         meshVertices = g_BattleSummonTitanMeshSource1.vertices;
-        for (vertexIndex = 0; vertexIndex < 0x65; vertexIndex++) {
+        for (vertexIndex = 0; vertexIndex < 101; vertexIndex++) {
             g_BattleSummonTitanInterpSourceRecords[vertexIndex] = meshVertices[vertexIndex];
         }
         task->sourceWeight = 0x1000;
@@ -1002,7 +1002,7 @@ void __cdecl BattleFx_SummonTitanFragmentingMeshTask(void)
     MultiplyMatrix(&g_BattleSummonTitanBasisMatrix, &g_BattleSummonTitanModelReq2.transform, matrix);
     MultiplyMatrix(&g_BattleCameraTransform, matrix, matrix);
     frameCount = task->frameCount;
-    if (frameCount < 0xF) {
+    if (frameCount < 15) {
         SetRotMatrix(matrix);
         SetTransMatrix(matrix);
         RefreshGlobalTransformState();
@@ -1010,10 +1010,10 @@ void __cdecl BattleFx_SummonTitanFragmentingMeshTask(void)
         Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm1));
         g_BattleOverlayDrawListHead = BattleFx_SummonTitanDrawPsxMesh(&g_BattleSummonTitanModelReq1.mesh, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     } else {
-        frameCount -= 0xF;
-        if (frameCount < 0x3C) {
+        frameCount -= 15;
+        if (frameCount < 60) {
             SetDrawColorRGB(0, 0, 0);
-            if (frameCount > 0x13) {
+            if (frameCount > 19) {
                 Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm3));
                 Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm3));
             } else {
@@ -1031,32 +1031,32 @@ void __cdecl BattleFx_SummonTitanFragmentingMeshTask(void)
     }
     if (g_BattleIsPaused == 0) {
         frameCount = task->frameCount;
-        if (frameCount < 0xA) {
+        if (frameCount < 10) {
             task->sourceWeight -= task->targetWeight;
             task->targetWeight += 0xFF6C;
             meshVertices = g_BattleSummonTitanMeshSource1.vertices;
-            for (vertexIndex = 0; vertexIndex < 0x65; vertexIndex++) {
+            for (vertexIndex = 0; vertexIndex < 101; vertexIndex++) {
                 BattleFx_SummonTitanBlendVertexPositions((short *)(vertexIndex * 8 + (int)&g_BattleSummonTitanInterpSourceRecords), (short *)(vertexIndex * 8 + (int)&g_BattleSummonTitanTargetVertexTable), task->sourceWeight, 0x1000 - task->sourceWeight, (short *)((int)meshVertices + vertexIndex * 8));
             }
         } else {
-            frameCount -= 0xA;
+            frameCount -= 10;
             if (frameCount < 5) { /* empty first arm: lib/codegen.h */
             } else {
                 frameCount -= 5;
-                if (frameCount < 0x29) {
+                if (frameCount < 41) {
                     BattleFx_SummonTitanSpawnScatterSprites();
                 }
                 if (frameCount < 4) {
-                    for (vertexIndex = frameCount; vertexIndex < 0xAB; vertexIndex += 4) {
+                    for (vertexIndex = frameCount; vertexIndex < 171; vertexIndex += 4) {
                         g_BattleSummonTitanFragments[vertexIndex].shade = 0x63;
                     }
                 }
-                for (vertexIndex = 0; vertexIndex < 0xAB; vertexIndex++) {
+                for (vertexIndex = 0; vertexIndex < 171; vertexIndex++) {
                     if (g_BattleSummonTitanFragments[vertexIndex].shade != 0) {
                         g_BattleSummonTitanFragments[vertexIndex].offsetX += g_BattleSummonTitanFragments[vertexIndex].velocityX;
                         g_BattleSummonTitanFragments[vertexIndex].offsetY += g_BattleSummonTitanFragments[vertexIndex].velocityY;
                         g_BattleSummonTitanFragments[vertexIndex].offsetZ += g_BattleSummonTitanFragments[vertexIndex].velocityZ;
-                        g_BattleSummonTitanFragments[vertexIndex].velocityY += 0x32;
+                        g_BattleSummonTitanFragments[vertexIndex].velocityY += 50;
                         g_BattleSummonTitanFragments[vertexIndex].rotX += g_BattleSummonTitanFragments[vertexIndex].spinX;
                         g_BattleSummonTitanFragments[vertexIndex].rotY += g_BattleSummonTitanFragments[vertexIndex].spinY;
                         g_BattleSummonTitanFragments[vertexIndex].rotZ += g_BattleSummonTitanFragments[vertexIndex].spinZ;
@@ -1405,7 +1405,7 @@ void __cdecl BattleFx_SummonTitanSpawnScatterSprites(void)
     int radius;
     BattleFxSummonTitanScatterSprite *pSprite;
 
-    pPosition = (BattleFxPosition3s *)Gfx_GetPsxScratchpadPtr(0xC0);
+    pPosition = (BattleFxPosition3s *)Gfx_GetPsxScratchpadPtr(192);
     flagsAddr = (int)pPosition + 0x10;
     offset = (Vec3sPacked *)(flagsAddr + 4);
     SetRotMatrix(&g_BattleSummonTitanBasisMatrix);
@@ -1413,15 +1413,15 @@ void __cdecl BattleFx_SummonTitanSpawnScatterSprites(void)
     offset->vy = 0;
     for (i = 0; i < 5; i++) {
         pSprite = (BattleFxSummonTitanScatterSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTitanBillboardSpriteTask);
-        radius = rand() % 0x5DC + 0x1F4;
+        radius = rand() % 1500 + 500;
         angle = rand() & 0xFFF;
-        offset->vx = radius * SinFixed(angle) >> 0xC;
-        offset->vz = radius * CosFixed(angle) >> 0xC;
+        offset->vx = radius * SinFixed(angle) >> 12;
+        offset->vz = radius * CosFixed(angle) >> 12;
         RotTransPoint((void *)offset, (int *)pPosition, (void *)flagsAddr);
         pSprite->posX = pPosition->posX;
         pSprite->posY = pPosition->posY;
         pSprite->posZ = pPosition->posZ;
-        pSprite->lifetime = rand() % 0x5000 + 0x3000;
+        pSprite->lifetime = rand() % 20480 + 12288;
     }
 }
 
@@ -1436,7 +1436,7 @@ void __cdecl BattleFx_SummonTitanBillboardSpriteTask(void)
     task = (BattleFxTitanBillboardSpriteTask *)BATTLE_CURRENT_TASK_SLOT;
     g_BattleSummonTitanModelReq1.sprite.animTable = Gfx_ModelTableGetLoadedRecord(1, g_pBattleSummonTitanModelTable);
     g_BattleSummonTitanModelReq1.sprite.sceneField = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), (short)task->scale, -0x80);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), (short)task->scale, -128);
     g_BattleSummonTitanModelReq1.sprite.spriteIndex = task->spriteIndex;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonTitanModelReq1.sprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
@@ -1469,27 +1469,27 @@ void __cdecl BattleFx_SummonTitanRotatingFragmentMeshTask(void)
     pPosition = (BattleFxTitanFragmentVector *)((int)cameraMatrix + 0x1E);
     flagsAddr = (int)pPosition + 0x10;
     count = pTaskSlot->frameCount;
-    if (count < 0xA) {
+    if (count < 10) {
         if (count == 0) {
             child = (BattleFxTitanFragmentRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTitanSpawnTablePointSpritesTask);
             *(Int64Pair *)((char *)child + 4) = *(Int64Pair *)((char *)pTaskSlot + 4);
         }
-        g_BattleSummonTitanTiltAngles[0] = -((count + 1) * 0xB0 / 0xA);
+        g_BattleSummonTitanTiltAngles[0] = -((count + 1) * 0xB0 / 10);
         BattleFx_SummonTitanRotateSelectedActorPositions((struct GfxRotationAngles2 *)g_BattleSummonTitanTiltAngles, 0);
-        g_BattleSummonTitanTiltAngles[0] = -(count * 0xB0 / 0xA);
+        g_BattleSummonTitanTiltAngles[0] = -(count * 0xB0 / 10);
     } else {
-        count -= 0xA;
-        if (count < 0x14) {
+        count -= 10;
+        if (count < 20) {
             g_BattleSummonTitanTiltAngles[0] = 0xFF50;
             BattleFx_SummonTitanRotateSelectedActorPositions((struct GfxRotationAngles2 *)g_BattleSummonTitanTiltAngles, 0);
         } else {
-            count -= 0x14;
-            if (count < 0x23) {
+            count -= 20;
+            if (count < 35) {
                 g_BattleSummonTitanTiltAngles[0] = -(((count + 1) * (count + 1) * 3) / 2 + 0xB0);
                 BattleFx_SummonTitanRotateSelectedActorPositions((struct GfxRotationAngles2 *)g_BattleSummonTitanTiltAngles, count);
                 g_BattleSummonTitanTiltAngles[0] = -(count * count * 3 / 2 + 0xB0);
             } else {
-                count -= 0x23;
+                count -= 35;
                 if (count == 0) {
                     child = (BattleFxTitanFragmentRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTitanSpawnDirectedSpritesTask);
                     *(Int64Pair *)((char *)child + 4) = *(Int64Pair *)((char *)pTaskSlot + 4);
@@ -1507,7 +1507,7 @@ void __cdecl BattleFx_SummonTitanRotatingFragmentMeshTask(void)
     MultiplyMatrix(&g_BattleSummonTitanBasisMatrix, matrix, matrix);
     MultiplyMatrix(&g_BattleCameraTransform, matrix, cameraMatrix);
     count = pTaskSlot->frameCount;
-    if (count < 0x41) {
+    if (count < 65) {
         SetRotMatrix(cameraMatrix);
         SetTransMatrix(cameraMatrix);
         RefreshGlobalTransformState();
@@ -1516,13 +1516,13 @@ void __cdecl BattleFx_SummonTitanRotatingFragmentMeshTask(void)
         g_BattleOverlayDrawListHead = BattleFx_SummonTitanDrawPsxMesh(&g_BattleSummonTitanModelReq3.mesh, g_BattleCurrentOrderingTable + 0xB0, 0xC, g_BattleOverlayDrawListHead);
         g_BattleSummonTitanModelReq4.mesh.progress = 0;
     } else {
-        count -= 0x41;
-        if (count < 0xF) {
+        count -= 65;
+        if (count < 15) {
             SetDrawColorRGB(0, 0, 0);
             Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm3));
             Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm4));
             g_BattleOverlayDrawListHead = BattleFx_SummonTitanDrawPsxTexturedFragmentMesh(&g_BattleSummonTitanModelReq3.mesh, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead, cameraMatrix, g_BattleSummonTitanRotatingFragmentVertexBuffer);
-            g_BattleSummonTitanModelReq4.mesh.progress = (count << 0xC) / 0xF;
+            g_BattleSummonTitanModelReq4.mesh.progress = (count << 12) / 15;
         } else {
             pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
         }
@@ -1537,13 +1537,13 @@ void __cdecl BattleFx_SummonTitanRotatingFragmentMeshTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SummonTitanDrawPsxMesh(&g_BattleSummonTitanModelReq4.mesh, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         count = pTaskSlot->frameCount;
-        if (count < 0x40) {
+        if (count < 64) {
             SetRotMatrix(matrix);
             SetTransMatrix(matrix);
             sourceTable = (int)g_BattleSummonTitanMeshSource3.vertices;
             for (i = 0; i < 2; i++) {
                 child = (BattleFxTitanFragmentRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTitanBouncingDebrisTask);
-                RotTransPoint((void *)(sourceTable + rand() % 0x6C * 8), (int *)pPosition, (void *)flagsAddr);
+                RotTransPoint((void *)(sourceTable + rand() % 108 * 8), (int *)pPosition, (void *)flagsAddr);
                 child->posA = pPosition->posA;
                 child->posB = pPosition->posB;
                 child->posC = pPosition->posC;
@@ -1559,15 +1559,15 @@ void __cdecl BattleFx_SummonTitanRotatingFragmentMeshTask(void)
                 child->rotSpeed = rand() % 0xC00 + 0x400;
             }
         } else {
-            count -= 0x40;
-            if (count < 0xF) {
-                for (i = 0; i < 0xCC; i++) {
+            count -= 64;
+            if (count < 15) {
+                for (i = 0; i < 204; i++) {
                     g_BattleSummonTitanRotatingFragmentVertexBuffer[i].posX += g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityX;
                     g_BattleSummonTitanRotatingFragmentVertexBuffer[i].posY += g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityY;
                     g_BattleSummonTitanRotatingFragmentVertexBuffer[i].posZ += g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityZ;
-                    g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityX = g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityX * 0xF00 >> 0xC;
-                    g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityY = g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityY * 0xF00 >> 0xC;
-                    g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityZ = g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityZ * 0xF00 >> 0xC;
+                    g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityX = g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityX * 0xF00 /* 0.9375 */ >> 12;
+                    g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityY = g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityY * 0xF00 /* 0.9375 */ >> 12;
+                    g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityZ = g_BattleSummonTitanRotatingFragmentVertexBuffer[i].velocityZ * 0xF00 /* 0.9375 */ >> 12;
                     g_BattleSummonTitanRotatingFragmentVertexBuffer[i].rotationX += g_BattleSummonTitanRotatingFragmentVertexBuffer[i].rotationSpeedX;
                     g_BattleSummonTitanRotatingFragmentVertexBuffer[i].rotationY += g_BattleSummonTitanRotatingFragmentVertexBuffer[i].rotationSpeedY;
                     g_BattleSummonTitanRotatingFragmentVertexBuffer[i].rotationZ += g_BattleSummonTitanRotatingFragmentVertexBuffer[i].rotationSpeedZ;
@@ -1602,7 +1602,7 @@ int __cdecl BattleFx_SummonTitanDrawPsxTexturedFragmentMesh(BattleFxTitanMeshIns
     BattleFxPsxTexturedQuad *quadPointer;
     int vertexIndex;
 
-    centerData = (BattleTitanFragmentMesh *)Gfx_GetPsxScratchpadPtr(0x80);
+    centerData = (BattleTitanFragmentMesh *)Gfx_GetPsxScratchpadPtr(128);
     matrixBuffer = (struct BattleFxOffsetTriMeshDesc *)((int)centerData + 0x28);
     vertRefsPtr = (BattleFxTitanQuadRef *)((char *)matrixBuffer + 0x1E);
     meshOrigin = meshInst->meshData + 4;
@@ -1767,12 +1767,12 @@ void __cdecl BattleFx_SummonTitanSpawnDirectedSpritesTask(void)
     ScaleMatrix(matrix, &g_BattleSummonTitanRotStep1);
     SetRotMatrix(matrix);
     SetTransMatrix(matrix);
-    for (j = 0; j < 0xA; j++) {
+    for (j = 0; j < 10; j++) {
         pSprite = (BattleFxTitanDirectedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTitanDirectedSpriteTask);
         gridPointPtr = (BattleFxRingGridPoint *)(tablePtr + rand() % pointCnt * 8);
-        localPoint->vx = gridPointPtr->posX + rand() % 0x258 + -0x12C;
+        localPoint->vx = gridPointPtr->posX + rand() % 600 + -300;
         localPoint->vy = 0;
-        localPoint->vz = gridPointPtr->posZ + rand() % 0x258 + -0x12C;
+        localPoint->vz = gridPointPtr->posZ + rand() % 600 + -300;
         if (g_BattleSummonTitanStageRotation.angleY == 0) {
             pSprite->velocityX = localPoint->vx;
             pSprite->velocityY = 0;
@@ -1863,19 +1863,19 @@ void __cdecl BattleFx_SummonTitanBouncingDebrisTask(void)
             task->posY = -task->posY;
             task->velY = -task->velY >> 2;
         }
-        task->velY += 0x14;
+        task->velY += 20;
     }
     frameCount = task->frame;
-    if (frameCount < 0xA) {
+    if (frameCount < 10) {
         g_BattleSummonTitanSpriteReq1.flags = 0x80;
         g_BattleSummonTitanSpriteReq1.progress = 0;
         Gfx_SetPsxPrimQuadState(9, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm1));
         Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm2));
     } else {
-        frameCount -= 0xA;
+        frameCount -= 10;
         if (frameCount < 5) {
             g_BattleSummonTitanSpriteReq1.flags = 0x88;
-            g_BattleSummonTitanSpriteReq1.progress = (frameCount << 0xB) / 5 + 0x800;
+            g_BattleSummonTitanSpriteReq1.progress = (frameCount << 11) / 5 + 0x800;
             Gfx_SetPsxPrimQuadState(9, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm3));
             Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonTitanCameraTrackTerm4));
         } else {
@@ -1921,16 +1921,16 @@ void __cdecl BattleFx_SummonTitanRotateSelectedActorPositions(GfxRotationAngles2
     vecPtr = (Vec3sPacked *)((int)secondMtx + 0x1E);
     TransposeMatrix(&g_BattleSummonTitanBasisMatrix, rotBuffer);
     RotMatrix((SVECTOR *)rotVec, secondMtx);
-    for (slot = 4; slot < 0xA; slot++) {
+    for (slot = 4; slot < 10; slot++) {
         if ((g_BattleSummonTitanTiltActorMask & 1 << slot) != 0) {
             vecPtr->vx = g_BattleSummonTitanActorPositions[slot].posX - g_BattleSummonTitanBasisMatrix.t[0];
             vecPtr->vy = g_BattleSummonTitanActorPositions[slot].posY - g_BattleSummonTitanBasisMatrix.t[1];
             vecPtr->vz = g_BattleSummonTitanActorPositions[slot].posZ - g_BattleSummonTitanBasisMatrix.t[2];
             TransformVectorToInt16(rotBuffer, (void *)vecPtr, (void *)vecPtr);
-            vecPtr->vz += (short)(tiltStep * 0x64 - 0x1388);
+            vecPtr->vz += (short)(tiltStep * 100 - 5000);
             if (vecPtr->vz < 0) {
                 TransformVectorToInt16(secondMtx, (void *)vecPtr, (void *)vecPtr);
-                vecPtr->vz += 0x1388;
+                vecPtr->vz += 5000;
                 TransformVectorToInt16(&g_BattleSummonTitanBasisMatrix, (void *)vecPtr, (void *)vecPtr);
                 g_BattleActorRecords[slot].posX = vecPtr->vx + g_BattleSummonTitanBasisMatrix.t[0];
                 g_BattleActorRecords[slot].posY = vecPtr->vy + g_BattleSummonTitanBasisMatrix.t[1];
@@ -1968,13 +1968,13 @@ void __cdecl BattleFx_SummonTitanSpawnTablePointSpritesTask(void)
     MultiplyMatrix(&g_BattleSummonTitanBasisMatrix, &g_BattleSummonTitanScaleRate1, matrix);
     SetRotMatrix(matrix);
     SetTransMatrix(matrix);
-    for (i = 0; i < 0x1E; i++) {
+    for (i = 0; i < 30; i++) {
         pSprite = (BattleFxSummonTitanScatterSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonTitanBillboardSpriteTask);
         RotTransPoint((void *)(meshPoints + rand() % pointCount * 8), (int *)position, (void *)flagsAddress);
         pSprite->posX = position->posX;
         pSprite->posY = position->posY;
         pSprite->posZ = position->posZ;
-        pSprite->lifetime = rand() % 0x1000 + 0x2000;
+        pSprite->lifetime = rand() % 4096 + 8192;
     }
     taskSlot->stage = 0xFFFF;
 }
@@ -2016,15 +2016,15 @@ void __cdecl BattleFx_SummonTitanInitFragmentVelocitiesFromNormals(void)
         normalScratch->edgeBY = pPointC->vy - pointBPtr->vy;
         normalScratch->edgeBZ = pPointC->vz - pointBPtr->vz;
         CrossProductInt((struct VECTOR *)normalScratch, (VECTOR *)((int)normalScratch + 0x10), (char *)normalScratch + 0x20);
-        while (normalScratch->crossX < -0x4000 || (normalScratch->crossX > 0x4000 || (normalScratch->crossY < -0x4000 || (normalScratch->crossY > 0x4000 || (normalScratch->crossZ < -0x4000 || normalScratch->crossZ > 0x4000))))) {
+        while (normalScratch->crossX < -16384 || (normalScratch->crossX > 16384 || (normalScratch->crossY < -16384 || (normalScratch->crossY > 16384 || (normalScratch->crossZ < -16384 || normalScratch->crossZ > 16384))))) {
             normalScratch->crossX >>= 1;
             normalScratch->crossY >>= 1;
             normalScratch->crossZ >>= 1;
         }
         NormalizeVectorFixed((char *)normalScratch + 0x20, (char *)normalScratch + 0x20);
-        fragment->velocityX = -normalScratch->crossX * 0xC8 >> 0xC;
-        fragment->velocityY = -normalScratch->crossY * 0xC8 >> 0xC;
-        fragment->velocityZ = -normalScratch->crossZ * 0xC8 >> 0xC;
+        fragment->velocityX = -normalScratch->crossX * 0xC8 >> 12;
+        fragment->velocityY = -normalScratch->crossY * 0xC8 >> 12;
+        fragment->velocityZ = -normalScratch->crossZ * 0xC8 >> 12;
         fragment->shade = 0;
         fragment->rotZ = 0;
         fragment->rotY = 0;
@@ -2061,7 +2061,7 @@ void __cdecl BattleFx_SummonTitanInitFragmentVelocitiesFromVertexXZ(void)
         fragment->posY = 0;
         fragment->posX = 0;
         fragment->velocityX = vertexVelocityPtr->velocityX >> 5;
-        fragment->velocityY = rand() % 0xBE + 0xA;
+        fragment->velocityY = rand() % 190 + 10;
         fragment->velocityZ = vertexVelocityPtr->velocityZ >> 5;
         fragment->rotationZ = 0;
         fragment->rotationY = 0;
@@ -2081,7 +2081,7 @@ void __cdecl BattleFx_SummonTitanInitFragmentVelocitiesFromVertexXZ(void)
         fragment->posY = 0;
         fragment->posX = 0;
         fragment->velocityX = vertexVelocityPtr->velocityX >> 4;
-        fragment->velocityY = rand() % 0xBE + 0xA;
+        fragment->velocityY = rand() % 190 + 10;
         fragment->velocityZ = vertexVelocityPtr->velocityZ >> 4;
         fragment->rotationZ = 0;
         fragment->rotationY = 0;

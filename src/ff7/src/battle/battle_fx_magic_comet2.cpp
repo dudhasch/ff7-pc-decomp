@@ -184,7 +184,7 @@ void __cdecl BattleFx_MagicComet2TimelineTask(void)
     } else {
         localStep -= 8;
         if (localStep >= 0) {
-            if (localStep - 0x14 >= 0 && (localStep - 0x14) % 8 == 0) {
+            if (localStep - 20 >= 0 && (localStep - 0x14) % 8 == 0) {
                 target = g_BattleHitTargetActors[task->sequenceIndex];
                 if (target != 0xFF) {
                     pRecord = (BattleFxPoint3s *)Battle_AllocSceneMessage(0xA);
@@ -193,12 +193,12 @@ void __cdecl BattleFx_MagicComet2TimelineTask(void)
                     (task->sequenceIndex)++;
                 }
             }
-            if (localStep < 0x3C) {
-                if (localStep % 0xA == 0) {
+            if (localStep < 60) {
+                if (localStep % 10 == 0) {
                     child = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicComet2MeteorSequenceTask);
-                    child->posX = g_BattleMagicComet2_CenterXY[0] + rand() % 0x1770 + -0xBB8;
+                    child->posX = g_BattleMagicComet2_CenterXY[0] + rand() % 6000 + -3000;
                     child->posY = 0;
-                    child->posZ = g_BattleMagicComet2_CenterZ + rand() % 0x1770 + -0xBB8;
+                    child->posZ = g_BattleMagicComet2_CenterZ + rand() % 6000 + -3000;
                 }
             } else {
                 task->sequenceIndex = 0xFFFF;
@@ -227,19 +227,19 @@ void __cdecl BattleFx_MagicComet2MeteorSequenceTask(void)
     }
     if (taskPtr->step == 0) {
         meteor = (BattleFxMeteorParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicComet2DescendingModelTask);
-        meteor->posX = g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].posX + (SinFixed(g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].yaw) * 0xBB8 >> 0xC);
+        meteor->posX = g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].posX + (SinFixed(g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].yaw) * 0xBB8 >> 12);
         meteor->posY = 0xE890;
-        meteor->posZ = g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].posZ + (CosFixed(g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].yaw) * 0xBB8 >> 0xC);
-        meteor->velX = (taskPtr->targetX - meteor->posX) / 0xA;
+        meteor->posZ = g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].posZ + (CosFixed(g_BattleActorRecords[g_BattleMagicComet2_CasterActorIdx].yaw) * 0xBB8 >> 12);
+        meteor->velX = (taskPtr->targetX - meteor->posX) / 10;
         vec.vx = meteor->velX;
-        meteor->velY = (taskPtr->targetY - meteor->posY) / 0xA;
+        meteor->velY = (taskPtr->targetY - meteor->posY) / 10;
         vec.vy = meteor->velY;
-        meteor->velZ = (taskPtr->targetZ - meteor->posZ) / 0xA;
+        meteor->velZ = (taskPtr->targetZ - meteor->posZ) / 10;
         vec.vz = meteor->velZ;
         NormalizeVectorFixed(&vec, &vec);
-        meteor->posX -= (short)(vec.vx * 0x1F4 >> 0xC);
-        meteor->posY -= (short)(vec.vy * 0x1F4 >> 0xC);
-        meteor->posZ -= (short)(vec.vz * 0x1F4 >> 0xC);
+        meteor->posX -= (short)(vec.vx * 0x1F4 >> 12);
+        meteor->posY -= (short)(vec.vy * 0x1F4 >> 12);
+        meteor->posZ -= (short)(vec.vz * 0x1F4 >> 12);
     }
     if (taskPtr->step == 9) {
         meteor = (BattleFxMeteorParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicComet2ExpandingModelPairTask);
@@ -248,26 +248,26 @@ void __cdecl BattleFx_MagicComet2MeteorSequenceTask(void)
             meteor = (BattleFxMeteorParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicComet2BouncingDebrisTask);
             *(Int64Pair *)((char *)meteor + 4) = *(Int64Pair *)((char *)taskPtr + 4);
             meteor->posY = 0;
-            meteor->velX = rand() % 0x1F4 - 0xFA;
-            meteor->velY = -(rand() % 0xC8 + 0x12C);
-            meteor->velZ = rand() % 0x1F4 - 0xFA;
-            meteor->tiltX = (rand() & 0x3F) - 0x20;
-            meteor->tiltY = (rand() & 0x3F) - 0x20;
-            meteor->tiltZ = (rand() & 0x3F) - 0x20;
-            meteor->randomSpan = rand() % 0xE00 + 0x200;
+            meteor->velX = rand() % 500 - 250;
+            meteor->velY = -(rand() % 200 + 300);
+            meteor->velZ = rand() % 500 - 250;
+            meteor->tiltX = (rand() & 0x3F) - 32;
+            meteor->tiltY = (rand() & 0x3F) - 32;
+            meteor->tiltZ = (rand() & 0x3F) - 32;
+            meteor->randomSpan = rand() % 3584 + 512;
             meteor->ownerSlot = 0;
             meteor->randomFlag = rand() & 1;
         }
     }
-    if (taskPtr->step >= 0xA && taskPtr->step < 0x19) {
+    if (taskPtr->step >= 10 && taskPtr->step < 25) {
         for (loop = 0; loop < 1; loop++) {
             meteor = (BattleFxMeteorParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicComet2AnimatedSpriteTask);
-            meteor->posX = taskPtr->targetX + rand() % 0xA00 + -0x500;
-            meteor->posY = taskPtr->targetY - rand() % 0x500;
-            meteor->posZ = taskPtr->targetZ + rand() % 0xA00 + -0x500;
+            meteor->posX = taskPtr->targetX + rand() % 2560 + -1280;
+            meteor->posY = taskPtr->targetY - rand() % 1280;
+            meteor->posZ = taskPtr->targetZ + rand() % 2560 + -1280;
         }
     }
-    if (taskPtr->step == 0x19) {
+    if (taskPtr->step == 25) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (taskPtr->step)++;
@@ -336,10 +336,10 @@ void __cdecl BattleFx_MagicComet2DescendingModelTask(void)
         SetRotMatrix(frame.dataBlock);
         SetTransMatrix(frame.dataBlock);
         for (frame.sparkIndex = 0; frame.sparkIndex < 3; frame.sparkIndex++) {
-            frame.sparkAngle = (frame.sparkIndex << 0xC) / 3 + rand() % 0x555;
-            frame.sparkOffset->sinOffset = SinFixed(frame.sparkAngle) * 0x3E8 >> 0xC;
-            frame.sparkOffset->cosOffset = CosFixed(frame.sparkAngle) * 0x3E8 >> 0xC;
-            frame.sparkOffset->jitter = rand() % 0x3E8;
+            frame.sparkAngle = (frame.sparkIndex << 12) / 3 + rand() % 0x555;
+            frame.sparkOffset->sinOffset = SinFixed(frame.sparkAngle) * 0x3E8 >> 12;
+            frame.sparkOffset->cosOffset = CosFixed(frame.sparkAngle) * 0x3E8 >> 12;
+            frame.sparkOffset->jitter = rand() % 1000;
             RotTransPoint((void *)frame.sparkOffset, (int *)frame.cometPos, &frame.pointDepth);
             frame.sparkPixel = (BattleFxSpecialEnergyOrbSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicComet2SparkPixelTask);
             frame.sparkPixel->posX = frame.cometPos->posX;
@@ -353,10 +353,10 @@ void __cdecl BattleFx_MagicComet2DescendingModelTask(void)
         }
         g_BattleMagicComet2_ModelReq3[0] ^= 0x80;
         g_BattleMagicComet2_SpinAngleXY[0] += 0x80;
-        g_BattleMagicComet2_SpinAngleXY[1] += 0x100;
+        g_BattleMagicComet2_SpinAngleXY[1] += 0x100 /* 22.5 deg */;
         g_BattleMagicComet2_SpinAngleZ += 0x180;
         (frame.cometModel->frameCount)++;
-        if (frame.cometModel->frameCount >= 0xA) {
+        if (frame.cometModel->frameCount >= 10) {
             frame.cometModel->ownerSlot = BATTLE_TASK_FREE;
         }
         frame.cometModel->posX += frame.cometModel->velocityX;
@@ -418,20 +418,20 @@ void __cdecl BattleFx_MagicComet2ExpandingModelPairTask(void)
     task = (BattleCometExpandingPairState *)BATTLE_CURRENT_TASK_SLOT;
     matrix = Gfx_GetPsxScratchpadPtr(0);
     localFrame = task->frameIndex;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         g_BattleMagicComet2_ModelReq6.flags = 0x88;
-        g_BattleMagicComet2_ModelReq6.fadeLevel = localFrame * -0x1000 / 0xA + 0x1000;
+        g_BattleMagicComet2_ModelReq6.fadeLevel = localFrame * -4096 / 10 + 4096;
         SetDrawColorRGB(0xFF, 0xFF, 0xFF);
     } else {
-        localFrame -= 0xA;
+        localFrame -= 10;
         if (localFrame < 0) {
             g_BattleMagicComet2_ModelReq6.flags = 0x88;
             g_BattleMagicComet2_ModelReq6.fadeLevel = 0;
         } else {
             localFrame = localFrame;
-            if (localFrame < 0xA) {
+            if (localFrame < 10) {
                 g_BattleMagicComet2_ModelReq6.flags = 0x88;
-                g_BattleMagicComet2_ModelReq6.fadeLevel = (localFrame << 0xC) / 0xA;
+                g_BattleMagicComet2_ModelReq6.fadeLevel = (localFrame << 12) / 10;
                 SetDrawColorRGB(0, 0, 0);
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
@@ -439,7 +439,7 @@ void __cdecl BattleFx_MagicComet2ExpandingModelPairTask(void)
             }
         }
     }
-    g_BattleMagicComet2_Matrix2.m[2][2] = task->frameIndex * 0x1200 / 0xA + 0x800;
+    g_BattleMagicComet2_Matrix2.m[2][2] = task->frameIndex * 4608 / 10 + 0x800;
     g_BattleMagicComet2_Matrix2.m[1][1] = g_BattleMagicComet2_Matrix2.m[2][2];
     g_BattleMagicComet2_Matrix2.m[0][0] = g_BattleMagicComet2_Matrix2.m[1][1];
     g_BattleMagicComet2_Matrix2.t[0] = task->transX;
@@ -485,7 +485,7 @@ void __cdecl BattleFx_MagicComet2BouncingDebrisTask(void)
         g_BattleMagicComet2_ModelReq7.fadeLevel = 0;
     } else {
         g_BattleMagicComet2_ModelReq7.flags = 0x88;
-        g_BattleMagicComet2_ModelReq7.fadeLevel = ((frame.debris->step << 0xC) / 8);
+        g_BattleMagicComet2_ModelReq7.fadeLevel = ((frame.debris->step << 12) / 8);
         if (frame.debris->modelVariant == 0) {
             g_BattleMagicComet2_ModelReq7.modelGroup = Gfx_ModelTableGetRenderObject(6, g_BattleMagicComet2_ResourceTable);
         } else {
@@ -526,7 +526,7 @@ void __cdecl BattleFx_MagicComet2BouncingDebrisTask(void)
         frame.debris->posX += frame.debris->velocityX;
         frame.debris->posY += frame.debris->velocityY;
         frame.debris->posZ += frame.debris->velocityZ;
-        frame.debris->velocityY += 0x32;
+        frame.debris->velocityY += 50;
         if (frame.debris->posY > 0) {
             frame.debris->posY = -frame.debris->posY;
             frame.debris->velocityY = (-frame.debris->velocityY) / 4;
@@ -555,7 +555,7 @@ void __cdecl BattleFx_MagicComet2AnimatedSpriteTask(void)
     g_BattleMagicComet2_SpriteDrawReq.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(8, g_BattleMagicComet2_ResourceTable);
     g_BattleMagicComet2_SpriteDrawReq.drawObj = Gfx_ModelTableGetSpriteObject(8, g_BattleMagicComet2_ResourceTable);
     g_BattleMagicComet2_SpriteDrawReq.frame = task->frameCounter;
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2500, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x2500 /* 2.3125 */, 0);
     g_BattleMagicComet2_DrawCursor = BattleFx_SubmitSpriteDraw(&g_BattleMagicComet2_SpriteDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicComet2_DrawCursor);
     if (g_BattleIsPaused == 0 && g_BattleMagicComet2_SpriteDrawReq.spriteGroup != 0) {
         (task->frameCounter)++;

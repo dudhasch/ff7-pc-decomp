@@ -257,7 +257,7 @@ void __cdecl BattleFx_SummonBeginPhoenix(int targetMask, int actorIdx)
     if (centroidBuf.vz > g_BattleActorRecords[actorIdx].posZ) {
         g_BattleSummonPhoenixTransformMatrix3.offsetZ = centroidBuf.vz - 0x1388;
     } else {
-        g_BattleSummonPhoenixCoordBuffer1.rotY = 0x800;
+        g_BattleSummonPhoenixCoordBuffer1.rotY = 0x800 /* 180 deg */;
         g_BattleSummonPhoenixTransformMatrix3.offsetZ = centroidBuf.vz + 0x1388;
     }
     RotMatrix((SVECTOR *)&g_BattleSummonPhoenixCoordBuffer1, &g_BattleSummonPhoenixTransformMatrix3.matrix);
@@ -573,11 +573,11 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
         return;
     }
     if (DEAD_IN_RETAIL != 0) {
-        x0 = g_BattleSummonPhoenixStateData3 % 0x200;
+        x0 = g_BattleSummonPhoenixStateData3 % 512;
         g_BattleSummonPhoenixStateData3++;
-        posY = 0x64;
-        bytesX = 0x100;
-        quadH = 0x100;
+        posY = 100;
+        bytesX = 256;
+        quadH = 256;
         angle = 0;
         textureU = 0;
         textureY = 0;
@@ -587,34 +587,34 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
         }
     }
     time = taskPtr->frameCounter;
-    if (time < 0xA) {
+    if (time < 10) {
         if (time == 0) {
             g_BattleSummonPhoenixAngleData1.spriteX = *(short *)&g_BattleViewportOriginX;
             g_BattleSummonPhoenixAngleData1.spriteY = *(short *)&g_BattleViewportOriginY;
-            g_BattleSummonPhoenixCoordBuffer3.vy = GetGeomScreen() * 0x18;
+            g_BattleSummonPhoenixCoordBuffer3.vy = GetGeomScreen() * 24;
             BattleFx_SummonPhoenixQueueStageOffscreenRequest(&g_BattleSummonPhoenixCoordBuffer3, &g_BattleSummonPhoenixAngleData1);
             BattleFx_SummonPhoenixBuildRingGridMesh();
         }
     } else {
-        time -= 0xA;
-        if (time < 0x2D) {
+        time -= 10;
+        if (time < 45) {
             if (time == 0) {
                 spawn = (BattleFxPhoenixSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixRisingSpriteEmitterTask);
                 spawn->posX = 0;
                 spawn->posY = 0xF3CB;
                 spawn->posZ = 0;
                 spawn->endX = 0;
-                spawn->endY = 0x9C;
+                spawn->endY = 156;
                 spawn->endZ = 0;
-                spawn->scale = 0x1000;
+                spawn->scale = 0x1000 /* 1.0 */;
                 Battle_AllocateResourceSlot(BattleFx_SummonPhoenixRingGridWaveTask);
             }
             if (time == 0) {
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            time -= 0x2D;
-            if (time < 0x14) {
+            time -= 45;
+            if (time < 20) {
                 if (time == 0) {
                     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                 }
@@ -624,7 +624,7 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                     spawn->posY = 0;
                     spawn->posZ = 0;
                 }
-                if (time == 0x13) {
+                if (time == 19) {
                     ringRecord = (BattleFxPhoenixOffset *)Battle_AllocSceneMessage(BATTLE_SCENE_MSG_START_SLOT3_ACTOR);
                     ringRecord->posX = g_BattleSummonPhoenixTransformMatrix3.offsetXShort;
                     ringRecord->posY = 0xFC18;
@@ -632,8 +632,8 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                     ringRecord->angle = g_BattleSummonPhoenixCoordBuffer1.rotY ^ 0x800;
                 }
             } else {
-                time -= 0x14;
-                if (time < 0x14) {
+                time -= 20;
+                if (time < 20) {
                     if (time == 0) {
                         spawn = (BattleFxPhoenixSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixSpawnFallingSpritesTask);
                         spawn = (BattleFxPhoenixSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixSpawnRingColumnsTask);
@@ -641,9 +641,9 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                         Battle_AllocateResourceSlot(BattleFx_SummonPhoenixGrowingModelTask);
                     }
                 } else {
-                    time -= 0x14;
-                    if (time < 0x19) {
-                        if (time < 0xF) {
+                    time -= 20;
+                    if (time < 25) {
+                        if (time < 15) {
                             Battle_ComposeMatrixRelativeToCamera(g_BattleCameraTransform.matrix, &g_BattleActorRecords[3].boneNodes5[0x104], &g_BattleSummonPhoenixTimelineState->matrix);
                             SetRotMatrix(&g_BattleSummonPhoenixTransformMatrix3.matrix);
                             SetTransMatrix(&g_BattleSummonPhoenixTimelineState->matrix);
@@ -657,24 +657,24 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                             g_BattleCameraPosZ = g_BattleSummonPhoenixTimelineState->posZ;
                         }
                     } else {
-                        time -= 0x19;
-                        if (time < 0xA) {
+                        time -= 25;
+                        if (time < 10) {
                             if (time == 0) {
                                 spawn = (BattleFxPhoenixSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixDampedSpritePoolTask);
-                                for (i8 = 0; i8 < 0x64; i8++) {
+                                for (i8 = 0; i8 < 100; i8++) {
                                     g_BattleSummonPhoenixBufferPtrTable[0][i8].posX = 0;
                                     g_BattleSummonPhoenixBufferPtrTable[0][i8].posY = 0xF830;
                                     g_BattleSummonPhoenixBufferPtrTable[0][i8].posZ = 0;
                                     if (DEAD_IN_RETAIL != 0) {
                                         startBytes = 0x600;
                                     } else {
-                                        startBytes = rand() % 0x400 + 0x200;
+                                        startBytes = rand() % 1024 + 512;
                                     }
                                     g_BattleSummonPhoenixBufferPtrTable[0][i8].spriteX = startBytes;
                                     g_BattleSummonPhoenixTimelineState->vec.vx = rand() & 0x1FF;
                                     g_BattleSummonPhoenixTimelineState->vec.vy = 0;
                                     if (DEAD_IN_RETAIL != 0) {
-                                        spinSpeed = 0x1000;
+                                        spinSpeed = 0x1000 /* 360 deg */;
                                     } else {
                                         spinSpeed = rand() % 0x1000;
                                     }
@@ -684,7 +684,7 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                                     if (DEAD_IN_RETAIL != 0) {
                                         tilt = 0x1F4;
                                     } else {
-                                        tilt = rand() % 0xC8 + 0x12C;
+                                        tilt = rand() % 200 + 300;
                                     }
                                     g_BattleSummonPhoenixTimelineState->vec.vy = -tilt;
                                     g_BattleSummonPhoenixTimelineState->vec.vz = 0;
@@ -692,8 +692,8 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                                 }
                             }
                         } else {
-                            time -= 0xA;
-                            if (time < 0x14) {
+                            time -= 10;
+                            if (time < 20) {
                                 if (time == 0) {
                                     spawn = (BattleFxPhoenixSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixGrowingDipModelTask);
                                     spawn->posX = 0;
@@ -701,8 +701,8 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                                     spawn->posZ = 0;
                                 }
                             } else {
-                                time -= 0x14;
-                                if (time < 0x14) {
+                                time -= 20;
+                                if (time < 20) {
                                     if (time == 0) {
                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                     }
@@ -714,20 +714,20 @@ void __cdecl BattleFx_SummonPhoenixTimelineTask(void)
                                         spawn = (BattleFxPhoenixSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixTrailedModelsTask);
                                         spawn->posX = 0;
                                         spawn->posY = 0xF448;
-                                        spawn->posZ = 0x36B0;
+                                        spawn->posZ = 14000;
                                         spawn->endX = 0;
                                         spawn->endY = 0xF448;
                                         spawn->endZ = 0xE4A8;
                                         spawn = (BattleFxPhoenixSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixSpawnBillboardSpritesTask);
                                     }
                                 } else {
-                                    time -= 0x14;
-                                    if (time < 0x2D) {
-                                        if (time == 0x2B) {
+                                    time -= 20;
+                                    if (time < 45) {
+                                        if (time == 43) {
                                             ringRecord = (BattleFxPhoenixOffset *)Battle_AllocSceneMessage(BATTLE_SCENE_MSG_STOP_SLOT3_ACTOR);
                                         }
                                     } else {
-                                        for (i8 = 0; i8 < 0xA; i8++) {
+                                        for (i8 = 0; i8 < 10; i8++) {
                                             if ((g_BattleSummonPhoenixTargetPos & 1 << i8) != 0) {
                                                 Battle_PostActorHitOrHurtMessage(i8);
                                             }
@@ -774,16 +774,16 @@ void __cdecl BattleFx_SummonPhoenixRisingSpriteEmitterTask(void)
     g_BattleSummonPhoenixBufferPtr = BattleFx_SubmitSpriteDraw(&g_BattleSummonPhoenixAnimData2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonPhoenixBufferPtr);
     if (g_BattleIsPaused == 0) {
         accumulator = (task->frame * 0xC0 & 0xFF) + 0xC0;
-        while (accumulator >= 0x100) {
+        while (accumulator >= 256) {
             pSprite = (BattleFxAscentSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixAnimatedSpriteEntry7Task);
-            pSprite->posX = task->baseX + rand() % 0x190 + -0xC8;
-            pSprite->posY = task->baseY + rand() % 0x190 + -0xC8;
-            pSprite->posZ = task->baseZ + rand() % 0x190 + -0xC8;
-            pSprite->scale = 0x1000;
+            pSprite->posX = task->baseX + rand() % 400 + -200;
+            pSprite->posY = task->baseY + rand() % 400 + -200;
+            pSprite->posZ = task->baseZ + rand() % 400 + -200;
+            pSprite->scale = 0x1000 /* 1.0 */;
             accumulator -= 0x100;
         }
         (task->frame)++;
-        if (task->frame >= 0x14) {
+        if (task->frame >= 20) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             task->baseY += task->riseSpeed;
@@ -806,9 +806,9 @@ short *__cdecl BattleFx_SummonPhoenixInstallBillboardMatrix(void *positionPtr, s
     RotTransPoint((SVECTOR *)positionPtr, &g_BattleSummonPhoenixAnimBuffer.x, &flag);
     if (distance != 0) {
         NormalizeVectorFixed((VECTOR *)&g_BattleSummonPhoenixAnimBuffer.x, (VECTOR *)normal);
-        g_BattleSummonPhoenixAnimBuffer.x += normal[0] * distance >> 0xC;
-        g_BattleSummonPhoenixAnimBuffer.y += normal[1] * distance >> 0xC;
-        g_BattleSummonPhoenixAnimBuffer.z += normal[2] * distance >> 0xC;
+        g_BattleSummonPhoenixAnimBuffer.x += normal[0] * distance >> 12;
+        g_BattleSummonPhoenixAnimBuffer.y += normal[1] * distance >> 12;
+        g_BattleSummonPhoenixAnimBuffer.z += normal[2] * distance >> 12;
     }
     SetRotMatrix((PsxMatrix *)g_BattleSummonPhoenixCoordBuffer2);
     SetTransMatrix(g_BattleSummonPhoenixCoordBuffer2);
@@ -853,25 +853,25 @@ void __cdecl BattleFx_SummonPhoenixCounterSpinModelsTask(void)
     scale = (BattleFxPhoenixCounterSpinState *)((char *)anglesPtr + 8);
     viewMatrix = (PsxMatrix *)((char *)scale + 0x10);
     frameIndex = taskPtr->frameCount;
-    if (frameIndex < 0x14) {
-        scale->next = (frameIndex << 0xC) / 0x14;
+    if (frameIndex < 20) {
+        scale->next = (frameIndex << 12) / 20;
         scale->current = scale->next;
         scale->previous = scale->current;
         g_BattleSummonPhoenixSpriteRequest1.spinAngle = 0;
     } else {
-        frameIndex -= 0x14;
+        frameIndex -= 20;
         if (frameIndex < 0) {
-            scale->next = 0x1000;
-            scale->current = 0x1000;
-            scale->previous = 0x1000;
+            scale->next = 0x1000 /* 1.0 */;
+            scale->current = 0x1000 /* 1.0 */;
+            scale->previous = 0x1000 /* 1.0 */;
             g_BattleSummonPhoenixSpriteRequest1.spinAngle = 0;
         } else {
             frameIndex = frameIndex;
-            if (frameIndex < 0x2D) {
-                scale->next = (frameIndex << 0xB) / 0x2D + 0x1000;
+            if (frameIndex < 45) {
+                scale->next = (frameIndex << 11) / 45 + 0x1000;
                 scale->current = scale->next;
                 scale->previous = scale->current;
-                g_BattleSummonPhoenixSpriteRequest1.spinAngle = (frameIndex << 0xC) / 0x2D;
+                g_BattleSummonPhoenixSpriteRequest1.spinAngle = (frameIndex << 12) / 45;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -920,15 +920,15 @@ void __cdecl BattleFx_SummonPhoenixSpawnFallingSpritesTask(void)
     for (i = 0; i < 3; i++) {
         pSprite = (BattleFxPhoenixFallingSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixFallingFadeSpriteTask);
         pSprite->scale = rand() % 0x600 + 0x200;
-        dist = rand() % 0x3E8 + 0x1F4;
+        dist = rand() % 1000 + 500;
         theta = rand() & 0xFFF;
-        pSprite->posX = SinFixed(theta) * dist >> 0xC;
+        pSprite->posX = SinFixed(theta) * dist >> 12;
         pSprite->posY = 0xFE0C;
-        pSprite->posZ = CosFixed(theta) * dist >> 0xC;
-        pSprite->velocityY = -(rand() % 0x1F4 + 0x1F4);
+        pSprite->posZ = CosFixed(theta) * dist >> 12;
+        pSprite->velocityY = -(rand() % 500 + 500);
     }
     (pTaskSlot->spawnIndex)++;
-    if (pTaskSlot->spawnIndex >= 0x2D) {
+    if (pTaskSlot->spawnIndex >= 45) {
         pTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -944,10 +944,10 @@ void __cdecl BattleFx_SummonPhoenixFallingFadeSpriteTask(void)
     g_BattleSummonPhoenixSpriteRequest2.spriteValue = Gfx_ModelTableGetLoadedRecord(6, g_BattleSummonPhoenixTimer);
     g_BattleSummonPhoenixSpriteRequest2.fallingTableValue = Gfx_ModelTableGetSpriteObject(6, g_BattleSummonPhoenixTimer);
     phaseFrame = task->frameCount;
-    if (phaseFrame < 0xA) {
+    if (phaseFrame < 10) {
         g_BattleSummonPhoenixSpriteRequest2.fallingFadeColor = 0x2E808080;
     } else {
-        phaseFrame -= 0xA;
+        phaseFrame -= 10;
         if (phaseFrame < 5) {
             g_BattleSummonPhoenixSpriteRequest2.colorB = phaseFrame * -0x80 / 5 + 0x80;
             g_BattleSummonPhoenixSpriteRequest2.colorG = g_BattleSummonPhoenixSpriteRequest2.colorB;
@@ -962,7 +962,7 @@ void __cdecl BattleFx_SummonPhoenixFallingFadeSpriteTask(void)
     if (g_BattleIsPaused == 0) {
         (task->frameCount)++;
         task->posY += task->velocityY;
-        task->velocityY = task->velocityY * 0xD00 >> 0xC;
+        task->velocityY = task->velocityY * 0xD00 /* 0.8125 */ >> 12;
     }
 }
 
@@ -981,29 +981,29 @@ void __cdecl BattleFx_SummonPhoenixSpawnRingColumnsTask(void)
         return;
     }
     if (taskPtr->stepCount == 0) {
-        for (i = 0; i < 0x14; i++) {
+        for (i = 0; i < 20; i++) {
             g_BattleSummonPhoenixColumnUsed[i] = 0;
         }
     }
     if ((taskPtr->stepCount % 1) == 0) {
         pColumn = (BattleFxPhoenixRingColumn *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixRingColumnTask);
-        g_BattleSummonPhoenixStateData1.value = rand() % 0x14;
+        g_BattleSummonPhoenixStateData1.value = rand() % 20;
         while (g_BattleSummonPhoenixColumnUsed[g_BattleSummonPhoenixStateData1.value] != 0) {
-            g_BattleSummonPhoenixStateData1.value = (g_BattleSummonPhoenixStateData1.value + 1) % 0x14;
+            g_BattleSummonPhoenixStateData1.value = (g_BattleSummonPhoenixStateData1.value + 1) % 20;
         }
         g_BattleSummonPhoenixColumnUsed[g_BattleSummonPhoenixStateData1.value] = 1;
-        g_BattleSummonPhoenixStateData1.value = (g_BattleSummonPhoenixStateData1.value << 0xC) / 0x14 + rand() % 0x99;
-        pColumn->x = SinFixed(g_BattleSummonPhoenixStateData1.value) * 0x5DC >> 0xC;
+        g_BattleSummonPhoenixStateData1.value = (g_BattleSummonPhoenixStateData1.value << 12) / 20 + rand() % 153;
+        pColumn->x = SinFixed(g_BattleSummonPhoenixStateData1.value) * 0x5DC >> 12;
         pColumn->y = 0xFE0C;
-        pColumn->z = CosFixed(g_BattleSummonPhoenixStateData1.value) * 0x5DC >> 0xC;
+        pColumn->z = CosFixed(g_BattleSummonPhoenixStateData1.value) * 0x5DC >> 12;
         pColumn->rotX = 0;
         pColumn->angle = g_BattleSummonPhoenixStateData1.angle;
         pColumn->rotZ = 0;
-        pColumn->peakHeight = rand() % 0xFA + 0x32;
-        pColumn->rotXStep = (rand() % 0x10) + 0x10;
+        pColumn->peakHeight = rand() % 250 + 50;
+        pColumn->rotXStep = (rand() % 16) + 16;
     }
     (taskPtr->stepCount)++;
-    if (taskPtr->stepCount >= 0x14) {
+    if (taskPtr->stepCount >= 20) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1035,10 +1035,10 @@ void __cdecl BattleFx_SummonPhoenixRingColumnTask(void)
         height = task->peakHeight * phaseFrame / 5;
     } else {
         phaseFrame -= 5;
-        if (phaseFrame < 0x1E) {
+        if (phaseFrame < 30) {
             height = task->peakHeight;
         } else {
-            phaseFrame -= 0x1E;
+            phaseFrame -= 30;
             if (phaseFrame < 5) {
                 if (g_BattleIsPaused == 0) {
                     task->height -= task->heightStep;
@@ -1071,7 +1071,7 @@ void __cdecl BattleFx_SummonPhoenixRingColumnTask(void)
     SetTransMatrix(matPtr);
     RefreshGlobalTransformState();
     primitive = (BattleFxPhoenixFlatPacket *)Gfx_GetPsxPacketScratchPtr();
-    g_BattleSummonPhoenixCoordData2.ringColumnCoord2 = 0xFC18;
+    g_BattleSummonPhoenixCoordData2.ringColumnCoord2 = 0xFC18 /* -1000 */;
     g_BattleSummonPhoenixCoordData1.ringColumnCoord1 = g_BattleSummonPhoenixCoordData2.ringColumnCoord2;
     g_BattleSummonPhoenixCoordData4.ringColumnCoord4 = 0;
     g_BattleSummonPhoenixCoordData3.ringColumnCoord3 = g_BattleSummonPhoenixCoordData4.ringColumnCoord4;
@@ -1083,10 +1083,10 @@ void __cdecl BattleFx_SummonPhoenixRingColumnTask(void)
             Gfx_DrawPsxPrimitive(primitive);
             primitive++;
         }
-        g_BattleSummonPhoenixCoordData1.ringColumnCoord1 += 0xFC18;
-        g_BattleSummonPhoenixCoordData2.ringColumnCoord2 += 0xFC18;
-        g_BattleSummonPhoenixCoordData3.ringColumnCoord3 += 0xFC18;
-        g_BattleSummonPhoenixCoordData4.ringColumnCoord4 += 0xFC18;
+        g_BattleSummonPhoenixCoordData1.ringColumnCoord1 += 0xFC18 /* -1000 */;
+        g_BattleSummonPhoenixCoordData2.ringColumnCoord2 += 0xFC18 /* -1000 */;
+        g_BattleSummonPhoenixCoordData3.ringColumnCoord3 += 0xFC18 /* -1000 */;
+        g_BattleSummonPhoenixCoordData4.ringColumnCoord4 += 0xFC18 /* -1000 */;
     }
     if (g_BattleIsPaused == 0) {
         (task->spawnIndex)++;
@@ -1114,15 +1114,15 @@ void __cdecl BattleFx_SummonPhoenixGrowingDipModelTask(void)
         } else {
             local.frame -= 5;
             if (local.frame < 5) {
-                g_BattleSummonPhoenixSpriteRequest3.growingDipValue = local.frame * 0x1000 / 5;
+                g_BattleSummonPhoenixSpriteRequest3.growingDipValue = local.frame * 4096 / 5;
             } else {
                 local.p->ownerSlot = BATTLE_TASK_FREE;
                 return;
             }
         }
     }
-    local.scale = local.p->frameCounter * 0x300 / 0xF + 0x800;
-    BattleFx_SummonPhoenixInstallBillboardMatrix(local.p->data, (short)local.scale, -0x3E8);
+    local.scale = local.p->frameCounter * 0x300 / 15 + 0x800;
+    BattleFx_SummonPhoenixInstallBillboardMatrix(local.p->data, (short)local.scale, -1000);
     g_BattleSummonPhoenixSpriteRequest3.requestValue = Gfx_ModelTableGetRenderObject(3, g_BattleSummonPhoenixTimer);
     g_BattleSummonPhoenixBufferPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSummonPhoenixSpriteRequest3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonPhoenixBufferPtr);
     if (g_BattleIsPaused == 0) {
@@ -1150,13 +1150,13 @@ void __cdecl BattleFx_SummonPhoenixTrailedModelsTask(void)
     delta = (BattleFxSuperNovaCameraDelta *)((int)baseMatrix + 0x1E);
     rotation = (BattleFxPhoenixTrailState *)((int)delta + 0x10);
     phaseFrame = task->frame;
-    if (phaseFrame < 0x32) {
+    if (phaseFrame < 50) {
         g_BattleSummonPhoenixSpriteRequest5.trailSpriteCurrent = 0;
         g_BattleSummonPhoenixSpriteRequest4.trailSpritePrev = g_BattleSummonPhoenixSpriteRequest5.trailSpriteCurrent;
     } else {
-        phaseFrame -= 0x32;
-        if (phaseFrame < 0xF) {
-            g_BattleSummonPhoenixSpriteRequest5.trailSpriteCurrent = (phaseFrame << 0xC) / 0xF;
+        phaseFrame -= 50;
+        if (phaseFrame < 15) {
+            g_BattleSummonPhoenixSpriteRequest5.trailSpriteCurrent = (phaseFrame << 12) / 15;
             g_BattleSummonPhoenixSpriteRequest4.trailSpritePrev = g_BattleSummonPhoenixSpriteRequest5.trailSpriteCurrent;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -1169,7 +1169,7 @@ void __cdecl BattleFx_SummonPhoenixTrailedModelsTask(void)
     baseMatrix->t[2] = 0;
     MultiplyMatrix(&g_BattleSummonPhoenixMeshWorkingBlob.billboardMatrix, baseMatrix, baseMatrix);
     rotation->rotX = 0;
-    rotation->rotY = 0x800;
+    rotation->rotY = 0x800 /* 180 deg */;
     rotation->rotZ = task->frame << 5;
     RotMatrixXYZ(rotation, matrix);
     matrix->t[0] = task->startX;
@@ -1204,9 +1204,9 @@ void __cdecl BattleFx_SummonPhoenixTrailedModelsTask(void)
     if (g_BattleIsPaused == 0) {
         (task->frame)++;
     }
-    task->startZ += 0x3E8;
-    if (task->startZ >= 0x3A98) {
-        task->startZ -= 0x2400;
+    task->startZ += 1000;
+    if (task->startZ >= 15000) {
+        task->startZ -= 9216;
     }
 }
 
@@ -1223,14 +1223,14 @@ void __cdecl BattleFx_SummonPhoenixSpawnSpinQuadsTask(void)
         return;
     }
     emitAccum = (task->spawnIndex << 8 & 0xFF) + 0x100;
-    while (emitAccum >= 0x100) {
+    while (emitAccum >= 256) {
         child = (BattleFxPhoenixSpinQuad *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixSpinQuadTask);
         child->pos = task->pos;
         child->rotX = 0;
         child->rotY = 0;
         g_BattleSummonPhoenixStateData2.value = g_BattleSummonPhoenixStateData2.value + (rand() & 0x7FF) + 0x400 & 0xFFF;
         child->rotZ = g_BattleSummonPhoenixStateData2.angle;
-        child->timer = rand() % 0xC8 + 0x64;
+        child->timer = rand() % 200 + 100;
         child->spinSpeed = rand() % 0x30 + 0x10;
         if ((rand() & 1) != 0) {
             child->spinSpeed = -child->spinSpeed;
@@ -1238,7 +1238,7 @@ void __cdecl BattleFx_SummonPhoenixSpawnSpinQuadsTask(void)
         emitAccum -= 0x100;
     }
     (task->spawnIndex)++;
-    if (task->spawnIndex >= 0x36) {
+    if (task->spawnIndex >= 54) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1328,23 +1328,23 @@ void __cdecl BattleFx_SummonPhoenixSpawnBillboardSpritesTask(void)
         return;
     }
     accumulator = (task->spawnIndex << 9 & 0xFF) + 0x200;
-    while (accumulator >= 0x100) {
+    while (accumulator >= 256) {
         pSprite = (BattleFxPhoenixBillboardSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonPhoenixBillboardSpriteTask);
         angle = rand() & 0xFFF;
-        pSprite->posX = SinFixed(angle) * 0x708 >> 0xC;
-        pSprite->posY = CosFixed(angle) * 0x708 >> 0xC;
+        pSprite->posX = SinFixed(angle) * 0x708 >> 12;
+        pSprite->posY = CosFixed(angle) * 0x708 >> 12;
         pSprite->forwardPos = 0;
-        pSprite->forwardStep = rand() % 0xC8 + 0x12C;
+        pSprite->forwardStep = rand() % 200 + 300;
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x3000;
         } else {
-            bytes = (rand() % 0x2000) + 0x1000;
+            bytes = (rand() % 8192) + 4096;
         }
         pSprite->scale = bytes;
         accumulator -= 0x100;
     }
     (task->spawnIndex)++;
-    if (task->spawnIndex >= 0x23) {
+    if (task->spawnIndex >= 35) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1376,7 +1376,7 @@ void __cdecl BattleFx_SummonPhoenixBillboardSpriteTask(void)
     g_BattleSummonPhoenixBufferPtr = BattleFx_SubmitSpriteDraw(&g_BattleSummonPhoenixAnimData3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonPhoenixBufferPtr);
     if (g_BattleIsPaused == 0) {
         (task->frameCount)++;
-        if (task->frameCount >= 0x1E) {
+        if (task->frameCount >= 30) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
         task->value += task->step;
@@ -1454,49 +1454,49 @@ void __cdecl BattleFx_SummonPhoenixBuildRingGridMesh(void)
     BattleFxPhoenixRingGridQuad *pRingQuad;
     int column, a0, vertexIndex, baseAngleB, bound, rowBytes;
 
-    for (row = 0; row < 0x20; row++) {
+    for (row = 0; row < 32; row++) {
         radiusVal = row * 3;
-        if (radiusVal + 3 < 0x60) {
+        if (radiusVal + 3 < 96) {
             bound = radiusVal + 3;
         } else {
             bound = 0x5F;
         }
         dstOuterRadius = bound;
-        for (column = 0; column < 0x10; column++) {
+        for (column = 0; column < 16; column++) {
             pRingQuad = &g_BattleSummonPhoenixSourceMeshAndPoseBlob[row][column];
             pRingQuad->vertexA = &g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][column];
-            pRingQuad->vertexB = &g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][(column + 1) % 0x10];
+            pRingQuad->vertexB = &g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][(column + 1) % 16];
             pRingQuad->vertexC = &g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row + 1][column];
-            pRingQuad->vertexD = &g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row + 1][(column + 1) % 0x10];
-            a0 = (column << 0xC) / 0x10;
-            baseAngleB = ((column + 1) << 0xC) / 0x10;
+            pRingQuad->vertexD = &g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row + 1][(column + 1) % 16];
+            a0 = (column << 12) / 16;
+            baseAngleB = ((column + 1) << 12) / 16;
             for (vertexIndex = 0; vertexIndex < 1; vertexIndex++) {
                 pRingQuad->poly[vertexIndex].tag = 0x9000000;
                 pRingQuad->poly[vertexIndex].color = 0x2C808080;
-                pRingQuad->poly[vertexIndex].u0 = (radiusVal * SinFixed(a0) >> 0xC) + 0x60;
-                pRingQuad->poly[vertexIndex].v0 = (radiusVal * CosFixed(a0) >> 0xC) + 0x60;
-                pRingQuad->poly[vertexIndex].u1 = (radiusVal * SinFixed(baseAngleB) >> 0xC) + 0x60;
-                pRingQuad->poly[vertexIndex].v1 = (radiusVal * CosFixed(baseAngleB) >> 0xC) + 0x60;
-                pRingQuad->poly[vertexIndex].u2 = (dstOuterRadius * SinFixed(a0) >> 0xC) + 0x60;
-                pRingQuad->poly[vertexIndex].v2 = (dstOuterRadius * CosFixed(a0) >> 0xC) + 0x60;
-                pRingQuad->poly[vertexIndex].u3 = (dstOuterRadius * SinFixed(baseAngleB) >> 0xC) + 0x60;
-                pRingQuad->poly[vertexIndex].v3 = (dstOuterRadius * CosFixed(baseAngleB) >> 0xC) + 0x60;
+                pRingQuad->poly[vertexIndex].u0 = (radiusVal * SinFixed(a0) >> 12) + 0x60;
+                pRingQuad->poly[vertexIndex].v0 = (radiusVal * CosFixed(a0) >> 12) + 0x60;
+                pRingQuad->poly[vertexIndex].u1 = (radiusVal * SinFixed(baseAngleB) >> 12) + 0x60;
+                pRingQuad->poly[vertexIndex].v1 = (radiusVal * CosFixed(baseAngleB) >> 12) + 0x60;
+                pRingQuad->poly[vertexIndex].u2 = (dstOuterRadius * SinFixed(a0) >> 12) + 0x60;
+                pRingQuad->poly[vertexIndex].v2 = (dstOuterRadius * CosFixed(a0) >> 12) + 0x60;
+                pRingQuad->poly[vertexIndex].u3 = (dstOuterRadius * SinFixed(baseAngleB) >> 12) + 0x60;
+                pRingQuad->poly[vertexIndex].v3 = (dstOuterRadius * CosFixed(baseAngleB) >> 12) + 0x60;
                 pRingQuad->poly[vertexIndex].texPage = 0x14C;
             }
         }
     }
-    for (row = 0; row < 0x21; row++) {
-        if (row < 0x20) {
-            rowBytes = row * 3 * 0x18;
+    for (row = 0; row < 33; row++) {
+        if (row < 32) {
+            rowBytes = row * 3 * 24;
         } else {
-            rowBytes = 0x8E8;
+            rowBytes = 2280;
         }
         radiusVal = rowBytes;
-        for (column = 0; column < 0x10; column++) {
-            a0 = (column << 0xC) / 0x10;
-            g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][column].vx = radiusVal * SinFixed(a0) >> 0xC;
+        for (column = 0; column < 16; column++) {
+            a0 = (column << 12) / 16;
+            g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][column].vx = radiusVal * SinFixed(a0) >> 12;
             g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][column].vy = 0;
-            g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][column].vz = -radiusVal * CosFixed(a0) >> 0xC;
+            g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][column].vz = -radiusVal * CosFixed(a0) >> 12;
         }
     }
 }
@@ -1516,13 +1516,13 @@ void __cdecl BattleFx_SummonPhoenixRingGridWaveTask(void)
 
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     time = taskPtr->frameCounter;
-    if (time < 0x14) { /* empty first arm: lib/codegen.h */
+    if (time < 20) { /* empty first arm: lib/codegen.h */
     } else {
-        time -= 0x14;
-        if (time < 0x18) {
-            BattleFx_SummonPhoenixSetRingGridRowHeights(time << 1, 0x14, -(time * -150 / 0x18 + 0x96));
+        time -= 20;
+        if (time < 24) {
+            BattleFx_SummonPhoenixSetRingGridRowHeights(time << 1, 20, -(time * -150 / 24 + 0x96));
         } else {
-            if (time == 0x18) {
+            if (time == 24) {
                 (taskPtr->frameCounter)++;
                 return;
             }
@@ -1535,8 +1535,8 @@ void __cdecl BattleFx_SummonPhoenixRingGridWaveTask(void)
     g_BattleSummonPhoenixActiveCount = 0;
     RefreshGlobalTransformState();
     Gfx_SetPsxPrimQuadState(GFX_PSX_PRIM_POLY_FT4, BLEND_NONE, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleSummonPhoenixParam3));
-    for (row = 0; row < 0x20; row++) {
-        for (column = 0; column < 0x10; column++) {
+    for (row = 0; row < 32; row++) {
+        for (column = 0; column < 16; column++) {
             quadPtr = &g_BattleSummonPhoenixSourceMeshAndPoseBlob[row][column];
             depthResult = Gfx_TransformQuadReturnDepth((void *)quadPtr->vertexA, quadPtr->vertexB, quadPtr->vertexC, quadPtr->vertexD, &zA, &stateOut);
             Gfx_DrawPsxPrimitive(quadPtr->poly);
@@ -1553,13 +1553,13 @@ void __cdecl BattleFx_SummonPhoenixSetRingGridRowHeights(int centerRow, int rang
 {
     int value, row, column;
 
-    for (row = 0; row < 0x21; row++) {
+    for (row = 0; row < 33; row++) {
         if (row <= centerRow && centerRow - row < range && (centerRow - row) % 8 == 0) {
             value = rowHeight;
         } else {
             value = 0;
         }
-        for (column = 0; column < 0x10; column++) {
+        for (column = 0; column < 16; column++) {
             g_BattleSummonPhoenixMeshWorkingBlob.ringGrid[row][column].vy = value;
         }
     }
@@ -1582,7 +1582,7 @@ void __cdecl BattleFx_SummonPhoenixMoveSummonActorTask(void)
     }
     c = rec->frameCounter;
     if (c < 0x2D) {
-        g_BattleSummonPhoenixTransformData1.transformOffset = c * -0x5DC / 0x2D - 0x3E8;
+        g_BattleSummonPhoenixTransformData1.transformOffset = c * -0x5DC / 45 - 0x3E8;
     } else {
         rec->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -1609,18 +1609,18 @@ void __cdecl BattleFx_SummonPhoenixGrowingModelTask(void)
         g_BattleSummonPhoenixLoadedResTable = (struct BattleFxPhoenixGrowState *)Gfx_GetPsxScratchpadPtr(0);
     }
     phaseFrame = task->frameCounter;
-    if (phaseFrame < 0x32) {
+    if (phaseFrame < 50) {
         g_BattleSummonPhoenixSpriteRequest7.growingStepAngle = 0;
     } else {
-        phaseFrame -= 0x32;
-        if (phaseFrame < 0xA) {
-            g_BattleSummonPhoenixSpriteRequest7.growingStepAngle = (phaseFrame << 0xC) / 0xA;
+        phaseFrame -= 50;
+        if (phaseFrame < 10) {
+            g_BattleSummonPhoenixSpriteRequest7.growingStepAngle = (phaseFrame << 12) / 10;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    g_BattleSummonPhoenixBuffer3.growStep = (task->frameCounter << 0xC) / 0x3C + 0x800;
+    g_BattleSummonPhoenixBuffer3.growStep = (task->frameCounter << 12) / 60 + 2048;
     g_BattleSummonPhoenixStep2 = g_BattleSummonPhoenixBuffer3.growStep;
     SetRotMatrix(&g_BattleSummonPhoenixMeshWorkingBlob.billboardMatrix);
     SetTransMatrix(&g_BattleSummonPhoenixMeshWorkingBlob.billboardMatrix);
@@ -1629,9 +1629,9 @@ void __cdecl BattleFx_SummonPhoenixGrowingModelTask(void)
     g_BattleSummonPhoenixLoadedResTable->pointZ = g_BattleSummonPhoenixTransformData1.posZ;
     RotTransPoint(&g_BattleSummonPhoenixLoadedResTable->point, &g_BattleSummonPhoenixLoadedResTable->posX, &g_BattleSummonPhoenixLoadedResTable->rotTransFlag);
     NormalizeVectorFixed(&g_BattleSummonPhoenixLoadedResTable->pos, &g_BattleSummonPhoenixLoadedResTable->velocity);
-    g_BattleSummonPhoenixBuffer3.growingPosX = g_BattleSummonPhoenixLoadedResTable->posX + (g_BattleSummonPhoenixLoadedResTable->velocityX * 0x3E8 >> 0xC);
-    g_BattleSummonPhoenixBuffer3.growingPosY = g_BattleSummonPhoenixLoadedResTable->posY + (g_BattleSummonPhoenixLoadedResTable->velocityY * 0x3E8 >> 0xC);
-    g_BattleSummonPhoenixBuffer3.growingPosZ = g_BattleSummonPhoenixLoadedResTable->posZ + (g_BattleSummonPhoenixLoadedResTable->velocityZ * 0x3E8 >> 0xC);
+    g_BattleSummonPhoenixBuffer3.growingPosX = g_BattleSummonPhoenixLoadedResTable->posX + (g_BattleSummonPhoenixLoadedResTable->velocityX * 0x3E8 >> 12);
+    g_BattleSummonPhoenixBuffer3.growingPosY = g_BattleSummonPhoenixLoadedResTable->posY + (g_BattleSummonPhoenixLoadedResTable->velocityY * 0x3E8 >> 12);
+    g_BattleSummonPhoenixBuffer3.growingPosZ = g_BattleSummonPhoenixLoadedResTable->posZ + (g_BattleSummonPhoenixLoadedResTable->velocityZ * 0x3E8 >> 12);
     SetRotMatrix((PsxMatrix *)&g_BattleSummonPhoenixStep2);
     SetTransMatrix(&g_BattleSummonPhoenixStep2);
     g_BattleSummonPhoenixSpriteRequest7.growingValue = Gfx_ModelTableGetRenderObject(2, g_BattleSummonPhoenixTimer);
@@ -1654,20 +1654,20 @@ void __cdecl BattleFx_SummonPhoenixDampedSpritePoolTask(void)
     g_BattleSummonPhoenixSpriteRequest8.dampedTableValue = Gfx_ModelTableGetSpriteObject(6, g_BattleSummonPhoenixTimer);
     time = taskSlot->spawnIndex;
     if (time < 5) {
-        ratio = (time << 0xC) / 5;
+        ratio = (time << 12) / 5;
         scale = ratio;
         g_BattleSummonPhoenixSpriteRequest8.dampedPoolColor = 0x2E808080;
     } else {
         time -= 5;
-        if (time < 0x14) {
-            scale = 0x1000;
+        if (time < 20) {
+            scale = 0x1000 /* 1.0 */;
             g_BattleSummonPhoenixSpriteRequest8.dampedPoolColor = 0x2E808080;
         } else {
-            time -= 0x14;
+            time -= 20;
             if (time < 5) {
-                ratio = (time << 0xC) / 5;
-                scale = 0x1000;
-                g_BattleSummonPhoenixSpriteRequest8.colorB = (ratio * -0x80 >> 0xC) + 0x80;
+                ratio = (time << 12) / 5;
+                scale = 0x1000 /* 1.0 */;
+                g_BattleSummonPhoenixSpriteRequest8.colorB = (ratio * -0x80 >> 12) + 0x80;
                 g_BattleSummonPhoenixSpriteRequest8.colorG = g_BattleSummonPhoenixSpriteRequest8.colorB;
                 g_BattleSummonPhoenixSpriteRequest8.colorR = g_BattleSummonPhoenixSpriteRequest8.colorG;
             } else {
@@ -1676,16 +1676,16 @@ void __cdecl BattleFx_SummonPhoenixDampedSpritePoolTask(void)
             }
         }
     }
-    for (i = 0; i < 0x64; i++) {
-        BattleFx_SummonPhoenixInstallBillboardMatrix(&g_BattleSummonPhoenixBufferPtrTable[0][i], g_BattleSummonPhoenixBufferPtrTable[0][i].spriteX * scale >> 0xC, 0);
+    for (i = 0; i < 100; i++) {
+        BattleFx_SummonPhoenixInstallBillboardMatrix(&g_BattleSummonPhoenixBufferPtrTable[0][i], g_BattleSummonPhoenixBufferPtrTable[0][i].spriteX * scale >> 12, 0);
         g_BattleSummonPhoenixBufferPtr = BattleFx_SubmitSpriteDraw(&g_BattleSummonPhoenixSpriteRequest8, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSummonPhoenixBufferPtr);
         if (g_BattleIsPaused == 0) {
             g_BattleSummonPhoenixBufferPtrTable[0][i].posX += g_BattleSummonPhoenixBufferPtrTable[0][i].velocityX;
             g_BattleSummonPhoenixBufferPtrTable[0][i].posY += g_BattleSummonPhoenixBufferPtrTable[0][i].velocityY;
             g_BattleSummonPhoenixBufferPtrTable[0][i].posZ += g_BattleSummonPhoenixBufferPtrTable[0][i].velocityZ;
-            g_BattleSummonPhoenixBufferPtrTable[0][i].velocityX = g_BattleSummonPhoenixBufferPtrTable[0][i].velocityX * 0xF00 >> 0xC;
-            g_BattleSummonPhoenixBufferPtrTable[0][i].velocityY = g_BattleSummonPhoenixBufferPtrTable[0][i].velocityY * 0xF00 >> 0xC;
-            g_BattleSummonPhoenixBufferPtrTable[0][i].velocityZ = g_BattleSummonPhoenixBufferPtrTable[0][i].velocityZ * 0xF00 >> 0xC;
+            g_BattleSummonPhoenixBufferPtrTable[0][i].velocityX = g_BattleSummonPhoenixBufferPtrTable[0][i].velocityX * 0xF00 /* 0.9375 */ >> 12;
+            g_BattleSummonPhoenixBufferPtrTable[0][i].velocityY = g_BattleSummonPhoenixBufferPtrTable[0][i].velocityY * 0xF00 /* 0.9375 */ >> 12;
+            g_BattleSummonPhoenixBufferPtrTable[0][i].velocityZ = g_BattleSummonPhoenixBufferPtrTable[0][i].velocityZ * 0xF00 /* 0.9375 */ >> 12;
         }
     }
     if (g_BattleIsPaused == 0) {

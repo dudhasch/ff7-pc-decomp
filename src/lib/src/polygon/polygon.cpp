@@ -129,7 +129,7 @@ void __cdecl Pfile_DestroyEditLists(PolygonFileArrays *record)
         DestroyListAndNull(&record->editSource->hundreds);
         DestroyListAndNull(&record->editSource->groups);
         DestroyListAndNull(&record->editSource->sourceIndices);
-        GameHeapFree(record->editSource, PolygonLit_SourcePath_1(), 0x1F);
+        GameHeapFree(record->editSource, PolygonLit_SourcePath_1(), 31);
         record->editSource = 0;
     }
 }
@@ -142,47 +142,47 @@ void __cdecl Pfile_FreeArrays(int freeRecord, PolygonFileArrays *record)
 {
     if (record != 0) {
         if (record->vertices != 0) {
-            GameHeapFree((void *)record->vertices, PolygonLit_SourcePath_2(), 0x2B);
+            GameHeapFree((void *)record->vertices, PolygonLit_SourcePath_2(), 43);
             record->vertices = 0;
         }
         if (record->normals != 0) {
-            GameHeapFree((void *)record->normals, PolygonLit_SourcePath_3(), 0x30);
+            GameHeapFree((void *)record->normals, PolygonLit_SourcePath_3(), 48);
             record->normals = 0;
         }
         if (record->xyzRecords != 0) {
-            GameHeapFree((void *)record->xyzRecords, PolygonLit_SourcePath_4(), 0x35);
+            GameHeapFree((void *)record->xyzRecords, PolygonLit_SourcePath_4(), 53);
             record->xyzRecords = 0;
         }
         if (record->texCoords != 0) {
-            GameHeapFree((void *)record->texCoords, PolygonLit_SourcePath_5(), 0x3A);
+            GameHeapFree((void *)record->texCoords, PolygonLit_SourcePath_5(), 58);
             record->texCoords = 0;
         }
         if (record->vertexColors != 0) {
-            GameHeapFree((void *)record->vertexColors, PolygonLit_SourcePath_6(), 0x3F);
+            GameHeapFree((void *)record->vertexColors, PolygonLit_SourcePath_6(), 63);
             record->vertexColors = 0;
         }
         if (record->polygonColors != 0) {
-            GameHeapFree((void *)record->polygonColors, PolygonLit_SourcePath_7(), 0x44);
+            GameHeapFree((void *)record->polygonColors, PolygonLit_SourcePath_7(), 68);
             record->polygonColors = 0;
         }
         if (record->edges != 0) {
-            GameHeapFree((void *)record->edges, PolygonLit_SourcePath_8(), 0x4A);
+            GameHeapFree((void *)record->edges, PolygonLit_SourcePath_8(), 74);
             record->edges = 0;
         }
         if (record->polygons != 0) {
-            GameHeapFree((void *)record->polygons, PolygonLit_SourcePath_9(), 0x50);
+            GameHeapFree((void *)record->polygons, PolygonLit_SourcePath_9(), 80);
             record->polygons = 0;
         }
         if (record->hundreds != 0) {
-            GameHeapFree((void *)record->hundreds, PolygonLit_SourcePath_10(), 0x55);
+            GameHeapFree((void *)record->hundreds, PolygonLit_SourcePath_10(), 85);
             record->hundreds = 0;
         }
         if (record->groups != 0) {
-            GameHeapFree((void *)record->groups, PolygonLit_SourcePath_11(), 0x5A);
+            GameHeapFree((void *)record->groups, PolygonLit_SourcePath_11(), 90);
             record->groups = 0;
         }
         if (record->extraPolys != 0) {
-            GameHeapFree((void *)record->extraPolys, PolygonLit_SourcePath_12(), 0x60);
+            GameHeapFree((void *)record->extraPolys, PolygonLit_SourcePath_12(), 96);
             record->extraPolys = 0;
         }
         if (record->auxByteTriplets != 0) {
@@ -190,16 +190,16 @@ void __cdecl Pfile_FreeArrays(int freeRecord, PolygonFileArrays *record)
             record->auxByteTriplets = 0;
         }
         if (record->boundingBoxes != 0) {
-            GameHeapFree((void *)record->boundingBoxes, PolygonLit_SourcePath_13(), 0x6A);
+            GameHeapFree((void *)record->boundingBoxes, PolygonLit_SourcePath_13(), 106);
             record->boundingBoxes = 0;
         }
         if (record->sourceIndices != 0) {
-            GameHeapFree((void *)record->sourceIndices, PolygonLit_SourcePath_14(), 0x70);
+            GameHeapFree((void *)record->sourceIndices, PolygonLit_SourcePath_14(), 112);
             record->sourceIndices = 0;
         }
         if (freeRecord != 0) {
             Pfile_DestroyEditLists(record);
-            GameHeapFree(record, PolygonLit_SourcePath_15(), 0x78);
+            GameHeapFree(record, PolygonLit_SourcePath_15(), 120);
         }
     }
 }
@@ -227,7 +227,7 @@ PolygonFileArrays *__cdecl Pfile_CreatePolygonData(int createEdits, int kind)
     PolygonFileArrays *record;
 
     // STRING: FF7 0x00911c9c
-    record = (PolygonFileArrays *)GameHeapAlloc(1, sizeof(PolygonFileArrays), "C:\\lib\\src\\polygon\\polygon.cpp", 0x9A);
+    record = (PolygonFileArrays *)GameHeapAlloc(1, sizeof(PolygonFileArrays), "C:\\lib\\src\\polygon\\polygon.cpp", 154);
     if (record != 0) {
         record->version = 1;
         record->initFlag = 1;
@@ -248,7 +248,7 @@ PolygonFileArrays *__cdecl Pfile_CreatePolygonData(int createEdits, int kind)
 void __cdecl Pfile_CreateEditLists(PolygonFileArrays *record)
 {
     if (record != 0) {
-        record->editSource = (PolygonEditLists *)GameHeapAlloc(1, sizeof(PolygonEditLists), PolygonLit_SourcePath_16(), 0x86);
+        record->editSource = (PolygonEditLists *)GameHeapAlloc(1, sizeof(PolygonEditLists), PolygonLit_SourcePath_16(), 134);
         if (record->editSource != 0) {
             record->editSource->positions = CreateList(ListFreeValueGameHeap);
             record->editSource->normals = CreateList(ListFreeValueGameHeap);
@@ -294,17 +294,17 @@ void __cdecl Pfile_AddVertex(int sourceIndex, int *color, void *texCoord, void *
         edits = record->editSource;
         if (position != 0) {
             // STRING: FF7 0x00911cbc
-            positionNode = Pfile_CloneRecordToHeap(0xC, position, "C:\\lib\\src\\polygon\\polygon.cpp", 0xCA);
+            positionNode = Pfile_CloneRecordToHeap(12, position, "C:\\lib\\src\\polygon\\polygon.cpp", 202);
             ListAppendValue(positionNode, edits->positions);
         }
         if (normal != 0) {
             // STRING: FF7 0x00911cdc
-            normalNode = Pfile_CloneRecordToHeap(0xC, normal, "C:\\lib\\src\\polygon\\polygon.cpp", 0xCE);
+            normalNode = Pfile_CloneRecordToHeap(12, normal, "C:\\lib\\src\\polygon\\polygon.cpp", 206);
             ListAppendValue(normalNode, edits->normals);
         }
         if (texCoord != 0) {
             // STRING: FF7 0x00911cfc
-            texNode = Pfile_CloneRecordToHeap(8, texCoord, "C:\\lib\\src\\polygon\\polygon.cpp", 0xD2);
+            texNode = Pfile_CloneRecordToHeap(8, texCoord, "C:\\lib\\src\\polygon\\polygon.cpp", 210);
             ListAppendValue(texNode, edits->texCoords);
         }
         if (color != 0) {
@@ -331,7 +331,7 @@ void __cdecl Pfile_AddPolygon(void *polygon, PolygonFileArrays *record)
         lists = record->editSource;
         if (lists != 0 && polygon != 0) {
             // STRING: FF7 0x00911d1c
-            clone = Pfile_CloneRecordToHeap(0x18, polygon, "C:\\lib\\src\\polygon\\polygon.cpp", 0xEB);
+            clone = Pfile_CloneRecordToHeap(24, polygon, "C:\\lib\\src\\polygon\\polygon.cpp", 235);
             ListAppendValue(clone, lists->polygons);
         }
     }
@@ -353,11 +353,11 @@ void __cdecl Pfile_AddPolygonWithNormal(void *unknown08, void *polygon, PolygonF
         if (lists != 0 && polygon != 0) {
             if (unknown08 != 0) {
                 // STRING: FF7 0x00911d3c
-                clone = Pfile_CloneRecordToHeap(0xC, unknown08, "C:\\lib\\src\\polygon\\polygon.cpp", 0xFB);
+                clone = Pfile_CloneRecordToHeap(12, unknown08, "C:\\lib\\src\\polygon\\polygon.cpp", 251);
                 ListAppendValue(clone, lists->unknown08);
             }
             // STRING: FF7 0x00911d5c
-            polyNode = Pfile_CloneRecordToHeap(0x18, polygon, "C:\\lib\\src\\polygon\\polygon.cpp", 0xFE);
+            polyNode = Pfile_CloneRecordToHeap(24, polygon, "C:\\lib\\src\\polygon\\polygon.cpp", 254);
             ListAppendValue(polyNode, lists->polygons);
         }
     }
@@ -376,7 +376,7 @@ void __cdecl Pfile_AddNormal(void *normal, PolygonFileArrays *record)
         lists = record->editSource;
         if (normal != 0) {
             // STRING: FF7 0x00911d7c
-            clone = Pfile_CloneRecordToHeap(0xC, normal, "C:\\lib\\src\\polygon\\polygon.cpp", 0x10C);
+            clone = Pfile_CloneRecordToHeap(12, normal, "C:\\lib\\src\\polygon\\polygon.cpp", 268);
             ListAppendValue(clone, lists->normals);
         }
     }
@@ -394,7 +394,7 @@ void __cdecl Pfile_AddHundred(void *hundred, PolygonFileArrays *record)
     if (record != 0 && record->editSource != 0 && hundred != 0) {
         lists = record->editSource;
         // STRING: FF7 0x00911d9c
-        clone = Pfile_CloneRecordToHeap(0x64, hundred, "C:\\lib\\src\\polygon\\polygon.cpp", 0x119);
+        clone = Pfile_CloneRecordToHeap(100, hundred, "C:\\lib\\src\\polygon\\polygon.cpp", 281);
         ListAppendValue(clone, lists->hundreds);
     }
 }
@@ -412,7 +412,7 @@ void __cdecl Pfile_AddGroup(void *group, PolygonFileArrays *record)
     if (record != 0 && record->editSource != 0 && group != 0) {
         lists = record->editSource;
         // STRING: FF7 0x00911dbc
-        clone = Pfile_CloneRecordToHeap(0x38, group, "C:\\lib\\src\\polygon\\polygon.cpp", 0x125);
+        clone = Pfile_CloneRecordToHeap(56, group, "C:\\lib\\src\\polygon\\polygon.cpp", 293);
         ListAppendValue(clone, lists->groups);
     }
 }
@@ -439,14 +439,14 @@ void __cdecl Pfile_FlattenEditLists(PolygonFileArrays *record)
         record->hundredCount = ListGetCount(lists->hundreds);
         record->groupCount = ListGetCount(lists->groups);
         record->boundingBoxCount = 0;
-        record->vertices = (int)ListToArray(1, 0xC, lists->positions);
-        record->normals = (int)ListToArray(1, 0xC, lists->normals);
-        record->xyzRecords = (int)ListToArray(1, 0xC, lists->unknown08);
+        record->vertices = (int)ListToArray(1, 12, lists->positions);
+        record->normals = (int)ListToArray(1, 12, lists->normals);
+        record->xyzRecords = (int)ListToArray(1, 12, lists->unknown08);
         record->texCoords = (int)ListToArray(1, 8, lists->texCoords);
         record->vertexColors = (int)ListToArray(0, 4, lists->vertexColors);
-        record->polygons = (int)ListToArray(1, 0x18, lists->polygons);
-        record->hundreds = (int)ListToArray(1, 0x64, lists->hundreds);
-        record->groups = (int)ListToArray(1, 0x38, lists->groups);
+        record->polygons = (int)ListToArray(1, 24, lists->polygons);
+        record->hundreds = (int)ListToArray(1, 100, lists->hundreds);
+        record->groups = (int)ListToArray(1, 56, lists->groups);
         if (record->editMode != 0) {
             record->sourceIndices = (int)ListToArray(0, 4, lists->sourceIndices);
         }
@@ -487,7 +487,7 @@ void __cdecl Pfile_BuildPolygonColors(PolygonFileArrays *object)
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
     if (object != 0) {
         // STRING: FF7 0x00911ddc
-        object->polygonColors = (int)GameHeapAlloc(object->polygonCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 0x162);
+        object->polygonColors = (int)GameHeapAlloc(object->polygonCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 354);
         if (object->polygonColors != 0) {
             frame.group = (PolygonFileGroup *)object->groups;
             for (frame.groupLoop = 0; frame.groupLoop < object->groupCount; frame.groupLoop++) {
@@ -579,19 +579,19 @@ PolygonFileArrays *__cdecl Pfile_LoadBinary(FileOpenRequest *request, int withEd
                 frame.fileSections->boundingBoxes = 0;
                 frame.fileSections->sourceIndices = 0;
                 if (frame.fileSections->version == 1) {
-                    frame.fileSections->vertices = ReadFileIntoNewBuffer(0xC, frame.fileSections->vertexCount, frame.fileHandle);
-                    frame.fileSections->normals = ReadFileIntoNewBuffer(0xC, frame.fileSections->normalCount, frame.fileHandle);
-                    frame.fileSections->xyzRecords = ReadFileIntoNewBuffer(0xC, frame.fileSections->xyzCount, frame.fileHandle);
+                    frame.fileSections->vertices = ReadFileIntoNewBuffer(12, frame.fileSections->vertexCount, frame.fileHandle);
+                    frame.fileSections->normals = ReadFileIntoNewBuffer(12, frame.fileSections->normalCount, frame.fileHandle);
+                    frame.fileSections->xyzRecords = ReadFileIntoNewBuffer(12, frame.fileSections->xyzCount, frame.fileHandle);
                     frame.fileSections->texCoords = ReadFileIntoNewBuffer(8, frame.fileSections->texCoordCount, frame.fileHandle);
                     frame.fileSections->vertexColors = ReadFileIntoNewBuffer(4, frame.fileSections->vertexColorCount, frame.fileHandle);
                     frame.fileSections->polygonColors = ReadFileIntoNewBuffer(4, frame.fileSections->polygonCount, frame.fileHandle);
                     frame.fileSections->edges = ReadFileIntoNewBuffer(4, frame.fileSections->edgeCount, frame.fileHandle);
-                    frame.fileSections->polygons = ReadFileIntoNewBuffer(0x18, frame.fileSections->polygonCount, frame.fileHandle);
-                    frame.fileSections->extraPolys = ReadFileIntoNewBuffer(0x18, frame.fileSections->extraPolyCount, frame.fileHandle);
+                    frame.fileSections->polygons = ReadFileIntoNewBuffer(24, frame.fileSections->polygonCount, frame.fileHandle);
+                    frame.fileSections->extraPolys = ReadFileIntoNewBuffer(24, frame.fileSections->extraPolyCount, frame.fileHandle);
                     frame.fileSections->auxByteTriplets = ReadFileIntoNewBuffer(3, frame.fileSections->auxByteTripletCount, frame.fileHandle);
-                    frame.fileSections->hundreds = ReadFileIntoNewBuffer(0x64, frame.fileSections->hundredCount, frame.fileHandle);
-                    frame.fileSections->groups = ReadFileIntoNewBuffer(0x38, frame.fileSections->groupCount, frame.fileHandle);
-                    frame.fileSections->boundingBoxes = ReadFileIntoNewBuffer(0x1C, frame.fileSections->boundingBoxCount, frame.fileHandle);
+                    frame.fileSections->hundreds = ReadFileIntoNewBuffer(100, frame.fileSections->hundredCount, frame.fileHandle);
+                    frame.fileSections->groups = ReadFileIntoNewBuffer(56, frame.fileSections->groupCount, frame.fileHandle);
+                    frame.fileSections->boundingBoxes = ReadFileIntoNewBuffer(28, frame.fileSections->boundingBoxCount, frame.fileHandle);
                     if (frame.fileSections->editMode != 0) {
                         frame.fileSections->sourceIndices = ReadFileIntoNewBuffer(4, frame.fileSections->vertexCount, frame.fileHandle);
                     }
@@ -737,17 +737,17 @@ void __cdecl Pfile_WeldDuplicateVertices(PolygonFileArrays *fileArrays)
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
     if (fileArrays != 0) {
         // STRING: FF7 0x00911e28
-        frame.vertCanonicalIdx = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 0x29E);
+        frame.vertCanonicalIdx = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 670);
         // STRING: FF7 0x00911e48
-        frame.globalVertShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 0x29F);
+        frame.globalVertShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 671);
         // STRING: FF7 0x00911e68
-        frame.groupVertShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 0x2A0);
+        frame.groupVertShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 672);
         // STRING: FF7 0x00911e88
-        frame.texCanonicalIdx = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 0x2A1);
+        frame.texCanonicalIdx = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 673);
         // STRING: FF7 0x00911ea8
-        frame.globalTexShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 0x2A2);
+        frame.globalTexShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 674);
         // STRING: FF7 0x00911ec8
-        frame.groupTexShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 0x2A3);
+        frame.groupTexShift = (int *)GameHeapAlloc(fileArrays->vertexCount, 4, "C:\\lib\\src\\polygon\\polygon.cpp", 675);
         if (frame.vertCanonicalIdx != 0 && frame.globalVertShift != 0 && frame.groupVertShift != 0 && frame.texCanonicalIdx != 0) {
             frame.fileBlock = (PolygonFileGroup *)fileArrays->groups;
             for (frame.groupIdx = 0; frame.groupIdx < fileArrays->groupCount; frame.groupIdx++) {
@@ -885,17 +885,17 @@ void __cdecl Pfile_WeldDuplicateVertices(PolygonFileArrays *fileArrays)
             }
         }
         // STRING: FF7 0x00911f1c
-        GameHeapFree(frame.vertCanonicalIdx, "C:\\lib\\src\\polygon\\polygon.cpp", 0x3A2);
+        GameHeapFree(frame.vertCanonicalIdx, "C:\\lib\\src\\polygon\\polygon.cpp", 930);
         // STRING: FF7 0x00911f3c
-        GameHeapFree(frame.globalVertShift, "C:\\lib\\src\\polygon\\polygon.cpp", 0x3A3);
+        GameHeapFree(frame.globalVertShift, "C:\\lib\\src\\polygon\\polygon.cpp", 931);
         // STRING: FF7 0x00911f5c
-        GameHeapFree(frame.groupVertShift, "C:\\lib\\src\\polygon\\polygon.cpp", 0x3A4);
+        GameHeapFree(frame.groupVertShift, "C:\\lib\\src\\polygon\\polygon.cpp", 932);
         // STRING: FF7 0x00911f7c
-        GameHeapFree(frame.texCanonicalIdx, "C:\\lib\\src\\polygon\\polygon.cpp", 0x3A5);
+        GameHeapFree(frame.texCanonicalIdx, "C:\\lib\\src\\polygon\\polygon.cpp", 933);
         // STRING: FF7 0x00911f9c
-        GameHeapFree(frame.globalTexShift, "C:\\lib\\src\\polygon\\polygon.cpp", 0x3A6);
+        GameHeapFree(frame.globalTexShift, "C:\\lib\\src\\polygon\\polygon.cpp", 934);
         // STRING: FF7 0x00911fbc
-        GameHeapFree(frame.groupTexShift, "C:\\lib\\src\\polygon\\polygon.cpp", 0x3A7);
+        GameHeapFree(frame.groupTexShift, "C:\\lib\\src\\polygon\\polygon.cpp", 935);
     }
 }
 

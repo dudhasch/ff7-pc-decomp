@@ -155,7 +155,7 @@ void __cdecl BattleFx_LimitBreathOfTheEarthTimelineTask(void)
         pTrail->worldPos = task->worldPos;
         pTrail->trailBuffer = (BattleFxPsxTrailRibbon *)(g_YasuiLimitBreathOfTheEarthTrailBufferCount * 0xAC + (int)&g_YasuiLimitBreathOfTheEarthTrailBuffers);
         g_YasuiLimitBreathOfTheEarthTrailBufferCount++;
-        pTrail->velocityX = 0xBB8;
+        pTrail->velocityX = 3000;
         pTrail->velocityY = 0xFFAD;
         pTrail->orbitAngle = *(short *)&g_YasuiLimitBreathOfTheEarthOrbitAnglePhase;
     }
@@ -165,14 +165,14 @@ void __cdecl BattleFx_LimitBreathOfTheEarthTimelineTask(void)
         pTrail->trailBuffer = (BattleFxPsxTrailRibbon *)(g_YasuiLimitBreathOfTheEarthTrailBufferCount * 0xAC + (int)&g_YasuiLimitBreathOfTheEarthTrailBuffers);
         g_YasuiLimitBreathOfTheEarthTrailBufferCount++;
         pTrail->velocityX = 0xF448;
-        pTrail->velocityY = 0x53;
+        pTrail->velocityY = 83;
         pTrail->orbitAngle = *(short *)&g_YasuiLimitBreathOfTheEarthOrbitAnglePhase;
         g_YasuiLimitBreathOfTheEarthOrbitAnglePhase ^= 0x800;
     }
-    if (task->step == 0xF) {
+    if (task->step == 15) {
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
     }
-    if (task->step == 0xF) {
+    if (task->step == 15) {
         task->actorIndex = 0xFFFF;
     }
     (task->step)++;
@@ -196,9 +196,9 @@ void __cdecl BattleFx_LimitBreathOfTheEarthOrbitTrailTask(void)
         g_YasuiLimitBreathOfTheEarthOrbitScratchPtr = (struct Vec3sPacked *)Gfx_GetPsxScratchpadPtr(0);
     }
     if (orbitPtr->frameCount == 0) {
-        orbitPtr->vertexBuffer->points[0].x = orbitPtr->radius * CosFixed(orbitPtr->angle) >> 0xC;
+        orbitPtr->vertexBuffer->points[0].x = orbitPtr->radius * CosFixed(orbitPtr->angle) >> 12;
         orbitPtr->vertexBuffer->points[0].y = 0;
-        orbitPtr->vertexBuffer->points[0].z = -orbitPtr->radius * SinFixed(orbitPtr->angle) >> 0xC;
+        orbitPtr->vertexBuffer->points[0].z = -orbitPtr->radius * SinFixed(orbitPtr->angle) >> 12;
         orbitPtr->vertexBuffer->count = 0;
         orbitPtr->vertexBuffer->headIndex = 1;
     }
@@ -206,42 +206,42 @@ void __cdecl BattleFx_LimitBreathOfTheEarthOrbitTrailTask(void)
         for (i = 0; i < 2; i++) {
             orbitPtr->angle += (short)(0x1F400 / orbitPtr->radius);
             frameIndex = orbitPtr->frameCount;
-            if (frameIndex < 0x1E) {
-                blend = (frameIndex << 0xC) / 0x1E;
+            if (frameIndex < 30) {
+                blend = (frameIndex << 12) / 30;
                 orbitPtr->radius += orbitPtr->radiusSpeed;
-                height = blend * 0 >> 0xC;
-                if (orbitPtr->vertexBuffer->count < 0x14) {
+                height = blend * 0 >> 12;
+                if (orbitPtr->vertexBuffer->count < 20) {
                     (orbitPtr->vertexBuffer->count)++;
                 }
                 fadeAlpha = blend;
             } else {
-                frameIndex -= 0x1E;
-                if (frameIndex < 0x3C) {
-                    blend = (frameIndex << 0xC) / 0x3C;
-                    height = blend * -0x7D0 >> 0xC;
-                    if (frameIndex > 0x28 && orbitPtr->vertexBuffer->count > 0) {
+                frameIndex -= 30;
+                if (frameIndex < 60) {
+                    blend = (frameIndex << 12) / 60;
+                    height = blend * -0x7D0 >> 12;
+                    if (frameIndex > 40 && orbitPtr->vertexBuffer->count > 0) {
                         (orbitPtr->vertexBuffer->count)--;
                     }
-                    fadeAlpha = (orbitPtr->vertexBuffer->count << 0xC) / 0x14;
+                    fadeAlpha = (orbitPtr->vertexBuffer->count << 12) / 20;
                 } else {
                     orbitPtr->ownerSlot = BATTLE_TASK_FREE;
                     return;
                 }
             }
-            g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vx = orbitPtr->centerX + (orbitPtr->radius * CosFixed(orbitPtr->angle) >> 0xC);
+            g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vx = orbitPtr->centerX + (orbitPtr->radius * CosFixed(orbitPtr->angle) >> 12);
             orbitPtr->vertexBuffer->points[orbitPtr->vertexBuffer->headIndex].x = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vx;
             g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vy = height;
             orbitPtr->vertexBuffer->points[orbitPtr->vertexBuffer->headIndex].y = height;
-            g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vz = orbitPtr->centerY - (orbitPtr->radius * SinFixed(orbitPtr->angle) >> 0xC);
+            g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vz = orbitPtr->centerY - (orbitPtr->radius * SinFixed(orbitPtr->angle) >> 12);
             orbitPtr->vertexBuffer->points[orbitPtr->vertexBuffer->headIndex].z = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vz;
-            orbitPtr->vertexBuffer->headIndex = (orbitPtr->vertexBuffer->headIndex + 1) % 0x15;
+            orbitPtr->vertexBuffer->headIndex = (orbitPtr->vertexBuffer->headIndex + 1) % 21;
             (orbitPtr->frameCount)++;
         }
         for (i = 0; i < 1; i++) {
             pSpriteTask = (BattleFxBolt3MultiParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitBreathOfTheEarthAnimatedSpriteTask);
-            pSpriteTask->posX = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vx + rand() % 0x258 + -0x12C;
-            pSpriteTask->posY = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vy + rand() % 0x258 + -0x12C;
-            pSpriteTask->posZ = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vz + rand() % 0x258 + -0x12C;
+            pSpriteTask->posX = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vx + rand() % 600 + -300;
+            pSpriteTask->posY = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vy + rand() % 600 + -300;
+            pSpriteTask->posZ = g_YasuiLimitBreathOfTheEarthOrbitScratchPtr->vz + rand() % 600 + -300;
         }
     }
     BattleFx_LimitBreathOfTheEarthDrawPsxTrailRibbon(orbitPtr->vertexBuffer, fadeAlpha);
@@ -256,7 +256,7 @@ void __cdecl BattleFx_LimitBreathOfTheEarthAnimatedSpriteTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     (g_YasuiLimitBreathOfTheEarthSpriteRequest.animBlock) = Gfx_ModelTableGetLoadedRecord(0, g_YasuiLimitBreathOfTheEarthResourceHandle);
     g_YasuiLimitBreathOfTheEarthSpriteRequest.battleLimitDaichiSpriteResource = Gfx_ModelTableGetSpriteObject(0, g_YasuiLimitBreathOfTheEarthResourceHandle);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 8), 0x1000, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 8), 0x1000 /* 1.0 */, 0);
     g_YasuiLimitBreathOfTheEarthSpriteRequest.battleLimitDaichiSpriteFrameIndex = task->frameCounter;
     g_YasuiLimitBreathOfTheEarthRenderPacketCursor = BattleFx_SubmitSpriteDraw(&g_YasuiLimitBreathOfTheEarthSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitBreathOfTheEarthRenderPacketCursor);
     if (g_BattleIsPaused == 0 && (g_YasuiLimitBreathOfTheEarthSpriteRequest.animBlock) != 0) {
@@ -283,13 +283,13 @@ void __cdecl BattleFx_LimitBreathOfTheEarthDrawPsxTrailRibbon(BattleFxPsxTrailRi
     }
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
-    g_YasuiLimitBreathOfTheEarthTrailScratchPtr->primitiveWord = alpha << 7 >> 0xC;
+    g_YasuiLimitBreathOfTheEarthTrailScratchPtr->primitiveWord = alpha << 7 >> 12;
     g_YasuiLimitBreathOfTheEarthTrailScratchPtr->primitiveWord = g_YasuiLimitBreathOfTheEarthTrailScratchPtr->primitiveWord << 0x10 | 0x2E000000 | g_YasuiLimitBreathOfTheEarthTrailScratchPtr->primitiveWord << 8 | g_YasuiLimitBreathOfTheEarthTrailScratchPtr->primitiveWord;
     RefreshGlobalTransformState();
     packetPtr = (BattleFxBreathOfTheEarthRibbonPacket *)Gfx_GetPsxPacketScratchPtr();
-    currentIndex = (trail->headIndex + 0x15 - trail->count - 1) % 0x15;
+    currentIndex = (trail->headIndex + 21 - trail->count - 1) % 21;
     for (i = 0; i < trail->count; i++) {
-        nextIndex = (currentIndex + 1) % 0x15;
+        nextIndex = (currentIndex + 1) % 21;
         g_YasuiLimitBreathOfTheEarthTrailScratchPtr->currentSampleA = trail->points[currentIndex].x;
         g_YasuiLimitBreathOfTheEarthTrailScratchPtr->currentOffsetA = trail->points[currentIndex].y - 0x64;
         g_YasuiLimitBreathOfTheEarthTrailScratchPtr->currentSampleZA = trail->points[currentIndex].z;

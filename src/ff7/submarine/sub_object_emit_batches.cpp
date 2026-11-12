@@ -89,7 +89,7 @@ void __cdecl Submarine_EmitObjectTriangleBatch(SubmarineAngleSet *angles)
     frame.colorCursor = angles->colorCursor;
     frame.triangleCount = angles->triangleCount;
     frame.alphaByte = 0xFF;
-    frame.rotMatrix.m[2][2] = 0x1000;
+    frame.rotMatrix.m[2][2] = 0x1000 /* 360 deg */;
     frame.rotMatrix.m[1][1] = frame.rotMatrix.m[2][2];
     frame.rotMatrix.m[0][0] = frame.rotMatrix.m[1][1];
     frame.rotMatrix.m[2][1] = 0;
@@ -135,9 +135,9 @@ void __cdecl Submarine_EmitObjectTriangleBatch(SubmarineAngleSet *angles)
                 if (frame.projC.w > 0.0) {
                     frame.batchNode = AcquireBatchNode(1, (void *)(((int)g_SubmarineFixedBatchList)));
                     if (frame.batchNode != 0) {
-                        frame.colorByte0 = *frame.colorCursor << 0x18 >> 0x18;
-                        frame.colorByte1 = *frame.colorCursor << 0x10 >> 0x18;
-                        *(char *)&frame.vertexColor = *frame.colorCursor << 8 >> 0x18;
+                        frame.colorByte0 = *frame.colorCursor << 24 >> 24;
+                        frame.colorByte1 = *frame.colorCursor << 16 >> 24;
+                        *(char *)&frame.vertexColor = *frame.colorCursor << 8 >> 24;
                         frame.colorCursor++;
                         frame.invWA = 1.0f / frame.projA.w;
                         frame.outVertA = (GfxTlVertex *)(g_SubmarineFixedBatchList->vertexCursor);
@@ -146,9 +146,9 @@ void __cdecl Submarine_EmitObjectTriangleBatch(SubmarineAngleSet *angles)
                         frame.outVertA->z = frame.projA.z * frame.invWA;
                         frame.outVertA->rhw = frame.invWA;
                         frame.outVertA->color = frame.vertexColor;
-                        frame.colorByte0 = *frame.colorCursor << 0x18 >> 0x18;
-                        frame.colorByte1 = *frame.colorCursor << 0x10 >> 0x18;
-                        *(char *)&frame.vertexColor = *frame.colorCursor << 8 >> 0x18;
+                        frame.colorByte0 = *frame.colorCursor << 24 >> 24;
+                        frame.colorByte1 = *frame.colorCursor << 16 >> 24;
+                        *(char *)&frame.vertexColor = *frame.colorCursor << 8 >> 24;
                         frame.colorCursor++;
                         frame.invWB = 1.0f / frame.projB.w;
                         frame.outVertB = (GfxTlVertex *)(g_SubmarineFixedBatchList->vertexCursor + 0x20);
@@ -157,9 +157,9 @@ void __cdecl Submarine_EmitObjectTriangleBatch(SubmarineAngleSet *angles)
                         frame.outVertB->z = frame.projB.z * frame.invWB;
                         frame.outVertB->rhw = frame.invWB;
                         frame.outVertB->color = frame.vertexColor;
-                        frame.colorByte0 = *frame.colorCursor << 0x18 >> 0x18;
-                        frame.colorByte1 = *frame.colorCursor << 0x10 >> 0x18;
-                        *(char *)&frame.vertexColor = *frame.colorCursor << 8 >> 0x18;
+                        frame.colorByte0 = *frame.colorCursor << 24 >> 24;
+                        frame.colorByte1 = *frame.colorCursor << 16 >> 24;
+                        *(char *)&frame.vertexColor = *frame.colorCursor << 8 >> 24;
                         frame.colorCursor++;
                         frame.invWC = 1.0f / frame.projC.w;
                         frame.outVertC = (GfxTlVertex *)(g_SubmarineFixedBatchList->vertexCursor + 0x40);

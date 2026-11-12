@@ -121,21 +121,21 @@ void __cdecl BattleFx_LimitGreasedLightningTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->step == 0x16 || task->step == 0x37) {
+    if (task->step == 22 || task->step == 55) {
         child = (BattleFxPositionedSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGreasedLightningSpriteAnimationTask);
         child->posX = task->posX;
         child->posY = task->posY;
         child->posZ = task->posZ;
         Battle_PlaySfxPannedToActor(0x155, task->actorIndex, 0);
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         Battle_PlaySfxPannedToActor(0x30, task->actorIndex, 0);
     }
-    if (task->step == 0x37) {
+    if (task->step == 55) {
         Battle_PostActorHitOrHurtMessage(task->target);
     }
     task->step += 1;
-    if (task->step == 0x46) {
+    if (task->step == 70) {
         task->state = 0xFFFF;
     }
 }
@@ -153,7 +153,7 @@ void __cdecl BattleFx_LimitGreasedLightningSpriteAnimationTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleLimitGreasedLightningSpriteRequest.spriteHandle = Gfx_ModelTableGetLoadedRecord(0, g_BattleLimitGreasedLightningLoadedResTable);
     g_BattleLimitGreasedLightningSpriteRequest.res = Gfx_ModelTableGetSpriteObject(0, g_BattleLimitGreasedLightningLoadedResTable);
-    BattleFx_InstallBillboardMatrix(task->data, 0x3000, 0);
+    BattleFx_InstallBillboardMatrix(task->data, 0x3000 /* 3.0 */, 0);
     g_BattleLimitGreasedLightningSpriteRequest.frame = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleLimitGreasedLightningSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && g_BattleLimitGreasedLightningSpriteRequest.spriteHandle != 0) {

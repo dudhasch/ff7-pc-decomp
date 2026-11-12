@@ -126,9 +126,9 @@ void __cdecl BattleFx_SpecialSmokeShotProjectileTask(void)
     task->posZ += task->velocityZ;
     smoke = (BattleFxSmokeShotSpriteTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSmokeShotAnimatedSpriteTask);
     *(Int64Pair *)&smoke->posX = *(Int64Pair *)&task->posX;
-    smoke->scale = 0x2000;
+    smoke->scale = 0x2000 /* 2.0 */;
     (task->frame)++;
-    if (task->frame >= 0x10) {
+    if (task->frame >= 16) {
         BattleFx_HitMarkSpawnAtActorBone(task->actorIndex, 0x32);
         Battle_PostActorHitOrHurtMessage(task->actorIndex);
         task->ownerSlot = BATTLE_TASK_FREE;

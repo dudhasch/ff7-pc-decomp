@@ -227,21 +227,21 @@ void __cdecl BattleFx_LimitStardustRaySpawnTimeline(void)
     task = (BattleFxStardustRaySpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitStardustRayTimelineTask);
     Battle_GetActorMaskCentroid(g_BattleLimitStardustRayTargetActorMask, &task->posX);
     task->posY = 0xEF20;
-    task->jitterRadius = 0x900;
+    task->jitterRadius = 2304;
     task->sequenceIndex = 0;
-    for (i = 0; i < 0xB4; i++) {
+    for (i = 0; i < 180; i++) {
         g_BattleLimitStardustRaySpokePool[i].active = 0;
     }
-    for (i = 0; i < 0x78; i++) {
+    for (i = 0; i < 120; i++) {
         g_BattleLimitStardustRayParticlePool1[i].active = 0;
     }
-    for (i = 0; i < 0x78; i++) {
+    for (i = 0; i < 120; i++) {
         g_BattleLimitStardustRayParticlePool2[i].active = 0;
     }
-    for (i = 0; i < 0x1E; i++) {
+    for (i = 0; i < 30; i++) {
         g_BattleLimitStardustRayQuadPool[i].state = 0;
     }
-    g_BattleLimitStardustRayRandomIndex = rand() % 0x100;
+    g_BattleLimitStardustRayRandomIndex = rand() % 256;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x128);
 }
 
@@ -286,13 +286,13 @@ void __cdecl BattleFx_LimitStardustRayTimelineTask(void)
     }
     if (selfPtr->phase == 0x36) {
         child = (BattleFxLimitStardustRayChildTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitStardustRayDrawMovingModelTask);
-        child->posX = 0xAA;
+        child->posX = 170;
         child->posY = 0xFFB0;
         child->rotZ = 0xFB2E;
-        child->radius = 0x28F;
+        child->radius = 655;
         child->scale = 0x10;
     }
-    if (selfPtr->phase >= 0x28 && selfPtr->phase <= 0x3C && (selfPtr->phase & 1) != 0) {
+    if (selfPtr->phase >= 40 && selfPtr->phase <= 60 && (selfPtr->phase & 1) != 0) {
         extent = selfPtr->spreadRadius;
         span = extent << 1;
         child = (BattleFxLimitStardustRayChildTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitStardustRayDrawGrowingModelTask);
@@ -300,23 +300,23 @@ void __cdecl BattleFx_LimitStardustRayTimelineTask(void)
         child->posY = 0;
         child->posZ = selfPtr->posZ + rand() % span - extent;
         extent = 0x1174;
-        span = rand() % 0xA00 + 0x800;
+        span = rand() % 2560 + 2048;
         child->radius = 0;
-        child->scale = (extent * span >> 0xC) / 6;
+        child->scale = (extent * span >> 12) / 6;
     }
     if (selfPtr->phase < 8) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
         level = selfPtr->phase << 9;
-    } else if (selfPtr->phase >= 0x48) {
+    } else if (selfPtr->phase >= 72) {
         g_BattleStageHideFlags &= 0xF8;
         level = 0x1000 - (selfPtr->phase - 0x48 << 9);
     } else {
         g_BattleStageHideFlags |= 7;
         level = 0x1000;
     }
-    if (selfPtr->phase >= 0x26 && selfPtr->phase % 4 == 0) {
+    if (selfPtr->phase >= 38 && selfPtr->phase % 4 == 0) {
         targetActor = g_BattleHitTargetActors[selfPtr->sequenceIndex];
         if (targetActor != 0xFF) {
             ringRec = (BattleFxPoint3s *)Battle_AllocSceneMessage(0xA);
@@ -328,7 +328,7 @@ void __cdecl BattleFx_LimitStardustRayTimelineTask(void)
             child->radius = g_BattleActorRecords[targetActor].radius;
         }
     }
-    if (selfPtr->phase >= 0x50) {
+    if (selfPtr->phase >= 80) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
@@ -342,7 +342,7 @@ void __cdecl BattleFx_LimitStardustRayTimelineTask(void)
 
 /*
  * When unpaused emits four BattleFx_LimitStardustRayBillboardSpriteTask slots with coordinate jitter rand modulo twice the parent's
- * radius minus that radius, without a zero-divisor guard, and scale 0xC80 times a random 0x800
+ * radius minus that radius, without a zero-divisor guard, and scale 3200 times a random 0x800
  * through 0x17FF shifted twelve. Retires the parent at counter four or above after emission, then
  * advances the counter.
  */
@@ -369,8 +369,8 @@ void __cdecl BattleFx_LimitStardustRaySpawnSpriteBurstTask(void)
         child->posX = selfPtr->posX + rand() % width - jitter;
         child->posY = selfPtr->posY + rand() % width - jitter;
         child->posZ = selfPtr->posZ + rand() % width - jitter;
-        rnd = rand() % 0x1000 + 0x800;
-        child->scale = baseScale * rnd >> 0xC;
+        rnd = rand() % 4096 + 2048;
+        child->scale = baseScale * rnd >> 12;
     }
     if (selfPtr->timer >= 4) {
         selfPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -450,14 +450,14 @@ void __cdecl BattleFx_LimitStardustRayDrawMovingModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleLimitStardustRayDrawListHead = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST_1, 0, g_BattleLimitStardustRayDrawListHead);
-    if (frame.movingSlot->frame >= 0x14) {
+    if (frame.movingSlot->frame >= 20) {
         frame.movingSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.movingSlot->posX += (short)(frame.movingSlot->speed * frame.velX.vx >> 0xC);
-    frame.movingSlot->posY += (short)(frame.movingSlot->speed * frame.velX.vy >> 0xC);
+    frame.movingSlot->posX += (short)(frame.movingSlot->speed * frame.velX.vx >> 12);
+    frame.movingSlot->posY += (short)(frame.movingSlot->speed * frame.velX.vy >> 12);
     frame.movingSlot->speed += (short)(frame.movingSlot->speed >> 4);
     (frame.movingSlot->frame)++;
 }
@@ -479,13 +479,13 @@ void __cdecl BattleFx_LimitStardustRayTexturedQuadPool30Task(void)
     task = (BattleFxLimitStardustRayQuadState *)BATTLE_CURRENT_TASK_SLOT;
     if (task->index < 8) {
         level = task->index << 4;
-    } else if (task->index >= 0x39) {
+    } else if (task->index >= 57) {
         level = 0x80 - (task->index - 0x39 << 4);
     } else {
         level = 0x80;
     }
     colorWord = level << 0x10 | level << 8 | level;
-    for (idx = 0; idx < 0x1E; idx++) {
+    for (idx = 0; idx < 30; idx++) {
         if (g_BattleLimitStardustRayQuadPool[idx].state != 0) {
             BattleFx_LimitStardustRayDrawTexturedQuad(&g_BattleLimitStardustRayQuadPool[idx].corner, g_BattleLimitStardustRayQuadPool[idx].variant, colorWord);
         }
@@ -493,11 +493,11 @@ void __cdecl BattleFx_LimitStardustRayTexturedQuadPool30Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->index >= 0x41) {
+    if (task->index >= 65) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (task->index == 0) {
-        for (idx = 0; idx < 0x18; idx++) {
+        for (idx = 0; idx < 24; idx++) {
             for (colorWord = 0; colorWord < 0x1E && g_BattleLimitStardustRayQuadPool[colorWord].state != 0; colorWord++) {
             }
             if (colorWord >= 0x1E) {
@@ -506,8 +506,8 @@ void __cdecl BattleFx_LimitStardustRayTexturedQuadPool30Task(void)
             g_BattleLimitStardustRayQuadPool[colorWord].state = 1;
             g_BattleLimitStardustRayRandomIndex = g_BattleLimitStardustRayRandomIndex + 1 & 0xFF;
             g_BattleLimitStardustRayQuadPool[colorWord].variant = (short)g_BattleLimitStardustRayRandomIndex;
-            g_BattleLimitStardustRayQuadPool[colorWord].corner.srcX = rand() % 0x258;
-            g_BattleLimitStardustRayQuadPool[colorWord].corner.srcY = rand() % 0x12C;
+            g_BattleLimitStardustRayQuadPool[colorWord].corner.srcX = rand() % 600;
+            g_BattleLimitStardustRayQuadPool[colorWord].corner.srcY = rand() % 300;
         }
     }
     (task->index)++;
@@ -535,9 +535,9 @@ void __cdecl BattleFx_LimitStardustRayDrawTexturedQuad(BattleFxStardustRayCorner
     quad->x0 = quad->srcX;
     quad->srcY = cornerPtr->srcY;
     quad->y0 = quad->srcY;
-    quad->spanX = quad->x0 + 0x20;
+    quad->spanX = quad->x0 + 32;
     quad->x1 = quad->spanX;
-    quad->spanY = quad->y0 + 0x20;
+    quad->spanY = quad->y0 + 32;
     quad->y1 = quad->spanY;
     if (variant != 0) {
         quad->clutWord = 0x78C80000;
@@ -607,7 +607,7 @@ void __cdecl BattleFx_LimitStardustRayDrawGrowingModelTask(void)
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleLimitStardustRayDrawListHead = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitStardustRayDrawListHead);
-    if (frame.growingSlot->frame >= 0xC) {
+    if (frame.growingSlot->frame >= 12) {
         frame.growingSlot->slotTag = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -643,7 +643,7 @@ void __cdecl BattleFx_LimitStardustRaySpokeParticlePool180Task(void)
     workBlock = (BattleFxLimitSpokes *)Gfx_GetPsxScratchpadPtr(0);
     g_BattleLimitStardustRayParticleReq3.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleLimitStardustRayModelTable);
     g_BattleLimitStardustRayParticleReq3.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleLimitStardustRayModelTable);
-    for (poolIndex = 0; poolIndex < 0xB4; poolIndex++) {
+    for (poolIndex = 0; poolIndex < 180; poolIndex++) {
         if (g_BattleLimitStardustRaySpokePool[poolIndex].active != 0) {
             g_BattleLimitStardustRayParticleReq3.colorB = 0x80 - (g_BattleLimitStardustRaySpokePool[poolIndex].age << 2);
             g_BattleLimitStardustRayParticleReq3.colorG = g_BattleLimitStardustRayParticleReq3.colorB;
@@ -663,7 +663,7 @@ void __cdecl BattleFx_LimitStardustRaySpokeParticlePool180Task(void)
                 } else {
                     (g_BattleLimitStardustRaySpokePool[poolIndex].accelY)--;
                 }
-                if (g_BattleLimitStardustRaySpokePool[poolIndex].posY > 0 || g_BattleLimitStardustRaySpokePool[poolIndex].age >= 0x1F) {
+                if (g_BattleLimitStardustRaySpokePool[poolIndex].posY > 0 || g_BattleLimitStardustRaySpokePool[poolIndex].age >= 31) {
                     g_BattleLimitStardustRaySpokePool[poolIndex].active = 0;
                 }
                 (g_BattleLimitStardustRaySpokePool[poolIndex].age)++;
@@ -673,36 +673,36 @@ void __cdecl BattleFx_LimitStardustRaySpokeParticlePool180Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (emitter->frameCount >= 0x37) {
+    if (emitter->frameCount >= 55) {
         emitter->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (emitter->frameCount < 0x19) {
+    if (emitter->frameCount < 25) {
         rate = 8 - (emitter->frameCount >> 1);
         if (rate < 4) {
             rate = 4;
         }
         baseSize = 0xF33;
         for (poolIndex = 0; poolIndex < rate; poolIndex++) {
-            for (emptyIdx = 0; emptyIdx < 0xB4 && g_BattleLimitStardustRaySpokePool[emptyIdx].active != 0; emptyIdx++) {
+            for (emptyIdx = 0; emptyIdx < 180 && g_BattleLimitStardustRaySpokePool[emptyIdx].active != 0; emptyIdx++) {
             }
-            if (emptyIdx >= 0xB4) {
+            if (emptyIdx >= 180) {
                 break;
             }
             g_BattleLimitStardustRaySpokePool[emptyIdx].active = 1;
             g_BattleLimitStardustRaySpokePool[emptyIdx].age = 0;
             rnd = ((rand()) % 4096);
-            radius = rand() % 0xB4 + 0x50;
-            g_BattleLimitStardustRaySpokePool[emptyIdx].posX = emitter->posX + (CosFixed(rnd) * radius >> 0xC);
+            radius = rand() % 180 + 80;
+            g_BattleLimitStardustRaySpokePool[emptyIdx].posX = emitter->posX + (CosFixed(rnd) * radius >> 12);
             g_BattleLimitStardustRaySpokePool[emptyIdx].posY = emitter->posY;
-            g_BattleLimitStardustRaySpokePool[emptyIdx].posZ = emitter->posZ + (SinFixed(rnd) * radius >> 0xC);
-            radius = rand() % 0x50 + 0x32;
-            g_BattleLimitStardustRaySpokePool[emptyIdx].velX = CosFixed(rnd) * radius >> 0xC;
-            g_BattleLimitStardustRaySpokePool[emptyIdx].velY = rand() % 0x6E + 0xDC;
-            g_BattleLimitStardustRaySpokePool[emptyIdx].velZ = SinFixed(rnd) * radius >> 0xC;
+            g_BattleLimitStardustRaySpokePool[emptyIdx].posZ = emitter->posZ + (SinFixed(rnd) * radius >> 12);
+            radius = rand() % 80 + 50;
+            g_BattleLimitStardustRaySpokePool[emptyIdx].velX = CosFixed(rnd) * radius >> 12;
+            g_BattleLimitStardustRaySpokePool[emptyIdx].velY = rand() % 110 + 220;
+            g_BattleLimitStardustRaySpokePool[emptyIdx].velZ = SinFixed(rnd) * radius >> 12;
             g_BattleLimitStardustRaySpokePool[emptyIdx].accelY = -(((rand()) % 4) + 4);
             g_BattleLimitStardustRaySpokePool[emptyIdx].spokeLength = rand() % 5 + 3;
-            rnd = ((rand()) % 4096) + 0xA00 - emitter->frameCount * 0x14;
-            g_BattleLimitStardustRaySpokePool[emptyIdx].scale = baseSize * rnd >> 0xC;
+            rnd = ((rand()) % 4096) + 2560 - emitter->frameCount * 20;
+            g_BattleLimitStardustRaySpokePool[emptyIdx].scale = baseSize * rnd >> 12;
         }
     }
     (emitter->frameCount)++;
@@ -737,15 +737,15 @@ void __cdecl BattleFx_LimitStardustRayDrawSpokes(BattleFxLimitSpokes *spokes, In
     vertexIdx = 1;
     for (i = 0; i < count; i++) {
         g_BattleLimitStardustRayRandomIndex = g_BattleLimitStardustRayRandomIndex + 1 & 0xFF;
-        srcSample = g_BattleLimitStardustRayRandomTable[g_BattleLimitStardustRayRandomIndex] % 0xC8 - 0x64;
+        srcSample = g_BattleLimitStardustRayRandomTable[g_BattleLimitStardustRayRandomIndex] % 200 - 0x64;
         if (srcSample > 0) {
-            jitterX = srcSample + 0x46;
+            jitterX = srcSample + 70;
         } else {
-            jitterX = srcSample - 0x46;
+            jitterX = srcSample - 70;
         }
         spokes->spreadX = jitterX;
         g_BattleLimitStardustRayRandomIndex = g_BattleLimitStardustRayRandomIndex + 1 & 0xFF;
-        srcSample = g_BattleLimitStardustRayRandomTable[g_BattleLimitStardustRayRandomIndex] % 0xC8 - 0x64;
+        srcSample = g_BattleLimitStardustRayRandomTable[g_BattleLimitStardustRayRandomIndex] % 200 - 0x64;
         if (srcSample > 0) {
             offsetY = srcSample + 0x46;
         } else {
@@ -753,11 +753,11 @@ void __cdecl BattleFx_LimitStardustRayDrawSpokes(BattleFxLimitSpokes *spokes, In
         }
         spokes->spreadY = offsetY;
         g_BattleLimitStardustRayRandomIndex = g_BattleLimitStardustRayRandomIndex + 1 & 0xFF;
-        srcSample = g_BattleLimitStardustRayRandomTable[g_BattleLimitStardustRayRandomIndex] % 0xC8 - 0x64;
+        srcSample = g_BattleLimitStardustRayRandomTable[g_BattleLimitStardustRayRandomIndex] % 200 - 0x64;
         if (srcSample > 0) {
-            jitterZ = srcSample + 0x46;
+            jitterZ = srcSample + 70;
         } else {
-            jitterZ = srcSample - 0x46;
+            jitterZ = srcSample - 70;
         }
         spokes->spreadZ = jitterZ;
         ProjectPointHardware(spokes->vertex[vertexIdx], (short *)&spokes->projected[vertexIdx], &scrX, &screenY);
@@ -814,9 +814,9 @@ void __cdecl BattleFx_LimitStardustRaySpriteParticlePool120Task(void)
     scratch->rotZ = 0;
     g_BattleLimitStardustRayParticleReq4.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(1, g_BattleLimitStardustRayModelTable);
     g_BattleLimitStardustRayParticleReq4.drawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleLimitStardustRayModelTable);
-    for (idx = 0; idx < 0x78; idx++) {
+    for (idx = 0; idx < 120; idx++) {
         if (g_BattleLimitStardustRayParticlePool1[idx].active != 0) {
-            if (g_BattleLimitStardustRayParticlePool1[idx].age >= 0x10) {
+            if (g_BattleLimitStardustRayParticlePool1[idx].age >= 16) {
                 g_BattleLimitStardustRayParticleReq4.colorB = 0x80 - (g_BattleLimitStardustRayParticlePool1[idx].age * 8 + -0x80);
                 g_BattleLimitStardustRayParticleReq4.colorG = g_BattleLimitStardustRayParticleReq4.colorB;
                 g_BattleLimitStardustRayParticleReq4.colorR = g_BattleLimitStardustRayParticleReq4.colorG;
@@ -846,7 +846,7 @@ void __cdecl BattleFx_LimitStardustRaySpriteParticlePool120Task(void)
                 } else {
                     (g_BattleLimitStardustRayParticlePool1[idx].accelY)--;
                 }
-                if (g_BattleLimitStardustRayParticlePool1[idx].posY > 0 || g_BattleLimitStardustRayParticlePool1[idx].age >= 0x1F) {
+                if (g_BattleLimitStardustRayParticlePool1[idx].posY > 0 || g_BattleLimitStardustRayParticlePool1[idx].age >= 31) {
                     g_BattleLimitStardustRayParticlePool1[idx].active = 0;
                 }
                 (g_BattleLimitStardustRayParticlePool1[idx].age)++;
@@ -856,41 +856,41 @@ void __cdecl BattleFx_LimitStardustRaySpriteParticlePool120Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (emitter->frameCount >= 0x37) {
+    if (emitter->frameCount >= 55) {
         emitter->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (emitter->frameCount < 0x19) {
+    if (emitter->frameCount < 25) {
         spawnCount = 6 - (emitter->frameCount >> 1);
         if (spawnCount < 3) {
             spawnCount = 3;
         }
         baseSize = 0x10E0;
         for (idx = 0; idx < spawnCount; idx++) {
-            for (emptyIdx = 0; emptyIdx < 0x78 && g_BattleLimitStardustRayParticlePool1[emptyIdx].active != 0; emptyIdx++) {
+            for (emptyIdx = 0; emptyIdx < 120 && g_BattleLimitStardustRayParticlePool1[emptyIdx].active != 0; emptyIdx++) {
             }
-            if (emptyIdx >= 0x78) {
+            if (emptyIdx >= 120) {
                 break;
             }
             g_BattleLimitStardustRayParticlePool1[emptyIdx].active = 1;
             g_BattleLimitStardustRayParticlePool1[emptyIdx].age = 0;
             rnd = ((rand()) % 4096);
-            radius = rand() % 0xB4 + 0x50;
-            g_BattleLimitStardustRayParticlePool1[emptyIdx].posX = emitter->posX + (CosFixed(rnd) * radius >> 0xC);
+            radius = rand() % 180 + 80;
+            g_BattleLimitStardustRayParticlePool1[emptyIdx].posX = emitter->posX + (CosFixed(rnd) * radius >> 12);
             g_BattleLimitStardustRayParticlePool1[emptyIdx].posY = emitter->posY + radius;
-            g_BattleLimitStardustRayParticlePool1[emptyIdx].posZ = emitter->posZ + (SinFixed(rnd) * radius >> 0xC);
+            g_BattleLimitStardustRayParticlePool1[emptyIdx].posZ = emitter->posZ + (SinFixed(rnd) * radius >> 12);
             g_BattleLimitStardustRayRandomIndex = g_BattleLimitStardustRayRandomIndex + 1 & 0xFF;
             g_BattleLimitStardustRayParticlePool1[emptyIdx].rotZ = (short)g_BattleLimitStardustRayRandomIndex;
-            radius = rand() % 0x55 + 0x32;
-            g_BattleLimitStardustRayParticlePool1[emptyIdx].velX = CosFixed(rnd) * radius >> 0xC;
-            g_BattleLimitStardustRayParticlePool1[emptyIdx].velY = rand() % 0x82 + 0xC8;
-            g_BattleLimitStardustRayParticlePool1[emptyIdx].velZ = SinFixed(rnd) * radius >> 0xC;
+            radius = rand() % 85 + 50;
+            g_BattleLimitStardustRayParticlePool1[emptyIdx].velX = CosFixed(rnd) * radius >> 12;
+            g_BattleLimitStardustRayParticlePool1[emptyIdx].velY = rand() % 130 + 200;
+            g_BattleLimitStardustRayParticlePool1[emptyIdx].velZ = SinFixed(rnd) * radius >> 12;
             g_BattleLimitStardustRayParticlePool1[emptyIdx].accelY = -(((rand()) % 4) + 4);
             g_BattleLimitStardustRayParticlePool1[emptyIdx].rotStep = rand() % 0xDC + 0x96;
             if ((g_BattleLimitStardustRayParticlePool1[emptyIdx].rotZ & 1) != 0) {
                 g_BattleLimitStardustRayParticlePool1[emptyIdx].rotStep = -g_BattleLimitStardustRayParticlePool1[emptyIdx].rotStep;
             }
-            rnd = rand() % 0x1400 + 0x800 - (emitter->frameCount << 2);
-            g_BattleLimitStardustRayParticlePool1[emptyIdx].scale = baseSize * rnd >> 0xC;
+            rnd = rand() % 5120 + 2048 - (emitter->frameCount << 2);
+            g_BattleLimitStardustRayParticlePool1[emptyIdx].scale = baseSize * rnd >> 12;
         }
     }
     (emitter->frameCount)++;
@@ -919,7 +919,7 @@ void __cdecl BattleFx_LimitStardustRaySpriteEntry2ParticlePool120Task(void)
     scratch = Gfx_GetPsxScratchpadPtr(0);
     g_BattleLimitStardustRayParticleReq5.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(2, g_BattleLimitStardustRayModelTable);
     g_BattleLimitStardustRayParticleReq5.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleLimitStardustRayModelTable);
-    for (idx = 0; idx < 0x78; idx++) {
+    for (idx = 0; idx < 120; idx++) {
         if (g_BattleLimitStardustRayParticlePool2[idx].active != 0) {
             g_BattleLimitStardustRayParticleReq5.colorB = 0x80 - (g_BattleLimitStardustRayParticlePool2[idx].age << 2);
             g_BattleLimitStardustRayParticleReq5.colorG = g_BattleLimitStardustRayParticleReq5.colorB;
@@ -936,7 +936,7 @@ void __cdecl BattleFx_LimitStardustRaySpriteEntry2ParticlePool120Task(void)
                 } else {
                     (g_BattleLimitStardustRayParticlePool2[idx].accelY)--;
                 }
-                if (g_BattleLimitStardustRayParticlePool2[idx].posY > 0 || g_BattleLimitStardustRayParticlePool2[idx].age >= 0x1F) {
+                if (g_BattleLimitStardustRayParticlePool2[idx].posY > 0 || g_BattleLimitStardustRayParticlePool2[idx].age >= 31) {
                     g_BattleLimitStardustRayParticlePool2[idx].active = 0;
                 }
                 (g_BattleLimitStardustRayParticlePool2[idx].age)++;
@@ -946,35 +946,35 @@ void __cdecl BattleFx_LimitStardustRaySpriteEntry2ParticlePool120Task(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (emitter->index >= 0x37) {
+    if (emitter->index >= 55) {
         emitter->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (emitter->index < 0x19) {
+    if (emitter->index < 25) {
         spawnCount = 6 - (emitter->index >> 1);
         if (spawnCount < 3) {
             spawnCount = 3;
         }
         baseSize = 0x1400;
         for (idx = 0; idx < spawnCount; idx++) {
-            for (emptyIdx = 0; emptyIdx < 0x78 && g_BattleLimitStardustRayParticlePool2[emptyIdx].active != 0; emptyIdx++) {
+            for (emptyIdx = 0; emptyIdx < 120 && g_BattleLimitStardustRayParticlePool2[emptyIdx].active != 0; emptyIdx++) {
             }
-            if (emptyIdx >= 0x78) {
+            if (emptyIdx >= 120) {
                 break;
             }
             g_BattleLimitStardustRayParticlePool2[emptyIdx].active = 1;
             g_BattleLimitStardustRayParticlePool2[emptyIdx].age = 0;
             rnd = ((rand()) % 4096);
-            radius = rand() % 0xB4 + 0x50;
-            g_BattleLimitStardustRayParticlePool2[emptyIdx].posX = emitter->posX + (CosFixed(rnd) * radius >> 0xC);
+            radius = rand() % 180 + 80;
+            g_BattleLimitStardustRayParticlePool2[emptyIdx].posX = emitter->posX + (CosFixed(rnd) * radius >> 12);
             g_BattleLimitStardustRayParticlePool2[emptyIdx].posY = emitter->posY + radius;
-            g_BattleLimitStardustRayParticlePool2[emptyIdx].posZ = emitter->posZ + (SinFixed(rnd) * radius >> 0xC);
-            radius = rand() % 0x5A + 0x32;
-            g_BattleLimitStardustRayParticlePool2[emptyIdx].velX = CosFixed(rnd) * radius >> 0xC;
-            g_BattleLimitStardustRayParticlePool2[emptyIdx].velY = rand() % 0x82 + 0xC8;
-            g_BattleLimitStardustRayParticlePool2[emptyIdx].velZ = SinFixed(rnd) * radius >> 0xC;
+            g_BattleLimitStardustRayParticlePool2[emptyIdx].posZ = emitter->posZ + (SinFixed(rnd) * radius >> 12);
+            radius = rand() % 90 + 50;
+            g_BattleLimitStardustRayParticlePool2[emptyIdx].velX = CosFixed(rnd) * radius >> 12;
+            g_BattleLimitStardustRayParticlePool2[emptyIdx].velY = rand() % 130 + 200;
+            g_BattleLimitStardustRayParticlePool2[emptyIdx].velZ = SinFixed(rnd) * radius >> 12;
             g_BattleLimitStardustRayParticlePool2[emptyIdx].accelY = -(((rand()) % 4) + 4);
-            rnd = ((rand()) % 4096) + 0x800;
-            g_BattleLimitStardustRayParticlePool2[emptyIdx].scale = baseSize * rnd >> 0xC;
+            rnd = ((rand()) % 4096) + 2048;
+            g_BattleLimitStardustRayParticlePool2[emptyIdx].scale = baseSize * rnd >> 12;
         }
     }
     (emitter->index)++;

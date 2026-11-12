@@ -135,7 +135,7 @@ void __cdecl Gl_LogImplementationInfo(void)
 // FUNCTION: FF7 0x006a6ae6
 void __cdecl Gl_InitConfigDefaults(GlConfig *config)
 {
-    ZeroFillMemory32(0xC, config);
+    ZeroFillMemory32(12, config);
     config->frontFaceClockwise = 1;
     config->doubleBuffered = 1;
 }
@@ -257,9 +257,9 @@ GlContext *__cdecl Gl_AllocState(void)
     int i;
 
     // STRING: FF7 0x0091725c
-    context = (GlContext *)GameHeapAlloc(1, 0x450, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0xF3);
+    context = (GlContext *)GameHeapAlloc(1, 1104, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 243);
     if (context != 0) {
-        for (i = 0; i < 0x100; i++) {
+        for (i = 0; i < 256; i++) {
             context->colorTable[i].value = i / 255.0f;
         }
     }
@@ -279,7 +279,7 @@ void __cdecl Gl_DestroyContext(GlContext *glState)
             glState->renderContext = 0;
         }
         // STRING: FF7 0x00917280
-        GameHeapFree(glState, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x10D);
+        GameHeapFree(glState, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 269);
     }
 }
 
@@ -317,8 +317,8 @@ GlContext *__cdecl Gl_CreateContext(GlContextConfig *config, GfxEngineContext *d
             if (config->doubleBuffered != 0) {
                 bits |= 1;
             }
-            ZeroFillMemory32(0x28, &descriptor);
-            descriptor.nSize = 0x28;
+            ZeroFillMemory32(40, &descriptor);
+            descriptor.nSize = 40;
             descriptor.nVersion = 1;
             descriptor.dwFlags = bits;
             descriptor.iPixelType = 0;
@@ -823,17 +823,17 @@ void __cdecl Gl_FreeColorArrays(GlColorArrays *colorArrays)
 {
     if (colorArrays != 0) {
         // STRING: FF7 0x00917534
-        GameHeapFree((void *)colorArrays->colorRecords, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3E8);
+        GameHeapFree((void *)colorArrays->colorRecords, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1000);
         // STRING: FF7 0x00917558
-        GameHeapFree((void *)colorArrays->cornerColor2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3EA);
+        GameHeapFree((void *)colorArrays->cornerColor2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1002);
         // STRING: FF7 0x0091757c
-        GameHeapFree((void *)colorArrays->cornerColor1, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3EB);
+        GameHeapFree((void *)colorArrays->cornerColor1, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1003);
         // STRING: FF7 0x009175a0
-        GameHeapFree((void *)colorArrays->cornerColor0, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3EC);
+        GameHeapFree((void *)colorArrays->cornerColor0, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1004);
         // STRING: FF7 0x009175c4
-        GameHeapFree((void *)colorArrays->cornerColor3, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3ED);
+        GameHeapFree((void *)colorArrays->cornerColor3, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1005);
         // STRING: FF7 0x009175e8
-        GameHeapFree(colorArrays, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3EF);
+        GameHeapFree(colorArrays, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1007);
     }
 }
 
@@ -846,18 +846,18 @@ int __cdecl Gl_AllocColorArrays(int count)
     GlColorArrays *arrays;
 
     // STRING: FF7 0x0091760c
-    arrays = (GlColorArrays *)GameHeapAlloc(1, 0x14, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3F7);
+    arrays = (GlColorArrays *)GameHeapAlloc(1, 20, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1015);
     if (arrays != 0) {
         // STRING: FF7 0x00917630
-        arrays->cornerColor2 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3FA);
+        arrays->cornerColor2 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1018);
         // STRING: FF7 0x00917654
-        arrays->cornerColor1 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3FB);
+        arrays->cornerColor1 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1019);
         // STRING: FF7 0x00917678
-        arrays->cornerColor0 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3FC);
+        arrays->cornerColor0 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1020);
         // STRING: FF7 0x0091769c
-        arrays->cornerColor3 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3FD);
+        arrays->cornerColor3 = (int)GameHeapAllocRaw(count << 2, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1021);
         // STRING: FF7 0x009176c0
-        arrays->colorRecords = (int)GameHeapAllocRaw(count << 4, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x3FF);
+        arrays->colorRecords = (int)GameHeapAllocRaw(count << 4, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1023);
     }
     return (int)arrays;
 }
@@ -947,9 +947,9 @@ void __cdecl Gl_FreeTextureNameTable(GlTextureNameTable *nameTable)
             }
         }
         // STRING: FF7 0x00917714
-        GameHeapFree(nameTable->names, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x4DC);
+        GameHeapFree(nameTable->names, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1244);
         // STRING: FF7 0x00917738
-        GameHeapFree(nameTable, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x4DD);
+        GameHeapFree(nameTable, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1245);
     }
 }
 
@@ -962,11 +962,11 @@ int __cdecl Gl_AllocTextureNameTable(int count)
     GlTextureNameTable *table;
 
     // STRING: FF7 0x0091775c
-    table = (GlTextureNameTable *)GameHeapAlloc(1, 8, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x4E5);
+    table = (GlTextureNameTable *)GameHeapAlloc(1, 8, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1253);
     if (table != 0) {
         table->count = count;
         // STRING: FF7 0x00917780
-        table->names = (int *)GameHeapAlloc(count, 4, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x4E9);
+        table->names = (int *)GameHeapAlloc(count, 4, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1257);
     }
     return (int)table;
 }
@@ -1043,7 +1043,7 @@ void __cdecl Gl_ReadFrameBuffer(int left, int top, int width, int height, int su
     }
     if (needsScale != 0) {
         // STRING: FF7 0x009177a4
-        tempBuffer = (int)GameHeapAlloc(1, rowWidth * rowHeight * sizePerPixel, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x52C);
+        tempBuffer = (int)GameHeapAlloc(1, rowWidth * rowHeight * sizePerPixel, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1324);
     } else {
         tempBuffer = dst;
     }
@@ -1088,7 +1088,7 @@ void __cdecl Gl_ReadFrameBuffer(int left, int top, int width, int height, int su
             srcPointer = srcPointer + padCount * 4;
         }
         // STRING: FF7 0x009177c8
-        GameHeapFree((void *)tempBuffer, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 0x58B);
+        GameHeapFree((void *)tempBuffer, "C:\\lib\\src\\graphics\\gl\\gl_code.cpp", 1419);
     }
 }
 // clang-format off

@@ -352,7 +352,7 @@ void __cdecl Gfx_RasterDrawLine16(int x0, int y0, int x1, int y1, int pixel, Gfx
     int rightY;
 
     if (context->rasterBase->usesAlignedHeap != 0) {
-        scanSize = 0x1000;
+        scanSize = 4096;
     } else {
         scanSize = context->targetFormat.pitch;
     }

@@ -198,7 +198,7 @@ void __cdecl BattleFx_LimitBeginBladeBeam(int targetMask, int casterIdx)
 
     g_YasuiLimitBladeBeamAltCompleteFlag = 0;
     g_YasuiLimitBladeBeamIsPrimaryPhase = 1;
-    for (actorIdx = 0; actorIdx < 0xA; actorIdx++) {
+    for (actorIdx = 0; actorIdx < 10; actorIdx++) {
         if ((targetMask & 1 << actorIdx) != 0) {
             break;
         }
@@ -224,7 +224,7 @@ void __cdecl BattleFx_LimitBladeBeamSpawnTimeline(void)
         return;
     }
     (slot->timer)++;
-    if (slot->timer == 0x1E) {
+    if (slot->timer == 30) {
         timeline = (BattleFxBladeBeamTimelineSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_LimitBladeBeamTimelineTask)]);
         timeline->firstTargetActor = slot->firstTargetActor;
         timeline->actorIndex = slot->actorIndex;
@@ -276,14 +276,14 @@ void __cdecl BattleFx_LimitBladeBeamTimelineTask(void)
     }
     if (frame.timeline->stage == 8) {
         if (g_BattleLimitBladeBeamTargetDiffers == 0) {
-            for (frame.i = 0; frame.i < 0x32; frame.i++) {
+            for (frame.i = 0; frame.i < 50; frame.i++) {
                 frame.particle = &g_YasuiLimitBladeBeamParticleRecords[frame.i];
                 frame.particle->frameIndex = (rand() & 1) + 1;
-                frame.particle->age = rand() % 0x1000 + 0x2000;
+                frame.particle->age = rand() % 4096 + 8192;
                 *(Int64Pair *)&frame.particle->posX = *(Int64Pair *)&g_YasuiLimitBladeBeamTargetActorPos;
                 frame.vec->x = 0;
                 frame.vec->y = 0;
-                frame.vec->lifetime = rand() % 0x258 + 0xC8;
+                frame.vec->lifetime = rand() % 600 + 200;
                 frame.rotation->rotX = rand() % 0x900 - 0x80;
                 frame.rotation->rotY = rand() & 0xFFF;
                 frame.rotation->rotZ = 0;
@@ -294,14 +294,14 @@ void __cdecl BattleFx_LimitBladeBeamTimelineTask(void)
             frame.bone = (BattleFxLimitBladeBeamBone *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_LimitBladeBeamFadingSpriteEmitterTask)];
             Battle_GetBoneWorldPos(frame.timeline->firstTargetActor, g_BattleActorRecords[frame.timeline->firstTargetActor].targetBone, &frame.bone->posX);
         } else {
-            for (frame.i = 0; frame.i < 0x64; frame.i++) {
+            for (frame.i = 0; frame.i < 100; frame.i++) {
                 frame.particle = &g_YasuiLimitBladeBeamParticleRecords[frame.i];
                 *(Int64Pair *)&frame.particle->posX = *(Int64Pair *)&g_YasuiLimitBladeBeamTargetActorPos;
                 frame.particle->frameIndex = 0;
                 frame.particle->age = 0;
                 frame.vec->x = 0;
                 frame.vec->y = 0;
-                frame.vec->lifetime = rand() % 0x258 + 0xC8;
+                frame.vec->lifetime = rand() % 600 + 200;
                 frame.rotation->rotX = rand() % 0x900 - 0x80;
                 frame.rotation->rotY = rand() & 0xFFF;
                 frame.rotation->rotZ = 0;
@@ -318,7 +318,7 @@ void __cdecl BattleFx_LimitBladeBeamTimelineTask(void)
         Battle_PostActorHitOrHurtMessage(frame.timeline->firstTargetActor);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&g_BattleActorRecords[frame.timeline->firstTargetActor].posX), 0x1B);
     }
-    if (frame.timeline->stage == 0x14) {
+    if (frame.timeline->stage == 20) {
         frame.timeline->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.timeline->stage)++;
@@ -355,7 +355,7 @@ void __cdecl BattleFx_LimitBladeBeamTravelingBeamModelTask(void)
                 pSelf->active = 0xFFFF;
                 return;
             }
-            blend = (frame << 0xC) / 4;
+            blend = (frame << 12) / 4;
         } else {
             pSelf->active = 0xFFFF;
             return;
@@ -368,7 +368,7 @@ void __cdecl BattleFx_LimitBladeBeamTravelingBeamModelTask(void)
     SetRotMatrix((void *)matrix);
     SetTransMatrix((void *)matrix);
     SetDrawColorRGB(0, 0, 0);
-    g_YasuiLimitBladeBeamModelDrawReq.fadeLevel = blend / 2 + 0x800;
+    g_YasuiLimitBladeBeamModelDrawReq.fadeLevel = blend / 2 + 2048;
     g_YasuiLimitBladeBeamDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitBladeBeamModelDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitBladeBeamDrawHandle);
     if (g_BattleIsPaused == 0) {
         for (i = 0; i < 2; i++) {
@@ -387,11 +387,11 @@ void __cdecl BattleFx_LimitBladeBeamTravelingBeamModelTask(void)
                 pSprite = (BattleFxBladeBeamBeamTravel *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_LimitBladeBeamOrientedSpriteTask)];
                 pSprite->variant = rand() % 3;
                 alongBeam = rand() & 0xFFF;
-                pSprite->posX = pSelf->x - (pSelf->width * alongBeam >> 0xC);
-                pSprite->posY = pSelf->z - (pSelf->height * alongBeam >> 0xC);
-                heightJitter = rand() % 0x258 - 0x12C;
+                pSprite->posX = pSelf->x - (pSelf->width * alongBeam >> 12);
+                pSprite->posY = pSelf->z - (pSelf->height * alongBeam >> 12);
+                heightJitter = rand() % 600 - 300;
                 pSprite->endY = pSelf->y + heightJitter;
-                pSprite->frameCounter = abs(heightJitter) * 5 / 0x12C;
+                pSprite->frameCounter = abs(heightJitter) * 5 / 300;
                 pSprite->transform = (int)pSelf->matrix;
             }
         }
@@ -428,7 +428,7 @@ void __cdecl BattleFx_LimitBladeBeamMirroredSpritePairTask(void)
                 loopBasis = (BattleFxBladeBeamSpriteOffsets *)Gfx_GetPsxScratchpadPtr(0);
                 matrixPtr = (PsxMatrix *)((int)loopBasis + 0x1E);
                 baseScratchA = (int)matrixPtr + 0x1E;
-                x = baseScratchA + 0x1E;
+                x = baseScratchA + 30;
                 scaleVecPtr = (BattleFxLimitSealEvilDelay *)(x + 0x10);
                 pairOffsets8 = (BattleFxBladeBeamMirroredSpritePair *)((int)scaleVecPtr + 0x10);
                 scaleVecPtr->nextValue = task->nextValue;
@@ -463,7 +463,7 @@ void __cdecl BattleFx_LimitBladeBeamMirroredSpritePairTask(void)
                 g_YasuiLimitBladeBeamDrawHandle = BattleFx_SubmitSpriteDraw(&g_YasuiLimitBladeBeamSecondarySpriteReqA, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitBladeBeamDrawHandle);
                 if (g_BattleIsPaused == 0) {
                     task->frameCounter += 2;
-                    if (task->frameCounter >= 0xA) {
+                    if (task->frameCounter >= 10) {
                         task->ownerSlot = BATTLE_TASK_FREE;
                     }
                 }
@@ -572,7 +572,7 @@ void __cdecl BattleFx_LimitBladeBeamUpdateTrailParticle(BattleFxBladeBeamParticl
     }
     if (g_BattleIsPaused == 0) {
         (targetRecord->age)++;
-        if (targetRecord->age >= 0xA) {
+        if (targetRecord->age >= 10) {
             targetRecord->frameIndex = 0xFFFF;
         } else {
             targetRecord->posX += targetRecord->velocityX;
@@ -618,7 +618,7 @@ void __cdecl BattleFx_LimitBladeBeamFadingBillboardSpriteTask(void)
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
     (g_YasuiLimitBladeBeamFadeSpriteReq.spriteGroup) = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_YasuiLimitBladeBeamLoadedResTable);
     g_YasuiLimitBladeBeamFadeSpriteReq.drawObj = Gfx_ModelTableGetSpriteObject(3, g_YasuiLimitBladeBeamLoadedResTable);
-    angle = (task->frameCounter << 0xE) / 8;
+    angle = (task->frameCounter << 14) / 8;
     frame = task->frameCounter;
     if (frame < 0) {
         g_YasuiLimitBladeBeamFadeSpriteReq.colorB = 0x80;
@@ -651,17 +651,17 @@ void __cdecl BattleFx_LimitBladeBeamDampedSpriteParticlePool50Task(void)
     ColorLoopLocals locals;
 
     locals.record = (BattleTaskSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    locals.color[2] = locals.record->frameCounter * -0x80 / 0xF + 0x80;
+    locals.color[2] = locals.record->frameCounter * -0x80 / 15 + 0x80;
     locals.color[1] = locals.color[2];
     locals.color[0] = locals.color[1];
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
-    for (locals.index = 0; locals.index < 0x32; locals.index++) {
+    for (locals.index = 0; locals.index < 50; locals.index++) {
         BattleFx_LimitBladeBeamUpdateDampedSpriteParticle(&g_YasuiLimitBladeBeamParticleRecords[locals.index], (BattleFxSpriteColor *)locals.color);
     }
     if (g_BattleIsPaused == 0) {
         (locals.record->frameCounter)++;
-        if (locals.record->frameCounter >= 0xF) {
+        if (locals.record->frameCounter >= 15) {
             locals.record->ownerSlot = -1;
         }
     }
@@ -764,7 +764,7 @@ void __cdecl BattleFx_LimitBladeBeamAltTimelineTask(void)
     if (frame.state->step == 8) {
         Battle_PostActorHitOrHurtMessage(frame.state->actorIndex);
     }
-    if (frame.state->step == 0x14) {
+    if (frame.state->step == 20) {
         g_YasuiLimitBladeBeamAltCompleteFlag = 1;
         frame.state->ownerSlot = BATTLE_TASK_FREE;
     }

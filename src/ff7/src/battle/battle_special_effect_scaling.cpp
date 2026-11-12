@@ -53,7 +53,7 @@ void __cdecl Battle_SpecialEffect0F_PickSlotsAttack(void)
             rollTotal += ((unsigned char (__cdecl *)(int limit))Battle_RandBelow)(0xA);
             Battle_AdvanceActionSequenceCounter();
         }
-        rollTotal += g_pBattleCommandCtx->attackerLevel / 0x15;
+        rollTotal += g_pBattleCommandCtx->attackerLevel / 21;
         rollTotal /= 2;
         rollTotal -= 4;
         if (rollTotal < 0) {
@@ -132,7 +132,7 @@ void __cdecl Battle_MergePartyStatsIntoActor(void)
     for (i = 0; i < 8; i++) {
         stats[i] = stats[i] / num;
         stats[i] += stats[i] * g_BattleStatMutationPercentTable[i] / 100;
-        if (stats[i] > 0xFF) {
+        if (stats[i] > 255) {
             stats[i] = 0xFF;
         }
     }
@@ -185,7 +185,7 @@ void __cdecl Battle_ApplyActorStatMutation(void)
     case BATTLE_LIMIT_TRANSFORM_GALIAN_GALIAN_BEAST:
         Battle_AddStatPercentModifiers(val, 0x14, 0x10);
         Battle_AddStatPercentModifiers(val, 0x32, 0x20);
-        g_aCombatants[val].maxHp = (unsigned int)(g_aCombatants[val].maxHp * 0xD) / 0xA;
+        g_aCombatants[val].maxHp = (unsigned int)(g_aCombatants[val].maxHp * 13) / 10;
         break;
     case BATTLE_LIMIT_TRANSFORM_DEATH_GIGAS:
         Battle_AddStatPercentModifiers(val, 0x32, 4);
@@ -278,7 +278,7 @@ void __cdecl Battle_SpecialEffect20_PowerFromMateriaAp(void)
             limit = 0;
             for (tierIndex = 0; tierIndex < 4; tierIndex++) {
                 if (g_KernelMateriaDataArray[typeId].apLevels[tierIndex] != 0xFFFF) {
-                    limit = g_KernelMateriaDataArray[typeId].apLevels[tierIndex] * 0x64;
+                    limit = g_KernelMateriaDataArray[typeId].apLevels[tierIndex] * 100;
                 }
             }
             if (ap > limit) {
@@ -287,7 +287,7 @@ void __cdecl Battle_SpecialEffect20_PowerFromMateriaAp(void)
             sum += ap;
         }
     }
-    g_pBattleCommandCtx->power = ((sum / 0x2710 * g_pBattleCommandCtx->basePower) / 16) + 1;
+    g_pBattleCommandCtx->power = ((sum / 10000 * g_pBattleCommandCtx->basePower) / 16) + 1;
 }
 
 /*

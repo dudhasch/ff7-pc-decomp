@@ -101,13 +101,13 @@ void __cdecl Mini_CoasterResetStreamLists(void)
         removeTable = g_CoasterPsxDataSet.binData + removeOfs;
     }
     g_pCoasterRailRemoveTable = (unsigned short *)removeTable;
-    for (nodeIndex = 0; nodeIndex < 0x2EE0; nodeIndex++) {
+    for (nodeIndex = 0; nodeIndex < 12000; nodeIndex++) {
         pNode = &g_CoasterSceneryStreamNodes[nodeIndex];
         pNode->prevIndex = 0xFFFF;
         pNode->nextIndex = 0xFFFF;
     }
     g_CoasterSceneryCount = 0;
-    for (nodeIndex = 0; nodeIndex < 0x2328; nodeIndex++) {
+    for (nodeIndex = 0; nodeIndex < 9000; nodeIndex++) {
         pNode = &g_CoasterRailStreamNodes[nodeIndex];
         pNode->prevIndex = 0xFFFF;
         pNode->nextIndex = 0xFFFF;
@@ -135,8 +135,8 @@ void Mini_CoasterAdvanceTrackCursorAndRetire(int speed)
 
     g_CoasterPrevStreamPosition = g_CoasterStreamPosition;
     g_CoasterStreamPosition += speed;
-    local.oldCell = g_CoasterPrevStreamPosition >> 0x12;
-    local.newCell = g_CoasterStreamPosition >> 0x12;
+    local.oldCell = g_CoasterPrevStreamPosition >> 18;
+    local.newCell = g_CoasterStreamPosition >> 18;
     local.crossed = local.newCell - local.oldCell;
     g_CoasterTrackCursor += local.crossed;
     for (local.i = 0; local.i < local.crossed + g_CoasterStreamPrimePending; local.i++) {
@@ -193,8 +193,8 @@ void __cdecl Mini_CoasterAdvanceTrackCursor(int speed)
 
     g_CoasterPrevStreamPosition = g_CoasterStreamPosition;
     g_CoasterStreamPosition += speed;
-    local.oldCell = g_CoasterPrevStreamPosition >> 0x12;
-    local.newCell = g_CoasterStreamPosition >> 0x12;
+    local.oldCell = g_CoasterPrevStreamPosition >> 18;
+    local.newCell = g_CoasterStreamPosition >> 18;
     g_CoasterCellDelta = local.newCell - local.oldCell;
     g_CoasterTrackCursor += g_CoasterCellDelta;
     for (local.i = 0; local.i < (unsigned int)g_CoasterCellDelta + g_CoasterStreamPrimePending; local.i++) {

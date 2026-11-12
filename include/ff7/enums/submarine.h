@@ -53,8 +53,8 @@ enum SubmarineResult {
     SUBMARINE_RESULT_QUIT = 5        /* quit from the pause menu */
 };
 
-/* The four 256x256 atlas pages Submarine_DrawAtlasQuad draws from at 640x480, as (x >= 0x100) << 1 |
- * (y >= 0x100), each with its own batch: batch, batchC, batchB, batchD. */
+/* The four 256x256 atlas pages Submarine_DrawAtlasQuad draws from at 640x480, as (x >= 256) << 1 |
+ * (y >= 256), each with its own batch: batch, batchC, batchB, batchD. */
 enum SubmarineAtlasPage {
     SUBMARINE_ATLAS_PAGE_TOP_LEFT = 0,
     SUBMARINE_ATLAS_PAGE_BOTTOM_LEFT = 1,

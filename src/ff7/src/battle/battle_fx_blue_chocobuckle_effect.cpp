@@ -183,7 +183,7 @@ void __cdecl BattleFx_BlueChocobuckleSetupTask(void)
     if (frame.targetCount == 1) {
         Battle_GetBoneWorldPos(frame.firstTarget, g_BattleActorRecords[frame.firstTarget].targetBone, &frame.setupSlot->posX);
         Battle_GetBoneWorldPos(frame.firstTarget, g_BattleActorRecords[frame.firstTarget].altBone, (short *)&frame.altBonePos);
-        frame.setupSlot->posY = frame.tmpOffset - 0x1C0;
+        frame.setupSlot->posY = frame.tmpOffset - 448;
         frame.spriteParam = 0x460;
         frame.spriteSlot = (BattleFxChocobuckleSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleSpawnOrbitSpritesTask);
         frame.spriteSlot->pos = frame.setupSlot->pos;
@@ -196,9 +196,9 @@ void __cdecl BattleFx_BlueChocobuckleSetupTask(void)
         frame.spriteSlot->pos = frame.setupSlot->pos;
         frame.spriteSlot->baseOffset = *(short *)&frame.spriteParam;
     }
-    frame.setupSlot->posY -= 0x2A0;
+    frame.setupSlot->posY -= 672;
     frame.setupSlot->yaw = g_BattleActorRecords[g_BattleBlueChocobuckleOriginActor].yaw + 0x800 & 0xFFF;
-    frame.setupSlot->actorYStep = 0x2A;
+    frame.setupSlot->actorYStep = 42;
 }
 
 // Drives the blue Chyobo effect's timeline, one step per frame. It has no pause check. At step 1 it
@@ -220,23 +220,23 @@ void __cdecl BattleFx_BlueChocobuckleTimelineTask(void)
         ringRecord->pos = task->pos;
         ringRecord->yaw = task->yaw;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x19F);
-    } else if (task->step == 0x2A) {
+    } else if (task->step == 42) {
         Battle_AllocSceneMessage(2);
     }
-    if (task->step >= 1 && task->step < 0x11) {
+    if (task->step >= 1 && task->step < 17) {
         g_BattleActorRecords[3].posY += task->counterDelta;
     }
-    if (task->step >= 0x2A && task->step < 0x3A) {
+    if (task->step >= 42 && task->step < 58) {
         g_BattleActorRecords[3].posY -= task->counterDelta;
     }
-    if (task->step == 0x36) {
-        for (i = 0; i < 0xA; i++) {
+    if (task->step == 54) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleBlueChocobuckleTargetMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
             }
         }
     }
-    if (task->step >= 0x3C) {
+    if (task->step >= 60) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -257,7 +257,7 @@ void __cdecl BattleFx_BlueChocobuckleSpawnOrbitSpritesTask(void)
     BattleFxChocobuckleSpawnSlot *spawner;
 
     spawner = (BattleFxChocobuckleSpawnSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (spawner->frameCount == 0x11) {
+    if (spawner->frameCount == 17) {
         baseScale = 0xAAA;
         for (spriteIndex = 0; spriteIndex < 8; spriteIndex++) {
             pSprite = (BattleFxChocobuckleOrbitSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleOrbitSpriteTask);
@@ -269,7 +269,7 @@ void __cdecl BattleFx_BlueChocobuckleSpawnOrbitSpritesTask(void)
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&spawner->pos), 0x19E);
     }
-    if (spawner->frameCount >= 0x3C) {
+    if (spawner->frameCount >= 60) {
         spawner->ownerSlot = BATTLE_TASK_FREE;
     }
     spawner->frameCount += 1;
@@ -319,9 +319,9 @@ void __cdecl BattleFx_BlueChocobuckleOrbitSpriteTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     if (frame.orbitSlot->frameCounter < 8) {
-        frame.colorLevel = frame.orbitSlot->frameCounter * 0xD;
-    } else if (frame.orbitSlot->frameCounter >= 0x15) {
-        frame.colorLevel = 0x68 - (frame.orbitSlot->frameCounter - 0x15) * 0xD;
+        frame.colorLevel = frame.orbitSlot->frameCounter * 13;
+    } else if (frame.orbitSlot->frameCounter >= 21) {
+        frame.colorLevel = 0x68 - (frame.orbitSlot->frameCounter - 0x15) * 13;
     } else {
         frame.colorLevel = 0x68;
     }
@@ -331,7 +331,7 @@ void __cdecl BattleFx_BlueChocobuckleOrbitSpriteTask(void)
     g_BattleBlueChocobuckleColor1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueChocobuckleLoadedRes);
     g_BattleBlueChocobuckleColor1.spriteDrawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueChocobuckleLoadedRes);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueChocobuckleColor1.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.orbitSlot->frameCounter >= 0x1D) {
+    if (frame.orbitSlot->frameCounter >= 29) {
         frame.orbitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -361,38 +361,38 @@ void __cdecl BattleFx_BlueChocobuckleSpawnBouncingSpritesTask(void)
 
     currRefX.vx = 0;
     currRefX.vy = 0;
-    currRefX.vz = 0x1000;
+    currRefX.vz = 4096;
     memset(&currRefX.pad, 0, sizeof(currRefX.pad));
     spawner = (BattleFxChocobuckleSpriteSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (spawner->timer >= 0x11 && spawner->timer <= 0x14) {
+    if (spawner->timer >= 17 && spawner->timer <= 20) {
         scaleConst = 0xAAA;
-        for (spriteIndex = 0; spriteIndex < 0x12; spriteIndex++) {
+        for (spriteIndex = 0; spriteIndex < 18; spriteIndex++) {
             pNewSprite = (BattleFxBlueChocobuckleBounce *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleBouncingSpriteTask);
             pNewSprite->pos = spawner->pos;
-            normXTerm.vx = rand() % 0x1000 - 0x800;
+            normXTerm.vx = rand() % 4096 - 2048;
             normXTerm.vy = 0;
-            normXTerm.vz = rand() % 0x1000 - 0x800;
+            normXTerm.vz = rand() % 4096 - 2048;
             NormalizeVectorFixed(&normXTerm, &normXTerm);
             pNewSprite->angle = ComputeAngleBetweenVectors(&currRefX, &normXTerm, &innerOutVec);
             if (innerOutVec.vy < 0) {
                 pNewSprite->angle = -pNewSprite->angle;
             }
             pNewSprite->bounceVelocity = 0;
-            s = spawner->baseOffset + rand() % 0x1C0;
-            pNewSprite->endX = pNewSprite->startX + (s * normXTerm.vx >> 0xC);
+            s = spawner->baseOffset + rand() % 448;
+            pNewSprite->endX = pNewSprite->startX + (s * normXTerm.vx >> 12);
             pNewSprite->velocityY = 0;
-            pNewSprite->endZ = pNewSprite->startZ + (s * normXTerm.vz >> 0xC);
-            pNewSprite->endX = (pNewSprite->endX - pNewSprite->startX) / 0x10;
-            pNewSprite->velocityY = -(rand() % 0x3C + 0xFA);
-            pNewSprite->endZ = (pNewSprite->endZ - pNewSprite->startZ) / 0x10;
+            pNewSprite->endZ = pNewSprite->startZ + (s * normXTerm.vz >> 12);
+            pNewSprite->endX = (pNewSprite->endX - pNewSprite->startX) / 16;
+            pNewSprite->velocityY = -(rand() % 60 + 250);
+            pNewSprite->endZ = (pNewSprite->endZ - pNewSprite->startZ) / 16;
             pNewSprite->scale = scaleConst;
-            pNewSprite->accelY = -pNewSprite->startY / 0x18;
+            pNewSprite->accelY = -pNewSprite->startY / 24;
         }
     }
-    if (spawner->timer == 0x11) {
+    if (spawner->timer == 17) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&spawner->pos), 0x19E);
     }
-    if (spawner->timer >= 0x3C) {
+    if (spawner->timer >= 60) {
         spawner->ownerSlot = BATTLE_TASK_FREE;
     }
     (spawner->timer)++;
@@ -436,9 +436,9 @@ void __cdecl BattleFx_BlueChocobuckleBouncingSpriteTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     if (frame.bounceSlot->frameCounter < 6) {
-        frame.colorLevel = frame.bounceSlot->frameCounter * 0x11;
-    } else if (frame.bounceSlot->frameCounter >= 0x15) {
-        frame.colorLevel = 0x68 - (frame.bounceSlot->frameCounter - 0x15) * 0xD;
+        frame.colorLevel = frame.bounceSlot->frameCounter * 17;
+    } else if (frame.bounceSlot->frameCounter >= 21) {
+        frame.colorLevel = 0x68 - (frame.bounceSlot->frameCounter - 0x15) * 13;
     } else {
         frame.colorLevel = 0x68;
     }
@@ -448,7 +448,7 @@ void __cdecl BattleFx_BlueChocobuckleBouncingSpriteTask(void)
     g_BattleBlueChocobuckleColor2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueChocobuckleLoadedRes);
     g_BattleBlueChocobuckleColor2.spriteDrawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueChocobuckleLoadedRes);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueChocobuckleColor2.spriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.bounceSlot->frameCounter >= 0x1D) {
+    if (frame.bounceSlot->frameCounter >= 29) {
         frame.bounceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -461,9 +461,9 @@ void __cdecl BattleFx_BlueChocobuckleBouncingSpriteTask(void)
     frame.bounceSlot->accelY -= (short)(frame.bounceSlot->accelY >> 4);
     frame.bounceSlot->bounceOffset += frame.bounceSlot->bounceVelocity;
     if (frame.bounceSlot->posY >= 0) {
-        frame.bounceSlot->velocityY = -(rand() % 0x50 + 0xFA);
-        frame.bounceSlot->accelY = (int)frame.bounceSlot->accelY + rand() % 0x32;
-        frame.bounceSlot->bounceVelocity = rand() % 0x30 + 0x10;
+        frame.bounceSlot->velocityY = -(rand() % 80 + 250);
+        frame.bounceSlot->accelY = (int)frame.bounceSlot->accelY + rand() % 50;
+        frame.bounceSlot->bounceVelocity = rand() % 48 + 16;
         if (frame.bounceSlot->bounceOffset < 0) {
             frame.bounceSlot->bounceVelocity = -frame.bounceSlot->bounceVelocity;
         }
@@ -506,13 +506,13 @@ void __cdecl BattleFx_BlueChocobuckleAltSetupTask(void)
     frame.timelineSlot = (BattleFxChocobuckleAltTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleAltTimelineTask);
     Battle_GetBoneWorldPos(g_BattleBlueChocobuckleOriginActor, g_BattleActorRecords[g_BattleBlueChocobuckleOriginActor].targetBone, &frame.timelineSlot->posX);
     Battle_GetBoneWorldPos(g_BattleBlueChocobuckleOriginActor, g_BattleActorRecords[g_BattleBlueChocobuckleOriginActor].altBone, (short *)&frame.altBonePos);
-    frame.timelineSlot->posY = frame.altBoneY - 0x1C0;
-    frame.timelineSlot->posY -= 0x2A0;
+    frame.timelineSlot->posY = frame.altBoneY - 448;
+    frame.timelineSlot->posY -= 672;
     frame.timelineSlot->yaw = g_BattleActorRecords[g_BattleBlueChocobuckleOriginActor].yaw;
     frame.timelineSlot->value = 0x460;
-    frame.timelineSlot->posYStep = 0x2A;
+    frame.timelineSlot->posYStep = 42;
     frame.timelineSlot->state = BLUE_CHYOBO_STATE_START;
-    frame.timelineSlot->frameCount = 0x63;
+    frame.timelineSlot->frameCount = 99;
     Battle_GetBoneWorldPos(g_BattleBlueChocobuckleActorIdx, g_BattleActorRecords[g_BattleBlueChocobuckleActorIdx].altBone, &g_BattleBlueChocobuckleTargetBonePos.posX);
     if (g_BattleBlueChocobuckleTargetBonePos.posY >= 0) {
         g_BattleBlueChocobuckleTargetBonePos.posY = 0xFF9C;
@@ -568,11 +568,11 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
         break;
     case BLUE_CHYOBO_STATE_RISE:
         frame.track->posY += frame.track->posYStep;
-        if (frame.track->timer >= 0x11) {
-            frame.track->velocityX = g_BattleBlueChocobuckleScaleFactor * g_BattleBlueChocobuckleDeltaX >> 0xC;
+        if (frame.track->timer >= 17) {
+            frame.track->velocityX = g_BattleBlueChocobuckleScaleFactor * g_BattleBlueChocobuckleDeltaX >> 12;
             frame.track->velocityY = 0xFED4;
-            frame.track->velocityZ = g_BattleBlueChocobuckleScaleFactor * g_BattleBlueChocobuckleDeltaZ >> 0xC;
-            frame.track->accelerationY = 0x44;
+            frame.track->velocityZ = g_BattleBlueChocobuckleScaleFactor * g_BattleBlueChocobuckleDeltaZ >> 12;
+            frame.track->accelerationY = 68;
             g_BattleBlueChocobuckleScaleFactor += 0x14;
             frame.track->state = BLUE_CHYOBO_STATE_HOP;
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.track->pos), 0x19F);
@@ -592,7 +592,7 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
             if (g_BattleBlueChocobuckleActorIdx == g_BattleBlueChocobuckleOriginActor) {
                 Battle_GetBoneWorldPos(g_BattleBlueChocobuckleActorIdx, g_BattleActorRecords[g_BattleBlueChocobuckleActorIdx].altBone, &g_BattleBlueChocobuckleTargetBonePos.posX);
             }
-            frame.stepLimit = BattleFx_BlueChocobuckleCountStepsToTarget(0, 0xFFFFFE84, 0x60, 0);
+            frame.stepLimit = BattleFx_BlueChocobuckleCountStepsToTarget(0, 0xFFFFFE84, 96, 0);
             frame.stepLimit *= g_BattleBlueChocobuckleScaleFactor << 1;
             frame.stepLimit *= frame.stepLimit;
             frame.dirX = g_BattleBlueChocobuckleTargetBonePos.posX - frame.track->posX;
@@ -604,16 +604,16 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
             g_BattleBlueChocobuckleDeltaZ = frame.dirZ;
             g_BattleBlueChocobuckleStepCount = frame.stepCount;
             if (frame.distSq > frame.stepLimit) {
-                frame.track->velocityX = g_BattleBlueChocobuckleScaleFactor * frame.dirX >> 0xC;
+                frame.track->velocityX = g_BattleBlueChocobuckleScaleFactor * frame.dirX >> 12;
                 frame.track->velocityY = 0xFE84;
-                frame.track->velocityZ = g_BattleBlueChocobuckleScaleFactor * frame.dirZ >> 0xC;
-                frame.track->accelerationY = 0x60;
+                frame.track->velocityZ = g_BattleBlueChocobuckleScaleFactor * frame.dirZ >> 12;
+                frame.track->accelerationY = 96;
                 frame.track->posY += frame.track->velocityY;
                 frame.track->velocityY += frame.track->accelerationY;
                 g_BattleBlueChocobuckleScaleFactor += 0x14;
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.track->pos), 0x99);
             } else {
-                frame.stepLimit = BattleFx_BlueChocobuckleCountStepsToTarget(0, 0xFFFFF8F8, 0xDC, g_BattleBlueChocobuckleTargetBonePos.posY);
+                frame.stepLimit = BattleFx_BlueChocobuckleCountStepsToTarget(0, 0xFFFFF8F8, 220, g_BattleBlueChocobuckleTargetBonePos.posY);
                 if (frame.stepLimit == 0) {
                     frame.stepLimit = 1;
                 }
@@ -621,10 +621,10 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
                 if (frame.leapSpeed <= 0) {
                     frame.distSq = 2;
                 }
-                frame.track->velocityX = frame.leapSpeed * frame.dirX >> 0xC;
+                frame.track->velocityX = frame.leapSpeed * frame.dirX >> 12;
                 frame.track->velocityY = 0xF8F8;
-                frame.track->velocityZ = frame.leapSpeed * frame.dirZ >> 0xC;
-                frame.track->accelerationY = 0xDC;
+                frame.track->velocityZ = frame.leapSpeed * frame.dirZ >> 12;
+                frame.track->accelerationY = 220;
                 frame.track->posY += frame.track->velocityY;
                 frame.track->velocityY += frame.track->accelerationY;
                 frame.track->state = BLUE_CHYOBO_STATE_LEAP;
@@ -643,17 +643,17 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
                 frame.track->posY = g_BattleBlueChocobuckleTargetBonePos.posY;
             }
         } else {
-            g_BattleBlueChocobuckleJitterY = rand() % 0x42 + 0x84;
+            g_BattleBlueChocobuckleJitterY = rand() % 66 + 132;
             frame.distSq = g_BattleBlueChocobuckleDeltaX * g_BattleBlueChocobuckleParamVector2[0] + (g_BattleBlueChocobuckleDeltaY + g_BattleBlueChocobuckleParamVector2[1]) + g_BattleBlueChocobuckleDeltaZ * g_BattleBlueChocobuckleParamVector2[2];
             if (frame.distSq < 0) {
                 g_BattleBlueChocobuckleJitterY = -g_BattleBlueChocobuckleJitterY;
             }
-            g_BattleBlueChocobuckleJitterX = (rand() % 0x18 + 0x30) * (rand() % 2 - 1);
-            frame.distSq = rand() % 0x50 + 0xA0;
-            frame.track->velocityX = frame.distSq * g_BattleBlueChocobuckleDeltaX >> 0xC;
-            frame.track->velocityY = -(rand() % 0x78 + 0x190);
-            frame.track->velocityZ = frame.distSq * g_BattleBlueChocobuckleDeltaZ >> 0xC;
-            frame.track->accelerationY = rand() % 0x28 + 0x46;
+            g_BattleBlueChocobuckleJitterX = (rand() % 24 + 48) * (rand() % 2 - 1);
+            frame.distSq = rand() % 80 + 160;
+            frame.track->velocityX = frame.distSq * g_BattleBlueChocobuckleDeltaX >> 12;
+            frame.track->velocityY = -(rand() % 120 + 400);
+            frame.track->velocityZ = frame.distSq * g_BattleBlueChocobuckleDeltaZ >> 12;
+            frame.track->accelerationY = rand() % 40 + 70;
             frame.track->posY += frame.track->velocityY;
             frame.track->velocityY += frame.track->accelerationY;
             frame.track->state = BLUE_CHYOBO_STATE_BOUNCE_OFF;
@@ -661,7 +661,7 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
         }
         break;
     case BLUE_CHYOBO_STATE_BOUNCE_OFF:
-        if (frame.track->frameCount < 0x14) {
+        if (frame.track->frameCount < 20) {
             frame.track->posX += frame.track->velocityX;
             frame.track->posY += frame.track->velocityY;
             frame.track->posZ += frame.track->velocityZ;
@@ -678,8 +678,8 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
             Battle_PostActorHitOrHurtMessage(g_BattleBlueChocobuckleActorIdx);
         }
         if (frame.track->posY >= -160) {
-            frame.track->velocityY = -(rand() % 0x32 + 0xFA);
-            frame.track->accelerationY = rand() % 0x1E + 0x32;
+            frame.track->velocityY = -(rand() % 50 + 250);
+            frame.track->accelerationY = rand() % 30 + 50;
             frame.track->posY += frame.track->velocityY;
             frame.track->velocityY += frame.track->accelerationY;
         }
@@ -690,7 +690,7 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
         frame.track->ownerSlot = BATTLE_TASK_FREE;
     }
     *(Int64Pair *)(&g_BattleActorRecords[3].posX) = frame.track->pos;
-    if (frame.track->frameCount < 0x14) {
+    if (frame.track->frameCount < 20) {
         g_BattleActorRecords[3].rotX += g_BattleBlueChocobuckleJitterY;
         g_BattleActorRecords[3].rotZ += g_BattleBlueChocobuckleJitterX;
     }
@@ -698,13 +698,13 @@ void __cdecl BattleFx_BlueChocobuckleAltTimelineTask(void)
         frame.spawnTask = (BattleFxBlueChocobuckleAltRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleSpawnScatterSpritesTask);
         frame.spawnTask->pos = frame.track->pos;
         frame.spawnTask->value = frame.track->value;
-        frame.spawnTask->stepRate = 0x1555;
+        frame.spawnTask->stepRate = 5461;
     }
     if (frame.track->frameCount == 0) {
         frame.spawnTask = (BattleFxBlueChocobuckleAltRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleSpawnBouncingBillboardSpritesTask);
         frame.spawnTask->pos = frame.track->pos;
         frame.spawnTask->value = frame.track->value;
-        frame.spawnTask->stepRate = 0xAAA;
+        frame.spawnTask->stepRate = 2730;
     }
     (frame.track->timer)++;
 }
@@ -730,23 +730,23 @@ void __cdecl BattleFx_BlueChocobuckleSpawnScatterSpritesTask(void)
         (spawner->timer)++;
     } else {
         baseScale = spawner->scaleBase;
-        for (i = 0; i < 0x16; i++) {
-            if (g_BattleSecondaryTaskActiveCount > 0x5F) {
+        for (i = 0; i < 22; i++) {
+            if (g_BattleSecondaryTaskActiveCount > 95) {
                 break;
             }
             pSprite = (BattleFxBlueChocobuckleSpawnTask *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleScatterSpriteTask);
             pSprite->pos = spawner->pos;
-            pSprite->posY -= 0x3C;
-            nx.vx = ((rand()) % 4096) - 0x800;
+            pSprite->posY -= 60;
+            nx.vx = ((rand()) % 4096) - 2048;
             nx.vy = 0;
-            nx.vz = ((rand()) % 4096) - 0x800;
+            nx.vz = ((rand()) % 4096) - 2048;
             NormalizeVectorFixed(&nx, &nx);
-            pace = spawner->baseOffset + rand() % 0x1C0;
-            pSprite->velocityX = (pace * nx.vx >> 0xC) / 0xC;
+            pace = spawner->baseOffset + rand() % 448;
+            pSprite->velocityX = (pace * nx.vx >> 12) / 12;
             pSprite->velocityY = 0;
-            pSprite->velocityZ = (pace * nx.vz >> 0xC) / 0xC;
-            pace = ((rand()) % 2048) + 0xA00;
-            pSprite->scale = baseScale * pace >> 0xC;
+            pSprite->velocityZ = (pace * nx.vz >> 12) / 12;
+            pace = ((rand()) % 2048) + 2560;
+            pSprite->scale = baseScale * pace >> 12;
         }
         spawner->ownerSlot = BATTLE_TASK_FREE;
         (spawner->timer)++;
@@ -770,7 +770,7 @@ void __cdecl BattleFx_BlueChocobuckleScatterSpriteTask(void)
     g_BattleBlueChocobuckleSpriteDrawReq.scatterHandle = Gfx_ModelTableGetLoadedRecord(1, g_BattleBlueChocobuckleLoadedRes);
     g_BattleBlueChocobuckleSpriteDrawReq.scatterResource = Gfx_ModelTableGetSpriteObject(1, g_BattleBlueChocobuckleLoadedRes);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueChocobuckleSpriteDrawReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frameCount >= 0xB) {
+    if (task->frameCount >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -803,24 +803,24 @@ void __cdecl BattleFx_BlueChocobuckleSpawnBouncingBillboardSpritesTask(void)
         (spawner->bounceCount)++;
     } else {
         baseScale = spawner->scaleBase;
-        for (i = 0; i < 0x18; i++) {
-            if (g_BattleSecondaryTaskActiveCount > 0x5F) {
+        for (i = 0; i < 24; i++) {
+            if (g_BattleSecondaryTaskActiveCount > 95) {
                 break;
             }
             pSprite = (BattleFxChocobuckleBillboardSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueChocobuckleBouncingBillboardSpriteTask);
             pSprite->pos = spawner->pos;
-            nx.vx = ((rand()) % 4096) - 0x800;
+            nx.vx = ((rand()) % 4096) - 2048;
             nx.vy = 0;
-            nx.vz = ((rand()) % 4096) - 0x800;
+            nx.vz = ((rand()) % 4096) - 2048;
             NormalizeVectorFixed(&nx, &nx);
-            pace = spawner->speedBase + rand() % 0x2A0 + 0xE0;
-            pSprite->velocityX = (pace * nx.vx >> 0xC) / 0xA;
-            pSprite->velocityY = -(rand() % 0x17C + 0x3C);
-            pSprite->velocityZ = (pace * nx.vz >> 0xC) / 0xA;
-            pace = rand() % 0xC00 + 0xA00;
-            pSprite->scale = baseScale * pace >> 0xC;
+            pace = spawner->speedBase + rand() % 672 + 224;
+            pSprite->velocityX = (pace * nx.vx >> 12) / 10;
+            pSprite->velocityY = -(rand() % 380 + 60);
+            pSprite->velocityZ = (pace * nx.vz >> 12) / 10;
+            pace = rand() % 3072 + 2560;
+            pSprite->scale = baseScale * pace >> 12;
             pSprite->phaseSlot = ((rand()) % 4);
-            pSprite->gravity = rand() % 0x48 + 0x1C;
+            pSprite->gravity = rand() % 72 + 28;
         }
         spawner->ownerSlot = BATTLE_TASK_FREE;
         (spawner->bounceCount)++;
@@ -839,9 +839,9 @@ void __cdecl BattleFx_BlueChocobuckleBouncingBillboardSpriteTask(void)
     pSprite = (BattleFxBillboardBounce *)BATTLE_CURRENT_TASK_SLOT;
     BattleFx_InstallBillboardMatrix(&pSprite->posX, (short)pSprite->scale, -(pSprite->scale >> 3));
     if (pSprite->phase < 6) {
-        colorByte = pSprite->phase * 0x11;
-    } else if (pSprite->phase >= 0xC) {
-        colorByte = 0x68 - (pSprite->phase - 0xC) * 0xD;
+        colorByte = pSprite->phase * 17;
+    } else if (pSprite->phase >= 12) {
+        colorByte = 0x68 - (pSprite->phase - 0xC) * 13;
     } else {
         colorByte = 0x68;
     }
@@ -854,7 +854,7 @@ void __cdecl BattleFx_BlueChocobuckleBouncingBillboardSpriteTask(void)
     g_BattleBlueChocobuckleSpriteDrawReq.billboardHandle = Gfx_ModelTableGetLoadedRecord(0, g_BattleBlueChocobuckleLoadedRes);
     g_BattleBlueChocobuckleSpriteDrawReq.billboardResource = Gfx_ModelTableGetSpriteObject(0, g_BattleBlueChocobuckleLoadedRes);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleBlueChocobuckleSpriteDrawReq.billboardHandle, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (pSprite->phase >= 0x14) {
+    if (pSprite->phase >= 20) {
         pSprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -867,8 +867,8 @@ void __cdecl BattleFx_BlueChocobuckleBouncingBillboardSpriteTask(void)
     pSprite->gravity -= (short)(pSprite->gravity >> 4);
     pSprite->angle += pSprite->angleStep;
     if (pSprite->posY >= 0) {
-        pSprite->velocityY = -(rand() % 0x12C + 0x28);
-        pSprite->gravity = pSprite->gravity + rand() % 0x32;
+        pSprite->velocityY = -(rand() % 300 + 40);
+        pSprite->gravity = pSprite->gravity + rand() % 50;
     }
     (pSprite->phase)++;
 }
@@ -883,7 +883,7 @@ int __cdecl BattleFx_BlueChocobuckleCountStepsToTarget(int position, int velocit
 
     position += velocity;
     velocity += accel;
-    for (steps = 0; steps < 0x63; steps++) {
+    for (steps = 0; steps < 99; steps++) {
         position += velocity;
         velocity += accel;
         accel -= accel >> 4;

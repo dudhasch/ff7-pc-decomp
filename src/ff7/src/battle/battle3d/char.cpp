@@ -26,7 +26,7 @@ extern "C" {
 struct Battle3dDescriptorFile;
 // clang-format off
 // GLOBAL: FF7 0x00c3f390
-unsigned char g_BattleModel_FlagTable[0x4] = {0};
+unsigned char g_BattleModel_FlagTable[4] = {0};
 unsigned char g_bssPad_00c3f394[4] = {0};
 unsigned char g_bssPad_00c3f398[96] = {0};
 // Pieces of the two byte tables BattleModel_LoadEnemy indexes by enemy model id: g_BattleModel_FlagTable
@@ -444,7 +444,7 @@ void *__cdecl BattleModel_AllocBank(int animCount, int weaponCount)
 {
     BattleModelBank *rec;
 
-    rec = (BattleModelBank *)(GameHeapAlloc(1, 0x94, CharCpp_FileLine056(), 0x56));
+    rec = (BattleModelBank *)(GameHeapAlloc(1, 148, CharCpp_FileLine056(), 0x56));
     if (rec != 0) {
         rec->animCount = animCount;
         rec->anims = GameHeapAlloc(animCount, 4, CharCpp_FileLine05A(), 0x5A);
@@ -485,13 +485,13 @@ void *__cdecl BattleModel_LoadPartyDatLegacy(Battle3dPartyLoadDesc *battleLoadDe
     int jb;
     int j2;
     int iv;
-    char i6[0xC8];
+    char i6[200];
     int hz;
     unsigned int hj;
     int gn;
     unsigned int *fr;
-    char fb[0xC8];
-    char f2[0xC8];
+    char fb[200];
+    char f2[200];
     int ev;
     int ef;
     unsigned int *e6;
@@ -504,7 +504,7 @@ void *__cdecl BattleModel_LoadPartyDatLegacy(Battle3dPartyLoadDesc *battleLoadDe
     PolygonTim *av;
     int af;
     void *a6;
-    char p[0xCC];
+    char p[204];
 
     ef = 0;
     av = 0;
@@ -779,13 +779,13 @@ int __cdecl BattleModel_AllocDescriptor(int id, int count)
 {
     Battle3dEnemyModel *descriptor;
 
-    descriptor = (Battle3dEnemyModel *)(GameHeapAlloc(1, 0x34, CharCpp_FileLine238(), 0x238));
+    descriptor = (Battle3dEnemyModel *)(GameHeapAlloc(1, 52, CharCpp_FileLine238(), 0x238));
     if (descriptor != 0) {
         descriptor->modelId = id;
         descriptor->entryCount = count;
         // BUG: this allocation is not tested; when it fails the descriptor is still returned,
         // with a null boneVectors array.
-        descriptor->boneVectors = (int)GameHeapAlloc(count, 0xC, CharCpp_FileLine23D(), 0x23D);
+        descriptor->boneVectors = (int)GameHeapAlloc(count, 12, CharCpp_FileLine23D(), 0x23D);
     }
     return (int)descriptor;
 }
@@ -796,9 +796,9 @@ int __cdecl BattleModel_AllocDescriptor(int id, int count)
 // FUNCTION: FF7 0x005e0fc0
 void *__cdecl BattleModel_LoadDescriptor(int useCallerCtx, void *fileCtx, char *modelName)
 {
-    char assetName[0xC8];
+    char assetName[200];
     int size;
-    char dirState[0xCC];
+    char dirState[204];
     Battle3dModelDescriptor *descriptor;
 
     if (useCallerCtx == 0) {
@@ -809,7 +809,7 @@ void *__cdecl BattleModel_LoadDescriptor(int useCallerCtx, void *fileCtx, char *
     MakeExtensionAssetName(g_BattleModel_ExtD, modelName, assetName);
     descriptor = (Battle3dModelDescriptor *)((void *)LoadWholeFile(fileCtx, &size, assetName));
     if (descriptor != 0) {
-        if ((unsigned int)size >= 0x34) {
+        if ((unsigned int)size >= 52) {
             descriptor->entries = 0;
             if (descriptor->entryCount > 0) {
                 *(void **)&descriptor->entries = (char *)descriptor + 0x34;
@@ -833,16 +833,16 @@ void *__cdecl BattleModel_LoadDescriptor(int useCallerCtx, void *fileCtx, char *
 // FUNCTION: FF7 0x005e10b9
 void BattleModel_WriteDescriptorFile(Battle3dDescriptorFile *descriptor, char *modelName)
 {
-    char fileName[0xC8];
+    char fileName[200];
     FileHandle *fileHandle;
 
     if (descriptor != 0) {
         MakeExtensionAssetName(g_BattleModel_ExtD, modelName, fileName);
         fileHandle = (FileHandle *)OpenFileSimple(FILE_OPEN_CREATE, fileName);
         if (fileHandle != 0) {
-            WriteFileData(0x34, descriptor, fileHandle);
+            WriteFileData(52, descriptor, fileHandle);
             if (descriptor->entryCount > 0) {
-                WriteFileData(descriptor->entryCount * 0xC, descriptor->entries, fileHandle);
+                WriteFileData(descriptor->entryCount * 12, descriptor->entries, fileHandle);
             }
             CloseFileEx(fileHandle);
         }
@@ -880,7 +880,7 @@ void *__cdecl BattleModel_BuildSkeleton(int isWeapon, int weaponIndex, int boneC
     Battle3dModelBone *bone;
     PolygonSkelHierarchy *skel;
     int boneIndex;
-    char nm[0xc8];
+    char nm[200];
     PolygonFileArrays *pWeaponFile;
     int anm;
     int wanm;
@@ -952,7 +952,7 @@ void __cdecl BattleModel_MakeInfoName(char *modelName, char *outPath)
 // FUNCTION: FF7 0x005e1463
 void __cdecl BattleModel_WriteInfoFile(int size, void *data, char *modelName)
 {
-    char name[0xc8];
+    char name[200];
 
     BattleModel_MakeInfoName(modelName, name);
     WriteWholeFile(size, name, data);
@@ -971,12 +971,12 @@ void __cdecl BattleModel_WriteInfoFile(int size, void *data, char *modelName)
 // FUNCTION: FF7 0x005e149a
 void *__cdecl BattleModel_LoadBank(int useCallerCtx, int weaponIndex, Battle3dPartyLoadDesc *descriptor, struct Battle3dPartyLoadDesc *battleLoadDesc, PfileLoadOptions *pfileLoadOptions, char *modelName)
 {
-    int slot[0x33];
+    int slot[51];
     int i;
     BattleModelBank *bk;
     int aa;
     int len;
-    char nm[0xc8];
+    char nm[200];
     int wi;
     int flg;
 
@@ -1035,13 +1035,13 @@ void *__cdecl BattleModel_LoadBank(int useCallerCtx, int weaponIndex, Battle3dPa
 // FUNCTION: FF7 0x005e1749
 void __cdecl Battle_LoadLimitAnimBank(Battle3dLimitAnimBank *bank, Battle3dPartyLoadDesc *battleLoadDesc, PfileLoadOptions *modelCtx, char *charName)
 {
-    char dirState[0xCC];
-    char pathName[0xC8];
+    char dirState[204];
+    char pathName[200];
 
     if (bank != 0) {
         BattleFx_PushResourceDirectory(&modelCtx->file, (int *)dirState);
         sprintf(pathName, Char_LimitPathFormat(), charName);
-        bank->entryCount = 0x10;
+        bank->entryCount = 16;
         bank->entries = GameHeapAlloc(bank->entryCount, 4, CharCpp_FileLine376(), 0x376);
         if (*(int *)&bank->entries != 0) {
             BattleModel_LoadAnimBank(battleLoadDesc->packedAnim, 0, bank->entries, &modelCtx->file, pathName);
@@ -1207,17 +1207,17 @@ void *__cdecl BattleModel_LoadPartyMember(int category, int partyIndex, Battle3d
 void *__cdecl BattleStage_LoadModelSet(int forceLegacy, int stageId, Battle3dPartyLoadDesc *battleLoadDesc, PfileLoadOptions *pfileLoadOptions, char *stageName)
 {
     int ln;
-    int slot[0x33];
+    int slot[51];
     Battle3dStageLoad *ml;
     int partIndex;
-    char nm[0xc8];
+    char nm[200];
     Battle3dStageDescriptor *md;
     PolygonFileArrays *pModelFile;
 
     Battle_PushDataDirectory(slot);
     md = (Battle3dStageDescriptor *)((int)BattleModel_LoadDescriptor(0, &pfileLoadOptions->file, stageName));
     if (md != 0) {
-        ml = (Battle3dStageLoad *)((int)GameHeapAlloc(1, 0xC, CharCpp_FileLine478(), 0x478));
+        ml = (Battle3dStageLoad *)((int)GameHeapAlloc(1, 12, CharCpp_FileLine478(), 0x478));
         if (ml != 0) {
             ml->stageId = stageId;
             BattleModel_MakeInfoName(stageName, nm);
@@ -1586,7 +1586,7 @@ void __cdecl BattleModel_NameManglerHook(char *name, char *out)
 // FUNCTION: FF7 0x005e291d
 void __cdecl BattleModel_MangleName(char *srcName, char *outName4)
 {
-    BattleModel_ResolveArchiveName(0x17, gBattleArchiveNameRecords, srcName, outName4);
+    BattleModel_ResolveArchiveName(23, gBattleArchiveNameRecords, srcName, outName4);
 }
 
 /*

@@ -160,7 +160,7 @@ void __cdecl Pfile_FreeRsdModel(void *model, void *ctx)
         }
         Pfile_FreeRsdRecord((PolygonRsdRecord *)(((PolygonRsdModel *)model)->rsdRecord));
         // STRING: FF7 0x0090cf40
-        GameHeapFree(model, "C:\\lib\\src\\polygon\\rsd.cpp", 0x71);
+        GameHeapFree(model, "C:\\lib\\src\\polygon\\rsd.cpp", 113);
     }
 }
 
@@ -231,7 +231,7 @@ int __cdecl Pfile_LoadRsdModelEx(PolygonRsdRecord *existingRecord, PfileLoadOpti
     }
     polygonSet = 0;
     // STRING: FF7 0x0090cf5c
-    handle = (PolygonRsdModel *)GameHeapAlloc(1, 0xC, "C:\\lib\\src\\polygon\\rsd.cpp", 0xA2);
+    handle = (PolygonRsdModel *)GameHeapAlloc(1, 12, "C:\\lib\\src\\polygon\\rsd.cpp", 162);
     if (handle != 0) {
         if (existingRecord != 0) {
             pParsedRecord = existingRecord;
@@ -392,10 +392,10 @@ void __cdecl Pfile_RestoreModelVertexColors(int modelHandle)
 int __cdecl Pfile_InitModelSetRequest(int request)
 {
     if (request != 0) {
-        ZeroFillMemory32(0x10, (void *)(request));
+        ZeroFillMemory32(16, (void *)(request));
     } else {
         // STRING: FF7 0x0090cfa4
-        request = (int)(GameHeapAlloc(1, 0x10, "C:\\lib\\src\\polygon\\rsd.cpp", 0x179));
+        request = (int)(GameHeapAlloc(1, 16, "C:\\lib\\src\\polygon\\rsd.cpp", 377));
     }
     if (request != 0) {
         *(int *)request = 1;
@@ -417,10 +417,10 @@ void __cdecl Pfile_FreeModelSet(void *models, void *ctx)
                 Pfile_FreeRsdModel(((PolygonModelSet *)models)->modelPointers[i], ctx);
             }
             // STRING: FF7 0x0090cfc0
-            GameHeapFree(((PolygonModelSet *)models)->modelPointers, "C:\\lib\\src\\polygon\\rsd.cpp", 0x192);
+            GameHeapFree(((PolygonModelSet *)models)->modelPointers, "C:\\lib\\src\\polygon\\rsd.cpp", 402);
         }
         // STRING: FF7 0x0090cfdc
-        GameHeapFree(models, "C:\\lib\\src\\polygon\\rsd.cpp", 0x195);
+        GameHeapFree(models, "C:\\lib\\src\\polygon\\rsd.cpp", 405);
     }
 }
 
@@ -433,10 +433,10 @@ int __cdecl Pfile_AllocModelSet(int count, struct GfxEngineContext *context)
     PolygonModelSet *modelSet;
 
     // STRING: FF7 0x0090cff8
-    modelSet = (PolygonModelSet *)((GameHeapAlloc(1, 8, "C:\\lib\\src\\polygon\\rsd.cpp", 0x19D)));
+    modelSet = (PolygonModelSet *)((GameHeapAlloc(1, 8, "C:\\lib\\src\\polygon\\rsd.cpp", 413)));
     if (modelSet != 0) {
         // STRING: FF7 0x0090d014
-        modelSet->modelPointers = (PolygonRsdModel **)(GameHeapAlloc(count, 4, "C:\\lib\\src\\polygon\\rsd.cpp", 0x1A0));
+        modelSet->modelPointers = (PolygonRsdModel **)(GameHeapAlloc(count, 4, "C:\\lib\\src\\polygon\\rsd.cpp", 416));
         if (modelSet->modelPointers != 0) {
             modelSet->count = count;
         } else {
@@ -506,15 +506,15 @@ int __cdecl Pfile_LoadModelSet(PolygonModelFileList *fileList, PfileLoadOptions 
                 for (idx = 0; idx < count; idx++) {
                     if (fileList->isEnumerated != 0) {
                         // STRING: FF7 0x0090d038
-                        fullPath = (char *)(GameHeapAllocRaw(0x104, "C:\\lib\\src\\polygon\\rsd.cpp", 0x1EA));
+                        fullPath = (char *)(GameHeapAllocRaw(260, "C:\\lib\\src\\polygon\\rsd.cpp", 490));
                         // STRING: FF7 0x0090d054
-                        drive = (char *)(GameHeapAllocRaw(3, "C:\\lib\\src\\polygon\\rsd.cpp", 0x1EB));
+                        drive = (char *)(GameHeapAllocRaw(3, "C:\\lib\\src\\polygon\\rsd.cpp", 491));
                         // STRING: FF7 0x0090d070
-                        pDirName = (char *)(GameHeapAllocRaw(0x100, "C:\\lib\\src\\polygon\\rsd.cpp", 0x1EC));
+                        pDirName = (char *)(GameHeapAllocRaw(256, "C:\\lib\\src\\polygon\\rsd.cpp", 492));
                         // STRING: FF7 0x0090d08c
-                        baseName = (char *)(GameHeapAllocRaw(0x100, "C:\\lib\\src\\polygon\\rsd.cpp", 0x1ED));
+                        baseName = (char *)(GameHeapAllocRaw(256, "C:\\lib\\src\\polygon\\rsd.cpp", 493));
                         // STRING: FF7 0x0090d0a8
-                        extensionPtr = (char *)(GameHeapAllocRaw(0x100, "C:\\lib\\src\\polygon\\rsd.cpp", 0x1EE));
+                        extensionPtr = (char *)(GameHeapAllocRaw(256, "C:\\lib\\src\\polygon\\rsd.cpp", 494));
                         pRsdName = ((char **)entries)[idx];
                         _splitpath(pRsdName, drive, pDirName, baseName, extensionPtr);
                         _makepath(fullPath, 0, 0, baseName, extensionPtr);
@@ -525,15 +525,15 @@ int __cdecl Pfile_LoadModelSet(PolygonModelFileList *fileList, PfileLoadOptions 
                         }
                         PushFileContextDirectory(&context->file, (char *)((int)oldDir), 0);
                         // STRING: FF7 0x0090d0c4
-                        GameHeapFree(fullPath, "C:\\lib\\src\\polygon\\rsd.cpp", 0x207);
+                        GameHeapFree(fullPath, "C:\\lib\\src\\polygon\\rsd.cpp", 519);
                         // STRING: FF7 0x0090d0e0
-                        GameHeapFree(drive, "C:\\lib\\src\\polygon\\rsd.cpp", 0x208);
+                        GameHeapFree(drive, "C:\\lib\\src\\polygon\\rsd.cpp", 520);
                         // STRING: FF7 0x0090d0fc
-                        GameHeapFree(pDirName, "C:\\lib\\src\\polygon\\rsd.cpp", 0x209);
+                        GameHeapFree(pDirName, "C:\\lib\\src\\polygon\\rsd.cpp", 521);
                         // STRING: FF7 0x0090d118
-                        GameHeapFree(baseName, "C:\\lib\\src\\polygon\\rsd.cpp", 0x20A);
+                        GameHeapFree(baseName, "C:\\lib\\src\\polygon\\rsd.cpp", 522);
                         // STRING: FF7 0x0090d134
-                        GameHeapFree(extensionPtr, "C:\\lib\\src\\polygon\\rsd.cpp", 0x20B);
+                        GameHeapFree(extensionPtr, "C:\\lib\\src\\polygon\\rsd.cpp", 523);
                     } else {
                         modelPointer = (PolygonRsdModel *)(LoadRsdModel(context, ((char **)entries)[idx], engine));
                         if (modelPointer != 0) {
@@ -546,7 +546,7 @@ int __cdecl Pfile_LoadModelSet(PolygonModelFileList *fileList, PfileLoadOptions 
         if (fileList->hasFiles != 0) {
             FreeDirectoryListing(pListing);
             // STRING: FF7 0x0090d150
-            GameHeapFree((void *)entries, "C:\\lib\\src\\polygon\\rsd.cpp", 0x21D);
+            GameHeapFree((void *)entries, "C:\\lib\\src\\polygon\\rsd.cpp", 541);
         }
     }
     return (int)result;

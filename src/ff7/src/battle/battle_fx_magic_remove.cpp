@@ -136,13 +136,13 @@ void __cdecl BattleFx_MagicBeginRemove(int targetIndex, int actorIdx)
     readPointer = (BattleFxRemoveRecord *)(*(int *)((char *)*(int *)((char *)*(int *)((char *)*(int *)((char *)table + 0xC) + 0x14) + 0x8C) + 0x18));
     rowTint = readPointer->rowTint;
     readPointer++;
-    for (row = 0; row < 0xE; row++) {
+    for (row = 0; row < 14; row++) {
         value = readPointer->value;
         readPointer = (BattleFxRemoveRecord *)((char *)readPointer + 4);
         g_BattleMagicRemove_QuadRecords[row].unused0 = 0;
         g_BattleMagicRemove_QuadRecords[row].tintColor = rowTint;
-        for (column = 0; column < 0xE; column++) {
-            g_BattleMagicRemove_QuadRecords[column].cycleColor[(column + row) % 0xE] = value;
+        for (column = 0; column < 14; column++) {
+            g_BattleMagicRemove_QuadRecords[column].cycleColor[(column + row) % 14] = value;
         }
     }
     Battle_AllocateResourceSlot(BattleFx_MagicRemoveTimelineTask);
@@ -167,15 +167,15 @@ void __cdecl BattleFx_MagicRemoveTimelineTask(void)
         particle = (BattleFxRemoveParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicRemoveTwinSpriteLayersTask);
         particle->position = *(Int64Pair *)&g_BattleMagicRemove_TargetPosition;
     }
-    if (taskPtr->frameCounter >= 0 && taskPtr->frameCounter < 0x1E) {
+    if (taskPtr->frameCounter >= 0 && taskPtr->frameCounter < 30) {
         for (i = 0; i < 3; i++) {
             particle = (BattleFxRemoveParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicRemoveInwardArcSpriteTask);
-            particle->posX = g_BattleMagicRemove_TargetPosition.targetX + rand() % 0x2710 + -0x1388;
-            particle->posY = -rand() % 0x1388;
-            particle->posZ = g_BattleMagicRemove_TargetPosition.targetZ + rand() % 0x2710 + -0x1388;
-            particle->velocityX = (g_BattleMagicRemove_TargetPosition.targetX - particle->posX) / 0x1B;
-            particle->velocityY = -particle->posY / 0x1B;
-            particle->velocityZ = (g_BattleMagicRemove_TargetPosition.targetZ - particle->posZ) / 0x1B;
+            particle->posX = g_BattleMagicRemove_TargetPosition.targetX + rand() % 10000 + -5000;
+            particle->posY = -rand() % 5000;
+            particle->posZ = g_BattleMagicRemove_TargetPosition.targetZ + rand() % 10000 + -5000;
+            particle->velocityX = (g_BattleMagicRemove_TargetPosition.targetX - particle->posX) / 27;
+            particle->velocityY = -particle->posY / 27;
+            particle->velocityZ = (g_BattleMagicRemove_TargetPosition.targetZ - particle->posZ) / 27;
             particle->scale = rand() % 0xD00 + 0x500;
         }
     }
@@ -184,20 +184,20 @@ void __cdecl BattleFx_MagicRemoveTimelineTask(void)
         particle->position = *(Int64Pair *)&g_BattleMagicRemove_TargetPosition;
         particle->posY = 0;
     }
-    if (taskPtr->frameCounter == 0x14) {
-        for (i = 0; i < 0xA; i++) {
+    if (taskPtr->frameCounter == 20) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleMagicRemove_Step & 1 << i) != 0 && (g_BattleTimelineTargetMask & 1 << i) != 0) {
                 particle = (BattleFxRemoveParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicRemovePullActorTask);
                 particle->position = *(Int64Pair *)&g_BattleActorRecords[i].posX;
                 particle->scale = g_BattleActorRecords[i].scale;
                 particle->index = i;
-                particle->velocityX = (g_BattleMagicRemove_TargetPosition.targetX - particle->posX) / 0x1E;
-                particle->velocityY = (g_BattleMagicRemove_TargetPosition.targetY - particle->posY) / 0x1E;
-                particle->velocityZ = (g_BattleMagicRemove_TargetPosition.targetZ - particle->posZ) / 0x1E;
+                particle->velocityX = (g_BattleMagicRemove_TargetPosition.targetX - particle->posX) / 30;
+                particle->velocityY = (g_BattleMagicRemove_TargetPosition.targetY - particle->posY) / 30;
+                particle->velocityZ = (g_BattleMagicRemove_TargetPosition.targetZ - particle->posZ) / 30;
             }
         }
     }
-    if (taskPtr->frameCounter == 0x1E) {
+    if (taskPtr->frameCounter == 30) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (taskPtr->frameCounter)++;
@@ -220,16 +220,16 @@ void __cdecl BattleFx_MagicRemoveTwinSpriteLayersTask(void)
     g_BattleMagicRemove_SpriteReq.nextSpriteGroup = Gfx_ModelTableGetLoadedRecord(1, g_BattleMagicRemove_LoadedRes.tableCursor);
     g_BattleMagicRemove_SpriteReq.paletteObj = Gfx_ModelTableGetSpriteObject(1, g_BattleMagicRemove_LoadedRes.tableCursor);
     localFrame = task->layerIndex;
-    if (localFrame < 0x14) {
-        angle = localFrame * 0x2500 / 0x14;
+    if (localFrame < 20) {
+        angle = localFrame * 0x2500 / 20;
     } else {
-        localFrame -= 0x14;
-        if (localFrame < 0x28) {
-            angle = 0x2500;
+        localFrame -= 20;
+        if (localFrame < 40) {
+            angle = 0x2500 /* 832.5 deg */;
         } else {
-            localFrame -= 0x28;
-            if (localFrame < 0xA) {
-                angle = localFrame * -0x2500 / 0xA + 0x2500;
+            localFrame -= 40;
+            if (localFrame < 10) {
+                angle = localFrame * -0x2500 / 10 + 0x2500;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -247,7 +247,7 @@ void __cdecl BattleFx_MagicRemoveTwinSpriteLayersTask(void)
     SetTransMatrix(matrix);
     g_BattleMagicRemove_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleMagicRemove_SpriteReq.nextSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicRemove_DrawListHandle);
     g_BattleMagicRemove_DrawListHandle = BattleFx_SubmitSpriteDraw(&(g_BattleMagicRemove_SpriteReq.spriteGroup), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleMagicRemove_DrawListHandle);
-    Gfx_UploadRenderObjectPalette(0, 0x10, (int)&g_BattleMagicRemove_QuadRecords[task->layerIndex % 0xE], 0, g_BattleMagicRemove_SpriteReq.paletteObj);
+    Gfx_UploadRenderObjectPalette(0, 16, (int)&g_BattleMagicRemove_QuadRecords[task->layerIndex % 14], 0, g_BattleMagicRemove_SpriteReq.paletteObj);
     if (g_BattleIsPaused == 0) {
         (task->layerIndex)++;
     }
@@ -278,7 +278,7 @@ void __cdecl BattleFx_MagicRemoveInwardArcSpriteTask(void)
         (g_BattleMagicRemove_SpriteData.colorR) = g_BattleMagicRemove_SpriteData.colorG;
     } else {
         frame.phase -= 2;
-        if (frame.phase < 0x19) {
+        if (frame.phase < 25) {
             g_BattleMagicRemove_SpriteData.colorB = 0x80;
             g_BattleMagicRemove_SpriteData.colorG = g_BattleMagicRemove_SpriteData.colorB;
             (g_BattleMagicRemove_SpriteData.colorR) = g_BattleMagicRemove_SpriteData.colorG;
@@ -288,7 +288,7 @@ void __cdecl BattleFx_MagicRemoveInwardArcSpriteTask(void)
         }
     }
     frame.posX.vx = frame.arcRecord->posX;
-    frame.posX.vy = frame.arcRecord->posY - (SinFixed((frame.arcRecord->step << 0xB) / 0x1B) * 0x3E8 >> 0xC);
+    frame.posX.vy = frame.arcRecord->posY - (SinFixed((frame.arcRecord->step << 11) / 27) * 0x3E8 >> 12);
     frame.posX.vz = frame.arcRecord->posZ;
     BattleFx_InstallBillboardMatrix(&frame.posX, (short)frame.arcRecord->angle, 0);
     BattleFx_SubmitSpriteQuadDraw((BattleFxSpriteQuadRequest *)&g_BattleMagicRemove_QuadReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, 0);
@@ -320,22 +320,22 @@ void __cdecl BattleFx_MagicRemoveScaledModelTask(void)
     frame.scaledModel = (BattleFreezeGrowthRecord *)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleMagicRemove_ModelReq.modelEntry) = Gfx_ModelTableGetRenderObject(2, g_BattleMagicRemove_LoadedRes.tableCursor);
     frame.phase = frame.scaledModel->frameIndex;
-    if (frame.phase < 0x14) {
-        g_BattleMagicRemove_ScaleXY = frame.phase * 0x3000 / 0x14;
+    if (frame.phase < 20) {
+        g_BattleMagicRemove_ScaleXY = frame.phase * 0x3000 / 20;
         g_BattleMagicRemove_ScaleZ = g_BattleMagicRemove_ScaleXY;
         g_BattleMagicRemove_ModelReq.alpha = 0x80;
     } else {
         frame.phase -= 0x14;
-        if (frame.phase < 0x1E) {
-            g_BattleMagicRemove_ScaleXY = 0x3000;
+        if (frame.phase < 30) {
+            g_BattleMagicRemove_ScaleXY = 0x3000 /* 3.0 */;
             g_BattleMagicRemove_ScaleZ = g_BattleMagicRemove_ScaleXY;
             g_BattleMagicRemove_ModelReq.alpha = 0x80;
         } else {
             frame.phase -= 0x1E;
-            if (frame.phase < 0xA) {
-                g_BattleMagicRemove_ScaleXY = 0x3000;
+            if (frame.phase < 10) {
+                g_BattleMagicRemove_ScaleXY = 0x3000 /* 3.0 */;
                 g_BattleMagicRemove_ScaleZ = g_BattleMagicRemove_ScaleXY;
-                g_BattleMagicRemove_ModelReq.alpha = frame.phase * -0x80 / 0xA + 0x80;
+                g_BattleMagicRemove_ModelReq.alpha = frame.phase * -0x80 / 10 + 0x80;
             } else {
                 frame.scaledModel->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -371,8 +371,8 @@ void __cdecl BattleFx_MagicRemovePullActorTask(void)
         return;
     }
     localStep = task->step;
-    if (localStep < 0x1E) {
-        g_BattleActorRecords[task->slotIndex].scale = task->startValue + (0 - task->startValue) * localStep / 0x1E;
+    if (localStep < 30) {
+        g_BattleActorRecords[task->slotIndex].scale = task->startValue + (0 - task->startValue) * localStep / 30;
     } else {
         *(Int64Pair *)&g_BattleActorRecords[task->slotIndex].posX = task->position;
         g_BattleActorRecords[task->slotIndex].scale = task->startValue;

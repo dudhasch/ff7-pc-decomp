@@ -2681,9 +2681,9 @@ void __cdecl BattleFx_MagicBio3TimelineTask(void)
     if (task->step >= 0 && task->step < 8 && task->step % 2 == 0) {
         child = (BattleFxBio3TimelineRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio3WobblingMeshTask);
         child->timer = task->step / 2;
-        child->posX = task->baseX + (rand() % 0x800) + -0x400;
-        child->posY = task->baseY + (rand() % 0x800) + -0x400;
-        child->posZ = task->baseZ + (rand() % 0x800) + -0x400;
+        child->posX = task->baseX + (rand() % 2048) + -1024;
+        child->posY = task->baseY + (rand() % 2048) + -1024;
+        child->posZ = task->baseZ + (rand() % 2048) + -1024;
         child->scale = task->scale;
     }
     if (task->step == 0) {
@@ -2691,10 +2691,10 @@ void __cdecl BattleFx_MagicBio3TimelineTask(void)
         child->pos = task->base;
         child->scale = task->scale;
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         Battle_PostActorHitOrHurtMessage(task->recordType);
     }
-    if (task->step == 0x1E) {
+    if (task->step == 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -2717,35 +2717,35 @@ void __cdecl BattleFx_MagicBio3WobblingMeshTask(void)
     int angleClamp;
 
     taskPtr = (BattleFxMagicBio3Wobble *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleMagicBio3_WobbleMatrix = (SinFixed((taskPtr->phase + taskPtr->ownerSlot * 3) * 0x111) << 9 >> 0xC) + 0x1200;
-    g_BattleMagicBio3_WobbleMatrixM11[0] = (SinFixed((taskPtr->phase + taskPtr->ownerSlot * 3) * 0x199) << 9 >> 0xC) + 0x1200;
+    g_BattleMagicBio3_WobbleMatrix = (SinFixed((taskPtr->phase + taskPtr->ownerSlot * 3) * 273) << 9 >> 12) + 0x1200;
+    g_BattleMagicBio3_WobbleMatrixM11[0] = (SinFixed((taskPtr->phase + taskPtr->ownerSlot * 3) * 409) << 9 >> 12) + 0x1200;
     stage = taskPtr->phase;
     if (stage < 5) {
         g_BattleMagicBio3_WobbleMatrix = g_BattleMagicBio3_WobbleMatrix * taskPtr->phase / 5;
         g_BattleMagicBio3_WobbleMatrixM11[0] = g_BattleMagicBio3_WobbleMatrixM11[0] * taskPtr->phase / 5;
     } else {
         stage -= 5;
-        if (stage < 0x14) { /* empty first arm: lib/codegen.h */
+        if (stage < 20) { /* empty first arm: lib/codegen.h */
         } else {
-            stage -= 0x14;
-            if (stage < 0xA) {
-                g_BattleMagicBio3_WobbleMatrix = g_BattleMagicBio3_WobbleMatrix * (0xA - stage) / 0xA;
-                g_BattleMagicBio3_WobbleMatrixM11[0] = g_BattleMagicBio3_WobbleMatrixM11[0] * (0xA - stage) / 0xA;
+            stage -= 20;
+            if (stage < 10) {
+                g_BattleMagicBio3_WobbleMatrix = g_BattleMagicBio3_WobbleMatrix * (0xA - stage) / 10;
+                g_BattleMagicBio3_WobbleMatrixM11[0] = g_BattleMagicBio3_WobbleMatrixM11[0] * (0xA - stage) / 10;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
                 return;
             }
         }
     }
-    calc = g_BattleMagicBio3_WobbleMatrix * taskPtr->ratio >> 0xC;
-    if (calc <= 0x7FFF) {
+    calc = g_BattleMagicBio3_WobbleMatrix * taskPtr->ratio >> 12;
+    if (calc <= 32767) {
         clampedScale = calc;
     } else {
         clampedScale = 0x7FFF;
     }
     g_BattleMagicBio3_WobbleMatrix = clampedScale;
-    calc = g_BattleMagicBio3_WobbleMatrixM11[0] * taskPtr->ratio >> 0xC;
-    if (calc <= 0x7FFF) {
+    calc = g_BattleMagicBio3_WobbleMatrixM11[0] * taskPtr->ratio >> 12;
+    if (calc <= 32767) {
         angleClamp = calc;
     } else {
         angleClamp = 0x7FFF;
@@ -2755,8 +2755,8 @@ void __cdecl BattleFx_MagicBio3WobblingMeshTask(void)
     pBases = (BattleMagicBio3WobbleBase *)(g_BattleMagicBio3_ModelTable2Ptrs[taskPtr->ownerSlot] + 4);
     limit = *(int *)g_BattleMagicBio3_ModelTable1Ptrs[taskPtr->ownerSlot] / 8;
     for (i = 0; i < limit; i++) {
-        offsetsPtr[i].offsetX = pBases[i].baseX + (SinFixed(i * 0x1F4 + taskPtr->phase * 0x12C) * 0x32 >> 0xC);
-        offsetsPtr[i].offsetY = pBases[i].baseY + (CosFixed(0) * 0 >> 0xC);
+        offsetsPtr[i].offsetX = pBases[i].baseX + (SinFixed(i * 500 + taskPtr->phase * 300) * 0x32 >> 12);
+        offsetsPtr[i].offsetY = pBases[i].baseY + (CosFixed(0) * 0 >> 12);
     }
     BattleFx_MakeViewSpacePointPushed(&taskPtr->posX, 0, (Vec3sPacked *)&g_BattleMagicBio3_WobbleMatrix);
     SetRotMatrix(&g_BattleMagicBio3_WobbleMatrix);
@@ -2997,25 +2997,25 @@ void __cdecl BattleFx_MagicBio3PulsingScaledModelTask(void)
     (*(int *)&g_BattleMagicBio3_ModelData2) = Gfx_ModelTableGetRenderObject(0, g_BattleMagicBio3_LoadedModelTable);
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     scaleVecPtr = (BattleFxFixedScaleVec *)((int)matrix + 0x1E);
-    sinScale = (SinFixed(task->phase * 0x111) << 8 >> 0xD) + 0xE80;
+    sinScale = (SinFixed(task->phase * 0x111) << 8 >> 13) + 0xE80;
     stage = task->phase;
-    if (stage < 0xA) {
-        envelope = (stage << 0xC) / 0xA;
+    if (stage < 10) {
+        envelope = (stage << 12) / 10;
     } else {
-        stage -= 0xA;
-        if (stage < 0x14) {
+        stage -= 10;
+        if (stage < 20) {
             envelope = 0x1000;
         } else {
-            stage -= 0x14;
-            if (stage < 0xA) {
-                envelope = stage * -0x1000 / 0xA + 0x1000;
+            stage -= 20;
+            if (stage < 10) {
+                envelope = stage * -0x1000 / 10 + 0x1000;
             } else {
                 task->ownerSlot = BATTLE_TASK_FREE;
                 return;
             }
         }
     }
-    sinScale = (sinScale * envelope >> 0xC) * task->scale >> 0xC;
+    sinScale = (sinScale * envelope >> 12) * task->scale >> 12;
     if (sinScale < 0x7FFF) {
         clamped8 = sinScale;
     } else {
@@ -3058,20 +3058,20 @@ void __cdecl BattleFx_MagicBio3RisingFadeSpriteEmitterTask(void)
     }
     if (taskPtr->frameCount % 1 == 0) {
         sprite = (BattleMagicBio3RisingSpriteRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicBio3RisingFadeSpriteTask);
-        sprite->posX = taskPtr->posX + ((rand() % 0x7D0 - 0x3E8) * taskPtr->spread >> 0xC);
+        sprite->posX = taskPtr->posX + ((rand() % 2000 - 1000) * taskPtr->spread >> 12);
         sprite->heightY = 0;
-        sprite->posY = taskPtr->posY + ((rand() % 0x7D0 - 0x3E8) * taskPtr->spread >> 0xC);
-        sizeVal = (rand() % 0xA00 + 0x1000) * taskPtr->spread >> 0xC;
-        if (sizeVal < 0x8000) {
+        sprite->posY = taskPtr->posY + ((rand() % 2000 - 1000) * taskPtr->spread >> 12);
+        sizeVal = (rand() % 2560 + 4096) * taskPtr->spread >> 12;
+        if (sizeVal < 32768) {
             clamped = sizeVal;
         } else {
             clamped = 0x7FFF;
         }
         sprite->size = clamped;
-        sprite->riseSpeed = rand() % 0x8C + 0xA;
+        sprite->riseSpeed = rand() % 140 + 10;
     }
     (taskPtr->frameCount)++;
-    if (taskPtr->frameCount >= 0x1E) {
+    if (taskPtr->frameCount >= 30) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3089,13 +3089,13 @@ void __cdecl BattleFx_MagicBio3RisingFadeSpriteTask(void)
     g_BattleMagicBio3_SpriteDrawReq2.table = Gfx_ModelTableGetLoadedRecord(1, g_BattleMagicBio3_LoadedModelTable);
     g_BattleMagicBio3_SpriteDrawReq2.tableAlt = Gfx_ModelTableGetSpriteObject(1, g_BattleMagicBio3_LoadedModelTable);
     localFrame = task->frame;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         g_BattleMagicBio3_SpriteDrawReq3.colorWord = 0x2C808080;
     } else {
-        localFrame -= 0xA;
-        if (localFrame < 0xA) {
+        localFrame -= 10;
+        if (localFrame < 10) {
             g_BattleMagicBio3_SpriteDrawReq3.code = 0x2E;
-            g_BattleMagicBio3_SpriteDrawReq3.colorB = localFrame * -0x80 / 0xA + 0x80;
+            g_BattleMagicBio3_SpriteDrawReq3.colorB = localFrame * -0x80 / 10 + 0x80;
             g_BattleMagicBio3_SpriteDrawReq3.colorG = g_BattleMagicBio3_SpriteDrawReq3.colorB;
             g_BattleMagicBio3_SpriteDrawReq3.colorR = g_BattleMagicBio3_SpriteDrawReq3.colorG;
         } else {

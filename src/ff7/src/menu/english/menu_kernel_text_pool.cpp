@@ -44,7 +44,7 @@ extern const unsigned char g_KernelUiTextGroupBankMap[16] = {1, 1, 1, 1, 2, 0, 0
 // GLOBAL: FF7 0x007c0ae8
 unsigned char g_KernelEmptyString[2] = {0xff, 0x00};
 // GLOBAL: FF7 0x009a13c8
-char g_KernelTextPool[0x6c00] = {0};
+char g_KernelTextPool[27648] = {0};
 // GLOBAL: FF7 0x009a7fc8
 unsigned short g_KernelTextBankOffsets[20] = {0};
 // g_KernelExpandedTextBuffer is indexed by the code as an array. The span runs to the next named
@@ -104,7 +104,7 @@ int __cdecl Kernel_GetUseCondition(int category, int entry)
         conditionByte = g_BattleAttackTable[(g_KernelUseConditionOffsets[category] + entry)].useCondition;
         break;
     case KERNEL_TEXT_ITEM:
-        if (entry < 0x80) {
+        if (entry < 128) {
             conditionByte = g_MenuKernelItemBuffer[entry].useCondition;
         }
         break;
@@ -265,7 +265,7 @@ char *__cdecl Kernel_LookupUiText(unsigned int group, int id, int slot)
                     cp = (char *)&g_KernelFormattedTextBuffer;
                     mid = (char *)g_BattleState.enemyRecords[g_BattleScene.enemies[id].enemyIndex].name;
                     targ = id + 4;
-                    cp = Kernel_AppendEncodedString(cp, mid, 0x20);
+                    cp = Kernel_AppendEncodedString(cp, mid, 32);
                     if ((*(unsigned char *)&g_BattleState.actors[targ].nameSuffixIndex) != 0xFF) {
                         *cp = (char)(g_BattleSequenceBuffer.textFormatBase + (*(unsigned char *)&g_BattleState.actors[targ].nameSuffixIndex));
                         cp = cp + 1;
@@ -382,14 +382,14 @@ char *__cdecl Kernel_FormatBattleText(char *out, unsigned char *text)
                         g_BattleScene.actors[arg].unitIndex, cp);
                 } else if (arg >= 4) {
                     rec = (char *)g_BattleState.enemyRecords[g_BattleScene.enemies[(arg - 4)].enemyIndex].name;
-                    cp = Kernel_AppendEncodedString(cp, rec, 0x20);
+                    cp = Kernel_AppendEncodedString(cp, rec, 32);
                 }
                 break;
             case TEXT_BATTLE_ESC_MAGIC_NAME:
                 cp = ((AppendBankFn)Kernel_AppendTextBankEntry)(9, arg, cp);
                 break;
             case TEXT_BATTLE_ESC_GLYPH:
-                if (arg < 0x1A) {
+                if (arg < 26) {
                     *cp = (char)(g_BattleSequenceBuffer.textFormatBase + arg);
                     cp = cp + 1;
                 }
@@ -436,7 +436,7 @@ char *__cdecl Kernel_AppendCharacterName(int charId, char *out)
     for (slotIndex = 0; slotIndex < 9; slotIndex++) {
         if (gSavemap.chars[slotIndex].id == charId) {
             namePointer = (char *)&gSavemap.chars[slotIndex].name;
-            out = Kernel_AppendEncodedString(out, namePointer, 0xC);
+            out = Kernel_AppendEncodedString(out, namePointer, 12);
             break;
         }
     }

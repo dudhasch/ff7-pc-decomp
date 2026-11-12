@@ -221,7 +221,7 @@ void __cdecl Battle_RunOpeningSequence(void)
     case BATTLE_OPENING_SEQ_LOAD_ACTORS:
         switch (g_BattleSceneState) {
         case BATTLE_SCENE_STATE_OPENING_LOAD_ENEMIES:
-            g_BattleEnterFramesToWait = 0x3D;
+            g_BattleEnterFramesToWait = 61;
             Battle_ReloadAllEnemyModelBanks();
             Battle_Step3dFrame();
             g_BattleSceneState = BATTLE_SCENE_STATE_OPENING_WAIT_ENEMIES;
@@ -283,7 +283,7 @@ void __cdecl Battle_RunNextRoundSequence(void)
     switch (g_BattleNextRoundSequenceState) {
     case BATTLE_NEXT_ROUND_SEQ_INIT:
         g_BattleSceneState = BATTLE_SCENE_STATE_ROUND_END;
-        for (i = 4; i < 0xA; i++) {
+        for (i = 4; i < 10; i++) {
             g_BattleActorRecords[i].drawFlags = (unsigned char)g_BattleActorRecords[i].drawFlags | 0x40;
             g_BattleActorRecords[i].drawFlags = (unsigned char)g_BattleActorRecords[i].drawFlags & ~0x80;
         }
@@ -308,7 +308,7 @@ void __cdecl Battle_RunNextRoundSequence(void)
         }
         g_BattleNextRoundSequenceState = BATTLE_NEXT_ROUND_SEQ_RESET_POSES;
     case BATTLE_NEXT_ROUND_SEQ_RESET_POSES:
-        for (i = 4; i < 0xA; i++) {
+        for (i = 4; i < 10; i++) {
             Battle_ResetActorPose((char)i);
         }
         g_BattleSceneState = BATTLE_SCENE_STATE_NEXT_ROUND_LOAD_ENEMIES;
@@ -316,7 +316,7 @@ void __cdecl Battle_RunNextRoundSequence(void)
     case BATTLE_NEXT_ROUND_SEQ_LOAD_ACTORS:
         switch (g_BattleSceneState) {
         case BATTLE_SCENE_STATE_NEXT_ROUND_LOAD_ENEMIES:
-            g_BattleEnterFramesToWait = 0x1E;
+            g_BattleEnterFramesToWait = 30;
             Battle_ReloadAllEnemyModelBanks();
             Battle_Step3dFrame();
             g_BattleSceneState = BATTLE_SCENE_STATE_NEXT_ROUND_WAIT_ENEMIES;
@@ -359,7 +359,7 @@ void __cdecl Battle3d_DebugDumpSceneStub(void)
     BattleStageDescriptor *rec;
 
     rec = (BattleStageDescriptor *)Battle3d_GetStageDescriptor(g_pBattle3dScene);
-    Battle_DebugDumpSceneNoOp(0x140, 0xF0, g_BattleCameraScriptValue, g_BattleDebugDumpByte0, g_BattleDebugDumpByte1, g_BattleDebugDumpByte2);
+    Battle_DebugDumpSceneNoOp(320, 240, g_BattleCameraScriptValue, g_BattleDebugDumpByte0, g_BattleDebugDumpByte1, g_BattleDebugDumpByte2);
 }
 
 // Sets g_BattleOpeningUiMode to 4, calls Battle_SetUiModeByte, Battle_ResetMenuScreenState, and Battle_OpenWindow(-1, -1, 0) in order,
@@ -425,7 +425,7 @@ void __cdecl Battle_ReloadAllEnemyModelBanks(void)
     Battle_InitLmdLoadDesc((int *)descPtr);
     Pfile_InitLoadOptions(optionsPtr);
     for (bankIdx = 0; bankIdx < g_BattleEnemyTypeCount; bankIdx++) {
-        for (actorIndex = 4; actorIndex < 0xA; actorIndex++) {
+        for (actorIndex = 4; actorIndex < 10; actorIndex++) {
             if ((BattleActorModel *)(&g_BattleModelBankSlots[3])[bankIdx] == g_BattleActorRecords[actorIndex].model) {
                 g_BattleActorRecords[actorIndex].model = 0;
             }
@@ -658,7 +658,7 @@ void __cdecl Battle_SetupRoundActors(void)
     Battle_ResetActorRange(0, 3);
     Battle_ResetActorRange(3, 3);
     if (g_BattleScene.locationId == 0x39) {
-        for (i = 0; i < 0xA; i++) {
+        for (i = 0; i < 10; i++) {
             g_BattleActorRecords[i].drawFlags = (unsigned char)g_BattleActorRecords[i].drawFlags | 0x10;
         }
     }
@@ -697,14 +697,14 @@ void __cdecl Battle_ResetSequenceStateFromSetup(void)
     g_BattleApproachHoldFrames = 0;
     g_Battle3dReadyActorMask = 0;
     g_BattleStageHideFlags = 0;
-    for (task = 0; task < 0xA; task++) {
+    for (task = 0; task < 10; task++) {
         g_BattleActorRecords[task].isDirty = 1;
     }
     for (task = 0; task < 3; task++) {
         g_BattlePartyStatusIconMasks[task] = 0;
     }
     g_BattleActorRecords[g_BattleActiveActorId].effectId = 0;
-    g_BattleScriptWaitFrames = 0xE;
+    g_BattleScriptWaitFrames = 14;
     g_BattleSequenceBuffer.steps[g_BattleSequenceStepIndex].targetIndex = 0xFFFE;
     Battle_ResetAllTaskSlots();
     Battle_ClearMessageWindowQueue();
@@ -830,20 +830,20 @@ void __cdecl Battle3d_ResetStageNodes(void)
         Battle_SetNodeParentMatrix(&g_BattleCameraTransform, &g_BattleStageNodes[2]);
         Battle_SetNodeParentMatrix(&g_BattleCameraTransform, &g_BattleStageNodes[3]);
         Battle_SetNodeParentMatrix(&g_BattleCameraTransform, &g_BattleStageNodes[4]);
-        g_BattleStageNodes[4].posY = 0x30D4;
+        g_BattleStageNodes[4].posY = 12500;
         break;
     case BATTLE_STAGE_TYPE_DEPTH_SCROLL:
         for (i = 0; i < 10; i++) {
             Battle_SetNodeParentMatrix(&g_BattleCameraTransform, &g_BattleStageNodes[i]);
         }
-        g_BattleStageNodes[2].posZ = 0x7530;
-        g_BattleStageNodes[3].posZ = 0x4E20;
-        g_BattleStageNodes[4].posZ = 0x2710;
+        g_BattleStageNodes[2].posZ = 30000;
+        g_BattleStageNodes[3].posZ = 20000;
+        g_BattleStageNodes[4].posZ = 10000;
         g_BattleStageNodes[5].posZ = 0;
         g_BattleStageNodes[6].posZ = 0xD8F0;
         g_BattleStageNodes[7].posZ = 0xB1E0;
         g_BattleStageNodes[8].posZ = 0x8AD0;
-        g_BattleStageNodes[8].posZ = 0x63C0;
+        g_BattleStageNodes[8].posZ = 25536;
         break;
     case BATTLE_STAGE_TYPE_ROLL_SPIN:
         Battle_SetNodeParentMatrix(&g_BattleCameraTransform, &g_BattleStageNodes[6]);
@@ -934,9 +934,9 @@ void __cdecl Battle_PlacePartyActors(void)
             if (g_BattleScene.actors[actorIndex].unitIndex != -1) {
                 if ((g_BattleScene.actors[actorIndex].flags & 1) != 0) {
                     if (g_BattleOpeningEnemyFacing.facing[g_BattleLayout][offsetIndex] == 0) {
-                        g_BattleOpeningEnemyPositions.slot[g_BattleLayout][offsetIndex].posZ += 0x204;
+                        g_BattleOpeningEnemyPositions.slot[g_BattleLayout][offsetIndex].posZ += 516;
                     } else {
-                        g_BattleOpeningEnemyPositions.slot[g_BattleLayout][offsetIndex].posZ -= 0x204;
+                        g_BattleOpeningEnemyPositions.slot[g_BattleLayout][offsetIndex].posZ -= 516;
                     }
                 }
                 offsetIndex++;
@@ -997,9 +997,9 @@ void __cdecl Battle_ShiftPartyOpeningPositionZForFlag(void)
     for (i = 0; i < 3; i++) {
         if ((g_BattleScene.actors[i].flags & 1) != 0) {
             if (g_BattleOpeningPartyFacing.facing[g_BattleLayout][i] == 0) {
-                g_BattleOpeningPartyPositions.slot[g_BattleLayout][i].posZ += 0x204;
+                g_BattleOpeningPartyPositions.slot[g_BattleLayout][i].posZ += 516;
             } else {
-                g_BattleOpeningPartyPositions.slot[g_BattleLayout][i].posZ -= 0x204;
+                g_BattleOpeningPartyPositions.slot[g_BattleLayout][i].posZ -= 516;
             }
         }
     }
@@ -1067,7 +1067,7 @@ void __cdecl Battle_BindPartyActorToModel(char actorIndex)
             Battle_SetNodeParentMatrix(&g_BattleActorRecords[actorIndex].root, &g_BattleActorTransformRecords[actorIndex].aux);
             Battle_ClearAuxNodeTranslation(&g_BattleActorTransformRecords[actorIndex].boneCount, 0, actorIndex);
         }
-        for (index = 0; index < 0x10; index++) {
+        for (index = 0; index < 16; index++) {
             (&g_BattleActorRecords[actorIndex].targetBone)[index] = record->boneTable[index];
         }
     }
@@ -1127,13 +1127,13 @@ void __cdecl Battle_PlaceEnemyActors(void)
                 g_BattleActorRecords[actorIndex].yaw = 0;
                 g_BattleActorRecords[actorIndex].facing = 0;
             } else {
-                g_BattleActorRecords[actorIndex].yaw = 0x800;
+                g_BattleActorRecords[actorIndex].yaw = 0x800 /* 180 deg */;
                 g_BattleActorRecords[actorIndex].facing = 0x800;
             }
             break;
         default:
             if (g_BattleActorSpawnPos[actorIndex].posZ < 0) {
-                g_BattleActorRecords[actorIndex].yaw = 0x800;
+                g_BattleActorRecords[actorIndex].yaw = 0x800 /* 180 deg */;
                 g_BattleActorRecords[actorIndex].facing = 0x800;
             } else {
                 g_BattleActorRecords[actorIndex].yaw = 0;
@@ -1179,7 +1179,7 @@ void __cdecl Battle_BindEnemyActorToModel(char actorIndex)
     }
     g_BattleActorStates[actorIndex].posY = pRecord->posY;
     g_BattleActorStates[actorIndex].bindIndex = pRecord->bindIndex;
-    g_BattleActorStates[actorIndex].spriteY = pRecord->posY - 0x384;
+    g_BattleActorStates[actorIndex].spriteY = pRecord->posY - 900;
     g_BattleActorStates[actorIndex].mirrorWord = 0;
     g_BattleActorStates[actorIndex].heightBias = pRecord->heightBias;
     for (loopIndex = 0; loopIndex < 4; loopIndex++) {
@@ -1194,7 +1194,7 @@ void __cdecl Battle_BindEnemyActorToModel(char actorIndex)
         Battle_SetNodeParentMatrix(&g_BattleActorRecords[actorIndex].root, &g_BattleActorTransformRecords[actorIndex].aux);
         Battle_ClearAuxNodeTranslation(&g_BattleActorTransformRecords[actorIndex].boneCount, 0, actorIndex);
     }
-    for (idx = 0; idx < 0x10; idx++) {
+    for (idx = 0; idx < 16; idx++) {
         (&g_BattleActorRecords[actorIndex].targetBone)[idx] = pRecord->boneTable[idx];
     }
 }
@@ -1209,7 +1209,7 @@ void __cdecl Battle_BindEnemyActors(void)
     int actorSlot;
 
     for (enemyType = 0; enemyType < g_BattleEnemyTypeCount; enemyType++) {
-        for (actorSlot = 4; actorSlot < 0xA; actorSlot++) {
+        for (actorSlot = 4; actorSlot < 10; actorSlot++) {
             if (g_BattleActorRecords[actorSlot].modelId == g_BattleEnemyBankModelIds[enemyType]) {
                 if (g_BattleScene.locationId == 0x4E) {
                     Battle_EmptyNodeSetupStub((short)actorSlot, enemyType + 0x13);
@@ -1224,12 +1224,12 @@ void __cdecl Battle_BindEnemyActors(void)
     if (g_BattleScene.locationId == 0x4E) {
         g_BattleActorRecords[4].rootYaw = 0;
     } else {
-        g_BattleActorRecords[4].rootYaw = 0x300;
+        g_BattleActorRecords[4].rootYaw = 0x300 /* 67.5 deg */;
     }
     g_BattleActorRecords[5].rootYaw = 0x3C0;
     g_BattleActorRecords[6].rootYaw = 0x480;
     g_BattleActorRecords[7].rootYaw = 0x540;
-    g_BattleActorRecords[8].rootYaw = 0x600;
+    g_BattleActorRecords[8].rootYaw = 0x600 /* 135 deg */;
     g_BattleActorRecords[9].rootYaw = 0x6C0;
     for (enemyType = 4; enemyType < 0xA; enemyType++) {
         Battle_SetNodeParentMatrix(&g_BattleActorRecords[enemyType].root, &g_BattleActorRecords[enemyType].nodes[49]);
@@ -1251,10 +1251,10 @@ void __cdecl Battle_ResetActorPose(char actorIndex)
     g_BattleActorRecords[actorIndex].posX = g_BattleActorSpawnPos[actorIndex].posX;
     g_BattleActorRecords[actorIndex].posY = g_BattleActorSpawnPos[actorIndex].posY;
     g_BattleActorRecords[actorIndex].posZ = g_BattleActorSpawnPos[actorIndex].posZ;
-    g_BattleActorRecords[actorIndex].scale = 0x1000;
+    g_BattleActorRecords[actorIndex].scale = 0x1000 /* 1.0 */;
     g_BattleActorStates[actorIndex].poseAngleC = 0x1000;
-    g_BattleActorStates[actorIndex].poseAngleB = 0x1000;
-    g_BattleActorStates[actorIndex].poseAngleA = 0x1000;
+    g_BattleActorStates[actorIndex].poseAngleB = 0x1000 /* 360 deg */;
+    g_BattleActorStates[actorIndex].poseAngleA = 0x1000 /* 360 deg */;
     g_BattleActorStates[actorIndex].flags = 0;
     g_BattleActorStates[actorIndex].status = 0;
     for (partIndex = 0; partIndex < g_BattleActorRecords[actorIndex].boneCount; partIndex++) {
@@ -1358,7 +1358,7 @@ void __cdecl Battle_ProcessActorFadeRequests(short actorId)
             (unsigned char)g_BattleActorRecords[actorId].tintG / g_BattleScriptWaitFrames;
         g_BattleOverlayTaskSlotBuffer[g_BattleVmReg_0].velocityX =
             (unsigned char)g_BattleActorRecords[actorId].tintB / g_BattleScriptWaitFrames;
-        g_BattleOverlayTaskSlotBuffer[g_BattleVmReg_0].velocityZ = 0x1000 / g_BattleScriptWaitFrames;
+        g_BattleOverlayTaskSlotBuffer[g_BattleVmReg_0].velocityZ = 4096 / g_BattleScriptWaitFrames;
         Battle_SetActorFadingFlags(actorId);
     }
     if (g_BattleActorRecords[actorId].stateFlags & 4) {
@@ -1374,7 +1374,7 @@ void __cdecl Battle_ProcessActorFadeRequests(short actorId)
             (unsigned char)g_BattleActorRecords[actorId].tintG / g_BattleScriptWaitFrames;
         g_BattleOverlayTaskSlotBuffer[g_BattleVmReg_0].velocityX =
             (unsigned char)g_BattleActorRecords[actorId].tintB / g_BattleScriptWaitFrames;
-        g_BattleOverlayTaskSlotBuffer[g_BattleVmReg_0].velocityZ = 0x1000 / g_BattleScriptWaitFrames;
+        g_BattleOverlayTaskSlotBuffer[g_BattleVmReg_0].velocityZ = 4096 / g_BattleScriptWaitFrames;
         if (actorId == 3) {
             g_BattleActorRecords[actorId].drawFlags =
                 (unsigned char)g_BattleActorRecords[actorId].drawFlags & ~4;
@@ -1469,10 +1469,10 @@ void __cdecl Battle_ResetActorRange(int first, int end)
         g_BattleActorRecords[actor].stateFlags = g_BattleActorRecords[actor].stateFlags | 1;
         g_BattleActorRecords[actor].stateFlags = g_BattleActorRecords[actor].stateFlags & ~8;
         g_BattleActorRecords[actor].scriptId = 0;
-        g_BattleActorRecords[actor].scale = 0x1000;
+        g_BattleActorRecords[actor].scale = 0x1000 /* 1.0 */;
         g_BattleActorStates[actor].poseAngleC = 0x1000;
-        g_BattleActorStates[actor].poseAngleB = 0x1000;
-        g_BattleActorStates[actor].poseAngleA = 0x1000;
+        g_BattleActorStates[actor].poseAngleB = 0x1000 /* 360 deg */;
+        g_BattleActorStates[actor].poseAngleA = 0x1000 /* 360 deg */;
         g_BattleActorRecords[actor].isDirty = 1;
         g_BattleActorStates[actor].motionState = 0;
     }
@@ -1629,7 +1629,7 @@ void __cdecl Battle_BindSequenceEffectToActor(void)
     Battle3d_ClearHitDisplayTable();
 }
 
-// Clears the hit-display table: for the 0x4E entries it writes 0xFF to the byte at g_BattleHitTargetActors +
+// Clears the hit-display table: for the 78 entries it writes 0xFF to the byte at g_BattleHitTargetActors +
 // p and zeroes the 8-byte record at g_BattleHitDisplayTable + p*8 field by field (byte at +0, short at +2,
 // int at +4).
 // FUNCTION: FF7 0x0042d379
@@ -1637,7 +1637,7 @@ void __cdecl Battle3d_ClearHitDisplayTable(void)
 {
     int i;
 
-    for (i = 0; i < 0x4E; i++) {
+    for (i = 0; i < 78; i++) {
         g_BattleHitTargetActors[i] = 0xFF;
         g_BattleHitDisplayTable[i].battleActorIndex = 0;
         g_BattleHitDisplayTable[i].targetMask = 0;
@@ -1729,7 +1729,7 @@ void __cdecl Battle_Step3dFrame(void)
     Battle3d_ProfileSectionMark(1);
     Battle_StepMessageWindowQueue();
     Battle_Update3dScene();
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         if ((unsigned char)g_BattleActorRecords[i].isDirty == 0) {
             g_BattleSequenceStepReady = 0;
             break;
@@ -1750,7 +1750,7 @@ void __cdecl Battle_Step3dFrame(void)
         g_BattlePsxHookCalled = 1;
     }
     if ((g_BattleScene.flags & 2) != 0) {
-        Battle_DrawCountdownTimer(g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_29, 0x10, 0x10, gSavemap.countdownSeconds);
+        Battle_DrawCountdownTimer(g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_29, 16, 16, gSavemap.countdownSeconds);
     }
     g_Battle3d_PendingDrawFlag = 0;
     Battle_PollMagicEffectThreadDefault();
@@ -1862,7 +1862,7 @@ void __cdecl Battle3d_SyncActorIdlePoses(void)
 {
     int i;
 
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         g_BattleActorIdleScripts[i] = g_BattleScene.actors[i].scriptId;
         if ((g_BattleActorStates[i].flags & 8) == 0 && g_BattleActorRecords[i].scriptId != (char)g_BattleActorIdleScripts[i] && ((unsigned char)g_BattleActorRecords[i].isDirty) == 1) {
             g_BattleActorRecords[i].stateFlags = g_BattleActorRecords[i].stateFlags | 1;
@@ -1946,7 +1946,7 @@ void __cdecl Battle3d_HandleEndOfBattleTransitions(void)
 short __cdecl Battle_FindActorInEffectOrder(int actorId)
 {
     int i;
-    for (i = 0; i < 0x4E; i++) {
+    for (i = 0; i < 78; i++) {
         if (actorId == g_BattleHitTargetActors[i]) {
             return (short)i;
         }
@@ -2154,7 +2154,7 @@ void __cdecl Battle_LatchActorProjectedPoints(void)
 {
     int i;
 
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         g_BattleActorScreenPositions[i].prevX = g_BattleActorScreenPositions[i].projectedX;
         g_BattleActorScreenPositions[i].prevY = g_BattleActorScreenPositions[i].projectedY;
     }
@@ -2203,14 +2203,14 @@ void __cdecl Battle3d_UpdateAndDrawStage(void)
                 Battle3d_DrawStagePart(3, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_13, 4, 0);
                 Battle3d_DrawStagePart(2, g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_13, 4, 0);
             }
-            Battle3d_DrawScrollingStageLayer(2, 0x3E8, 0x7530, 0x9C40);
-            Battle3d_DrawScrollingStageLayer(3, 0x3E8, 0x4E20, 0x7530);
-            Battle3d_DrawScrollingStageLayer(4, 0x3E8, 0x2710, 0x4E20);
-            Battle3d_DrawScrollingStageLayer(5, 0x3E8, 0, 0x2710);
-            Battle3d_DrawScrollingStageLayer(6, 0x3E8, 0xFFFFD8F0, 0);
-            Battle3d_DrawScrollingStageLayer(7, 0x3E8, 0xFFFFB1E0, 0xFFFFD8F0);
-            Battle3d_DrawScrollingStageLayer(8, 0x3E8, 0xFFFF8AD0, 0xFFFFB1E0);
-            Battle3d_DrawScrollingStageLayer(9, 0x3E8, 0xFFFF63C0, 0xFFFF8AD0);
+            Battle3d_DrawScrollingStageLayer(2, 1000, 0x7530, 0x9C40);
+            Battle3d_DrawScrollingStageLayer(3, 1000, 0x4E20, 30000);
+            Battle3d_DrawScrollingStageLayer(4, 1000, 0x2710, 20000);
+            Battle3d_DrawScrollingStageLayer(5, 1000, 0, 10000);
+            Battle3d_DrawScrollingStageLayer(6, 1000, 0xFFFFD8F0, 0);
+            Battle3d_DrawScrollingStageLayer(7, 1000, 0xFFFFB1E0, 0xFFFFD8F0);
+            Battle3d_DrawScrollingStageLayer(8, 1000, 0xFFFF8AD0, 0xFFFFB1E0);
+            Battle3d_DrawScrollingStageLayer(9, 1000, 0xFFFF63C0, 0xFFFF8AD0);
         }
         break;
     case BATTLE_STAGE_TYPE_YAW_SPIN:
@@ -2275,26 +2275,26 @@ void __cdecl Battle3d_UpdateAndDrawStage(void)
                 g_BattleStageNodes[2].posY = 0;
             }
             if (g_BattleIsPaused == 0) {
-                g_BattleStageNodes[2].posY -= 0x64;
+                g_BattleStageNodes[2].posY -= 100;
             }
             for (partIndex = 3; partIndex < 6; partIndex++) {
                 Battle3d_DrawStagePart(partIndex, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, 0);
             }
-            for (partIndex = 9; partIndex < 0xB; partIndex++) {
+            for (partIndex = 9; partIndex < 11; partIndex++) {
                 Battle3d_DrawStagePart(partIndex, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, 0);
             }
             RotMatrix((SVECTOR *)&g_BattleStageNodes[4].rotX, g_BattleStageNodes[4].matrix);
             Battle3d_ComposeNodeWithParent((Battle3dNode *)g_BattleStageNodes[4].matrix);
             if (g_BattleStageNodes[4].posY == 0) {
-                g_BattleStageNodes[4].posY = 0x30D4;
+                g_BattleStageNodes[4].posY = 12500;
             }
             if (g_BattleIsPaused == 0) {
-                g_BattleStageNodes[4].posY -= 0x64;
+                g_BattleStageNodes[4].posY -= 100;
             }
             for (partIndex = 3; partIndex < 6; partIndex++) {
                 Battle3d_DrawStagePart(partIndex, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, 0);
             }
-            for (partIndex = 9; partIndex < 0xB; partIndex++) {
+            for (partIndex = 9; partIndex < 11; partIndex++) {
                 Battle3d_DrawStagePart(partIndex, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, 0);
             }
             RotMatrix((SVECTOR *)&g_BattleStageNodes[3].rotX, g_BattleStageNodes[3].matrix);
@@ -2392,10 +2392,10 @@ void __cdecl Battle3d_TickStageFlicker(void)
     }
     g_BattleStageNodes[0].posY = 0;
     if (((short *)&g_BattleStageNodeState)[0] == 0) {
-        g_BattleStageNodes[0].posY -= 0x28;
+        g_BattleStageNodes[0].posY -= 40;
     }
     if (((short *)&g_BattleStageNodeState)[1] == 0) {
-        g_BattleStageNodes[0].posY -= 0x50;
+        g_BattleStageNodes[0].posY -= 80;
     }
     ((short *)&g_BattleStageNodeState)[0]--;
     ((short *)&g_BattleStageNodeState)[0] &= 3;
@@ -2410,10 +2410,10 @@ void __cdecl Battle3d_TickStageFlicker(void)
 // FUNCTION: FF7 0x0042f126
 void __cdecl Battle3d_TickStageOscillator(int index)
 {
-    if (((short *)&g_BattleStageNodeState)[index] < 0x10) {
-        g_BattleStageNodes[index].posY -= 0x19;
+    if (((short *)&g_BattleStageNodeState)[index] < 16) {
+        g_BattleStageNodes[index].posY -= 25;
     } else {
-        g_BattleStageNodes[index].posY += 0x19;
+        g_BattleStageNodes[index].posY += 25;
     }
     (((short *)&g_BattleStageNodeState)[index])--;
     ((short *)&g_BattleStageNodeState)[index] &= 0x1F;
@@ -2593,9 +2593,9 @@ void __cdecl Battle_DrawActor(int actorIndex)
     }
     g_BattleVmReg_3 = 0;
     if ((g_BattleActorStates[actorIndex].flags & 0x20) != 0) {
-        g_BattleVmReg_0 = g_BattleActorStates[actorIndex].poseAngleA * g_BattleActorRecords[actorIndex].scale >> 0xC;
-        g_BattleVmReg_1 = g_BattleActorStates[actorIndex].poseAngleB * g_BattleActorRecords[actorIndex].scale >> 0xC;
-        g_BattleVmReg_2 = g_BattleActorStates[actorIndex].poseAngleC * g_BattleActorRecords[actorIndex].scale >> 0xC;
+        g_BattleVmReg_0 = g_BattleActorStates[actorIndex].poseAngleA * g_BattleActorRecords[actorIndex].scale >> 12;
+        g_BattleVmReg_1 = g_BattleActorStates[actorIndex].poseAngleB * g_BattleActorRecords[actorIndex].scale >> 12;
+        g_BattleVmReg_2 = g_BattleActorStates[actorIndex].poseAngleC * g_BattleActorRecords[actorIndex].scale >> 12;
     } else {
         g_BattleVmReg_2 = g_BattleActorRecords[actorIndex].scale;
         g_BattleVmReg_1 = g_BattleVmReg_2;
@@ -2837,7 +2837,7 @@ void __cdecl Battle3d_PushActorNodeMatrices(int actorIndex)
     int i;
     g_Battle3d_NodeMatrixScratch = (BattleNodeMatrixScratch *)g_BattleActor_BufferPtr;
     for (i = 0; i < g_BattleActorRecords[actorIndex].boneCount; i++) {
-        nodePointer = (int)g_BattleActorRecords[actorIndex].boneNodes + i * 0x34;
+        nodePointer = (int)g_BattleActorRecords[actorIndex].boneNodes + i * 52;
         g_Battle3d_NodeMatrixScratch->parentMatrix = *(int *)(nodePointer + 0x30);
         g_Battle3d_NodeMatrixScratch->matrix = *(PsxMatrix *)g_Battle3d_NodeMatrixScratch->parentMatrix;
     }
@@ -3059,7 +3059,7 @@ void __cdecl Battle_InitActorNodeChain(short actorIndex, int mode, int variant)
     BattleStageDescriptor *stage;
 
     stage = (BattleStageDescriptor *)Battle3d_GetStageDescriptor(g_pBattle3dScene);
-    ZeroFillMemory32(0x1C, &g_BattleActorRecords[actorIndex].deathActive);
+    ZeroFillMemory32(28, &g_BattleActorRecords[actorIndex].deathActive);
     if (stage->stageType == BATTLE_STAGE_TYPE_SPLIT_SCROLL) {
         if (variant == 0) {
             Battle_SetNodeParentMatrix((void *)g_BattleStageNodes[0].matrix, &g_BattleActorRecords[actorIndex].root);

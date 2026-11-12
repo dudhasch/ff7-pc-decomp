@@ -84,28 +84,28 @@ void __cdecl BattleFx_BlueSpawnMagicHammerPerTarget(int actor)
 
     swingPtr = (BattleFxMagicHammerSwing *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueMagicHammerSwingModelTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].altBone, (short *)((int)swingPtr + 4));
-    swingRange = g_BattleActorRecords[actor].radius + 0x120;
-    if (swingRange > 0x76C) {
-        swingRange = 0x76C;
+    swingRange = g_BattleActorRecords[actor].radius + 288;
+    if (swingRange > 1900) {
+        swingRange = 1900;
     }
     swingPtr->swingAngle = 0;
-    swingPtr->swingStep = 0xFF00;
+    swingPtr->swingStep = 0xFF00 /* -256 */;
     swingPtr->yaw = g_BattleActorRecords[actor].yaw;
     swingPtr->tiltAngle = 0;
-    swingPtr->tiltStep = ((swingRange << 0xC) / 0x2EE) / 8;
-    scaledRange = swingRange * 0x2EE;
-    swingPtr->swingRadius = scaledRange / 0x28A;
-    swingPtr->heightOffset = scaledRange / 0x384;
+    swingPtr->tiltStep = ((swingRange << 12) / 750) / 8;
+    scaledRange = swingRange * 750;
+    swingPtr->swingRadius = scaledRange / 650;
+    swingPtr->heightOffset = scaledRange / 900;
     swingPtr->targetIndex = actor;
     driftTask = (BattleFxHammerDriftTask *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueMagicHammerSpawnDriftingSpritesTask);
-    if (swingRange > 0x4F2) {
-        swingRange = 0x4F2;
+    if (swingRange > 1266) {
+        swingRange = 1266;
     }
     *(Int64Pair *)((char *)driftTask + 4) = *(Int64Pair *)((char *)swingPtr + 4);
     driftTask->halfSwingRange = swingRange / 2;
     driftTask->quarterSwingRange = driftTask->halfSwingRange / 2;
-    driftTask->spriteScale = (swingRange << 0xC) / 0x15E;
-    driftTask->driftSpeed = swingRange * 0x32 / 0x258;
+    driftTask->spriteScale = (swingRange << 12) / 350;
+    driftTask->driftSpeed = swingRange * 50 / 600;
     Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition((char *)swingPtr + 4), 0xA4);
 }
 
@@ -160,16 +160,16 @@ void __cdecl BattleFx_BlueMagicHammerSwingModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0x1A) {
+    if (frame.slot->frameCounter >= 26) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.slot->frameCounter == 0x10) {
+    if (frame.slot->frameCounter == 16) {
         Battle_PostActorHitOrHurtMessage(frame.slot->actorIndex);
     }
-    if (frame.slot->frameCounter >= 0xA && frame.slot->frameCounter < 0xE) {
+    if (frame.slot->frameCounter >= 10 && frame.slot->frameCounter < 14) {
         frame.slot->swingAngle += frame.slot->swingStep;
     }
     if (frame.slot->frameCounter < 8) {
@@ -193,24 +193,24 @@ void __cdecl BattleFx_BlueMagicHammerSpawnDriftingSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (spawner->step >= 0xE && spawner->step <= 0x11) {
+    if (spawner->step >= 14 && spawner->step <= 17) {
         for (i = 0; i < 9; i++) {
             pDriftSprite = (BattleFxMagicHammerDriftSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueMagicHammerDriftingAnimatedSpriteTask);
-            nx.vx = rand() % 0x4B0 - 0x258;
+            nx.vx = rand() % 1200 - 600;
             nx.vy = 0;
-            nx.vz = rand() % 0x4B0 - 0x258;
+            nx.vz = rand() % 1200 - 600;
             NormalizeVectorFixed(&nx, &nx);
             radius = spawner->center - spawner->halfRange + rand() % (spawner->halfRange << 1);
-            pDriftSprite->posX = spawner->baseX + (radius * nx.vx >> 0xC);
+            pDriftSprite->posX = spawner->baseX + (radius * nx.vx >> 12);
             pDriftSprite->posY = spawner->baseY;
-            pDriftSprite->posZ = spawner->baseZ + (radius * nx.vz >> 0xC);
+            pDriftSprite->posZ = spawner->baseZ + (radius * nx.vz >> 12);
             pDriftSprite->scale = spawner->spriteScale;
-            pace = spawner->driftSpeed + rand() % 0x20;
-            pDriftSprite->velocityX = pace * nx.vx >> 0xC;
-            pDriftSprite->velocityZ = pace * nx.vz >> 0xC;
+            pace = spawner->driftSpeed + rand() % 32;
+            pDriftSprite->velocityX = pace * nx.vx >> 12;
+            pDriftSprite->velocityZ = pace * nx.vz >> 12;
         }
     }
-    if (spawner->step >= 0x1A) {
+    if (spawner->step >= 26) {
         spawner->ownerSlot = BATTLE_TASK_FREE;
     }
     (spawner->step)++;

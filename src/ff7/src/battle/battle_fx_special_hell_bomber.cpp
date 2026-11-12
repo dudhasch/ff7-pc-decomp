@@ -216,7 +216,7 @@ void __cdecl BattleFx_SpecialHellBomberInterpolateVertexCallback(int ignored, Ba
     float weight;
     int stepIndex;
 
-    stepIndex = g_BattleSpecHellBomberCounter / 0x1E;
+    stepIndex = g_BattleSpecHellBomberCounter / 30;
     weight = stepIndex;
     outVertex->posX = (endVertex->posX - startVertex->x) * weight + startVertex->x;
     outVertex->posY = (endVertex->posY - startVertex->y) * weight + startVertex->y;
@@ -281,16 +281,16 @@ void __cdecl BattleFx_SpecialHellBomberTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step < 0xA) {
+    if (taskPtr->step < 10) {
         for (j6 = 0; j6 < 4; j6++) {
             pChild = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBomberVariantSpriteTask);
             pChild->posX = taskPtr->startX;
             pChild->posY = taskPtr->startY;
             pChild->posZ = taskPtr->startZ;
             frameAngle = rand() % 0x1000;
-            pChild->velocityX = CosFixed(frameAngle) * 0x50 >> 0xC;
-            pChild->velocityZ = SinFixed(frameAngle) * 0x50 >> 0xC;
-            pChild->velocityY = -rand() % 0x50;
+            pChild->velocityX = CosFixed(frameAngle) * 0x50 >> 12;
+            pChild->velocityZ = SinFixed(frameAngle) * 0x50 >> 12;
+            pChild->velocityY = -rand() % 80;
             pChild->variant = 0;
         }
     }
@@ -301,24 +301,24 @@ void __cdecl BattleFx_SpecialHellBomberTimelineTask(void)
             pChild->posX = taskPtr->startX;
             pChild->posY = taskPtr->startY;
             pChild->posZ = taskPtr->startZ;
-            pChild->velocityX = SinFixed(frameAngle + j6 * 0x258 + -0x12C) * 0x96 >> 0xC;
-            pChild->velocityZ = CosFixed(frameAngle + j6 * 0x258 + -0x12C) * 0x96 >> 0xC;
-            pChild->velocityY = -rand() % 0xC8 - 0xC8;
+            pChild->velocityX = SinFixed(frameAngle + j6 * 600 + -300) * 0x96 >> 12;
+            pChild->velocityZ = CosFixed(frameAngle + j6 * 600 + -300) * 0x96 >> 12;
+            pChild->velocityY = -rand() % 200 - 200;
         }
     }
-    if (taskPtr->step == 0xA) {
+    if (taskPtr->step == 10) {
         pChild = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBomberRocketTask);
         pChild->posX = taskPtr->startX;
         pChild->posY = taskPtr->startY;
         pChild->posZ = taskPtr->startZ;
-        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 0x14;
+        pChild->velocityX = (taskPtr->endX - taskPtr->startX) / 20;
         pChild->velocityY = 0xFED4;
-        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 0x14;
+        pChild->velocityZ = (taskPtr->endZ - taskPtr->startZ) / 20;
     }
-    if (taskPtr->step == 0x32) {
+    if (taskPtr->step == 50) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
     }
-    if (taskPtr->step == 0x1E) {
+    if (taskPtr->step == 30) {
         pChild = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBomberGrowingMorphModelsTask);
         pChild->posX = taskPtr->endX;
         pChild->posY = 0;
@@ -327,23 +327,23 @@ void __cdecl BattleFx_SpecialHellBomberTimelineTask(void)
         pChild->posX = taskPtr->endX;
         pChild->posY = 0xFED4;
         pChild->posZ = taskPtr->endZ;
-        for (j6 = 0; j6 < 0x14; j6++) {
+        for (j6 = 0; j6 < 20; j6++) {
             pChild = (BattleFxNapalmTrailSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBomberBouncingSpriteTask);
             pChild->posX = taskPtr->endX;
             pChild->posZ = taskPtr->endZ;
             pChild->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFF06, 0x64, &pChild->velocityX);
+            BattleFx_MakeRandomConeVector(0xFFFFFF06, 100, &pChild->velocityX);
             pChild->variant = rand() % 7;
         }
-        Battle_StartFixedPointRamp(0x1000, 0xA);
+        Battle_StartFixedPointRamp(0x1000, 10);
         g_BattleFxTimelineState.red = 0x20;
         g_BattleFxTimelineState.channel1 = 0;
         g_BattleFxTimelineState.channel2 = 0;
         Battle_PlaySfxPannedToActor(0x176, (short)taskPtr->actorIndex, 0x40);
     }
     (taskPtr->step)++;
-    if (taskPtr->step == 0x3C) {
-        Battle_StartFixedPointRamp(0, 0xA);
+    if (taskPtr->step == 60) {
+        Battle_StartFixedPointRamp(0, 10);
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -397,7 +397,7 @@ void __cdecl BattleFx_SpecialHellBomberFallingSpriteEmitterTask(void)
     task->posX += task->velocityX;
     task->posY += task->velocityY;
     task->posZ += task->velocityZ;
-    task->velocityY += 0x28;
+    task->velocityY += 40;
     spawned = (BattleFxHellBomberFallingSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialHellBomberVariantSpriteTask);
     spawned->posX = task->posX;
     spawned->posY = task->posY;
@@ -407,13 +407,13 @@ void __cdecl BattleFx_SpecialHellBomberFallingSpriteEmitterTask(void)
     spawned->velocityZ = task->velocityZ >> 1;
     spawned->variant = 1;
     (task->frameCount)++;
-    if (task->frameCount == 0xA) {
+    if (task->frameCount == 10) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Draws the rocket model and its flame sprite, leaves a smoke sprite behind it each frame and moves it along its arc for 0x14 frames.
+ * Draws the rocket model and its flame sprite, leaves a smoke sprite behind it each frame and moves it along its arc for 20 frames.
  */
 // FUNCTION: FF7 0x0052ae50
 void __cdecl BattleFx_SpecialHellBomberRocketTask(void)
@@ -446,7 +446,7 @@ void __cdecl BattleFx_SpecialHellBomberRocketTask(void)
     SetTransMatrix(&frame.modelMatrix);
     SetDrawColorRGB(0, 0, 0);
     g_BattleSpecHellBomberDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecHellBomberModelReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHellBomberDrawListHead);
-    BattleFx_InstallBillboardMatrix(&frame.rocketSlot->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.rocketSlot->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecHellBomberSpriteReq3.req3Word12 = frame.rocketSlot->frameCounter % 3;
     g_BattleSpecHellBomberDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecHellBomberSpriteReq3, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecHellBomberDrawListHead);
     if (g_BattleIsPaused != 0) {
@@ -460,9 +460,9 @@ void __cdecl BattleFx_SpecialHellBomberRocketTask(void)
     frame.rocketSlot->posX += frame.rocketSlot->velocityX;
     frame.rocketSlot->posY += frame.rocketSlot->velocityY;
     frame.rocketSlot->posZ += frame.rocketSlot->velocityZ;
-    frame.rocketSlot->velocityY += 0x1E;
+    frame.rocketSlot->velocityY += 30;
     (frame.rocketSlot->frameCounter)++;
-    if (frame.rocketSlot->frameCounter == 0x14) {
+    if (frame.rocketSlot->frameCounter == 20) {
         frame.rocketSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -494,10 +494,10 @@ void __cdecl BattleFx_SpecialHellBomberBouncingSpriteTask(void)
         frame.combinedMat.m[1][frame.axis] = 0;
         frame.combinedMat.m[0][frame.axis] = 0;
     }
-    if (frame.slot->frameCounter < 0x16) {
+    if (frame.slot->frameCounter < 22) {
         frame.stageTicks = 8;
     } else {
-        frame.stageTicks = 0x1E - frame.slot->frameCounter;
+        frame.stageTicks = 30 - frame.slot->frameCounter;
     }
     frame.stage = *(short *)&frame.stageTicks;
     frame.rotX.vy = 0;
@@ -515,11 +515,11 @@ void __cdecl BattleFx_SpecialHellBomberBouncingSpriteTask(void)
     SetTransMatrix(&frame.combinedMat);
     g_BattleSpecHellBomberSpriteReq4.req4Word12 = frame.slot->variant;
     if (frame.stage == 8) {
-        (g_BattleSpecHellBomberSpriteReq4.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecHellBomberLoadedResTable);
-        g_BattleSpecHellBomberSpriteReq4.req4ResourceHandle = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecHellBomberLoadedResTable);
+        (g_BattleSpecHellBomberSpriteReq4.spriteResource) = Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecHellBomberLoadedResTable);
+        g_BattleSpecHellBomberSpriteReq4.req4ResourceHandle = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecHellBomberLoadedResTable);
     } else {
-        (g_BattleSpecHellBomberSpriteReq4.spriteResource) = Gfx_ModelTableGetLoadedRecord(0xC, g_BattleSpecHellBomberLoadedResTable);
-        g_BattleSpecHellBomberSpriteReq4.req4ResourceHandle = Gfx_ModelTableGetSpriteObject(0xC, g_BattleSpecHellBomberLoadedResTable);
+        (g_BattleSpecHellBomberSpriteReq4.spriteResource) = Gfx_ModelTableGetLoadedRecord(12, g_BattleSpecHellBomberLoadedResTable);
+        g_BattleSpecHellBomberSpriteReq4.req4ResourceHandle = Gfx_ModelTableGetSpriteObject(12, g_BattleSpecHellBomberLoadedResTable);
     }
     g_BattleSpecHellBomberSpriteReq4.req4ChainByte2 = frame.stage << 4;
     g_BattleSpecHellBomberSpriteReq4.req4ChainByte1 = g_BattleSpecHellBomberSpriteReq4.req4ChainByte2;
@@ -535,10 +535,10 @@ void __cdecl BattleFx_SpecialHellBomberBouncingSpriteTask(void)
         frame.slot->posY = 0;
         frame.slot->velocityY *= -1;
     }
-    frame.slot->velocityY += 0x14;
-    frame.slot->angle += 0x200;
+    frame.slot->velocityY += 20;
+    frame.slot->angle += 0x200 /* 45 deg */;
     (frame.slot->frameCounter)++;
-    if (frame.slot->frameCounter == 0x1E) {
+    if (frame.slot->frameCounter == 30) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -580,7 +580,7 @@ void __cdecl BattleFx_SpecialHellBomberExpandingModelTask(void)
         return;
     }
     (frame.growSlot->growStep)++;
-    if (frame.growSlot->growStep == 0xF) {
+    if (frame.growSlot->growStep == 15) {
         frame.growSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -645,23 +645,23 @@ void __cdecl BattleFx_SpecialHellBomberGrowingMorphModelsTask(void)
     if (frame.partTwo != 0 && frame.partOne != 0) {
         Gfx_ForEachPolygonSetPartPair((DxGroupPairCallback)BattleFx_SpecialHellBomberInterpolateVertexCallback, *(int *)((char *)frame.partOne + 4), *(int *)((char *)frame.partTwo + 4));
     }
-    if (frame.morphSlot->frameCounter < 0x16) {
-        frame.radius = frame.morphSlot->frameCounter * 0x50;
+    if (frame.morphSlot->frameCounter < 22) {
+        frame.radius = frame.morphSlot->frameCounter * 80;
         for (frame.spriteIndex = 0; frame.spriteIndex < 4; frame.spriteIndex++) {
             frame.randAngle = (rand() % 4096);
             frame.sprite = (BattleFxNapalmTrailSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialHellBomberFadingAnimatedSpriteTask)]);
-            frame.sprite->posX = frame.morphSlot->centerX + (CosFixed(frame.randAngle) * frame.radius >> 0xC);
-            frame.sprite->posZ = frame.morphSlot->centerZ + (SinFixed(frame.randAngle) * frame.radius >> 0xC);
+            frame.sprite->posX = frame.morphSlot->centerX + (CosFixed(frame.randAngle) * frame.radius >> 12);
+            frame.sprite->posZ = frame.morphSlot->centerZ + (SinFixed(frame.randAngle) * frame.radius >> 12);
             frame.sprite->posY = 0xFF6A;
             frame.sprite->variant = 2;
         }
     }
     g_BattleCameraFocalPoint.focalPointY += (short)(((frame.morphSlot->frameCounter % 2) << 4) - 8);
-    if (frame.morphSlot->frameCounter > 0x16) {
+    if (frame.morphSlot->frameCounter > 22) {
         g_BattleSpecHellBomberTargetMask--;
     }
     (frame.morphSlot->frameCounter)++;
-    if (frame.morphSlot->frameCounter == 0x1E) {
+    if (frame.morphSlot->frameCounter == 30) {
         frame.morphSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -683,7 +683,7 @@ void __cdecl BattleFx_SpecialHellBomberFadingAnimatedSpriteTask(void)
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
     (g_BattleSpecHellBomberSpriteReq2.spriteResource) = Gfx_ModelTableGetLoadedRecord(9, g_BattleSpecHellBomberLoadedResTable);
     g_BattleSpecHellBomberSpriteReq2.fadeResourceHandle = Gfx_ModelTableGetSpriteObject(9, g_BattleSpecHellBomberLoadedResTable);
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1800, 0);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 4), 0x1800 /* 1.5 */, 0);
     g_BattleSpecHellBomberSpriteReq2.req2Word12 = task->frameCounter;
     g_BattleSpecHellBomberSpriteReq2.req2ChainByte2 = 0x40 - (task->frameCounter << 2);
     g_BattleSpecHellBomberSpriteReq2.req2ChainByte1 = g_BattleSpecHellBomberSpriteReq2.req2ChainByte2;

@@ -21,7 +21,7 @@ struct FieldPointTo;
 
 // clang-format off
 // GLOBAL: FF7 0x00905e50
-unsigned char g_FieldRandomStep = 0x01;
+unsigned char g_FieldRandomStep = 1;
 // clang-format on
 
 /* Int amount matches VC5 caller push without narrow short sign-extension; callee reads 16-bit low word. */
@@ -628,23 +628,23 @@ int __cdecl Script_OpSearchBankForByte(void)
     needle = Script_ReadOperand8(4, 9);
     switch (selector) {
     case FIELD_BANK_SAVE_400_BYTE:
-        startIdx += 0x100;
-        endIndex += 0x100;
+        startIdx += 256;
+        endIndex += 256;
     case FIELD_BANK_SAVE_300_BYTE:
-        startIdx += 0x100;
-        endIndex += 0x100;
+        startIdx += 256;
+        endIndex += 256;
     case FIELD_BANK_SAVE_200_BYTE:
-        startIdx += 0x100;
-        endIndex += 0x100;
+        startIdx += 256;
+        endIndex += 256;
     case FIELD_BANK_SAVE_100_BYTE:
-        startIdx += 0x100;
-        endIndex += 0x100;
+        startIdx += 256;
+        endIndex += 256;
     case FIELD_BANK_SAVE_000_BYTE:
-        if (startIdx >= 0x500) {
-            startIdx = 0x4FF;
+        if (startIdx >= 1280) {
+            startIdx = 1279;
         }
-        if (endIndex >= 0x500) {
-            endIndex = 0x4FF;
+        if (endIndex >= 1280) {
+            endIndex = 1279;
         }
         for (i = startIdx; i <= endIndex; i++) {
             if (gSavemap.scriptBanks[i] == needle) {
@@ -655,10 +655,10 @@ int __cdecl Script_OpSearchBankForByte(void)
         }
         break;
     case FIELD_BANK_TEMP_BYTE:
-        if (startIdx >= 0x100) {
+        if (startIdx >= 256) {
             startIdx = 0xFF;
         }
-        if (endIndex >= 0x100) {
+        if (endIndex >= 256) {
             endIndex = 0xFF;
         }
         for (i = startIdx; i <= endIndex; i++) {
@@ -732,7 +732,7 @@ int __cdecl Script_OpDefineLine(void)
 {
     short val;
 
-    if (g_FieldLineCount >= 0x20) {
+    if (g_FieldLineCount >= 32) {
         g_FieldScriptPC[g_CurrentEntity] += 0xD;
         return 0;
     } else {
@@ -779,9 +779,9 @@ int __cdecl Script_OpSetLinePoints(void)
     g_FieldLines[line].pos.x1 = Script_ReadOperand16(1, 4);
     g_FieldLines[line].pos.y1 = Script_ReadOperand16(2, 6);
     g_FieldLines[line].pos.z1 = Script_ReadOperand16(3, 8);
-    g_FieldLines[line].pos.x2 = Script_ReadOperand16(4, 0xa);
-    g_FieldLines[line].pos.y2 = Script_ReadOperand16(5, 0xc);
-    g_FieldLines[line].pos.z2 = Script_ReadOperand16(6, 0xe);
+    g_FieldLines[line].pos.x2 = Script_ReadOperand16(4, 10);
+    g_FieldLines[line].pos.y2 = Script_ReadOperand16(5, 12);
+    g_FieldLines[line].pos.z2 = Script_ReadOperand16(6, 14);
     g_FieldScriptPC[g_CurrentEntity] += 0x10;
     return 0;
 }
@@ -1920,10 +1920,10 @@ int __cdecl Script_GetAkaoBlockOffset(short id)
              << 8;
     value |= *(g_FieldScripts->entityCount * 8 + id * 4 + 0x22 +
                (unsigned char *)g_FieldScripts)
-             << 0x10;
+             << 16;
     value |= *(g_FieldScripts->entityCount * 8 + id * 4 + 0x23 +
                (unsigned char *)g_FieldScripts)
-             << 0x18;
+             << 24;
     return value;
 }
 
@@ -2530,13 +2530,13 @@ int __cdecl Script_OpMoveTo(void)
     } else {
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionArg = 0;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].dirLock = 0;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 2) << 0xC;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 4) << 0xC;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 2) << 12;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 4) << 12;
         // Faster than three times the field's scale: run, else walk.
-        if (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveSpeed > (g_pFieldState->fieldScale * 0x600) / 0x200) {
+        if (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveSpeed > (g_pFieldState->fieldScale * 1536) / 512) {
             if (*(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId != FIELD_STANDARD_ANIM_RUN) {
                 g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId = FIELD_STANDARD_ANIM_RUN;
-                g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 0x10;
+                g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 16;
                 g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animCurrentFrame = 0;
                 if (((int)g_pFieldModelSlots) != 0) {
                     Field_SetModelAnimation((FieldModel *)&g_pFieldModelSlots[g_FieldEntityModel[g_CurrentEntity]], *(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId);
@@ -2545,7 +2545,7 @@ int __cdecl Script_OpMoveTo(void)
             }
         } else if (*(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId != FIELD_STANDARD_ANIM_WALK) {
             g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId = FIELD_STANDARD_ANIM_WALK;
-            g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 0x10;
+            g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 16;
             g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animCurrentFrame = 0;
             if (((int)g_pFieldModelSlots) != 0) {
                 Field_SetModelAnimation((FieldModel *)&g_pFieldModelSlots[g_FieldEntityModel[g_CurrentEntity]], *(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId);
@@ -2586,8 +2586,8 @@ int __cdecl Script_OpMoveToDirect(void)
     } else {
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionArg = 0;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].dirLock = 0;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 2) << 0xC;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 4) << 0xC;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 2) << 12;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 4) << 12;
         if (*(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].scriptedMoveMode == FIELD_SCRIPTED_MOVE_WALK) {
             switch (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionState) {
             case FIELD_MOVE_STATE_RUNNING:
@@ -2620,8 +2620,8 @@ int __cdecl Script_OpMoveToStyled(void)
     } else {
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionArg = 0;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].dirLock = 1;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 2) << 0xC;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 4) << 0xC;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 2) << 12;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 4) << 12;
         if (*(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].scriptedMoveMode == FIELD_SCRIPTED_MOVE_WALK) {
             switch (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionState) {
             case FIELD_MOVE_STATE_RUNNING:
@@ -2683,8 +2683,8 @@ int __cdecl Script_OpMoveTo3D(void)
         }
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].scriptedMoveMode = FIELD_SCRIPTED_MOVE_JUMP;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionState = FIELD_MOVE_STATE_START;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 3) << 0xC;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 5) << 0xC;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 3) << 12;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 5) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndI = Script_ReadOperand16(3, 7);
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveSteps = Script_ReadOperand16(4, 9);
         return 1;
@@ -2738,12 +2738,12 @@ int __cdecl Script_OpMoveToMode(void)
             g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionArg = 1;
         }
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionState = FIELD_MOVE_STATE_START;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 3) << 0xC;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 5) << 0xC;
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndZ = (short)Script_ReadOperand16(3, 7) << 0xC;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndX = (short)Script_ReadOperand16(1, 3) << 12;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndY = (short)Script_ReadOperand16(2, 5) << 12;
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndZ = (short)Script_ReadOperand16(3, 7) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveEndI = Script_ReadOperand16(4, 9);
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId = SCRIPT_PARAM_S8(0xC);
-        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = g_FieldModelAnimSpeed[g_FieldEntityModel[g_CurrentEntity]] / SCRIPT_PARAM_U8(0xE);
+        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = g_FieldModelAnimSpeed[g_FieldEntityModel[g_CurrentEntity]] / SCRIPT_PARAM_U8(14);
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animCurrentFrame = 0;
         if (((int)g_pFieldModelSlots) != 0) {
             Field_SetModelAnimation((FieldModel *)&g_pFieldModelSlots[g_FieldEntityModel[g_CurrentEntity]], *(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId);
@@ -2819,10 +2819,10 @@ int __cdecl Script_StepModelToModel(unsigned char targetEntity)
         if (*(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].scriptedMoveMode == FIELD_SCRIPTED_MOVE_WALK) {
             switch (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].actionState) {
             case FIELD_MOVE_STATE_RUNNING:
-                if (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveSpeed > (g_pFieldState->fieldScale * 0x600) / 0x200) {
+                if (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].moveSpeed > (g_pFieldState->fieldScale * 1536) / 512) {
                     if (*(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId != FIELD_STANDARD_ANIM_RUN) {
                         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId = FIELD_STANDARD_ANIM_RUN;
-                        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 0x10;
+                        g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 16;
                         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animCurrentFrame = 0;
                         if (((int)g_pFieldModelSlots) != 0) {
                             Field_SetModelAnimation((FieldModel *)&g_pFieldModelSlots[g_FieldEntityModel[g_CurrentEntity]], *(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId);
@@ -2831,7 +2831,7 @@ int __cdecl Script_StepModelToModel(unsigned char targetEntity)
                     }
                 } else if (*(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId != FIELD_STANDARD_ANIM_WALK) {
                     g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId = FIELD_STANDARD_ANIM_WALK;
-                    g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 0x10;
+                    g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animSpeed = 16;
                     g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].animCurrentFrame = 0;
                     if (((int)g_pFieldModelSlots) != 0) {
                         Field_SetModelAnimation((FieldModel *)&g_pFieldModelSlots[g_FieldEntityModel[g_CurrentEntity]], *(char *)&g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].activeAnimId);
@@ -2915,8 +2915,8 @@ int __cdecl Script_FaceModelAtModel(short otherEntity)
         g_FieldScriptPC[g_CurrentEntity] += 2;
         return 0;
     } else {
-        Field_MakePoint(&pointA, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posX >> 0xC, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posY >> 0xC, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posZ >> 0xC);
-        Field_MakePoint(&pointB, g_pFieldEntities[g_FieldEntityModel[otherEntity]].posX >> 0xC, g_pFieldEntities[g_FieldEntityModel[otherEntity]].posY >> 0xC, g_pFieldEntities[g_FieldEntityModel[otherEntity]].posZ >> 0xC);
+        Field_MakePoint(&pointA, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posX >> 12, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posY >> 12, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posZ >> 12);
+        Field_MakePoint(&pointB, g_pFieldEntities[g_FieldEntityModel[otherEntity]].posX >> 12, g_pFieldEntities[g_FieldEntityModel[otherEntity]].posY >> 12, g_pFieldEntities[g_FieldEntityModel[otherEntity]].posZ >> 12);
         if (pointA.x == pointB.x && pointA.y == pointB.y) {
             pointA.x++;
         }
@@ -3002,8 +3002,8 @@ int __cdecl Script_TurnModelToModel(short entity)
             g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnStart = (unsigned short)(g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].dir);
             g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnType = FIELD_INTERP_SMOOTH;
             g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnSteps = SCRIPT_PARAM_S8(2);
-            Field_MakePoint((FieldVec3i *)first, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posX >> 0xC, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posY >> 0xC, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posZ >> 0xC);
-            Field_MakePoint((FieldVec3i *)second, g_pFieldEntities[g_FieldEntityModel[entity]].posX >> 0xC, g_pFieldEntities[g_FieldEntityModel[entity]].posY >> 0xC, g_pFieldEntities[g_FieldEntityModel[entity]].posZ >> 0xC);
+            Field_MakePoint((FieldVec3i *)first, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posX >> 12, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posY >> 12, g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posZ >> 12);
+            Field_MakePoint((FieldVec3i *)second, g_pFieldEntities[g_FieldEntityModel[entity]].posX >> 12, g_pFieldEntities[g_FieldEntityModel[entity]].posY >> 12, g_pFieldEntities[g_FieldEntityModel[entity]].posZ >> 12);
             if (first[0] == second[0] && first[1] == second[1]) {
                 first[0]++;
             }
@@ -3016,7 +3016,7 @@ int __cdecl Script_TurnModelToModel(short entity)
                     turnDelta ^= 0xFFFF;
                     turnDelta++;
                 }
-                if (turnDelta > 0x80) {
+                if (turnDelta > 128) {
                     if (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnEnd > g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnStart) {
                         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnEnd += 0xFF00;
                     } else {
@@ -3197,7 +3197,7 @@ int __cdecl Script_OpTurnStart(void)
                     d ^= 0xFFFF;
                     d += 1;
                 }
-                if (d > 0x80) {
+                if (d > 128) {
                     if (g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnEnd > g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnStart) {
                         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].turnEnd += -0x100;
                     } else {
@@ -3433,10 +3433,10 @@ int __cdecl Script_OpGetEntityXY(void)
     if (g_FieldEntityModel[entity] != 0xff) {
         Script_WriteOperand16(
             1, 3,
-            g_pFieldEntities[g_FieldEntityModel[entity]].posX >> 0xc);
+            g_pFieldEntities[g_FieldEntityModel[entity]].posX >> 12);
         Script_WriteOperand16(
             2, 4,
-            g_pFieldEntities[g_FieldEntityModel[entity]].posY >> 0xc);
+            g_pFieldEntities[g_FieldEntityModel[entity]].posY >> 12);
     }
     g_FieldScriptPC[g_CurrentEntity] += 5;
     return 0;
@@ -3456,11 +3456,11 @@ int __cdecl Script_OpGetEntityXYZI(void)
     entity = SCRIPT_PARAM_U8(3);
     if (g_FieldEntityModel[entity] != 0xff) {
         Script_WriteOperand16(
-            1, 4, g_pFieldEntities[g_FieldEntityModel[entity]].posX >> 0xc);
+            1, 4, g_pFieldEntities[g_FieldEntityModel[entity]].posX >> 12);
         Script_WriteOperand16(
-            2, 5, g_pFieldEntities[g_FieldEntityModel[entity]].posY >> 0xc);
+            2, 5, g_pFieldEntities[g_FieldEntityModel[entity]].posY >> 12);
         Script_WriteOperand16(
-            3, 6, g_pFieldEntities[g_FieldEntityModel[entity]].posZ >> 0xc);
+            3, 6, g_pFieldEntities[g_FieldEntityModel[entity]].posZ >> 12);
         Script_WriteOperand16(
             4, 7, g_pFieldEntities[g_FieldEntityModel[entity]].posI);
     }
@@ -3488,11 +3488,11 @@ int __cdecl Script_OpGetPartyXYZI(void)
             id = g_FieldCharEntity.charEntity[id];
             if (g_FieldEntityModel[id] != 0xff) {
                 Script_WriteOperand16(
-                    1, 4, g_pFieldEntities[g_FieldEntityModel[id]].posX >> 0xc);
+                    1, 4, g_pFieldEntities[g_FieldEntityModel[id]].posX >> 12);
                 Script_WriteOperand16(
-                    2, 5, g_pFieldEntities[g_FieldEntityModel[id]].posY >> 0xc);
+                    2, 5, g_pFieldEntities[g_FieldEntityModel[id]].posY >> 12);
                 Script_WriteOperand16(
-                    3, 6, g_pFieldEntities[g_FieldEntityModel[id]].posZ >> 0xc);
+                    3, 6, g_pFieldEntities[g_FieldEntityModel[id]].posZ >> 12);
                 Script_WriteOperand16(
                     4, 7, g_pFieldEntities[g_FieldEntityModel[id]].posI);
             }
@@ -3545,11 +3545,11 @@ int __cdecl Script_OpSetPositionXYZI(void)
 {
     if (g_FieldEntityModel[g_CurrentEntity] != 0xff) {
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posX =
-            Script_ReadOperand16(1, 3) << 0xc;
+            Script_ReadOperand16(1, 3) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posY =
-            Script_ReadOperand16(2, 5) << 0xc;
+            Script_ReadOperand16(2, 5) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posZ =
-            Script_ReadOperand16(3, 7) << 0xc;
+            Script_ReadOperand16(3, 7) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posI =
             Script_ReadOperand16(4, 9);
     }
@@ -3568,11 +3568,11 @@ int __cdecl Script_OpSetPositionXYZ(void)
 {
     if (g_FieldEntityModel[g_CurrentEntity] != 0xff) {
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posX =
-            Script_ReadOperand16(1, 3) << 0xc;
+            Script_ReadOperand16(1, 3) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posY =
-            Script_ReadOperand16(2, 5) << 0xc;
+            Script_ReadOperand16(2, 5) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posZ =
-            Script_ReadOperand16(3, 7) << 0xc;
+            Script_ReadOperand16(3, 7) << 12;
     }
     g_FieldScriptPC[g_CurrentEntity] += 9;
     return 1;
@@ -3589,9 +3589,9 @@ int __cdecl Script_OpSetPositionXYI(void)
 {
     if (g_FieldEntityModel[g_CurrentEntity] != 0xff) {
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posX =
-            Script_ReadOperand16(1, 3) << 0xc;
+            Script_ReadOperand16(1, 3) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posY =
-            Script_ReadOperand16(2, 5) << 0xc;
+            Script_ReadOperand16(2, 5) << 12;
         g_pFieldEntities[g_FieldEntityModel[g_CurrentEntity]].posI =
             Script_ReadOperand16(3, 7);
     }
@@ -3945,7 +3945,7 @@ int __cdecl Script_OpAddByteSat(void)
     short value;
 
     value = Script_ReadOperand8(1, 2) + Script_ReadOperand8(2, 3);
-    if (value > 0xff) {
+    if (value > 255) {
         value = 0xff;
     }
     Script_WriteOperand8(1, 2, value);
@@ -3978,7 +3978,7 @@ int __cdecl Script_OpAddWordSat(void)
     int value;
 
     value = Script_ReadOperand16(1, 2) + Script_ReadOperand16(2, 3);
-    if (value > 0x7fff) {
+    if (value > 32767) {
         value = 0x7fff;
     }
     Script_WriteOperand16(1, 2, value);
@@ -4049,7 +4049,7 @@ int __cdecl Script_OpSubWordSat(void)
 
     value = Script_ReadOperand16(1, 2) - Script_ReadOperand16(2, 3);
     // BUG: true for every ordinary difference, so the result is -32768.
-    if (value < 0x8000) {
+    if (value < 32768) {
         value = 0x8000;
     }
     Script_WriteOperand16(1, 2, value);
@@ -4166,7 +4166,7 @@ int __cdecl Script_OpIncByteSat(void)
     short value;
 
     value = Script_ReadOperand8(2, 2) + 1;
-    if (value > 0xff) {
+    if (value > 255) {
         value = 0xff;
     }
     Script_WriteOperand8(2, 2, value);
@@ -4198,7 +4198,7 @@ int __cdecl Script_OpIncWordSat(void)
     int value;
 
     value = Script_ReadOperand16(2, 2) + 1;
-    if (value > 0x7fff) {
+    if (value > 32767) {
         value = 0x7fff;
     }
     Script_WriteOperand16(2, 2, value);
@@ -4270,7 +4270,7 @@ int __cdecl Script_OpDecWordSat(void)
 
     value = Script_ReadOperand16(2, 2) - 1;
     // BUG: always true, so the result is -32768.
-    if (value < 0x8000) {
+    if (value < 32768) {
         value = 0x8000;
     }
     Script_WriteOperand16(2, 2, value);
@@ -4961,21 +4961,21 @@ int __cdecl Script_OpPaletteAdd(void)
     for (palIdx = 0; palIdx < num; palIdx++) {
         px = g_FieldPalettes[src][palIdx];
         newR = (px & 0x1F) + redDelta;
-        if (newR > 0x1F) {
+        if (newR > 31) {
             newR = 0x1F;
         }
         if (newR < 0) {
             newR = 0;
         }
         newG = ((px >> 5) & 0x1F) + gAdd;
-        if (newG > 0x1F) {
+        if (newG > 31) {
             newG = 0x1F;
         }
         if (newG < 0) {
             newG = 0;
         }
         newB = ((px >> 10) & 0x1F) + bDelta;
-        if (newB > 0x1F) {
+        if (newB > 31) {
             newB = 0x1F;
         }
         if (newB < 0) {
@@ -5012,7 +5012,7 @@ int __cdecl Script_OpPaletteAddRange(void)
     unsigned short px;
     short beg;
 
-    num = Script_ReadOperand8(6, 0xA) + 1;
+    num = Script_ReadOperand8(6, 10) + 1;
     srcPalette = SCRIPT_PARAM_S8(4);
     destPal8 = SCRIPT_PARAM_S8(5);
     beg = (unsigned char)Script_ReadOperand8(1, 6);
@@ -5038,21 +5038,21 @@ int __cdecl Script_OpPaletteAddRange(void)
     for (index = beg; index < num; index++) {
         px = *(short *)&g_FieldPalettes[srcPalette][index];
         redOut = (px & 0x1F) + redDelta;
-        if (redOut > 0x1F) {
+        if (redOut > 31) {
             redOut = 0x1F;
         }
         if (redOut < 0) {
             redOut = 0;
         }
         resGreen = (px >> 5 & 0x1F) + greenAdj;
-        if (resGreen > 0x1F) {
+        if (resGreen > 31) {
             resGreen = 0x1F;
         }
         if (resGreen < 0) {
             resGreen = 0;
         }
         outBlue = (px >> 0xA & 0x1F) + bDelta;
-        if (outBlue > 0x1F) {
+        if (outBlue > 31) {
             outBlue = 0x1F;
         }
         if (outBlue < 0) {
@@ -5106,13 +5106,13 @@ int __cdecl Script_OpPaletteMultiply(void)
         newGreen = greenFactor * newGreen >> 7;
         rawBlue = pixel >> 9 & 0x3F;
         rawBlue = bMul * rawBlue >> 7;
-        if (rawBlue > 0x1F) {
+        if (rawBlue > 31) {
             rawBlue = 0x1F;
         }
-        if (newGreen > 0x1F) {
+        if (newGreen > 31) {
             newGreen = 0x1F;
         }
-        if (redChan > 0x1F) {
+        if (redChan > 31) {
             redChan = 0x1F;
         }
         *(short *)&g_FieldPalettes[dstPal][i] = rawBlue << 0xA | newGreen << 5 | redChan | pixel & 0x8000;
@@ -5165,13 +5165,13 @@ int __cdecl Script_OpPaletteMultiplyRange(void)
         newG = (gAdd * newG) >> 7;
         newB = (px >> 9) & 0x3F;
         newB = (blueFactor * newB) >> 7;
-        if (newB > 0x1F) {
+        if (newB > 31) {
             newB = 0x1F;
         }
-        if (newG > 0x1F) {
+        if (newG > 31) {
             newG = 0x1F;
         }
-        if (newR > 0x1F) {
+        if (newR > 31) {
             newR = 0x1F;
         }
         g_FieldPalettes[subPal][palIdx] = (newB << 10) | (newG << 5) | newR | (px & 0x8000);
@@ -5384,7 +5384,7 @@ int __cdecl Script_OpGetFieldParty(void)
 
 /*
  * Sets the field party from a three-slot list. Anyone named in the list is first taken out of the old
- * party, so nobody appears twice; old members not named then fill the list's 0xFF slots, so nobody is
+ * party, so nobody appears twice; old members not named then fill the list's 255 slots, so nobody is
  * lost; a 0xFE slot is left empty. The list is written back (the caller's array is changed in place),
  * every member is made available in the PHS, the savemap party is brought in line and the leader drives.
  */
@@ -5432,7 +5432,7 @@ void __cdecl Savemap_SetFieldParty(unsigned char *party)
 
 /*
  * Compares two three-slot party lists: onlyB gets the members of partyB missing from partyA, onlyA those
- * of partyA missing from partyB, each padded with 0xFF. 0xFF slots are compared like characters. Assumes
+ * of partyA missing from partyB, each padded with 0xFF. 255 slots are compared like characters. Assumes
  * outputs do not destructively alias inputs.
  */
 // FUNCTION: FF7 0x0061c3e1
@@ -5998,10 +5998,10 @@ void __cdecl Field_StartScriptedMove(short entity, short x, short y, short moveA
     Field_MakePoint((FieldVec3i *)d, x, y, g_pFieldEntities[g_FieldEntityModel[entity]].posZ >> 12);
     Field_HeadingBetweenPoints((FieldPointTo *)a, (FieldPointTo *)d, &b);
     g_pFieldEntities[g_FieldEntityModel[entity]].moveSpeed = (b << 8) / moveArg;
-    if (g_pFieldEntities[g_FieldEntityModel[entity]].moveSpeed > 0x600) {
+    if (g_pFieldEntities[g_FieldEntityModel[entity]].moveSpeed > 1536) {
         if (*(char *)&g_pFieldEntities[g_FieldEntityModel[entity]].activeAnimId != FIELD_STANDARD_ANIM_RUN) {
             g_pFieldEntities[g_FieldEntityModel[entity]].activeAnimId = FIELD_STANDARD_ANIM_RUN;
-            g_pFieldEntities[g_FieldEntityModel[entity]].animSpeed = 0x10;
+            g_pFieldEntities[g_FieldEntityModel[entity]].animSpeed = 16;
             g_pFieldEntities[g_FieldEntityModel[entity]].animCurrentFrame = 0;
             if (g_pFieldModelSlots != 0) {
                 Field_SetModelAnimation(
@@ -6014,7 +6014,7 @@ void __cdecl Field_StartScriptedMove(short entity, short x, short y, short moveA
     } else {
         if (*(char *)&g_pFieldEntities[g_FieldEntityModel[entity]].activeAnimId != FIELD_STANDARD_ANIM_WALK) {
             g_pFieldEntities[g_FieldEntityModel[entity]].activeAnimId = FIELD_STANDARD_ANIM_WALK;
-            g_pFieldEntities[g_FieldEntityModel[entity]].animSpeed = 0x10;
+            g_pFieldEntities[g_FieldEntityModel[entity]].animSpeed = 16;
             g_pFieldEntities[g_FieldEntityModel[entity]].animCurrentFrame = 0;
             if (g_pFieldModelSlots != 0) {
                 Field_SetModelAnimation(
@@ -6064,14 +6064,14 @@ void __cdecl Field_StartEntityTurn(short entity, unsigned char from, unsigned ch
     g_pFieldEntities[g_FieldEntityModel[entity]].turnStart = (unsigned short)from;
     g_pFieldEntities[g_FieldEntityModel[entity]].turnType = FIELD_INTERP_SMOOTH;
     g_pFieldEntities[g_FieldEntityModel[entity]].turnStep = 0;
-    g_pFieldEntities[g_FieldEntityModel[entity]].turnSteps = 0x10;
+    g_pFieldEntities[g_FieldEntityModel[entity]].turnSteps = 16;
     g_pFieldEntities[g_FieldEntityModel[entity]].turnEnd = (unsigned short)to;
     val = g_pFieldEntities[g_FieldEntityModel[entity]].turnEnd - g_pFieldEntities[g_FieldEntityModel[entity]].turnStart;
     if (val < 0) {
         val ^= 0xFFFF;
         val++;
     }
-    if (val > 0x80) {
+    if (val > 128) {
         if (g_pFieldEntities[g_FieldEntityModel[entity]].turnEnd > g_pFieldEntities[g_FieldEntityModel[entity]].turnStart) {
             g_pFieldEntities[g_FieldEntityModel[entity]].turnEnd += 0xFF00;
         } else {
@@ -6135,7 +6135,7 @@ int __cdecl Script_OpScreenFade(void)
     g_pFieldState->green = (unsigned char)Script_ReadOperand8(2, 4);
     g_pFieldState->blue = (unsigned char)Script_ReadOperand8(4, 5);
     if (g_pFieldState->fadeType == FIELD_FADE_SCALED_COMPLEMENT_OUT || g_pFieldState->fadeType == FIELD_FADE_SCALED_COMPLEMENT_IN) {
-        if ((g_pFieldState->red < 0xDC && g_pFieldState->red > 0x14) || (g_pFieldState->green < 0xDC && g_pFieldState->green > 0x14) || (g_pFieldState->blue < 0xDC && g_pFieldState->blue > 0x14)) {
+        if ((g_pFieldState->red < 220 && g_pFieldState->red > 20) || (g_pFieldState->green < 220 && g_pFieldState->green > 20) || (g_pFieldState->blue < 220 && g_pFieldState->blue > 20)) {
             g_FieldFxStepCounter = 1;
         }
     }
@@ -6202,7 +6202,7 @@ int __cdecl Script_OpWaitFade(void)
     case FIELD_FADE_SCALED_IN:
     case FIELD_FADE_FLAT_COMPLEMENT_IN:
     case FIELD_FADE_FLAT_IN:
-        if (g_pFieldState->fadeAdjust >= 0xff) {
+        if (g_pFieldState->fadeAdjust >= 255) {
             g_FieldScriptPC[g_CurrentEntity] += 1;
             return 0;
         }
@@ -6433,7 +6433,7 @@ int __cdecl Script_OpSpecial(void)
 
     switch (SCRIPT_PARAM_U8(1)) {
     case FIELD_SPECIAL_REMOVE_ALL_ITEMS:
-        for (i = 0; i < 0x200; i++) {
+        for (i = 0; i < 512; i++) {
             itemId = i;
             *(unsigned short *)&itemId |= FIELD_ITEM_QTY_99;
             /* Pushed unextended, as in Script_OpRemoveItem. */
@@ -6458,7 +6458,7 @@ int __cdecl Script_OpSpecial(void)
         g_FieldScriptPC[g_CurrentEntity] += 3;
         return 0;
     case FIELD_SPECIAL_ADD_ALL_ITEMS:
-        for (i = 0; i < 0x200; i++) {
+        for (i = 0; i < 512; i++) {
             itemId = i;
             *(unsigned short *)&itemId |= FIELD_ITEM_QTY_99;
             Savemap_AddItem((short)itemId);
@@ -6466,7 +6466,7 @@ int __cdecl Script_OpSpecial(void)
         g_FieldScriptPC[g_CurrentEntity] += 2;
         return 0;
     case FIELD_SPECIAL_ADD_ALL_MATERIA:
-        for (i = 0; i < 0x50; i++) {
+        for (i = 0; i < 80; i++) {
             Savemap_AddMateria(i);
         }
         g_FieldScriptPC[g_CurrentEntity] += 2;
@@ -6571,8 +6571,8 @@ int __cdecl Script_OpAddMateria(void)
 
     materia = Script_ReadOperand8(1, 3);
     materia |= Script_ReadOperand8(2, 4) << 8;
-    materia |= Script_ReadOperand8(3, 5) << 0x10;
-    materia |= Script_ReadOperand8(4, 6) << 0x18;
+    materia |= Script_ReadOperand8(3, 5) << 16;
+    materia |= Script_ReadOperand8(4, 6) << 24;
     slot = Savemap_AddMateria(materia);
     if (slot == -1) {
         gSavemap.materiaResult = 0;
@@ -6596,8 +6596,8 @@ int __cdecl Script_OpRemoveMateria(void)
 
     materia = Script_ReadOperand8(1, 3);
     materia |= Script_ReadOperand8(2, 4) << 8;
-    materia |= Script_ReadOperand8(3, 5) << 0x10;
-    materia |= Script_ReadOperand8(4, 6) << 0x18;
+    materia |= Script_ReadOperand8(3, 5) << 16;
+    materia |= Script_ReadOperand8(4, 6) << 24;
     Savemap_RemoveMateriaReturnZero(materia, SCRIPT_PARAM_U8(7));
     g_FieldScriptPC[g_CurrentEntity] += 8;
     return 0;
@@ -6617,8 +6617,8 @@ int __cdecl Script_OpCountMateria(void)
 
     materia = Script_ReadOperand8(1, 4);
     materia |= Script_ReadOperand8(2, 5) << 8;
-    materia |= Script_ReadOperand8(3, 6) << 0x10;
-    materia |= Script_ReadOperand8(4, 7) << 0x18;
+    materia |= Script_ReadOperand8(3, 6) << 16;
+    materia |= Script_ReadOperand8(4, 7) << 24;
     count = Savemap_CountMateriaReturnZero(materia, SCRIPT_PARAM_U8(8));
     Script_WriteOperand8(6, 9, count);
     g_FieldScriptPC[g_CurrentEntity] += 0xa;
@@ -6760,7 +6760,7 @@ int __cdecl Script_OpSinScaled(void)
     value = SinFixed(Script_ReadOperand16(1, 3));
     value *= Script_ReadOperand16(2, 5);
     value += Script_ReadOperand16(3, 7);
-    Script_WriteOperand16(4, 9, value >> 0xc);
+    Script_WriteOperand16(4, 9, value >> 12);
     g_FieldScriptPC[g_CurrentEntity] += 0xa;
     return 0;
 }
@@ -6778,7 +6778,7 @@ int __cdecl Script_OpCosScaled(void)
     value = CosFixed(Script_ReadOperand16(1, 3));
     value *= Script_ReadOperand16(2, 5);
     value += Script_ReadOperand16(3, 7);
-    Script_WriteOperand16(4, 9, value >> 0xc);
+    Script_WriteOperand16(4, 9, value >> 12);
     g_FieldScriptPC[g_CurrentEntity] += 0xa;
     return 0;
 }
@@ -7005,7 +7005,7 @@ int __cdecl Script_OpAddGil(void)
     unsigned int amount;
 
     amount = (unsigned short)Script_ReadOperand16(1, 2);
-    amount |= (unsigned short)Script_ReadOperand16(2, 4) << 0x10;
+    amount |= (unsigned short)Script_ReadOperand16(2, 4) << 16;
     Savemap_AddGil(amount);
     g_FieldScriptPC[g_CurrentEntity] += 6;
     return 0;
@@ -7022,7 +7022,7 @@ int __cdecl Script_OpSpendGil(void)
     unsigned int amount;
 
     amount = (unsigned short)Script_ReadOperand16(1, 2);
-    amount |= (unsigned short)Script_ReadOperand16(2, 4) << 0x10;
+    amount |= (unsigned short)Script_ReadOperand16(2, 4) << 16;
     Savemap_SpendGil(amount);
     g_FieldScriptPC[g_CurrentEntity] += 6;
     return 0;
@@ -7040,7 +7040,7 @@ int __cdecl Script_OpGetGil(void)
 
     gil = Savemap_GetGil();
     Script_WriteOperand16(1, 2, gil & 0xffff);
-    Script_WriteOperand16(2, 3, (gil >> 0x10) & 0xffff);
+    Script_WriteOperand16(2, 3, (gil >> 16) & 0xffff);
     g_FieldScriptPC[g_CurrentEntity] += 4;
     return 0;
 }
@@ -7093,8 +7093,8 @@ int __cdecl Script_OpSetCountdown(void)
 {
     int seconds;
 
-    seconds = Script_ReadOperand8(1, 3) * 0x3c * 0x3c;
-    seconds += Script_ReadOperand8(2, 4) * 0x3c;
+    seconds = Script_ReadOperand8(1, 3) * 60 * 60;
+    seconds += Script_ReadOperand8(2, 4) * 60;
     seconds += Script_ReadOperand8(4, 5);
     gSavemap.countdownSeconds = seconds;
     g_FieldScriptPC[g_CurrentEntity] += 6;
@@ -7139,7 +7139,7 @@ int __cdecl Script_OpWindowSetNumber(void)
     win = SCRIPT_PARAM_U8(2);
     value = Script_ReadOperand16(1, 3);
     // BUG: a low word of 0x8000 or more has already filled the high half with ones.
-    value |= Script_ReadOperand16(2, 5) << 0x10;
+    value |= Script_ReadOperand16(2, 5) << 16;
     g_FieldWindows[win].numDisplayValue = value;
     g_FieldWindows[win].numDisplayLength = SCRIPT_PARAM_U8(7);
     g_FieldScriptPC[g_CurrentEntity] += 8;

@@ -74,7 +74,7 @@ unsigned char g_rawData_008a8244[4] = {0x20, 0x00, 0x00, 0x00};
 #pragma intrinsic(memcpy)
 
 
-/* The 0xC8 records of the sand particle field. */
+/* The 200 records of the sand particle field. */
 #define g_BattleSandstormSprite (&g_BattleSpecialSandstormSpriteData)
 #define g_BattleSandstormConfig (&g_BattleSpecialSandstormConfig)
 
@@ -146,10 +146,10 @@ void __cdecl BattleFx_SpecialEnterSandstorm(int targetMask, int actorIdx)
     BattleFx_SpecialLoadResSandstorm();
     g_BattleSpecialSandstormDrawListHandle = (int)&g_GfxPsxPacketScratch;
     g_BattleSpecialSandstormStep = 0;
-    g_BattleSpecialSandstormScaleVector = 0x1A00;
-    g_BattleSpecialSandstormScaleFactor = 0x1000;
-    g_BattleSpecialSandstormScale = 0x1A00;
-    for (i = 0; i < 0xC8; i++) {
+    g_BattleSpecialSandstormScaleVector = 0x1A00 /* 1.625 */;
+    g_BattleSpecialSandstormScaleFactor = 0x1000 /* 1.0 */;
+    g_BattleSpecialSandstormScale = 0x1A00 /* 1.625 */;
+    for (i = 0; i < 200; i++) {
         g_BattleSpecialSandstormParticleRecords[i].active = 0;
     }
     g_BattleSpecialSandstormTargetMask = targetMask;
@@ -185,46 +185,46 @@ void __cdecl BattleFx_SpecialSandstormTimelineTask(void)
         spawned->posX = taskSlot->startX;
         spawned->posY = taskSlot->startY;
         spawned->posZ = taskSlot->startZ;
-        spawned->stepX = (taskSlot->endX - taskSlot->startX) / 0x14;
+        spawned->stepX = (taskSlot->endX - taskSlot->startX) / 20;
         spawned->angle = 0;
-        spawned->stepZ = (taskSlot->endZ - taskSlot->startZ) / 0x14;
+        spawned->stepZ = (taskSlot->endZ - taskSlot->startZ) / 20;
         spawned->rotationY = heading;
         spawned->growth = 0;
         spawned = (BattleFxSandstormParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSandstormSpinGrowModelTask);
         spawned->posX = taskSlot->startX;
         spawned->posY = taskSlot->startY;
         spawned->posZ = taskSlot->startZ;
-        spawned->stepZ = 0x400;
+        spawned->stepZ = 1024;
         spawned->angle = heading - 0x400;
         curDeltaX = taskSlot->endX - taskSlot->startX;
         resolvedDeltaY = taskSlot->endZ - taskSlot->startZ;
         length = SqrtToInt(curDeltaX * curDeltaX + resolvedDeltaY * resolvedDeltaY);
-        spawned->scaleY = length * 0x1500 / 0xAF0;
+        spawned->scaleY = length * 0x1500 / 2800;
         spawned->growth = 0;
     }
-    if (taskSlot->step == 0x23) {
-        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    if (taskSlot->step == 35) {
+        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
             if ((g_BattleSpecialSandstormTargetMask & 1 << actorIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(actorIndex);
             }
         }
     }
-    if (taskSlot->step > 0x1F && taskSlot->step < 0x27) {
-        for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    if (taskSlot->step > 31 && taskSlot->step < 39) {
+        for (actorIndex = 0; actorIndex < 10; actorIndex++) {
             if ((g_BattleSpecialSandstormTargetMask & 1 << actorIndex) != 0) {
                 for (puffIdx = 0; puffIdx < 2; puffIdx++) {
                     spawned = (BattleFxSandstormParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSandstormVariantSpriteTask);
                     Battle_GetBoneWorldPos(actorIndex, g_BattleActorRecords[actorIndex].targetBone, &spawned->posX);
-                    spawned->posX += (short)(rand() % 0x3E8 - 0x1F4);
-                    spawned->posY += (short)(rand() % 0x3E8 - 0x1F4);
-                    spawned->posZ += (short)(rand() % 0x3E8 - 0x1F4);
+                    spawned->posX += (short)(rand() % 1000 - 500);
+                    spawned->posY += (short)(rand() % 1000 - 500);
+                    spawned->posZ += (short)(rand() % 1000 - 500);
                     spawned->variant = rand() & 3;
                 }
             }
         }
     }
     (taskSlot->step)++;
-    if (taskSlot->step == 0x32) {
+    if (taskSlot->step == 50) {
         taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -238,7 +238,7 @@ void __cdecl BattleFx_SpecialSandstormVariantSpriteTask(void)
     BattleFxSandstormVariantSprite *task;
 
     task = (BattleFxSandstormVariantSprite *)BATTLE_CURRENT_TASK_SLOT;
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x1000 /* 1.0 */, 0);
     g_BattleSandstormSprite->sunaSpriteFrameWord = task->frameIndex;
     g_BattleSandstormSprite->animTable = Gfx_ModelTableGetLoadedRecord(((int *)&g_BattleSpecialSandstormConfig)[task->variantIndex], g_BattleSpecialSandstormLoadedRes);
     g_BattleSandstormSprite->drawObj = Gfx_ModelTableGetSpriteObject(((int *)&g_BattleSpecialSandstormConfig)[task->variantIndex], g_BattleSpecialSandstormLoadedRes);
@@ -267,7 +267,7 @@ void __cdecl BattleFx_SpecialSandstormParticleFieldTask(void)
         return;
     }
     field->angle += 8;
-    if (field->age > 0 && field->age < 0x28) {
+    if (field->age > 0 && field->age < 40) {
         for (recordIndex = 0; recordIndex < 8; recordIndex++) {
             claimed = BattleFx_SpecialSandstormClaimParticleRecord();
             if (claimed != 0) {
@@ -277,18 +277,18 @@ void __cdecl BattleFx_SpecialSandstormParticleFieldTask(void)
         }
     }
     recordIndex = 0;
-    for (activeCnt = 0; recordIndex < 0xC8; recordIndex++) {
+    for (activeCnt = 0; recordIndex < 200; recordIndex++) {
         if (g_BattleSpecialSandstormParticleRecords[recordIndex].active != 0) {
             activeCnt++;
             g_BattleSpecialSandstormParticleRecords[recordIndex].angle -= 0x80;
             (g_BattleSpecialSandstormParticleRecords[recordIndex].age)++;
-            if (g_BattleSpecialSandstormParticleRecords[recordIndex].age == 0x19) {
+            if (g_BattleSpecialSandstormParticleRecords[recordIndex].age == 25) {
                 g_BattleSpecialSandstormParticleRecords[recordIndex].active = 0;
             }
         }
     }
     (field->age)++;
-    if (field->age > 0x28 && activeCnt == 0) {
+    if (field->age > 40 && activeCnt == 0) {
         field->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -301,7 +301,7 @@ BattleSpecialSandstormParticleRecord *__cdecl BattleFx_SpecialSandstormClaimPart
 {
     short i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleSpecialSandstormParticleRecords[i].active == 0) {
             g_BattleSpecialSandstormParticleRecords[i].active = 1;
             g_BattleSpecialSandstormParticleRecords[i].age = 0;
@@ -343,11 +343,11 @@ void __cdecl BattleFx_SpecialSandstormDrawParticleField(BattleFxSandstormParticl
     frame.rotMatrix.t[1] = frame.rotMatrix.t[2];
     frame.rotMatrix.t[0] = frame.rotMatrix.t[1];
     frame.particleIndex = 0;
-    for (frame.activeCount = 0; frame.particleIndex < 0xC8; frame.particleIndex++) {
+    for (frame.activeCount = 0; frame.particleIndex < 200; frame.particleIndex++) {
         if (g_BattleSpecialSandstormParticleRecords[frame.particleIndex].active != 0) {
             frame.activeCount++;
-            frame.posX.vx = CosFixed(g_BattleSpecialSandstormParticleRecords[frame.particleIndex].angle) * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].radius * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age / 0x14 * (fieldRecord->angle + 0x100) >> 0x14;
-            frame.posX.vy = SinFixed(g_BattleSpecialSandstormParticleRecords[frame.particleIndex].angle) * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].radius * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age / 0x14 * (fieldRecord->angle + 0x100) >> 0x14;
+            frame.posX.vx = CosFixed(g_BattleSpecialSandstormParticleRecords[frame.particleIndex].angle) * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].radius * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age / 20 * (fieldRecord->angle + 256) >> 20;
+            frame.posX.vy = SinFixed(g_BattleSpecialSandstormParticleRecords[frame.particleIndex].angle) * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].radius * g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age / 20 * (fieldRecord->angle + 256) >> 20;
             frame.posX.vz = 0;
             SetRotMatrix(&frame.rotMatrix);
             SetTransMatrix(&frame.rotMatrix);
@@ -363,10 +363,10 @@ void __cdecl BattleFx_SpecialSandstormDrawParticleField(BattleFxSandstormParticl
             frame.primitive->primCode = 0x68;
             frame.primitive->primCode = 0x6A;
             frame.depth = Gfx_TransformVertexSlot0ReturnDepth(&frame.posX, &frame.screenPos, &frame.projDepth);
-            if (g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age < 0x11) {
+            if (g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age < 17) {
                 frame.sizeByAge = 8;
             } else {
-                frame.sizeByAge = 0x19 - g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age;
+                frame.sizeByAge = 25 - g_BattleSpecialSandstormParticleRecords[frame.particleIndex].age;
             }
             frame.size = *(short *)&frame.sizeByAge;
             frame.primitive->colorR = frame.size << 7 >> 3;
@@ -416,11 +416,11 @@ void __cdecl BattleFx_SpecialSandstormSpinGrowModelTask(void)
     if (frame.spinSlot->frameCounter < 8) {
         g_BattleSpecialSandstormStep++;
     }
-    if (frame.spinSlot->frameCounter > 0x2D) {
+    if (frame.spinSlot->frameCounter > 45) {
         g_BattleSpecialSandstormStep--;
     }
     (frame.spinSlot->frameCounter)++;
-    if (frame.spinSlot->frameCounter == 0x35) {
+    if (frame.spinSlot->frameCounter == 53) {
         frame.spinSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

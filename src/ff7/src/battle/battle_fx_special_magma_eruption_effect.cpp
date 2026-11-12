@@ -40,7 +40,7 @@ short g_BattleSpecMagmaEruptionActorBonePosZ = 0;
 // g_BattleSpecMagmaEruptionParticlePool; g_BattleSpecMagmaEruptionParticlePos and the pads below are the rest of
 // that span and keep their own symbols, so the records are read through a cast of the first.
 // GLOBAL: FF7 0x00b63300
-unsigned char g_BattleSpecMagmaEruptionParticlePool[0x8] = {0};
+unsigned char g_BattleSpecMagmaEruptionParticlePool[8] = {0};
 // GLOBAL: FF7 0x00b63308
 int g_BattleSpecMagmaEruptionParticlePos = 0;
 unsigned char g_bssPad_00b6330c[4] = {0};
@@ -109,7 +109,7 @@ void __cdecl BattleFx_SpecialBeginMagmaEruption(int targetMask, int actorIdx)
     g_BattleSpecMagmaEruptionTargetMask = targetMask;
     BattleFx_SpecialLoadResMagmaEruption();
     Battle_PlaySfxPannedToActor(0x165, (short)actorIdx, 0x40);
-    for (recordIndex = 0; recordIndex < 0x12C; recordIndex++) {
+    for (recordIndex = 0; recordIndex < 300; recordIndex++) {
         ((BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool)[recordIndex].state = 0;
     }
     Battle_GetBoneWorldPos(actorIdx, g_BattleActorRecords[actorIdx].bone33, (short *)&g_BattleSpecMagmaEruptionActorBonePos);
@@ -138,22 +138,22 @@ void __cdecl BattleFx_SpecialMagmaEruptionTimelineTask(void)
     if (pCur->timelineStep == 0) {
         spawned = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMagmaEruptionParticleSpritesTask);
     }
-    if (pCur->timelineStep < 0x10) {
+    if (pCur->timelineStep < 16) {
         g_BattleSpecMagmaEruptionFlashIntensity += 8;
     }
-    if (pCur->timelineStep > 0x40) {
+    if (pCur->timelineStep > 64) {
         g_BattleSpecMagmaEruptionFlashIntensity -= 8;
     }
-    if (pCur->timelineStep == 0x3C) {
-        for (i7 = 0; i7 < 0xA; i7++) {
+    if (pCur->timelineStep == 60) {
+        for (i7 = 0; i7 < 10; i7++) {
             if ((g_BattleSpecMagmaEruptionTargetMask & 1 << i7) != 0) {
                 Battle_PostActorHitOrHurtMessage(i7);
             }
         }
     }
-    g_BattleCameraFocalPoint.focalPointY += (short)(0x40 - (pCur->timelineStep % 2 << 7));
+    g_BattleCameraFocalPoint.focalPointY += (short)(64 - (pCur->timelineStep % 2 << 7));
     (pCur->timelineStep)++;
-    if (pCur->timelineStep == 0x50) {
+    if (pCur->timelineStep == 80) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -175,7 +175,7 @@ void __cdecl BattleFx_SpecialMagmaEruptionParticleSpritesTask(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     g_BattleSpecMagmaEruptionResourceDefRows[4] = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecMagmaEruptionLoadedResTable);
     g_BattleSpecMagmaEruptionResourceDefRows[5] = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecMagmaEruptionLoadedResTable);
-    for (index = 0; index < 0x12C; index++) {
+    for (index = 0; index < 300; index++) {
         if (((BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool)[index].state == 1) {
             g_BattleSpecMagmaEruptionSpriteReq.blue = 0x80 - (((BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool)[index].age << 3);
             g_BattleSpecMagmaEruptionSpriteReq.green = g_BattleSpecMagmaEruptionSpriteReq.blue;
@@ -187,38 +187,38 @@ void __cdecl BattleFx_SpecialMagmaEruptionParticleSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x3C) {
+    if (task->frameCounter < 60) {
         for (index = 0; index < (0x3C - task->frameCounter) / 5 + 1; index++) {
             emitter = (BattleSpecMagmaParticleRecord *)BattleFx_SpecialMagmaEruptionClaimSpriteRecord();
             if ((unsigned int)(int)emitter > (unsigned int)0) {
-                emitter->posX = ((BattleSpecHeatBlastActorBonePos *)&g_BattleSpecMagmaEruptionActorBonePos)->bonePosX + (CosFixed(angle) * rad >> 0xC);
-                emitter->posZ = g_BattleSpecMagmaEruptionActorBonePosZ + (SinFixed(angle) * rad >> 0xC);
+                emitter->posX = ((BattleSpecHeatBlastActorBonePos *)&g_BattleSpecMagmaEruptionActorBonePos)->bonePosX + (CosFixed(angle) * rad >> 12);
+                emitter->posZ = g_BattleSpecMagmaEruptionActorBonePosZ + (SinFixed(angle) * rad >> 12);
                 emitter->posY = ((BattleSpecHeatBlastActorBonePos *)&g_BattleSpecMagmaEruptionActorBonePos)->bonePosY;
                 angle = (rand() % 4096);
-                rad = rand() % 0xC8;
-                emitter->velocityX = CosFixed(angle) * rad >> 0xC;
-                emitter->velocityZ = SinFixed(angle) * rad >> 0xC;
-                emitter->velocityY = (SinFixed(task->frameCounter << 0xA) * 0x14 >> 0xC) + task->frameCounter * 2 + -0x15E;
+                rad = rand() % 200;
+                emitter->velocityX = CosFixed(angle) * rad >> 12;
+                emitter->velocityZ = SinFixed(angle) * rad >> 12;
+                emitter->velocityY = (SinFixed(task->frameCounter << 10) * 0x14 >> 12) + task->frameCounter * 2 + -350;
                 emitter->scale = 0x1800 - task->frameCounter * 0x1E + ((rand() % 4) << 9);
             }
         }
     }
     index = 0;
     liveCount = 0;
-    for (emitter = (BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool; index < 0x12C; index++) {
+    for (emitter = (BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool; index < 300; index++) {
         if (emitter->state == 1) {
             emitter->posX += emitter->velocityX;
             emitter->posY += emitter->velocityY;
             emitter->posZ += emitter->velocityZ;
             oldVy = emitter->velocityY;
-            emitter->velocityY += 0x14;
+            emitter->velocityY += 20;
             if (emitter->age == 0) {
                 if (oldVy < 0 && emitter->velocityY >= 0) {
                     emitter->age = 1;
                 }
             } else {
                 (emitter->age)++;
-                if (emitter->age == 0x10) {
+                if (emitter->age == 16) {
                     emitter->state = 0;
                 }
             }
@@ -227,7 +227,7 @@ void __cdecl BattleFx_SpecialMagmaEruptionParticleSpritesTask(void)
         emitter++;
     }
     (task->frameCounter)++;
-    if (task->frameCounter > 0x3C && liveCount == 0) {
+    if (task->frameCounter > 60 && liveCount == 0) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -241,7 +241,7 @@ int __cdecl BattleFx_SpecialMagmaEruptionClaimSpriteRecord(void)
 {
     short i;
 
-    for (i = 0; i < 0x12C; i++) {
+    for (i = 0; i < 300; i++) {
         if (((BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool)[i].state == 0) {
             ((BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool)[i].state = 1;
             ((BattleSpecMagmaParticleRecord *)&g_BattleSpecMagmaEruptionParticlePool)[i].age = 0;

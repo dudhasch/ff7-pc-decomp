@@ -46,7 +46,7 @@ struct BattleFxBadBreathParticleRing g_BattleSpecShadyBreathTargetCoords = {0};
 // records starts at its posX; g_BattleSpecShadyBreathLightRecords starts eight bytes into the first point,
 // so its BattleFxShadyBreathLightRecord[i].scale is the scale of point i.
 // GLOBAL: FF7 0x00b60cf0
-unsigned char g_BattleSpecShadyBreathLightRecords[0xdd8] = {0};
+unsigned char g_BattleSpecShadyBreathLightRecords[3544] = {0};
 // GLOBAL: FF7 0x00b61ac8
 int g_BattleSpecShadyBreathTargetMask = 0;
 // GLOBAL: FF7 0x00b61acc
@@ -144,7 +144,7 @@ void __cdecl BattleFx_SpecialShadyBreathTimelineTask(void)
         return;
     }
     task = (BattleFxShadyBreathTimeline *)BATTLE_CURRENT_TASK_SLOT;
-    if (task->frameCount > 1 && task->frameCount < 0x21) {
+    if (task->frameCount > 1 && task->frameCount < 33) {
         ringIndex = g_BattleSpecShadyBreathTargetCoords.ringIndex;
         pNewTask = (BattleFxBerserkFadeSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialShadyBreathScatteredSpritesTask);
         pNewTask->ringIndex = ringIndex;
@@ -153,23 +153,23 @@ void __cdecl BattleFx_SpecialShadyBreathTimelineTask(void)
             ((BattleFxShadyBreathLightPoint *)&g_BattleSpecShadyBreathTargetCoords.posX)[ringIndex].x = task->centerX + rand() % task->jitterRange - task->jitterOffset;
             ((BattleFxShadyBreathLightPoint *)&g_BattleSpecShadyBreathTargetCoords.posX)[ringIndex].y = task->centerY - rand() % task->jitterRangeY + task->jitterOffsetY;
             ((BattleFxShadyBreathLightPoint *)&g_BattleSpecShadyBreathTargetCoords.posX)[ringIndex].z = task->centerZ + rand() % task->jitterRange - task->jitterOffset;
-            spriteScale = task->particleScale * scaleJitter >> 0xC;
+            spriteScale = task->particleScale * scaleJitter >> 12;
             ((BattleFxShadyBreathLightRecord *)&g_BattleSpecShadyBreathLightRecords)[ringIndex].scale = spriteScale;
             ringIndex++;
-            if (ringIndex >= 0xDE) {
+            if (ringIndex >= 222) {
                 ringIndex = 0;
             }
         }
         g_BattleSpecShadyBreathTargetCoords.ringIndex = ringIndex;
     }
-    if (task->frameCount == 0x28) {
-        for (spriteIndex = 0; spriteIndex < 0xA; spriteIndex++) {
+    if (task->frameCount == 40) {
+        for (spriteIndex = 0; spriteIndex < 10; spriteIndex++) {
             if ((g_BattleSpecShadyBreathTargetMask & 1 << spriteIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(spriteIndex);
             }
         }
     }
-    if (task->frameCount >= 0x30) {
+    if (task->frameCount >= 48) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frameCount)++;
@@ -196,11 +196,11 @@ void __cdecl BattleFx_SpecialShadyBreathScatteredSpritesTask(void)
         BattleFx_InstallBillboardMatrix(&((BattleFxShadyBreathLightPoint *)&g_BattleSpecShadyBreathTargetCoords.posX)[ringIndex], (short)((BattleFxShadyBreathLightRecord *)&g_BattleSpecShadyBreathLightRecords)[ringIndex].scale, -(((BattleFxShadyBreathLightRecord *)&g_BattleSpecShadyBreathLightRecords)[ringIndex].scale >> 2));
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecShadyBreathSpriteReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         ringIndex++;
-        if (ringIndex >= 0xDE) {
+        if (ringIndex >= 222) {
             ringIndex = 0;
         }
     }
-    if (task->frame >= 0xB) {
+    if (task->frame >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

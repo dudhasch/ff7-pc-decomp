@@ -50,19 +50,19 @@ void __cdecl Bit_InitLeadingZeroCountTable(void)
     for (i = 4; i < 8; i++) {
         ((int *)g_SubmarineGridBuffer)[i] = 5;
     }
-    for (i = 8; i < 0x10; i++) {
+    for (i = 8; i < 16; i++) {
         ((int *)g_SubmarineGridBuffer)[i] = 4;
     }
-    for (i = 0x10; i < 0x20; i++) {
+    for (i = 16; i < 32; i++) {
         ((int *)g_SubmarineGridBuffer)[i] = 3;
     }
-    for (i = 0x20; i < 0x40; i++) {
+    for (i = 32; i < 64; i++) {
         ((int *)g_SubmarineGridBuffer)[i] = 2;
     }
-    for (i = 0x40; i < 0x80; i++) {
+    for (i = 64; i < 128; i++) {
         ((int *)g_SubmarineGridBuffer)[i] = 1;
     }
-    for (i = 0x80; i < 0x100; i++) {
+    for (i = 128; i < 256; i++) {
         ((int *)g_SubmarineGridBuffer)[i] = 0;
     }
 }
@@ -80,22 +80,22 @@ void __cdecl Bit_InitLeadingOneCountTable(void)
 {
     int i;
 
-    for (i = 0; i < 0x80; i++) {
+    for (i = 0; i < 128; i++) {
         ((int *)&g_SubmarineSceneBuffer)[i] = 0;
     }
-    for (i = 0x80; i < 0xC0; i++) {
+    for (i = 128; i < 192; i++) {
         ((int *)&g_SubmarineSceneBuffer)[i] = 1;
     }
-    for (i = 0xC0; i < 0xE0; i++) {
+    for (i = 192; i < 224; i++) {
         ((int *)&g_SubmarineSceneBuffer)[i] = 2;
     }
-    for (i = 0xE0; i < 0xF0; i++) {
+    for (i = 224; i < 240; i++) {
         ((int *)&g_SubmarineSceneBuffer)[i] = 3;
     }
-    for (i = 0xF0; i < 0xF8; i++) {
+    for (i = 240; i < 248; i++) {
         ((int *)&g_SubmarineSceneBuffer)[i] = 4;
     }
-    for (i = 0xF8; i < 0xFC; i++) {
+    for (i = 248; i < 252; i++) {
         ((int *)&g_SubmarineSceneBuffer)[i] = 5;
     }
     g_SubmarineLeadingOnesEntry253 = 6;
@@ -119,48 +119,48 @@ int __cdecl Bit_CountLeadingSignBits(int value)
 
     sum = 0;
     if (value > 0) {
-        byte = value >> 0x18;
+        byte = value >> 24;
         tableValue = g_SubmarineGridBuffer[byte].tableValue;
         sum += tableValue;
         if (tableValue != 8) {
             return sum;
         }
-        byte = value << 8 >> 0x18;
+        byte = value << 8 >> 24;
         tableValue = g_SubmarineGridBuffer[byte].tableValue;
         sum += tableValue;
         if (tableValue != 8) {
             return sum;
         }
-        byte = value << 0x10 >> 0x18;
+        byte = value << 16 >> 24;
         tableValue = g_SubmarineGridBuffer[byte].tableValue;
         sum += tableValue;
         if (tableValue != 8) {
             return sum;
         }
-        byte = value << 0x18 >> 0x18;
+        byte = value << 24 >> 24;
         tableValue = g_SubmarineGridBuffer[byte].tableValue;
         sum += tableValue;
         return sum;
     } else {
-        byte = value >> 0x18;
+        byte = value >> 24;
         tableValue = g_SubmarineSceneBuffer[byte].tableValue;
         sum += tableValue;
         if (tableValue != 8) {
             return sum;
         } else {
-            byte = value << 8 >> 0x18;
+            byte = value << 8 >> 24;
             tableValue = g_SubmarineSceneBuffer[byte].tableValue;
             sum += tableValue;
             if (tableValue != 8) {
                 return sum;
             } else {
-                byte = value << 0x10 >> 0x18;
+                byte = value << 16 >> 24;
                 tableValue = g_SubmarineSceneBuffer[byte].tableValue;
                 sum += tableValue;
                 if (tableValue != 8) {
                     return sum;
                 } else {
-                    byte = value << 0x18 >> 0x18;
+                    byte = value << 24 >> 24;
                     tableValue = g_SubmarineSceneBuffer[byte].tableValue;
                     sum += tableValue;
                     return sum;

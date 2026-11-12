@@ -234,7 +234,7 @@ void __cdecl BattleFx_MagicFullCureClearParticleCallbacks(void)
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_BattleMagicFullCureParticleCallbacks[i] = 0;
     }
 }
@@ -252,7 +252,7 @@ void __cdecl BattleFx_MagicFullCureParticleCallbackTask(void)
 
     frame.slot = BATTLE_CURRENT_TASK_SLOT;
     frame.active = 0;
-    for (frame.particleIndex = 0; frame.particleIndex < 0xc8; frame.particleIndex++) {
+    for (frame.particleIndex = 0; frame.particleIndex < 200; frame.particleIndex++) {
         if (g_BattleMagicFullCureParticleCallbacks[frame.particleIndex] != 0) {
             g_BattleMagicFullCureParticleCallbacks[frame.particleIndex](&((BattleFxMagicFullCureSparkle *)&g_BattleMagicFullCureParticlePool)[frame.particleIndex]);
             if (((BattleFxMagicFullCureSparkle *)&g_BattleMagicFullCureParticlePool)[frame.particleIndex].state == -1) {
@@ -301,25 +301,25 @@ void __cdecl BattleFx_MagicFullCureTimelineTask(void)
         child = (BattleFxFullCureTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFullCureSpawnGrowingModelsTask);
         child->targetPos = task->targetPos;
     }
-    if (task->frame == 0xA) {
+    if (task->frame == 10) {
         child = (BattleFxFullCureTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFullCureSpawnRisingSpritesTask);
         child->targetPos = task->targetPos;
     }
-    if (task->frame == 0xF) {
+    if (task->frame == 15) {
         child = (BattleFxFullCureTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFullCureSpawnFadingRisingSpritesTask);
         child->targetPos = task->targetPos;
     }
-    if (task->frame == 0x19) {
+    if (task->frame == 25) {
         child = (BattleFxFullCureTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicFullCureShrinkingModelTask);
         child->targetPos = task->targetPos;
     }
-    if (task->frame == 0x23) {
+    if (task->frame == 35) {
         Battle_PostActorHitOrHurtMessage(task->ownerSlot);
     }
-    if (task->frame == 0x4B) {
+    if (task->frame == 75) {
         Battle_StartFixedPointRamp(0, 5);
     }
-    if (task->frame == 0x4B) {
+    if (task->frame == 75) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frame)++;
@@ -341,7 +341,7 @@ void __cdecl BattleFx_MagicFullCureSpawnGrowingModelsTask(void)
         child->targetPos = task->targetPos;
     }
     (task->frame)++;
-    if (task->frame >= 0x1E) {
+    if (task->frame >= 30) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -361,10 +361,10 @@ void __cdecl BattleFx_MagicFullCureGrowingModelTask(void)
     }
     g_BattleMagicFullCureModelDef1.modelGroup = Gfx_ModelTableGetRenderObject(0, g_BattleMagicFullCureLoadedResTable);
     localFrame = task->frame;
-    if (localFrame < 0xF) {
+    if (localFrame < 15) {
         /* The mesh lies on its side: m[0][0], m[1][2] and m[2][1] carry the scale. */
-        ratio = (localFrame << 0xC) / 0xF;
-        g_BattleMagicFullCureTransformMatrix.m[2][1] = (ratio * 0x780 >> 0xC) + 0x80;
+        ratio = (localFrame << 12) / 15;
+        g_BattleMagicFullCureTransformMatrix.m[2][1] = (ratio * 0x780 >> 12) + 0x80;
         g_BattleMagicFullCureTransformMatrix.m[1][2] = g_BattleMagicFullCureTransformMatrix.m[2][1];
         g_BattleMagicFullCureTransformMatrix.m[0][0] = g_BattleMagicFullCureTransformMatrix.m[1][2];
         g_BattleMagicFullCureModelDef1.fadeLevel = ratio;
@@ -405,15 +405,15 @@ void __cdecl BattleFx_MagicFullCureSpawnRisingSpritesTask(void)
     for (k = 0; k < 3; k++) {
         pSprite = BattleFx_MagicFullCureClaimParticleRecord(BattleFx_MagicFullCureRisingSpriteParticle);
         if (DEAD_IN_RETAIL != 0) {
-            rndRadius = 0x3E8;
+            rndRadius = 1000;
         } else {
-            rndRadius = rand() % 0x3E8;
+            rndRadius = rand() % 1000;
         }
         extent = rndRadius;
         angle = rand() & 0xFFF;
-        pSprite->pos.vx = task->targetPos.vx + (extent * SinFixed(angle) >> 0xC);
+        pSprite->pos.vx = task->targetPos.vx + (extent * SinFixed(angle) >> 12);
         pSprite->pos.vy = 0;
-        pSprite->pos.vz = task->targetPos.vz + (extent * CosFixed(angle) >> 0xC);
+        pSprite->pos.vz = task->targetPos.vz + (extent * CosFixed(angle) >> 12);
         if (DEAD_IN_RETAIL != 0) {
             hRoll = 0x190;
         } else {
@@ -421,14 +421,14 @@ void __cdecl BattleFx_MagicFullCureSpawnRisingSpritesTask(void)
         }
         pSprite->velocityY = -hRoll;
         if (DEAD_IN_RETAIL != 0) {
-            speedValue = 0x800;
+            speedValue = 2048;
         } else {
-            speedValue = rand() % 0x400 + 0x400;
+            speedValue = rand() % 1024 + 1024;
         }
         pSprite->scale = speedValue;
     }
     (task->frame)++;
-    if (task->frame >= 0x14) {
+    if (task->frame >= 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -439,7 +439,7 @@ BattleFxMagicFullCureSparkle *__cdecl BattleFx_MagicFullCureClaimParticleRecord(
 {
     int i;
 
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         if (g_BattleMagicFullCureParticleCallbacks[i] == 0) {
             g_BattleMagicFullCureParticleCallbacks[i] = pIndex;
             ((BattleFxMagicFullCureSparkle *)&g_BattleMagicFullCureParticlePool)[i].state = 0;
@@ -459,15 +459,15 @@ void __cdecl BattleFx_MagicFullCureRisingSpriteParticle(BattleFxMagicFullCureSpa
 
     g_BattleMagicFullCureSpriteRequest1.drawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleMagicFullCureLoadedResTable);
     localFrame = particleRecord->frame;
-    if (localFrame < 0xA) {
+    if (localFrame < 10) {
         g_BattleMagicFullCureSpriteRequest1.colorB = 0x80;
         g_BattleMagicFullCureSpriteRequest1.colorG = g_BattleMagicFullCureSpriteRequest1.colorB;
         g_BattleMagicFullCureSpriteRequest1.colorR = g_BattleMagicFullCureSpriteRequest1.colorG;
     } else {
-        localFrame -= 0xA;
+        localFrame -= 10;
         if (localFrame < 5) {
-            frac = (localFrame << 0xC) / 5;
-            g_BattleMagicFullCureSpriteRequest1.colorB = (frac * -0x80 >> 0xC) + 0x80;
+            frac = (localFrame << 12) / 5;
+            g_BattleMagicFullCureSpriteRequest1.colorB = (frac * -0x80 >> 12) + 0x80;
             g_BattleMagicFullCureSpriteRequest1.colorG = g_BattleMagicFullCureSpriteRequest1.colorB;
             g_BattleMagicFullCureSpriteRequest1.colorR = g_BattleMagicFullCureSpriteRequest1.colorG;
         } else {
@@ -480,7 +480,7 @@ void __cdecl BattleFx_MagicFullCureRisingSpriteParticle(BattleFxMagicFullCureSpa
     if (g_BattleIsPaused == 0) {
         (particleRecord->frame)++;
         particleRecord->pos.vy += particleRecord->velocityY;
-        particleRecord->velocityY = particleRecord->velocityY * 0xF80 >> 0xC;
+        particleRecord->velocityY = particleRecord->velocityY * 0xF80 >> 12;
     }
 }
 
@@ -505,39 +505,39 @@ void __cdecl BattleFx_MagicFullCureSpawnFadingRisingSpritesTask(void)
     for (k = 0; k < 3; k++) {
         pSprite = BattleFx_MagicFullCureClaimParticleRecord(BattleFx_MagicFullCureFadingRisingSpriteTask);
         if (DEAD_IN_RETAIL != 0) {
-            rndRadius = 0xBB8;
+            rndRadius = 3000;
         } else {
-            rndRadius = rand() % 0x9C4 + 0x1F4;
+            rndRadius = rand() % 2500 + 500;
         }
         extent = rndRadius;
         angle = rand() & 0xFFF;
-        pSprite->pos.vx = task->targetPos.vx + (extent * SinFixed(angle) >> 0xC);
+        pSprite->pos.vx = task->targetPos.vx + (extent * SinFixed(angle) >> 12);
         pSprite->pos.vy = 0xF448;
-        pSprite->pos.vz = task->targetPos.vz + (extent * CosFixed(angle) >> 0xC);
+        pSprite->pos.vz = task->targetPos.vz + (extent * CosFixed(angle) >> 12);
         pSprite->angles.vx = rand() & 0xFFF;
         pSprite->angles.vy = rand() & 0xFFF;
         pSprite->angles.vz = rand() & 0xFFF;
         if (DEAD_IN_RETAIL != 0) {
-            speedValue = 0x800;
+            speedValue = 2048;
         } else {
-            speedValue = rand() % 0x400 + 0x400;
+            speedValue = rand() % 1024 + 1024;
         }
         pSprite->scale = speedValue;
         if (DEAD_IN_RETAIL != 0) {
             orbitRnd = 0xC8;
         } else {
-            orbitRnd = rand() % 0xBE + 0xA;
+            orbitRnd = rand() % 190 + 10;
         }
         pSprite->orbitRadius = orbitRnd;
         if (DEAD_IN_RETAIL != 0) {
-            accelTmp = 0x55;
+            accelTmp = 85;
         } else {
-            accelTmp = rand() % 0x32 + 0x23;
+            accelTmp = rand() % 50 + 35;
         }
         pSprite->fallSpeed = accelTmp;
     }
     (task->frame)++;
-    if (task->frame >= 0x14) {
+    if (task->frame >= 20) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -557,21 +557,21 @@ void __cdecl BattleFx_MagicFullCureFadingRisingSpriteTask(BattleFxMagicFullCureS
     g_BattleMagicFullCureModelDef2.spriteDrawObj = Gfx_ModelTableGetSpriteObject(2, g_BattleMagicFullCureLoadedResTable);
     phaseFrame = particleRecord->frame;
     if (phaseFrame < 5) {
-        fade = (phaseFrame << 0xC) / 5;
-        g_BattleMagicFullCureSpriteRequest2.colorB = fade << 7 >> 0xC;
+        fade = (phaseFrame << 12) / 5;
+        g_BattleMagicFullCureSpriteRequest2.colorB = fade << 7 >> 12;
         g_BattleMagicFullCureSpriteRequest2.colorG = g_BattleMagicFullCureSpriteRequest2.colorB;
         g_BattleMagicFullCureSpriteRequest2.colorR = g_BattleMagicFullCureSpriteRequest2.colorG;
     } else {
         phaseFrame -= 5;
-        if (phaseFrame < 0x19) {
+        if (phaseFrame < 25) {
             g_BattleMagicFullCureSpriteRequest2.colorB = 0x80;
             g_BattleMagicFullCureSpriteRequest2.colorG = g_BattleMagicFullCureSpriteRequest2.colorB;
             g_BattleMagicFullCureSpriteRequest2.colorR = g_BattleMagicFullCureSpriteRequest2.colorG;
         } else {
-            phaseFrame -= 0x19;
+            phaseFrame -= 25;
             if (phaseFrame < 5) {
-                fade = (phaseFrame << 0xC) / 5;
-                g_BattleMagicFullCureSpriteRequest2.colorB = (fade * -0x80 >> 0xC) + 0x80;
+                fade = (phaseFrame << 12) / 5;
+                g_BattleMagicFullCureSpriteRequest2.colorB = (fade * -0x80 >> 12) + 0x80;
                 g_BattleMagicFullCureSpriteRequest2.colorG = g_BattleMagicFullCureSpriteRequest2.colorB;
                 g_BattleMagicFullCureSpriteRequest2.colorR = g_BattleMagicFullCureSpriteRequest2.colorG;
             } else {
@@ -614,21 +614,21 @@ void __cdecl BattleFx_MagicFullCureShrinkingModelTask(void)
     }
     g_BattleMagicFullCureModelDef2.model.modelGroup = Gfx_ModelTableGetRenderObject(1, g_BattleMagicFullCureLoadedResTable);
     frameCount = task->frame;
-    if (frameCount < 0xA) {
-        ratio = (frameCount << 0xC) / 0xA;
+    if (frameCount < 10) {
+        ratio = (frameCount << 12) / 10;
         g_BattleMagicFullCureModelDef2.transform.m[2][2] = 0x1000;
         g_BattleMagicFullCureModelDef2.transform.m[0][0] = g_BattleMagicFullCureModelDef2.transform.m[2][2];
-        g_BattleMagicFullCureModelDef2.model.fadeLevel = 0x1000 - ratio;
+        g_BattleMagicFullCureModelDef2.model.fadeLevel = 4096 - ratio;
     } else {
-        frameCount -= 0xA;
-        if (frameCount < 0x28) {
-            ratio = (frameCount << 0xC) / 0x28;
-            g_BattleMagicFullCureModelDef2.transform.m[2][2] = (ratio * -0x1000 >> 0xC) + 0x1000;
+        frameCount -= 10;
+        if (frameCount < 40) {
+            ratio = (frameCount << 12) / 40;
+            g_BattleMagicFullCureModelDef2.transform.m[2][2] = (ratio * -0x1000 /* 1.0 */ >> 12) + 0x1000;
             g_BattleMagicFullCureModelDef2.transform.m[0][0] = g_BattleMagicFullCureModelDef2.transform.m[2][2];
-            if (frameCount < 0x14) {
+            if (frameCount < 20) {
                 g_BattleMagicFullCureModelDef2.model.fadeLevel = 0;
             } else {
-                ratio = (frameCount - 0x14 << 0xC) / 0x14;
+                ratio = (frameCount - 0x14 << 12) / 20;
                 g_BattleMagicFullCureModelDef2.model.fadeLevel = ratio;
             }
         } else {

@@ -237,7 +237,7 @@ HighwayIndex::HighwayIndex()
     this->freeHead = 0;
     {
         int i;
-        for (i = 0; i < 0x190; i++) {
+        for (i = 0; i < 400; i++) {
             this->nextFree[i] = i + 1;
         }
     }

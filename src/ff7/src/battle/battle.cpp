@@ -128,7 +128,7 @@ int g_BattleArenaRoundBreakDone = 0;
 // GLOBAL: FF7 0x009ab9f0
 int g_BattleUnreadPhaseWord = 0;
 // GLOBAL: FF7 0x009ab9f4
-unsigned char g_BattleMessageWindowTextId[0x4] = {0};
+unsigned char g_BattleMessageWindowTextId[4] = {0};
 // GLOBAL: FF7 0x009ab9f8
 int g_BattleSequenceWaitDone = 0;
 unsigned char g_bssPad_009ab9fc[4] = {0};
@@ -171,7 +171,7 @@ int g_BattleActionQueueResult = 0;
 int g_BattleModeTransition = 0;
 unsigned char g_bssPad_009acb94[4] = {0};
 // The battle's hit records: 128 records of 12 bytes (BattleHitRecord). Battle_ClearWorkRam clears the
-// whole table; battle_sequence_step_records.cpp walks it for q < 0x80; Battle3d_PushHitDisplayEntry
+// whole table; battle_sequence_step_records.cpp walks it for q < 128; Battle3d_PushHitDisplayEntry
 // (battle_opening_actor_setup.cpp) copies a record's status into the effect-order table. It is one
 // object so that every record keeps its 12-byte stride.
 // Aliased as g_BattleEffectOrderTable in include/ff7/api/battle.h.
@@ -384,7 +384,7 @@ static __inline void Battle_ShutdownSession(void)
     g_BattlePhase = BATTLE_PHASE_INIT;
     g_BattleSessionEntryCount = 0;
     // STRING: FF7 0x007c0b68
-    GameHeapFree((void *)g_BattleCameraGlobalScripts, "C:\\FF7\\src\\Battle\\Battle.cpp", 0x143);
+    GameHeapFree((void *)g_BattleCameraGlobalScripts, "C:\\FF7\\src\\Battle\\Battle.cpp", 323);
     g_BattleCameraGlobalScripts = 0;
     for (partyIndex = 0; partyIndex < 4; partyIndex++) {
         gSavemap.party[partyIndex] = g_BattleSavedPartyBytes[partyIndex];

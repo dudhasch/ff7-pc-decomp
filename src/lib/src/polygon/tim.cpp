@@ -43,27 +43,27 @@ void __cdecl Pfile_ComputeTimTextureSize(PolygonTim *texture)
         switch (texture->bitsPerPixel) {
         case GFX_BPP_4:
             width *= 4;
-            texture->texX = record->x % 0x40;
+            texture->texX = record->x % 64;
             texture->texX *= 4;
-            texture->texY = record->y % 0x100;
-            texture->texPage = record->x / 0x40;
-            texture->texPage += record->y / 0x100 * 16;
+            texture->texY = record->y % 256;
+            texture->texPage = record->x / 64;
+            texture->texPage += record->y / 256 * 16;
             break;
         case GFX_BPP_8:
             width *= 2;
-            texture->texX = record->x % 0x80;
+            texture->texX = record->x % 128;
             texture->texX *= 2;
-            texture->texY = record->y % 0x100;
-            texture->texPage = record->x / 0x80;
-            texture->texPage += record->y / 0x100 * 8;
+            texture->texY = record->y % 256;
+            texture->texPage = record->x / 128;
+            texture->texPage += record->y / 256 * 8;
             break;
         case GFX_BPP_16:
             width *= 1;
-            texture->texX = record->x % 0x100;
+            texture->texX = record->x % 256;
             texture->texX *= 1;
-            texture->texY = record->y % 0x100;
-            texture->texPage = record->x / 0x100;
-            texture->texPage += record->y / 0x100 * 4;
+            texture->texY = record->y % 256;
+            texture->texPage = record->x / 256;
+            texture->texPage += record->y / 256 * 4;
             break;
         case GFX_BPP_24:
             width = width * 2 / 3;
@@ -102,20 +102,20 @@ void __cdecl Pfile_DestroyTim(PolygonTim *timTexture)
     if (timTexture != 0) {
         if (timTexture->image != 0) {
             // STRING: FF7 0x009116dc
-            GameHeapFree((void *)timTexture->image->data, "C:\\lib\\src\\polygon\\tim.cpp", 0x5E);
+            GameHeapFree((void *)timTexture->image->data, "C:\\lib\\src\\polygon\\tim.cpp", 94);
             // STRING: FF7 0x009116f8
-            GameHeapFree(timTexture->image, "C:\\lib\\src\\polygon\\tim.cpp", 0x5F);
+            GameHeapFree(timTexture->image, "C:\\lib\\src\\polygon\\tim.cpp", 95);
         }
         if (timTexture->clut != 0) {
             // STRING: FF7 0x00911714
-            GameHeapFree((void *)timTexture->clut->data, "C:\\lib\\src\\polygon\\tim.cpp", 0x64);
+            GameHeapFree((void *)timTexture->clut->data, "C:\\lib\\src\\polygon\\tim.cpp", 100);
             // STRING: FF7 0x00911730
-            GameHeapFree(timTexture->clut, "C:\\lib\\src\\polygon\\tim.cpp", 0x65);
+            GameHeapFree(timTexture->clut, "C:\\lib\\src\\polygon\\tim.cpp", 101);
         }
         // STRING: FF7 0x0091174c
-        GameHeapFree(timTexture->header, "C:\\lib\\src\\polygon\\tim.cpp", 0x68);
+        GameHeapFree(timTexture->header, "C:\\lib\\src\\polygon\\tim.cpp", 104);
         // STRING: FF7 0x00911768
-        GameHeapFree(timTexture, "C:\\lib\\src\\polygon\\tim.cpp", 0x69);
+        GameHeapFree(timTexture, "C:\\lib\\src\\polygon\\tim.cpp", 105);
     }
 }
 
@@ -135,10 +135,10 @@ int __cdecl Pfile_LoadTimFromContext(FileOpenRequest *fileContext, const char *f
 
     errorCode = 1;
     // STRING: FF7 0x00911784
-    pResult = (PolygonTim *)GameHeapAlloc(1, 0x44, "C:\\lib\\src\\polygon\\tim.cpp", 0x77);
+    pResult = (PolygonTim *)GameHeapAlloc(1, 68, "C:\\lib\\src\\polygon\\tim.cpp", 119);
     if (pResult != 0) {
         // STRING: FF7 0x009117a0
-        pResult->header = (PolygonTimHeader *)GameHeapAlloc(1, 8, "C:\\lib\\src\\polygon\\tim.cpp", 0x7A);
+        pResult->header = (PolygonTimHeader *)GameHeapAlloc(1, 8, "C:\\lib\\src\\polygon\\tim.cpp", 122);
         hdrBlock = pResult->header;
         if (hdrBlock != 0) {
             handle = OpenFileEx(fileContext, fileName);
@@ -148,7 +148,7 @@ int __cdecl Pfile_LoadTimFromContext(FileOpenRequest *fileContext, const char *f
                         if ((hdrBlock->id & 0xFF00) == 0) {
                             if ((hdrBlock->flags & TIM_FLAG_HAS_CLUT) != 0) {
                                 // STRING: FF7 0x009117bc
-                                pResult->clut = (PolygonTimBlock *)GameHeapAlloc(1, 0x10, "C:\\lib\\src\\polygon\\tim.cpp", 0x8D);
+                                pResult->clut = (PolygonTimBlock *)GameHeapAlloc(1, 16, "C:\\lib\\src\\polygon\\tim.cpp", 141);
                                 if (pResult->clut != 0) {
                                     if (ReadFileData(4, pResult->clut, handle) != 0) {
                                         if (ReadFileData(8, &pResult->clut->rect, handle) != 0) {
@@ -175,7 +175,7 @@ int __cdecl Pfile_LoadTimFromContext(FileOpenRequest *fileContext, const char *f
                             if (errorCode == 0) {
                                 errorCode = 1;
                                 // STRING: FF7 0x009117d8
-                                pResult->image = (PolygonTimBlock *)GameHeapAlloc(1, 0x10, "C:\\lib\\src\\polygon\\tim.cpp", 0xB7);
+                                pResult->image = (PolygonTimBlock *)GameHeapAlloc(1, 16, "C:\\lib\\src\\polygon\\tim.cpp", 183);
                                 if (pResult->image != 0) {
                                     if (ReadFileData(4, pResult->image, handle) != 0) {
                                         if (ReadFileData(8, &pResult->image->rect, handle) != 0) {
@@ -287,7 +287,7 @@ int __cdecl Pfile_TimSpreadNibbles(int value)
 {
     int result;
 
-    result = value & 0xF | (value & 0xF0) << 4 | (value & 0xF00) << 8 | (value & 0xF000) << 0xC;
+    result = value & 0xF | (value & 0xF0) << 4 | (value & 0xF00) << 8 | (value & 0xF000) << 12;
     return result;
 }
 
@@ -431,7 +431,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
                 }
                 texFormat8->entriesPerPalette = headerPtr->entriesPerPalette;
                 // STRING: FF7 0x00911844
-                texFormat8->palette = (PolygonTimColor *)GameHeapAlloc(texFormat8->paletteEntryCount, 4, "C:\\lib\\src\\polygon\\tim.cpp", 0x1D4);
+                texFormat8->palette = (PolygonTimColor *)GameHeapAlloc(texFormat8->paletteEntryCount, 4, "C:\\lib\\src\\polygon\\tim.cpp", 468);
                 if (DEBUG_TRACE) {
                     // STRING: FF7 0x00911860
                     sprintf(textB, "%s TOTAL PALETTES %d ENTRIES PER PALETTE %d \n", fileName, headerPtr->paletteCount, headerPtr->entriesPerPalette);
@@ -508,7 +508,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
             }
             if (blackFlag != 0 && texFormat8->paletteEntryCount > 0) {
                 // STRING: FF7 0x009118c8
-                remapTable = (int *)GameHeapAlloc(texFormat8->paletteEntryCount, 4, "C:\\lib\\src\\polygon\\tim.cpp", 0x264);
+                remapTable = (int *)GameHeapAlloc(texFormat8->paletteEntryCount, 4, "C:\\lib\\src\\polygon\\tim.cpp", 612);
                 for (outIdx = 0; outIdx < headerPtr->entriesPerPalette; outIdx++) {
                     remapTable[outIdx] = outIdx;
                 }
@@ -598,7 +598,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
             switch (timRecord->header->flags & TIM_FLAG_PIXEL_MODE_MASK) {
             case TIM_PIXEL_MODE_4BPP:
                 // STRING: FF7 0x00911924
-                headerPtr->pixelBuffer = (int)GameHeapAlloc(texFormat8->width * texFormat8->height, 1, "C:\\lib\\src\\polygon\\tim.cpp", 0x30C);
+                headerPtr->pixelBuffer = (int)GameHeapAlloc(texFormat8->width * texFormat8->height, 1, "C:\\lib\\src\\polygon\\tim.cpp", 780);
                 curBufEntry = (int *)headerPtr->pixelBuffer;
                 if (curBufEntry != 0) {
                     rowWords = imageWidth / 4;
@@ -624,7 +624,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
                 break;
             case TIM_PIXEL_MODE_8BPP:
                 // STRING: FF7 0x00911940
-                headerPtr->pixelBuffer = (int)GameHeapAlloc(texFormat8->width * texFormat8->height, 1, "C:\\lib\\src\\polygon\\tim.cpp", 0x344);
+                headerPtr->pixelBuffer = (int)GameHeapAlloc(texFormat8->width * texFormat8->height, 1, "C:\\lib\\src\\polygon\\tim.cpp", 836);
                 shortBuf = (short *)headerPtr->pixelBuffer;
                 if (shortBuf != 0) {
                     rowWords = imageWidth / 2;
@@ -706,7 +706,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
                     xPad = outW - texFormat8->width;
                     mainPadBottom = outHeight - texFormat8->height;
                     // STRING: FF7 0x009119bc
-                    padBuf = (int)GameHeapAlloc(1, outW * outHeight * texFormat8->bytesPerPixel, "C:\\lib\\src\\polygon\\tim.cpp", 0x3E2);
+                    padBuf = (int)GameHeapAlloc(1, outW * outHeight * texFormat8->bytesPerPixel, "C:\\lib\\src\\polygon\\tim.cpp", 994);
                     if (padBuf != 0) {
                         dstRow = padBuf;
                         srcPtr = headerPtr->pixelBuffer;
@@ -716,7 +716,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
                             dstRow += outW * texFormat8->bytesPerPixel;
                         }
                         // STRING: FF7 0x009119d8
-                        GameHeapFree((void *)headerPtr->pixelBuffer, "C:\\lib\\src\\polygon\\tim.cpp", 0x3F1);
+                        GameHeapFree((void *)headerPtr->pixelBuffer, "C:\\lib\\src\\polygon\\tim.cpp", 1009);
                         if (texFormat8->bytesPerPixel == 1) {
                             if ((timRecord->flags & 2) != 0 && xPad > 0) {
                                 dstRow = padBuf;
@@ -748,7 +748,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
                 if (UNFOLDED(0) && headerPtr->paletteCount > 0) {
                     headerPtr->paletteMode = 1;
                     // STRING: FF7 0x009119f4
-                    headerPtr->colorLookup = (int)GameHeapAlloc(headerPtr->paletteCount, 1, "C:\\lib\\src\\polygon\\tim.cpp", 0x433);
+                    headerPtr->colorLookup = (int)GameHeapAlloc(headerPtr->paletteCount, 1, "C:\\lib\\src\\polygon\\tim.cpp", 1075);
                     for (lookupIndex = 0; lookupIndex < headerPtr->paletteCount; lookupIndex++) {
                         if ((lookupIndex & 1) != 0) {
                             *(char *)((char *)headerPtr->colorLookup + lookupIndex) = 1;
@@ -757,7 +757,7 @@ int __cdecl Pfile_BuildTextureFromTimRect(int rectX, int rectY, int rectWidth, i
                 }
             }
             // STRING: FF7 0x00911a10
-            GameHeapFree(remapTable, "C:\\lib\\src\\polygon\\tim.cpp", 0x443);
+            GameHeapFree(remapTable, "C:\\lib\\src\\polygon\\tim.cpp", 1091);
         }
     }
     if (failure != 0) {
@@ -805,10 +805,10 @@ void __cdecl Pfile_FreeTextureSet(int releaseTextures, PolygonTextureSet *textur
                 }
             }
             // STRING: FF7 0x00911a2c
-            GameHeapFree((void *)textureSet->textures, "C:\\lib\\src\\polygon\\tim.cpp", 0x477);
+            GameHeapFree((void *)textureSet->textures, "C:\\lib\\src\\polygon\\tim.cpp", 1143);
         }
         // STRING: FF7 0x00911a48
-        GameHeapFree(textureSet, "C:\\lib\\src\\polygon\\tim.cpp", 0x47A);
+        GameHeapFree(textureSet, "C:\\lib\\src\\polygon\\tim.cpp", 1146);
     }
 }
 
@@ -823,11 +823,11 @@ int __cdecl Pfile_AllocTextureSetHeader(int count)
     header = 0;
     if (count > 0) {
         // STRING: FF7 0x00911a64
-        header = (PolygonTextureSet *)GameHeapAlloc(1, 8, "C:\\lib\\src\\polygon\\tim.cpp", 0x485);
+        header = (PolygonTextureSet *)GameHeapAlloc(1, 8, "C:\\lib\\src\\polygon\\tim.cpp", 1157);
         if (header != 0) {
             header->textureCount = count;
             // STRING: FF7 0x00911a80
-            header->textures = (int)GameHeapAlloc(count, 4, "C:\\lib\\src\\polygon\\tim.cpp", 0x489);
+            header->textures = (int)GameHeapAlloc(count, 4, "C:\\lib\\src\\polygon\\tim.cpp", 1161);
         }
     }
     return (int)header;

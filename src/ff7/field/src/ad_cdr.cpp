@@ -131,9 +131,9 @@ int __cdecl Field_LoadFieldFile(char *path)
     if (pLgpEntry != 0) {
         size = GetLgpEntrySize((int)pLgpEntry, LGP_ARCHIVE_FIELD_LEVEL);
         // STRING: FF7 0x00906750
-        pPackedData = GameHeapAllocRaw(size, "C:\\FF7\\field\\src\\ad_cdr.cpp", 0x68);
+        pPackedData = GameHeapAllocRaw(size, "C:\\FF7\\field\\src\\ad_cdr.cpp", 104);
         // STRING: FF7 0x0090676c
-        g_pFieldFileBuffer = GameHeapAllocRaw(g_FieldFileUncompressedSize, "C:\\FF7\\field\\src\\ad_cdr.cpp", 0x6b);
+        g_pFieldFileBuffer = GameHeapAllocRaw(g_FieldFileUncompressedSize, "C:\\FF7\\field\\src\\ad_cdr.cpp", 107);
         if (g_pFieldFileBuffer == 0) {
             return 0;
         }
@@ -141,7 +141,7 @@ int __cdecl Field_LoadFieldFile(char *path)
         Field_DecompressLzs((unsigned char *)pPackedData, (unsigned char *)g_pFieldFileBuffer);
         if (pPackedData != 0) {
             // STRING: FF7 0x00906788
-            GameHeapFree(pPackedData, "C:\\FF7\\field\\src\\ad_cdr.cpp", 0x75);
+            GameHeapFree(pPackedData, "C:\\FF7\\field\\src\\ad_cdr.cpp", 117);
             pPackedData = 0;
         }
     } else {
@@ -179,7 +179,7 @@ void __cdecl Field_FreeFlevelBuffer(void)
 {
     if (g_pFieldFileBuffer != 0) {
         // STRING: FF7 0x009067a4
-        GameHeapFree(g_pFieldFileBuffer, "C:\\FF7\\field\\src\\ad_cdr.cpp", 0x95);
+        GameHeapFree(g_pFieldFileBuffer, "C:\\FF7\\field\\src\\ad_cdr.cpp", 149);
         g_pFieldFileBuffer = 0;
     }
 }

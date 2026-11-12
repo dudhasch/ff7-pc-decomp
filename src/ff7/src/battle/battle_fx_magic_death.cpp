@@ -166,7 +166,7 @@ void __cdecl BattleFx_MagicDeathPlaceEffectTask(void)
 #pragma pack(pop)
 
     frame.actorIndex = 0;
-    for (frame.targetCount = 0; frame.actorIndex < 0xA; frame.actorIndex++) {
+    for (frame.targetCount = 0; frame.actorIndex < 10; frame.actorIndex++) {
         if ((g_BattleMagicDeathTargetMask & 1 << frame.actorIndex) != 0) {
             frame.targetCount++;
             if (frame.targetCount == 1) {
@@ -179,9 +179,9 @@ void __cdecl BattleFx_MagicDeathPlaceEffectTask(void)
     if (frame.targetCount == 1 && g_BattleActorRecords[g_BattleMagicDeathOriginActor].effectCategory != 0x14) {
         frame.spawnSlot = (BattleFxDeathPlaceEffectSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDeathTimelineTask);
         Battle_GetBoneWorldPos(frame.targetActor, g_BattleActorRecords[frame.targetActor].altBone, &frame.spawnSlot->posX);
-        frame.spawnDistance = g_BattleActorRecords[frame.targetActor].radius + 0xE0;
-        if (frame.spawnDistance > 0x76C) {
-            frame.spawnDistance = 0x76C;
+        frame.spawnDistance = g_BattleActorRecords[frame.targetActor].radius + 224;
+        if (frame.spawnDistance > 1900) {
+            frame.spawnDistance = 1900;
         }
         frame.spawnSlot->angleBetweenVectors = g_BattleActorRecords[frame.targetActor].yaw;
         frame.spawnSlot->spawnIndex = *(short *)&frame.spawnDistance;
@@ -190,9 +190,9 @@ void __cdecl BattleFx_MagicDeathPlaceEffectTask(void)
     } else {
         frame.spawnSlot = (BattleFxDeathPlaceEffectSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDeathTimelineTask);
         Battle_GetBoneWorldPos(g_BattleMagicDeathOriginActor, g_BattleActorRecords[g_BattleMagicDeathOriginActor].altBone, &frame.spawnSlot->posX);
-        frame.spawnDistance = g_BattleActorRecords[g_BattleMagicDeathOriginActor].radius + 0x1C0;
-        if (frame.spawnDistance > 0x76C) {
-            frame.spawnDistance = 0x76C;
+        frame.spawnDistance = g_BattleActorRecords[g_BattleMagicDeathOriginActor].radius + 448;
+        if (frame.spawnDistance > 1900) {
+            frame.spawnDistance = 1900;
         }
         frame.spawnSlot->spawnIndex = *(short *)&frame.spawnDistance;
         frame.spawnSlot->stage = 0;
@@ -216,7 +216,7 @@ void __cdecl BattleFx_MagicDeathPlaceEffectTask(void)
     frame.offsetX.vz = -frame.spawnDistance;
     TransformVectorToInt16(&frame.rotMatrix, &frame.offsetX, &frame.offsetX.vx);
     frame.spawnSlot->posX += frame.offsetX.vx;
-    frame.spawnSlot->posY += (short)(frame.offsetX.vy + 0x12C);
+    frame.spawnSlot->posY += (short)(frame.offsetX.vy + 300);
     frame.spawnSlot->posZ += frame.offsetX.vz;
     if (frame.spawnSlot->posY > 0) {
         frame.spawnSlot->posY = 0;
@@ -244,7 +244,7 @@ void __cdecl BattleFx_MagicDeathTimelineTask(void)
         return;
     }
     innerTask = (BattleFxDeathState *)BATTLE_CURRENT_TASK_SLOT;
-    if (innerTask->step == 0x1E) {
+    if (innerTask->step == 30) {
         if (innerTask->flag != 0) {
             pSprite = (BattleFxDeathSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDeathCurvedStripTimelineTask);
         } else {
@@ -253,40 +253,40 @@ void __cdecl BattleFx_MagicDeathTimelineTask(void)
         *(Int64Pair *)&pSprite->posX = *(Int64Pair *)&innerTask->baseX;
         pSprite->angle = innerTask->angle;
     }
-    if (innerTask->step >= 1 && innerTask->step <= 0x10) {
+    if (innerTask->step >= 1 && innerTask->step <= 16) {
         writePos = g_BattleMagicDeathWorkingBlob1.writePos;
         pSprite = (BattleFxDeathSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDeathGatherSpritesToTarget);
         pSprite->ringStartIndex = writePos;
         maxScale = 0x12AA;
         for (i = 0; i < 4; i++) {
-            rnd = rand() % 0x1000 + 0x800;
-            g_BattleMagicDeathWorkingBlob1.points[writePos].x = innerTask->baseX + rand() % 0x708 + -0x384;
-            g_BattleMagicDeathWorkingBlob1.points[writePos].y = innerTask->baseY - 0xA5A;
-            g_BattleMagicDeathWorkingBlob1.points[writePos].z = innerTask->baseZ + rand() % 0x708 + -0x384;
-            g_BattleMagicDeathWorkingBlob1.points[writePos].scale = maxScale * rnd >> 0xC;
+            rnd = rand() % 4096 + 2048;
+            g_BattleMagicDeathWorkingBlob1.points[writePos].x = innerTask->baseX + rand() % 1800 + -900;
+            g_BattleMagicDeathWorkingBlob1.points[writePos].y = innerTask->baseY - 2650;
+            g_BattleMagicDeathWorkingBlob1.points[writePos].z = innerTask->baseZ + rand() % 1800 + -900;
+            g_BattleMagicDeathWorkingBlob1.points[writePos].scale = maxScale * rnd >> 12;
             writePos++;
-            if (writePos >= 0x90) {
+            if (writePos >= 144) {
                 writePos = 0;
             }
         }
         g_BattleMagicDeathWorkingBlob1.writePos = writePos;
     }
-    if (innerTask->step >= 6 && innerTask->step <= 0x1A) {
+    if (innerTask->step >= 6 && innerTask->step <= 26) {
         maxScale = 0x12AA;
         for (i = 0; i < 5; i++) {
-            rnd = rand() % 0x800 + 0x700;
+            rnd = rand() % 2048 + 1792;
             pSprite = (BattleFxDeathSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDeathSpiralSpriteTask);
             *(Int64Pair *)&pSprite->posX = *(Int64Pair *)&innerTask->baseX;
-            pSprite->posY -= 0x9F6;
+            pSprite->posY -= 2550;
             pSprite->angle = (g_BattleMagicDeathWorkingBlob1.writePos + i & 0xFFF) << 6;
             pSprite->angleStep = rand() % 0x1C + 0x20;
-            pSprite->scale = maxScale * rnd >> 0xC;
-            pSprite->radialOffset = rand() % 0x1E + 0x1C;
-            pSprite->yStep = rand() % 0x3C + 0xDC;
-            pSprite->radialStep = rand() % 0xF + 0x14;
+            pSprite->scale = maxScale * rnd >> 12;
+            pSprite->radialOffset = rand() % 30 + 28;
+            pSprite->yStep = rand() % 60 + 220;
+            pSprite->radialStep = rand() % 15 + 20;
         }
     }
-    if (innerTask->step >= 0x15 && innerTask->step <= 0x5F) {
+    if (innerTask->step >= 21 && innerTask->step <= 95) {
         writePos = g_BattleMagicDeathWorkingBlob1.writePos;
         pSprite = (BattleFxDeathSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicDeathScatterSpritesFromTarget);
         pSprite->ringStartIndex = writePos;
@@ -296,24 +296,24 @@ void __cdecl BattleFx_MagicDeathTimelineTask(void)
             innerTask->stage = 5;
         }
         for (i = 0; i < innerTask->stage; i++) {
-            rnd = rand() % 0xC00 + 0x700;
-            g_BattleMagicDeathWorkingBlob1.points[writePos].x = innerTask->baseX + rand() % 0x44C + -0x226;
+            rnd = rand() % 3072 + 1792;
+            g_BattleMagicDeathWorkingBlob1.points[writePos].x = innerTask->baseX + rand() % 1100 + -550;
             g_BattleMagicDeathWorkingBlob1.points[writePos].y = innerTask->baseY;
-            g_BattleMagicDeathWorkingBlob1.points[writePos].z = innerTask->baseZ + rand() % 0x44C + -0x226;
-            g_BattleMagicDeathWorkingBlob1.points[writePos].scale = maxScale * rnd >> 0xC;
+            g_BattleMagicDeathWorkingBlob1.points[writePos].z = innerTask->baseZ + rand() % 1100 + -550;
+            g_BattleMagicDeathWorkingBlob1.points[writePos].scale = maxScale * rnd >> 12;
             writePos++;
-            if (writePos >= 0x90) {
+            if (writePos >= 144) {
                 writePos = 0;
             }
         }
         g_BattleMagicDeathWorkingBlob1.writePos = writePos;
     }
-    if (innerTask->step < 0xA) {
+    if (innerTask->step < 10) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        ramp = innerTask->step * 0xCC;
-    } else if (innerTask->step >= 0x5F) {
+        ramp = innerTask->step * 204;
+    } else if (innerTask->step >= 95) {
         ramp = 0x800 - (innerTask->step - 0x5F << 8);
         if (ramp < 0) {
             ramp = 0;
@@ -321,7 +321,7 @@ void __cdecl BattleFx_MagicDeathTimelineTask(void)
     } else {
         ramp = 0x800;
     }
-    if (innerTask->step >= 0x67) {
+    if (innerTask->step >= 103) {
         ramp = 0;
         innerTask->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -358,11 +358,11 @@ void __cdecl BattleFx_MagicDeathLinearStripTimelineTask(void)
         *(Int64Pair *)&ringEnt->posX = *(Int64Pair *)&taskSlot->posX;
         ringEnt->angle = taskSlot->angle + 0x800 & 0xFFF;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&taskSlot->posX), 0x1A4);
-    } else if (taskSlot->step == 0x37) {
+    } else if (taskSlot->step == 55) {
         Battle_AllocSceneMessage(2);
     }
-    if (taskSlot->step > 0x17 && taskSlot->step < 0x28) {
-        if (taskSlot->step < 0x1F) {
+    if (taskSlot->step > 23 && taskSlot->step < 40) {
+        if (taskSlot->step < 31) {
             BattleFx_MagicDeathUpdateDrawLinearStripTrail(1);
         } else {
             BattleFx_MagicDeathUpdateDrawLinearStripTrail(0);
@@ -371,16 +371,16 @@ void __cdecl BattleFx_MagicDeathLinearStripTimelineTask(void)
         g_BattleMagicDeathStepFlag = 0;
         g_BattleMagicDeathStateParam2 = 0;
         g_BattleMagicDeathStateParam1 = 0;
-        for (i8 = 0; i8 < 0x10; i8++) {
+        for (i8 = 0; i8 < 16; i8++) {
             g_BattleMagicDeathTrailData[i8].active = 0;
         }
     }
-    if (taskSlot->step == 0x18) {
+    if (taskSlot->step == 24) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&taskSlot->posX), 0x1A3);
     }
-    if (taskSlot->step == 0x28) {
+    if (taskSlot->step == 40) {
         i8 = 0;
-        for (r = 0; i8 < 0xA; i8++) {
+        for (r = 0; i8 < 10; i8++) {
             if ((g_BattleMagicDeathTargetMask & 1 << i8) != 0) {
                 Battle_PostActorHitOrHurtMessage(i8);
                 if ((g_BattleTimelineTargetMask & 1 << i8) != 0) {
@@ -392,7 +392,7 @@ void __cdecl BattleFx_MagicDeathLinearStripTimelineTask(void)
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&taskSlot->posX), 0x1A8);
         }
     }
-    if (taskSlot->step >= 0x41) {
+    if (taskSlot->step >= 65) {
         taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (taskSlot->step)++;
@@ -459,7 +459,7 @@ void __cdecl BattleFx_MagicDeathUpdateDrawLinearStripTrail(int updateFlag)
     SetTransMatrix(g_BattleCameraTransform.matrix);
     RefreshGlobalTransformState();
     SetDrawColorRGB(0x68, 0x28, 0x28);
-    stripTrailPtr->colRemaining = 0x10;
+    stripTrailPtr->colRemaining = 16;
     stripTrailPtr->shadeStartColor = 0x10;
     length = g_BattleMagicDeathStateParam2;
     numSegments = g_BattleMagicDeathStateParam1;
@@ -601,11 +601,11 @@ void __cdecl BattleFx_MagicDeathCurvedStripTimelineTask(void)
         *(Int64Pair *)&ringEnt->posX = *(Int64Pair *)&rawTaskSlot->posX;
         ringEnt->angle = rawTaskSlot->angle;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&rawTaskSlot->posX), 0x1A4);
-    } else if (rawTaskSlot->step == 0x37) {
+    } else if (rawTaskSlot->step == 55) {
         Battle_AllocSceneMessage(2);
     }
-    if (rawTaskSlot->step > 0x18 && rawTaskSlot->step < 0x2C) {
-        if (rawTaskSlot->step < 0x1F) {
+    if (rawTaskSlot->step > 24 && rawTaskSlot->step < 44) {
+        if (rawTaskSlot->step < 31) {
             BattleFx_MagicDeathUpdateDrawCurvedStripTrail(1);
         } else {
             BattleFx_MagicDeathUpdateDrawCurvedStripTrail(0);
@@ -614,22 +614,22 @@ void __cdecl BattleFx_MagicDeathCurvedStripTimelineTask(void)
         g_BattleMagicDeathStepFlag = 0;
         g_BattleMagicDeathStateParam2 = 0;
         g_BattleMagicDeathStateParam1 = 0;
-        for (i8 = 0; i8 < 0x10; i8++) {
+        for (i8 = 0; i8 < 16; i8++) {
             g_BattleMagicDeathTrailData[i8].active = 0;
         }
     }
-    if (rawTaskSlot->step == 0x18) {
+    if (rawTaskSlot->step == 24) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&rawTaskSlot->posX), 0x1A3);
     }
-    if (rawTaskSlot->step == 0x28) {
-        for (i8 = 0; i8 < 0xA; i8++) {
+    if (rawTaskSlot->step == 40) {
+        for (i8 = 0; i8 < 10; i8++) {
             if ((g_BattleMagicDeathTargetMask & 1 << i8) != 0) {
                 Battle_PostActorHitOrHurtMessage(i8);
             }
         }
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH2, Battle_ComputeScreenPanFromPosition(&rawTaskSlot->posX), 0x1A8);
     }
-    if (rawTaskSlot->step >= 0x41) {
+    if (rawTaskSlot->step >= 65) {
         rawTaskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (rawTaskSlot->step)++;
@@ -662,10 +662,10 @@ void __cdecl BattleFx_MagicDeathUpdateDrawCurvedStripTrail(int updateFlag)
     frame.scratch->normalA.vy = 0;
     frame.scratch->normalA.vz = frame.start.components[2] - g_BattleMagicDeathTargetPos.targetZ;
     NormalizeVectorFixed(&frame.scratch->normalA.vx, &frame.scratch->normalA.vx);
-    frame.start.components[0] = g_BattleMagicDeathTargetPos.targetX + (frame.scratch->normalA.vx * 0x12C >> 0xC);
-    frame.start.components[2] = g_BattleMagicDeathTargetPos.targetZ + (frame.scratch->normalA.vz * 0x12C >> 0xC);
-    frame.end.components[0] = g_BattleMagicDeathTargetPos.targetX + (frame.scratch->normalA.vx * 0x1130 >> 0xC);
-    frame.end.components[2] = g_BattleMagicDeathTargetPos.targetZ + (frame.scratch->normalA.vz * 0x1130 >> 0xC);
+    frame.start.components[0] = g_BattleMagicDeathTargetPos.targetX + (frame.scratch->normalA.vx * 0x12C >> 12);
+    frame.start.components[2] = g_BattleMagicDeathTargetPos.targetZ + (frame.scratch->normalA.vz * 0x12C >> 12);
+    frame.end.components[0] = g_BattleMagicDeathTargetPos.targetX + (frame.scratch->normalA.vx * 0x1130 >> 12);
+    frame.end.components[2] = g_BattleMagicDeathTargetPos.targetZ + (frame.scratch->normalA.vz * 0x1130 >> 12);
     frame.end.components[1] = g_BattleMagicDeathTargetPos.targetHeight - 0x2BC;
     frame.start.components[1] = frame.end.components[1];
     if (updateFlag != 0) {
@@ -709,7 +709,7 @@ void __cdecl BattleFx_MagicDeathUpdateDrawCurvedStripTrail(int updateFlag)
         }
         g_BattleMagicDeathStateParam2 = frame.next;
     }
-    frame.scratch->colRemaining = 0x10;
+    frame.scratch->colRemaining = 16;
     frame.scratch->shadeStartColor = 0x10;
     SetRotMatrix(g_BattleCameraTransform.matrix);
     SetTransMatrix(g_BattleCameraTransform.matrix);
@@ -769,10 +769,10 @@ void __cdecl BattleFx_MagicDeathUpdateDrawCurvedStripTrail(int updateFlag)
             frame.scratch->stripBHeight = frame.scratch->posAHeight;
             frame.scratch->stripAHeight = frame.scratch->stripBHeight;
             for (frame.point = 1; frame.point < frame.count; frame.point++) {
-                frame.scratch->stripAX = frame.scratch->posAX - (frame.scratch->distance * frame.scratch->normalA.vx >> 0xC);
-                frame.scratch->stripAY = frame.scratch->posAY - (frame.scratch->distance * frame.scratch->normalA.vz >> 0xC);
-                frame.scratch->stripBX = frame.scratch->posBX - (frame.scratch->segmentLength * frame.scratch->normalA.vx >> 0xC);
-                frame.scratch->stripBY = frame.scratch->posBY - (frame.scratch->segmentLength * frame.scratch->normalA.vz >> 0xC);
+                frame.scratch->stripAX = frame.scratch->posAX - (frame.scratch->distance * frame.scratch->normalA.vx >> 12);
+                frame.scratch->stripAY = frame.scratch->posAY - (frame.scratch->distance * frame.scratch->normalA.vz >> 12);
+                frame.scratch->stripBX = frame.scratch->posBX - (frame.scratch->segmentLength * frame.scratch->normalA.vx >> 12);
+                frame.scratch->stripBY = frame.scratch->posBY - (frame.scratch->segmentLength * frame.scratch->normalA.vz >> 12);
                 frame.scratch->distance += frame.scratch->savedDistance;
                 frame.scratch->segmentLength += frame.scratch->savedSegmentLength;
                 Gte_BuildAxisAngleMatrix(frame.point << 7, &frame.scratch->rotMatrix, &frame.scratch->cross);
@@ -793,10 +793,10 @@ void __cdecl BattleFx_MagicDeathUpdateDrawCurvedStripTrail(int updateFlag)
         *(Int64Pair *)&g_BattleMagicDeathTrailWorkingBlob1[frame.increment].startX = *(Int64Pair *)&g_BattleMagicDeathTrailData[frame.next].startPos;
         *(Int64Pair *)&g_BattleMagicDeathTrailWorkingBlob1[frame.increment].endX = *(Int64Pair *)&g_BattleMagicDeathTrailData[frame.next].endPos;
         frame.count += 2;
-        g_BattleMagicDeathTrailData[frame.current].startPos += (short)(frame.scratch->normalA.vx * 0x320 >> 0xC);
-        g_BattleMagicDeathTrailData[frame.current].posA += (short)(frame.scratch->normalA.vz * 0x320 >> 0xC);
-        g_BattleMagicDeathTrailData[frame.current].endPos += (short)(frame.scratch->normalA.vx * 0x640 >> 0xC);
-        g_BattleMagicDeathTrailData[frame.current].posB += (short)(frame.scratch->normalA.vz * 0x640 >> 0xC);
+        g_BattleMagicDeathTrailData[frame.current].startPos += (short)(frame.scratch->normalA.vx * 0x320 >> 12);
+        g_BattleMagicDeathTrailData[frame.current].posA += (short)(frame.scratch->normalA.vz * 0x320 >> 12);
+        g_BattleMagicDeathTrailData[frame.current].endPos += (short)(frame.scratch->normalA.vx * 0x640 >> 12);
+        g_BattleMagicDeathTrailData[frame.current].posB += (short)(frame.scratch->normalA.vz * 0x640 >> 12);
         frame.scratch->rColor = frame.scratch->colRemaining;
         frame.shade = 0x1000 / frame.total * frame.step;
         SetDrawColorRGB(0x78, 0x1A, 0x1A);
@@ -916,20 +916,20 @@ void __cdecl BattleFx_MagicDeathScatterSpritesFromTarget(void)
             auxDirX.vz = g_BattleMagicDeathWorkingBlob1.points[readPos].z - g_BattleMagicDeathTargetPos.targetZ;
             r = NormalizeVectorFixed(&auxDirX, &auxDirX);
             r = SqrtToInt(r) >> 5;
-            g_BattleMagicDeathWorkingBlob1.points[readPos].x += (short)(r * auxDirX.vx >> 0xC);
-            g_BattleMagicDeathWorkingBlob1.points[readPos].y += (short)(r * auxDirX.vy >> 0xC);
-            g_BattleMagicDeathWorkingBlob1.points[readPos].z += (short)(r * auxDirX.vz >> 0xC);
+            g_BattleMagicDeathWorkingBlob1.points[readPos].x += (short)(r * auxDirX.vx >> 12);
+            g_BattleMagicDeathWorkingBlob1.points[readPos].y += (short)(r * auxDirX.vy >> 12);
+            g_BattleMagicDeathWorkingBlob1.points[readPos].z += (short)(r * auxDirX.vz >> 12);
         }
         matrix = (int)BattleFx_InstallBillboardMatrix(&g_BattleMagicDeathWorkingBlob1.points[readPos].x, g_BattleMagicDeathWorkingBlob1.points[readPos].scale, 0);
         if (REG_ALLOC_HINT) {
         }
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleMagicDeathSpriteDrawReq1.sprite, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         readPos++;
-        if (readPos >= 0x90) {
+        if (readPos >= 144) {
             readPos = 0;
         }
     }
-    if (pFx->frame >= 0xB) {
+    if (pFx->frame >= 11) {
         pFx->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -980,7 +980,7 @@ void __cdecl BattleFx_MagicDeathSpiralSpriteTask(void)
     g_BattleMagicDeathSpriteColor.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleMagicDeathLoadedRes);
     g_BattleMagicDeathSpriteColor.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleMagicDeathLoadedRes);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleMagicDeathSpriteColor, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.spiralSprite->timer >= 0xB) {
+    if (frame.spiralSprite->timer >= 11) {
         frame.spiralSprite->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -1018,20 +1018,20 @@ void __cdecl BattleFx_MagicDeathGatherSpritesToTarget(void)
             auxDirX.vz = g_BattleMagicDeathTargetPos.targetZ - g_BattleMagicDeathWorkingBlob1.points[readPos].z;
             r = NormalizeVectorFixed(&auxDirX, &auxDirX);
             r = SqrtToInt(r) >> 6;
-            g_BattleMagicDeathWorkingBlob1.points[readPos].x += (short)(r * auxDirX.vx >> 0xC);
-            g_BattleMagicDeathWorkingBlob1.points[readPos].y += (short)(r * auxDirX.vy >> 0xC);
-            g_BattleMagicDeathWorkingBlob1.points[readPos].z += (short)(r * auxDirX.vz >> 0xC);
+            g_BattleMagicDeathWorkingBlob1.points[readPos].x += (short)(r * auxDirX.vx >> 12);
+            g_BattleMagicDeathWorkingBlob1.points[readPos].y += (short)(r * auxDirX.vy >> 12);
+            g_BattleMagicDeathWorkingBlob1.points[readPos].z += (short)(r * auxDirX.vz >> 12);
         }
         matrix = (int)BattleFx_InstallBillboardMatrix(&g_BattleMagicDeathWorkingBlob1.points[readPos].x, g_BattleMagicDeathWorkingBlob1.points[readPos].scale, 0);
         if (REG_ALLOC_HINT) {
         }
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleMagicDeathSpriteDrawReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
         readPos++;
-        if (readPos >= 0x90) {
+        if (readPos >= 144) {
             readPos = 0;
         }
     }
-    if (pFx->frame >= 0xB) {
+    if (pFx->frame >= 11) {
         pFx->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

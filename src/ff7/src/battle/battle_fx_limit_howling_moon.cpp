@@ -149,9 +149,9 @@ void __cdecl BattleFx_LimitHowlingMoonSpawnTimeline(void)
     task->ownerSlot = BATTLE_TASK_FREE;
     task = (BattleFxLimitHowlingMoonTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHowlingMoonTimelineTask);
     Battle_GetBoneWorldPos(g_BattleLimitHowlingMoonActorIndex, g_BattleActorRecords[g_BattleLimitHowlingMoonActorIndex].targetBone, &task->posX);
-    dist = g_BattleActorRecords[g_BattleLimitHowlingMoonActorIndex].radius + 0x180;
-    if (dist > 0x76C) {
-        dist = 0x76C;
+    dist = g_BattleActorRecords[g_BattleLimitHowlingMoonActorIndex].radius + 384;
+    if (dist > 1900) {
+        dist = 1900;
     }
     task->spread = dist;
     task->waveStarted = 0;
@@ -203,20 +203,20 @@ void __cdecl BattleFx_LimitHowlingMoonTimelineTask(void)
         pG->scale = pW->spread;
         pG->modelScale = 0xC80;
     }
-    if (pW->frameCount >= 0x3A && pW->frameCount <= 0x3C) {
+    if (pW->frameCount >= 58 && pW->frameCount <= 60) {
         fixedScale = 0xC80;
-        for (index = 0; index < 0x10; index++) {
+        for (index = 0; index < 16; index++) {
             pG = (BattleFxLimitHowlingMoonState *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitHowlingMoonFadingBillboardSpriteTask);
             *(Int64Pair *)&pG->posX = *(Int64Pair *)&g_BattleActorRecords[g_BattleLimitHowlingMoonActorIndex].posX;
-            phase = rand() % 0x1000;
-            dstMagnitude = rand() % 0x50 + 0xC8;
-            pG->posX += (short)(SinFixed(phase) * dstMagnitude >> 0xC);
-            pG->posZ += (short)(CosFixed(phase) * dstMagnitude >> 0xC);
-            dstMagnitude = rand() % 0x32 + 0x50;
-            pG->velocityX = SinFixed(phase) * dstMagnitude >> 0xC;
-            pG->velocityZ = CosFixed(phase) * dstMagnitude >> 0xC;
-            dstMagnitude = rand() % 0x600 + 0xA00;
-            pG->scale = fixedScale * dstMagnitude >> 0xC;
+            phase = rand() % 4096;
+            dstMagnitude = rand() % 80 + 200;
+            pG->posX += (short)(SinFixed(phase) * dstMagnitude >> 12);
+            pG->posZ += (short)(CosFixed(phase) * dstMagnitude >> 12);
+            dstMagnitude = rand() % 50 + 80;
+            pG->velocityX = SinFixed(phase) * dstMagnitude >> 12;
+            pG->velocityZ = CosFixed(phase) * dstMagnitude >> 12;
+            dstMagnitude = rand() % 1536 + 2560;
+            pG->scale = fixedScale * dstMagnitude >> 12;
         }
     }
     if (pW->frameCount < 8) {
@@ -224,19 +224,19 @@ void __cdecl BattleFx_LimitHowlingMoonTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         fadeLevel = pW->frameCount << 8;
-    } else if (pW->frameCount >= 0x3E) {
-        fadeLevel = 0x800 - (pW->frameCount - 0x3E << 8);
+    } else if (pW->frameCount >= 62) {
+        fadeLevel = 2048 - (pW->frameCount - 62 << 8);
     } else {
-        fadeLevel = 0x800;
+        fadeLevel = 2048;
     }
-    if (pW->frameCount == 0x41) {
-        for (index = 0; index < 0xA; index++) {
+    if (pW->frameCount == 65) {
+        for (index = 0; index < 10; index++) {
             if ((g_BattleLimitHowlingMoonTargetMask & 1 << index) != 0) {
                 Battle_PostActorHitOrHurtMessage(index);
             }
         }
     }
-    if (pW->frameCount >= 0x46) {
+    if (pW->frameCount >= 70) {
         fadeLevel = 0;
         g_BattleFxTimelineState.red = fadeLevel;
         pW->ownerSlot = BATTLE_TASK_FREE;
@@ -270,7 +270,7 @@ void __cdecl BattleFx_LimitHowlingMoonFadingBillboardSpriteTask(void)
     g_BattleLimitHowlingMoonSpriteRequest.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(3, g_BattleLimitHowlingMoonLoadedResTable);
     g_BattleLimitHowlingMoonSpriteRequest.drawObj = Gfx_ModelTableGetSpriteObject(3, g_BattleLimitHowlingMoonLoadedResTable);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleLimitHowlingMoonSpriteRequest, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frame >= 0xF) {
+    if (task->frame >= 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -307,9 +307,9 @@ void __cdecl BattleFx_LimitHowlingMoonWaveStripTask(void)
     frame.rotX.vz = 0;
     RotMatrixXYZ(&frame.rotX, &frame.modelMatrix);
     ConcatMatrixInPlace(&g_BattleLimitHowlingMoonRotationMatrix, &frame.modelMatrix);
-    frame.modelMatrix.t[0] = frame.waveStrip->posX - (frame.waveStrip->spread * g_BattleLimitHowlingMoonCameraDirX >> 0xC);
-    frame.modelMatrix.t[1] = frame.waveStrip->posY - (frame.waveStrip->spread * g_BattleLimitHowlingMoonCameraDirY >> 0xC);
-    frame.modelMatrix.t[2] = frame.waveStrip->posZ - (frame.waveStrip->spread * g_BattleLimitHowlingMoonCameraDirZ >> 0xC);
+    frame.modelMatrix.t[0] = frame.waveStrip->posX - (frame.waveStrip->spread * g_BattleLimitHowlingMoonCameraDirX >> 12);
+    frame.modelMatrix.t[1] = frame.waveStrip->posY - (frame.waveStrip->spread * g_BattleLimitHowlingMoonCameraDirY >> 12);
+    frame.modelMatrix.t[2] = frame.waveStrip->posZ - (frame.waveStrip->spread * g_BattleLimitHowlingMoonCameraDirZ >> 12);
     frame.scale.vz = frame.waveStrip->uniformScale;
     frame.scale.vy = frame.scale.vz;
     frame.scale.vx = frame.scale.vy;
@@ -321,27 +321,27 @@ void __cdecl BattleFx_LimitHowlingMoonWaveStripTask(void)
     frame.waveStrips = (BattleFxMoonWaveStrips *)Gfx_GetPsxScratchpadPtr(0);
     frame.waveStrips->stepOffset = 0x20;
     frame.waveStrips->phase = frame.waveStrip->timer << 7;
-    if (frame.waveStrip->timer <= 0xC) {
-        frame.waveStrips->waveValue = CosFixed(frame.waveStrip->timer * 0x55);
-        frame.waveStrips->waveValue = frame.waveStrips->waveValue << 0xB >> 0xC;
+    if (frame.waveStrip->timer <= 12) {
+        frame.waveStrips->waveValue = CosFixed(frame.waveStrip->timer * 85);
+        frame.waveStrips->waveValue = frame.waveStrips->waveValue << 11 >> 12;
         frame.waveStrips->enabled = 1;
-    } else if (frame.waveStrip->timer >= 0x31) {
+    } else if (frame.waveStrip->timer >= 49) {
         frame.waveStrips->waveValue = SinFixed(frame.waveStrip->timer - 0x31 << 6);
-        frame.waveStrips->waveValue = frame.waveStrips->waveValue << 0xB >> 0xC;
+        frame.waveStrips->waveValue = frame.waveStrips->waveValue << 11 >> 12;
         frame.waveStrips->enabled = 1;
     } else {
         frame.waveStrips->waveValue = 0;
         frame.waveStrips->enabled = 0;
     }
     if (frame.waveStrip->timer < 8) {
-        frame.waveStrips->amplitude = frame.waveStrip->timer * 0xC;
-    } else if (frame.waveStrip->timer >= 0x39) {
-        frame.waveStrips->amplitude = 0x60 - (frame.waveStrip->timer - 0x39) * 0xC;
+        frame.waveStrips->amplitude = frame.waveStrip->timer * 12;
+    } else if (frame.waveStrip->timer >= 57) {
+        frame.waveStrips->amplitude = 0x60 - (frame.waveStrip->timer - 0x39) * 12;
     } else {
         frame.waveStrips->amplitude = 0x60;
     }
     BattleFx_LimitHowlingMoonDrawWaveStrips(frame.waveStrips);
-    if (frame.waveStrip->timer >= 0x41) {
+    if (frame.waveStrip->timer >= 65) {
         frame.waveStrip->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -374,13 +374,13 @@ void __cdecl BattleFx_LimitHowlingMoonDrawWaveStrips(BattleFxMoonWaveStrips *tas
     taskData->quad[0].vx = 0xFC00;
     taskData->quad[0].vy = 0xFC00;
     taskData->quad[0].vz = 0;
-    taskData->quad[1].vx = 0x400;
+    taskData->quad[1].vx = 1024;
     taskData->quad[1].vy = 0xFC00;
     taskData->quad[1].vz = 0;
     taskData->quad[2].vx = 0xFC00;
     taskData->quad[2].vy = 0xFC08;
     taskData->quad[2].vz = 0;
-    taskData->quad[3].vx = 0x400;
+    taskData->quad[3].vx = 1024;
     taskData->quad[3].vy = 0xFC08;
     taskData->quad[3].vz = 0;
     phaseAngle = taskData->phase;
@@ -389,7 +389,7 @@ void __cdecl BattleFx_LimitHowlingMoonDrawWaveStrips(BattleFxMoonWaveStrips *tas
     if (taskData->waveValue != 0) {
         sinOut = SinFixed(phaseAngle);
         phaseAngle += taskData->stepOffset;
-        delta = taskData->waveValue * sinOut >> 0xC;
+        delta = taskData->waveValue * sinOut >> 12;
     } else {
         delta = 0;
     }
@@ -397,11 +397,11 @@ void __cdecl BattleFx_LimitHowlingMoonDrawWaveStrips(BattleFxMoonWaveStrips *tas
     taskData->quad[1].vx += delta;
     uvWordA = 0x78080000;
     baseUvB = 0x2C00FF;
-    for (i = 0; i < 0xFF; i++) {
+    for (i = 0; i < 255; i++) {
         if (taskData->waveValue != 0) {
             sinOut = SinFixed(phaseAngle);
             phaseAngle += taskData->stepOffset;
-            delta = taskData->waveValue * sinOut >> 0xC;
+            delta = taskData->waveValue * sinOut >> 12;
         } else {
             delta = 0;
         }

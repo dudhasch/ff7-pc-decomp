@@ -680,7 +680,7 @@ void __cdecl Mini_ChocoboCreateHudRenderObjects(GfxEngineContext *engineResource
     optionBuffer->directory = local.path;
     optionBuffer->flags |= 0x10;
 
-    for (local.i = 0; local.i < 0xA; local.i++) {
+    for (local.i = 0; local.i < 10; local.i++) {
         if (g_ChocoboUiScalingMode != 2 && local.i == 7) {
             g_ChocoboHudObjCount++;
             continue;
@@ -781,7 +781,7 @@ void __cdecl Mini_ChocoboCreateHudRenderObjects(GfxEngineContext *engineResource
             local.uiTextures = (const char **)g_pChocoboHudTexNames24;
         }
     }
-    for (local.i = 0; local.i < 0xB; local.i++) {
+    for (local.i = 0; local.i < 11; local.i++) {
         if (local.i == 4) {
             g_ChocoboHudObjCount++;
             continue;
@@ -820,7 +820,7 @@ void __cdecl Mini_ChocoboCreateHudRenderObjects(GfxEngineContext *engineResource
             optionBuffer->flags |= 0x10;
         }
         if (local.i < 7 || includeAll != 0) {
-            if (local.i == 0xA || local.i == 9) {
+            if (local.i == 10 || local.i == 9) {
                 if (g_ChocoboUiScalingMode == 2) {
                     optionBuffer->renderFlags |= 0x40;
                 } else {
@@ -838,7 +838,7 @@ void __cdecl Mini_ChocoboCreateHudRenderObjects(GfxEngineContext *engineResource
         }
     }
 
-    g_ChocoboHudObjCount = 0x18;
+    g_ChocoboHudObjCount = 24;
     g_ChocoboHudRenderObject24 = (int)Gfx_CreateRenderObject(1, GFX_DRAW_FLAT_QUAD_2D, optionBuffer, 0, (void *)engineResource->renderObjectBank);
     g_ChocoboHudRenderObject24Active = 1;
     g_ChocoboHudRenderObject24SlotUsed = 0;
@@ -875,7 +875,7 @@ void __cdecl Mini_ChocoboDestroyHudRenderObjects(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0x28; i++) {
+    for (i = 0; i < 40; i++) {
         if (g_ChocoboHudRenderObjects[i].activeFlag != 0) {
             DestroyRenderObject(g_ChocoboHudRenderObjects[i].renderObj);
             g_ChocoboHudRenderObjects[i].renderObj = 0;
@@ -896,7 +896,7 @@ void __cdecl Mini_ChocoboEmptyDirtyHudRenderObjectBatches(void)
 {
     unsigned short i;
 
-    for (i = 0; i < 0x28; i++) {
+    for (i = 0; i < 40; i++) {
         if (g_ChocoboHudRenderObjects[i].activeFlag != 0 && g_ChocoboHudRenderObjects[i].slotUsedFlag != 0) {
             Gfx_EmptyRenderObjectBatch((int)g_ChocoboHudRenderObjects[i].renderObj);
             g_ChocoboHudRenderObjects[i].slotUsedFlag = 0;

@@ -146,7 +146,7 @@ void __cdecl BattleFx_SpecialEnterMissileSalvo(int targetMask, int actorIdx)
 {
     BattleFx_SpecialLoadResMissileSalvo();
     g_BattleSpecMissileSalvoDrawListHead = (int)&g_GfxPsxPacketScratch;
-    g_BattleSpecMissileSalvoImpactCountdown = 0x10;
+    g_BattleSpecMissileSalvoImpactCountdown = 16;
     BattleFx_SpecialRegisterMissileSalvoPerTargetCallback(targetMask, actorIdx);
 }
 
@@ -194,19 +194,19 @@ void __cdecl BattleFx_SpecialMissileSalvoTimelineTask(void)
     if (taskPtr->frame <= 5 && taskPtr->frame % 5 == 0) {
         pChild = (BattleFxMissileSalvoSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMissileSalvoProjectileTask);
         pChild->posX = taskPtr->startX;
-        pChild->posY = taskPtr->startY - taskPtr->frame * 0x1E;
+        pChild->posY = taskPtr->startY - taskPtr->frame * 30;
         pChild->posZ = taskPtr->startZ;
         pChild->angle = ArcTangentFixed(taskPtr->endX - taskPtr->startX, taskPtr->endZ - taskPtr->startZ);
-        pChild->stepX = (taskPtr->endX - taskPtr->startX) / 0xF;
-        pChild->stepY = (taskPtr->endY - taskPtr->startY) / 0xF;
-        pChild->stepZ = (taskPtr->endZ - taskPtr->startZ) / 0xF;
-        pChild->frameCount = 0x32;
+        pChild->stepX = (taskPtr->endX - taskPtr->startX) / 15;
+        pChild->stepY = (taskPtr->endY - taskPtr->startY) / 15;
+        pChild->stepZ = (taskPtr->endZ - taskPtr->startZ) / 15;
+        pChild->frameCount = 50;
         Battle_PlaySfxPannedToActor(0x82, (short)taskPtr->sourceIndex, 0x40);
     }
-    if (taskPtr->frame == 0x32) {
+    if (taskPtr->frame == 50) {
         Battle_PostActorHitOrHurtMessage(taskPtr->targetIndex);
     }
-    if (taskPtr->frame == 0x14) {
+    if (taskPtr->frame == 20) {
         pChild = (BattleFxMissileSalvoSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMissileSalvoImpactModelTask);
         pChild->posX = taskPtr->endX;
         pChild->posY = 0;
@@ -216,24 +216,24 @@ void __cdecl BattleFx_SpecialMissileSalvoTimelineTask(void)
         pChild->posX = taskPtr->endX;
         pChild->posY = 0xFED4;
         pChild->posZ = taskPtr->endZ;
-        for (currIndex = 0; currIndex < 0x14; currIndex++) {
+        for (currIndex = 0; currIndex < 20; currIndex++) {
             pChild = (BattleFxMissileSalvoSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialMissileSalvoBouncingSpriteTask);
             pChild->posX = taskPtr->endX;
             pChild->posZ = taskPtr->endZ;
             pChild->posY = 0;
-            BattleFx_MakeRandomConeVector(0xFFFFFF06, 0x64, (void *)&pChild->stepX);
+            BattleFx_MakeRandomConeVector(0xFFFFFF06, 100, (void *)&pChild->stepX);
             pChild->variant = rand() % 7;
         }
         Battle_PlaySfxPannedToActor(0x176, (short)taskPtr->targetIndex, 0x40);
     }
     (taskPtr->frame)++;
-    if (taskPtr->frame == 0x3C) {
+    if (taskPtr->frame == 60) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Draws one bouncing fragment sprite, moves it under gravity, bounces it at the floor and frees it after 0x1E frames.
+ * Draws one bouncing fragment sprite, moves it under gravity, bounces it at the floor and frees it after 30 frames.
  */
 // FUNCTION: FF7 0x0051b67d
 void __cdecl BattleFx_SpecialMissileSalvoBouncingSpriteTask(void)
@@ -261,10 +261,10 @@ void __cdecl BattleFx_SpecialMissileSalvoBouncingSpriteTask(void)
         frame.matrixBase.m[1][frame.axisIndex] = 0;
         frame.matrixBase.m[0][frame.axisIndex] = 0;
     }
-    if (frame.spriteSlot->frameCounter < 0x16) {
+    if (frame.spriteSlot->frameCounter < 22) {
         frame.fadeLevel = 8;
     } else {
-        frame.fadeLevel = 0x1E - frame.spriteSlot->frameCounter;
+        frame.fadeLevel = 30 - frame.spriteSlot->frameCounter;
     }
     frame.fadeLevelCopy = *(short *)&frame.fadeLevel;
     frame.rotAngleX.vy = 0;
@@ -296,10 +296,10 @@ void __cdecl BattleFx_SpecialMissileSalvoBouncingSpriteTask(void)
         frame.spriteSlot->posY = 0;
         frame.spriteSlot->velocityY *= -1;
     }
-    frame.spriteSlot->velocityY += 0x14;
-    frame.spriteSlot->angle += 0x200;
+    frame.spriteSlot->velocityY += 20;
+    frame.spriteSlot->angle += 0x200 /* 45 deg */;
     (frame.spriteSlot->frameCounter)++;
-    if (frame.spriteSlot->frameCounter == 0x1E) {
+    if (frame.spriteSlot->frameCounter == 30) {
         frame.spriteSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -341,13 +341,13 @@ void __cdecl BattleFx_SpecialMissileSalvoGrowingModelTask(void)
         return;
     }
     (local.slot->growStep)++;
-    if (local.slot->growStep == 0xF) {
+    if (local.slot->growStep == 15) {
         local.slot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
 /*
- * Draws the spinning, growing impact models, emits ring sprites for the first 0x16 frames and shakes the camera focal point.
+ * Draws the spinning, growing impact models, emits ring sprites for the first 22 frames and shakes the camera focal point.
  */
 // FUNCTION: FF7 0x0051ba1a
 void __cdecl BattleFx_SpecialMissileSalvoImpactModelTask(void)
@@ -412,23 +412,23 @@ void __cdecl BattleFx_SpecialMissileSalvoImpactModelTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (frame.modelSlot->frameCounter < 0x16) {
-        frame.spawnRadius = frame.modelSlot->frameCounter * 0x50;
+    if (frame.modelSlot->frameCounter < 22) {
+        frame.spawnRadius = frame.modelSlot->frameCounter * 80;
         for (frame.spawnIndex = 0; frame.spawnIndex < 6; frame.spawnIndex++) {
             frame.spawnAngle = (rand() % 4096);
             frame.impactSlot = (BattleFxMissileSalvoImpactSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialMissileSalvoAnimatedSpriteTask)]);
-            frame.impactSlot->posX = frame.modelSlot->posX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
-            frame.impactSlot->posZ = frame.modelSlot->posZ + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 0xC);
+            frame.impactSlot->posX = frame.modelSlot->posX + (CosFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
+            frame.impactSlot->posZ = frame.modelSlot->posZ + (SinFixed(frame.spawnAngle) * frame.spawnRadius >> 12);
             frame.impactSlot->posY = 0xFF6A;
             frame.impactSlot->scale = 2;
         }
     }
     g_BattleCameraFocalPoint.focalPointY += (short)(((frame.modelSlot->frameCounter % 2) << 4) - 8);
-    if (frame.modelSlot->frameCounter > 0xE) {
+    if (frame.modelSlot->frameCounter > 14) {
         g_BattleSpecMissileSalvoImpactCountdown--;
     }
     (frame.modelSlot->frameCounter)++;
-    if (frame.modelSlot->frameCounter == 0x1E) {
+    if (frame.modelSlot->frameCounter == 30) {
         frame.modelSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -448,7 +448,7 @@ void __cdecl BattleFx_SpecialMissileSalvoAnimatedSpriteTask(void)
     task = (BattleTaskSlot *)(&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx]);
     (g_BattleSpecMissileSalvoSpriteRequest1.spriteResource) = Gfx_ModelTableGetLoadedRecord(7, g_BattleSpecMissileSalvoLoadedResTable);
     g_BattleSpecMissileSalvoSpriteRequest1.req1Object = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
-    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2800, 0);
+    BattleFx_InstallBillboardMatrix((short *)task->data, 0x2800 /* 2.5 */, 0);
     g_BattleSpecMissileSalvoSpriteRequest1.req1Word12 = task->frameCounter;
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecMissileSalvoSpriteRequest1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0 && (g_BattleSpecMissileSalvoSpriteRequest1.spriteResource) != 0) {
@@ -491,8 +491,8 @@ void __cdecl BattleFx_SpecialMissileSalvoProjectileTask(void)
     g_BattleSpecMissileSalvoTransformMatrix.res36 = Gfx_ModelTableGetSpriteObject(4, g_BattleSpecMissileSalvoLoadedResTable);
     g_BattleSpecMissileSalvoTransformMatrix.spriteRecord = Gfx_ModelTableGetLoadedRecord(5, g_BattleSpecMissileSalvoLoadedResTable);
     g_BattleSpecMissileSalvoTransformMatrix.secondDrawObj = Gfx_ModelTableGetSpriteObject(5, g_BattleSpecMissileSalvoLoadedResTable);
-    frame.rotAngleX.vx = 0xFC00;
-    frame.rotAngleX.vy = 0xFC00;
+    frame.rotAngleX.vx = 0xFC00 /* 5670 deg */;
+    frame.rotAngleX.vy = 0xFC00 /* 5670 deg */;
     frame.rotAngleX.vz = 0;
     RotMatrixXYZ(&frame.rotAngleX, &frame.rotMatrix);
     RotateMatrixY(frame.projectileSlot->angle, &frame.rotMatrix);
@@ -517,17 +517,17 @@ void __cdecl BattleFx_SpecialMissileSalvoProjectileTask(void)
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
     RotTransPointToInt16(&frame.baseX, (short *)&frame.baseX, &frame.transFlag);
-    BattleFx_InstallBillboardMatrix(&frame.baseX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&frame.baseX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecMissileSalvoTransformMatrix.firstFrame = frame.projectileSlot->frameCounter % *(int *)((char *)*(int *)g_BattleSpecMissileSalvoTransformMatrix.resource + 4);
     g_BattleSpecMissileSalvoDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecMissileSalvoTransformMatrix.resource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecMissileSalvoDrawListHead);
     if (frame.projectileSlot->frameCounter >= 6) {
         frame.pointX.vx = frame.baseX.vx;
         frame.pointX.vy = frame.baseX.vy;
         frame.pointX.vz = frame.baseX.vz;
-        frame.stepX = -SinFixed(frame.projectileSlot->angle) * ((frame.projectileSlot->frameCounter % 2) * 0x50 + 0x50) >> 0xC;
-        frame.stepZ = -CosFixed(frame.projectileSlot->angle) * ((frame.projectileSlot->frameCounter % 2) * 0x50 + 0x50) >> 0xC;
-        for (frame.loopIndex = 0; frame.loopIndex < 0xC; frame.loopIndex++) {
-            BattleFx_InstallBillboardMatrix(&frame.pointX, 0x2000, 0);
+        frame.stepX = -SinFixed(frame.projectileSlot->angle) * ((frame.projectileSlot->frameCounter % 2) * 80 + 80) >> 12;
+        frame.stepZ = -CosFixed(frame.projectileSlot->angle) * ((frame.projectileSlot->frameCounter % 2) * 80 + 80) >> 12;
+        for (frame.loopIndex = 0; frame.loopIndex < 12; frame.loopIndex++) {
+            BattleFx_InstallBillboardMatrix(&frame.pointX, 0x2000 /* 2.0 */, 0);
             g_BattleSpecMissileSalvoTransformMatrix.secondFrame = frame.loopIndex >> 1;
             g_BattleSpecMissileSalvoDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecMissileSalvoTransformMatrix.spriteRecord, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecMissileSalvoDrawListHead);
             frame.pointX.vx += frame.stepX;
@@ -540,10 +540,10 @@ void __cdecl BattleFx_SpecialMissileSalvoProjectileTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RefreshGlobalTransformState();
-    for (frame.loopIndex = 0; frame.loopIndex < 0xA; frame.loopIndex++) {
-        frame.pointX.vx = frame.baseX.vx + rand() % 0x190 + -0xC8;
-        frame.pointX.vy = frame.baseX.vy + rand() % 0x190 + -0xC8;
-        frame.pointX.vz = frame.baseX.vz + rand() % 0x190 + -0xC8;
+    for (frame.loopIndex = 0; frame.loopIndex < 10; frame.loopIndex++) {
+        frame.pointX.vx = frame.baseX.vx + rand() % 400 + -200;
+        frame.pointX.vy = frame.baseX.vy + rand() % 400 + -200;
+        frame.pointX.vz = frame.baseX.vz + rand() % 400 + -200;
         frame.projectileState = (BattleFxMissileSalvoProjectileState *)g_BattleSpecMissileSalvoDrawListHead;
         frame.projectileState->commandWord = frame.projectileState->commandWord & 0xFFFFFF | 0x2000000;
         frame.projectileState->primCode = 0x68;
@@ -564,11 +564,11 @@ void __cdecl BattleFx_SpecialMissileSalvoProjectileTask(void)
     }
     if (frame.projectileSlot->frameCounter >= 6) {
         frame.projectileSlot->posX += frame.projectileSlot->velocityX;
-        frame.projectileSlot->posY += (short)(frame.projectileSlot->velocityY - 0xA);
+        frame.projectileSlot->posY += (short)(frame.projectileSlot->velocityY - 10);
         frame.projectileSlot->posZ += frame.projectileSlot->velocityZ;
     }
     (frame.projectileSlot->frameCounter)++;
-    if (frame.projectileSlot->frameCounter == 0x14) {
+    if (frame.projectileSlot->frameCounter == 20) {
         frame.projectileSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }

@@ -88,7 +88,7 @@ void __cdecl DisableFileDebugLog(void)
 // FUNCTION: FF7 0x00682076
 void __cdecl InitFileContext(int mode, void *context)
 {
-    ZeroFillMemory32(0x10, context);
+    ZeroFillMemory32(16, context);
     ((FileOpenRequest *)context)->mode = mode;
 }
 #pragma optimize("p", on)
@@ -117,7 +117,7 @@ void __cdecl CloseFileEx(FileHandle *file)
                 close(file->handle);
         }
         // STRING: FF7 0x0090f690
-        GameHeapFree(file, "C:\\lib\\src\\file\\file.cpp", 0x5e);
+        GameHeapFree(file, "C:\\lib\\src\\file\\file.cpp", 94);
     }
 }
 #pragma optimize("p", on)
@@ -197,7 +197,7 @@ FileHandle *__cdecl OpenFileEx(FileOpenRequest *request, const char *fileName)
     frame.file = 0;
     if (request->fromArchive != 0) {
         // STRING: FF7 0x0090f6e8
-        frame.file = (FileHandle *)GameHeapAlloc(1, 0x18, "C:\\lib\\src\\file\\file.cpp", 0x93);
+        frame.file = (FileHandle *)GameHeapAlloc(1, 24, "C:\\lib\\src\\file\\file.cpp", 147);
         if (frame.file != 0) {
             frame.file->name = (char *)fileName;
             frame.file->request = *request;
@@ -263,7 +263,7 @@ FileHandle *__cdecl OpenFileEx(FileOpenRequest *request, const char *fileName)
             frame.permissions = _S_IREAD | _S_IWRITE;
         }
         // STRING: FF7 0x0090f7a4
-        frame.file = (FileHandle *)GameHeapAlloc(1, 0x18, "C:\\lib\\src\\file\\file.cpp", 0x100);
+        frame.file = (FileHandle *)GameHeapAlloc(1, 24, "C:\\lib\\src\\file\\file.cpp", 256);
         if (frame.file != 0) {
             frame.file->name = (char *)fileName;
             if (request->callback != 0) {
@@ -406,12 +406,12 @@ void *__cdecl ReadFileIntoNewBufferEx(int extra, int size, int count, FileHandle
     rec = 0;
     if (count > 0) {
         // STRING: FF7 0x0090f84c
-        rec = GameHeapAllocRaw(size * count + extra, "C:\\lib\\src\\file\\file.cpp", 0x196);
+        rec = GameHeapAllocRaw(size * count + extra, "C:\\lib\\src\\file\\file.cpp", 406);
         if (rec) {
             if (ReadFileData(size * count, rec, file)) { /* empty first arm: lib/codegen.h */
             } else {
                 // STRING: FF7 0x0090f868
-                GameHeapFree(rec, "C:\\lib\\src\\file\\file.cpp", 0x19f);
+                GameHeapFree(rec, "C:\\lib\\src\\file\\file.cpp", 415);
                 rec = 0;
             }
         }
@@ -611,11 +611,11 @@ void __cdecl FileFreeRecord(FileRecord *record)
             Gfx_DebugPrint(buf);
         }
         // STRING: FF7 0x0090f8e0
-        GameHeapFree(record->directory, "C:\\lib\\src\\file\\file.cpp", 0x24e);
+        GameHeapFree(record->directory, "C:\\lib\\src\\file\\file.cpp", 590);
         // STRING: FF7 0x0090f8fc
-        GameHeapFree(record->name, "C:\\lib\\src\\file\\file.cpp", 0x24f);
+        GameHeapFree(record->name, "C:\\lib\\src\\file\\file.cpp", 591);
         // STRING: FF7 0x0090f918
-        GameHeapFree(record, "C:\\lib\\src\\file\\file.cpp", 0x250);
+        GameHeapFree(record, "C:\\lib\\src\\file\\file.cpp", 592);
     }
 }
 #pragma optimize("p", on)
@@ -641,7 +641,7 @@ FileRecord *__cdecl FileCreateRecord(int kind, char *name, char *directory)
     FileRecord *p;
     char buf[200];
     // STRING: FF7 0x0090f934
-    p = (FileRecord *)GameHeapAlloc(1, 32, "C:\\lib\\src\\file\\file.cpp", 0x25e);
+    p = (FileRecord *)GameHeapAlloc(1, 32, "C:\\lib\\src\\file\\file.cpp", 606);
     if (p) {
         p->kind = kind;
         p->name = GameHeapStrDup(name);

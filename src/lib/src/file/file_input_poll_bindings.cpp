@@ -136,7 +136,7 @@ void __cdecl Input_Update(GfxEngineContext *ctx)
     g_InputPrevHeldBits = g_InputHeldMask;
     g_InputHeldMask = g_InputHeldMask ^ g_InputHeldMask;
     for (mapIdx = 0; mapIdx < 3; mapIdx++) {
-        for (actionIdx = 0; actionIdx < 0x19; actionIdx++) {
+        for (actionIdx = 0; actionIdx < 25; actionIdx++) {
             if ((unsigned int)g_InputBindings[mapIdx][actionIdx] < INPUT_SOURCE_KEY_END) {
                 if (g_InputKeyboardStateBuffer != 0) {
                     if ((g_InputKeyboardStateBuffer[g_InputBindings[mapIdx][actionIdx]] & 0x80) != 0) {
@@ -424,7 +424,7 @@ int __cdecl Input_PollMouseBuffered(void)
     int *obj;
 
     dead = 0xF;
-    range = 0xC8;
+    range = 200;
     g_InputMouseButtonFlags = g_InputMouseButtonFlags ^ g_InputMouseButtonFlags;
     g_InputMouseRepeatMask = g_InputMouseRepeatMask ^ g_InputMouseRepeatMask;
     if (g_InputRepeatInterval == 0) {

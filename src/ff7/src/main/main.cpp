@@ -151,8 +151,8 @@ void __cdecl Savemap_CaptureFieldEntryPoint(void)
         gSavemap.gameMode = GAME_MODE_FIELD;
     }
     gSavemap.locationId = g_FieldEntryMapId;
-    gSavemap.coordX = g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 0xC;
-    gSavemap.coordY = g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 0xC;
+    gSavemap.coordX = g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 12;
+    gSavemap.coordY = g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 12;
     gSavemap.coordT = (short)g_FieldEntityState[g_FieldPlayerEntityIndex].posI;
     gSavemap.coordD = (char)g_FieldEntityState[g_FieldPlayerEntityIndex].moveDir;
     gSavemap.fieldRandomIndex1 = g_FieldRandomIndex1;
@@ -326,7 +326,7 @@ void __cdecl App_FreeInputStateAndRsdModel(MainInputState *obj, GfxEngineContext
     if (obj != 0) {
         Pfile_FreeRsdModel((void *)obj->rsdModel, (void *)ctx);
         // STRING: FF7 0x007bac14
-        GameHeapFree(obj, "C:\\FF7\\Src\\main\\main.cpp", 0x22E);
+        GameHeapFree(obj, "C:\\FF7\\Src\\main\\main.cpp", 558);
     }
 }
 
@@ -339,7 +339,7 @@ void __cdecl App_ResetInputStateFlags(MainInputState *state)
     int i;
 
     if (state != 0) {
-        for (i = 0; i < 0x16; i++) {
+        for (i = 0; i < 22; i++) {
             (&state->f1DebugToggle)[i] = 0;
         }
         state->resetFlagA = 1;
@@ -361,7 +361,7 @@ MainInputState *__cdecl App_AllocInputState(void)
     MainInputState *state;
 
     // STRING: FF7 0x007bac30
-    state = (MainInputState *)GameHeapAlloc(1, 0x90, "C:\\FF7\\Src\\main\\main.cpp", 0x251);
+    state = (MainInputState *)GameHeapAlloc(1, 144, "C:\\FF7\\Src\\main\\main.cpp", 593);
     if (state != 0) {
         state->initHeaderA = 1;
         state->initHeaderB = 1;
@@ -415,11 +415,11 @@ void __cdecl App_BlankScreenForModeSwitch(GfxEngineContext *frameContext)
         bgColor.b = 0;
         bgColor.a = FLOAT_ONE_BITS;
         if (uiMode == 2) {
-            GfxSetViewportRect(0, 0, 0x280, 0x1E0, frameContext);
+            GfxSetViewportRect(0, 0, 640, 480, frameContext);
         } else if (uiMode == 1) {
-            GfxSetViewportRect(0xA0, 0x78, 0x140, 0xF0, frameContext);
+            GfxSetViewportRect(160, 120, 320, 240, frameContext);
         } else if (uiMode == 0) {
-            GfxSetViewportRect(0, 0, 0x140, 0xF0, frameContext);
+            GfxSetViewportRect(0, 0, 320, 240, frameContext);
         }
         GfxSetBackgroundColorCall(&bgColor, frameContext);
         GfxClearAllCall(frameContext);

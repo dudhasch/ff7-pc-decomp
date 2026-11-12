@@ -129,13 +129,13 @@ void __cdecl BattleFx_MagicShieldSetupTask(void)
     task->ownerSlot = -1;
     task = (BattleMagicShieldTaskSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicShieldTimelineTask);
     Battle_GetBoneWorldPos(g_BattleMagicShieldTargetActor, g_BattleActorRecords[g_BattleMagicShieldTargetActor].targetBone, task->pos);
-    size = g_BattleActorRecords[g_BattleMagicShieldTargetActor].radius + 0x120;
-    if (size > 0x76C) {
-        size = 0x76C;
+    size = g_BattleActorRecords[g_BattleMagicShieldTargetActor].radius + 288;
+    if (size > 1900) {
+        size = 1900;
     }
-    task->scaledModelScale = (size << 0xC) / 0x3E8;
-    size = size + 0x240;
-    task->tumblingModelScale = (size << 0xC) / 0x1A9;
+    task->scaledModelScale = (size << 12) / 1000;
+    size = size + 576;
+    task->tumblingModelScale = (size << 12) / 425;
     face = (BattleFxMagicShieldFace *)Gfx_GetPsxScratchpadPtr(0);
     face->dataBlock = (int)&g_BattleMagicShieldModelMeshBlob;
     BattleFx_MagicShieldComputeFaceVelocitiesFromBlock((BattleFxMagicShieldFace *)face);
@@ -190,21 +190,21 @@ int __cdecl BattleFx_MagicShieldComputeFaceVelocities(BattleFxMagicShieldFace *f
         face->edgeToNextX = neighborB->vx - vertex->vx;
         face->edgeToNextY = neighborB->vy - vertex->vy;
         face->edgeToNextZ = neighborB->vz - vertex->vz;
-        velocity = rand() % 0xFA0 + 0x3E8;
-        twistRate = velocity / 0xC;
+        velocity = rand() % 4000 + 1000;
+        twistRate = velocity / 12;
         CrossProductFixed12((VECTOR *)&face->edgeFromPrevX, (VECTOR *)&face->edgeToNextX, (VECTOR *)&face->normalX);
         NormalizeVectorFixed(&face->normalX, &face->normalX);
-        if (faceIdx < 0x80) {
+        if (faceIdx < 128) {
             face->normalX = -face->normalX;
             face->normalY = -face->normalY;
             face->normalZ = -face->normalZ;
         }
-        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].velocityX = face->normalX * velocity >> 0xC;
-        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].velocityY = face->normalY * velocity >> 0xC;
-        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].velocityZ = face->normalZ * velocity >> 0xC;
-        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].accelX = face->normalX * twistRate >> 0xC;
-        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].accelY = face->normalY * twistRate >> 0xC;
-        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].accelZ = face->normalZ * twistRate >> 0xC;
+        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].velocityX = face->normalX * velocity >> 12;
+        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].velocityY = face->normalY * velocity >> 12;
+        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].velocityZ = face->normalZ * velocity >> 12;
+        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].accelX = face->normalX * twistRate >> 12;
+        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].accelY = face->normalY * twistRate >> 12;
+        ((MagicShieldFaceMotion *)&g_BattleMagicShieldMotionData)[motionIdx].accelZ = face->normalZ * twistRate >> 12;
         motionIdx++;
         entIter++;
     }
@@ -231,27 +231,27 @@ void __cdecl BattleFx_MagicShieldTimelineTask(void)
         pChild->pos = task->pos;
         pChild->scale = task->modelScale;
     }
-    if (task->step == 0xE) {
+    if (task->step == 14) {
         BattleFx_StartScreenFlashRamp(1);
     }
-    if (task->step == 0x10) {
+    if (task->step == 16) {
         BattleFx_FadeOutScreenFlashRamp(3);
     }
-    if (task->step == 0xF) {
+    if (task->step == 15) {
         pChild = (BattleFxMagicShieldParticleState *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicShieldTumblingModelTask);
         pChild->pos = task->pos;
         pChild->angleX = 0;
-        pChild->angleStepX = (rand() % 16) + 0x2A;
+        pChild->angleStepX = (rand() % 16) + 42;
         pChild->angleY = 0x10;
         pChild->angleStepY = (rand() % 8) + 8;
         pChild->angleZ = 4;
-        pChild->angleStepZ = rand() % 0x18 + 0x20;
+        pChild->angleStepZ = rand() % 24 + 32;
         pChild->scale = task->tumbleScale;
     }
-    if (task->step == 0x20) {
+    if (task->step == 32) {
         Battle_PostActorHitOrHurtMessage(g_BattleMagicShieldTargetActor);
     }
-    if (task->step >= 0x2C) {
+    if (task->step >= 44) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->step)++;
@@ -298,12 +298,12 @@ void __cdecl BattleFx_MagicShieldTumblingModelTask(void)
     frame.drawItem->fadeLevel = 0;
     frame.drawItem->stateFlags = 0;
     frame.drawItem->texturePageBits = 0;
-    if (frame.tumbleSlot->frameCounter >= 0xC) {
-        frame.drawItem->fadeLevel = (frame.tumbleSlot->frameCounter - 0xC) * 0x155;
+    if (frame.tumbleSlot->frameCounter >= 12) {
+        frame.drawItem->fadeLevel = (frame.tumbleSlot->frameCounter - 12) * 341;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.drawItem, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.tumbleSlot->frameCounter >= 0x18) {
+    if (frame.tumbleSlot->frameCounter >= 24) {
         frame.tumbleSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -350,12 +350,12 @@ void __cdecl BattleFx_MagicShieldScaledModelTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.rotMatrix, &frame.rotMatrix);
     SetRotMatrix(&frame.rotMatrix);
     SetTransMatrix(&frame.rotMatrix);
-    if (frame.scaledSlot->frameCounter >= 0xC) {
+    if (frame.scaledSlot->frameCounter >= 12) {
         frame.drawItem = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
         frame.drawItem->modelGroup = Gfx_ModelTableGetRenderObject(2, g_BattleMagicShieldLoadedResTable);
         frame.drawItem->flags = 8;
         frame.drawItem->uvScroll = 0;
-        frame.drawItem->fadeLevel = 0x80;
+        frame.drawItem->fadeLevel = 128;
         frame.drawItem->stateFlags = 0x20;
         frame.drawItem->texturePageBits = 0;
         g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.drawItem, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
@@ -366,11 +366,11 @@ void __cdecl BattleFx_MagicShieldScaledModelTask(void)
         frame.triangleBlock = (BattleFxShieldTriangleBlock *)Gfx_GetPsxScratchpadPtr(0);
         frame.triangleBlock->blockPtr = (int)&g_BattleMagicShieldModelMeshBlob;
         frame.triangleBlock->orderingTableSlot = g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED;
-        frame.triangleBlock->countdown = 0xC;
+        frame.triangleBlock->countdown = 12;
         frame.triangleBlock->renderStateBlock = Gfx_GetPsxPacketScratchPtr();
         g_BattleFxActiveDrawListPtr = BattleFx_MagicShieldDrawPsxTexturedTrianglesFromBlock((BattleFxShieldTriangleBlock *)frame.triangleBlock, frame.scaledSlot->frameCounter);
     }
-    if (frame.scaledSlot->frameCounter >= 0xE) {
+    if (frame.scaledSlot->frameCounter >= 14) {
         frame.scaledSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -419,7 +419,7 @@ int __cdecl BattleFx_MagicShieldDrawPsxTexturedTriangles(BattleFxShieldTriangleB
     frameNumber = block->frameNumber;
     a = 0xE - block->countdown;
     if (fadeLevel < 8) {
-        auxColor = fadeLevel * 0xF0F0F;
+        auxColor = fadeLevel * 986895;
         auxColor |= 0x26000000;
     } else {
         auxColor = 0x26808080;

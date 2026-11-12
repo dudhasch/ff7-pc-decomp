@@ -167,10 +167,10 @@ void __cdecl BattleFx_LimitLivewireSpawnTimeline(void)
     task = (BattleFxLimitLivewireTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLivewireTimelineTask);
     Battle_GetActorMaskCentroid(g_YasuiLimitLivewireTargetMask, &task->posX);
     task->posY = 0xFCA0;
-    task->spreadX = 0xD80;
-    task->spreadY = 0x5A0;
+    task->spreadX = 3456;
+    task->spreadY = 1440;
     task->clearedWord = 0;
-    for (actorIndex = 0; actorIndex < 0xA; actorIndex++) {
+    for (actorIndex = 0; actorIndex < 10; actorIndex++) {
         if ((g_YasuiLimitLivewireTargetMask & 1 << actorIndex) != 0) {
             g_YasuiLimitLivewireSavedActorPositions[actorIndex] = *(YasuiLimitSparkPoint *)&g_BattleActorRecords[actorIndex].posX;
             g_YasuiLimitLivewireRandomTable[actorIndex].randomValue = rand();
@@ -250,21 +250,21 @@ void __cdecl BattleFx_LimitLivewireTimelineTask(void)
         return;
     }
     frame.sparkSprite = (BattleFxLimitLivewireTimelineSlot *)BATTLE_CURRENT_TASK_SLOT;
-    if (frame.sparkSprite->phase < 0x10) {
+    if (frame.sparkSprite->phase < 16) {
         if (frame.sparkSprite->phase % 3 == 1) {
             BattleFx_LimitLivewireSpawnSpriteBurst(frame.sparkSprite, 1);
         }
-    } else if (frame.sparkSprite->phase < 0x19) {
+    } else if (frame.sparkSprite->phase < 25) {
         if ((frame.sparkSprite->phase & 1) != 0) {
             BattleFx_LimitLivewireSpawnSpriteBurst(frame.sparkSprite, 1);
         }
-    } else if (frame.sparkSprite->phase < 0x26) {
+    } else if (frame.sparkSprite->phase < 38) {
         BattleFx_LimitLivewireSpawnSpriteBurst(frame.sparkSprite, 1);
-    } else if (frame.sparkSprite->phase < 0x3F) {
+    } else if (frame.sparkSprite->phase < 63) {
         BattleFx_LimitLivewireSpawnSpriteBurst(frame.sparkSprite, 2);
-    } else if (frame.sparkSprite->phase < 0x41) {
+    } else if (frame.sparkSprite->phase < 65) {
         BattleFx_LimitLivewireSpawnSpriteBurst(frame.sparkSprite, 1);
-    } else if (frame.sparkSprite->phase < 0x50) {
+    } else if (frame.sparkSprite->phase < 80) {
         if ((frame.sparkSprite->phase & 1) != 0) {
             BattleFx_LimitLivewireSpawnSpriteBurst(frame.sparkSprite, 1);
         }
@@ -278,16 +278,16 @@ void __cdecl BattleFx_LimitLivewireTimelineTask(void)
     } else if (frame.sparkSprite->phase == 0x41) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_CH1, Battle_ComputeScreenPanFromPosition(&g_YasuiLimitLivewireSourceBonePos), 0);
     }
-    if (frame.sparkSprite->phase >= 0x25 && frame.sparkSprite->phase <= 0x38) {
+    if (frame.sparkSprite->phase >= 37 && frame.sparkSprite->phase <= 56) {
         frame.tmpIndex = (frame.sparkSprite->phase + 1) % 4;
         if (frame.tmpIndex == 0) {
             frame.particle = (BattleFxLimitLivewireParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLivewireExpandingModelTask);
             *(YasuiLimitSparkPoint *)&frame.particle->posX = g_YasuiLimitLivewireSourceBonePos;
             frame.particle->scale = 0;
-            frame.particle->scaleStep = (g_YasuiLimitLivewireSourceBonePos.radius << 0xC) / 0x384;
+            frame.particle->scaleStep = (g_YasuiLimitLivewireSourceBonePos.radius << 12) / 900;
         }
     }
-    if (frame.sparkSprite->phase >= 0x28 && frame.sparkSprite->phase <= 0x37) {
+    if (frame.sparkSprite->phase >= 40 && frame.sparkSprite->phase <= 55) {
         frame.spread = frame.sparkSprite->spreadX;
         frame.tmpRange = frame.spread << 1;
         frame.spreadY = frame.sparkSprite->spreadY;
@@ -298,11 +298,11 @@ void __cdecl BattleFx_LimitLivewireTimelineTask(void)
         frame.spread = frame.spread / 3 << 1;
         frame.tmpRange = frame.spread << 1;
         frame.particle->posZ += (short)(rand() % frame.tmpRange - frame.spread);
-        frame.spread = 0x1800;
-        frame.tmpRange = rand() % 0x1200 + 0xE00;
-        frame.particle->scale = frame.spread * frame.tmpRange >> 0xC;
+        frame.spread = 6144;
+        frame.tmpRange = rand() % 4608 + 3584;
+        frame.particle->scale = frame.spread * frame.tmpRange >> 12;
     }
-    if (frame.sparkSprite->phase >= 0x28 && frame.sparkSprite->phase <= 0x37) {
+    if (frame.sparkSprite->phase >= 40 && frame.sparkSprite->phase <= 55) {
         frame.spread = frame.sparkSprite->spreadX;
         frame.tmpRange = frame.spread << 1;
         frame.spreadY = frame.sparkSprite->spreadY;
@@ -313,15 +313,15 @@ void __cdecl BattleFx_LimitLivewireTimelineTask(void)
         frame.spread = frame.spread / 3 << 1;
         frame.tmpRange = frame.spread << 1;
         frame.streak->posZ += (short)(rand() % frame.tmpRange - frame.spread);
-        frame.streak->lifetime = (rand() % 32) + 0x10;
+        frame.streak->lifetime = (rand() % 32) + 16;
         frame.vecX.x = frame.streak->posX - g_YasuiLimitLivewireSourceBonePos.x;
         frame.vecX.y = frame.streak->posY - g_YasuiLimitLivewireSourceBonePos.y;
         frame.vecX.z = frame.streak->posZ - g_YasuiLimitLivewireSourceBonePos.z;
         frame.tmpIndex = NormalizeVectorFixed((VECTOR *)&frame.vecX, &frame.vecX);
         frame.spread = SqrtToInt(frame.tmpIndex) / 3;
-        frame.streak->posX += (short)(frame.spread * frame.vecX.x >> 0xC);
-        frame.streak->posY += (short)(frame.spread * frame.vecX.y >> 0xC);
-        frame.streak->posZ += (short)(frame.spread * frame.vecX.z >> 0xC);
+        frame.streak->posX += (short)(frame.spread * frame.vecX.x >> 12);
+        frame.streak->posY += (short)(frame.spread * frame.vecX.y >> 12);
+        frame.streak->posZ += (short)(frame.spread * frame.vecX.z >> 12);
         frame.streak->scale = 8;
         frame.streak->scaleStep = (rand() % 0x1A4) * 2 + 0x1E0;
         frame.vecX.x = -frame.streak->posY - frame.streak->posZ;
@@ -334,10 +334,10 @@ void __cdecl BattleFx_LimitLivewireTimelineTask(void)
         frame.streak->offsetX = frame.vecX.x;
         frame.streak->offsetY = frame.vecX.y;
         frame.streak->offsetZ = frame.vecX.z;
-        frame.streak->durationOrIndex = (rand() % 8) + 0xA;
+        frame.streak->durationOrIndex = (rand() % 8) + 10;
         frame.streak->scaleStep = frame.streak->scaleStep / frame.streak->durationOrIndex;
     }
-    if (frame.sparkSprite->phase >= 0x2A && frame.sparkSprite->phase <= 0x3C) {
+    if (frame.sparkSprite->phase >= 42 && frame.sparkSprite->phase <= 60) {
         frame.spread = frame.sparkSprite->spreadX;
         frame.tmpRange = frame.spread << 1;
         frame.spreadY = frame.sparkSprite->spreadY;
@@ -349,11 +349,11 @@ void __cdecl BattleFx_LimitLivewireTimelineTask(void)
             frame.particle->posY += (short)(rand() % (frame.spreadY << 1) - frame.spreadY);
             frame.particle->posZ += (short)(rand() % frame.tmpRange - frame.spread);
             frame.randomScale = (rand() % 4096) + 0x200;
-            frame.particle->scale = frame.scale * frame.randomScale >> 0xC;
+            frame.particle->scale = frame.scale * frame.randomScale >> 12;
             frame.particle->durationOrIndex = 0;
         }
-        frame.spread = 0x20;
-        for (frame.tmpIndex = 0; frame.tmpIndex < 0xA; frame.tmpIndex++) {
+        frame.spread = 32;
+        for (frame.tmpIndex = 0; frame.tmpIndex < 10; frame.tmpIndex++) {
             if ((g_YasuiLimitLivewireTargetMask & 1 << frame.tmpIndex) != 0) {
                 if ((g_YasuiLimitLivewireRandomTable[frame.tmpIndex].shakeStep & 1) != 0) {
                     frame.tmpRange = frame.spread;
@@ -372,21 +372,21 @@ void __cdecl BattleFx_LimitLivewireTimelineTask(void)
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
         g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-        frame.trailStart = frame.sparkSprite->phase * 0x140;
-    } else if (frame.sparkSprite->phase >= 0x48) {
-        frame.trailStart = 0xA00 - (frame.sparkSprite->phase - 0x48) * 0x140;
+        frame.trailStart = frame.sparkSprite->phase * 320;
+    } else if (frame.sparkSprite->phase >= 72) {
+        frame.trailStart = 0xA00 - (frame.sparkSprite->phase - 0x48) * 320;
     } else {
         frame.trailStart = 0xA00;
     }
     if (frame.sparkSprite->phase == 0x4B) {
-        for (frame.tmpIndex = 0; frame.tmpIndex < 0xA; frame.tmpIndex++) {
+        for (frame.tmpIndex = 0; frame.tmpIndex < 10; frame.tmpIndex++) {
             if ((g_YasuiLimitLivewireTargetMask & 1 << frame.tmpIndex) != 0) {
                 Battle_PostActorHitOrHurtMessage(frame.tmpIndex);
             }
         }
     }
-    if (frame.sparkSprite->phase >= 0x50) {
-        for (frame.tmpIndex = 0; frame.tmpIndex < 0xA; frame.tmpIndex++) {
+    if (frame.sparkSprite->phase >= 80) {
+        for (frame.tmpIndex = 0; frame.tmpIndex < 10; frame.tmpIndex++) {
             if ((g_YasuiLimitLivewireTargetMask & 1 << frame.tmpIndex) != 0) {
                 *(YasuiLimitSparkPoint *)&g_BattleActorRecords[frame.tmpIndex].posX = g_YasuiLimitLivewireSavedActorPositions[frame.tmpIndex];
             }
@@ -409,7 +409,7 @@ void __cdecl BattleFx_LimitLivewireTableScaledModelTask(void)
     int sizeScale;
 
     rec = (BattleFxLimitLivewireRecord *)BATTLE_CURRENT_TASK_SLOT;
-    sizeScale = rec->baseScale * (&g_YasuiLimitLivewireScaleTable[6])[rec->tableIndex] >> 0xC;
+    sizeScale = rec->baseScale * (&g_YasuiLimitLivewireScaleTable[6])[rec->tableIndex] >> 12;
     BattleFx_InstallBillboardMatrix(&rec->posX, sizeScale, -(sizeScale >> 4));
     modelDraw = (BattleFxModelDraw *)&g_YasuiLimitLivewireModelDrawReq;
     modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(5, g_YasuiLimitLivewireLoadedResTable);
@@ -448,7 +448,7 @@ void __cdecl BattleFx_LimitLivewireExpandingModelTask(void)
     modelDraw->stateFlags = 0;
     modelDraw->texturePageBits = 0;
     if (task->step >= 4) {
-        modelDraw->fadeLevel = task->step - 4 << 0xA;
+        modelDraw->fadeLevel = task->step - 4 << 10;
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw(modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
@@ -493,9 +493,9 @@ void __cdecl BattleFx_LimitLivewireStreakTask(void)
     frame.streak = (BattleFxLivewireStreakSlot *)BATTLE_CURRENT_TASK_SLOT;
     frame.tail = *(YasuiLimitSparkPoint *)&frame.streak->posX;
     frame.step = frame.streak->phase;
-    frame.tail.x += (short)(frame.step * frame.streak->velocityX >> 0xC);
-    frame.tail.y += (short)(frame.step * frame.streak->velocityY >> 0xC);
-    frame.tail.z += (short)(frame.step * frame.streak->velocityZ >> 0xC);
+    frame.tail.x += (short)(frame.step * frame.streak->velocityX >> 12);
+    frame.tail.y += (short)(frame.step * frame.streak->velocityY >> 12);
+    frame.tail.z += (short)(frame.step * frame.streak->velocityZ >> 12);
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     frame.prim = (BattleFxLivewireStreakPrim *)g_BattleFxActiveDrawListPtr;
@@ -544,9 +544,9 @@ void __cdecl BattleFx_LimitLivewireStreakTask(void)
     frame.dir[2] = frame.streak->posZ - g_YasuiLimitLivewireSourceBonePos.z;
     NormalizeVectorFixed(frame.dir, frame.dir);
     frame.step = frame.streak->speed;
-    frame.streak->posX += (short)(frame.step * frame.streak->velocityX >> 0xC);
-    frame.streak->posY += (short)(frame.step * frame.streak->velocityY >> 0xC);
-    frame.streak->posZ += (short)(frame.step * frame.streak->velocityZ >> 0xC);
+    frame.streak->posX += (short)(frame.step * frame.streak->velocityX >> 12);
+    frame.streak->posY += (short)(frame.step * frame.streak->velocityY >> 12);
+    frame.streak->posZ += (short)(frame.step * frame.streak->velocityZ >> 12);
     frame.angle = rand() % 0x32 + 0x18;
     Gte_BuildAxisAngleMatrix(frame.angle, &frame.matrix, (VECTOR *)frame.dir);
     TransformVectorToInt16(&frame.matrix, &frame.streak->velocityX, &frame.streak->velocityX);
@@ -601,11 +601,11 @@ void __cdecl BattleFx_LimitLivewireOrientedSpriteTask(void)
     frame.toCamera[0] = g_BattleCameraPosition.cameraPosX - g_YasuiLimitLivewireSourceBonePos.x;
     frame.toCamera[1] = g_BattleCameraPosition.cameraPosY - g_YasuiLimitLivewireSourceBonePos.y;
     frame.toCamera[2] = g_BattleCameraPosZ - g_YasuiLimitLivewireSourceBonePos.z;
-    frame.angle = frame.rel[0] * frame.toCamera[0] + frame.rel[1] * frame.toCamera[1] + frame.rel[2] * frame.toCamera[2] >> 0xC;
+    frame.angle = frame.rel[0] * frame.toCamera[0] + frame.rel[1] * frame.toCamera[1] + frame.rel[2] * frame.toCamera[2] >> 12;
     frame.anchor = g_YasuiLimitLivewireSourceBonePos;
-    frame.anchor.x += (short)(frame.angle * frame.radial[0] >> 0xC);
-    frame.anchor.y += (short)(frame.angle * frame.radial[1] >> 0xC);
-    frame.anchor.z += (short)(frame.angle * frame.radial[2] >> 0xC);
+    frame.anchor.x += (short)(frame.angle * frame.radial[0] >> 12);
+    frame.anchor.y += (short)(frame.angle * frame.radial[1] >> 12);
+    frame.anchor.z += (short)(frame.angle * frame.radial[2] >> 12);
     frame.toCamera[0] = g_BattleCameraPosition.cameraPosX - frame.anchor.x;
     frame.toCamera[1] = g_BattleCameraPosition.cameraPosY - frame.anchor.y;
     frame.toCamera[2] = g_BattleCameraPosZ - frame.anchor.z;
@@ -615,7 +615,7 @@ void __cdecl BattleFx_LimitLivewireOrientedSpriteTask(void)
     if (frame.rel[1] > 0) {
         frame.angle = -frame.angle;
     }
-    frame.spin[0] = 0x400;
+    frame.spin[0] = 0x400 /* 90 deg */;
     frame.spin[1] = 0;
     frame.spin[2] = frame.angle;
     RotMatrixZYX((SVECTOR *)frame.spin, &frame.matrix);
@@ -623,7 +623,7 @@ void __cdecl BattleFx_LimitLivewireOrientedSpriteTask(void)
     frame.matrix.t[1] = g_YasuiLimitLivewireSourceBonePos.y;
     frame.matrix.t[2] = g_YasuiLimitLivewireSourceBonePos.z;
     ConcatMatrixInPlace(&frame.matrixB, &frame.matrix);
-    frame.angle = (SqrtToInt(frame.flatLength) << 0xC) / 0x800;
+    frame.angle = (SqrtToInt(frame.flatLength) << 12) / 2048;
     frame.scale[1] = frame.angle + frame.angle / 3;
     frame.scale[2] = frame.sprite->scale;
     frame.scale[0] = frame.scale[2];
@@ -665,8 +665,8 @@ void __cdecl BattleFx_LimitLivewireSpawnSpriteBurst(BattleFxLimitLivewireTimelin
     Battle_GetBoneWorldPos(g_YasuiLimitLivewireSourceActor, g_BattleActorRecords[g_YasuiLimitLivewireSourceActor].targetBone, &g_YasuiLimitLivewireSourceBonePos.x);
     g_YasuiLimitLivewireSourceBonePos.radius = g_BattleActorRecords[g_YasuiLimitLivewireSourceActor].radius;
     extent = g_YasuiLimitLivewireSourceBonePos.radius;
-    scaleA = (extent << 0xC) / 0x1AE;
-    velScaleB = (extent << 0xC) / 0x15E;
+    scaleA = (extent << 12) / 430;
+    velScaleB = (extent << 12) / 350;
     span = extent << 1;
     for (i = 0; i < count; i++) {
         burstSprite = (BattleFxLimitLivewireBurstSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitLivewireAnimatedSpriteEntry2Task);
@@ -674,10 +674,10 @@ void __cdecl BattleFx_LimitLivewireSpawnSpriteBurst(BattleFxLimitLivewireTimelin
         burstSprite->posX += (short)(rand() % span - extent);
         burstSprite->posY += (short)(rand() % span - extent);
         burstSprite->posZ += (short)(rand() % span - extent);
-        burstSprite->rotY = rand() % 2 << 0xB;
-        randVal = rand() % 0xE00 + 0x500;
-        burstSprite->speed = scaleA * randVal >> 0xC;
-        burstSprite->lifetime = rand() % 0x40 + 0x50;
+        burstSprite->rotY = rand() % 2 << 11;
+        randVal = rand() % 3584 + 1280;
+        burstSprite->speed = scaleA * randVal >> 12;
+        burstSprite->lifetime = rand() % 64 + 80;
     }
     extent += 0x90;
     span = extent << 1;
@@ -687,9 +687,9 @@ void __cdecl BattleFx_LimitLivewireSpawnSpriteBurst(BattleFxLimitLivewireTimelin
         burstSprite->posX += (short)(rand() % span - extent);
         burstSprite->posY += (short)(rand() % span - extent);
         burstSprite->posZ += (short)(rand() % span - extent);
-        randVal = rand() % 0xC00 + 0x500;
-        burstSprite->speed = velScaleB * randVal >> 0xC;
-        burstSprite->lifetime = rand() % 0x50 + 0x40;
+        randVal = rand() % 3072 + 1280;
+        burstSprite->speed = velScaleB * randVal >> 12;
+        burstSprite->lifetime = rand() % 80 + 64;
     }
 }
 

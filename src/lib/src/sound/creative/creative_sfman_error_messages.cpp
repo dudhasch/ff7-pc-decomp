@@ -15,14 +15,14 @@ extern "C" {
 #pragma intrinsic(memset, strcpy, strcat, strcmp)
 // clang-format off
 // GLOBAL: FF7 0x00969228
-char g_SfManErrorClass400TextTable[0x12c] =
+char g_SfManErrorClass400TextTable[300] =
     "Unknown\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Error loading the SoundFont Master Manager\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Error receiving the SF Master Manager entry point\0\0\0\0\0\0\0\0\0\0\0"
     "No SoundFont Compatible Device with the given index.\0\0\0\0\0\0\0\0"
     "This version of the SFMan API is not supported.";
 // GLOBAL: FF7 0x00969358
-char g_SfManErrorClass100TextTable[0x400] =
+char g_SfManErrorClass100TextTable[1024] =
     "Unknown Invalid Error\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Unknown\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Invalid User ID\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
@@ -41,7 +41,7 @@ char g_SfManErrorClass100TextTable[0x400] =
     "Wrong sound ROM\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Synthesizer does not support static memory";
 // GLOBAL: FF7 0x00969758
-char g_SfManErrorClass200TextTable[0x168] =
+char g_SfManErrorClass200TextTable[360] =
     "Unknown Contention Error\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Manager DLL is busy\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "MIDI Output Driver is busy\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
@@ -49,7 +49,7 @@ char g_SfManErrorClass200TextTable[0x168] =
     "Insufficient system memory\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Insufficient sound memory";
 // GLOBAL: FF7 0x009698c0
-char g_SfManFallbackErrorPrefix[0x78] =
+char g_SfManFallbackErrorPrefix[120] =
     "Unknown Misc Error\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
     "Undefined error";
 // GLOBAL: FF7 0x00de6798
@@ -74,7 +74,7 @@ int __cdecl SfManIsAbsBelow100(int value)
 // FUNCTION: FF7 0x0074b8d5
 char *__cdecl SfManFormatUnknownError(const char *prefix, unsigned int error)
 {
-    char text[0xc];
+    char text[12];
 
     text[0] = 0;
     g_SfUtilsErrorMsgBuffer[0] = 0;
@@ -101,20 +101,20 @@ char *__cdecl SfManErrorText(int value)
         // STRING: FF7 0x00969940
         return "Success";
     case SOUND_SFMAN_ERROR_INVALID:
-        if (value < 0x75) {
-            return g_SfManErrorClass100TextTable + offset * 0x3c;
+        if (value < 117) {
+            return g_SfManErrorClass100TextTable + offset * 60;
         } else {
             return SfManFormatUnknownError(g_SfManErrorClass100TextTable, value);
         }
     case SOUND_SFMAN_ERROR_CONTENTION:
-        if (value < 0xce) {
-            return g_SfManErrorClass200TextTable + offset * 0x3c;
+        if (value < 206) {
+            return g_SfManErrorClass200TextTable + offset * 60;
         } else {
             return SfManFormatUnknownError(g_SfManErrorClass200TextTable, value);
         }
     case SOUND_SFMAN_ERROR_MANAGER:
-        if (value < 0x195) {
-            return g_SfManErrorClass400TextTable + offset * 0x3c;
+        if (value < 405) {
+            return g_SfManErrorClass400TextTable + offset * 60;
         } else {
             return SfManFormatUnknownError(g_SfManErrorClass400TextTable, value);
         }

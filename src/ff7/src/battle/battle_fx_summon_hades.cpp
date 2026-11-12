@@ -3745,13 +3745,13 @@ short g_BattleSummonHadesPairScaleMatrixM22 = 0;
 unsigned char g_bssPad_00af8adc[4] = {0};
 unsigned char g_bssPad_00af8ae0[8] = {0};
 // GLOBAL: FF7 0x00af8ae8
-unsigned char g_BattleSummonHadesRisingRingScaleMatrix[0x4] = {0};
+unsigned char g_BattleSummonHadesRisingRingScaleMatrix[4] = {0};
 unsigned char g_bssPad_00af8aec[4] = {0};
 // GLOBAL: FF7 0x00af8af0
 short g_BattleSummonHadesRisingRingScaleMatrixM11 = 0;
 unsigned char g_bssPad_00af8af4[4] = {0};
 // GLOBAL: FF7 0x00af8af8
-unsigned char g_BattleSummonHadesRisingRingPosition[0x10] = {0};
+unsigned char g_BattleSummonHadesRisingRingPosition[16] = {0};
 // GLOBAL: FF7 0x00af8b08
 short g_BattleSummonHadesColorCycleScaleMatrix = 0;
 unsigned char g_bssPad_00af8b0c[4] = {0};
@@ -3848,7 +3848,7 @@ void __cdecl BattleFx_SummonHadesSpawnTimeline(void)
     frame.spawnRecord = (BattleFxHadesSpawnRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesTimelineTask);
     Battle_GetActorMaskCentroid((g_BattleSummonHadesTargetState.actorMask), (short *)((int)frame.spawnRecord + 4));
     RotMatrix((SVECTOR *)&g_BattleSummonHadesFacingAngles, &g_BattleSummonHadesModelMatrix.matrix);
-    frame.scaleVec.vz = 0xE00;
+    frame.scaleVec.vz = 0xE00 /* 0.875 */;
     frame.scaleVec.vy = frame.scaleVec.vz;
     frame.scaleVec.vx = frame.scaleVec.vy;
     ScaleMatrix(&g_BattleSummonHadesModelMatrix.matrix, &frame.scaleVec);
@@ -3856,10 +3856,10 @@ void __cdecl BattleFx_SummonHadesSpawnTimeline(void)
     g_BattleSummonHadesModelMatrix.matrix.t[1] = 0xFFFFF97F;
     g_BattleSummonHadesModelMatrix.matrix.t[2] = 0;
     if (frame.spawnRecord->posZ < g_BattleActorRecords[g_BattleSummonHadesCasterActor].posZ) {
-        g_BattleSummonHadesPlacementZ.placementZ = frame.spawnRecord->posZ + 0x157C;
+        g_BattleSummonHadesPlacementZ.placementZ = frame.spawnRecord->posZ + 5500;
     } else {
-        g_BattleSummonHadesFacingAngles.targetBoneMaxY = 0x800;
-        g_BattleSummonHadesPlacementZ.placementZ = frame.spawnRecord->posZ - 0x157C;
+        g_BattleSummonHadesFacingAngles.targetBoneMaxY = 0x800 /* 180 deg */;
+        g_BattleSummonHadesPlacementZ.placementZ = frame.spawnRecord->posZ - 5500;
     }
     RotMatrix((SVECTOR *)&g_BattleSummonHadesFacingAngles, &g_BattleSummonHadesFacingMatrix);
     frame.angleX.vx = 0;
@@ -3867,12 +3867,12 @@ void __cdecl BattleFx_SummonHadesSpawnTimeline(void)
     frame.angleX.vz = 0;
     RotMatrix(&frame.angleX, &g_BattleSummonHadesRotationMatrix);
     frame.blobCursor = (int)&g_BattleSummonHadesMeshBlob.meshHeader;
-    for (frame.rowIndex = 0; frame.rowIndex < 0xF; frame.rowIndex++) {
+    for (frame.rowIndex = 0; frame.rowIndex < 15; frame.rowIndex++) {
         frame.blobValue = *(short *)frame.blobCursor;
         frame.blobCursor += 2;
         *(short *)((char *)&g_BattleSummonHadesRotatedShortMatrix + (frame.rowIndex << 5)) = 0;
-        for (frame.colIndex = 0; frame.colIndex < 0xF; frame.colIndex++) {
-            *(short *)((char *)&(*(short *)((char *)&g_BattleSummonHadesRotatedShortMatrix + 2)) + ((frame.colIndex << 5) + (frame.colIndex + frame.rowIndex) % 0xF * 2)) = frame.blobValue;
+        for (frame.colIndex = 0; frame.colIndex < 15; frame.colIndex++) {
+            *(short *)((char *)&(*(short *)((char *)&g_BattleSummonHadesRotatedShortMatrix + 2)) + ((frame.colIndex << 5) + (frame.colIndex + frame.rowIndex) % 15 * 2)) = frame.blobValue;
         }
     }
     BattleFx_HadesSpawnCameraScript((int)&g_BattleSummonHadesAnimBlob, (int)&g_BattleSummonHadesFacingMatrix, g_BattleSummonHadesCasterActor);
@@ -4201,30 +4201,30 @@ void __cdecl BattleFx_SummonHadesTimelineTask(void)
         }
     } else {
         stage -= 5;
-        if (stage < 0x28) {
+        if (stage < 40) {
             if (stage == 0) {
                 Battle_AllocateResourceSlot(BattleFx_SummonHadesFadingSpriteModelPairEmitterTask);
                 Battle_AllocateResourceSlot(BattleFx_SummonHadesRibbonSpawnerTask);
                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 0);
             }
         } else {
-            stage -= 0x28;
-            if (stage < 0xA) { /* empty first arm: lib/codegen.h */
+            stage -= 40;
+            if (stage < 10) { /* empty first arm: lib/codegen.h */
             } else {
-                stage -= 0xA;
-                if (stage < 0x3C) {
+                stage -= 10;
+                if (stage < 60) {
                     if (stage == 0) {
                         Battle_AllocateResourceSlot(BattleFx_SummonHadesRadiusClampedMeshSpawnTimeline);
                     }
                 } else {
-                    stage -= 0x3C;
-                    if (stage < 0x3C) {
+                    stage -= 60;
+                    if (stage < 60) {
                         if (stage == 0) {
                             Battle_AllocateResourceSlot(BattleFx_SummonHadesHeightClippedMeshSpawnTimeline);
                         }
                     } else {
-                        stage -= 0x3C;
-                        if (stage < 0x1E) {
+                        stage -= 60;
+                        if (stage < 30) {
                             if (stage == 0) {
                                 Battle_AllocateResourceSlot(BattleFx_SummonHadesSpriteModelPairSpawnTimeline);
                             }
@@ -4232,8 +4232,8 @@ void __cdecl BattleFx_SummonHadesTimelineTask(void)
                                 Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 1);
                             }
                         } else {
-                            stage -= 0x1E;
-                            if (stage < 0x1E) {
+                            stage -= 30;
+                            if (stage < 30) {
                                 if (stage == 0) {
                                     g_BattleSummonHadesRibbonIndex = 0;
                                     Battle_AllocateResourceSlot(BattleFx_SummonHadesTwoColorRibbonSpawnTimeline);
@@ -4241,20 +4241,20 @@ void __cdecl BattleFx_SummonHadesTimelineTask(void)
                                     Battle_AllocateResourceSlot(BattleFx_SummonHadesDelayedRingSpawnTask);
                                 }
                             } else {
-                                stage -= 0x1E;
-                                if (stage < 0x30) {
-                                    if (stage == 0x29) {
+                                stage -= 30;
+                                if (stage < 48) {
+                                    if (stage == 41) {
                                         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_3, 0x40, 2);
                                         Sfx_ReleaseCachedBuffer(0x294, 0);
                                         Sfx_ReleaseCachedBuffer(0x295, 0);
                                         Sfx_ReleaseCachedBuffer(0x296, 0);
                                     }
                                 } else {
-                                    stage -= 0x30;
-                                    if (stage < 0x3E) { /* empty first arm: lib/codegen.h */
+                                    stage -= 48;
+                                    if (stage < 62) { /* empty first arm: lib/codegen.h */
                                     } else {
-                                        stage -= 0x3E;
-                                        if (stage < 0x1E) {
+                                        stage -= 62;
+                                        if (stage < 30) {
                                             if (stage == 0) {
                                                 Battle_AllocateResourceSlot(BattleFx_SummonHadesStretchingModelSpawnTimeline);
                                                 Battle_AllocateResourceSlot(BattleFx_SummonHadesColorCyclingSpriteEmitterSpawnTimeline);
@@ -4266,14 +4266,14 @@ void __cdecl BattleFx_SummonHadesTimelineTask(void)
                                                 Sfx_ReleaseCachedBuffer(0x299, 1);
                                             }
                                         } else {
-                                            stage -= 0x1E;
-                                            if (stage < 0x3E7) {
+                                            stage -= 30;
+                                            if (stage < 999) {
                                                 if (stage == 0) {
                                                     Battle_AllocateResourceSlot(BattleFx_SummonHadesSpriteParticlePoolSpawnTimeline);
                                                     Battle_AllocateResourceSlot(BattleFx_SummonHadesDelayedPerTargetSpawnTask);
                                                     Battle_AllocateResourceSlot(BattleFx_SummonHadesTargetRecordSpawnTimeline);
                                                 }
-                                                if (stage == 0x44) {
+                                                if (stage == 68) {
                                                     Battle_AllocateResourceSlot(BattleFx_SummonHadesSharedColorFadeOutTask);
                                                     task->ownerSlot = BATTLE_TASK_FREE;
                                                     Sfx_ReleaseCachedBuffer(0x29A, 2);
@@ -4314,7 +4314,7 @@ void __cdecl BattleFx_SummonHadesSharedColorFadeInTask(void)
     if (task->frameCounter == 0) {
         *(int *)&g_BattleFxTimelineState.red = g_BattleSummonHadesFadeInColor;
     }
-    g_BattleFxTimelineState.startValue = task->frameCounter * 0x180;
+    g_BattleFxTimelineState.startValue = task->frameCounter * 384;
     if (task->frameCounter >= 7) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -4338,7 +4338,7 @@ void __cdecl BattleFx_SummonHadesSharedColorFadeOutTask(void)
         return;
     }
     task = BATTLE_CURRENT_TASK_SLOT;
-    g_BattleFxTimelineState.startValue = 0xC00 - task->frameCounter * 0x180;
+    g_BattleFxTimelineState.startValue = 0xC00 - task->frameCounter * 384;
     if (task->frameCounter >= 7) {
         g_BattleFxTimelineState.channel2 = 0;
         g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
@@ -4373,7 +4373,7 @@ void __cdecl BattleFx_SummonHadesFadingSpriteModelPairEmitterTask(void)
             pairPtr->side = rand() % 2;
             pairPtr->oppositeSide = pairPtr->side ^ 1;
             pairPtr->variant = rand() % 8;
-            pairPtr->angle = (rand() % 4) << 0xA;
+            pairPtr->angle = (rand() % 4) << 10;
             pairPtr->tableIndex = entIdx;
         }
     }
@@ -4441,31 +4441,31 @@ void __cdecl BattleFx_SummonHadesFadingSpriteModelPairTask(void)
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     frame.angleX.vx = 0;
-    frame.angleX.vy = frame.fadeRecord->randomFlagA << 0xB;
+    frame.angleX.vy = frame.fadeRecord->randomFlagA << 11;
     frame.angleX.vz = 0;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
     SetRotMatrix(&frame.rotMatrix);
     NormalizeVectorFixed((VECTOR *)&frame.pointX, &frame.dirX);
     frame.offsetDistance = -(frame.offsetDistance >> 3);
-    frame.combinedMatrix.t[0] = frame.pointX.x + (frame.offsetDistance * frame.dirX.vx >> 0xC);
-    frame.combinedMatrix.t[1] = frame.pointX.y + (frame.offsetDistance * frame.dirX.vy >> 0xC);
-    frame.combinedMatrix.t[2] = frame.pointX.z + (frame.offsetDistance * frame.dirX.vz >> 0xC);
+    frame.combinedMatrix.t[0] = frame.pointX.x + (frame.offsetDistance * frame.dirX.vx >> 12);
+    frame.combinedMatrix.t[1] = frame.pointX.y + (frame.offsetDistance * frame.dirX.vy >> 12);
+    frame.combinedMatrix.t[2] = frame.pointX.z + (frame.offsetDistance * frame.dirX.vz >> 12);
     SetTransMatrix(&frame.combinedMatrix);
     g_BattleSummonHadesSpriteReq3.texture = Gfx_ModelTableGetLoadedRecord(4, g_pBattleSummonHadesTableCursor);
     g_BattleSummonHadesSpriteReq3.clut = Gfx_ModelTableGetSpriteObject(4, g_pBattleSummonHadesTableCursor);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonHadesSpriteReq3.texture, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     g_BattleSummonHadesSpriteReq3.frameIndex = ((g_BattleSummonHadesSpriteReq3.frameIndex + 4) % 8);
-    frame.angleX.vy = frame.fadeRecord->randomFlagB << 0xB;
+    frame.angleX.vy = frame.fadeRecord->randomFlagB << 11;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
     SetRotMatrix(&frame.rotMatrix);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonHadesSpriteReq3.texture, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0xA, g_pBattleSummonHadesTableCursor);
+    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(10, g_pBattleSummonHadesTableCursor);
     frame.modelDraw->flags = 0x88;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x1000 - ((frame.brightness & 0xFF) << 5);
+    frame.modelDraw->fadeLevel = 4096 - ((frame.brightness & 0xFF) << 5);
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     frame.offsetDistance = SinFixed(frame.fadeRecord->angle);
@@ -4476,13 +4476,13 @@ void __cdecl BattleFx_SummonHadesFadingSpriteModelPairTask(void)
     if (frame.offsetDistance > 0x1000) {
         frame.offsetDistance = 0x1000;
     }
-    frame.fadeComplement = 0x1000 - frame.modelDraw->fadeLevel;
-    frame.modelDraw->fadeLevel = 0x1000 - (frame.offsetDistance * frame.fadeComplement >> 0xC);
+    frame.fadeComplement = 4096 - frame.modelDraw->fadeLevel;
+    frame.modelDraw->fadeLevel = 4096 - (frame.offsetDistance * frame.fadeComplement >> 12);
     if (frame.modelDraw->fadeLevel < 0) {
         frame.modelDraw->fadeLevel = 0;
     }
-    if (frame.modelDraw->fadeLevel > 0x1000) {
-        frame.modelDraw->fadeLevel = 0x1000;
+    if (frame.modelDraw->fadeLevel > 4096) {
+        frame.modelDraw->fadeLevel = 4096;
     }
     frame.offsetDistance = 0x2000;
     g_BattleSummonHadesFadingPairScaleMatrixM22 = *(short *)&frame.offsetDistance;
@@ -4539,7 +4539,7 @@ void __cdecl BattleFx_SummonHadesRibbonSpawnerTask(void)
             g_BattleSummonHadesPositionHistory[idx].timer = 0;
             g_BattleSummonHadesPositionHistory[idx].step = 0;
             g_BattleSummonHadesPositionHistory[idx].headIndex = 0;
-            g_BattleSummonHadesPositionHistory[idx].stepLimit = 0x2C;
+            g_BattleSummonHadesPositionHistory[idx].stepLimit = 44;
         }
     }
     if (spawner->frameCounter >= g_BattleSummonHadesRibbonSpawnFrames.ribbonThreshold) {
@@ -4602,7 +4602,7 @@ void __cdecl BattleFx_SummonHadesRibbonTask(void)
         segCnt = pHistory->timer - 1;
         pScratch->vertexPair = *pHistory->positions[cursor];
         pScratch->sideX = pScratch->vertexX;
-        pScratch->sideY = pScratch->vertexY - 0x3E8;
+        pScratch->sideY = pScratch->vertexY - 1000;
         pScratch->sideZ = pScratch->vertexZ;
         BattleFx_SummonHadesProjectRibbonVertices(pScratch, &pScratch->vertexX, &pScratch->sideVec, &pScratch->vertexVec);
         for (calcSegmentIndex = 1; calcSegmentIndex <= segCnt; cursor++, calcSegmentIndex++) {
@@ -4624,18 +4624,18 @@ void __cdecl BattleFx_SummonHadesRibbonTask(void)
             pScratch->endColorAlt = pScratch->endColor;
             pScratch->vertexPair = *pHistory->positions[nextCursor];
             pScratch->sideX = pScratch->vertexX;
-            pScratch->sideY = pScratch->vertexY - 0x3E8;
+            pScratch->sideY = pScratch->vertexY - 1000;
             pScratch->sideZ = pScratch->vertexZ;
             BattleFx_SummonHadesProjectRibbonVertices(pScratch, &pScratch->vertexX, &pScratch->sideVec, &pScratch->vertexVec);
             BattleFx_SummonHadesDrawRibbonSegmentFourColorQuad(pScratch, calcSegmentIndex, segCnt);
         }
-        if (selfPtr->frameIndex >= 0x3C) {
+        if (selfPtr->frameIndex >= 60) {
             selfPtr->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
             return;
         }
-        if (selfPtr->frameIndex >= 0x28) {
+        if (selfPtr->frameIndex >= 40) {
             for (cursor = 0; cursor < 2; cursor++) {
                 (pHistory->step)++;
                 if (pHistory->step >= pHistory->stepLimit) {
@@ -4787,22 +4787,22 @@ void __cdecl BattleFx_SummonHadesRadiusClampedMeshSpawnTimeline(void)
     if (timeline->frameCounter == 6) {
         pChild = (BattleSummonHadesMeshSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesRadiusClampedMeshTask);
         pChild->radius = 0;
-        pChild->radiusStep = 0xFA;
+        pChild->radiusStep = 250;
         pChild->yawOrEmitSpeed = 0;
         pChild->yawSpeed = 0x4C;
         pChild->scaleYOrEmitCount = 0;
         pChild->meshRadius = 0;
-        pChild->meshRadiusStep = 0x78;
-        pChild->scaleYStep = 0x9D;
+        pChild->meshRadiusStep = 120;
+        pChild->scaleYStep = 157;
         pChild = (BattleSummonHadesMeshSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesGrowingRadialSpriteEmitterTask);
         pChild->centerZ = 0;
         pChild->centerX = 0;
         pChild->centerY = 0xFF92;
-        pChild->yawOrEmitSpeed = 0xBE;
+        pChild->yawOrEmitSpeed = 190;
         pChild->radiusStep = 0xFFF8;
         pChild->scaleYOrEmitCount = 4;
         pChild->stateIndex = 0;
-        for (idx = 0; idx < 0x12C; idx++) {
+        for (idx = 0; idx < 300; idx++) {
             g_BattleSummonHadesParticleBuffer[idx].age = 0;
         }
         timeline->ownerSlot = BATTLE_TASK_FREE;
@@ -4834,10 +4834,10 @@ void __cdecl BattleFx_SummonHadesGrowingRadialSpriteEmitterTask(void)
     particlePoolPtr = (BattleFxHadesGrowParticle *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + taskSlot->stateIndex * 0x1C20);
     (g_BattleSummonHadesRadialData.growRadialDraw) = Gfx_ModelTableGetLoadedRecord(6, g_pBattleSummonHadesTableCursor);
     g_BattleSummonHadesRadialData.growRadialLookup4 = Gfx_ModelTableGetSpriteObject(6, g_pBattleSummonHadesTableCursor);
-    for (idx = 0; idx < 0x12C; idx++) {
+    for (idx = 0; idx < 300; idx++) {
         if (particlePoolPtr[idx].active != 0) {
             g_BattleSummonHadesRadialData.growRadialFlags = particlePoolPtr[idx].frame | 0x8000;
-            g_BattleSummonHadesRadialData.growRadialSize = 0x40;
+            g_BattleSummonHadesRadialData.growRadialSize = 64;
             (g_BattleSummonHadesGrowState.radius) = particlePoolPtr[idx].radius;
             g_BattleSummonHadesGrowScaleMatrixM11 = (g_BattleSummonHadesGrowState.radius);
             g_BattleSummonHadesGrowScaleMatrix = g_BattleSummonHadesGrowScaleMatrixM11;
@@ -4853,8 +4853,8 @@ void __cdecl BattleFx_SummonHadesGrowingRadialSpriteEmitterTask(void)
                 particlePoolPtr[idx].posZ += particlePoolPtr[idx].velocityZ;
                 particlePoolPtr[idx].velocityX -= (short)(particlePoolPtr[idx].velocityX >> 3);
                 particlePoolPtr[idx].velocityZ -= (short)(particlePoolPtr[idx].velocityZ >> 3);
-                particlePoolPtr[idx].radius += 0x10;
-                if (particlePoolPtr[idx].frame >= 0xF) {
+                particlePoolPtr[idx].radius += 16;
+                if (particlePoolPtr[idx].frame >= 15) {
                     particlePoolPtr[idx].active = 0;
                 }
                 (particlePoolPtr[idx].frame)++;
@@ -4864,33 +4864,33 @@ void __cdecl BattleFx_SummonHadesGrowingRadialSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskSlot->timer >= 0x48) {
+    if (taskSlot->timer >= 72) {
         taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (taskSlot->timer < 0x36) {
+    if (taskSlot->timer < 54) {
         sizeBase = 0x1900;
-        if (taskSlot->emitCount > 0x18) {
-            taskSlot->emitCount = 0x18;
+        if (taskSlot->emitCount > 24) {
+            taskSlot->emitCount = 24;
         }
         (taskSlot->emitCount)++;
         for (idx = 0; idx < taskSlot->emitCount; idx++) {
-            for (freeSlot = 0; freeSlot < 0x12C && particlePoolPtr[freeSlot].active != 0; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 300 && particlePoolPtr[freeSlot].active != 0; freeSlot++) {
             }
-            if (freeSlot >= 0x12C) {
+            if (freeSlot >= 300) {
                 break;
             }
             particlePoolPtr[freeSlot].active = 1;
             particlePoolPtr[freeSlot].frame = 0;
             theta = ((rand()) % 4096);
-            spawnDist = g_BattleSummonHadesSpawnRadius + rand() % 0xF0;
-            particlePoolPtr[freeSlot].posX = taskSlot->centerX + (CosFixed(theta) * spawnDist >> 0xC);
-            particlePoolPtr[freeSlot].posY = taskSlot->centerY - rand() % 0x28;
-            particlePoolPtr[freeSlot].posZ = taskSlot->centerZ - (SinFixed(theta) * spawnDist >> 0xC);
-            spawnDist = taskSlot->radius + rand() % 0x5F + 0xBE;
-            particlePoolPtr[freeSlot].velocityX = CosFixed(theta) * spawnDist >> 0xC;
-            particlePoolPtr[freeSlot].velocityZ = -(SinFixed(theta) * spawnDist >> 0xC);
+            spawnDist = g_BattleSummonHadesSpawnRadius + rand() % 240;
+            particlePoolPtr[freeSlot].posX = taskSlot->centerX + (CosFixed(theta) * spawnDist >> 12);
+            particlePoolPtr[freeSlot].posY = taskSlot->centerY - rand() % 40;
+            particlePoolPtr[freeSlot].posZ = taskSlot->centerZ - (SinFixed(theta) * spawnDist >> 12);
+            spawnDist = taskSlot->radius + rand() % 95 + 190;
+            particlePoolPtr[freeSlot].velocityX = CosFixed(theta) * spawnDist >> 12;
+            particlePoolPtr[freeSlot].velocityZ = -(SinFixed(theta) * spawnDist >> 12);
             theta = rand() % 0xD00 + 0x600;
-            particlePoolPtr[freeSlot].radius = sizeBase * theta >> 0xC;
+            particlePoolPtr[freeSlot].radius = sizeBase * theta >> 12;
         }
         taskSlot->radius += taskSlot->radiusStep;
         if (taskSlot->radius < 0) {
@@ -4932,7 +4932,7 @@ void __cdecl BattleFx_SummonHadesRadiusClampedMeshTask(void)
     frame.taskMatrix.t[2] = 0;
     frame.taskMatrix.t[1] = frame.taskMatrix.t[2];
     frame.taskMatrix.t[0] = frame.taskMatrix.t[1];
-    frame.scaleX.vz = 0x2000;
+    frame.scaleX.vz = 0x2000 /* 2.0 */;
     frame.scaleX.vx = frame.scaleX.vz;
     frame.scaleX.vy = frame.radiusRecord->scaleY;
     ScaleMatrix(&frame.taskMatrix, &frame.scaleX);
@@ -4955,34 +4955,34 @@ void __cdecl BattleFx_SummonHadesRadiusClampedMeshTask(void)
     frame.phaseLeft = frame.radiusRecord->frameCount;
     if (frame.phaseLeft < 2) {
         frame.radiusRecord->radius += frame.radiusRecord->radiusStep;
-        g_BattleSummonHadesSpawnRadius = 2 * (frame.radiusRecord->radius / 3) - 0x64;
+        g_BattleSummonHadesSpawnRadius = 2 * (frame.radiusRecord->radius / 3) - 100;
     } else {
         frame.phaseLeft -= 2;
-        if (frame.phaseLeft < 0xC) {
+        if (frame.phaseLeft < 12) {
             frame.radiusRecord->meshRadius += frame.radiusRecord->meshRadiusStep;
             frame.radiusRecord->radius += frame.radiusRecord->radiusStep;
-            g_BattleSummonHadesSpawnRadius = 2 * (frame.radiusRecord->radius / 3) - 0x64;
+            g_BattleSummonHadesSpawnRadius = 2 * (frame.radiusRecord->radius / 3) - 100;
         } else {
-            frame.phaseLeft -= 0xC;
+            frame.phaseLeft -= 12;
             if (frame.phaseLeft < 8) {
-                frame.radiusRecord->meshRadius = 0x60E;
-                g_BattleCameraTransform.posY = (frame.radiusRecord->frameCount & 1) * 0x23;
-                g_BattleSummonHadesSpawnRadius = 2 * (frame.radiusRecord->radius / 3) - 0x64;
+                frame.radiusRecord->meshRadius = 1550;
+                g_BattleCameraTransform.posY = (frame.radiusRecord->frameCount & 1) * 35;
+                g_BattleSummonHadesSpawnRadius = 2 * (frame.radiusRecord->radius / 3) - 100;
             } else {
                 frame.phaseLeft -= 8;
-                if (frame.phaseLeft < 0x20) {
+                if (frame.phaseLeft < 32) {
                     frame.radiusRecord->yaw += frame.radiusRecord->yawSpeed;
                     frame.radiusRecord->yawSpeed -= (short)(frame.radiusRecord->yawSpeed >> 3);
                     g_BattleSummonHadesRotationMatrix.t[1] = -(frame.phaseLeft * 0xC);
                     frame.radiusRecord->scaleY += frame.radiusRecord->scaleYStep;
-                    g_BattleCameraTransform.posY = (frame.radiusRecord->frameCount & 1) * 0x46;
+                    g_BattleCameraTransform.posY = (frame.radiusRecord->frameCount & 1) * 70;
                 } else {
-                    frame.phaseLeft -= 0x20;
-                    if (frame.phaseLeft < 0x22) {
-                        g_BattleCameraTransform.posY = (frame.radiusRecord->frameCount & 1) * 0x46;
+                    frame.phaseLeft -= 32;
+                    if (frame.phaseLeft < 34) {
+                        g_BattleCameraTransform.posY = (frame.radiusRecord->frameCount & 1) * 70;
                     } else {
-                        frame.phaseLeft -= 0x22;
-                        if (frame.phaseLeft < 0x63) {
+                        frame.phaseLeft -= 34;
+                        if (frame.phaseLeft < 99) {
                             g_BattleCameraTransform.posY = 0;
                         } else if ((g_BattleSummonHadesTimerState.timer) < 0) {
                             frame.radiusRecord->ownerSlot = BATTLE_TASK_FREE;
@@ -5007,7 +5007,7 @@ int __cdecl BattleFx_SummonHadesDrawPsxMeshRadiusClamped(BattleFxHadesRingState 
 
     streamBase = object->meshData + 4;
     cursor = streamBase + **(int **)object;
-    object->highWord = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+    object->highWord = (*(int *)cursor & 0xFFFF0000) >> 16;
     cursor = BattleFx_SummonHadesDrawPsxTexturedTrianglesRadiusClamped(object, (char *)streamBase, cursor, radius);
     cursor = BattleFx_SummonHadesDrawPsxTexturedQuads(object, (char *)streamBase, cursor, radius);
     return object->primPtr;
@@ -5053,10 +5053,10 @@ int __cdecl BattleFx_SummonHadesDrawPsxTexturedTrianglesRadiusClamped(BattleFxHa
         scratch->rimBOffZ = scratch->rimBZ - scratch->centerZ;
         edgeLengthB = SqrtToInt(NormalizeVectorFixed(&scratch->rimBOffX, &scratch->rimBOffX));
         if (length > radius) {
-            scratch->rimAX = scratch->centerX + (radius * scratch->rimAOffX >> 0xC);
-            scratch->rimAZ = scratch->centerZ + (radius * scratch->rimAOffZ >> 0xC);
-            scratch->rimBX = scratch->centerX + (radius * scratch->rimBOffX >> 0xC);
-            scratch->rimBZ = scratch->centerZ + (radius * scratch->rimBOffZ >> 0xC);
+            scratch->rimAX = scratch->centerX + (radius * scratch->rimAOffX >> 12);
+            scratch->rimAZ = scratch->centerZ + (radius * scratch->rimAOffZ >> 12);
+            scratch->rimBX = scratch->centerX + (radius * scratch->rimBOffX >> 12);
+            scratch->rimBZ = scratch->centerZ + (radius * scratch->rimBOffZ >> 12);
             val = radius * (scratch->texU0 - scratch->texU2) / length;
             scratch->texU0 = scratch->texU2 + val;
             val = radius * (scratch->texV0 - scratch->texV2) / length;
@@ -5179,11 +5179,11 @@ void __cdecl BattleFx_SummonHadesHeightClippedMeshSpawnTimeline(void)
             emitter = (BattleFxHadesHeightClipTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesShrinkingRadialSpriteEmitterTask);
             *(Int64Pair *)((char *)emitter + 4) = *(Int64Pair *)((char *)mesh + 4);
             emitter->centerY = 0xFFBA;
-            emitter->radius = 0x6E;
+            emitter->radius = 110;
             emitter->radiusStep = 0xFFF8;
             emitter->emitCount = 2;
             emitter->poolSelector = entIdx + 1;
-            for (localClearIndex = 0; localClearIndex < 0x12C; localClearIndex++) {
+            for (localClearIndex = 0; localClearIndex < 300; localClearIndex++) {
                 *(short *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + (entIdx + 1) * 0x1C20 + localClearIndex * 0x18) = 0;
             }
         }
@@ -5218,10 +5218,10 @@ void __cdecl BattleFx_SummonHadesShrinkingRadialSpriteEmitterTask(void)
     particlePoolPtr = (BattleFxHadesShrinkParticle *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + taskSlot->stateIndex * 0x1C20);
     g_BattleSummonHadesRadialData.shrinkRadialDraw = Gfx_ModelTableGetLoadedRecord(6, g_pBattleSummonHadesTableCursor);
     g_BattleSummonHadesRadialData.shrinkRadialLookup = Gfx_ModelTableGetSpriteObject(6, g_pBattleSummonHadesTableCursor);
-    for (idx = 0; idx < 0x12C; idx++) {
+    for (idx = 0; idx < 300; idx++) {
         if (particlePoolPtr[idx].active != 0) {
             g_BattleSummonHadesShrinkSpriteParams.shrinkRadialFlags = particlePoolPtr[idx].frame | 0x8000;
-            g_BattleSummonHadesShrinkSpriteParams.shrinkRadialSize = 0x40;
+            g_BattleSummonHadesShrinkSpriteParams.shrinkRadialSize = 64;
             (g_BattleSummonHadesShrinkState.shrinkSize) = particlePoolPtr[idx].size;
             g_BattleSummonHadesShrinkScaleMatrixM11 = (g_BattleSummonHadesShrinkState.shrinkSize);
             g_BattleSummonHadesShrinkScaleMatrix = g_BattleSummonHadesShrinkScaleMatrixM11;
@@ -5238,7 +5238,7 @@ void __cdecl BattleFx_SummonHadesShrinkingRadialSpriteEmitterTask(void)
                 particlePoolPtr[idx].velocityX -= (short)(particlePoolPtr[idx].velocityX >> 3);
                 particlePoolPtr[idx].velocityZ -= (short)(particlePoolPtr[idx].velocityZ >> 3);
                 particlePoolPtr[idx].size -= 8;
-                if (particlePoolPtr[idx].frame >= 0xF) {
+                if (particlePoolPtr[idx].frame >= 15) {
                     particlePoolPtr[idx].active = 0;
                 }
                 (particlePoolPtr[idx].frame)++;
@@ -5248,33 +5248,33 @@ void __cdecl BattleFx_SummonHadesShrinkingRadialSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskSlot->timer >= 0x24) {
+    if (taskSlot->timer >= 36) {
         taskSlot->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (taskSlot->timer < 0x14) {
+    if (taskSlot->timer < 20) {
         sizeBase = 0x1900;
         if (taskSlot->emitCount > 5) {
             taskSlot->emitCount = 5;
         }
         (taskSlot->emitCount)++;
         for (idx = 0; idx < taskSlot->emitCount; idx++) {
-            for (freeSlot = 0; freeSlot < 0x12C && particlePoolPtr[freeSlot].active != 0; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 300 && particlePoolPtr[freeSlot].active != 0; freeSlot++) {
             }
-            if (freeSlot >= 0x12C) {
+            if (freeSlot >= 300) {
                 break;
             }
             particlePoolPtr[freeSlot].active = 1;
             particlePoolPtr[freeSlot].frame = 0;
             theta = ((rand()) % 4096);
-            spawnDist = rand() % 0x5A + 0xB4;
-            particlePoolPtr[freeSlot].posX = taskSlot->centerX + (CosFixed(theta) * spawnDist >> 0xC);
-            particlePoolPtr[freeSlot].posY = taskSlot->centerY - rand() % 0x1E;
-            particlePoolPtr[freeSlot].posZ = taskSlot->centerZ - (SinFixed(theta) * spawnDist >> 0xC);
-            spawnDist = taskSlot->radius + rand() % 0x37 + 0x6E;
-            particlePoolPtr[freeSlot].velocityX = CosFixed(theta) * spawnDist >> 0xC;
-            particlePoolPtr[freeSlot].velocityZ = -(SinFixed(theta) * spawnDist >> 0xC);
+            spawnDist = rand() % 90 + 180;
+            particlePoolPtr[freeSlot].posX = taskSlot->centerX + (CosFixed(theta) * spawnDist >> 12);
+            particlePoolPtr[freeSlot].posY = taskSlot->centerY - rand() % 30;
+            particlePoolPtr[freeSlot].posZ = taskSlot->centerZ - (SinFixed(theta) * spawnDist >> 12);
+            spawnDist = taskSlot->radius + rand() % 55 + 110;
+            particlePoolPtr[freeSlot].velocityX = CosFixed(theta) * spawnDist >> 12;
+            particlePoolPtr[freeSlot].velocityZ = -(SinFixed(theta) * spawnDist >> 12);
             theta = rand() % 0xB80 + 0x580;
-            particlePoolPtr[freeSlot].size = sizeBase * theta >> 0xC;
+            particlePoolPtr[freeSlot].size = sizeBase * theta >> 12;
         }
         taskSlot->radius += taskSlot->radiusStep;
         if (taskSlot->radius < 0) {
@@ -5315,9 +5315,9 @@ void __cdecl BattleFx_SummonHadesHeightClippedMeshTask(void)
     frame.taskMatrix.t[0] = frame.clipRecord->posX;
     frame.taskMatrix.t[1] = frame.clipRecord->offset;
     frame.taskMatrix.t[2] = frame.clipRecord->posZ;
-    frame.scaleX.vz = (g_BattleSummonHadesClipMeshWidths[frame.tableIndex] << 0xC) / 0x140;
+    frame.scaleX.vz = (g_BattleSummonHadesClipMeshWidths[frame.tableIndex] << 12) / 320;
     frame.scaleX.vx = frame.scaleX.vz;
-    frame.scaleX.vy = (g_BattleSummonHadesClipMeshHeights[frame.tableIndex] << 0xC) / 0xAF5;
+    frame.scaleX.vy = (g_BattleSummonHadesClipMeshHeights[frame.tableIndex] << 12) / 2805;
     ScaleMatrix(&frame.taskMatrix, &frame.scaleX);
     MultiplyMatrix(&g_BattleSummonHadesWorldMatrix, &frame.taskMatrix, &frame.taskMatrix);
     SetRotMatrix(&frame.taskMatrix);
@@ -5364,7 +5364,7 @@ int __cdecl BattleFx_SummonHadesDrawPsxMeshHeightClipped(BattleFxHadesRingState 
 
     streamBase = mesh->meshData + 4;
     cursor = (BattleFxHadesPsxDrawCursor *)(streamBase + **(int **)mesh);
-    mesh->highWord = (*(int *)cursor & 0xFFFF0000) >> 0x10;
+    mesh->highWord = (*(int *)cursor & 0xFFFF0000) >> 16;
     cursor = (BattleFxHadesPsxDrawCursor *)BattleFx_SummonHadesDrawPsxTexturedTrianglesHeightClipped(mesh, streamBase, cursor, height);
     cursor = (BattleFxHadesPsxDrawCursor *)BattleFx_SummonHadesDrawPsxTexturedQuadsHeightClipped(mesh, (char *)streamBase, cursor, height);
     return mesh->primPtr;
@@ -5428,7 +5428,7 @@ int __cdecl BattleFx_SummonHadesDrawPsxTexturedTrianglesHeightClipped(BattleFxHa
  * Visits the full count of twenty-byte quad records and classifies the first and third vertex Y
  * against threshold. Skips pairs both at or above the threshold; for a single upper endpoint sets its
  * paired Ys to threshold+1 and interpolates the associated texture bytes against the opposite endpoint.
- * Projects and draws opcode-0x2C quads only for clear transform flags and positive orientation,
+ * Projects and draws opcode-44 quads only for clear transform flags and positive orientation,
  * then returns the next descriptor.
  */
 // FUNCTION: FF7 0x004ba4ca
@@ -5540,7 +5540,7 @@ void __cdecl BattleFx_SummonHadesSpriteModelPairSpawnTimeline(void)
             pChild->side = rand() % 2;
             pChild->otherSide = pChild->side ^ 1;
             pChild->phaseOffset = rand() % 8;
-            pChild->baseAngle = rand() % 4 << 0xA;
+            pChild->baseAngle = rand() % 4 << 10;
             pChild->pairIndex = pairIdx;
         }
         timeline->ownerSlot = BATTLE_TASK_FREE;
@@ -5580,7 +5580,7 @@ void __cdecl BattleFx_SummonHadesSpriteModelPairTask(void)
     frame.pairRecord = (BattleFxHadesSpritePairRecord *)BATTLE_CURRENT_TASK_SLOT;
     frame.tableIndex = frame.pairRecord->tableIndex;
     frame.localX.vx = *(short *)((char *)&g_BattleSummonHadesPairOffsetX + frame.tableIndex * 4);
-    frame.localX.vy = 0xA;
+    frame.localX.vy = 10;
     frame.localX.vz = *(short *)((char *)&g_BattleSummonHadesPairOffsetZ + frame.tableIndex * 4);
     ApplyMatrixToSVectorInt32(&g_BattleSummonHadesTimerState.rotMatrix, &frame.localX, &frame.rotMatrix.t[0]);
     frame.rotMatrix.t[0] += g_BattleSummonHadesTimerState.rotMatrix.t[0];
@@ -5600,31 +5600,31 @@ void __cdecl BattleFx_SummonHadesSpriteModelPairTask(void)
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
     frame.angleX.vx = 0;
-    frame.angleX.vy = frame.pairRecord->flipA << 0xB;
+    frame.angleX.vy = frame.pairRecord->flipA << 11;
     frame.angleX.vz = 0;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
     SetRotMatrix(&frame.rotMatrix);
     NormalizeVectorFixed(&frame.rotMatrix.t[0], &frame.dirZ);
     frame.offsetDistance = -(frame.offsetDistance >> 3);
-    frame.transMatrix.t[0] = frame.rotMatrix.t[0] + (frame.offsetDistance * frame.dirZ.vx >> 0xC);
-    frame.transMatrix.t[1] = frame.rotMatrix.t[1] + (frame.offsetDistance * frame.dirZ.vy >> 0xC);
-    frame.transMatrix.t[2] = frame.rotMatrix.t[2] + (frame.offsetDistance * frame.dirZ.vz >> 0xC);
+    frame.transMatrix.t[0] = frame.rotMatrix.t[0] + (frame.offsetDistance * frame.dirZ.vx >> 12);
+    frame.transMatrix.t[1] = frame.rotMatrix.t[1] + (frame.offsetDistance * frame.dirZ.vy >> 12);
+    frame.transMatrix.t[2] = frame.rotMatrix.t[2] + (frame.offsetDistance * frame.dirZ.vz >> 12);
     SetTransMatrix(&frame.transMatrix);
     g_BattleSummonHadesPairSprite.texture = Gfx_ModelTableGetLoadedRecord(4, g_pBattleSummonHadesTableCursor);
     g_BattleSummonHadesPairSprite.clut = Gfx_ModelTableGetSpriteObject(4, g_pBattleSummonHadesTableCursor);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonHadesPairSprite.texture, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     g_BattleSummonHadesPairSprite.frameIndex = ((g_BattleSummonHadesPairSprite.frameIndex + 4) % 8);
-    frame.angleX.vy = frame.pairRecord->flipB << 0xB;
+    frame.angleX.vy = frame.pairRecord->flipB << 11;
     RotMatrix(&frame.angleX, &frame.rotMatrix);
     ScaleMatrix(&frame.rotMatrix, &frame.scaleX);
     SetRotMatrix(&frame.rotMatrix);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSummonHadesPairSprite.texture, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
-    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0xA, g_pBattleSummonHadesTableCursor);
+    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(10, g_pBattleSummonHadesTableCursor);
     frame.modelDraw->flags = 0x88;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x1000 - ((frame.brightness & 0xFF) << 6);
+    frame.modelDraw->fadeLevel = 4096 - ((frame.brightness & 0xFF) << 6);
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     if (frame.modelDraw->fadeLevel < 0) {
@@ -5638,8 +5638,8 @@ void __cdecl BattleFx_SummonHadesSpriteModelPairTask(void)
     if (frame.offsetDistance > 0x1000) {
         frame.offsetDistance = 0x1000;
     }
-    frame.fadeComplement = 0x1000 - frame.modelDraw->fadeLevel;
-    frame.modelDraw->fadeLevel = 0x1000 - (frame.offsetDistance * frame.fadeComplement >> 0xC);
+    frame.fadeComplement = 4096 - frame.modelDraw->fadeLevel;
+    frame.modelDraw->fadeLevel = 4096 - (frame.offsetDistance * frame.fadeComplement >> 12);
     if (frame.modelDraw->fadeLevel < 0) {
         frame.modelDraw->fadeLevel = 0;
     }
@@ -5700,7 +5700,7 @@ void __cdecl BattleFx_SummonHadesOscillatingModelsTask(void)
     frame.angleX.vz = 0;
     RotMatrixXYZ(&frame.angleX, &frame.taskMatrix);
     frame.localX.vx = 0;
-    frame.localX.vy = 0x834;
+    frame.localX.vy = 2100;
     frame.localX.vz = 0;
     frame.angleX.vx = frame.oscillatorRecord->oscillation;
     frame.angleX.vy = 0x12C;
@@ -5708,7 +5708,7 @@ void __cdecl BattleFx_SummonHadesOscillatingModelsTask(void)
     RotMatrix(&frame.angleX, &frame.oscillationMatrix);
     ConcatMatrixInPlace(&frame.oscillationMatrix, &frame.taskMatrix);
     ApplyMatrixToSVectorInt32(&frame.oscillationMatrix, &frame.localX, &frame.pointX);
-    frame.pointX.y -= 0x19C8;
+    frame.pointX.y -= 6600;
     frame.scaleX.vz = 0x1656;
     frame.scaleX.vy = frame.scaleX.vz;
     frame.scaleX.vx = frame.scaleX.vy;
@@ -5723,14 +5723,14 @@ void __cdecl BattleFx_SummonHadesOscillatingModelsTask(void)
     frame.modelDraw->fadeLevel = 0;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
-    if (frame.oscillatorRecord->frameCount < 0xC) {
+    if (frame.oscillatorRecord->frameCount < 12) {
         frame.modelDraw->flags |= 8;
-        frame.modelDraw->fadeLevel = 0x1000 - frame.oscillatorRecord->frameCount * 0x155;
+        frame.modelDraw->fadeLevel = 4096 - frame.oscillatorRecord->frameCount * 341;
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(9, g_pBattleSummonHadesTableCursor);
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
-    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_pBattleSummonHadesTableCursor);
+    frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(11, g_pBattleSummonHadesTableCursor);
     frame.modelDraw->flags = 0xA0;
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if ((g_BattleSummonHadesTimerState.timer) < 0) {
@@ -5739,7 +5739,7 @@ void __cdecl BattleFx_SummonHadesOscillatingModelsTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    frame.oscillatorRecord->oscillation = CosFixed(frame.oscillatorRecord->phase) * 0xC8 >> 0xC;
+    frame.oscillatorRecord->oscillation = CosFixed(frame.oscillatorRecord->phase) * 0xC8 >> 12;
     frame.oscillatorRecord->phase += 0x40;
     (frame.oscillatorRecord->frameCount)++;
 }
@@ -5766,7 +5766,7 @@ void __cdecl BattleFx_SummonHadesTwoColorRibbonSpawnTimeline(void)
     if (spawner->frame == 0) {
         spawner->spawnIndex = 1;
     }
-    if (spawner->frame >= 2 && spawner->frame <= 0x12) {
+    if (spawner->frame >= 2 && spawner->frame <= 18) {
         emitCount = spawner->spawnIndex;
         sizeRoll = spawner->frame % 3;
         if (sizeRoll == 0) {
@@ -5776,29 +5776,29 @@ void __cdecl BattleFx_SummonHadesTwoColorRibbonSpawnTimeline(void)
             emitCount = 5;
         }
         for (spawnLoop = 0; spawnLoop < emitCount; spawnLoop++) {
-            if (g_BattleSummonHadesRibbonIndex >= 0x1F) {
+            if (g_BattleSummonHadesRibbonIndex >= 31) {
                 break;
             }
             segmentPtr = (BattleFxHadesRibbonSegment *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesTwoColorRibbonTask);
             segmentPtr->initialVelocityZ = 0;
             segmentPtr->initialVelocityX = 0;
             segmentPtr->initialVelocityY = 0;
-            segmentPtr->angleOffset = ((rand()) % 2048) + g_BattleSummonHadesRibbonIndex * 0x12C;
+            segmentPtr->angleOffset = ((rand()) % 2048) + g_BattleSummonHadesRibbonIndex * 300;
             sizeRoll = rand() % 0x172 + spawner->frame + 0x82;
             segmentPtr->halfSize = sizeRoll / 2;
             segmentPtr->size = segmentPtr->halfSize;
-            segmentPtr->duration = rand() % 0x4E2 + 0x60E;
-            segmentPtr->velocityY = -(rand() % 0xFA + 0xFA);
+            segmentPtr->duration = rand() % 1250 + 1550;
+            segmentPtr->velocityY = -(rand() % 250 + 250);
             segmentPtr->spawnIndex = *(short *)&g_BattleSummonHadesRibbonIndex;
             segmentPtr->frameCount = ((rand()) % 4) + 4;
             g_BattleSummonHadesPositionHistory[g_BattleSummonHadesRibbonIndex].timer = 0;
             g_BattleSummonHadesPositionHistory[g_BattleSummonHadesRibbonIndex].step = 0;
             g_BattleSummonHadesPositionHistory[g_BattleSummonHadesRibbonIndex].headIndex = 0;
-            g_BattleSummonHadesPositionHistory[g_BattleSummonHadesRibbonIndex].stepLimit = 0xE;
+            g_BattleSummonHadesPositionHistory[g_BattleSummonHadesRibbonIndex].stepLimit = 14;
             g_BattleSummonHadesRibbonIndex++;
         }
     }
-    if (spawner->frame >= 0x12) {
+    if (spawner->frame >= 18) {
         spawner->ownerSlot = BATTLE_TASK_FREE;
     }
     (spawner->frame)++;
@@ -5979,7 +5979,7 @@ void __cdecl BattleFx_SummonHadesTubeSpawnTimeline(void)
         tube->posZ = 0;
         tube->posX = 0;
         tube->posY = 0;
-        tube->scrollSpeed = 0xF2B8;
+        tube->scrollSpeed = 0xF2B8 /* -3400 */;
         tube->stateIndex = 0x1F;
         g_BattleSummonHadesPositionHistory[0x1F].headIndex = g_BattleSummonHadesPositionHistory[0x1F].step = g_BattleSummonHadesPositionHistory[0x1F].timer = 0;
         g_BattleSummonHadesPositionHistory[0x1F].stepLimit = 5;
@@ -6026,11 +6026,11 @@ void __cdecl BattleFx_SummonHadesTubeTask(void)
         curStep = pHistory->step;
         sectionCount = pHistory->timer - 1;
         *(Int64Pair *)&pTubeState->centerX = *pHistory->positions[curStep];
-        BattleFx_SummonHadesLayoutCirclePoints(pTubeState, (Vec3sPacked *)&pTubeState->centerX, 0x20, 0xBB8);
+        BattleFx_SummonHadesLayoutCirclePoints(pTubeState, (Vec3sPacked *)&pTubeState->centerX, 32, 3000);
         SetRotMatrix(&g_BattleSummonHadesWorldMatrix);
         SetTransMatrix(&g_BattleSummonHadesTargetState.transMatrix);
         RefreshGlobalTransformState();
-        BattleFx_SummonHadesProjectCirclePoints(pTubeState, 0x20);
+        BattleFx_SummonHadesProjectCirclePoints(pTubeState, 32);
         for (section = 1; section <= sectionCount; curStep++, section++) {
             if (curStep >= pHistory->stepLimit) {
                 curStep = 0;
@@ -6042,14 +6042,14 @@ void __cdecl BattleFx_SummonHadesTubeTask(void)
             pTubeState->prevProjected = pTubeState->projected;
             pTubeState->colorEnd = pTubeState->colorStart;
             *(Int64Pair *)&pTubeState->centerX = *pHistory->positions[nIdx];
-            for (vert = 0; vert < 0x20; vert++) {
+            for (vert = 0; vert < 32; vert++) {
                 g_BattleSummonHadesPrevCircleVertices[vert] = g_BattleSummonHadesCircleVertices[vert];
                 g_BattleSummonHadesPrevNdcZ[vert] = *(int *)&g_BattleSummonHadesNdcZ[vert];
                 g_BattleSummonHadesPrevNdcW[vert] = *(int *)&g_BattleSummonHadesNdcW[vert];
                 g_BattleSummonHadesCirclePoints[vert].vy = pTubeState->circlePointY;
             }
-            BattleFx_SummonHadesProjectCirclePoints(pTubeState, 0x20);
-            BattleFx_SummonHadesDrawTubeSectionQuads(pTubeState, section, sectionCount, 0x20);
+            BattleFx_SummonHadesProjectCirclePoints(pTubeState, 32);
+            BattleFx_SummonHadesDrawTubeSectionQuads(pTubeState, section, sectionCount, 32);
         }
         if (g_BattleIsPaused != 0) {
             return;
@@ -6064,8 +6064,8 @@ void __cdecl BattleFx_SummonHadesTubeTask(void)
                 stage -= 3;
                 if (stage < 8) {
                     curStep = stage + 1 << 9;
-                    if (curStep > 0x1000) {
-                        curStep = 0x1000;
+                    if (curStep > 4096) {
+                        curStep = 4096;
                     }
                     SetDrawColorRGB(g_BattleSummonHadesTubeFullColor.r, g_BattleSummonHadesTubeFullColor.g, g_BattleSummonHadesTubeFullColor.b);
                     Gfx_ShadePsxVertexColor(&g_BattleSummonHadesTubeShadeSource, curStep, (CVECTOR *)&g_BattleSummonHadesColorState.tubeShade);
@@ -6075,8 +6075,8 @@ void __cdecl BattleFx_SummonHadesTubeTask(void)
                         g_BattleSummonHadesTubeShadeSource = g_BattleSummonHadesTubeFullColor;
                     } else {
                         stage -= 6;
-                        if (stage < 0xA) {
-                            curStep = stage * 0x199;
+                        if (stage < 10) {
+                            curStep = stage * 409;
                             SetDrawColorRGB(0, 0, 0);
                             Gfx_ShadePsxVertexColor(&g_BattleSummonHadesTubeFullColor, curStep, (CVECTOR *)&g_BattleSummonHadesColorState.tubeColor);
                             Gfx_ShadePsxVertexColor(&g_BattleSummonHadesTubeShadeSource, curStep, (CVECTOR *)&g_BattleSummonHadesColorState.tubeShade);
@@ -6108,7 +6108,7 @@ void __cdecl BattleFx_SummonHadesDrawTubeSectionQuads(BattleFxHadesTube *tube, i
     int avgZ;
     int next;
 
-    index = 0x1000 / divisor * amount;
+    index = 4096 / divisor * amount;
     rgbPtr = (BattleFxRibbonColor *)&tube->shadeWord;
     SetDrawColorRGB(rgbPtr->colorR, rgbPtr->colorG, rgbPtr->colorB);
     Gfx_ShadePsxVertexColor((CVECTOR *)&tube->colorWord, index, (CVECTOR *)&tube->colorStart);
@@ -6218,7 +6218,7 @@ void __cdecl BattleFx_SummonHadesDelayedRingSpawnTask(void)
         return;
     }
     task = BATTLE_CURRENT_TASK_SLOT;
-    if (task->frameCounter == 0x1A) {
+    if (task->frameCounter == 26) {
         offsetZ = 0x36B;
         ring = (BattleFxHadesDelayedRingRecord *)Battle_AllocSceneMessage(1);
         ring->posX = 0;
@@ -6230,7 +6230,7 @@ void __cdecl BattleFx_SummonHadesDelayedRingSpawnTask(void)
         }
         ring->posZ = g_BattleSummonHadesPlacementZ.placementZ + signedOffset;
         ring->selector = g_BattleSummonHadesFacingAngles.targetBoneMaxY;
-        g_BattleActorRecords[3].scale = 0xE00;
+        g_BattleActorRecords[3].scale = 0xE00 /* 0.875 */;
         Battle_AllocateResourceSlot(BattleFx_SummonHadesRisingRingSpriteEmitterSpawnTimeline);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
@@ -6250,7 +6250,7 @@ void __cdecl BattleFx_SummonHadesRisingRingSpriteEmitterSpawnTimeline(void)
     task = (int)BATTLE_CURRENT_TASK_SLOT;
     *(short *)task = 0xFFFF;
     task = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesRisingRingSpriteEmitterTask);
-    for (slot = 0; slot < 0xC8; slot++) {
+    for (slot = 0; slot < 200; slot++) {
         *(short *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + slot * 0x18 + 0x8CA0) = 0;
     }
 }
@@ -6284,7 +6284,7 @@ void __cdecl BattleFx_SummonHadesRisingRingSpriteEmitterTask(void)
     particles = (BattleFxHadesRisingRingParticle *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + 0x8CA0);
     g_BattleSummonHadesColorState.spriteTexture = Gfx_ModelTableGetLoadedRecord(6, g_pBattleSummonHadesTableCursor);
     g_BattleSummonHadesColorState.spriteClut = Gfx_ModelTableGetSpriteObject(6, g_pBattleSummonHadesTableCursor);
-    for (slot = 0; slot < 0xC8; slot++) {
+    for (slot = 0; slot < 200; slot++) {
         if (particles[slot].active != 0) {
             g_BattleSummonHadesColorState.spriteFrame = particles[slot].age;
             g_BattleSummonHadesColorState.spriteColor = g_BattleSummonHadesColorBlob1[particles[slot].colorIndex];
@@ -6309,7 +6309,7 @@ void __cdecl BattleFx_SummonHadesRisingRingSpriteEmitterTask(void)
                 if (particles[slot].age < 5) {
                     (particles[slot].accelY)++;
                 }
-                if (particles[slot].age >= 0xF || particles[slot].life < 0) {
+                if (particles[slot].age >= 15 || particles[slot].life < 0) {
                     particles[slot].active = 0;
                 }
                 (particles[slot].age)++;
@@ -6323,30 +6323,30 @@ void __cdecl BattleFx_SummonHadesRisingRingSpriteEmitterTask(void)
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     baseLife = 0x1040;
-    baseLife = baseLife * 0xE00 >> 0xC;
+    baseLife = baseLife * 0xE00 /* 0.875 */ >> 12;
     spawnCount = rand() % 6 + 6;
     for (slot = 0; slot < spawnCount; slot++) {
-        for (emptyIdx = 0; emptyIdx < 0xC8 && particles[emptyIdx].active != 0; emptyIdx++) {
+        for (emptyIdx = 0; emptyIdx < 200 && particles[emptyIdx].active != 0; emptyIdx++) {
         }
-        if (emptyIdx >= 0xC8) {
+        if (emptyIdx >= 200) {
             break;
         }
         particles[emptyIdx].active = 1;
         particles[emptyIdx].age = 0;
-        ang = rand() % 0x1000;
-        ringRadius = rand() % 0x5A + 0xB4;
-        particles[emptyIdx].posX = CosFixed(ang) * ringRadius >> 0xC;
-        particles[emptyIdx].posY = -(rand() % 0x1E + 0x1C);
-        particles[emptyIdx].posZ = -(SinFixed(ang) * ringRadius >> 0xC);
-        particles[emptyIdx].lifeStep = rand() % 0x10 + 8;
-        ringRadius = rand() % 0x1A + 0x37;
-        particles[emptyIdx].velocityX = CosFixed(ang) * ringRadius >> 0xC;
-        particles[emptyIdx].velocityY = -(rand() % 0xC + 0x18);
-        particles[emptyIdx].velocityZ = -(SinFixed(ang) * ringRadius >> 0xC);
+        ang = rand() % 4096;
+        ringRadius = rand() % 90 + 180;
+        particles[emptyIdx].posX = CosFixed(ang) * ringRadius >> 12;
+        particles[emptyIdx].posY = -(rand() % 30 + 28);
+        particles[emptyIdx].posZ = -(SinFixed(ang) * ringRadius >> 12);
+        particles[emptyIdx].lifeStep = rand() % 16 + 8;
+        ringRadius = rand() % 26 + 55;
+        particles[emptyIdx].velocityX = CosFixed(ang) * ringRadius >> 12;
+        particles[emptyIdx].velocityY = -(rand() % 12 + 24);
+        particles[emptyIdx].velocityZ = -(SinFixed(ang) * ringRadius >> 12);
         particles[emptyIdx].accelY = rand() % 6 + 4;
-        particles[emptyIdx].colorIndex = rand() % 0x10;
-        ang = rand() % 0x680 + 0x840;
-        particles[emptyIdx].life = baseLife * ang >> 0xC;
+        particles[emptyIdx].colorIndex = rand() % 16;
+        ang = rand() % 1664 + 2112;
+        particles[emptyIdx].life = baseLife * ang >> 12;
     }
     (task->counter)++;
 }
@@ -6367,8 +6367,8 @@ void __cdecl BattleFx_SummonHadesStretchingModelSpawnTimeline(void)
     if (task->frameCounter >= 2 && task->frameCounter % 6 == 2) {
         model = (BattleFxHadesStretchingModelTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesStretchingModelTask);
         model->angleY = 0;
-        model->scaleY = 0x400;
-        model->scaleX = 0x400;
+        model->scaleY = 0x400 /* 0.25 */;
+        model->scaleX = 0x400 /* 0.25 */;
     }
     if ((g_BattleSummonHadesTimerState.timer) < 0) {
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -6409,7 +6409,7 @@ void __cdecl BattleFx_SummonHadesStretchingModelTask(void)
         frame.taskMatrix.t[0] = 0;
         frame.taskMatrix.t[1] = 0;
         frame.taskMatrix.t[2] = 0;
-        frame.scaleX.vz = 0x1000;
+        frame.scaleX.vz = 0x1000 /* 1.0 */;
         frame.scaleX.vx = frame.scaleX.vz;
         frame.scaleX.vy = frame.stretchRecord->offset;
         ScaleMatrix(&frame.taskMatrix, &frame.scaleX);
@@ -6419,15 +6419,15 @@ void __cdecl BattleFx_SummonHadesStretchingModelTask(void)
         frame.modelDraw = (BattleFxModelDraw *)Gfx_GetPsxScratchpadPtr(0);
         frame.modelDraw->flags = 8;
         frame.modelDraw->uvScroll = 0;
-        frame.modelDraw->fadeLevel = 0x80;
+        frame.modelDraw->fadeLevel = 128;
         frame.modelDraw->stateFlags = 0x20;
         frame.modelDraw->texturePageBits = 0;
         if (frame.stretchRecord->timer >= 8) {
-            frame.modelDraw->fadeLevel -= (short)((frame.stretchRecord->timer - 8) * 0x15);
+            frame.modelDraw->fadeLevel -= (short)((frame.stretchRecord->timer - 8) * 21);
         }
         frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(7, g_pBattleSummonHadesTableCursor);
         g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw(frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
-        if (frame.stretchRecord->timer >= 0xE) {
+        if (frame.stretchRecord->timer >= 14) {
             frame.stretchRecord->ownerSlot = BATTLE_TASK_FREE;
         }
         if (g_BattleIsPaused != 0) {
@@ -6442,7 +6442,7 @@ void __cdecl BattleFx_SummonHadesStretchingModelTask(void)
 
 /*
  * When unpaused exactly at counter two allocates BattleFx_SummonHadesColorCyclingSpriteEmitterTask, clears the first short of three
- * hundred stride-0x20 records through g_BattleSummonHadesParticleBuffer plus 0x9F60 and retires the parent; increments
+ * hundred stride-32 records through g_BattleSummonHadesParticleBuffer plus 0x9F60 and retires the parent; increments
  * its counter afterward.
  */
 // FUNCTION: FF7 0x004bcc25
@@ -6458,7 +6458,7 @@ void __cdecl BattleFx_SummonHadesColorCyclingSpriteEmitterSpawnTimeline(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     if (task->frameCounter == 2) {
         newSlot = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesColorCyclingSpriteEmitterTask);
-        for (slot = 0; slot < 0x12C; slot++) {
+        for (slot = 0; slot < 300; slot++) {
             *(short *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + (slot << 5) + 0x9F60) = 0;
         }
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -6490,7 +6490,7 @@ void __cdecl BattleFx_SummonHadesColorCyclingSpriteEmitterTask(void)
     pParticleArray = (BattleFxHadesColorEmitter *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + 0x9F60);
     g_BattleSummonHadesColorCycleSprite.colorCycleDrawWord = Gfx_ModelTableGetLoadedRecord(6, g_pBattleSummonHadesTableCursor);
     g_BattleSummonHadesColorCycleSprite.colorCycleLookupB = Gfx_ModelTableGetSpriteObject(6, g_pBattleSummonHadesTableCursor);
-    for (idx = 0; idx < 0x12C; idx++) {
+    for (idx = 0; idx < 300; idx++) {
         if (pParticleArray[idx].active != 0) {
             g_BattleSummonHadesColorCycleSpriteParams.colorCycleNibble = pParticleArray[idx].cycleIndex & 0xF;
             (g_BattleSummonHadesColorCycleSpriteParams.spriteWord) = *(int *)((char *)pParticleArray + (idx << 5) + 0x14) | 0x2E000000;
@@ -6528,7 +6528,7 @@ void __cdecl BattleFx_SummonHadesColorCyclingSpriteEmitterTask(void)
                         pParticleArray[idx].toggle ^= 1;
                     }
                 }
-                if (pParticleArray[idx].cycleIndex >= 0x17) {
+                if (pParticleArray[idx].cycleIndex >= 23) {
                     pParticleArray[idx].active = 0;
                 }
                 (pParticleArray[idx].cycleIndex)++;
@@ -6538,42 +6538,42 @@ void __cdecl BattleFx_SummonHadesColorCyclingSpriteEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter >= 0x1D) {
+    if (taskPtr->frameCounter >= 29) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
-    if (taskPtr->frameCounter < 0x1D) {
+    if (taskPtr->frameCounter < 29) {
         sizeBase = 0x1B80;
-        sizeBase = sizeBase * 0xE00 >> 0xC;
-        numNew = (0x3B - taskPtr->frameCounter) / 6 + rand() % 6;
-        if (numNew < 0xA) {
-            numNew = 0xA;
+        sizeBase = sizeBase * 0xE00 /* 0.875 */ >> 12;
+        numNew = (59 - taskPtr->frameCounter) / 6 + rand() % 6;
+        if (numNew < 10) {
+            numNew = 10;
         }
         for (idx = 0; idx < numNew; idx++) {
-            for (freeSlot = 0; freeSlot < 0x12C && pParticleArray[freeSlot].active != 0; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 300 && pParticleArray[freeSlot].active != 0; freeSlot++) {
             }
-            if (freeSlot >= 0x12C) {
+            if (freeSlot >= 300) {
                 break;
             }
             pParticleArray[freeSlot].active = 1;
             pParticleArray[freeSlot].cycleIndex = 0;
             theta = ((rand()) % 4096);
-            distance = rand() % 0x190 + 0x3C;
-            pParticleArray[freeSlot].posX = CosFixed(theta) * distance >> 0xC;
-            pParticleArray[freeSlot].posY = -(rand() % 0x6E + 0x23);
-            pParticleArray[freeSlot].posZ = -(SinFixed(theta) * distance >> 0xC);
+            distance = rand() % 400 + 60;
+            pParticleArray[freeSlot].posX = CosFixed(theta) * distance >> 12;
+            pParticleArray[freeSlot].posY = -(rand() % 110 + 35);
+            pParticleArray[freeSlot].posZ = -(SinFixed(theta) * distance >> 12);
             pParticleArray[freeSlot].angleStep = ((rand()) % 16) + 0x20;
-            distance = rand() % 0x50 + 0x73;
-            pParticleArray[freeSlot].velocityX = CosFixed(theta) * distance >> 0xC;
-            pParticleArray[freeSlot].velocityY = -(rand() % 0x96 + 0x190);
-            pParticleArray[freeSlot].velocityZ = -(SinFixed(theta) * distance >> 0xC);
-            pParticleArray[freeSlot].accelY = rand() % 0xE + 0x1C;
+            distance = rand() % 80 + 115;
+            pParticleArray[freeSlot].velocityX = CosFixed(theta) * distance >> 12;
+            pParticleArray[freeSlot].velocityY = -(rand() % 150 + 400);
+            pParticleArray[freeSlot].velocityZ = -(SinFixed(theta) * distance >> 12);
+            pParticleArray[freeSlot].accelY = rand() % 14 + 28;
             distance = rand() % 6 + 6;
-            pParticleArray[freeSlot].fadeLevel = 0x80;
+            pParticleArray[freeSlot].fadeLevel = 128;
             pParticleArray[freeSlot].fadeValue = 0;
-            pParticleArray[freeSlot].fadeRate = 0x80 / distance;
+            pParticleArray[freeSlot].fadeRate = 128 / distance;
             pParticleArray[freeSlot].toggle = 0;
             theta = rand() % 0xB00 + 0x800;
-            pParticleArray[freeSlot].angle = sizeBase * theta >> 0xC;
+            pParticleArray[freeSlot].angle = sizeBase * theta >> 12;
         }
     }
     (taskPtr->frameCounter)++;
@@ -6581,7 +6581,7 @@ void __cdecl BattleFx_SummonHadesColorCyclingSpriteEmitterTask(void)
 
 /*
  * When unpaused exactly at counter two allocates BattleFx_SummonHadesSpriteParticlePoolTask, clears the first short of three
- * hundred stride-0x20 records through g_BattleSummonHadesParticleBuffer plus 0x9F60 and retires the parent; increments
+ * hundred stride-32 records through g_BattleSummonHadesParticleBuffer plus 0x9F60 and retires the parent; increments
  * its counter afterward.
  */
 // FUNCTION: FF7 0x004bd41f
@@ -6597,7 +6597,7 @@ void __cdecl BattleFx_SummonHadesSpriteParticlePoolSpawnTimeline(void)
     task = BATTLE_CURRENT_TASK_SLOT;
     if (task->frameCounter == 2) {
         poolTask = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesSpriteParticlePoolTask);
-        for (slot = 0; slot < 0x12C; slot++) {
+        for (slot = 0; slot < 300; slot++) {
             *(short *)(((unsigned char *)((unsigned char *)g_BattleSummonHadesParticleBuffer)) + (slot << 5) + 0x9F60) = 0;
         }
         task->ownerSlot = BATTLE_TASK_FREE;
@@ -6638,43 +6638,43 @@ void __cdecl BattleFx_SummonHadesSpriteParticlePoolTask(void)
     pPoolBlock->spriteRecord = Gfx_ModelTableGetLoadedRecord(6, g_pBattleSummonHadesTableCursor);
     pPoolBlock->spriteObject = Gfx_ModelTableGetSpriteObject(6, g_pBattleSummonHadesTableCursor);
     pPoolBlock->colorCmd = 0x2E686868;
-    for (idx = 0; idx < 0x14; idx++) {
+    for (idx = 0; idx < 20; idx++) {
         *(BattleVec4i *)&pPoolBlock->anchors[idx] = *(BattleVec4i *)((idx << 4) + (char *)&g_BattleSummonHadesColorBlob2);
     }
     BattleFx_SummonHadesUpdateDrawSpriteParticlePool(pParticleArray, pPoolBlock);
-    if (task->frameCounter >= 0x44) {
+    if (task->frameCounter >= 68) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x28) {
+    if (task->frameCounter < 40) {
         sizeBase = 0x1B80;
-        sizeBase = sizeBase * 0xE00 >> 0xC;
-        numNew = (0x50 - task->frameCounter) / 6 + rand() % 6;
+        sizeBase = sizeBase * 0xE00 /* 0.875 */ >> 12;
+        numNew = (80 - task->frameCounter) / 6 + rand() % 6;
         for (idx = 0; idx < numNew; idx++) {
-            for (freeSlot = 0; freeSlot < 0x1AE; freeSlot++) {
+            for (freeSlot = 0; freeSlot < 430; freeSlot++) {
                 if (pParticleArray[freeSlot].age != 0) {
                     continue;
                 }
                 break;
             }
-            if (freeSlot >= 0x1AE) {
+            if (freeSlot >= 430) {
                 break;
             }
             pParticleArray[freeSlot].age = rand() % 8;
-            pParticleArray[freeSlot].lifetime = pParticleArray[freeSlot].age + rand() % 0xE + 0x10;
-            pParticleArray[freeSlot].posX = rand() % 0x1F40 - 0xFA0;
-            pParticleArray[freeSlot].posY = rand() % 0x834 - 0x3AC;
-            pParticleArray[freeSlot].posZ = -(rand() % 0x5DC + 0x190);
+            pParticleArray[freeSlot].lifetime = pParticleArray[freeSlot].age + rand() % 14 + 16;
+            pParticleArray[freeSlot].posX = rand() % 8000 - 4000;
+            pParticleArray[freeSlot].posY = rand() % 2100 - 940;
+            pParticleArray[freeSlot].posZ = -(rand() % 1500 + 400);
             divisor = rand() % 6 + 6;
             pParticleArray[freeSlot].brightness = 0x80;
             pParticleArray[freeSlot].brightnessLevel = 0;
             pParticleArray[freeSlot].brightnessRate = 0x80 / divisor;
             pParticleArray[freeSlot].toggle = 0;
-            pParticleArray[freeSlot].anchorIndex = rand() % 0x28 + 0x16;
+            pParticleArray[freeSlot].anchorIndex = rand() % 40 + 22;
             randScale = rand() % 0xE00 + 0x800;
-            pParticleArray[freeSlot].scale = sizeBase * randScale >> 0xC;
+            pParticleArray[freeSlot].scale = sizeBase * randScale >> 12;
         }
     }
     (task->frameCounter)++;
@@ -6704,7 +6704,7 @@ void __cdecl BattleFx_SummonHadesUpdateDrawSpriteParticlePool(BattleFxHadesSprit
     int dz;
     int positionZ;
 
-    for (partIdx = 0; partIdx < 0x1AE; partIdx++) {
+    for (partIdx = 0; partIdx < 430; partIdx++) {
         if (particles[partIdx].age == 0) {
             continue;
         }
@@ -6715,7 +6715,7 @@ void __cdecl BattleFx_SummonHadesUpdateDrawSpriteParticlePool(BattleFxHadesSprit
         work->moveX = 0x7FFFFFFF;
         work->prevAnchorIndex = 0;
         work->anchorIndex = 0;
-        for (anchorIdx = 0; anchorIdx < 0x14; anchorIdx++) {
+        for (anchorIdx = 0; anchorIdx < 20; anchorIdx++) {
             moveX = posX - work->anchors[anchorIdx].posX;
             if (moveX < 0) {
                 magX = -moveX;
@@ -6760,10 +6760,10 @@ void __cdecl BattleFx_SummonHadesUpdateDrawSpriteParticlePool(BattleFxHadesSprit
             dz = work->anchors[work->anchorIndex].stepZ / anchorIdx + (work->anchors[work->prevAnchorIndex].stepZ >> 1) / anchorIdx;
             (particles[partIdx].age)++;
             if (particles[partIdx].age >= particles[partIdx].lifetime) {
-                if ((particles[partIdx].age & 0xF) == 0xF) {
+                if ((particles[partIdx].age & 0xF) == 15) {
                     particles[partIdx].age = 0;
                 } else {
-                    particles[partIdx].lifetime += (short)(0xF - (particles[partIdx].age & 0xF));
+                    particles[partIdx].lifetime += (short)(15 - (particles[partIdx].age & 0xF));
                 }
             }
             if (particles[partIdx].anchorIndex > 5) {
@@ -6844,7 +6844,7 @@ void __cdecl BattleFx_SummonSpawnHadesPerTarget(int actor)
     effect = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesPaletteCyclingModelEmitterTask);
     Battle_GetBoneWorldPos(actor, g_BattleActorRecords[actor].targetBone, (short *)(effect + 4));
     value = g_BattleActorRecords[actor].radius + 0x100;
-    if (value > 0x76C) {
+    if (value > 1900) {
         value = 0x76C;
     }
     ((BattleFxPaletteCycleEmitter *)effect)->jitterRange = value;
@@ -6866,18 +6866,18 @@ void __cdecl BattleFx_SummonHadesPaletteCyclingModelEmitterTask(void)
         return;
     }
     emitter = (BattleFxPaletteCycleEmitter *)BATTLE_CURRENT_TASK_SLOT;
-    if (emitter->frameCount % 0xB == 0) {
+    if (emitter->frameCount % 11 == 0) {
         modelTask = (BattleFxHadesPaletteCycleSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonHadesPaletteCyclingModelTask);
         *(Int64Pair *)((char *)modelTask + 4) = *(Int64Pair *)((char *)emitter + 4);
         modelTask->drift += (short)(rand() % emitter->jitterRange - (emitter->jitterRange >> 1));
-        modelTask->phase = rand() % 0x1000;
-        modelTask->lifetime = rand() % 0x64 + 0x28;
-        modelTask->driftRange = 0xE14;
-        modelTask->driftStep = modelTask->driftRange / 0x14;
+        modelTask->phase = rand() % 4096;
+        modelTask->lifetime = rand() % 100 + 40;
+        modelTask->driftRange = 3604;
+        modelTask->driftStep = modelTask->driftRange / 20;
         modelTask->colorIndex = 0;
         modelTask->cycleLength = 5;
     }
-    if (emitter->frameCount >= 0x2C) {
+    if (emitter->frameCount >= 44) {
         emitter->ownerSlot = BATTLE_TASK_FREE;
     }
     (emitter->frameCount)++;
@@ -6930,7 +6930,7 @@ void __cdecl BattleFx_SummonHadesPaletteCyclingModelTask(void)
     frame.gouraudState->drawList = g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED;
     frame.gouraudState->shift = 0xC;
     frame.gouraudState->primPtr = Gfx_GetPsxPacketScratchPtr();
-    if (frame.paletteRec->frameCount < 0x16) {
+    if (frame.paletteRec->frameCount < 22) {
         frame.cyclePhase = frame.paletteRec->frameCount % frame.paletteRec->cycleLength;
         frame.colorIndex = frame.paletteRec->colorIndex;
         frame.nextColorIndex = frame.colorIndex + 1;
@@ -6947,7 +6947,7 @@ void __cdecl BattleFx_SummonHadesPaletteCyclingModelTask(void)
             }
         }
     } else {
-        frame.cyclePhase = 0x16 % frame.paletteRec->cycleLength;
+        frame.cyclePhase = 22 % frame.paletteRec->cycleLength;
         frame.colorIndex = frame.paletteRec->colorIndex;
         frame.nextColorIndex = frame.colorIndex + 1;
         if (frame.nextColorIndex >= 4) {
@@ -6961,10 +6961,10 @@ void __cdecl BattleFx_SummonHadesPaletteCyclingModelTask(void)
         frame.gouraudState->colorB = 0;
         frame.gouraudState->colorG = 0;
         frame.gouraudState->colorR = 0;
-        frame.blend = (frame.paletteRec->frameCount - 0x16) * 0x2AA;
+        frame.blend = (frame.paletteRec->frameCount - 0x16) * 682;
     }
     g_BattleOverlayDrawListHead = BattleFx_SummonHadesDrawPsxMeshGouraud(frame.gouraudState, frame.blend);
-    if (frame.paletteRec->frameCount >= 0x1C) {
+    if (frame.paletteRec->frameCount >= 28) {
         frame.paletteRec->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -7092,7 +7092,7 @@ void __cdecl BattleFx_SummonHadesTargetRecordSpawnTimeline(void)
         return;
     }
     task = BATTLE_CURRENT_TASK_SLOT;
-    if (task->frameCounter == 0x2A) {
+    if (task->frameCounter == 42) {
         for (bitIdx = 0; bitIdx < 0xA; bitIdx++) {
             if (((g_BattleSummonHadesTargetState.actorMask) & 1 << bitIdx) != 0) {
                 Battle_PostActorHitOrHurtMessage(bitIdx);

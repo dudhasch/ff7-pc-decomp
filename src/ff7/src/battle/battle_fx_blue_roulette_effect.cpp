@@ -134,7 +134,7 @@ void __cdecl BattleFx_BlueBeginRoulette(int targetMask, int casterIdx)
 
     g_BattleBlueRouletteTargetMask = targetMask;
     actorIdx = 0;
-    for (setCount = 0; actorIdx < 0xA; actorIdx++) {
+    for (setCount = 0; actorIdx < 10; actorIdx++) {
         if ((targetMask & 1 << actorIdx) != 0) {
             setCount++;
             if (setCount == 1) {
@@ -199,18 +199,18 @@ void __cdecl BattleFx_BlueRouletteTimelineTask(void)
         record = (BattleFxRouletteRingRecord *)Battle_AllocSceneMessage(1);
         record->pos = task->pos;
         record->yaw = task->actorYaw;
-    } else if (task->frameCount == 0x11) {
+    } else if (task->frameCount == 17) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&task->pos), 0x1A4);
-    } else if (task->frameCount == 0x20) {
+    } else if (task->frameCount == 32) {
         Battle_AllocSceneMessage(2);
     }
-    if (task->frameCount >= 0x32) {
+    if (task->frameCount >= 50) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCount == 0x24) {
+    if (task->frameCount == 36) {
         Battle_PostActorHitOrHurtMessage(g_BattleBlueRouletteSelectedActor);
     }
     task->frameCount++;
@@ -239,7 +239,7 @@ void __cdecl BattleFx_BlueRouletteRunSelectionTask(void)
                 g_BattleBlueRouletteTargetIndex = 0;
             }
             g_BattleBlueRouletteStepIndex++;
-            if (g_BattleBlueRouletteStepIndex >= 0x30) {
+            if (g_BattleBlueRouletteStepIndex >= 48) {
                 if (g_BattleBlueRouletteSelectedActor == g_BattleBlueRouletteValidTargets[g_BattleBlueRouletteTargetIndex]) {
                     g_BattleBlueRouletteSpinState++;
                 }
@@ -264,15 +264,15 @@ void __cdecl BattleFx_BlueRouletteRunSelectionTask(void)
     Gfx_SetPsxPrimQuadState(0xB, 4, (GfxPsxSpriteQuadState *)(Gfx_ModelTableGetSpriteObject(0, g_BattleBlueRouletteLoadedRes)));
     primPtr = (BattleFxRoulettePrimitive *)Gfx_GetPsxPacketScratchPtr();
     if (actorIdx < 4) {
-        runState->corner[0].xy.x += (short)(g_BattleUiScale * -0x18);
-        runState->corner[2].xy.x += (short)(g_BattleUiScale * -0x18);
+        runState->corner[0].xy.x += (short)(g_BattleUiScale * -24);
+        runState->corner[2].xy.x += (short)(g_BattleUiScale * -24);
         primPtr->vertex[0].tex.word = 0x78480030;
         primPtr->vertex[1].tex.word = 0x4D0000;
         primPtr->vertex[2].tex.word = 0x2030;
         primPtr->vertex[3].tex.word = 0x2000;
     } else {
-        runState->corner[1].xy.x += (short)(g_BattleUiScale * 0x18);
-        runState->corner[3].xy.x += (short)(g_BattleUiScale * 0x18);
+        runState->corner[1].xy.x += (short)(g_BattleUiScale * 24);
+        runState->corner[3].xy.x += (short)(g_BattleUiScale * 24);
         primPtr->vertex[0].tex.word = 0x78480000;
         primPtr->vertex[1].tex.word = 0x4D0030;
         primPtr->vertex[2].tex.word = 0x2000;

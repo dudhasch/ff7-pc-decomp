@@ -847,16 +847,16 @@ extern unsigned char g_CondorUnitFrameIndex[32];
 struct CondorSpriteEntry;
 
 /* cd_init.cpp */
-extern unsigned char g_CondorRenderObjectSlots[0x8];
+extern unsigned char g_CondorRenderObjectSlots[8];
 
 /* condor_game_state_hud.cpp */
-extern unsigned char g_CondorHighestUnitY[0x4];
+extern unsigned char g_CondorHighestUnitY[4];
 extern unsigned char g_CondorCameraMatrix[30];
 extern struct CondorSpriteEntry g_CondorSpriteEntries[5];
 extern unsigned char g_CondorScreenDistanceBuf[4];
 extern unsigned char g_CondorSelectedAttackRangeBuf[4];
-extern unsigned char g_CondorScheduledCount[0x4];
-extern unsigned char g_CondorAlertLevel[0x4];
+extern unsigned char g_CondorScheduledCount[4];
+extern unsigned char g_CondorAlertLevel[4];
 extern int g_CondorGilDigitSprites[15];
 
 extern int g_CondorBattleClearCopy;

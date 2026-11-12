@@ -53,13 +53,13 @@ void __cdecl Submarine_InitGridHeightsFromBytes(int heightBytes)
     bytePtr = heightBytes;
     cellPtr = &g_SubmarineGridCellTable[0];
     do {
-        cellHeight = *(char *)bytePtr + baseLevel + -0x30;
+        cellHeight = *(char *)bytePtr + baseLevel + -48;
         bytePtr++;
         if (cellHeight < 0) {
             cellHeight = 0;
         }
-        if (cellHeight > 0x10) {
-            cellHeight = 0x10;
+        if (cellHeight > 16) {
+            cellHeight = 16;
         }
         cellPtr->height = cellHeight << 6;
         cellPtr->currentHeight = cellPtr->height;
@@ -70,33 +70,33 @@ void __cdecl Submarine_InitGridHeightsFromBytes(int heightBytes)
     cellIdx = 0;
     cellPtr = &g_SubmarineGridCellTable[0];
     do {
-        if ((cellIdx % 64) == 0x3F) {
-            hE = 0x3C0;
+        if ((cellIdx % 64) == 63) {
+            hE = 960;
         } else {
             hE = cellPtr[1].currentHeight;
         }
         cellPtr->eastHeight = hE;
         if ((cellIdx % 64) == 0) {
-            westHeight = 0x3C0;
+            westHeight = 960;
         } else {
             westHeight = cellPtr[-1].currentHeight;
         }
         cellPtr->westHeight = westHeight;
-        if (((cellIdx) / 64) == 0x3F) {
-            southH = 0x3C0;
+        if (((cellIdx) / 64) == 63) {
+            southH = 960;
         } else {
             southH = cellPtr[0x40].currentHeight;
         }
         cellPtr->southHeight = southH;
         if (((cellIdx) / 64) == 0) {
-            upperH = 0x3C0;
+            upperH = 960;
         } else {
             upperH = cellPtr[-0x40].currentHeight;
         }
         cellPtr->northHeight = upperH;
         cellPtr++;
         cellIdx++;
-    } while (cellIdx < 0x1000);
+    } while (cellIdx < 4096);
 }
 
 /*
@@ -120,7 +120,7 @@ void __cdecl Submarine_AllocateGridRecordSlots(short value)
         int block;
     } frame; /* Stack frame layout: see FRAME UNION in lib/codegen.h. */
 
-    frame.limit = g_SubmarineWorkingLevelParams[2] / 0x1000;
+    frame.limit = g_SubmarineWorkingLevelParams[2] / 4096;
     frame.state = g_SubmarineState.currentCellIndex;
     frame.block = frame.state / 64;
     frame.rem = frame.state % 64;
@@ -140,8 +140,8 @@ void __cdecl Submarine_AllocateGridRecordSlots(short value)
                     } else {
                         if ((short)rand() < 127) {
                             g_SubmarineGridCellTable[frame.cellIndex].flags = SUBMARINE_CELL_FLAGGED;
-                            frame.randomHeight = (rand() << 3) / 0x7fff;
-                            frame.randomHeight = 0x400 - (frame.randomHeight << 6);
+                            frame.randomHeight = (rand() << 3) / 32767;
+                            frame.randomHeight = 1024 - (frame.randomHeight << 6);
                             if (frame.randomHeight < 0)
                                 frame.randomHeight = 0;
                             if (frame.randomHeight > g_SubmarineGridCellTable[frame.cellIndex].height) {
@@ -156,7 +156,7 @@ void __cdecl Submarine_AllocateGridRecordSlots(short value)
                 }
             }
             frame.cellIndex++;
-        } while (frame.cellIndex < 0x1000);
+        } while (frame.cellIndex < 4096);
         if (frame.found == 0)
             break;
     }
@@ -242,6 +242,6 @@ void __cdecl Submarine_StepGridCellHeights(void)
         southAddress++;
         upAddress++;
         idx++;
-    } while (idx < 0x1000);
+    } while (idx < 4096);
 }
 } /* extern "C" */

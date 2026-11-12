@@ -210,7 +210,7 @@ void __cdecl BattleFx_SpecialBeginSwiftBolt(int targetMask, int actorIdx)
     g_BattleFxTimelineState.channel2 = 0;
     g_BattleFxTimelineState.channel1 = g_BattleFxTimelineState.channel2;
     g_BattleFxTimelineState.red = g_BattleFxTimelineState.channel1;
-    Battle_StartFixedPointRamp(0xC00, 0xA);
+    Battle_StartFixedPointRamp(0xC00, 10);
 }
 
 /*
@@ -224,7 +224,7 @@ void __cdecl BattleFx_SpecialSwiftBoltRampDownWhenIdleTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     if (g_BattleSecondaryTaskActiveCount <= 1) {
-        Battle_StartFixedPointRamp(0, 0xA);
+        Battle_StartFixedPointRamp(0, 10);
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -277,19 +277,19 @@ void __cdecl BattleFx_SpecialSwiftBoltTimelineTask(void)
         frame.spawnSlot->posY = 0;
         frame.spawnSlot->posZ = g_BattleSpecSwiftBoltTargetBonePosZ;
         frame.spawnSlot->velocityX = (frame.timelineSlot->posX - ((BattleSpecSwiftBoltTargetIdx *)&g_BattleSpecSwiftBoltTargetBonePosXY)->targetX) / 0xA;
-        frame.spawnSlot->velocityZ = (frame.timelineSlot->posZ - g_BattleSpecSwiftBoltTargetBonePosZ) / 0xA;
+        frame.spawnSlot->velocityZ = (frame.timelineSlot->posZ - g_BattleSpecSwiftBoltTargetBonePosZ) / 10;
         frame.spawnSlot->velocityY = 0;
     }
-    if (frame.timelineSlot->frameCounter == 0xA) {
-        for (frame.spawnIndex = 0; frame.spawnIndex < 0xC; frame.spawnIndex++) {
+    if (frame.timelineSlot->frameCounter == 10) {
+        for (frame.spawnIndex = 0; frame.spawnIndex < 12; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxSwiftBoltTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSwiftBoltRadialSparkSpriteTask)];
             frame.spawnSlot->posX = frame.timelineSlot->posX;
             frame.spawnSlot->posY = 0;
             frame.spawnSlot->posZ = frame.timelineSlot->posZ;
             frame.phase = (-rand() % 1024);
             frame.spawnSlot->phase = frame.phase;
-            frame.offsetX.vx = CosFixed(frame.phase) * 0xA0 >> 0xC;
-            frame.offsetX.vy = SinFixed(frame.phase) * 0xA0 >> 0xC;
+            frame.offsetX.vx = CosFixed(frame.phase) * 0xA0 >> 12;
+            frame.offsetX.vy = SinFixed(frame.phase) * 0xA0 >> 12;
             frame.offsetX.vz = 0;
             frame.rotX.vz = 0;
             frame.rotX.vx = frame.rotX.vz;
@@ -304,39 +304,39 @@ void __cdecl BattleFx_SpecialSwiftBoltTimelineTask(void)
             RotTransPointToInt16(&frame.offsetX, &frame.spawnSlot->velocityX, &frame.depth);
         }
     }
-    if (frame.timelineSlot->frameCounter >= 0xA && frame.timelineSlot->frameCounter < 0x16 && (frame.timelineSlot->frameCounter % 4) == 0) {
+    if (frame.timelineSlot->frameCounter >= 10 && frame.timelineSlot->frameCounter < 22 && (frame.timelineSlot->frameCounter % 4) == 0) {
         frame.phase = frame.timelineSlot->frameCounter - 0xA >> 2;
         frame.spawnSlot = (BattleFxSwiftBoltTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSwiftBoltGrowingSpinningModelTask);
-        frame.spawnSlot->posX = frame.timelineSlot->posX + (SinFixed(frame.phase * 0x555) * 0x258 >> 0xC);
+        frame.spawnSlot->posX = frame.timelineSlot->posX + (SinFixed(frame.phase * 1365) * 0x258 >> 12);
         frame.spawnSlot->posY = 0;
-        frame.spawnSlot->posZ = frame.timelineSlot->posZ + (CosFixed(frame.phase * 0x555) * 0x258 >> 0xC);
+        frame.spawnSlot->posZ = frame.timelineSlot->posZ + (CosFixed(frame.phase * 1365) * 0x258 >> 12);
     }
-    if (frame.timelineSlot->frameCounter > 0xA && frame.timelineSlot->frameCounter <= 0xD) {
+    if (frame.timelineSlot->frameCounter > 10 && frame.timelineSlot->frameCounter <= 13) {
         for (frame.spawnIndex = 0; frame.spawnIndex < 2; frame.spawnIndex++) {
             frame.spawnSlot = (BattleFxSwiftBoltTimelineSpawnSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialSwiftBoltGrowingFadeSpriteTask);
-            frame.spawnSlot->posX = frame.timelineSlot->posX + rand() % 0x640 + -0x320;
-            frame.spawnSlot->posY = -rand() % 0x1F4;
-            frame.spawnSlot->posZ = frame.timelineSlot->posZ + rand() % 0x640 + -0x320;
+            frame.spawnSlot->posX = frame.timelineSlot->posX + rand() % 1600 + -800;
+            frame.spawnSlot->posY = -rand() % 500;
+            frame.spawnSlot->posZ = frame.timelineSlot->posZ + rand() % 1600 + -800;
         }
         Battle_PlaySfxPannedToActor(0x7C, (short)frame.timelineSlot->actorIndex, 0);
     }
-    if (frame.timelineSlot->frameCounter > 0x1A && frame.timelineSlot->frameCounter < 0x22) {
+    if (frame.timelineSlot->frameCounter > 26 && frame.timelineSlot->frameCounter < 34) {
         frame.spawnSlot = (BattleFxSwiftBoltTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSwiftBoltAnimatedSpriteTask)];
-        frame.spawnSlot->posX = frame.timelineSlot->posX + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posY = frame.timelineSlot->posY + -rand() % 0x1F4 + -0xC8;
-        frame.spawnSlot->posZ = frame.timelineSlot->posZ + rand() % 0x4B0 + -0x258;
+        frame.spawnSlot->posX = frame.timelineSlot->posX + rand() % 1200 + -600;
+        frame.spawnSlot->posY = frame.timelineSlot->posY + -rand() % 500 + -200;
+        frame.spawnSlot->posZ = frame.timelineSlot->posZ + rand() % 1200 + -600;
         frame.spawnSlot->variant = (rand() % 2) + 2;
         frame.spawnSlot = (BattleFxSwiftBoltTimelineSpawnSlot *)&g_BattleTaskSlotBuffer.secondarySlots[(short)Battle_AllocateSecondaryResourceSlot(BattleFx_SpecialSwiftBoltAnimatedSpriteTask)];
-        frame.spawnSlot->posX = frame.timelineSlot->posX + rand() % 0x4B0 + -0x258;
-        frame.spawnSlot->posY = frame.timelineSlot->posY + -rand() % 0x1F4 + -0xC8;
-        frame.spawnSlot->posZ = frame.timelineSlot->posZ + rand() % 0x4B0 + -0x258;
+        frame.spawnSlot->posX = frame.timelineSlot->posX + rand() % 1200 + -600;
+        frame.spawnSlot->posY = frame.timelineSlot->posY + -rand() % 500 + -200;
+        frame.spawnSlot->posZ = frame.timelineSlot->posZ + rand() % 1200 + -600;
         frame.spawnSlot->variant = (rand() % 2);
     }
-    if (frame.timelineSlot->frameCounter == 0x1E) {
+    if (frame.timelineSlot->frameCounter == 30) {
         Battle_PostActorHitOrHurtMessage(frame.timelineSlot->actorIndex);
     }
     (frame.timelineSlot->frameCounter)++;
-    if (frame.timelineSlot->frameCounter == 0x3C) {
+    if (frame.timelineSlot->frameCounter == 60) {
         frame.timelineSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -353,7 +353,7 @@ void __cdecl BattleFx_SpecialSwiftBoltAnimatedSpriteTask(void)
     BattleFxSwiftBoltAnimatedSpriteSlot *task;
 
     task = (BattleFxSwiftBoltAnimatedSpriteSlot *)&g_BattleTaskSlotBuffer.secondarySlots[g_BattleSecondaryTaskActiveSlotIdx];
-    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000, 0);
+    BattleFx_InstallBillboardMatrix(&task->posX, 0x2000 /* 2.0 */, 0);
     g_BattleSpecSwiftBoltSpriteReq1.drawObj = Gfx_ModelTableGetSpriteObject(((int *)&g_BattleSpecSwiftBoltAnimFrameIndices)[task->animIndex], g_BattleSpecSwiftBoltModelTable);
     (g_BattleSpecSwiftBoltSpriteReq1.spriteResource) = Gfx_ModelTableGetLoadedRecord(((int *)&g_BattleSpecSwiftBoltAnimFrameIndices)[task->animIndex], g_BattleSpecSwiftBoltModelTable);
     g_BattleSpecSwiftBoltSpriteReq1.frame = task->frameIndex;
@@ -391,12 +391,12 @@ void __cdecl BattleFx_SpecialSwiftBoltGrowingFadeSpriteTask(void)
     g_BattleSpecSwiftBoltSpriteReq2.frameByte10 = 0x60 - (taskPtr->frameCounter << 2);
     g_BattleSpecSwiftBoltSpriteReq2.colorG = g_BattleSpecSwiftBoltSpriteReq2.frameByte10;
     g_BattleSpecSwiftBoltSpriteReq2.colorR = g_BattleSpecSwiftBoltSpriteReq2.colorG;
-    g_BattleSpecSwiftBoltSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(0xB, g_BattleSpecSwiftBoltModelTable);
-    (g_BattleSpecSwiftBoltSpriteReq2.spriteField) = Gfx_ModelTableGetLoadedRecord(0xB, g_BattleSpecSwiftBoltModelTable);
+    g_BattleSpecSwiftBoltSpriteReq2.drawObj = Gfx_ModelTableGetSpriteObject(11, g_BattleSpecSwiftBoltModelTable);
+    (g_BattleSpecSwiftBoltSpriteReq2.spriteField) = Gfx_ModelTableGetLoadedRecord(11, g_BattleSpecSwiftBoltModelTable);
     g_BattleSpecSwiftBoltDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecSwiftBoltSpriteReq2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSwiftBoltDrawListHead);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frameCounter)++;
-        if (taskPtr->frameCounter == 0x18) {
+        if (taskPtr->frameCounter == 24) {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -431,7 +431,7 @@ void __cdecl BattleFx_SpecialSwiftBoltRadialSparkSpriteTask(void)
     SetRotMatrix(&g_BattleCameraTransform);
     SetTransMatrix(&g_BattleCameraTransform);
     RotTransPoint(&frame.sparkSlot->posX, frame.scaleMatrix.t, &frame.depth);
-    frame.scaleMatrix.m[2][2] = 0x6000;
+    frame.scaleMatrix.m[2][2] = 0x6000 /* 6.0 */;
     frame.scaleMatrix.m[1][1] = frame.scaleMatrix.m[2][2];
     frame.scaleMatrix.m[0][0] = frame.scaleMatrix.m[1][1];
     ConcatMatrixIntoFirst(&frame.scaleMatrix, &g_BattleCameraTransform);
@@ -442,8 +442,8 @@ void __cdecl BattleFx_SpecialSwiftBoltRadialSparkSpriteTask(void)
     g_BattleSpecSwiftBoltSpriteReq4.colorB = 0x80 - (frame.sparkSlot->frameCounter << 4);
     g_BattleSpecSwiftBoltSpriteReq4.colorG = g_BattleSpecSwiftBoltSpriteReq4.colorB;
     g_BattleSpecSwiftBoltSpriteReq4.colorR = g_BattleSpecSwiftBoltSpriteReq4.colorG;
-    g_BattleSpecSwiftBoltSpriteReq4.drawObj = Gfx_ModelTableGetSpriteObject(0xA, g_BattleSpecSwiftBoltModelTable);
-    (g_BattleSpecSwiftBoltSpriteReq4.spriteField) = Gfx_ModelTableGetLoadedRecord(0xA, g_BattleSpecSwiftBoltModelTable);
+    g_BattleSpecSwiftBoltSpriteReq4.drawObj = Gfx_ModelTableGetSpriteObject(10, g_BattleSpecSwiftBoltModelTable);
+    (g_BattleSpecSwiftBoltSpriteReq4.spriteField) = Gfx_ModelTableGetLoadedRecord(10, g_BattleSpecSwiftBoltModelTable);
     g_BattleOverlayDrawListHead = BattleFx_SubmitSpriteDraw(&g_BattleSpecSwiftBoltSpriteReq4, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused != 0) {
         return;
@@ -457,7 +457,7 @@ void __cdecl BattleFx_SpecialSwiftBoltRadialSparkSpriteTask(void)
     }
 }
 
-/* Model that spins about Y and grows (scale from g_BattleSpecSwiftBoltModelScaleX/Y/Z) for 0x1E frames while fading. */
+/* Model that spins about Y and grows (scale from g_BattleSpecSwiftBoltModelScaleX/Y/Z) for 30 frames while fading. */
 // FUNCTION: FF7 0x0053e5a1
 void __cdecl BattleFx_SpecialSwiftBoltGrowingSpinningModelTask(void)
 {
@@ -494,7 +494,7 @@ void __cdecl BattleFx_SpecialSwiftBoltGrowingSpinningModelTask(void)
         return;
     }
     (frame.sanderSlot->frameCounter)++;
-    if (frame.sanderSlot->frameCounter == 0x1E) {
+    if (frame.sanderSlot->frameCounter == 30) {
         frame.sanderSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -529,18 +529,18 @@ void __cdecl BattleFx_SpecialSwiftBoltBoltEmitterTask(void)
         segmentPtr->posB = taskPtr->posB;
         segmentPtr->posY = 0;
         angle = rand() % 0x1000;
-        segmentPtr->cosOffset = CosFixed(angle) * 0x64 >> 0xC;
-        segmentPtr->sinOffset = SinFixed(angle) * 0x64 >> 0xC;
-        segmentPtr->startOffset = -rand() % 0xC8 - 0x64;
-        segmentPtr->stepCount = rand() % 0x10 + 4;
+        segmentPtr->cosOffset = CosFixed(angle) * 0x64 >> 12;
+        segmentPtr->sinOffset = SinFixed(angle) * 0x64 >> 12;
+        segmentPtr->startOffset = -rand() % 200 - 100;
+        segmentPtr->stepCount = rand() % 16 + 4;
     }
     (taskPtr->emitIndex)++;
-    if (taskPtr->emitIndex == 0xE) {
+    if (taskPtr->emitIndex == 14) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
 
-/* Sprite that spins and bounces on the ground plane (Y = 0) for 0xF frames. */
+/* Sprite that spins and bounces on the ground plane (Y = 0) for 15 frames. */
 // FUNCTION: FF7 0x0053e8b1
 void __cdecl BattleFx_SpecialSwiftBoltBouncingSpriteTask(void)
 {
@@ -568,7 +568,7 @@ void __cdecl BattleFx_SpecialSwiftBoltBouncingSpriteTask(void)
     if (frame.bounceSlot->frameCounter < 7) {
         frame.frameValue = 8;
     } else {
-        frame.frameValue = 0xF - frame.bounceSlot->frameCounter;
+        frame.frameValue = 15 - frame.bounceSlot->frameCounter;
     }
     frame.frameIndex = *(short *)&frame.frameValue;
     frame.rotX.vy = 0;
@@ -602,10 +602,10 @@ void __cdecl BattleFx_SpecialSwiftBoltBouncingSpriteTask(void)
         frame.bounceSlot->posY = 0;
         frame.bounceSlot->velocityY *= -1;
     }
-    frame.bounceSlot->velocityY += 0x14;
-    frame.bounceSlot->spinAngle += 0x200;
+    frame.bounceSlot->velocityY += 20;
+    frame.bounceSlot->spinAngle += 0x200 /* 45 deg */;
     (frame.bounceSlot->frameCounter)++;
-    if (frame.bounceSlot->frameCounter == 0xF) {
+    if (frame.bounceSlot->frameCounter == 15) {
         frame.bounceSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -639,8 +639,8 @@ void __cdecl BattleFx_SpecialSwiftBoltDrawBoltSegmentTask(void)
     Gte_BuildLookBasisFromDirection(&frame.dirX.vx, frame.lookBasis.m[0]);
     RotMatrixXYZ(&g_BattleSpecSwiftBoltOffsets1, &frame.boltMatrix);
     ConcatMatrixPreservingTranslation(&frame.lookBasis, &frame.boltMatrix, &frame.boltMatrix);
-    frame.scaleX.vx = (frame.distance << 0xC) / 0x7D0;
-    frame.scaleX.vz = 0x2000;
+    frame.scaleX.vx = (frame.distance << 12) / 2000;
+    frame.scaleX.vz = 0x2000 /* 2.0 */;
     frame.scaleX.vy = frame.scaleX.vz;
     ScaleMatrix(&frame.boltMatrix, &frame.scaleX);
     frame.boltMatrix.t[0] = ((BattleSpecSwiftBoltTargetIdx *)&g_BattleSpecSwiftBoltTargetBonePosXY)->targetX;
@@ -677,7 +677,7 @@ void __cdecl BattleFx_SpecialSwiftBoltDrawBoltSegmentTask(void)
     MultiplyMatrix(&g_BattleCameraTransform, &frame.boltMatrix, &frame.combinedMatrix);
     SetRotMatrix(&frame.combinedMatrix);
     SetTransMatrix(&frame.combinedMatrix);
-    g_BattleSpecSwiftBoltModelReq1.alpha = 0x60 - frame.boltSlot->frameCounter * 0x18;
+    g_BattleSpecSwiftBoltModelReq1.alpha = 0x60 - frame.boltSlot->frameCounter * 24;
     (g_BattleSpecSwiftBoltModelReq1.modelField) = Gfx_ModelTableGetRenderObject(0, g_BattleSpecSwiftBoltModelTable);
     g_BattleSpecSwiftBoltDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_BattleSpecSwiftBoltModelReq1, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecSwiftBoltDrawListHead);
     if (g_BattleIsPaused != 0) {

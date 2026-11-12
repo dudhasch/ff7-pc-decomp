@@ -35,7 +35,7 @@ unsigned char g_rawData_0089aa28[8] = {0x00, 0xf0, 0xff, 0xff, 0x00, 0x00, 0x00,
 // The three spawn directions are 16-byte vectors (x, y, z, pad) from g_BattleSpecChefsKnifeSpawnDir0X
 // on: the first is (0x80, -0xC06, 0, 0) and the other two are members of g_BattleSpecChefsKnifeAnimData.
 // GLOBAL: FF7 0x0089aa30
-int g_BattleSpecChefsKnifeSpawnDir0X = 0x80;
+int g_BattleSpecChefsKnifeSpawnDir0X = 128;
 // GLOBAL: FF7 0x0089aa34
 int g_BattleSpecChefsKnifeSpawnDir0Y = -3078;
 // GLOBAL: FF7 0x0089aa38
@@ -143,9 +143,9 @@ void __cdecl BattleFx_SpecialChefsKnifeSpawnTimelineTask(void)
     task->ownerSlot = BATTLE_TASK_FREE;
     task = (BattleFxChefsKnifeTimelineSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialChefsKnifeTimelineTask);
     Battle_GetBoneWorldPos(g_BattleSpecChefsKnifeTargetActor, g_BattleActorRecords[g_BattleSpecChefsKnifeTargetActor].targetBone, &task->posX);
-    size = g_BattleActorRecords[g_BattleSpecChefsKnifeTargetActor].radius + 0xE0;
-    if (size > 0x4F2) {
-        size = 0x4F2;
+    size = g_BattleActorRecords[g_BattleSpecChefsKnifeTargetActor].radius + 224;
+    if (size > 1266) {
+        size = 1266;
     }
     task->effectRadius = size;
     task->doubleRadius = size << 1;
@@ -198,32 +198,32 @@ void __cdecl BattleFx_SpecialChefsKnifeTimelineTask(void)
         frame.korosiSprite = (BattleFxChefsKnifeAnimatedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialChefsKnifeAnimatedSpriteTask);
         *(Int64Pair *)&frame.korosiSprite->posX = *(Int64Pair *)&frame.korosiSlot->posX;
         frame.tmpRandom = rand() % (frame.korosiSlot->effectRadius >> 1) + (frame.korosiSlot->effectRadius >> 1);
-        frame.offsetX.vx = *(int *)((char *)&g_BattleSpecChefsKnifeSpawnDir0X + (frame.korosiSlot->spawnIndex << 4)) * frame.tmpRandom >> 0xC;
-        frame.offsetX.vy = *(int *)((char *)&g_BattleSpecChefsKnifeSpawnDir0Y + (frame.korosiSlot->spawnIndex << 4)) * frame.tmpRandom >> 0xC;
+        frame.offsetX.vx = *(int *)((char *)&g_BattleSpecChefsKnifeSpawnDir0X + (frame.korosiSlot->spawnIndex << 4)) * frame.tmpRandom >> 12;
+        frame.offsetX.vy = *(int *)((char *)&g_BattleSpecChefsKnifeSpawnDir0Y + (frame.korosiSlot->spawnIndex << 4)) * frame.tmpRandom >> 12;
         frame.offsetX.vz = 0;
         TransformVectorToInt16((PsxMatrix *)&g_BattleSpecChefsKnifeSpriteMatrix, &frame.offsetX, &frame.offsetX.vx);
         frame.korosiSprite->posX += frame.offsetX.vx;
         frame.korosiSprite->posY += frame.offsetX.vy;
         frame.korosiSprite->posZ += frame.offsetX.vz;
-        frame.tmpRandom = (rand() % 2048) + 0xA00;
-        frame.baseScale = (frame.korosiSlot->effectRadius << 0xC) / 0x15E;
-        frame.korosiSprite->scale = frame.baseScale * frame.tmpRandom >> 0xC;
+        frame.tmpRandom = (rand() % 2048) + 2560;
+        frame.baseScale = (frame.korosiSlot->effectRadius << 12) / 350;
+        frame.korosiSprite->scale = frame.baseScale * frame.tmpRandom >> 12;
         (frame.korosiSlot->spawnIndex)++;
     }
     if (frame.korosiSlot->frameCounter == 2) {
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.korosiSlot->posX), 0x1A5);
     }
-    if (frame.korosiSlot->frameCounter == 0xC) {
+    if (frame.korosiSlot->frameCounter == 12) {
         frame.korosiSprite = (BattleFxChefsKnifeAnimatedSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialChefsKnifePulseFadeSpriteTask);
         *(Int64Pair *)&frame.korosiSprite->posX = *(Int64Pair *)&frame.korosiSlot->posX;
-        frame.korosiSprite->scale = (frame.korosiSlot->effectRadius << 0xC) / 0x320;
+        frame.korosiSprite->scale = (frame.korosiSlot->effectRadius << 12) / 800;
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.korosiSlot->posX), 0x1A4);
     }
-    if (frame.korosiSlot->frameCounter == 0x23) {
+    if (frame.korosiSlot->frameCounter == 35) {
         Battle_PostActorHitOrHurtMessage(g_BattleSpecChefsKnifeTargetActor);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&frame.korosiSlot->posX), 0x1A8);
     }
-    if (frame.korosiSlot->frameCounter >= 0x28) {
+    if (frame.korosiSlot->frameCounter >= 40) {
         frame.korosiSlot->ownerSlot = BATTLE_TASK_FREE;
     }
     (frame.korosiSlot->frameCounter)++;
@@ -247,8 +247,8 @@ void __cdecl BattleFx_SpecialChefsKnifePulseFadeSpriteTask(void)
     task = (BattleFxDethRampSlot *)BATTLE_CURRENT_TASK_SLOT;
     if (task->timer < 6) {
         level = task->timer << 4;
-    } else if (task->timer >= 0x11) {
-        level = 0x60 - (task->timer - 0x11) * 0xC;
+    } else if (task->timer >= 17) {
+        level = 0x60 - (task->timer - 0x11) * 12;
     } else {
         level = 0x60;
     }
@@ -259,7 +259,7 @@ void __cdecl BattleFx_SpecialChefsKnifePulseFadeSpriteTask(void)
     g_BattleSpecChefsKnifeAnimData.pulseDrawObj = Gfx_ModelTableGetSpriteObject(1, g_BattleSpecChefsKnifeTaskPtr);
     installResult = (int)BattleFx_InstallBillboardMatrix(task->pos, (short)task->scale, -(task->scale >> 2));
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecChefsKnifeAnimData.pulseSpriteGroup, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->timer >= 0x19) {
+    if (task->timer >= 25) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -285,7 +285,7 @@ void __cdecl BattleFx_SpecialChefsKnifeAnimatedSpriteTask(void)
     g_BattleSpecChefsKnifeSpriteRequest.animated.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecChefsKnifeTaskPtr);
     g_BattleSpecChefsKnifeSpriteRequest.animated.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecChefsKnifeTaskPtr);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitSpriteDraw(&g_BattleSpecChefsKnifeSpriteRequest.animated, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (task->frameIndex >= 0xB) {
+    if (task->frameIndex >= 11) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

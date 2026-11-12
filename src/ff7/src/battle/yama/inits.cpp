@@ -67,7 +67,7 @@ void __cdecl Battle_LoadSceneRecord(int sceneId, void *callback)
         frame.chunk = Battle_FindSceneFileChunk(frame.sceneIndex);
         Battle_PushDataDirectory(&frame.directory[0]);
         // STRING: FF7 0x008ff038
-        LoadFileBlock((int)"scene.bin", frame.chunk << 0xD, 0x2000, (void **)&g_Battle_sceneBuffer, 0);
+        LoadFileBlock((int)"scene.bin", frame.chunk << 13, 0x2000, (void **)&g_Battle_sceneBuffer, 0);
         Battle_PopDataDirectory(&frame.directory[0]);
         g_BattleSceneSubIndex = frame.sceneIndex - g_BattleKernelData.sceneLookup[frame.chunk];
         g_BattleSceneLoadStep = BATTLE_SCENE_LOAD_WAIT_CALLBACK;
@@ -87,7 +87,7 @@ void __cdecl Battle_LoadSceneRecord(int sceneId, void *callback)
         g_BattleSceneSubIndex = *(int *)((char *)frame.compressed + g_BattleSceneSubIndex * 4);
         frame.inflatedSize = GzipInflate_BinSection((void *)(frame.compressed + g_BattleSceneSubIndex * 4), &frame.scene[0]);
         // STRING: FF7 0x008ff044
-        GameHeapFree((void *)g_Battle_sceneBuffer, "C:\\FF7\\src\\Battle\\yama\\inits.cpp", 0xAB);
+        GameHeapFree((void *)g_Battle_sceneBuffer, "C:\\FF7\\src\\Battle\\yama\\inits.cpp", 171);
         g_Battle_sceneBuffer = 0;
         g_BattleSceneSubIndex = sceneId % 4;
         Battle_CopySceneDataBlock(&g_BattleScene, &frame.scene[0], 8);
@@ -145,7 +145,7 @@ int __cdecl Battle_FindSceneFileChunk(int blockIndex)
     int result;
     unsigned int i;
 
-    for (i = 1; i < 0x40; i++) {
+    for (i = 1; i < 64; i++) {
         if (blockIndex < g_BattleKernelData.sceneLookup[i]) {
             break;
         }
@@ -161,8 +161,8 @@ int __cdecl Battle_FindSceneFileChunk(int blockIndex)
 int __cdecl Battle_ScaleStatBy125Clamped(int stat)
 {
     /* The parameter doubles as the scratch variable; a separate local would change the frame. */
-    stat = stat * 0x7D / 0x64;
-    if (stat > 0xFF) {
+    stat = stat * 125 / 100;
+    if (stat > 255) {
         stat = 0xFF;
     }
     return stat;

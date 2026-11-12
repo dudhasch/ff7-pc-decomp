@@ -33,7 +33,7 @@ void __cdecl Field_LoadTutorialText(int fieldId)
         if (fileIndex != 0) {
             entrySize = GetLgpEntrySize((int)fileIndex, LGP_ARCHIVE_FIELD_LEVEL);
             // STRING: FF7 0x009069d8
-            g_pFieldTutorialTextBuffer = (char *)GameHeapAllocRaw(entrySize + 0xA, "C:\\FF7\\field\\src\\tutaddr.cpp", 0x3B);
+            g_pFieldTutorialTextBuffer = (char *)GameHeapAllocRaw(entrySize + 0xA, "C:\\FF7\\field\\src\\tutaddr.cpp", 59);
             if (g_pFieldTutorialTextBuffer == 0) {
                 return;
             }
@@ -46,7 +46,7 @@ void __cdecl Field_LoadTutorialText(int fieldId)
         if (fileIndex != 0) {
             entrySize = GetLgpEntrySize((int)fileIndex, LGP_ARCHIVE_FIELD_LEVEL);
             // STRING: FF7 0x00906a04
-            g_pFieldTutorialTextBuffer = (char *)GameHeapAllocRaw(entrySize + 0xA, "C:\\FF7\\field\\src\\tutaddr.cpp", 0x62);
+            g_pFieldTutorialTextBuffer = (char *)GameHeapAllocRaw(entrySize + 0xA, "C:\\FF7\\field\\src\\tutaddr.cpp", 98);
             if (g_pFieldTutorialTextBuffer == 0) {
                 return;
             }
@@ -59,7 +59,7 @@ void __cdecl Field_LoadTutorialText(int fieldId)
         if (fileIndex != 0) {
             entrySize = GetLgpEntrySize((int)fileIndex, LGP_ARCHIVE_FIELD_LEVEL);
             // STRING: FF7 0x00906a30
-            g_pFieldTutorialTextBuffer = (char *)GameHeapAllocRaw(entrySize + 0xA, "C:\\FF7\\field\\src\\tutaddr.cpp", 0x88);
+            g_pFieldTutorialTextBuffer = (char *)GameHeapAllocRaw(entrySize + 0xA, "C:\\FF7\\field\\src\\tutaddr.cpp", 136);
             if (g_pFieldTutorialTextBuffer == 0) {
                 return;
             }
@@ -77,7 +77,7 @@ void __cdecl Field_FreeTutaddrBuffer(void)
 {
     if (g_pFieldTutorialTextBuffer != 0) {
         // STRING: FF7 0x00906a50
-        GameHeapFree(g_pFieldTutorialTextBuffer, "C:\\FF7\\field\\src\\tutaddr.cpp", 0x9c);
+        GameHeapFree(g_pFieldTutorialTextBuffer, "C:\\FF7\\field\\src\\tutaddr.cpp", 156);
         g_pFieldTutorialTextBuffer = 0;
     }
 }

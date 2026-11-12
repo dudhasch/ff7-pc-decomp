@@ -153,7 +153,7 @@ char g_BattleDebugDumpByte0 = 0;
 // GLOBAL: FF7 0x00bf2850
 char g_BattleDebugDumpByte1 = 0;
 unsigned char g_bssPad_00bf2854[4] = {0};
-// The main task callbacks: Battle_AllocateResourceSlot and Battle_RunMainTaskSlots index 100 slots (slot < 0x64).
+// The main task callbacks: Battle_AllocateResourceSlot and Battle_RunMainTaskSlots index 100 slots (slot < 100).
 // This object holds slots 0..98; slot 99 is g_BattleCameraScriptTaskCallback, defined next.
 // GLOBAL: FF7 0x00bf2858
 BattleTaskFn g_BattleMainTaskCallbacks[99] = {0};
@@ -278,7 +278,7 @@ unsigned char g_BattleStageNodeState[4] = {0};
 // g_BattleScriptFlags is indexed by the code as an array. The span runs to the next named
 // definition of the TU; the TU's pieces inside 0xbfcdf0..0xbfcdf8 are aliases.
 // GLOBAL: FF7 0x00bfcdf0
-unsigned char g_BattleScriptFlags[0x8] = {0};
+unsigned char g_BattleScriptFlags[8] = {0};
 // GLOBAL: FF7 0x00bfcdf8
 char g_BattleEscapedEndState = 0;
 // GLOBAL: FF7 0x00bfcdfc
@@ -389,7 +389,7 @@ void __cdecl Battle3d_DrawActorOverlays(char actorIndex)
             if ((short)Battle_GetWindowState(1) == 2 && g_BtlActiveActor == actorIndex) {
                 Battle3d_DrawActorSpinningIndicator((char)actorIndex);
             }
-            if ((short)Battle_GetWindowState(0x13) == 2 && g_BtlEnemyIndex + 4 == actorIndex) {
+            if ((short)Battle_GetWindowState(19) == 2 && g_BtlEnemyIndex + 4 == actorIndex) {
                 Battle3d_DrawActorSpinningIndicator((char)actorIndex);
             }
         }
@@ -417,7 +417,7 @@ void __cdecl Battle3d_DrawActorSpinningIndicator(char actorIndex)
         if (g_BattleIsPaused == 0)
             g_BattleActorRecords[actorIndex].spinAngle += 0x80;
         if (g_BattleActorRecords[actorIndex].spinAngle > 0x1000)
-            g_BattleActorRecords[actorIndex].spinAngle -= 0x1000;
+            g_BattleActorRecords[actorIndex].spinAngle -= 0x1000 /* 360 deg */;
         RotMatrix((SVECTOR *)&g_BattleActorRecords[actorIndex].boneNodes5[0x90E], (int *)&g_BattleActorRecords[actorIndex].boneNodes5[0x8F0]);
         if (Gfx_IsDrawEnabled()) {
             SetIdentityMatrix4x4(frame.translation);
@@ -470,11 +470,11 @@ void __cdecl Battle3d_UpdateActorRenderState(char actorIndex)
             g_BattleActorStates[actorIndex].motionState = BATTLE_ACTOR_MOTION_FROZEN;
         }
         if ((g_BattleActorStates[actorIndex].status & BATTLE_STATUS_CONFUSION) != 0 && g_BattleActorRecords[actorIndex].scriptId == *(char *)((char *)&g_BattleActorIdleScripts + actorIndex) && g_BattleIsPaused == 0) {
-            g_BattleActorRecords[actorIndex].yaw += 0x100;
+            g_BattleActorRecords[actorIndex].yaw += 0x100 /* 22.5 deg */;
         }
         if ((g_BattleActorStates[actorIndex].status & BATTLE_STATUS_MANIPULATE) != 0 && g_BattleActorRecords[actorIndex].scriptId == *(char *)((char *)&g_BattleActorIdleScripts + actorIndex)) {
             if (g_BattleActorRecords[actorIndex].facing == 0) {
-                g_BattleActorRecords[actorIndex].yaw = 0x800;
+                g_BattleActorRecords[actorIndex].yaw = 0x800 /* 180 deg */;
             } else {
                 g_BattleActorRecords[actorIndex].yaw = 0;
             }
@@ -483,7 +483,7 @@ void __cdecl Battle3d_UpdateActorRenderState(char actorIndex)
             return;
         }
         if (g_BattleIsPaused == 0) {
-            if (g_BattleActorRecords[actorIndex].tintPulse < 0x10) {
+            if (g_BattleActorRecords[actorIndex].tintPulse < 16) {
                 g_BattleActorRecords[actorIndex].tintPhase += 0x80;
             } else {
                 g_BattleActorRecords[actorIndex].tintPhase -= 0x80;
@@ -586,7 +586,7 @@ int __cdecl Battle3d_DrawActorOverlayQuad(int actorIndex, void *position, short 
     g_BattleVmReg_5 = 0;
     g_BattleVmReg_4 = 0;
     cnt = Gfx_ProjectQuadToScreen(&g_BattleOverlay_QuadOffset0, &g_BattleOverlay_QuadOffset1, &g_BattleOverlay_QuadOffset2, &g_BattleOverlay_QuadOffset3, &quad->xMin, &quad->xMax, &quad->xMinLower, &quad->xMaxLower, &g_BattleVmReg_0, &g_BattleVmReg_2);
-    margin = (g_BattleUiScalingMode - 2 != 0 ? -0xF : 0) + 0x1F;
+    margin = (g_BattleUiScalingMode - 2 != 0 ? -15 : 0) + 31;
     g_BattleVmReg_0 = quad->xMax - quad->xMin;
     if (g_BattleVmReg_0 < margin) {
         quad->xMin = quad->xMax - margin;
@@ -619,21 +619,21 @@ int __cdecl Battle3d_DrawActorOverlayQuad(int actorIndex, void *position, short 
         if (g_BattleVmReg_4 == 1 && g_BattleVmReg_5 == 1) {
             quad->texU = texU;
             quad->texV = texV;
-            quad->texUEnd = texU + g_BattleUiScale * 0xF;
+            quad->texUEnd = texU + g_BattleUiScale * 15;
             quad->texVStart = texV;
             quad->texUStart = texU;
             quad->texVEnd = texV + (g_BattleUiScale << 4);
-            quad->texUEndAlt = texU + g_BattleUiScale * 0xF;
+            quad->texUEndAlt = texU + g_BattleUiScale * 15;
             quad->texVEndAlt = texV + (g_BattleUiScale << 4);
         } else {
             quad->texU = texU;
             quad->texV = texV;
-            quad->texUEnd = texU + g_BattleUiScale * 0xF;
+            quad->texUEnd = texU + g_BattleUiScale * 15;
             quad->texVStart = texV;
             quad->texUStart = texU;
-            quad->texVEnd = texV + g_BattleUiScale * 0xF;
-            quad->texUEndAlt = texU + g_BattleUiScale * 0xF;
-            quad->texVEndAlt = texV + g_BattleUiScale * 0xF;
+            quad->texVEnd = texV + g_BattleUiScale * 15;
+            quad->texUEndAlt = texU + g_BattleUiScale * 15;
+            quad->texVEndAlt = texV + g_BattleUiScale * 15;
         }
         cnt >>= 2;
         if (Gfx_IsDrawEnabled() != 0) {
@@ -689,8 +689,8 @@ void __cdecl Battle3d_SplitDecimalDigits(short value, void *digits)
     int i;
 
     for (i = 0; i < 4; i++) {
-        *(short *)((char *)digits + (3 - i) * 2) = value % 0xA;
-        value = value / 0xA;
+        *(short *)((char *)digits + (3 - i) * 2) = value % 10;
+        value = value / 10;
     }
 }
 
@@ -949,7 +949,7 @@ void __cdecl Battle_DrawTargetedEnemyMarker(char targetIndex)
     if (g_BattleSceneState == 4 && g_BattleScriptEffectFlag == 0 && g_BattleScriptAnimRunFlag == 0) {
         if (g_BattleActorScreenPositions[targetIndex].projectedX == -1 && g_BattleActorScreenPositions[targetIndex].projectedY == -1) { /* empty first arm: lib/codegen.h */
         } else {
-            g_BattleOverlayDrawListHead = BattleFx_SubmitScreenTexturedQuad(g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, g_BattleActorScreenPositions[targetIndex].projectedX + 3, g_BattleActorScreenPositions[targetIndex].projectedY - 0xE, 0, 0xD0, 0x30, 0x10, 0);
+            g_BattleOverlayDrawListHead = BattleFx_SubmitScreenTexturedQuad(g_BattleCurrentOrderingTable + BATTLE_OT_AFTER_SORTED_5, g_BattleActorScreenPositions[targetIndex].projectedX + 3, g_BattleActorScreenPositions[targetIndex].projectedY - 0xE, 0, 0xD0, 48, 16, 0);
         }
     }
 }
@@ -1223,7 +1223,7 @@ void __cdecl Battle_OverlayTaskDeathSink(void)
 
     switch (g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].state) {
     case BATTLE_TASK_FRAME_FIRST:
-        g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sinkCountdown = 0xE;
+        g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sinkCountdown = 14;
         (g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].state)++;
         a = g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].actorId;
         Battle_PlayPannedSfxForActor((char)a, 0x16, g_BattleOverlayTaskSlotBuffer[g_BattleOverlayTaskSlotIdx].sfxPan);
@@ -1316,8 +1316,8 @@ void __cdecl Battle_StatusPoseMode2UpdateActor(char taskSlot)
     } else {
         g_BattleActorRecords[actor].tintPhase += 0x80;
         g_BattleActorRecords[actor].tintR -= 0x10;
-        g_BattleActorStates[actor].poseAngleA += 0x100;
-        g_BattleActorStates[actor].poseAngleB -= 0x100;
+        g_BattleActorStates[actor].poseAngleA += 0x100 /* 22.5 deg */;
+        g_BattleActorStates[actor].poseAngleB -= 0x100 /* 22.5 deg */;
         g_BattleActorStates[actor].poseAngleC += 0x100;
         (*(short *)g_BattleTaskSlotBuffer.mainSlots[taskSlot].data)--;
     }
@@ -1451,9 +1451,9 @@ void __cdecl Battle_StatusPoseMode7UpdateActor(char taskSlot)
         g_BattleActorRecords[actor].tintG -= 8;
         g_BattleActorRecords[actor].tintB -= 8;
         g_BattleActorStates[actor].poseAngleA = 0;
-        g_BattleActorStates[actor].poseAngleB = 0x1000;
+        g_BattleActorStates[actor].poseAngleB = 0x1000 /* 360 deg */;
         g_BattleActorStates[actor].poseAngleC = 0x1000;
-        g_BattleActorRecords[actor].yaw += 0x100;
+        g_BattleActorRecords[actor].yaw += 0x100 /* 22.5 deg */;
         (*(short *)g_BattleTaskSlotBuffer.mainSlots[taskSlot].data)--;
     }
 }
@@ -1504,10 +1504,10 @@ void __cdecl Battle_StatusPoseMode8UpdateActor(char taskSlot)
         g_BattleActorRecords[actor].tintR -= 8;
         g_BattleActorRecords[actor].tintG -= 8;
         g_BattleActorRecords[actor].tintB -= 8;
-        g_BattleActorStates[actor].poseAngleA = 0x1000;
-        g_BattleActorStates[actor].poseAngleB = 0x1000;
+        g_BattleActorStates[actor].poseAngleA = 0x1000 /* 360 deg */;
+        g_BattleActorStates[actor].poseAngleB = 0x1000 /* 360 deg */;
         g_BattleActorStates[actor].poseAngleC = 0;
-        g_BattleActorRecords[actor].posY -= 0x80;
+        g_BattleActorRecords[actor].posY -= 128;
         (*(short *)g_BattleTaskSlotBuffer.mainSlots[taskSlot].data)--;
     }
 }
@@ -1605,7 +1605,7 @@ void __cdecl BattleFx_DrawScreenBandWipe(short taskSlot)
                 g_BattleOverlayDrawListHead = BattleFx_DrawScreenGradientBand(*(short *)&g_BattleViewportOriginX, *(short *)&g_BattleTaskSlotBuffer.secondarySlots[taskSlot].data[4] + g_BattleViewportOriginY, *(short *)&g_BattleViewportWidth, g_BattleUiScale * 0x21, &g_BattleBandAlphaFadeUp);
                 g_BattleOverlayDrawListHead = BattleFx_DrawScreenGradientBand(*(short *)&g_BattleViewportOriginX, ((*(short *)&g_BattleTaskSlotBuffer.secondarySlots[taskSlot].data[4] + g_BattleUiScale * 0x21) + g_BattleViewportOriginY), *(short *)&g_BattleViewportWidth, (short)leftHeight, &g_BattleBandAlphaOpaque);
             } else {
-                clippedHeight = g_BattleUiScale * 0x21 + leftHeight;
+                clippedHeight = g_BattleUiScale * 33 + leftHeight;
                 if (clippedHeight > 0) {
                     g_BattleOverlayDrawListHead = BattleFx_DrawScreenGradientBand(*(short *)&g_BattleViewportOriginX, *(short *)&g_BattleTaskSlotBuffer.secondarySlots[taskSlot].data[4] + g_BattleViewportOriginY, *(short *)&g_BattleViewportWidth, (short)clippedHeight, &g_BattleBandAlphaFadeUp);
                 }
@@ -1819,7 +1819,7 @@ void __cdecl Battle3d_SyncMiniScaleState(char actor)
         slot = (short)Battle_AllocateSecondaryResourceSlot(Battle3d_ActorScaleRampTask);
         *(short *)&g_BattleTaskSlotBuffer.secondarySlots[slot].data[2] = (short)*(volatile char *)&actor;
         *(short *)g_BattleTaskSlotBuffer.secondarySlots[slot].data = 0x10;
-        g_BattleTaskSlotBuffer.secondarySlots[slot].frameCounter = 0x80;
+        g_BattleTaskSlotBuffer.secondarySlots[slot].frameCounter = 128;
     }
 }
 
@@ -1868,7 +1868,7 @@ void __cdecl Battle3d_RainInit(void)
 
     particle = g_BattleEffectScratch.rainDrops;
     cursor = g_BattleEffectScratch.rainSplashes;
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 256; i++) {
         particle->posX = (Battle_AiVm_Random16() & 0x3FFF) - 0x2000;
         particle->posY = 0xFFFFD8F0 - Battle_AiVm_Random16() / 2;
         particle->posZ = (Battle_AiVm_Random16() & 0x3FFF) - 0x2000;
@@ -2021,7 +2021,7 @@ void __cdecl Battle_ClearMessageWindowQueue(void)
 {
     int i;
 
-    for (i = 0; i < 0x40; i++) {
+    for (i = 0; i < 64; i++) {
         g_BattleDisplayTextQueue[i].textId = 0xFFFF;
     }
 }
@@ -2034,7 +2034,7 @@ void __cdecl Battle_EnqueueMessageWindow(short textId, char windowType, int dura
 {
     int i;
 
-    for (i = 0; i < 0x40; i++) {
+    for (i = 0; i < 64; i++) {
         if (g_BattleDisplayTextQueue[i].textId == -1) {
             g_BattleDisplayTextQueue[i].textId = textId;
             g_BattleDisplayTextQueue[i].windowType = windowType - 1;
@@ -2067,9 +2067,9 @@ void __cdecl Battle_StepMessageWindowQueue(void)
             }
             if (*(unsigned char *)&g_BattleDisplayTextQueue[0].duration == 0) {
                 g_BattleDisplayTextQueue[0].textId = 0xFFFF;
-                for (passIndex = 0; passIndex < 0x40; passIndex++) {
+                for (passIndex = 0; passIndex < 64; passIndex++) {
                     if (g_BattleDisplayTextQueue[0].textId == -1) {
-                        for (entryIndex = 0; entryIndex < 0x3F; entryIndex++) {
+                        for (entryIndex = 0; entryIndex < 63; entryIndex++) {
                             g_BattleDisplayTextQueue[entryIndex].textId = g_BattleDisplayTextQueue[entryIndex + 1].textId;
                             g_BattleDisplayTextQueue[entryIndex].windowType = g_BattleDisplayTextQueue[entryIndex + 1].windowType;
                             g_BattleDisplayTextQueue[entryIndex].duration = g_BattleDisplayTextQueue[entryIndex + 1].duration;

@@ -232,7 +232,7 @@ short __cdecl Mini_CondorTryBeginChoice(void)
         if (g_CondorActiveActionRecord != 0) {
             return 1;
         }
-        if (g_CondorPlayerUnitCount <= 0x14) {
+        if (g_CondorPlayerUnitCount <= 20) {
             Mini_CondorSubmitSfxPlay(0, 2);
             if ((short)Mini_CondorBeginChoiceRing() == 1) {
                 Mini_CondorRequestDisplayMode1();
@@ -354,7 +354,7 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
     case CONDOR_RING_LAYOUT_TWO_WAY:
         frame.tablePtr = &frame.tableA0;
         g_CondorChoiceSectorCount = 8;
-        g_CondorSectorAngle = 0x200;
+        g_CondorSectorAngle = 0x200 /* 45 deg */;
         break;
     case CONDOR_RING_LAYOUT_THREE_WAY:
         frame.tablePtr = &frame.tableB0;
@@ -368,10 +368,10 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
         break;
     default:
         frame.tablePtr = &frame.tableD0;
-        g_CondorChoiceSectorCount = 0xA;
+        g_CondorChoiceSectorCount = 10;
         g_CondorSectorAngle = 0x199;
     }
-    for (frame.tmpIndex = 0; frame.tmpIndex < 0xB; frame.tmpIndex++) {
+    for (frame.tmpIndex = 0; frame.tmpIndex < 11; frame.tmpIndex++) {
         g_CondorChoiceRing[frame.tmpIndex] = *frame.tablePtr;
         frame.tablePtr++;
     }
@@ -402,8 +402,8 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
     g_pCondorConfigEntry->candidate = 0;
     g_pCondorConfigEntry->initialValue = 0;
     frame.cursorX.x = g_CondorCursorPos.x;
-    frame.cursorX.y = 0x400 - g_CondorCursorPos.y;
-    frame.cursorZ = 0xFFD8;
+    frame.cursorX.y = 1024 - g_CondorCursorPos.y;
+    frame.cursorZ = 0xFFD8 /* -40 */;
     /* Retail caller prototype (int, int, char, void *) -> short preserved for /Od argument promotion on `Mini_CondorInitRecordFromConfig`. */
     frame.tmpIndex = ((short(__cdecl *)(int, int, char, void *))Mini_CondorInitRecordFromConfig)((int)frame.record, (int)g_pCondorConfigEntry, (char)((frame.recordSlot & 0xFFFF) | 0x80), &frame.cursorX);
     if (frame.tmpIndex == 1) {
@@ -422,7 +422,7 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
         g_CondorChoiceUnaffordable = 0;
         g_CondorWheelOrigin = frame.record->worldX;
         (*(short *)((char *)&g_CondorWheelOrigin + 2)) = frame.record->worldY;
-        g_CondorWheelOriginZ = frame.record->worldZ - 0x118;
+        g_CondorWheelOriginZ = frame.record->worldZ - 280;
         Mini_CondorPlaceRecordOnRing(frame.record, (short)frame.placedCount);
         frame.placedCount++;
         frame.record++;
@@ -452,10 +452,10 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
         }
         *(short *)&frame.recordSlot = 0x42;
         frame.record = &g_CondorRecordTable.records[(frame.recordSlot & 0xFFFF)];
-        g_pCondorConfigEntry->unitIndex = 0x11;
+        g_pCondorConfigEntry->unitIndex = 17;
         Mini_CondorInitRecordFromConfig((CondorRecord *)frame.record, g_pCondorConfigEntry, frame.recordSlot & 0xFFFF, &frame.cursorX);
-        frame.record->worldX = 0xC;
-        frame.record->worldY = 0x18;
+        frame.record->worldX = 12;
+        frame.record->worldY = 24;
         frame.record->worldZ = 0xFFC0;
         frame.record->ringNewest = ((*(int *)&g_CondorScreenDistanceBuf) / (unsigned short)g_CondorStepDivisor) / 2;
         frame.record->ringMiddle = frame.record->ringNewest;
@@ -470,10 +470,10 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
         frame.record->operand = 0;
         *(short *)&frame.recordSlot = 0x41;
         frame.record = &g_CondorRecordTable.records[(frame.recordSlot & 0xFFFF)];
-        g_pCondorConfigEntry->unitIndex = 0x12;
+        g_pCondorConfigEntry->unitIndex = 18;
         Mini_CondorInitRecordFromConfig((CondorRecord *)frame.record, g_pCondorConfigEntry, frame.recordSlot & 0xFFFF, &frame.cursorX);
-        frame.record->worldX = 0x22;
-        frame.record->worldY = 0x18;
+        frame.record->worldX = 34;
+        frame.record->worldY = 24;
         frame.record->worldZ = 0xFFC0;
         frame.record->ringNewest = ((*(int *)&g_CondorScreenDistanceBuf) / (unsigned short)g_CondorStepDivisor) / 2;
         frame.record->ringMiddle = frame.record->ringNewest;
@@ -488,10 +488,10 @@ short __cdecl Mini_CondorBeginChoiceRing(void)
         frame.record->operand = 0;
         *(short *)&frame.recordSlot = 0x40;
         frame.record = &g_CondorRecordTable.records[(frame.recordSlot & 0xFFFF)];
-        g_pCondorConfigEntry->unitIndex = 0x13;
+        g_pCondorConfigEntry->unitIndex = 19;
         Mini_CondorInitRecordFromConfig((CondorRecord *)frame.record, g_pCondorConfigEntry, frame.recordSlot & 0xFFFF, &frame.cursorX);
-        frame.record->worldX = 0x38;
-        frame.record->worldY = 0x18;
+        frame.record->worldX = 56;
+        frame.record->worldY = 24;
         frame.record->worldZ = 0xFFC0;
         frame.record->ringNewest = ((*(int *)&g_CondorScreenDistanceBuf) / (unsigned short)g_CondorStepDivisor) / 2;
         frame.record->ringMiddle = frame.record->ringNewest;
@@ -558,7 +558,7 @@ short __cdecl Mini_CondorTryPurchaseRecordSlot(short kind)
     } frame;
 #pragma pack(pop)
 
-    *(short *)&frame.recordSlot = Mini_CondorFindInactiveRecordInRange(0, 0x14);
+    *(short *)&frame.recordSlot = Mini_CondorFindInactiveRecordInRange(0, 20);
     if ((frame.recordSlot & 0xFFFF) != 0xFFFF) {
         g_CondorMainState = CONDOR_STATE_RECORD_ANGLE_INPUT;
         g_CondorPurchaseSlot = *(short *)&frame.recordSlot;
@@ -567,8 +567,8 @@ short __cdecl Mini_CondorTryPurchaseRecordSlot(short kind)
         g_pCondorConfigEntry->candidate = 0;
         g_pCondorConfigEntry->initialValue = 0;
         frame.cursorX.x = g_CondorCursorPos.x;
-        frame.cursorX.y = 0x400 - g_CondorCursorPos.y;
-        frame.cursorZ = 0x28;
+        frame.cursorX.y = 1024 - g_CondorCursorPos.y;
+        frame.cursorZ = 40;
         frame.initResult = Mini_CondorInitRecordFromConfig((CondorRecord *)frame.record, g_pCondorConfigEntry, frame.recordSlot & 0xFFFF, &frame.cursorX);
         if (frame.initResult == 1) {
             Mini_CondorSubmitSfxPlay(3, 4);
@@ -588,7 +588,7 @@ short __cdecl Mini_CondorTryPurchaseRecordSlot(short kind)
     if (frame.record->kind == 3 || frame.record->kind == 4) {
         g_CondorMainState = CONDOR_STATE_RECORD_ANGLE_INPUT;
         (*(short *)&g_CondorSelectedAttackRangeBuf) = (unsigned char)frame.record->attackRange;
-        g_CondorWheelAngle = 0x200;
+        g_CondorWheelAngle = 0x200 /* 45 deg */;
         g_CondorPrevWheelSector = 0;
     } else {
         Mini_CondorRequestDisplayMode1();
@@ -763,7 +763,7 @@ void __cdecl Mini_CondorTickRecordAngleInput(void)
         frameCount = g_CondorUnitFrameIndex[unit->unitIndex];
         frameCount--;
         if (frameCount == 0) {
-            frameCount = 0x63;
+            frameCount = 99;
         }
         g_CondorUnitFrameIndex[unit->unitIndex] = frameCount;
         Mini_CondorBuildDigitDisplayRecords();
@@ -779,7 +779,7 @@ void __cdecl Mini_CondorStepSelectAngleFromInput(CondorRecord *record)
     if ((g_CondorInputMask & INPUT_LEFT) != 0) {
         g_CondorWheelAngle += 0x20;
         if (g_CondorWheelAngle > 0x400) {
-            g_CondorWheelAngle = 0x400;
+            g_CondorWheelAngle = 0x400 /* 90 deg */;
         }
     }
     if ((g_CondorInputMask & INPUT_RIGHT) != 0) {
@@ -846,10 +846,10 @@ void __cdecl Mini_CondorBuildActiveRecordList(void)
 
     unit = &g_CondorRecordTable.records[0];
     pActiveRecord = (CondorActiveRecord *)&g_CondorActiveRecords;
-    for (recordIndex = 0; recordIndex < 0x14; recordIndex++) {
+    for (recordIndex = 0; recordIndex < 20; recordIndex++) {
         if (unit->status != 0) {
             pActiveRecord->posX = unit->posX;
-            pActiveRecord->invertedPosY = 0x400 - unit->posY;
+            pActiveRecord->invertedPosY = 1024 - unit->posY;
             pActiveRecord->unitIndex = unit->unitIndex;
             pActiveRecord->angle = unit->angle;
             pActiveRecord++;

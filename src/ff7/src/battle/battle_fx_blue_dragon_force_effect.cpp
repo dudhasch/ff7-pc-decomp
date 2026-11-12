@@ -73,11 +73,11 @@ unsigned int g_BattleFxBlueDragonForceEffectResourceNames2[32] = {
 // g_BattleBlueDragonForceShrinkModelIndices is indexed by the code as an array. The span runs to the
 // next named definition of the TU; the TU's pieces inside 0x8aaee0..0x8aaef0 are aliases.
 // GLOBAL: FF7 0x008aaee0
-unsigned char g_BattleBlueDragonForceShrinkModelIndices[0x10] = {0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00};
+unsigned char g_BattleBlueDragonForceShrinkModelIndices[16] = {0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00};
 // g_BattleBlueDragonForceGrowModelIndices is indexed by the code as an array. The span runs to the next
 // named definition of the TU; the TU's pieces inside 0x8aaef0..0x8aaf00 are aliases.
 // GLOBAL: FF7 0x008aaef0
-unsigned char g_BattleBlueDragonForceGrowModelIndices[0x10] = {0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00};
+unsigned char g_BattleBlueDragonForceGrowModelIndices[16] = {0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00};
 // GLOBAL: FF7 0x008aaf00
 short g_BattleBlueDragonForceTriggerFrames[2] = {1, 5};
 unsigned char g_rawData_008aaf04[4] = {0x09, 0x00, 0x0d, 0x00};
@@ -131,7 +131,7 @@ void __cdecl BattleFx_BlueBeginDragonForce(int targetMask, int actorIdx)
 
     *(int *)&g_BattleFxDrawListBufferTaskSlotPtr = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SelectDrawListBuffer);
     idx = 0;
-    for (count = 0; idx < 0xA; idx++) {
+    for (count = 0; idx < 10; idx++) {
         if ((targetMask & 1 << idx) != 0) {
             count++;
             if (count == 1) {
@@ -156,19 +156,19 @@ void __cdecl BattleFx_BlueDragonForceSetupTask(void)
     Battle_GetBoneWorldPos(g_BattleBlueDragonForceTargetIndex, g_BattleActorRecords[g_BattleBlueDragonForceTargetIndex].targetBone, (short *)((int)task + 4));
     task->angle = 0;
     task->angleStep = 0xFEE0;
-    task->scale = 0x1000;
-    task->scaleStep = task->scale / 0xC;
+    task->scale = 0x1000 /* 1.0 */;
+    task->scaleStep = task->scale / 12;
     task->growScale = 0;
-    task->growScaleStep = task->scale / 0xC;
+    task->growScaleStep = task->scale / 12;
     task->triggerIndex = 0;
     spinPtr = (BattleFxDragonForceSpin *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueDragonForceSpinScaledModelTask);
     *(Int64Pair *)((char *)spinPtr + 4) = *(Int64Pair *)((char *)task + 4);
     spinPtr->angle = 0;
-    spinPtr->lifetime = 0x20;
+    spinPtr->lifetime = 32;
     spinPtr->rate = 0x1333;
-    spinPtr->scaleGrowStep = spinPtr->rate / 0xC;
+    spinPtr->scaleGrowStep = spinPtr->rate / 12;
     spinPtr->scale = 0;
-    spinPtr->scaleShrinkStep = spinPtr->rate / 0xC;
+    spinPtr->scaleShrinkStep = spinPtr->rate / 12;
 }
 
 /* Animates spinning and scaling dragon model around target. */
@@ -203,20 +203,20 @@ void __cdecl BattleFx_BlueDragonForceSpinScaledModelTask(void)
     frame.modelDraw->modelGroup = Gfx_ModelTableGetRenderObject(5, g_BattleBlueDragonForceLoadedResTable);
     frame.modelDraw->flags = 8;
     frame.modelDraw->uvScroll = 0;
-    frame.modelDraw->fadeLevel = 0x80;
+    frame.modelDraw->fadeLevel = 128;
     frame.modelDraw->stateFlags = 0x20;
     frame.modelDraw->texturePageBits = 0;
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0x34) {
+    if (frame.slot->frameCounter >= 52) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
         return;
     }
     frame.slot->angle += frame.slot->angleStep;
-    if (frame.slot->frameCounter < 0xC) {
+    if (frame.slot->frameCounter < 12) {
         frame.slot->scale += frame.slot->scaleGrowStep;
-    } else if (frame.slot->frameCounter >= 0x28) {
+    } else if (frame.slot->frameCounter >= 40) {
         frame.slot->scale -= frame.slot->scaleShrinkStep;
     } else {
         frame.slot->scale = frame.slot->holdScale;
@@ -247,7 +247,7 @@ void __cdecl BattleFx_BlueDragonForceTimelineTask(void)
         } else {
             pChild = (BattleFxDragonForceTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_BlueDragonForceGrowingModelTask);
             *(Int64Pair *)((char *)pChild + 4) = task->pos;
-            pChild->scale = 0x200;
+            pChild->scale = 0x200 /* 0.125 */;
             pChild->angleStep = task->angleStep;
             pChild->posX = task->growScale;
             pChild->posY = task->growScaleStep;
@@ -255,10 +255,10 @@ void __cdecl BattleFx_BlueDragonForceTimelineTask(void)
         }
         (task->triggerIndex)++;
     }
-    if (task->frame == 0x37) {
+    if (task->frame == 55) {
         Battle_PostActorHitOrHurtMessage(g_BattleBlueDragonForceTargetIndex);
     }
-    if (task->frame >= 0x3C) {
+    if (task->frame >= 60) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
     (task->frame)++;
@@ -303,11 +303,11 @@ void __cdecl BattleFx_BlueDragonForceShrinkingModelTask(void)
     frame.modelDraw->stateFlags = 0;
     frame.modelDraw->texturePageBits = 0;
     if (frame.slot->frameCounter < 8) {
-        frame.modelDraw->fadeLevel = 0x1000 - (frame.slot->frameCounter << 9);
+        frame.modelDraw->fadeLevel = 4096 - (frame.slot->frameCounter << 9);
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0xC) {
+    if (frame.slot->frameCounter >= 12) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {
@@ -361,13 +361,13 @@ void __cdecl BattleFx_BlueDragonForceGrowingModelTask(void)
     frame.modelDraw->texturePageBits = 0;
     if (frame.slot->frameCounter >= 4) {
         frame.modelDraw->fadeLevel = frame.slot->frameCounter - 4 << 9;
-        if (frame.modelDraw->fadeLevel > 0x1000) {
-            frame.modelDraw->fadeLevel = 0x1000;
+        if (frame.modelDraw->fadeLevel > 4096) {
+            frame.modelDraw->fadeLevel = 4096;
         }
     }
     SetDrawColorRGB(0, 0, 0);
     g_BattleFxActiveDrawListPtr = BattleFx_SubmitModelDraw((BattleFxModelDraw *)frame.modelDraw, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleFxActiveDrawListPtr);
-    if (frame.slot->frameCounter >= 0xC) {
+    if (frame.slot->frameCounter >= 12) {
         frame.slot->ownerSlot = BATTLE_TASK_FREE;
     }
     if (g_BattleIsPaused != 0) {

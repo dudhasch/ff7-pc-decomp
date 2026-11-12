@@ -47,10 +47,10 @@ void __cdecl Mini_CoasterResetSceneNodePool(void)
     Mini_CoasterInitLinkedNode(&g_CoasterRootSceneNode, 0);
     g_CoasterRootSceneNode.depth = 0;
     g_CoasterSceneNodeFreeHead = 0;
-    for (i = 0; i < 0xC8; i++) {
+    for (i = 0; i < 200; i++) {
         g_CoasterSceneNodeFreeLinks[i] = i + 1;
     }
-    for (i = 0; i < 0xA; i++) {
+    for (i = 0; i < 10; i++) {
         g_CoasterDepthHeadNodes[i].prev = 0;
         g_CoasterDepthHeadNodes[i].next = (CoasterNode *)(i * 0x38 + (int)&g_CoasterDepthTailNodes);
         g_CoasterDepthTailNodes[i].prev = (CoasterNode *)(i * 0x38 + (int)&g_CoasterDepthHeadNodes);

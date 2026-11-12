@@ -169,11 +169,11 @@ void __cdecl Battle_AddRewardItemsToInventory(void)
                 emptySlot = 0xFFFFFFFF;
                 quantity = g_BattleRewardItems[slot].count;
                 if (itemId < 0x180) {
-                    for (invIdx = 0; invIdx < 0x140; invIdx++) {
+                    for (invIdx = 0; invIdx < 320; invIdx++) {
                         if ((gSavemap.items[invIdx] & 0x1FF) == itemId) {
                             quantity += gSavemap.items[invIdx] >> 9;
-                            if (quantity > 0x63) {
-                                quantity = 0x63;
+                            if (quantity > 99) {
+                                quantity = 99;
                             }
                             gSavemap.items[invIdx] = itemId | quantity << 9;
                             break;
@@ -182,11 +182,11 @@ void __cdecl Battle_AddRewardItemsToInventory(void)
                             emptySlot = invIdx;
                         }
                     }
-                    if (invIdx == 0x140 && emptySlot != -1) {
+                    if (invIdx == 320 && emptySlot != -1) {
                         gSavemap.items[emptySlot] = itemId | quantity << 9;
                     }
                 } else {
-                    for (invIdx = 0; invIdx < 0x100; invIdx++) {
+                    for (invIdx = 0; invIdx < 256; invIdx++) {
                         if (gSavemap.materia[invIdx] == -1) {
                             gSavemap.materia[invIdx] = itemId - 0x180;
                             quantity--;

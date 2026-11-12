@@ -7144,7 +7144,7 @@ void __cdecl BattleFx_LimitGrenadeBombRadialSpriteTask(void);
 void __cdecl BattleFx_LimitGrenadeBombBlackBlastModelTask(void);
 
 /* yasui_limit_seal_evil_effect.cpp */
-extern void (__cdecl *g_YasuiLimitSealEvilParticleCallbacks[0xAA])(int);
+extern void (__cdecl *g_YasuiLimitSealEvilParticleCallbacks[170])(int);
 extern int g_YasuiLimitSealEvilSpriteDrawSlot;
 extern int g_YasuiLimitSealEvilTargetMask;
 extern int g_YasuiLimitSealEvilBillboardCount;
@@ -9230,7 +9230,7 @@ extern struct Battle3dScene *g_pBattle3dScene;
 
 /* battle.cpp */
 extern struct BattleMenuGraphicsPathBuffer g_BattleMenuGraphicsPathBuffer;
-extern unsigned char g_BattleMessageWindowTextId[0x4];
+extern unsigned char g_BattleMessageWindowTextId[4];
 
 /* battle_actor_overlay_draw.cpp */
 extern int g_BattleEnemyModelIds[2];
@@ -9252,14 +9252,14 @@ extern const char *g_BattleLimitModelFileTable[6];
 
 /* battle_effect_trail_ribbon.cpp */
 extern unsigned char g_BattleStageNodeState[4];
-extern unsigned char g_BattleScriptFlags[0x8];
+extern unsigned char g_BattleScriptFlags[8];
 
 /* battle_fx_alexander_summon.cpp */
 extern int g_BattleSummonAlexanderBoneIndices[12];
-extern unsigned char g_BattleSummonAlexanderQuad[0x4];
+extern unsigned char g_BattleSummonAlexanderQuad[4];
 
 /* battle_fx_blue_bad_breath_effect.cpp */
-extern unsigned char g_BattleBlueBadBreathParticlePool[0xdd8];
+extern unsigned char g_BattleBlueBadBreathParticlePool[3544];
 
 /* battle_fx_blue_death_force_effect.cpp */
 void __cdecl BattleFx_BlueDeathForceDrawWaveStrips(int amplitude, int angleStep, int startAngle, int gray);
@@ -9306,7 +9306,7 @@ extern short g_BattleMagicQuake3TransformMatrix[16];
 extern int g_BattleMagicSleepelResourceDefs[6];
 
 /* battle_fx_special_shady_breath.cpp */
-extern unsigned char g_BattleSpecShadyBreathLightRecords[0xdd8];
+extern unsigned char g_BattleSpecShadyBreathLightRecords[3544];
 
 /* battle_fx_special_blaster.cpp */
 extern int g_BattleSpecialBlasterModelReq4[4];
@@ -9321,8 +9321,8 @@ extern int g_BattleSpecHeatBlastAnimData[6];
 extern int g_BattleSpecialSnowstormResourceTable[20];
 
 /* battle_fx_special_avalanche.cpp */
-extern short g_BattleSpecAvalancheFaceActiveFlags[0x80];
-extern short g_BattleSpecAvalancheFaceOrder[0x80];
+extern short g_BattleSpecAvalancheFaceActiveFlags[128];
+extern short g_BattleSpecAvalancheFaceOrder[128];
 
 /* battle_fx_special_northern_cross.cpp */
 extern struct BattleFxSpriteRequest g_BattleSpecialNorthernCrossSpriteReq1;

@@ -984,12 +984,12 @@ int g_YasuiLimitGreatGospelColorMode = 0x00808080;
 // GLOBAL: FF7 0x007f37c0
 CVECTOR g_YasuiLimitGreatGospelColorPalette[3] = {{0x80, 0x40, 0x40, 0}, {0x40, 0x80, 0x40, 0}, {0x40, 0x40, 0x80, 0}};
 // GLOBAL: FF7 0x00a56d20
-unsigned char g_YasuiLimitGreatGospelModelAngles[0x4] = {0};
+unsigned char g_YasuiLimitGreatGospelModelAngles[4] = {0};
 // GLOBAL: FF7 0x00a56d24
 short g_YasuiLimitGreatGospelModelAngleZ = 0;
 // The 300 particle callbacks, one per record of g_YasuiLimitGreatGospelParticleRecords; a slot is free while its callback is null.
 // GLOBAL: FF7 0x00a56d28
-void (__cdecl *g_YasuiLimitEvaParticleCallbacks[0x12C])(int) = {0};
+void (__cdecl *g_YasuiLimitEvaParticleCallbacks[300])(int) = {0};
 // GLOBAL: FF7 0x00a571d8
 YasuiLimitGreatGospelScratchBlock *g_pYasuiLimitGreatGospelSpiralBlock = 0;
 // GLOBAL: FF7 0x00a571dc
@@ -1051,7 +1051,7 @@ GfxTableCursor *g_pYasuiLimitGreatGospelModelTable = 0;
 unsigned char g_bssPad_00a58a64[4] = {0};
 unsigned char g_bssPad_00a58a68[32] = {0};
 // GLOBAL: FF7 0x00a58a88
-unsigned char g_YasuiLimitGreatGospelStreakPool[0x4] = {0};
+unsigned char g_YasuiLimitGreatGospelStreakPool[4] = {0};
 unsigned char g_bssPad_00a58a8c[4] = {0};
 // GLOBAL: FF7 0x00a58a90
 short g_YasuiLimitGreatGospelTimer = 0;
@@ -1426,7 +1426,7 @@ void __cdecl BattleFx_GreatGospelClearParticleTable(void)
 {
     int i;
 
-    for (i = 0; i < 0x12C; i++) {
+    for (i = 0; i < 300; i++) {
         g_YasuiLimitEvaParticleCallbacks[i] = 0;
     }
 }
@@ -1443,7 +1443,7 @@ void __cdecl BattleFx_GreatGospelParticlePoolTask(void)
 
     task = BATTLE_CURRENT_TASK_SLOT;
     activeCount = 0;
-    for (particleIdx = 0; particleIdx < 0x12C; particleIdx++) {
+    for (particleIdx = 0; particleIdx < 300; particleIdx++) {
         if (g_YasuiLimitEvaParticleCallbacks[particleIdx] != 0) {
             g_YasuiLimitEvaParticleCallbacks[particleIdx](particleIdx * 0x14 + (int)&g_YasuiLimitGreatGospelParticleRecords);
             if (g_YasuiLimitGreatGospelParticleRecords[particleIdx].state == -1) {
@@ -1476,12 +1476,12 @@ void __cdecl BattleFx_GreatGospelTimelineTask(void)
         return;
     }
     frame = task->frameCounter;
-    if (frame < 0xE) {
+    if (frame < 14) {
         if (frame == 0) {
             g_BattleFxTimelineState.red = 0;
             g_BattleFxTimelineState.channel1 = 0;
             g_BattleFxTimelineState.channel2 = 0;
-            Battle_StartFixedPointRamp(0x800, 0xA);
+            Battle_StartFixedPointRamp(0x800, 10);
         }
         if (frame == 0) {
             child = (BattleFxEvaTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelFallingStreakEmitterTask);
@@ -1490,50 +1490,50 @@ void __cdecl BattleFx_GreatGospelTimelineTask(void)
             Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, 0x40, 0x242);
         }
     } else {
-        frame -= 0xE;
+        frame -= 14;
         if (frame < 8) { /* empty first arm: lib/codegen.h */
         } else {
             frame -= 8;
             if (frame < 8) { /* empty first arm: lib/codegen.h */
             } else {
                 frame -= 8;
-                if (frame < 0xA) { /* empty first arm: lib/codegen.h */
+                if (frame < 10) { /* empty first arm: lib/codegen.h */
                 } else {
-                    frame -= 0xA;
-                    if (frame < 0x19) {
+                    frame -= 10;
+                    if (frame < 25) {
                         if (frame == 0) {
                             child = (BattleFxEvaTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelDiscardedColorScaleRampTask);
-                            Battle_StartFixedPointRamp(0, 0x19);
+                            Battle_StartFixedPointRamp(0, 25);
                         }
                     } else {
-                        frame -= 0x19;
-                        if (frame < 0xA) {
+                        frame -= 25;
+                        if (frame < 10) {
                             if (frame == 0) {
                                 child = (BattleFxEvaTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelSteppedModelTask);
                             }
                         } else {
-                            frame -= 0xA;
+                            frame -= 10;
                             if (frame < 5) { /* empty first arm: lib/codegen.h */
                             } else {
                                 frame -= 5;
                                 if (frame < 5) { /* empty first arm: lib/codegen.h */
                                 } else {
                                     frame -= 5;
-                                    if (frame < 0x14) { /* empty first arm: lib/codegen.h */
+                                    if (frame < 20) { /* empty first arm: lib/codegen.h */
                                     } else {
-                                        frame -= 0x14;
-                                        if (frame < 0xA) {
+                                        frame -= 20;
+                                        if (frame < 10) {
                                             if (frame == 0) {
                                                 child = (BattleFxEvaTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelSpinningModelTask);
                                                 for (spawnIdx = 0; spawnIdx < 3; spawnIdx++) {
                                                     child = (BattleFxEvaTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelSpiralingModelTask);
-                                                    child->spiral.index = rand() % 0xA;
-                                                    angle = (spawnIdx << 0xC) / 3 + rand() % 0x155;
-                                                    rad = (UNFOLDED(0) ? 0x1F4 : rand() % 0x64 + 0x190);
+                                                    child->spiral.index = rand() % 10;
+                                                    angle = (spawnIdx << 12) / 3 + rand() % 0x155;
+                                                    rad = (UNFOLDED(0) ? 0x1F4 : rand() % 100 + 400);
                                                     child->spiral.radius = rad;
-                                                    child->spiral.offsetY = (UNFOLDED(0) ? 0xFFFFDECC : rand() % 0x5DC - 0x2710);
-                                                    child->spiral.velocityY = rand() % 0x28 - 0x14;
-                                                    child->spiral.rotX = 0x200;
+                                                    child->spiral.offsetY = (UNFOLDED(0) ? 0xFFFFDECC : rand() % 1500 - 10000);
+                                                    child->spiral.velocityY = rand() % 40 - 20;
+                                                    child->spiral.rotX = 0x200 /* 45 deg */;
                                                     child->spiral.angle = angle;
                                                     child->spiral.rotZ = 0;
                                                     child->spiral.angleVelocity = (rand() % 64) - 0x20;
@@ -1543,19 +1543,19 @@ void __cdecl BattleFx_GreatGospelTimelineTask(void)
                                                     child = (BattleFxEvaTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelExpandingFadeModelTask);
                                                     child->particle.posX = 0;
                                                     child->particle.posY = 0xFDA8;
-                                                    child->particle.posZ = 0x1000;
-                                                    child->particle.velocityX = spawnIdx * 0x3E8 / 5;
-                                                    child->particle.velocityY = spawnIdx * 0x4B0 / 5;
+                                                    child->particle.posZ = 4096;
+                                                    child->particle.velocityX = spawnIdx * 1000 / 5;
+                                                    child->particle.velocityY = spawnIdx * 1200 / 5;
                                                     child->particle.velocityZ = UNFOLDED(0) / 5;
                                                     child->particle.scale = (UNFOLDED(0) ? 0x400 : rand() % 0x300 + 0x100);
                                                 }
                                             }
                                         } else {
-                                            frame -= 0xA;
-                                            if (frame < 0x14) { /* empty first arm: lib/codegen.h */
+                                            frame -= 10;
+                                            if (frame < 20) { /* empty first arm: lib/codegen.h */
                                             } else {
-                                                frame -= 0x14;
-                                                if (frame < 0x1E) {
+                                                frame -= 20;
+                                                if (frame < 30) {
                                                     if (frame == 0) {
                                                         child = (BattleFxEvaTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelWideGrowingFadeModelEmitterTask);
                                                         Battle_CreateBitPatternCallbackTask(g_YasuiLimitGreatGospelEffectTargetMask, 0, 0, BattleFx_GreatGospelSpawnPerTarget);
@@ -1599,20 +1599,20 @@ void __cdecl BattleFx_GreatGospelFallingStreakEmitterTask(void)
         return;
     }
     frameIndex = taskPtr->index;
-    if (frameIndex < 0x16) {
-        ratio = (frameIndex << 0xC) / 0x16;
-        emitAmount = ratio << 0xC >> 0xC;
+    if (frameIndex < 22) {
+        ratio = (frameIndex << 12) / 22;
+        emitAmount = ratio << 12 >> 12;
         shift = 0;
     } else {
-        frameIndex -= 0x16;
-        if (frameIndex < 0x12) {
-            emitAmount = 0x1000;
+        frameIndex -= 22;
+        if (frameIndex < 18) {
+            emitAmount = 4096;
             shift = 0;
         } else {
-            frameIndex -= 0x12;
-            if (frameIndex < 0x14) {
-                ratio = (frameIndex << 0xC) / 0x14;
-                emitAmount = 0x1000 - ratio << 0xC >> 0xC;
+            frameIndex -= 18;
+            if (frameIndex < 20) {
+                ratio = (frameIndex << 12) / 20;
+                emitAmount = 4096 - ratio << 12 >> 12;
                 shift = 1;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -1621,25 +1621,25 @@ void __cdecl BattleFx_GreatGospelFallingStreakEmitterTask(void)
         }
     }
     emitAmount = (emitAmount * taskPtr->index & 0xFF) + emitAmount;
-    while (emitAmount >= 0x100) {
+    while (emitAmount >= 256) {
         streak = (BattleFxGreatGospelStreakParticle *)(BattleFx_GreatGospelClaimParticleRecord((int)BattleFx_GreatGospelFallingStreakTask));
         if (DEAD_IN_RETAIL != 0) {
-            randX8 = 0x7D0;
+            randX8 = 2000;
         } else {
-            randX8 = rand() % 0xFA0 - 0x7D0;
+            randX8 = rand() % 4000 - 2000;
         }
         streak->posX = randX8 >> shift;
-        streak->posY = rand() % 0x1F4 - 0x1388;
+        streak->posY = rand() % 500 - 5000;
         if (DEAD_IN_RETAIL != 0) {
-            valueZ = 0x7D0;
+            valueZ = 2000;
         } else {
-            valueZ = rand() % 0xFA0 - 0x7D0;
+            valueZ = rand() % 4000 - 2000;
         }
         streak->posZ = valueZ >> shift;
         streak->velocityX = 0;
-        streak->velocityY = 0x1F4;
+        streak->velocityY = 500;
         streak->velocityZ = 0xFFCE;
-        emitAmount -= 0x100;
+        emitAmount -= 256;
     }
     (taskPtr->index)++;
 }
@@ -1652,7 +1652,7 @@ int __cdecl BattleFx_GreatGospelClaimParticleRecord(int callback)
 {
     int i;
 
-    for (i = 0; i < 0x12C; i++) {
+    for (i = 0; i < 300; i++) {
         if (g_YasuiLimitEvaParticleCallbacks[i] == 0) {
             g_YasuiLimitEvaParticleCallbacks[i] = (void (__cdecl *)(int))callback;
             g_YasuiLimitGreatGospelParticleRecords[i].state = 0;
@@ -1749,22 +1749,22 @@ void __cdecl BattleFx_GreatGospelDiscardedColorScaleRampTask(void)
 
     rec = BATTLE_CURRENT_TASK_SLOT;
     frameIndex = rec->frameCounter;
-    if (frameIndex < 0x19) {
-        ratio = (frameIndex << 0xC) / 0x19;
-        clr = (ratio * 0xFF) >> 0xC;
-        clr = clr | (clr << 8) | (clr << 0x10);
-        scale = 0xA00;
+    if (frameIndex < 25) {
+        ratio = (frameIndex << 12) / 25;
+        clr = (ratio * 255) >> 12;
+        clr = clr | (clr << 8) | (clr << 16);
+        scale = 0xA00 /* 0.625 */;
     } else {
-        frameIndex -= 0x19;
-        if (frameIndex < 0xA) {
+        frameIndex -= 25;
+        if (frameIndex < 10) {
             clr = 0xFFFFFF;
-            scale = 0xA00;
+            scale = 0xA00 /* 0.625 */;
         } else {
-            frameIndex -= 0xA;
-            if (frameIndex < 0x1E) {
-                ratio = (frameIndex << 0xC) / 0x1E;
+            frameIndex -= 10;
+            if (frameIndex < 30) {
+                ratio = (frameIndex << 12) / 30;
                 clr = 0xFFFFFF;
-                scale = ((ratio * 0x3E00) >> 0xC) + 0xA00;
+                scale = ((ratio * 0x3E00) >> 12) + 0xA00;
             } else {
                 rec->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -1793,9 +1793,9 @@ void __cdecl BattleFx_GreatGospelSteppedModelTask(void)
     }
     ((YasuiLimitGreatGospelModelDrawData *)&g_YasuiLimitGreatGospelModelDrawData)->stepped.modelResource = Gfx_ModelTableGetRenderObject(2, g_pYasuiLimitGreatGospelModelTable);
     frameIndex = rec->frameCounter;
-    if (frameIndex < 0x28) {
-        ratio = (frameIndex << 0xC) / 0x28;
-        ((YasuiLimitGreatGospelModelDrawData *)&g_YasuiLimitGreatGospelModelDrawData)->stepped.scale = ratio << 4 >> 0xC;
+    if (frameIndex < 40) {
+        ratio = (frameIndex << 12) / 40;
+        ((YasuiLimitGreatGospelModelDrawData *)&g_YasuiLimitGreatGospelModelDrawData)->stepped.scale = ratio << 4 >> 12;
     } else {
         rec->ownerSlot = BATTLE_TASK_FREE;
         return;
@@ -1829,7 +1829,7 @@ void __cdecl BattleFx_GreatGospelSpinningModelTask(void)
     g_YasuiLimitGreatGospelDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&((YasuiLimitGreatGospelModelDrawData *)&g_YasuiLimitGreatGospelModelDrawData)->spinning, g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST, 0, g_YasuiLimitGreatGospelDrawListHead);
     if (g_BattleIsPaused == 0) {
         (task->frameCounter)++;
-        if (task->frameCounter >= 0x1E) {
+        if (task->frameCounter >= 30) {
             task->ownerSlot = BATTLE_TASK_FREE;
         } else {
             RotateMatrixY(-4, &((YasuiLimitGreatGospelModelDrawData *)&g_YasuiLimitGreatGospelModelDrawData)->spinningMatrix);
@@ -1860,12 +1860,12 @@ void __cdecl BattleFx_GreatGospelSpiralingModelTask(void)
             Gfx_ForEachPolygonSetPart((DxGroupPartCallback)BattleFx_GreatGospelCopyPolygonSetVertices, *(int *)(g_YasuiLimitGreatGospelModelHeader0[0] + 4));
         }
         RotMatrix((SVECTOR *)&p->rotX, (int *)&g_pYasuiLimitGreatGospelSpiralBlock->matrix);
-        g_pYasuiLimitGreatGospelSpiralBlock->matrix.t[0] = p->radius * SinFixed(p->angle) >> 0xC;
+        g_pYasuiLimitGreatGospelSpiralBlock->matrix.t[0] = p->radius * SinFixed(p->angle) >> 12;
         g_pYasuiLimitGreatGospelSpiralBlock->matrix.t[1] = p->offsetY;
-        g_pYasuiLimitGreatGospelSpiralBlock->matrix.t[2] = p->radius * CosFixed(p->angle) >> 0xC;
-        g_pYasuiLimitGreatGospelSpiralBlock->scaleZ = 0x100;
-        g_pYasuiLimitGreatGospelSpiralBlock->scaleY = 0x100;
-        g_pYasuiLimitGreatGospelSpiralBlock->scaleX = 0x100;
+        g_pYasuiLimitGreatGospelSpiralBlock->matrix.t[2] = p->radius * CosFixed(p->angle) >> 12;
+        g_pYasuiLimitGreatGospelSpiralBlock->scaleZ = 0x100 /* 0.0625 */;
+        g_pYasuiLimitGreatGospelSpiralBlock->scaleY = 0x100 /* 0.0625 */;
+        g_pYasuiLimitGreatGospelSpiralBlock->scaleX = 0x100 /* 0.0625 */;
         ScaleMatrix(&g_pYasuiLimitGreatGospelSpiralBlock->matrix, g_pYasuiLimitGreatGospelSpiralBlock);
         MultiplyMatrix(&g_YasuiLimitGreatGospelViewMatrix, &g_pYasuiLimitGreatGospelSpiralBlock->matrix, &g_pYasuiLimitGreatGospelSpiralBlock->matrix);
         SetRotMatrix(&g_pYasuiLimitGreatGospelSpiralBlock->matrix);
@@ -1873,10 +1873,10 @@ void __cdecl BattleFx_GreatGospelSpiralingModelTask(void)
         g_YasuiLimitGreatGospelDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitGreatGospelModelHeader0, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitGreatGospelDrawListHead);
         if (g_BattleIsPaused == 0) {
             (p->timer)++;
-            if (p->timer >= 0x1E) {
+            if (p->timer >= 30) {
                 p->index = BATTLE_TASK_FREE;
             } else {
-                p->index = (p->index + 1) % 0xA;
+                p->index = (p->index + 1) % 10;
                 p->offsetY += p->velocityY;
                 p->angle += p->angleVelocity;
             }
@@ -1903,15 +1903,15 @@ void __cdecl BattleFx_GreatGospelGrowingFadeModelEmitterTask(void)
     for (i = 0; i < 1; i++) {
         child = (BattleFxGreatGospelFadeEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelGrowingFadeModelTask);
         angle = rand() & 0xFFF;
-        child->offsetSin = SinFixed(angle) * 0x1F4 >> 0xC;
+        child->offsetSin = SinFixed(angle) * 0x1F4 >> 12;
         child->offsetY = -0x2710;
-        child->offsetCos = CosFixed(angle) * 0x1F4 >> 0xC;
-        child->angleX = 0x200;
+        child->offsetCos = CosFixed(angle) * 0x1F4 >> 12;
+        child->angleX = 0x200 /* 45 deg */;
         child->angle = angle;
         child->angleZ = 0;
     }
     (pEmitterTask->frameCounter)++;
-    if (pEmitterTask->frameCounter >= 0x14) {
+    if (pEmitterTask->frameCounter >= 20) {
         pEmitterTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -1932,18 +1932,18 @@ void __cdecl BattleFx_GreatGospelGrowingFadeModelTask(void)
         g_YasuiLimitGreatGospelTaskStatePtrs.fadeState = (YasuiLimitGreatGospelScratchBlock *)Gfx_GetPsxScratchpadPtr(0);
     }
     (g_YasuiLimitGreatGospelModelHeader1.growFadeModelResource) = Gfx_ModelTableGetRenderObject(1, g_pYasuiLimitGreatGospelModelTable);
-    g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleZ = 0x1000;
-    g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleY = 0x1000;
+    g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleZ = 0x1000 /* 1.0 */;
+    g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleY = 0x1000 /* 1.0 */;
     frame = task->frame;
     if (frame < 5) {
-        ratio = (frame << 0xC) / 5;
-        g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleX = ratio << 0xC >> 0xC;
+        ratio = (frame << 12) / 5;
+        g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleX = ratio << 12 >> 12;
         g_YasuiLimitGreatGospelModelHeader1.limitEvaGrowFadeModelAlpha = 0;
     } else {
         frame -= 5;
         if (frame < 5) {
-            ratio = (frame << 0xC) / 5;
-            g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleX = 0x1000;
+            ratio = (frame << 12) / 5;
+            g_YasuiLimitGreatGospelTaskStatePtrs.fadeState->scaleX = 0x1000 /* 1.0 */;
             g_YasuiLimitGreatGospelModelHeader1.limitEvaGrowFadeModelAlpha = ratio;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -1978,16 +1978,16 @@ void __cdecl BattleFx_GreatGospelExpandingFadeModelTask(void)
     particle = (BattleFxGreatGospelParticle *)BATTLE_CURRENT_TASK_SLOT;
     (g_YasuiLimitGreatGospelModelHeader2.expandFadeModelResource) = Gfx_ModelTableGetRenderObject(4, g_pYasuiLimitGreatGospelModelTable);
     frame = particle->frameIndex;
-    if (frame < 0xA) {
-        ratio = (frame << 0xC) / 0xA;
-        *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0x2) = particle->posX + (particle->velocityX * ratio >> 0xC);
-        *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0x6) = particle->posY + (particle->velocityY * ratio >> 0xC);
-        *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0xa) = particle->posZ + (particle->velocityZ * ratio >> 0xC);
+    if (frame < 10) {
+        ratio = (frame << 12) / 10;
+        *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0x2) = particle->posX + (particle->velocityX * ratio >> 12);
+        *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0x6) = particle->posY + (particle->velocityY * ratio >> 12);
+        *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0xa) = particle->posZ + (particle->velocityZ * ratio >> 12);
         g_YasuiLimitGreatGospelModelHeader2.limitEvaExpandFadeModelAlpha = 0;
     } else {
-        frame -= 0xA;
+        frame -= 10;
         if (frame < 5) {
-            ratio = (frame << 0xC) / 5;
+            ratio = (frame << 12) / 5;
             *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0x2) = particle->posX + particle->velocityX;
             *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0x6) = particle->posY + particle->velocityY;
             *(int *)((char *)&g_YasuiLimitGreatGospelParticlePool + 0xa) = particle->posZ + particle->velocityZ;
@@ -2026,19 +2026,19 @@ void __cdecl BattleFx_GreatGospelWideGrowingFadeModelEmitterTask(void)
         return;
     }
     emission = (task->frameCounter << 8 & 0xFF) + 0x100;
-    while (emission >= 0x100) {
+    while (emission >= 256) {
         fadeModelPtr = (BattleFxGreatGospelWideFadeEmitter *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelWideGrowingFadeModelTask);
         g_YasuiLimitGreatGospelWideFadeAngle = g_YasuiLimitGreatGospelWideFadeAngle + (rand() & 0x7FF) + 0x400;
-        fadeModelPtr->offsetSin = SinFixed(g_YasuiLimitGreatGospelWideFadeAngle) * 0x1F4 >> 0xC;
+        fadeModelPtr->offsetSin = SinFixed(g_YasuiLimitGreatGospelWideFadeAngle) * 0x1F4 >> 12;
         fadeModelPtr->offsetY = 0xE2B4;
-        fadeModelPtr->offsetCos = CosFixed(g_YasuiLimitGreatGospelWideFadeAngle) * 0x1F4 >> 0xC;
+        fadeModelPtr->offsetCos = CosFixed(g_YasuiLimitGreatGospelWideFadeAngle) * 0x1F4 >> 12;
         fadeModelPtr->angleX = 0xC0;
         fadeModelPtr->targetZ = *(short *)&g_YasuiLimitGreatGospelWideFadeAngle;
         fadeModelPtr->angleZ = 0;
         emission -= 0x100;
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0xF) {
+    if (task->frameCounter >= 15) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2059,18 +2059,18 @@ void __cdecl BattleFx_GreatGospelWideGrowingFadeModelTask(void)
         g_pYasuiLimitGreatGospelWideFadeBlock = (YasuiLimitGreatGospelScratchBlock *)Gfx_GetPsxScratchpadPtr(0);
     }
     (g_YasuiLimitGreatGospelModelHeader3.wideGrowFadeModelResource) = Gfx_ModelTableGetRenderObject(1, g_pYasuiLimitGreatGospelModelTable);
-    g_pYasuiLimitGreatGospelWideFadeBlock->scaleZ = 0x2000;
-    g_pYasuiLimitGreatGospelWideFadeBlock->scaleY = 0x2000;
+    g_pYasuiLimitGreatGospelWideFadeBlock->scaleZ = 0x2000 /* 2.0 */;
+    g_pYasuiLimitGreatGospelWideFadeBlock->scaleY = 0x2000 /* 2.0 */;
     frame = task->frame;
     if (frame < 5) {
-        ratio = (frame << 0xC) / 5;
-        g_pYasuiLimitGreatGospelWideFadeBlock->scaleX = ratio * 0x3000 >> 0xC;
+        ratio = (frame << 12) / 5;
+        g_pYasuiLimitGreatGospelWideFadeBlock->scaleX = ratio * 0x3000 /* 3.0 */ >> 12;
         g_YasuiLimitGreatGospelModelHeader3.limitEvaWideGrowFadeModelAlpha = 0;
     } else {
         frame -= 5;
-        if (frame < 0xA) {
-            ratio = (frame << 0xC) / 0xA;
-            g_pYasuiLimitGreatGospelWideFadeBlock->scaleX = 0x3000;
+        if (frame < 10) {
+            ratio = (frame << 12) / 10;
+            g_pYasuiLimitGreatGospelWideFadeBlock->scaleX = 0x3000 /* 3.0 */;
             g_YasuiLimitGreatGospelModelHeader3.limitEvaWideGrowFadeModelAlpha = ratio;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
@@ -2123,18 +2123,18 @@ void __cdecl BattleFx_GreatGospelFallingSpriteEmitterTask(void)
     for (i = 0; i < 1; i++) {
         sparkle = (BattleFxGreatGospelFallingSpriteParticle *)BATTLE_NEW_TASK_SLOT(BattleFx_GreatGospelFallingSpriteTask);
         sparkle->colorIndex = rand() % 3;
-        sparkle->posX = pEmitter->posX + rand() % 0x640 + -0x320;
-        sparkle->posY = pEmitter->posY + rand() % 0x640 + -0x320;
-        sparkle->posZ = pEmitter->posZ + rand() % 0x640 + -0x320;
+        sparkle->posX = pEmitter->posX + rand() % 1600 + -800;
+        sparkle->posY = pEmitter->posY + rand() % 1600 + -800;
+        sparkle->posZ = pEmitter->posZ + rand() % 1600 + -800;
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x2000;
         } else {
-            bytes = rand() % 0x800 + 0x1800;
+            bytes = rand() % 2048 + 6144;
         }
         sparkle->scale = bytes;
     }
     (pEmitter->frame)++;
-    if (pEmitter->frame >= 0xF) {
+    if (pEmitter->frame >= 15) {
         Battle_PostActorHitOrHurtMessage(pEmitter->actorIndex);
         pEmitter->actorIndex = BATTLE_TASK_FREE;
     }
@@ -2153,7 +2153,7 @@ void __cdecl BattleFx_GreatGospelFallingSpriteTask(void)
     (g_YasuiLimitGreatGospelSpriteRequestStreak.animBlock) = Gfx_ModelTableGetLoadedRecord(5, g_pYasuiLimitGreatGospelModelTable);
     g_YasuiLimitGreatGospelSpriteRequestStreak.limitEvaFallingSpriteResource = Gfx_ModelTableGetSpriteObject(5, g_pYasuiLimitGreatGospelModelTable);
     g_YasuiLimitGreatGospelSpriteRequestStreak.limitEvaFallingSpriteFrameIndex = sprite->frameIndex;
-    fade = (*(unsigned short *)&g_YasuiLimitGreatGospelSpriteRequestStreak.limitEvaFallingSpriteFrameIndex << 0xC) / *(int *)((char *)*(int *)(g_YasuiLimitGreatGospelSpriteRequestStreak.animBlock) + 4);
+    fade = (*(unsigned short *)&g_YasuiLimitGreatGospelSpriteRequestStreak.limitEvaFallingSpriteFrameIndex << 12) / *(int *)((char *)*(int *)(g_YasuiLimitGreatGospelSpriteRequestStreak.animBlock) + 4);
     SetDrawColorRGB(g_YasuiLimitGreatGospelColorPalette[sprite->colorIndex].r, g_YasuiLimitGreatGospelColorPalette[sprite->colorIndex].g, g_YasuiLimitGreatGospelColorPalette[sprite->colorIndex].b);
     Gfx_ShadePsxVertexColor((CVECTOR *)&g_YasuiLimitGreatGospelColorMode, fade, (CVECTOR *)&g_YasuiLimitGreatGospelSpriteRequestStreak.limitEvaFallingSpriteColor);
     ((CVECTOR *)&g_YasuiLimitGreatGospelSpriteRequestStreak.limitEvaFallingSpriteColor)->cd = 0x2E;

@@ -134,11 +134,11 @@ void __cdecl FreeTokenFile(PolygonTokenFile *file)
 {
     if (file != 0) {
         // STRING: FF7 0x0091955c
-        GameHeapFree(file->tokens, "C:\\lib\\src\\token\\token.cpp", 0x6C);
+        GameHeapFree(file->tokens, "C:\\lib\\src\\token\\token.cpp", 108);
         // STRING: FF7 0x00919578
-        GameHeapFree(file->buffer, "C:\\lib\\src\\token\\token.cpp", 0x6D);
+        GameHeapFree(file->buffer, "C:\\lib\\src\\token\\token.cpp", 109);
         // STRING: FF7 0x00919594
-        GameHeapFree(file, "C:\\lib\\src\\token\\token.cpp", 0x6E);
+        GameHeapFree(file, "C:\\lib\\src\\token\\token.cpp", 110);
     }
 }
 
@@ -354,7 +354,7 @@ int __cdecl LoadBraceHexByteListFromFile(int callback, int *countOut, int fileNa
         }
         *countOut = byteCount;
         // STRING: FF7 0x009195e8
-        buf = (char *)GameHeapAlloc(byteCount, 1, "C:\\lib\\src\\token\\token.cpp", 0x16C);
+        buf = (char *)GameHeapAlloc(byteCount, 1, "C:\\lib\\src\\token\\token.cpp", 364);
         if (buf != 0) {
             byteIdx = 0;
             for (i = openIndex; i < closeIndex; i++) {

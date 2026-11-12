@@ -156,28 +156,28 @@ void __cdecl BattleFx_SpecialPoisonBreathTimelineTask(void)
         rawParticle->posZ = pCur->startZ;
         dx9 = pCur->endX - rawParticle->posX;
         dz = pCur->endZ - rawParticle->posZ;
-        rawParticle->distance = SqrtToInt(dx9 * dx9 + dz * dz) / 0x18;
+        rawParticle->distance = SqrtToInt(dx9 * dx9 + dz * dz) / 24;
     }
-    if (pCur->frame == 0x32) {
+    if (pCur->frame == 50) {
         Battle_PostActorHitOrHurtMessage(pCur->actorIndex);
         SoundDispatchCommand(SOUND_SFX_PLAY_CH2, 0x40, 0x95, 0, 0, 0, 0, 0, 0);
     }
-    if (pCur->frame > 0x28 && pCur->frame < 0x30) {
+    if (pCur->frame > 40 && pCur->frame < 48) {
         theta = (pCur->frame - 0x28 << 9) - 0x400;
         rawParticle = (BattleFxLiquidPoisonParticleRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPoisonBreathVariantSpriteTask);
         Battle_GetBoneWorldPos(pCur->actorIndex, g_BattleActorRecords[pCur->actorIndex].targetBone, &rawParticle->posX);
-        rawParticle->posX += (short)(CosFixed(theta) * 0x320 >> 0xC);
-        rawParticle->posY += (short)(SinFixed(theta) * 0x320 >> 0xC);
+        rawParticle->posX += (short)(CosFixed(theta) * 0x320 >> 12);
+        rawParticle->posY += (short)(SinFixed(theta) * 0x320 >> 12);
         rawParticle->active = 1;
         rawParticle = (BattleFxLiquidPoisonParticleRecord *)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialPoisonBreathVariantSpriteTask);
         Battle_GetBoneWorldPos(pCur->actorIndex, g_BattleActorRecords[pCur->actorIndex].targetBone, &rawParticle->posX);
-        rawParticle->posX += (short)(rand() % 0x258 - 0x12C);
-        rawParticle->posY += (short)(rand() % 0x258 - 0x12C);
-        rawParticle->posZ += (short)(rand() % 0x258 - 0x12C);
+        rawParticle->posX += (short)(rand() % 600 - 300);
+        rawParticle->posY += (short)(rand() % 600 - 300);
+        rawParticle->posZ += (short)(rand() % 600 - 300);
         rawParticle->active = 0;
     }
     (pCur->frame)++;
-    if (pCur->frame == 0x3C) {
+    if (pCur->frame == 60) {
         pCur->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -252,7 +252,7 @@ void __cdecl BattleFx_SpecialPoisonBreathEmitSpriteTask(void)
     frame.pointX.vz = frame.emitSlot->speed;
     frame.angleX.vx = 0;
     frame.angleX.vy = -SinFixed(frame.emitSlot->step * 0x88) / 16;
-    frame.angleX.vz = 0x200;
+    frame.angleX.vz = 0x200 /* 45 deg */;
     RotMatrixZYX(&frame.angleX, &frame.rotMatrix);
     RotateMatrixY(frame.emitSlot->angleY, &frame.rotMatrix);
     frame.rotMatrix.t[2] = 0;
@@ -262,7 +262,7 @@ void __cdecl BattleFx_SpecialPoisonBreathEmitSpriteTask(void)
     SetTransMatrix(&frame.rotMatrix);
     RotTransPointToInt16(&frame.pointX, &frame.driftSlot->velocityX, &frame.projected);
     (frame.emitSlot->step)++;
-    if (frame.emitSlot->step == 0x20) {
+    if (frame.emitSlot->step == 32) {
         frame.emitSlot->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -284,9 +284,9 @@ void __cdecl BattleFx_SpecialPoisonBreathDriftingAnimatedSpriteTask(void)
     (g_BattleSpecialPoisonBreathColor2.resource) = Gfx_ModelTableGetLoadedRecord(0, g_BattleSpecialPoisonBreathLoadedRes);
     g_BattleSpecialPoisonBreathColor2.drawObj = Gfx_ModelTableGetSpriteObject(0, g_BattleSpecialPoisonBreathLoadedRes);
     entry = task->unusedParam;
-    size = 0x4000;
+    size = 16384;
     ceiling = size;
-    matrix = (int)BattleFx_InstallBillboardMatrix(&task->posX, 0x1800, 0);
+    matrix = (int)BattleFx_InstallBillboardMatrix(&task->posX, 0x1800 /* 1.5 */, 0);
     g_BattleSpecialPoisonBreathColor2.driftSlot = task->slotIndex;
     if (((PsxMatrix *)matrix)->t[2] > 0) {
         g_BattleSpecialPoisonBreathDrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleSpecialPoisonBreathColor2, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleSpecialPoisonBreathDrawListHandle);

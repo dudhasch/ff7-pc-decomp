@@ -358,7 +358,7 @@ unsigned char g_BattleSummonNeoBahamutLineLight2InitFlag[4] = {0};
 PsxMatrix g_BattleSummonNeoBahamutLineLightMatrix = {0};
 unsigned char g_bssPad_00aabd80[800] = {0};
 // GLOBAL: FF7 0x00aac0a0
-unsigned char g_BattleSummonNeoBahamutRock2SpawnInitFlag[0x4] = {0};
+unsigned char g_BattleSummonNeoBahamutRock2SpawnInitFlag[4] = {0};
 // GLOBAL: FF7 0x00aac0a4
 char g_BattleSummonNeoBahamutRock1InitFlag = 0;
 // GLOBAL: FF7 0x00aac0a8
@@ -425,7 +425,7 @@ struct BattleFxNeoBahamutSkyTile g_BattleSummonNeoBahamutBackSkyPrim3 = {0};
 // BattleFx_SummonNeoBahamutToggleActorMaskFlags). The span runs to the next named definition of the
 // TU; the TU's pieces inside 0xaaf170..0xaaf17c are aliases.
 // GLOBAL: FF7 0x00aaf170
-unsigned char g_BattleSummonNeoBahamutActorMaskFlags[0xc] = {0};
+unsigned char g_BattleSummonNeoBahamutActorMaskFlags[12] = {0};
 // GLOBAL: FF7 0x00aaf17c
 char g_BattleSummonNeoBahamutPsxMeshInitFlag = 0;
 // GLOBAL: FF7 0x00aaf180
@@ -492,8 +492,8 @@ int __cdecl BattleFx_SummonEnterNeoBahamut(int targetMask, int actorIdx)
     g_BattleSummonNeoBahamutLightRigAngle.angleX = 0xD8F0;
     g_BattleSummonNeoBahamutLightRigAngle.angleY = 0xD8F0;
     g_BattleSummonNeoBahamutAnchorPosition[0] = 0;
-    g_BattleSummonNeoBahamutAnchorPosition[1] = 0xFA24;
-    g_BattleSummonNeoBahamutAnchorPosition[2] = 0xE2B4;
+    g_BattleSummonNeoBahamutAnchorPosition[1] = 0xFA24 /* -1500 */;
+    g_BattleSummonNeoBahamutAnchorPosition[2] = 0xE2B4 /* -7500 */;
     g_BattleSummonNeoBahamutCircleModelAngle = 0;
     g_BattleSummonNeoBahamutLineLight2State = 0;
     memset(&g_BattleSummonNeoBahamutGroundMatrix, 0, sizeof(g_BattleSummonNeoBahamutGroundMatrix));
@@ -501,7 +501,7 @@ int __cdecl BattleFx_SummonEnterNeoBahamut(int targetMask, int actorIdx)
     g_BattleSummonNeoBahamutGroundMatrix.m[1][1] = g_BattleSummonNeoBahamutGroundMatrix.m[2][2];
     g_BattleSummonNeoBahamutGroundMatrix.m[0][0] = g_BattleSummonNeoBahamutGroundMatrix.m[1][1];
     memset(g_BattleSummonNeoBahamutLineLight2Rotation, 0, 30);
-    g_BattleSummonNeoBahamutLineLight2Rotation[0] = 0xFB00;
+    g_BattleSummonNeoBahamutLineLight2Rotation[0] = 0xFB00 /* 5647.5 deg */;
     g_BattleSummonNeoBahamutLineLight2Offset[0] = 0x500;
     memset(&g_BattleSummonNeoBahamutBillboardMatrix, 0, sizeof(g_BattleSummonNeoBahamutBillboardMatrix));
     memset(&g_BattleSummonNeoBahamutLineLightMatrix, 0, sizeof(g_BattleSummonNeoBahamutLineLightMatrix));
@@ -589,7 +589,7 @@ void __cdecl BattleFx_NeoBahamutBeginEffect(int targetMask, int actorIdx)
 
     Battle_GetActorMaskCentroid(g_BattleSummonNeoBahamutTargetMask = targetMask, centroid);
     if (centroid[2] < g_BattleActorRecords[actorIdx].posZ) {
-        g_BattleSummonNeoBahamutAngleVector[1] = 0x800;
+        g_BattleSummonNeoBahamutAngleVector[1] = 0x800 /* 180 deg */;
     }
     RotMatrix((SVECTOR *)g_BattleSummonNeoBahamutAngleVector, (int *)&g_BattleSummonNeoBahamutWorldMatrix);
     g_BattleSummonNeoBahamutWorldMatrix.t[2] = centroid[2];
@@ -935,11 +935,11 @@ void __cdecl BattleFx_NeoBahamutRunLightRig(void)
         return;
     }
     elapsed = taskPtr->frameCounter;
-    if (elapsed < 0xCF) {
+    if (elapsed < 207) {
         (taskPtr->frameCounter)++;
     } else {
-        elapsed -= 0xCF;
-        if (elapsed < 0x6E) {
+        elapsed -= 207;
+        if (elapsed < 110) {
             if (elapsed == 0) {
                 ring = (BattleFxLightRigSlot *)Battle_AllocSceneMessage(1);
                 TransformVectorToInt16(&g_BattleSummonNeoBahamutWorldMatrix, (short *)&g_BattleSummonNeoBahamutLightRigAngle, (void *)g_BattleSummonNeoBahamutLightRigTaskSlot);
@@ -948,27 +948,27 @@ void __cdecl BattleFx_NeoBahamutRunLightRig(void)
                 ring->posZ = g_BattleSummonNeoBahamutLightRigTaskSlot->rigZ + g_BattleSummonNeoBahamutWorldMatrix.t[2];
                 ring->rotationY = g_BattleSummonNeoBahamutAngleVector[1] + 0x800;
             }
-            easedProgress = (elapsed << 0xC) / 0x6E;
+            easedProgress = (elapsed << 12) / 110;
             easedProgress = BattleFx_NeoBahamutApplyCameraEasing(easedProgress, 0x3E0);
-            (g_BattleSummonNeoBahamutLightRigAngle.angleX) = (easedProgress * 0x2BC0 >> 0xC) - 0x2710;
+            (g_BattleSummonNeoBahamutLightRigAngle.angleX) = (easedProgress * 0x2BC0 >> 12) - 0x2710;
         } else {
-            elapsed -= 0x6E;
-            if (elapsed < 0x70) { /* empty first arm: lib/codegen.h */
+            elapsed -= 110;
+            if (elapsed < 112) { /* empty first arm: lib/codegen.h */
             } else {
-                elapsed -= 0x70;
-                if (elapsed < 0xF) {
-                    easedProgress = (elapsed << 0xC) / 0xF;
+                elapsed -= 112;
+                if (elapsed < 15) {
+                    easedProgress = (elapsed << 12) / 15;
                     easedProgress = BattleFx_NeoBahamutApplyCameraEasing(easedProgress, 0x1C0);
-                    g_BattleSummonNeoBahamutLightRigAngle.vectorX = (easedProgress * 0) >> 0xC;
+                    g_BattleSummonNeoBahamutLightRigAngle.vectorX = (easedProgress * 0) >> 12;
                     g_BattleSummonNeoBahamutAnchorPosition[0] = g_BattleSummonNeoBahamutLightRigAngle.vectorX;
-                    (g_BattleSummonNeoBahamutLightRigAngle.angleX) = ((easedProgress * 0) >> 0xC) + 0x4B0;
-                    g_BattleSummonNeoBahamutAnchorPosition[1] = (g_BattleSummonNeoBahamutLightRigAngle.angleX) - 0xA8C;
-                    (g_BattleSummonNeoBahamutLightRigAngle.angleY) = (easedProgress * -0x1F40 >> 0xC) - 0x2710;
-                    g_BattleSummonNeoBahamutAnchorPosition[2] = (g_BattleSummonNeoBahamutLightRigAngle.angleY) + 0x9C4;
+                    (g_BattleSummonNeoBahamutLightRigAngle.angleX) = ((easedProgress * 0) >> 12) + 0x4B0;
+                    g_BattleSummonNeoBahamutAnchorPosition[1] = (g_BattleSummonNeoBahamutLightRigAngle.angleX) - 2700;
+                    (g_BattleSummonNeoBahamutLightRigAngle.angleY) = (easedProgress * -0x1F40 >> 12) - 0x2710;
+                    g_BattleSummonNeoBahamutAnchorPosition[2] = (g_BattleSummonNeoBahamutLightRigAngle.angleY) + 2500;
                 } else {
-                    elapsed -= 0xF;
-                    if (elapsed < 0x4B) {
-                        if (elapsed == 0x4A) {
+                    elapsed -= 15;
+                    if (elapsed < 75) {
+                        if (elapsed == 74) {
                             Battle_AllocSceneMessage(2);
                         }
                     } else {
@@ -1029,7 +1029,7 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
         }
     } else {
         stage -= 5;
-        if (stage < 0xA) {
+        if (stage < 10) {
             if (stage == 0) {
                 // STRING: FF7 0x007f99b4
                 Gfx_DebugPrint("[Neo] begin thunder\n");
@@ -1044,7 +1044,7 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                 g_BattleFxTimelineState.red = 0;
                 g_BattleFxTimelineState.channel1 = 0;
                 g_BattleFxTimelineState.channel2 = 0;
-                Battle_StartFixedPointRamp(0x800, 0x19);
+                Battle_StartFixedPointRamp(0x800, 25);
             }
             if (stage == 0) {
                 // STRING: FF7 0x007f99cc
@@ -1054,15 +1054,15 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                 Gfx_DebugPrint("[Neo] finished effect play\n");
             }
         } else {
-            stage -= 0xA;
-            if (stage < 0xA) {
+            stage -= 10;
+            if (stage < 10) {
                 if (stage == 9) {
                     Battle_CreateBitPatternCallbackTask(BATTLE_ACTOR_MASK_ENEMIES, 0, 0, BattleFx_SummonSpawnNeoBahamutPerTarget);
                     BattleFx_SummonNeoBahamutToggleActorMaskFlags();
                 }
             } else {
-                stage -= 0xA;
-                if (stage < 0x19) {
+                stage -= 10;
+                if (stage < 25) {
                     if (stage == 0) {
                         // STRING: FF7 0x007f9a04
                         Gfx_DebugPrint("[Neo] Link ground, dust_manager, rock1_manager\n");
@@ -1074,14 +1074,14 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                         BattleFx_SummonBeginNeoBahamutJitterEnvelope(0x64, 0, 0x2D, 0);
                     }
                 } else {
-                    stage -= 0x19;
-                    if (stage < 0x14) {
-                        if (stage == 0x12) {
+                    stage -= 25;
+                    if (stage < 20) {
+                        if (stage == 18) {
                             g_BattleStageHideFlags |= 7;
                         }
                     } else {
-                        stage -= 0x14;
-                        if (stage < 0x64) {
+                        stage -= 20;
+                        if (stage < 100) {
                             if (stage == 0) {
                                 // STRING: FF7 0x007f9a34
                                 Gfx_DebugPrint("[Neo] link cloud1, sky_mask\n");
@@ -1090,39 +1090,39 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                                 ringData = Battle_AllocSceneMessage(7);
                                 *(short *)((char *)ringData + 0x10) = 6;
                             }
-                            if (stage == 0xF) {
+                            if (stage == 15) {
                                 // STRING: FF7 0x007f9a54
                                 Gfx_DebugPrint("[Neo] link cloud2\n");
                                 newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutCloud2ModelTask);
-                                newTask->posX = 0x2580;
+                                newTask->posX = 9600;
                                 newTask->posY = 0xB1E0;
                                 newTask->posZ = 0;
                                 newTask->clearedWordC = 0;
                                 newTask->clearedWordB = 0;
                                 newTask->clearedWordA = 0;
-                                newTask->scale = 0x1F00;
+                                newTask->scale = 0x1F00 /* 1.9375 */;
                             }
-                            if (stage == 0x1E) {
+                            if (stage == 30) {
                                 // STRING: FF7 0x007f9a68
                                 Gfx_DebugPrint("[Neo] link line_light3_manager\n");
                                 newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutSpawnLineLight3ModelsTask);
                             }
-                            if (stage == 0x50) {
+                            if (stage == 80) {
                                 // STRING: FF7 0x007f9a88
                                 Gfx_DebugPrint("[Neo] white out\n");
-                                BattleFx_StartScreenFlashRamp(0xA);
+                                BattleFx_StartScreenFlashRamp(10);
                             }
-                            if (stage == 0x5A) {
+                            if (stage == 90) {
                                 g_BattleStageHideFlags |= 7;
                                 g_BattleFxTimelineState.startValue = 0;
                             }
                         } else {
-                            stage -= 0x64;
-                            if (stage < 0x37) {
+                            stage -= 100;
+                            if (stage < 55) {
                                 if (stage == 0) {
                                     // STRING: FF7 0x007f9a9c
                                     Gfx_DebugPrint("[Neo] white-in, link cloudsea, backsky\n");
-                                    BattleFx_FadeOutScreenFlashRamp(0xF);
+                                    BattleFx_FadeOutScreenFlashRamp(15);
                                     newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutCloudSeaModelTask);
                                     newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutBackSkyPrimitiveTask);
                                 }
@@ -1134,11 +1134,11 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                                     Gfx_DebugPrint("[Neo] finished effect play 3\n");
                                 }
                             } else {
-                                stage -= 0x37;
-                                if (stage < 0xA3) { /* empty first arm: lib/codegen.h */
+                                stage -= 55;
+                                if (stage < 163) { /* empty first arm: lib/codegen.h */
                                 } else {
-                                    stage -= 0xA3;
-                                    if (stage < 0x2A) {
+                                    stage -= 163;
+                                    if (stage < 42) {
                                         if (stage == 0) {
                                             // STRING: FF7 0x007f9b00
                                             Gfx_DebugPrint("[Neo] linke ball_manager, circle, line_light1_manager\n");
@@ -1157,27 +1157,27 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                                             Sfx_ReleaseCachedBuffer(0x28A, 0);
                                         }
                                     } else {
-                                        stage -= 0x2A;
-                                        if (stage < 0xF) {
+                                        stage -= 42;
+                                        if (stage < 15) {
                                             if (stage == 0) {
                                                 // STRING: FF7 0x007f9b74
                                                 Gfx_DebugPrint("[Neo] link breath\n");
                                                 newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutBreathModelTask);
                                             }
                                         } else {
-                                            stage -= 0xF;
-                                            if (stage < 0x2D) {
+                                            stage -= 15;
+                                            if (stage < 45) {
                                                 if (stage == 0) {
                                                     // STRING: FF7 0x007f9b88
                                                     Gfx_DebugPrint("[Neo] rock2_manager\n");
                                                     newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutSpawnRock2ModelsTask);
                                                 }
                                             } else {
-                                                stage -= 0x2D;
-                                                if (stage < 0x1E) { /* empty first arm: lib/codegen.h */
+                                                stage -= 45;
+                                                if (stage < 30) { /* empty first arm: lib/codegen.h */
                                                 } else {
-                                                    stage -= 0x1E;
-                                                    if (stage < 0x28) {
+                                                    stage -= 30;
+                                                    if (stage < 40) {
                                                         if (stage == 0) {
                                                             // STRING: FF7 0x007f9ba0
                                                             Gfx_DebugPrint("[Neo] link flash2, rock3_manager, line_light2_manager\n");
@@ -1185,12 +1185,12 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                                                             newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutSpawnRock3ModelsTask);
                                                             newTask = (BattleFxNeoBahamutTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutSpawnLineLight2Task);
                                                         }
-                                                        if (stage == 0x14) {
+                                                        if (stage == 20) {
                                                             // STRING: FF7 0x007f9bd8
                                                             Gfx_DebugPrint("[Neo] white-out\n");
-                                                            BattleFx_StartScreenFlashRamp(0xA);
+                                                            BattleFx_StartScreenFlashRamp(10);
                                                         }
-                                                        if (stage == 0x27) {
+                                                        if (stage == 39) {
                                                             g_BattleStageHideFlags &= 0xF8;
                                                             BattleFx_SummonNeoBahamutToggleActorMaskFlags();
                                                         }
@@ -1205,12 +1205,12 @@ void __cdecl BattleFx_SummonNeoBahamutTimelineTask(void)
                                                             Sfx_ReleaseCachedBuffer(0x28D, 1);
                                                         }
                                                     } else {
-                                                        stage -= 0x28;
+                                                        stage -= 40;
                                                         if (stage < 1) {
                                                             if (stage == 0) {
                                                                 // STRING: FF7 0x007f9c28
                                                                 Gfx_DebugPrint("[Neo] white-in\n");
-                                                                BattleFx_FadeOutScreenFlashRamp(0xA);
+                                                                BattleFx_FadeOutScreenFlashRamp(10);
                                                             }
                                                         } else {
                                                             for (targetIndex = 0; targetIndex < 0xA; targetIndex++) {
@@ -1289,8 +1289,8 @@ void __cdecl BattleFx_SummonNeoBahamutJitterEnvelopeTask(void)
     }
     local.frame = local.p->frameCount;
     if (local.frame < local.p->riseFrames) {
-        local.ratio = (local.frame << 0xC) / local.p->riseFrames;
-        local.value = local.p->amplitude * local.ratio >> 0xC;
+        local.ratio = (local.frame << 12) / local.p->riseFrames;
+        local.value = local.p->amplitude * local.ratio >> 12;
     } else {
         local.frame -= local.p->riseFrames;
         if (local.frame < local.p->holdFrames) {
@@ -1298,8 +1298,8 @@ void __cdecl BattleFx_SummonNeoBahamutJitterEnvelopeTask(void)
         } else {
             local.frame -= local.p->holdFrames;
             if (local.frame < local.p->fallFrames) {
-                local.ratio = (local.frame << 0xC) / local.p->fallFrames;
-                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 0xC;
+                local.ratio = (local.frame << 12) / local.p->fallFrames;
+                local.value = local.p->amplitude * (0x1000 - local.ratio) >> 12;
             } else {
                 local.p->ownerSlot = 0xFFFF;
                 g_BattleCameraTransform.posZ = 0;
@@ -1323,13 +1323,13 @@ void __cdecl BattleFx_SummonNeoBahamutPrepareStageOffscreenRequests(void)
     if (g_BattleUiScalingMode != 2) {
         g_BattleSummonNeoBahamutStageOffscreenRequest.rect.x = (short)g_BattleViewportOriginX;
         g_BattleSummonNeoBahamutStageOffscreenRequest.rect.y = (short)g_BattleViewportOriginY;
-        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.width = 0x40;
-        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.height = 0x80;
+        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.width = 64;
+        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.height = 128;
     } else {
         g_BattleSummonNeoBahamutStageOffscreenRequest.rect.x = (short)g_BattleViewportOriginX;
         g_BattleSummonNeoBahamutStageOffscreenRequest.rect.y = (short)g_BattleViewportOriginY;
-        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.width = 0x80;
-        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.height = 0x100;
+        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.width = 128;
+        g_BattleSummonNeoBahamutStageOffscreenRequest.rect.height = 256;
     }
     g_BattleSummonNeoBahamutStageOffscreenRequest.m[4] = g_BattleSummonNeoBahamutWorldMatrix.m[0][0];
     *(short *)((char *)&g_BattleSummonNeoBahamutStageOffscreenParam + 0x18) = g_BattleSummonNeoBahamutStageOffscreenRequest.m[4];
@@ -1426,16 +1426,16 @@ void __cdecl BattleFx_SummonNeoBahamutGroundModelTask(void)
         g_BattleSummonNeoBahamutGroundTaskSlot = Gfx_GetPsxScratchpadPtr(0);
     }
     stage = taskPtr->nextIndex;
-    if (stage < 0x1D1) {
-        if (stage < 0x2D) {
-            progress = (stage << 0xC) / 0x2D;
-            g_BattleSummonNeoBahamutStageOffscreenRequest.mesh.vertexShade = g_BattleFxTimelineState.startValue + ((0 - g_BattleFxTimelineState.startValue) * progress >> 0xC);
+    if (stage < 465) {
+        if (stage < 45) {
+            progress = (stage << 12) / 45;
+            g_BattleSummonNeoBahamutStageOffscreenRequest.mesh.vertexShade = g_BattleFxTimelineState.startValue + ((0 - g_BattleFxTimelineState.startValue) * progress >> 12);
             if (g_BattleIsPaused == 0) {
                 g_BattleSummonNeoBahamutGroundMatrix.t[1] -= 0x6F;
             }
         } else {
-            stage -= 0x2D;
-            if (stage < 0x64) {
+            stage -= 45;
+            if (stage < 100) {
                 if (stage == 0) {
                     g_BattleSummonNeoBahamutGroundMatrix.t[1] = 0;
                     g_BattleSummonNeoBahamutStageOffscreenRequest.mesh.vertexShade = 0;
@@ -1444,12 +1444,12 @@ void __cdecl BattleFx_SummonNeoBahamutGroundModelTask(void)
                     g_BattleSummonNeoBahamutGroundMatrix.t[1] -= 0xC8;
                 }
             } else {
-                stage -= 0x64;
-                if (stage < 0x140) {
+                stage -= 100;
+                if (stage < 320) {
                     if (stage == 0) {
                         g_BattleSummonNeoBahamutGroundMatrix.t[1] = 0;
                     }
-                    if (stage >= 0x113) {
+                    if (stage >= 275) {
                         g_BattleSummonNeoBahamutGroundMatrix.t[0] = (stage & 1) != 0 ? 0x1E : -0x1E;
                     }
                 }
@@ -1466,23 +1466,23 @@ void __cdecl BattleFx_SummonNeoBahamutGroundModelTask(void)
         Gfx_SetPsxPrimQuadState(0xB, 1, (GfxPsxSpriteQuadState *)Battle3d_GetOffscreenRenderObject(g_BattleNeoBahamutField12OffscreenSlot));
         g_BattleOverlayDrawListHead = BattleFx_SummonNeoBahamutDrawPsxMesh(&g_BattleSummonNeoBahamutStageOffscreenRequest.mesh, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     } else {
-        stage -= 0x1D1;
-        if (stage < 0x4B) {
+        stage -= 465;
+        if (stage < 75) {
             if (stage == 0) {
                 BattleFx_SummonNeoBahamutInitFragmentTable();
             }
-            if (stage < 0x1E) {
-                progress = (stage << 0xC) / 0x1E;
-                ((BattleSummonTaskRecord *)g_BattleSummonNeoBahamutGroundTaskSlot)->offsetX = progress * -0x40 >> 0xC;
+            if (stage < 30) {
+                progress = (stage << 12) / 30;
+                ((BattleSummonTaskRecord *)g_BattleSummonNeoBahamutGroundTaskSlot)->offsetX = progress * -0x40 >> 12;
                 ((BattleSummonTaskRecord *)g_BattleSummonNeoBahamutGroundTaskSlot)->offsetY = 0;
-                ((BattleSummonTaskRecord *)g_BattleSummonNeoBahamutGroundTaskSlot)->offsetZ = progress << 7 >> 0xC;
+                ((BattleSummonTaskRecord *)g_BattleSummonNeoBahamutGroundTaskSlot)->offsetZ = progress << 7 >> 12;
                 RotMatrix((SVECTOR *)g_BattleSummonNeoBahamutGroundTaskSlot, (void *)(g_BattleSummonNeoBahamutGroundTaskSlot + 8));
                 *(int *)((char *)g_BattleSummonNeoBahamutGroundTaskSlot + 0x1A) = (stage & 1) != 0 ? 0x32 : -0x32;
                 *(int *)((char *)g_BattleSummonNeoBahamutGroundTaskSlot + 0x22) = stage * 0x1E;
                 *(int *)((char *)g_BattleSummonNeoBahamutGroundTaskSlot + 0x1E) = *(int *)((char *)g_BattleSummonNeoBahamutGroundTaskSlot + 0x22);
                 MultiplyMatrix(&g_BattleSummonNeoBahamutComposedMatrix, (void *)(g_BattleSummonNeoBahamutGroundTaskSlot + 8), (void *)(g_BattleSummonNeoBahamutGroundTaskSlot + 8));
             } else {
-                if (stage == 0x1E) {
+                if (stage == 30) {
                     g_BattleSummonNeoBahamutGroundMatrix.m[2][2] = 0x100;
                     g_BattleSummonNeoBahamutGroundMatrix.m[1][1] = g_BattleSummonNeoBahamutGroundMatrix.m[2][2];
                     g_BattleSummonNeoBahamutGroundMatrix.m[0][0] = g_BattleSummonNeoBahamutGroundMatrix.m[1][1];
@@ -1797,7 +1797,7 @@ int __cdecl BattleFx_SummonNeoBahamutDrawPsxMeshPerFaceMatrix(BattleFxPsxMeshRes
             Gfx_ReadTransformOrderingDepth2(&g_BattleSummonNeoBahamutPsxMeshTaskSlot->depth);
             primitive->textureFlags = texFlags;
             color = record->vertex3 & 0xFF;
-            color = color | color << 8 | color << 0x10;
+            color = color | color << 8 | color << 16;
             primitive->color = color | 0x24000000;
             primitive->colorWord = record->colorWord;
             primitive->uvWord0 = record->uvWord0;
@@ -1854,7 +1854,7 @@ int __cdecl BattleFx_SummonNeoBahamutDrawPsxMeshPerFaceMatrix(BattleFxPsxMeshRes
             quadPacket->tag = 0x9000000;
             quadPacket->textureFlags = texFlags;
             color = record->offsetD & 0xFF;
-            color = color | color << 8 | color << 0x10;
+            color = color | color << 8 | color << 16;
             quadPacket->color = color | 0x2C000000;
             quadPacket->colorWord = record->colorWord;
             quadPacket->uvWord0 = record->uvWord0;
@@ -1919,18 +1919,18 @@ void __cdecl BattleFx_SummonNeoBahamutInitFragmentTable(void)
         if (DEAD_IN_RETAIL != 0) {
             triValue = 0x100;
         } else {
-            triValue = rand() % 0x100 + 0x200;
+            triValue = rand() % 256 + 512;
         }
         speedScale = triValue;
-        pFragment->velocityX = pFragment->posX * speedScale >> 0xC;
-        pFragment->velocityY = (pFragment->posY - 0x3E8) * speedScale >> 0xC;
+        pFragment->velocityX = pFragment->posX * speedScale >> 12;
+        pFragment->velocityY = (pFragment->posY - 1000) * speedScale >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            triZ = 0x64;
+            triZ = 100;
         } else {
-            triZ = rand() % 0x64;
+            triZ = rand() % 100;
         }
         pFragment->velocityZ = triZ;
-        pFragment->timer = (pFragment->posZ + 0x1194) * 0x2D / 0x2328;
+        pFragment->timer = (pFragment->posZ + 4500) * 45 / 9000;
         pFragment->clearedWord = 0;
         pFragment->angleX = 0;
         pFragment->angleY = 0;
@@ -1949,20 +1949,20 @@ void __cdecl BattleFx_SummonNeoBahamutInitFragmentTable(void)
         pFragment->posY = (vertP->vy + vertA->vy + vertB->vy + pVertexC->vy) / 4;
         pFragment->posZ = (vertP->vz + vertA->vz + vertB->vz + pVertexC->vz) / 4;
         if (DEAD_IN_RETAIL != 0) {
-            quadSpeed = 0x100;
+            quadSpeed = 256;
         } else {
-            quadSpeed = rand() % 0x100 + 0x200;
+            quadSpeed = rand() % 256 + 512;
         }
         speedScale = quadSpeed;
-        pFragment->velocityX = pFragment->posX * speedScale >> 0xC;
-        pFragment->velocityY = (pFragment->posY - 0x3E8) * speedScale >> 0xC;
+        pFragment->velocityX = pFragment->posX * speedScale >> 12;
+        pFragment->velocityY = (pFragment->posY - 1000) * speedScale >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            quadDepthVel = 0x64;
+            quadDepthVel = 100;
         } else {
-            quadDepthVel = rand() % 0x64;
+            quadDepthVel = rand() % 100;
         }
         pFragment->velocityZ = quadDepthVel;
-        pFragment->timer = (pFragment->posZ + 0x1194) * 0x2D / 0x2328;
+        pFragment->timer = (pFragment->posZ + 4500) * 45 / 9000;
         pFragment->clearedWord = 0;
         pFragment->angleX = 0;
         pFragment->angleY = 0;
@@ -1972,7 +1972,7 @@ void __cdecl BattleFx_SummonNeoBahamutInitFragmentTable(void)
     }
 }
 
-// Acquires retained 0xC0 scratch and visits exactly 0x1B2 records at
+// Acquires retained 0xC0 scratch and visits exactly 434 records at
 // g_BattleSummonNeoBahamutPsxMeshScratch with stride 0x1C, writing thirty-byte matrices at
 // g_BattleSummonNeoBahamutGroundVertexBlob. Unpaused positive delay decrements without
 // movement; otherwise if record Z is below 25000 advances XYZ by velocity, damps all velocities by
@@ -1996,17 +1996,17 @@ void __cdecl BattleFx_SummonNeoBahamutUpdateFragmentMatrices(int matrix)
     }
     fragment = (BattleFxNeoBahamutFragment *)&g_BattleSummonNeoBahamutPsxMeshScratch;
     matrixOut = g_BattleSummonNeoBahamutGroundVertexBlob;
-    for (i = 0; i < 0x1B2; i++) {
+    for (i = 0; i < 434; i++) {
         if (g_BattleIsPaused == 0) {
             if (fragment->timer > 0) {
                 (fragment->timer)--;
-            } else if (fragment->posZ < 0x61A8) {
+            } else if (fragment->posZ < 25000) {
                 fragment->posX += fragment->velocityX;
                 fragment->posY += fragment->velocityY;
                 fragment->posZ += fragment->velocityZ;
-                fragment->velocityX = fragment->velocityX * 0xF80 >> 0xC;
-                fragment->velocityY = fragment->velocityY * 0xF80 >> 0xC;
-                fragment->velocityZ = (fragment->velocityZ * 0xF80 >> 0xC) + 0x32;
+                fragment->velocityX = fragment->velocityX * 0xF80 >> 12;
+                fragment->velocityY = fragment->velocityY * 0xF80 >> 12;
+                fragment->velocityZ = (fragment->velocityZ * 0xF80 >> 12) + 50;
                 fragment->angleX += 0x12;
                 fragment->angleY += 0x234;
                 fragment->angleZ += 0x456;
@@ -2056,12 +2056,12 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnThunderSpritesTask(void)
         return;
     }
     stage = taskPtr->spawnIndex;
-    if (stage < 0x14) {
-        progress = (stage << 0xC) / 0x14;
-        emitAccum = (progress << 7 >> 0xC) + 0x80;
+    if (stage < 20) {
+        progress = (stage << 12) / 20;
+        emitAccum = (progress << 7 >> 12) + 0x80;
     } else {
-        stage -= 0x14;
-        if (stage < 0x19) {
+        stage -= 20;
+        if (stage < 25) {
             emitAccum = 0x100;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -2069,14 +2069,14 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnThunderSpritesTask(void)
         }
     }
     emitAccum = (emitAccum * taskPtr->spawnIndex & 0xFF) + emitAccum;
-    while (emitAccum >= 0x100) {
+    while (emitAccum >= 256) {
         pSprite = (BattleFxNeoBahamutThunderSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutThunderSpriteTask);
         pSprite->spawnIndex = taskPtr->spawnIndex;
         BattleFx_SummonNeoBahamutMakeRandomLoopPoint((Vec3sPacked *)((int)pSprite + 4));
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x4000;
         } else {
-            bytes = (rand() % 0x1000) + 0x3000;
+            bytes = (rand() % 4096) + 12288;
         }
         pSprite->scale = bytes;
         emitAccum -= 0x100;
@@ -2097,10 +2097,10 @@ void __cdecl BattleFx_SummonNeoBahamutThunderSpriteTask(void)
     int matrix;
 
     task = (BattleFxNeoBahamutThunderSlot *)BATTLE_CURRENT_TASK_SLOT;
-    g_NeoBahamutThunderSpriteDrawRequest1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x10, g_BattleSummonNeoBahamutLoadedResTable);
-    g_NeoBahamutThunderSpriteDrawRequest1.drawObj = Gfx_ModelTableGetSpriteObject(0x10, g_BattleSummonNeoBahamutLoadedResTable);
-    g_NeoBahamutThunderSpriteDrawRequest2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(0x13, g_BattleSummonNeoBahamutLoadedResTable);
-    g_NeoBahamutThunderSpriteDrawRequest2.drawObj = Gfx_ModelTableGetSpriteObject(0x13, g_BattleSummonNeoBahamutLoadedResTable);
+    g_NeoBahamutThunderSpriteDrawRequest1.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(16, g_BattleSummonNeoBahamutLoadedResTable);
+    g_NeoBahamutThunderSpriteDrawRequest1.drawObj = Gfx_ModelTableGetSpriteObject(16, g_BattleSummonNeoBahamutLoadedResTable);
+    g_NeoBahamutThunderSpriteDrawRequest2.spriteGroup = (BattleFxSpriteGroup *)Gfx_ModelTableGetLoadedRecord(19, g_BattleSummonNeoBahamutLoadedResTable);
+    g_NeoBahamutThunderSpriteDrawRequest2.drawObj = Gfx_ModelTableGetSpriteObject(19, g_BattleSummonNeoBahamutLoadedResTable);
     matrix = BattleFx_SummonNeoBahamutInstallBillboardMatrix(&task->posX, (short)task->scale, 0xFFFFFC18);
     if (((PsxMatrix *)matrix)->t[2] > 0) {
         g_NeoBahamutThunderSpriteDrawRequest2.frameIndex = task->frameIndex;
@@ -2116,7 +2116,7 @@ void __cdecl BattleFx_SummonNeoBahamutThunderSpriteTask(void)
                 return;
             }
         }
-        if (task->frameIndex + task->ownerSlot >= 0x2D) {
+        if (task->frameIndex + task->ownerSlot >= 45) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2142,9 +2142,9 @@ int __cdecl BattleFx_SummonNeoBahamutInstallBillboardMatrix(void *point, short s
     RotTransPoint(point, g_BattleSummonNeoBahamutBillboardMatrix.t, &transformed);
     if (offset != 0) {
         NormalizeVectorFixed(g_BattleSummonNeoBahamutBillboardMatrix.t, &nx);
-        g_BattleSummonNeoBahamutBillboardMatrix.t[0] += nx.vx * offset >> 0xC;
-        g_BattleSummonNeoBahamutBillboardMatrix.t[1] += nx.vy * offset >> 0xC;
-        g_BattleSummonNeoBahamutBillboardMatrix.t[2] += nx.vz * offset >> 0xC;
+        g_BattleSummonNeoBahamutBillboardMatrix.t[0] += nx.vx * offset >> 12;
+        g_BattleSummonNeoBahamutBillboardMatrix.t[1] += nx.vy * offset >> 12;
+        g_BattleSummonNeoBahamutBillboardMatrix.t[2] += nx.vz * offset >> 12;
     }
     SetRotMatrix((short *)&g_BattleSummonNeoBahamutBillboardMatrix);
     SetTransMatrix((short *)&g_BattleSummonNeoBahamutBillboardMatrix);
@@ -2164,19 +2164,19 @@ void __cdecl BattleFx_SummonNeoBahamutMakeRandomLoopPoint(Vec3sPacked *outPoint)
     int base;
 
     base = (int)((char *)&g_BattleSummonNeoBahamutPolygonVertexBlob + 0x4);
-    idx = rand() % 0x18;
+    idx = rand() % 24;
     rowA = (Vec3sPacked *)(base + 0x188 + idx * 8);
-    rowB = (Vec3sPacked *)(base + 0x188 + (idx + 1) % 0x18 * 8);
+    rowB = (Vec3sPacked *)(base + 0x188 + (idx + 1) % 24 * 8);
     idx = rand() & 0xFFF;
-    outPoint->vx = (rowA->vx * idx + rowB->vx * (0x1000 - idx)) >> 0xC;
-    outPoint->vy = (rowA->vy * idx + rowB->vy * (0x1000 - idx)) >> 0xC;
-    outPoint->vz = (rowA->vz * idx + rowB->vz * (0x1000 - idx)) >> 0xC;
+    outPoint->vx = (rowA->vx * idx + rowB->vx * (4096 - idx)) >> 12;
+    outPoint->vy = (rowA->vy * idx + rowB->vy * (4096 - idx)) >> 12;
+    outPoint->vz = (rowA->vz * idx + rowB->vz * (4096 - idx)) >> 12;
 }
 
 // Per-frame spawner for the dust effect slot, which does nothing while the battle is paused. A
 // budget ((spawnIndex << 10) & 0xFF) + 0x400 is spent 0x100 at a time while it is at least 0x100.
 // Each unit allocates a resource slot for BattleFx_SummonNeoBahamutDustSpriteTask, seeds its loop
-// point with BattleFx_SummonNeoBahamutMakeRandomLoopPoint at slot+4 and writes rand() % 0x3000 +
+// point with BattleFx_SummonNeoBahamutMakeRandomLoopPoint at slot+4 and writes rand() % 12288 +
 // 0x5000 to the short at slot+0x18. The DEAD_IN_RETAIL branch is dead in retail; it would write
 // 0x8000 instead. Then spawnIndex advances, and the slot is retired (ownerSlot = BATTLE_TASK_FREE) once
 // spawnIndex reaches 4.
@@ -2193,13 +2193,13 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnDustSpritesTask(void)
         return;
     }
     budget = ((task->spawnIndex << 10) & 0xFF) + 0x400;
-    while (budget >= 0x100) {
+    while (budget >= 256) {
         dust = BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutDustSpriteTask);
         BattleFx_SummonNeoBahamutMakeRandomLoopPoint((Vec3sPacked *)dust->data);
         if (DEAD_IN_RETAIL) {
             bytes = 0x8000;
         } else {
-            bytes = rand() % 0x3000 + 0x5000;
+            bytes = rand() % 12288 + 20480;
         }
         ((BattleFxDeathForceAnimSprite *)dust)->scale = bytes;
         budget -= 0x100;
@@ -2223,7 +2223,7 @@ void __cdecl BattleFx_SummonNeoBahamutDustSpriteTask(void)
     BattleFxDeathForceAnimSprite *task;
 
     task = (BattleFxDeathForceAnimSprite *)BATTLE_CURRENT_TASK_SLOT;
-    g_BattleSummonNeoBahamutDustSpriteDrawRequest.animTable = Gfx_ModelTableGetLoadedRecord(0x12, g_BattleSummonNeoBahamutLoadedResTable);
+    g_BattleSummonNeoBahamutDustSpriteDrawRequest.animTable = Gfx_ModelTableGetLoadedRecord(18, g_BattleSummonNeoBahamutLoadedResTable);
     g_BattleSummonNeoBahamutDustSpriteDrawRequest.sceneField = Battle3d_GetSceneRenderObject(1, g_pBattle3dScene);
     BattleFx_SummonNeoBahamutInstallBillboardMatrix(&task->posX, (short)task->scale, 0);
     g_BattleSummonNeoBahamutDustSpriteDrawRequest.frame = task->frame | 0x8000;
@@ -2270,18 +2270,18 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnRock1ModelsTask(void)
         return;
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0x19) {
+    if (stage < 25) {
         baseY = stage * -0x6F;
         newCount = 5;
         phaseShort = 0;
     } else {
-        stage -= 0x19;
-        if (stage < 0x14) {
+        stage -= 25;
+        if (stage < 20) {
             (taskPtr->frameCounter)++;
             return;
         }
-        stage -= 0x14;
-        if (stage < 0x4B) {
+        stage -= 20;
+        if (stage < 75) {
             baseY = stage * -0xC8;
             newCount = 1;
             phaseShort = 0x200;
@@ -2294,25 +2294,25 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnRock1ModelsTask(void)
         pRockTask = (BattleFxNeoBahamutRock *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutRock1ModelTask);
         pRockTask->resourceIndex = rand() % 3;
         fraction = rand() & 0xFFF;
-        g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetX = SinFixed(fraction) * 0xFA0 >> 0xC;
-        g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetZ = CosFixed(fraction) * 0xFA0 >> 0xC;
+        g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetX = SinFixed(fraction) * 0xFA0 >> 12;
+        g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetZ = CosFixed(fraction) * 0xFA0 >> 12;
         fraction = rand() & 0xFFF;
-        pRockTask->posX = g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetX * fraction >> 0xC;
-        pRockTask->posY = baseY + ((0x1000 - fraction) * 0xFA0 >> 0xC);
-        pRockTask->posZ = g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetZ * fraction >> 0xC;
+        pRockTask->posX = g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetX * fraction >> 12;
+        pRockTask->posY = baseY + ((4096 - fraction) * 0xFA0 >> 12);
+        pRockTask->posZ = g_BattleSummonNeoBahamutRock1SpawnTaskSlot->offsetZ * fraction >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            randVel = 0x64;
+            randVel = 100;
         } else {
-            randVel = rand() % 0x64;
+            randVel = rand() % 100;
         }
         velocityMagnitude = randVel;
-        pRockTask->velocityX = velocityMagnitude * SinFixed(fraction) >> 0xC;
+        pRockTask->velocityX = velocityMagnitude * SinFixed(fraction) >> 12;
         pRockTask->velocityY = 0;
-        pRockTask->velocityZ = velocityMagnitude * CosFixed(fraction) >> 0xC;
+        pRockTask->velocityZ = velocityMagnitude * CosFixed(fraction) >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            sizeRand = 0x200;
+            sizeRand = 512;
         } else {
-            sizeRand = rand() % 0x100 + 0x100;
+            sizeRand = rand() % 256 + 256;
         }
         pRockTask->scale = sizeRand;
         pRockTask->randomAngles = rand() & 0xFFFFFF;
@@ -2342,14 +2342,14 @@ void __cdecl BattleFx_SummonNeoBahamutRock1ModelTask(void)
         g_BattleSummonNeoBahamutRock1TaskSlot = (BattleFxShardMeshRotation *)Gfx_GetPsxScratchpadPtr(0);
     }
     stage = rockPtr->frame;
-    if (stage < 0x14) {
+    if (stage < 20) {
         g_BattleNeoBahamutParticleDrawRequest.flags = 0x80;
         g_BattleNeoBahamutParticleDrawRequest.fadeLevel = 0;
         g_BattleNeoBahamutParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(((int *)&g_BattleNeoBahamutPrimaryResourceIds)[rockPtr->resourceIndex], g_BattleSummonNeoBahamutLoadedResTable);
     } else {
-        stage -= 0x14;
+        stage -= 20;
         if (stage < 5) {
-            progress = (stage << 0xC) / 5;
+            progress = (stage << 12) / 5;
             g_BattleNeoBahamutParticleDrawRequest.flags = 0x88;
             g_BattleNeoBahamutParticleDrawRequest.fadeLevel = progress;
             g_BattleNeoBahamutParticleDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject((&g_BattleNeoBahamutPrimaryResourceIds.fadeResourceIds)[rockPtr->resourceIndex], g_BattleSummonNeoBahamutLoadedResTable);
@@ -2360,7 +2360,7 @@ void __cdecl BattleFx_SummonNeoBahamutRock1ModelTask(void)
     }
     if (rockPtr->alpha != 0) {
         progress = 0x1000 - g_BattleNeoBahamutParticleDrawRequest.fadeLevel;
-        g_BattleNeoBahamutParticleDrawRequest.fadeLevel = 0x1000 - (progress * (0x1000 - rockPtr->alpha) >> 0xC);
+        g_BattleNeoBahamutParticleDrawRequest.fadeLevel = 4096 - (progress * (4096 - rockPtr->alpha) >> 12);
     }
     g_BattleSummonNeoBahamutRock1TaskSlot->angleX = rockPtr->angleX;
     g_BattleSummonNeoBahamutRock1TaskSlot->angleY = rockPtr->angleY;
@@ -2386,7 +2386,7 @@ void __cdecl BattleFx_SummonNeoBahamutRock1ModelTask(void)
             rockPtr->resourceIndex = 0xFFFF;
         } else {
             rockPtr->posZ += rockPtr->velocityZ;
-            rockPtr->velocityY += 0x32;
+            rockPtr->velocityY += 50;
             rockPtr->angleX += 8;
             rockPtr->angleY += 0x20;
             rockPtr->angleZ += 0x30;
@@ -2410,14 +2410,14 @@ void __cdecl BattleFx_SummonNeoBahamutCloud1ModelTask(void)
         g_BattleSummonNeoBahamutCloud1InitFlag |= 1;
         g_BattleSummonNeoBahamutCloud1TaskSlot = (BattleFxNeoBahamutCloud1Slot *)Gfx_GetPsxScratchpadPtr(0);
     }
-    g_BattleSummonNeoBahamutCloud1ModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(0xE, g_BattleSummonNeoBahamutLoadedResTable);
+    g_BattleSummonNeoBahamutCloud1ModelDrawRequest.modelGroup = Gfx_ModelTableGetRenderObject(14, g_BattleSummonNeoBahamutLoadedResTable);
     stage = taskPtr->frameCounter;
-    if (stage < 0xF) {
+    if (stage < 15) {
         g_BattleSummonNeoBahamutCloud1ModelDrawRequest.fadeLevel = 0;
     } else {
-        stage -= 0xF;
-        if (stage < 0x1E) {
-            progress = (stage << 0xC) / 0x1E;
+        stage -= 15;
+        if (stage < 30) {
+            progress = (stage << 12) / 30;
             g_BattleSummonNeoBahamutCloud1ModelDrawRequest.fadeLevel = progress;
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -2460,24 +2460,24 @@ void __cdecl BattleFx_SummonNeoBahamutCloud2ModelTask(void)
         g_BattleSummonNeoBahamutCloud2TaskSlot = (BattleSummonCloudSlot *)Gfx_GetPsxScratchpadPtr(0);
     }
     if (taskPtr->phase == 0) {
-        g_BattleSummonNeoBahamutCloud2VertexData.viewportOriginX = ((g_BattleViewportWidth - g_BattleUiScale * 0xA0) / 2) + g_BattleViewportOriginX;
+        g_BattleSummonNeoBahamutCloud2VertexData.viewportOriginX = ((g_BattleViewportWidth - g_BattleUiScale * 160) / 2) + g_BattleViewportOriginX;
         (g_BattleSummonNeoBahamutCloud2VertexData.viewportOriginY) = (short)g_BattleViewportOriginY;
-        (g_BattleSummonNeoBahamutCloud2VertexData.dataOffset) = g_BattleUiScale * 0xA0;
+        (g_BattleSummonNeoBahamutCloud2VertexData.dataOffset) = g_BattleUiScale * 160;
         (g_BattleSummonNeoBahamutCloud2VertexData.viewportBottomY) = g_BattleSceneViewportHeight + g_BattleViewportOriginY;
     }
-    g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer1.modelGroup = Gfx_ModelTableGetRenderObject(0xB, g_BattleSummonNeoBahamutLoadedResTable);
-    g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer2ModelGroup = Gfx_ModelTableGetRenderObject(0xC, g_BattleSummonNeoBahamutLoadedResTable);
+    g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer1.modelGroup = Gfx_ModelTableGetRenderObject(11, g_BattleSummonNeoBahamutLoadedResTable);
+    g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer2ModelGroup = Gfx_ModelTableGetRenderObject(12, g_BattleSummonNeoBahamutLoadedResTable);
     stage = taskPtr->phase;
     if (stage < 0) {
-        g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer1.fadeLevel = 0x1000;
+        g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer1.fadeLevel = 4096;
     } else {
         stage = stage;
-        if (stage < 0x1E) {
-            progress = (stage << 0xC) / 0x1E;
-            g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer1.fadeLevel = 0x1000 - progress;
+        if (stage < 30) {
+            progress = (stage << 12) / 30;
+            g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer1.fadeLevel = 4096 - progress;
         } else {
-            stage -= 0x1E;
-            if (stage < 0x37) {
+            stage -= 30;
+            if (stage < 55) {
                 g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer1.fadeLevel = 0;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -2487,12 +2487,12 @@ void __cdecl BattleFx_SummonNeoBahamutCloud2ModelTask(void)
     }
     stage = taskPtr->phase;
     if (stage < 0) {
-        g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer2FadeLevel = 0x1000;
+        g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer2FadeLevel = 4096;
     } else {
         stage = stage;
-        if (stage < 0x1E) {
-            progress = (stage << 0xC) / 0x1E;
-            g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer2FadeLevel = 0x1000 - progress;
+        if (stage < 30) {
+            progress = (stage << 12) / 30;
+            g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer2FadeLevel = 4096 - progress;
         } else {
             g_BattleSummonNeoBahamutCloud2ModelDrawRequest.layer2FadeLevel = 0;
         }
@@ -2501,13 +2501,13 @@ void __cdecl BattleFx_SummonNeoBahamutCloud2ModelTask(void)
         g_BattleSummonNeoBahamutCloud2VertexData.viewportOriginX = (short)g_BattleViewportOriginX;
         (g_BattleSummonNeoBahamutCloud2VertexData.dataOffset) = (short)g_BattleViewportWidth;
     }
-    progress = (taskPtr->phase << 0xC) / 0x55;
+    progress = (taskPtr->phase << 12) / 85;
     progress = BattleFx_NeoBahamutApplyCameraEasing(progress, 0x1C0);
-    taskPtr->posX = (progress * 0x4FB0 >> 0xC) + 0x2580;
+    taskPtr->posX = (progress * 0x4FB0 >> 12) + 9600;
     SetDrawColorRGB(0, 0, 0);
     g_BattleSummonNeoBahamutCloud2TaskSlot->angleY = 0;
     g_BattleSummonNeoBahamutCloud2TaskSlot->angleX = 0;
-    g_BattleSummonNeoBahamutCloud2TaskSlot->phaseStep = taskPtr->phase * 0x18;
+    g_BattleSummonNeoBahamutCloud2TaskSlot->phaseStep = taskPtr->phase * 24;
     RotMatrix(&g_BattleSummonNeoBahamutCloud2TaskSlot->rotation, &g_BattleSummonNeoBahamutCloud2TaskSlot->matrix);
     g_BattleSummonNeoBahamutCloud2TaskSlot->matrix.t[0] = taskPtr->posX;
     g_BattleSummonNeoBahamutCloud2TaskSlot->matrix.t[1] = taskPtr->posY;
@@ -2580,20 +2580,20 @@ void __cdecl BattleFx_SummonNeoBahamutSkyMaskModelTask(void)
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSummonNeoBahamutCloud2VertexData.resource) = Gfx_ModelTableGetRenderObject(4, g_BattleSummonNeoBahamutLoadedResTable);
     stage = taskPtr->frameCounter;
-    if (stage < 0xA) {
-        (g_BattleSummonNeoBahamutSkyMaskVertexData1.scale) = 0xF00;
+    if (stage < 10) {
+        (g_BattleSummonNeoBahamutSkyMaskVertexData1.scale) = 0xF00 /* 0.9375 */;
         g_BattleSummonNeoBahamutSkyMaskVertexData1.m00 = (g_BattleSummonNeoBahamutSkyMaskVertexData1.scale);
         (g_BattleSummonNeoBahamutSkyMaskVertexData1.translateY) = 0xF830;
         (g_BattleSummonNeoBahamutSkyMaskVertexData2.maskScale) = 0xF00;
         g_BattleSummonNeoBahamutSkyMaskVertexData2.m00 = (g_BattleSummonNeoBahamutSkyMaskVertexData2.maskScale);
         (g_BattleSummonNeoBahamutSkyMaskVertexData2.translateY) = 0xF830;
     } else {
-        stage -= 0xA;
-        if (stage < 0x5A) {
-            progress = (stage << 0xC) / 0x5A;
-            (g_BattleSummonNeoBahamutSkyMaskVertexData1.scale) = (progress * 0x780 >> 0xC) + 0xF00;
+        stage -= 10;
+        if (stage < 90) {
+            progress = (stage << 12) / 90;
+            (g_BattleSummonNeoBahamutSkyMaskVertexData1.scale) = (progress * 0x780 >> 12) + 0xF00;
             g_BattleSummonNeoBahamutSkyMaskVertexData1.m00 = (g_BattleSummonNeoBahamutSkyMaskVertexData1.scale);
-            (g_BattleSummonNeoBahamutSkyMaskVertexData1.translateY) = -((progress * 0x3E8 >> 0xC) + 0x7D0);
+            (g_BattleSummonNeoBahamutSkyMaskVertexData1.translateY) = -((progress * 0x3E8 >> 12) + 2000);
         } else {
             taskPtr->ownerSlot = BATTLE_TASK_FREE;
             return;
@@ -2629,7 +2629,7 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight3ModelsTask(void)
         return;
     }
     spawnBudget = (taskPtr->spawnIndex * 0x60 & 0xFF) + 0x60;
-    while (spawnBudget >= 0x100) {
+    while (spawnBudget >= 256) {
         light = (BattleFxLineLightTask *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutLineLight3ModelTask);
         light->spawnIndex = taskPtr->spawnIndex;
         if (DEAD_IN_RETAIL != 0) {
@@ -2655,10 +2655,10 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight3ModelsTask(void)
             light->offsetX = -light->offsetX;
             light->offsetY = -light->offsetY;
         }
-        light->rotY = 0x400;
+        light->rotY = 0x400 /* 90 deg */;
         light->rotZ = 0;
         if (DEAD_IN_RETAIL != 0) {
-            bytesRoll = 0x8000;
+            bytesRoll = 0x8000 /* 2880 deg */;
         } else {
             bytesRoll = rand() % 0x3000 + 0x5000;
         }
@@ -2666,7 +2666,7 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight3ModelsTask(void)
         spawnBudget -= 0x100;
     }
     (taskPtr->spawnIndex)++;
-    if (taskPtr->spawnIndex >= 0x1E) {
+    if (taskPtr->spawnIndex >= 30) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2693,17 +2693,17 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight3ModelTask(void)
     }
     (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.lineLightResource) = Gfx_ModelTableGetRenderObject(3, g_BattleSummonNeoBahamutLoadedResTable);
     stage = pLight->step;
-    if (stage < 0xA) {
-        progress = (stage << 0xC) / 0xA;
+    if (stage < 10) {
+        progress = (stage << 12) / 10;
         (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.phase) = 0x1000 - progress;
     } else {
-        stage -= 0xA;
+        stage -= 10;
         if (stage < 5) {
             (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.phase) = 0;
         } else {
             stage -= 5;
-            if (stage < 0xA) {
-                progress = (stage << 0xC) / 0xA;
+            if (stage < 10) {
+                progress = (stage << 12) / 10;
                 (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.phase) = progress;
             } else {
                 pLight->ownerSlot = BATTLE_TASK_FREE;
@@ -2716,8 +2716,8 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight3ModelTask(void)
     g_BattleSummonNeoBahamutLineLight3TaskSlot->matrix.t[1] = pLight->posY;
     g_BattleSummonNeoBahamutLineLight3TaskSlot->matrix.t[2] = pLight->posZ;
     g_BattleSummonNeoBahamutLineLight3TaskSlot->intensity = pLight->intensity;
-    g_BattleSummonNeoBahamutLineLight3TaskSlot->scaleZ = 0x2000;
-    g_BattleSummonNeoBahamutLineLight3TaskSlot->scaleY = 0x2000;
+    g_BattleSummonNeoBahamutLineLight3TaskSlot->scaleZ = 0x2000 /* 2.0 */;
+    g_BattleSummonNeoBahamutLineLight3TaskSlot->scaleY = 0x2000 /* 2.0 */;
     ScaleMatrix(&g_BattleSummonNeoBahamutLineLight3TaskSlot->matrix, g_BattleSummonNeoBahamutLineLight3TaskSlot);
     MultiplyMatrix(&g_BattleSummonNeoBahamutComposedMatrix, &g_BattleSummonNeoBahamutLineLight3TaskSlot->matrix, &g_BattleSummonNeoBahamutLineLight3TaskSlot->matrix);
     SetRotMatrix(&g_BattleSummonNeoBahamutLineLight3TaskSlot->matrix);
@@ -2726,7 +2726,7 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight3ModelTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)(((char *)&g_BattleSummonNeoBahamutSkyMaskWorkingBlob + 0x70)), g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (pLight->step)++;
-        if (pLight->step + pLight->ownerSlot >= 0x46) {
+        if (pLight->step + pLight->ownerSlot >= 70) {
             pLight->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -2754,7 +2754,7 @@ void __cdecl BattleFx_SummonNeoBahamutCloudSeaModelTask(void)
         g_BattleSummonNeoBahamutCloudSeaInitFlag |= 1;
         g_BattleSummonNeoBahamutCloudSeaTaskSlot = (BattleFxNeoBahamutCloudSea *)Gfx_GetPsxScratchpadPtr(0);
     }
-    (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.cloudSeaResource) = Gfx_ModelTableGetRenderObject(0xD, g_BattleSummonNeoBahamutLoadedResTable);
+    (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.cloudSeaResource) = Gfx_ModelTableGetRenderObject(13, g_BattleSummonNeoBahamutLoadedResTable);
     if (g_pBattle3dScene != 0) {
         (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.modelRequest) = g_pBattle3dScene->modelRequest;
     } else {
@@ -2762,30 +2762,30 @@ void __cdecl BattleFx_SummonNeoBahamutCloudSeaModelTask(void)
     }
     if (taskPtr->frameCounter == 0) {
         g_BattleSummonNeoBahamutCloudSeaTaskSlot->rotX = 0;
-        g_BattleSummonNeoBahamutCloudSeaTaskSlot->rotY = 0x400;
+        g_BattleSummonNeoBahamutCloudSeaTaskSlot->rotY = 0x400 /* 90 deg */;
         g_BattleSummonNeoBahamutCloudSeaTaskSlot->rotZ = 0;
         RotMatrix(&g_BattleSummonNeoBahamutCloudSeaTaskSlot->rotation, &g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix);
         g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[0] = 0x3E8;
         g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[1] = 0x1388;
         g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[2] = 0;
-        g_BattleSummonNeoBahamutCloudSeaTaskSlot->scaleZ = 0x3800;
-        g_BattleSummonNeoBahamutCloudSeaTaskSlot->scaleY = 0x3800;
-        g_BattleSummonNeoBahamutCloudSeaTaskSlot->scaleX = 0x3800;
+        g_BattleSummonNeoBahamutCloudSeaTaskSlot->scaleZ = 0x3800 /* 3.5 */;
+        g_BattleSummonNeoBahamutCloudSeaTaskSlot->scaleY = 0x3800 /* 3.5 */;
+        g_BattleSummonNeoBahamutCloudSeaTaskSlot->scaleX = 0x3800 /* 3.5 */;
         ScaleMatrix(&g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix, &g_BattleSummonNeoBahamutCloudSeaTaskSlot->scaleX);
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0xDA) {
+    if (stage < 218) {
         (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.cloudScroll) = 0;
     } else {
-        stage -= 0xDA;
-        if (stage < 0x2A) {
-            progress = (stage << 0xC) / 0x2A;
-            (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.cloudScroll) = progress * 0xC00 >> 0xC;
+        stage -= 218;
+        if (stage < 42) {
+            progress = (stage << 12) / 42;
+            (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.cloudScroll) = progress * 0xC00 /* 0.75 */ >> 12;
         } else {
-            stage -= 0x2A;
+            stage -= 42;
             if (stage < 0) {
-                progress = 0x1000 - (stage << 0xC) / 0x2A;
-                (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.cloudScroll) = progress * 0xC00 >> 0xC;
+                progress = 0x1000 - (stage << 12) / 42;
+                (g_BattleSummonNeoBahamutSkyMaskWorkingBlob.cloudScroll) = progress * 0xC00 /* 0.75 */ >> 12;
             } else {
                 stage = stage;
                 if (stage < 0) {
@@ -2808,10 +2808,10 @@ void __cdecl BattleFx_SummonNeoBahamutCloudSeaModelTask(void)
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)(((char *)&g_BattleSummonNeoBahamutSkyMaskWorkingBlob + 0x90)), g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST_2, 0, g_BattleOverlayDrawListHead);
     if (g_BattleIsPaused == 0) {
         (taskPtr->frameCounter)++;
-        progress = (taskPtr->frameCounter << 0xC) / 0x104;
-        g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[0] = (progress * -0x7D0 >> 0xC) + 0x3E8;
-        g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[1] = (UNFOLDED(0) >> 0xC) + 0x1388;
-        g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[2] = UNFOLDED(0) >> 0xC;
+        progress = (taskPtr->frameCounter << 12) / 260;
+        g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[0] = (progress * -0x7D0 >> 12) + 0x3E8;
+        g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[1] = (UNFOLDED(0) >> 12) + 0x1388;
+        g_BattleSummonNeoBahamutLineLight3WorkingBlob.matrix.t[2] = UNFOLDED(0) >> 12;
     }
 }
 
@@ -2841,12 +2841,12 @@ void __cdecl BattleFx_SummonNeoBahamutBackSkyPrimitiveTask(void)
         g_BattleSummonNeoBahamutBackSkyTaskSlot = (BattleFxNeoBahamutBackSkyState *)Gfx_GetPsxScratchpadPtr(0);
     }
     stage = taskPtr->frameCounter;
-    if (stage < 0xDA) { /* empty first arm: lib/codegen.h */
+    if (stage < 218) { /* empty first arm: lib/codegen.h */
     } else {
-        stage -= 0xDA;
-        if (stage < 0x2A) {
-            weight = (stage << 0xC) / 0x2A;
-            weight = weight * 0xC00 >> 0xC;
+        stage -= 218;
+        if (stage < 42) {
+            weight = (stage << 12) / 42;
+            weight = weight * 0xC00 /* 0.75 */ >> 12;
             SetDrawColorRGB(0, 0, 0);
             Gfx_ShadePsxVertexColor((CVECTOR *)&g_BattleSummonNeoBahamutBackSkyShadeColor1, weight, (CVECTOR *)&colorA);
             Gfx_ShadePsxVertexColor((CVECTOR *)&g_BattleSummonNeoBahamutBackSkyShadeColor2, weight, (CVECTOR *)&colorB);
@@ -2856,10 +2856,10 @@ void __cdecl BattleFx_SummonNeoBahamutBackSkyPrimitiveTask(void)
             g_BattleSummonNeoBahamutBackSkyPrims1[g_BattleSummonNeoBahamutBackSkyPrimIndex].color3 = g_BattleSummonNeoBahamutBackSkyPrims2[g_BattleSummonNeoBahamutBackSkyPrimIndex].color0;
             g_BattleSummonNeoBahamutBackSkyPrims1[g_BattleSummonNeoBahamutBackSkyPrimIndex].color2 = g_BattleSummonNeoBahamutBackSkyPrims1[g_BattleSummonNeoBahamutBackSkyPrimIndex].color3;
         } else {
-            stage -= 0x2A;
-            if (stage < 0xF) {
-                weight = 0x1000 - (stage << 0xC) / 0xF;
-                weight = weight * 0xC00 >> 0xC;
+            stage -= 42;
+            if (stage < 15) {
+                weight = 0x1000 - (stage << 12) / 15;
+                weight = weight * 0xC00 /* 0.75 */ >> 12;
                 SetDrawColorRGB(0, 0, 0);
                 Gfx_ShadePsxVertexColor((CVECTOR *)&g_BattleSummonNeoBahamutBackSkyShadeColor1, weight, (CVECTOR *)&colorA);
                 Gfx_ShadePsxVertexColor((CVECTOR *)&g_BattleSummonNeoBahamutBackSkyShadeColor2, weight, (CVECTOR *)&colorB);
@@ -2869,8 +2869,8 @@ void __cdecl BattleFx_SummonNeoBahamutBackSkyPrimitiveTask(void)
                 g_BattleSummonNeoBahamutBackSkyPrims1[g_BattleSummonNeoBahamutBackSkyPrimIndex].color3 = g_BattleSummonNeoBahamutBackSkyPrims2[g_BattleSummonNeoBahamutBackSkyPrimIndex].color0;
                 g_BattleSummonNeoBahamutBackSkyPrims1[g_BattleSummonNeoBahamutBackSkyPrimIndex].color2 = g_BattleSummonNeoBahamutBackSkyPrims1[g_BattleSummonNeoBahamutBackSkyPrimIndex].color3;
             } else {
-                stage -= 0xF;
-                if (stage < 0x5F) {
+                stage -= 15;
+                if (stage < 95) {
                     if (stage == 0) {
                         for (primIdx = 0; primIdx < 1; primIdx++) {
                             g_BattleSummonNeoBahamutBackSkyPrims3[primIdx].color = g_BattleSummonNeoBahamutBackSkyShadeColor1 | 0x60000000;
@@ -2891,9 +2891,9 @@ void __cdecl BattleFx_SummonNeoBahamutBackSkyPrimitiveTask(void)
     Gfx_DrawPsxPrimitive((g_BattleSummonNeoBahamutBackSkyPrimIndex << 4) + (char *)&g_BattleSummonNeoBahamutBackSkyPrim3);
     g_BattleSummonNeoBahamutBackSkyTaskSlot->matrix = *&g_BattleSummonNeoBahamutComposedMatrix;
     Gte_OrthonormaliseFromYAxis((BattleOrthoMatrix *)g_BattleSummonNeoBahamutBackSkyTaskSlot);
-    g_BattleSummonNeoBahamutBackSkyTaskSlot->scaleZ = 0x3800;
-    g_BattleSummonNeoBahamutBackSkyTaskSlot->scaleY = 0x3800;
-    g_BattleSummonNeoBahamutBackSkyTaskSlot->scaleX = 0x3800;
+    g_BattleSummonNeoBahamutBackSkyTaskSlot->scaleZ = 0x3800 /* 3.5 */;
+    g_BattleSummonNeoBahamutBackSkyTaskSlot->scaleY = 0x3800 /* 3.5 */;
+    g_BattleSummonNeoBahamutBackSkyTaskSlot->scaleX = 0x3800 /* 3.5 */;
     ScaleMatrix(g_BattleSummonNeoBahamutBackSkyTaskSlot, &g_BattleSummonNeoBahamutBackSkyTaskSlot->scaleX);
     SetRotMatrix((void *)g_BattleSummonNeoBahamutBackSkyTaskSlot);
     SetTransMatrix(g_BattleSummonNeoBahamutBackSkyTaskSlot);
@@ -2907,7 +2907,7 @@ void __cdecl BattleFx_SummonNeoBahamutBackSkyPrimitiveTask(void)
     g_BattleSummonNeoBahamutBackSkyPrims2[g_BattleSummonNeoBahamutBackSkyPrimIndex].vertex0Y = g_BattleSummonNeoBahamutBackSkyPrims2[g_BattleSummonNeoBahamutBackSkyPrimIndex].vertex1Y;
     g_BattleSummonNeoBahamutBackSkyPrims2[g_BattleSummonNeoBahamutBackSkyPrimIndex].vertex3Y = g_BattleSummonNeoBahamutBackSkyTaskSlot->projectedY3;
     g_BattleSummonNeoBahamutBackSkyPrims2[g_BattleSummonNeoBahamutBackSkyPrimIndex].vertex2Y = g_BattleSummonNeoBahamutBackSkyPrims2[g_BattleSummonNeoBahamutBackSkyPrimIndex].vertex3Y;
-    if (taskPtr->frameCounter < 0x15E) {
+    if (taskPtr->frameCounter < 350) {
         Gfx_SetBlendFactorPair(FLOAT_0_9999_BITS, FLOAT_ONE_BITS);
         Gfx_DrawPsxPrimitive(g_BattleSummonNeoBahamutBackSkyPrimIndex * 0x24 + (char *)&g_BattleSummonNeoBahamutBackSkyPrim1);
         Gfx_SetBlendFactorPair(FLOAT_0_9999_BITS, FLOAT_ONE_BITS);
@@ -2941,12 +2941,12 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnBallSpritesTask(void)
         ballPtr = (BattleFxNeoBahamutBallSprite *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutBallSpriteTask);
         g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[0] = rand() & 0xFFF;
         g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[1] = 0xFC00;
-        g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[2] = rand() % 0x300;
+        g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[2] = rand() % 768;
         RotMatrix((SVECTOR *)g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector, &g_BattleSummonNeoBahamutBallSpriteWorkingBlob.matrix);
         if (DEAD_IN_RETAIL != 0) {
             magnitude = 0x1388;
         } else {
-            magnitude = rand() % 0x7D0 + 0xBB8;
+            magnitude = rand() % 2000 + 3000;
         }
         g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[0] = magnitude;
         g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[1] = 0;
@@ -2955,18 +2955,18 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnBallSpritesTask(void)
         ballPtr->posX = (g_BattleSummonNeoBahamutAnchorPosition[0]) + g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[0];
         ballPtr->posY = (g_BattleSummonNeoBahamutAnchorPosition[1]) + g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[1];
         ballPtr->posZ = (g_BattleSummonNeoBahamutAnchorPosition[2]) + g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[2];
-        ballPtr->velocityX = -g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[0] / 0x14;
-        ballPtr->velocityY = -g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[1] / 0x14;
-        ballPtr->velocityZ = -g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[2] / 0x14;
+        ballPtr->velocityX = -g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[0] / 20;
+        ballPtr->velocityY = -g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[1] / 20;
+        ballPtr->velocityZ = -g_BattleSummonNeoBahamutBallSpriteWorkingBlob.vector[2] / 20;
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x600;
         } else {
-            bytes = rand() % 0x300 + 0x300;
+            bytes = rand() % 768 + 768;
         }
         ballPtr->scale = bytes;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0x16) {
+    if (taskPtr->frameCounter >= 22) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -2983,16 +2983,16 @@ void __cdecl BattleFx_SummonNeoBahamutBallSpriteTask(void)
     BattleFxNeoBahamutBallSprite *ballPtr;
 
     ballPtr = (BattleFxNeoBahamutBallSprite *)BATTLE_CURRENT_TASK_SLOT;
-    (((BattleFxNeoBahamutParam *)&g_BattleSummonNeoBahamutBackSkyVertex3)->resourceHandle) = Gfx_ModelTableGetLoadedRecord(0x11, g_BattleSummonNeoBahamutLoadedResTable);
-    (((BattleFxNeoBahamutParam *)&g_BattleSummonNeoBahamutBackSkyVertex3)->drawObj) = Gfx_ModelTableGetSpriteObject(0x11, g_BattleSummonNeoBahamutLoadedResTable);
+    (((BattleFxNeoBahamutParam *)&g_BattleSummonNeoBahamutBackSkyVertex3)->resourceHandle) = Gfx_ModelTableGetLoadedRecord(17, g_BattleSummonNeoBahamutLoadedResTable);
+    (((BattleFxNeoBahamutParam *)&g_BattleSummonNeoBahamutBackSkyVertex3)->drawObj) = Gfx_ModelTableGetSpriteObject(17, g_BattleSummonNeoBahamutLoadedResTable);
     stage = ballPtr->frameIndex;
-    if (stage < 0xA) {
-        progress = (stage << 0xC) / 0xA;
+    if (stage < 10) {
+        progress = (stage << 12) / 10;
         SetDrawColorRGB(0, 0, 0);
         Gfx_ShadePsxVertexColor(g_BattleSummonNeoBahamutBallSpriteColor2, 0x1000 - progress, g_BattleSummonNeoBahamutBallSpriteColor1);
     } else {
-        stage -= 0xA;
-        if (stage < 0xA) {
+        stage -= 10;
+        if (stage < 10) {
             (*(int *)&g_BattleSummonNeoBahamutBallSpriteColor1) = 0x2E808080;
         } else {
             ballPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -3024,19 +3024,19 @@ void __cdecl BattleFx_SummonNeoBahamutCircleModelTask(void)
     taskPtr = BATTLE_CURRENT_TASK_SLOT;
     (((BattleFxFlareSpriteSlot *)&g_BattleSummonNeoBahamutBallSpriteColor2)->tableValue) = Gfx_ModelTableGetRenderObject(1, g_BattleSummonNeoBahamutLoadedResTable);
     stage = taskPtr->frameCounter;
-    if (stage < 0x25) {
-        progress = (stage << 0xC) / 0x25;
-        scale = progress << 0xB >> 0xC;
+    if (stage < 37) {
+        progress = (stage << 12) / 37;
+        scale = progress << 11 >> 12;
     } else {
-        stage -= 0x25;
-        if (stage < 0xA) {
-            progress = (stage << 0xC) / 0xA;
-            scale = (progress * 0x1800 >> 0xC) + 0x800;
+        stage -= 37;
+        if (stage < 10) {
+            progress = (stage << 12) / 10;
+            scale = (progress * 0x1800 /* 1.5 */ >> 12) + 0x800;
         } else {
-            stage -= 0xA;
-            if (stage < 0xF) {
-                progress = (stage << 0xC) / 0xF;
-                scale = (progress * -0x1800 >> 0xC) + 0x2000;
+            stage -= 10;
+            if (stage < 15) {
+                progress = (stage << 12) / 15;
+                scale = (progress * -0x1800 /* 1.5 */ >> 12) + 0x2000;
             } else {
                 taskPtr->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -3071,18 +3071,18 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight1Task(void)
         return;
     }
     spawnBudget = (taskPtr->spawnIndex << 7 & 0xFF) + 0x80;
-    while (spawnBudget >= 0x100) {
+    while (spawnBudget >= 256) {
         pLine = (BattleFxNeoBahamutLineSpawn *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutLineLight1PrimitiveTask);
         pLine->spawnIndex = taskPtr->spawnIndex;
         *(Int64Pair *)((char *)pLine + 4) = *(Int64Pair *)(&g_BattleSummonNeoBahamutAnchorPosition);
         pLine->rotY = 0;
         pLine->rotX = 0;
-        g_BattleSummonNeoBahamutCircleModelAngle = g_BattleSummonNeoBahamutCircleModelAngle + (rand() & 0x7FF) + 0x400;
+        g_BattleSummonNeoBahamutCircleModelAngle = g_BattleSummonNeoBahamutCircleModelAngle + (rand() & 0x7FF) + 1024;
         pLine->angle = (short)g_BattleSummonNeoBahamutCircleModelAngle;
         if (DEAD_IN_RETAIL != 0) {
-            angularStep = 0x40;
+            angularStep = 64;
         } else {
-            angularStep = rand() % 0x20 + 0x20;
+            angularStep = rand() % 32 + 32;
         }
         pLine->angleStep = angularStep;
         if ((rand() & 0x800) != 0) {
@@ -3091,13 +3091,13 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight1Task(void)
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x1800;
         } else {
-            bytes = rand() % 0x1000 + 0x800;
+            bytes = rand() % 4096 + 2048;
         }
         pLine->size = bytes;
         spawnBudget -= 0x100;
     }
     (taskPtr->spawnIndex)++;
-    if (taskPtr->spawnIndex >= 0x1B) {
+    if (taskPtr->spawnIndex >= 27) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3124,8 +3124,8 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight1PrimitiveTask(void)
     }
     stage = pLight->step;
     if (stage < 5) {
-        progress = (stage << 0xC) / 5;
-        g_BattleSummonNeoBahamutLineLight1TaskSlot->blendedValue = pLight->intensity * progress >> 0xC;
+        progress = (stage << 12) / 5;
+        g_BattleSummonNeoBahamutLineLight1TaskSlot->blendedValue = pLight->intensity * progress >> 12;
     } else {
         stage -= 5;
         if (stage < 5) {
@@ -3133,8 +3133,8 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight1PrimitiveTask(void)
         } else {
             stage -= 5;
             if (stage < 5) {
-                progress = (stage << 0xC) / 5;
-                g_BattleSummonNeoBahamutLineLight1TaskSlot->blendedValue = pLight->intensity * (0x1000 - progress) >> 0xC;
+                progress = (stage << 12) / 5;
+                g_BattleSummonNeoBahamutLineLight1TaskSlot->blendedValue = pLight->intensity * (0x1000 - progress) >> 12;
             } else {
                 pLight->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -3149,8 +3149,8 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight1PrimitiveTask(void)
     g_BattleSummonNeoBahamutLineLight1TaskSlot->matrix.t[0] = g_BattleSummonNeoBahamutLineLight1TaskSlot->screenX - g_BattleSummonNeoBahamutLineLight1TaskSlot->geomOffsetX;
     g_BattleSummonNeoBahamutLineLight1TaskSlot->matrix.t[1] = g_BattleSummonNeoBahamutLineLight1TaskSlot->screenY - g_BattleSummonNeoBahamutLineLight1TaskSlot->geomOffsetY;
     g_BattleSummonNeoBahamutLineLight1TaskSlot->matrix.t[2] = GetGeomScreen();
-    g_BattleSummonNeoBahamutLineLight1TaskSlot->scaleZ = 0x1000;
-    g_BattleSummonNeoBahamutLineLight1TaskSlot->scaleY = 0x1000;
+    g_BattleSummonNeoBahamutLineLight1TaskSlot->scaleZ = 0x1000 /* 1.0 */;
+    g_BattleSummonNeoBahamutLineLight1TaskSlot->scaleY = 0x1000 /* 1.0 */;
     ScaleMatrix(&g_BattleSummonNeoBahamutLineLight1TaskSlot->matrix, g_BattleSummonNeoBahamutLineLight1TaskSlot);
     SetRotMatrix(&g_BattleSummonNeoBahamutLineLight1TaskSlot->matrix);
     SetTransMatrix(&g_BattleSummonNeoBahamutLineLight1TaskSlot->matrix);
@@ -3215,14 +3215,14 @@ void __cdecl BattleFx_SummonNeoBahamutBreathModelTask(void)
     (g_BattleSummonNeoBahamutLineLight1Param2.breathModelGroup) = Gfx_ModelTableGetRenderObject(0, g_BattleSummonNeoBahamutLoadedResTable);
     stage = taskPtr->frameCounter;
     if (stage < 4) {
-        progress = (stage << 0xC) / 4;
-        travel = progress * 0x7B0C >> 0xC;
-        g_BattleSummonNeoBahamutLineLight2Step[0] = -(travel << 0xC) / 0x2328;
+        progress = (stage << 12) / 4;
+        travel = progress * 0x7B0C >> 12;
+        g_BattleSummonNeoBahamutLineLight2Step[0] = -(travel << 12) / 9000;
         if (g_BattleIsPaused == 0) {
             spawnBudget = (stage << 9 & 0xFF) + 0x200;
-            positionZ = travel - 0x1F4;
+            positionZ = travel - 500;
             separation = 0xF61;
-            while (spawnBudget >= 0x100) {
+            while (spawnBudget >= 256) {
                 pChild = (BattleFxNeoBahamutBreathSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutBreathChildModelTask);
                 pChild->posX = 0;
                 pChild->posY = 0;
@@ -3238,21 +3238,21 @@ void __cdecl BattleFx_SummonNeoBahamutBreathModelTask(void)
         shift = 0xC;
     } else {
         stage -= 4;
-        if (stage < 0x23) {
+        if (stage < 35) {
             orderingTable = g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED;
             shift = 0xC;
         } else {
-            stage -= 0x23;
-            if (stage < 0x28) {
-                progress = (stage << 0xC) / 0x28;
+            stage -= 35;
+            if (stage < 40) {
+                progress = (stage << 12) / 40;
                 progress = BattleFx_NeoBahamutApplyCameraEasing(progress, 0x180);
-                g_BattleSummonNeoBahamutLineLight2Offset[0] = (progress * 0x2B00 >> 0xC) + 0x500;
+                g_BattleSummonNeoBahamutLineLight2Offset[0] = (progress * 0x2B00 /* 2.6875 */ >> 12) + 0x500;
                 g_BattleSummonNeoBahamutLineLight2Rotation[0] = -g_BattleSummonNeoBahamutLineLight2Offset[0];
                 orderingTable = g_BattleCurrentOrderingTable + 0x78;
                 shift = 0;
             } else {
-                stage -= 0x28;
-                if (stage < 0x1E) {
+                stage -= 40;
+                if (stage < 30) {
                     orderingTable = g_BattleCurrentOrderingTable + 0x78;
                     shift = 0;
                 } else {
@@ -3289,12 +3289,12 @@ void __cdecl BattleFx_SummonNeoBahamutBreathChildModelTask(void)
         g_BattleSummonNeoBahamutBreathChildInitFlag |= 1;
         g_BattleSummonNeoBahamutBreathScratch.scratch = (BattleFxNeoBahamutBreathScratch *)Gfx_GetPsxScratchpadPtr(0);
     }
-    (g_BattleSummonNeoBahamutLineLight1Param2.resourceHandle) = Gfx_ModelTableGetRenderObject(0xF, g_BattleSummonNeoBahamutLoadedResTable);
+    (g_BattleSummonNeoBahamutLineLight1Param2.resourceHandle) = Gfx_ModelTableGetRenderObject(15, g_BattleSummonNeoBahamutLoadedResTable);
     stage = child->frameIndex;
-    if (stage < 0xA) {
-        ratio = (stage << 0xC) / 0xA;
+    if (stage < 10) {
+        ratio = (stage << 12) / 10;
         ratio = BattleFx_NeoBahamutApplyCameraEasing(ratio, 0x1FF);
-        g_BattleSummonNeoBahamutBreathScratch.scratch->scaleZ = (ratio << 0xA >> 0xC) + 0x400;
+        g_BattleSummonNeoBahamutBreathScratch.scratch->scaleZ = (ratio << 10 >> 12) + 0x400;
         g_BattleSummonNeoBahamutBreathScratch.scratch->scaleY = g_BattleSummonNeoBahamutBreathScratch.scratch->scaleZ;
         g_BattleSummonNeoBahamutBreathScratch.scratch->scaleX = g_BattleSummonNeoBahamutBreathScratch.scratch->scaleY;
         (g_BattleSummonNeoBahamutLineLight1Param2.childFadeLevel) = ratio;
@@ -3352,16 +3352,16 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnRock2ModelsTask(void)
         pRockTask = (BattleFxNeoBahamutRock2Spawn *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutRock2ModelTask);
         pRockTask->variant = rand() % 3;
         if (DEAD_IN_RETAIL != 0) {
-            xRand = 0xBB8;
+            xRand = 3000;
         } else {
-            xRand = rand() % 0x1770 - 0xBB8;
+            xRand = rand() % 6000 - 3000;
         }
         pRockTask->posX = xRand;
         pRockTask->posY = 0;
         if (DEAD_IN_RETAIL != 0) {
-            zRand = 0xBB8;
+            zRand = 3000;
         } else {
-            zRand = rand() % 0x1770 - 0xBB8;
+            zRand = rand() % 6000 - 3000;
         }
         pRockTask->posZ = zRand;
         g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetX = (g_BattleSummonNeoBahamutAnchorPosition[0]) - pRockTask->posX;
@@ -3374,33 +3374,33 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnRock2ModelsTask(void)
         }
         NormalizeVectorFixed(g_BattleSummonNeoBahamutRock2SpawnTaskSlot, g_BattleSummonNeoBahamutRock2SpawnTaskSlot);
         if (DEAD_IN_RETAIL != 0) {
-            randVel = 0x1F4;
+            randVel = 500;
         } else {
-            randVel = rand() % 0xC8 + 0x12C;
+            randVel = rand() % 200 + 300;
         }
         rollVal = randVel;
-        pRockTask->velocityX = g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetX * rollVal >> 0xC;
-        pRockTask->velocityY = g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetY * rollVal >> 0xC;
-        pRockTask->velocityZ = g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetZ * rollVal >> 0xC;
+        pRockTask->velocityX = g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetX * rollVal >> 12;
+        pRockTask->velocityY = g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetY * rollVal >> 12;
+        pRockTask->velocityZ = g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetZ * rollVal >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            randAccel = 0x64;
+            randAccel = 100;
         } else {
-            randAccel = rand() % 0x1E + 0x46;
+            randAccel = rand() % 30 + 70;
         }
         rollVal = randAccel;
-        pRockTask->dirX = -g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetX * rollVal >> 0xC;
+        pRockTask->dirX = -g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetX * rollVal >> 12;
         pRockTask->accelerationY = 0;
-        pRockTask->dirZ = -g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetZ * rollVal >> 0xC;
+        pRockTask->dirZ = -g_BattleSummonNeoBahamutRock2SpawnTaskSlot->offsetZ * rollVal >> 12;
         if (DEAD_IN_RETAIL != 0) {
-            sizeRand = 0x120;
+            sizeRand = 288;
         } else {
-            sizeRand = rand() % 0x100 + 0x20;
+            sizeRand = rand() % 256 + 32;
         }
         *(short *)((char *)(*(int *)&g_BattleSummonNeoBahamutBreathChildModelParam) + 0x10) = sizeRand;
         pRockTask->childModelParam = (*(int *)&g_BattleSummonNeoBahamutBreathChildModelParam);
     }
     (task->frameCounter)++;
-    if (task->frameCounter >= 0x28) {
+    if (task->frameCounter >= 40) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3427,12 +3427,12 @@ void __cdecl BattleFx_SummonNeoBahamutRock2ModelTask(void)
         g_BattleSummonNeoBahamutRock2TaskSlot = (BattleFxNeoBahamutRock2State *)Gfx_GetPsxScratchpadPtr(0);
     }
     stage = rockPtr->frameIndex;
-    if (stage < 0x14) {
+    if (stage < 20) {
         (g_BattleSummonNeoBahamutLineLight2WorkingBlob.blendFraction) = 0;
     } else {
-        stage -= 0x14;
-        if (stage < 0xA) {
-            progress = (stage << 0xC) / 0xA;
+        stage -= 20;
+        if (stage < 10) {
+            progress = (stage << 12) / 10;
             (g_BattleSummonNeoBahamutLineLight2WorkingBlob.blendFraction) = progress;
         } else {
             rockPtr->ownerSlot = BATTLE_TASK_FREE;
@@ -3457,14 +3457,14 @@ void __cdecl BattleFx_SummonNeoBahamutRock2ModelTask(void)
         rockPtr->posX += rockPtr->velocityX;
         rockPtr->posY += rockPtr->velocityY;
         rockPtr->posZ += rockPtr->velocityZ;
-        rockPtr->velocityX = (rockPtr->velocityX * 0xF80 >> 0xC) + rockPtr->accelerationX;
-        rockPtr->velocityY = rockPtr->velocityY * 0xF80 >> 0xC;
-        rockPtr->velocityZ = (rockPtr->velocityZ * 0xF80 >> 0xC) + rockPtr->accelerationZ;
-        progress = (rockPtr->frameIndex << 0xC) / 0x1E;
+        rockPtr->velocityX = (rockPtr->velocityX * 0xF80 >> 12) + rockPtr->accelerationX;
+        rockPtr->velocityY = rockPtr->velocityY * 0xF80 >> 12;
+        rockPtr->velocityZ = (rockPtr->velocityZ * 0xF80 >> 12) + rockPtr->accelerationZ;
+        progress = (rockPtr->frameIndex << 12) / 30;
         progress = BattleFx_NeoBahamutApplyCameraEasing(progress, 0xFFFFFD20);
-        rockPtr->rotation->angleX += (short)(progress * 0x312 >> 0xC);
-        rockPtr->rotation->angleY += (short)(UNFOLDED(0) >> 0xC);
-        rockPtr->rotation->angleZ += (short)(progress * 0x25 >> 0xC);
+        rockPtr->rotation->angleX += (short)(progress * 0x312 >> 12);
+        rockPtr->rotation->angleY += (short)(UNFOLDED(0) >> 12);
+        rockPtr->rotation->angleZ += (short)(progress * 0x25 >> 12);
         (rockPtr->frameIndex)++;
     }
 }
@@ -3487,21 +3487,21 @@ void __cdecl BattleFx_SummonNeoBahamutFlash2ModelTask(void)
     local.p = (int)BATTLE_CURRENT_TASK_SLOT;
     (g_BattleSummonNeoBahamutBreathChildModelParam.modelResource) = Gfx_ModelTableGetRenderObject(2, g_BattleSummonNeoBahamutLoadedResTable);
     local.frame = *(short *)((char *)local.p + 2);
-    if (local.frame < 0xF) {
+    if (local.frame < 15) {
         (g_BattleSummonNeoBahamutBreathChildModelParam.rampValue) = 0;
     } else {
-        local.frame -= 0xF;
-        if (local.frame < 0xF) {
-            local.temp = (local.frame << 0xC) / 0xF;
+        local.frame -= 15;
+        if (local.frame < 15) {
+            local.temp = (local.frame << 12) / 15;
             (g_BattleSummonNeoBahamutBreathChildModelParam.rampValue) = (short)local.temp;
         } else {
             *(short *)local.p = 0xFFFF;
             return;
         }
     }
-    local.temp = (*(short *)((char *)local.p + 2) << 0xC) / 0x1E;
+    local.temp = (*(short *)((char *)local.p + 2) << 12) / 0x1E;
     local.temp = BattleFx_NeoBahamutApplyCameraEasing(local.temp, -0x210);
-    local.scale = (local.temp * 0x4B00 >> 0xC) + 0x500;
+    local.scale = (local.temp * 0x4B00 /* 4.6875 */ >> 12) + 0x500;
     BattleFx_SummonNeoBahamutInstallBillboardMatrix((int *)&g_BattleSummonNeoBahamutBillboardWorkingBlob, (short)local.scale, 0);
     SetDrawColorRGB(0, 0, 0);
     g_BattleOverlayDrawListHead = BattleFx_SubmitModelDraw((BattleFxModelDraw *)((&g_BattleSummonNeoBahamutBreathChildModelParam.modelResource)), g_BattleCurrentOrderingTable + BATTLE_OT_SORTED_LAST_3, 0, g_BattleOverlayDrawListHead);
@@ -3533,34 +3533,34 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnRock3ModelsTask(void)
         rock = (BattleFxNeoBahamutRock3Model *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutRock3ModelTask);
         rock->variant = rand() % 3;
         if (DEAD_IN_RETAIL != 0) {
-            xRand = 0x7D0;
+            xRand = 2000;
         } else {
-            xRand = rand() % 0xFA0 - 0x7D0;
+            xRand = rand() % 4000 - 2000;
         }
         rock->posX = xRand;
         rock->posY = 0xB1E0;
         if (DEAD_IN_RETAIL != 0) {
-            zRand = 0x7D0;
+            zRand = 2000;
         } else {
-            zRand = rand() % 0xFA0 - 0x7D0;
+            zRand = rand() % 4000 - 2000;
         }
         rock->posZ = zRand;
         if (DEAD_IN_RETAIL != 0) {
-            randVel = 0x64;
+            randVel = 100;
         } else {
-            randVel = rand() % 0x64;
+            randVel = rand() % 100;
         }
         rock->spawnX = randVel;
         if (DEAD_IN_RETAIL != 0) {
-            sizeRand = 0x240;
+            sizeRand = 576;
         } else {
-            sizeRand = rand() % 0x1F0 + 0x50;
+            sizeRand = rand() % 496 + 80;
         }
         rock->scale = sizeRand;
         rock->randomValue = rand() & 0xFFFFFF;
     }
     (taskPtr->frameCounter)++;
-    if (taskPtr->frameCounter >= 0xA) {
+    if (taskPtr->frameCounter >= 10) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3605,7 +3605,7 @@ void __cdecl BattleFx_SummonNeoBahamutRock3ModelTask(void)
         if (q->height >= 0) {
             q->ownerSlot = BATTLE_TASK_FREE;
         } else {
-            q->riseSpeed = (q->riseSpeed * 0xFC0 >> 0xC) + 0x3C;
+            q->riseSpeed = (q->riseSpeed * 0xFC0 >> 12) + 60;
             q->rotX++;
             q->rotY += 8;
             q->rotZ += 0x10;
@@ -3664,33 +3664,33 @@ void __cdecl BattleFx_SummonNeoBahamutActorRiseAndFallTask(void)
         taskPtr->baseZ = actor->posC;
     }
     stage = taskPtr->timer;
-    if (stage < 0x2D) {
-        progress = (stage << 0xC) / 0x2D;
-        actor->posB = progress * -0x1388 >> 0xC;
+    if (stage < 45) {
+        progress = (stage << 12) / 45;
+        actor->posB = progress * -0x1388 >> 12;
     } else {
-        stage -= 0x2D;
-        if (stage < 0x64) {
-            progress = (stage << 0xC) / 0x64;
-            actor->posB = progress * -0x4E20 >> 0xC;
+        stage -= 45;
+        if (stage < 100) {
+            progress = (stage << 12) / 100;
+            actor->posB = progress * -0x4E20 >> 12;
         } else {
-            stage -= 0x64;
-            if (stage < 0x140) {
+            stage -= 100;
+            if (stage < 320) {
                 if (stage == 0) {
                     actor->posB = 0;
                 }
             } else {
-                stage -= 0x140;
-                if (stage < 0x1E) { /* empty first arm: lib/codegen.h */
+                stage -= 320;
+                if (stage < 30) { /* empty first arm: lib/codegen.h */
                 } else {
-                    stage -= 0x1E;
-                    if (stage < 0x28) {
+                    stage -= 30;
+                    if (stage < 40) {
                         if (stage == 0) {
                             taskPtr->velocityY = 0;
                             actor->posB += 0xB1E0;
                         }
                         if (actor->posB < 0) {
                             actor->posB += taskPtr->velocityY;
-                            taskPtr->velocityY = (taskPtr->velocityY * 0xFC0 >> 0xC) + 0x3C;
+                            taskPtr->velocityY = (taskPtr->velocityY * 0xFC0 >> 12) + 60;
                             g_BattleSummonNeoBahamutActorRiseAndFallTaskSlot->vx = BattleFx_SummonNeoBahamutHeightToXOffset(actor->posB);
                             g_BattleSummonNeoBahamutActorRiseAndFallTaskSlot->vy = 0;
                             g_BattleSummonNeoBahamutActorRiseAndFallTaskSlot->vz = 0;
@@ -3731,7 +3731,7 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight2Task(void)
         return;
     }
     spawnBudget = (taskPtr->spawnIndex << 8 & 0xFF) + 0x100;
-    while (spawnBudget >= 0x100) {
+    while (spawnBudget >= 256) {
         pLine = (BattleFxNeoBahamutLine2Spawn *)BATTLE_NEW_TASK_SLOT(BattleFx_SummonNeoBahamutLineLight2PrimitiveTask);
         pLine->spawnIndex = taskPtr->spawnIndex;
         pLine->posX = 0xEC78;
@@ -3740,7 +3740,7 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight2Task(void)
         pLine->rotY = 0;
         pLine->rotX = 0;
         if (DEAD_IN_RETAIL != 0) {
-            rotRoll = 0x600;
+            rotRoll = 0x600 /* 135 deg */;
         } else {
             rotRoll = (rand() % 0x800) - 0x200;
         }
@@ -3748,13 +3748,13 @@ void __cdecl BattleFx_SummonNeoBahamutSpawnLineLight2Task(void)
         if (DEAD_IN_RETAIL != 0) {
             bytes = 0x1800;
         } else {
-            bytes = (rand() % 0x1000) + 0x800;
+            bytes = (rand() % 4096) + 2048;
         }
         pLine->size = bytes;
         spawnBudget -= 0x100;
     }
     (taskPtr->spawnIndex)++;
-    if (taskPtr->spawnIndex >= 0x28) {
+    if (taskPtr->spawnIndex >= 40) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -3781,8 +3781,8 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight2PrimitiveTask(void)
     }
     stage = line->step;
     if (stage < 5) {
-        fraction = (stage << 0xC) / 5;
-        g_BattleSummonNeoBahamutLineLight2TaskSlot->lerpedValue = line->intensity * fraction >> 0xC;
+        fraction = (stage << 12) / 5;
+        g_BattleSummonNeoBahamutLineLight2TaskSlot->lerpedValue = line->intensity * fraction >> 12;
     } else {
         stage -= 5;
         if (stage < 0) {
@@ -3790,8 +3790,8 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight2PrimitiveTask(void)
         } else {
             stage = stage;
             if (stage < 5) {
-                fraction = (stage << 0xC) / 5;
-                g_BattleSummonNeoBahamutLineLight2TaskSlot->lerpedValue = line->intensity * (0x1000 - fraction) >> 0xC;
+                fraction = (stage << 12) / 5;
+                g_BattleSummonNeoBahamutLineLight2TaskSlot->lerpedValue = line->intensity * (0x1000 - fraction) >> 12;
             } else {
                 line->ownerSlot = BATTLE_TASK_FREE;
                 return;
@@ -3806,8 +3806,8 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight2PrimitiveTask(void)
     g_BattleSummonNeoBahamutLineLight2TaskSlot->matrix.t[0] = g_BattleSummonNeoBahamutLineLight2TaskSlot->screenX - g_BattleSummonNeoBahamutLineLight2TaskSlot->geomOffsetX;
     g_BattleSummonNeoBahamutLineLight2TaskSlot->matrix.t[1] = g_BattleSummonNeoBahamutLineLight2TaskSlot->screenY - g_BattleSummonNeoBahamutLineLight2TaskSlot->geomOffsetY;
     g_BattleSummonNeoBahamutLineLight2TaskSlot->matrix.t[2] = GetGeomScreen();
-    g_BattleSummonNeoBahamutLineLight2TaskSlot->scaleZ = 0x1000;
-    g_BattleSummonNeoBahamutLineLight2TaskSlot->scaleY = 0x1000;
+    g_BattleSummonNeoBahamutLineLight2TaskSlot->scaleZ = 0x1000 /* 1.0 */;
+    g_BattleSummonNeoBahamutLineLight2TaskSlot->scaleY = 0x1000 /* 1.0 */;
     ScaleMatrix(&g_BattleSummonNeoBahamutLineLight2TaskSlot->matrix, g_BattleSummonNeoBahamutLineLight2TaskSlot);
     SetRotMatrix(&g_BattleSummonNeoBahamutLineLight2TaskSlot->matrix);
     SetTransMatrix(&g_BattleSummonNeoBahamutLineLight2TaskSlot->matrix);
@@ -3819,7 +3819,7 @@ void __cdecl BattleFx_SummonNeoBahamutLineLight2PrimitiveTask(void)
     Gfx_DrawPsxPrimitive(primitive);
     if (g_BattleIsPaused == 0) {
         (line->step)++;
-        if (line->step + line->ownerSlot >= 0x28) {
+        if (line->step + line->ownerSlot >= 40) {
             line->ownerSlot = BATTLE_TASK_FREE;
         }
     }
@@ -3836,14 +3836,14 @@ void __cdecl BattleFx_SummonNeoBahamutToggleActorMaskFlags(void)
     int i;
 
     if (g_BattleSummonNeoBahamutLineLight2State == 0) {
-        for (i = 0; i < 0xA; i++) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleSummonNeoBahamutTargetMask & 1 << i) != 0) {
                 g_BattleSummonNeoBahamutActorMaskFlags[i] = g_BattleActorRecords[i].drawFlags;
                 g_BattleActorRecords[i].drawFlags |= 0x10;
             }
         }
     } else {
-        for (i = 0; i < 0xA; i++) {
+        for (i = 0; i < 10; i++) {
             if ((g_BattleSummonNeoBahamutTargetMask & 1 << i) != 0) {
                 g_BattleActorRecords[i].drawFlags = (char)g_BattleSummonNeoBahamutActorMaskFlags[i];
             }

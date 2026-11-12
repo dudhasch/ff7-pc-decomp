@@ -143,14 +143,14 @@ void __cdecl BattleFx_MagicEsunaParticleEmitterTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->step < 0xA) {
+    if (taskPtr->step < 10) {
         *(short *)((char *)&g_BattleMagicEsuna_AnglePair + 2) = rand() & 0xFFF;
         for (i = 0; i < g_BattleMagicEsuna_ParticleCount; i++) {
             pSprite = (BattleWhiteWindFadingSpriteSlot *)BATTLE_NEW_TASK_SLOT(BattleFx_MagicEsunaParticleSpriteTask);
             pSprite->origin = taskPtr->origin;
             pSprite->scale = rand() % 0x800 + 0x800;
             pSprite->angle = g_BattleMagicEsuna_AnglePair;
-            pSprite->radialSpeed = rand() % 0x190 + 0x64 << 4;
+            pSprite->radialSpeed = rand() % 400 + 100 << 4;
             pSprite->spinStep = rand() % 0x64 - 0x32;
             *(short *)((char *)&g_BattleMagicEsuna_AnglePair + 2) += (short)(0x1000 / g_BattleMagicEsuna_ParticleCount);
         }
@@ -177,12 +177,12 @@ void __cdecl BattleFx_MagicEsunaParticleSpriteTask(void)
     velBlockPtr = (BattleFxWhiteWindFadeState *)Gfx_GetPsxScratchpadPtr(0);
     matrix = (int)velBlockPtr + 8;
     localFrame = task->timer;
-    if (localFrame < 0xD) {
+    if (localFrame < 13) {
         g_BattleMagicEsuna_SpriteDrawReq.colorB = 0x80;
         g_BattleMagicEsuna_SpriteDrawReq.colorG = g_BattleMagicEsuna_SpriteDrawReq.colorB;
         (g_BattleMagicEsuna_SpriteDrawReq.colorR) = g_BattleMagicEsuna_SpriteDrawReq.colorG;
     } else {
-        localFrame -= 0xD;
+        localFrame -= 13;
         if (localFrame < 4) {
             g_BattleMagicEsuna_SpriteDrawReq.colorB = (localFrame * -0x80 / 4) + 0x80;
             g_BattleMagicEsuna_SpriteDrawReq.colorG = g_BattleMagicEsuna_SpriteDrawReq.colorB;

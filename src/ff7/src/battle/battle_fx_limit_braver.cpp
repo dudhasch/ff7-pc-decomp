@@ -255,7 +255,7 @@ void __cdecl BattleFx_LimitBraverTrailRibbonTask(void)
     *(short *)((char *)&g_BattleLimitBraver_RibbonPoints.pointCoord + (g_BattleLimitBraver_LoadedRes << 4)) = frame.screenCoord;
     *(short *)((char *)&g_BattleLimitBraver_RibbonPoints.pointWord5 + (g_BattleLimitBraver_LoadedRes << 4)) = frame.pointWord5;
     *(short *)((char *)&g_BattleLimitBraver_RibbonPoints.pointWord6 + (g_BattleLimitBraver_LoadedRes << 4)) = frame.pointWord6;
-    if (frame.ribbonRecord->frame < 0x14) {
+    if (frame.ribbonRecord->frame < 20) {
         if (frame.ribbonRecord->frame >= 1) {
             frame.curIndex = g_BattleLimitBraver_LoadedRes & 0xF;
             frame.prevIndex = g_BattleLimitBraver_LoadedRes - 1 & 0xF;
@@ -305,10 +305,10 @@ void __cdecl BattleFx_LimitBraverBillboardSpriteTask(void)
         task->ownerSlot = BATTLE_TASK_FREE;
         return;
     }
-    BattleFx_InstallBillboardMatrix((void *)((int)task + 8), 0x1000, task->angle);
+    BattleFx_InstallBillboardMatrix((void *)((int)task + 8), 0x1000 /* 1.0 */, task->angle);
     g_BattleLimitBraver_DrawListHandle = BattleFx_SubmitSpriteDraw(&g_BattleLimitBraver_BillboardReq, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_BattleLimitBraver_DrawListHandle);
     if (g_BattleIsPaused == 0) {
-        task->frameAccumulator += 0x100;
+        task->frameAccumulator += 256;
     }
 }
 } /* extern "C" */

@@ -665,7 +665,7 @@ void __cdecl Mini_CondorLoadUnitModels(PfileLoadOptions *loadContext, struct Gfx
         loadContext->file.archiveId = 6;
         loadContext->file.callback = 0;
     }
-    for (unitIdx = 0; unitIdx < 0x1D; unitIdx++) {
+    for (unitIdx = 0; unitIdx < 29; unitIdx++) {
         ((CondorUnitModelEntry *)&g_CondorUnitModelSetKinds)[unitIdx].modelKind = (int)*(volatile char *)((char *)&g_CondorUnitModelDefs + unitIdx * 0x7C);
         Pfile_InitModelSetRequest((int)&loadReq);
         loadReq.count = ((CondorUnitModelEntry *)&g_CondorUnitModelSetKinds)[unitIdx].modelKind;
@@ -720,7 +720,7 @@ void __cdecl Mini_CondorFreeUnitModels(int context)
 {
     unsigned short i;
 
-    for (i = 0; i < 0x1D; i++) {
+    for (i = 0; i < 29; i++) {
         Pfile_FreeModelSet((void *)(((CondorUnitModelSlot *)&g_CondorUnitModelSets)[i].modelSet), (void *)(context));
     }
 }

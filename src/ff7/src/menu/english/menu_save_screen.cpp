@@ -605,7 +605,7 @@ int __cdecl Menu_SaveScreenModuleUpdate(void)
         Menu_SaveScreenInit(1);
         g_SaveMenuFrameParity = 0;
         g_MenuModuleId = 0xa;
-        Input_SetRepeatRates(0xc8, 0x32);
+        Input_SetRepeatRates(0xc8, 50);
         g_MenuOverlayActive = 1;
         g_SaveMenuActive = g_MenuOverlayActive;
     }

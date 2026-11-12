@@ -142,7 +142,7 @@ int __cdecl Mini_CoasterAllocVertexStorage(int vertexCount)
 {
     int block;
 
-    block = g_CoasterVertexStorageBase + g_CoasterVertexCount * 0x24;
+    block = g_CoasterVertexStorageBase + g_CoasterVertexCount * 36;
     g_CoasterVertexCount += vertexCount;
     return block;
 }
@@ -155,7 +155,7 @@ int __cdecl Mini_CoasterAllocTriangleStorage(int count)
 {
     int result;
 
-    result = g_CoasterTriangleStorageBase + g_CoasterTriangleCount * 0x28;
+    result = g_CoasterTriangleStorageBase + g_CoasterTriangleCount * 40;
     g_CoasterTriangleCount += count;
     return result;
 }

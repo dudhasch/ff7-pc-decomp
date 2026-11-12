@@ -35,13 +35,13 @@ void __cdecl Kernel_SortMagicMenuOrder(int partySlot)
         unsigned char attackId, b1, b2, b3, mpCost, b5, b6, b7;
     };
     int idx;
-    unsigned char grp[4][0x18];
-    unsigned char live[0x38];
+    unsigned char grp[4][24];
+    unsigned char live[56];
     int entryIdx;
     int inner;
     struct MagicEntry *src;
-    struct MagicEntry prev[0x38];
-    unsigned char index[0x38];
+    struct MagicEntry prev[56];
+    unsigned char index[56];
     unsigned char map;
     int code;
     int laneIndex8;
@@ -52,7 +52,7 @@ void __cdecl Kernel_SortMagicMenuOrder(int partySlot)
 
     src = (struct MagicEntry *)g_MenuPartyStats[partySlot].spells;
     code = (gSavemap.options >> 10) & 7;
-    for (entryIdx = 0; entryIdx < 0x38; entryIdx++) {
+    for (entryIdx = 0; entryIdx < 56; entryIdx++) {
         prev[entryIdx] = src[entryIdx];
         if (src[entryIdx].attackId != 0xff) {
             index[src[entryIdx].attackId] = (unsigned char)entryIdx;
@@ -60,25 +60,25 @@ void __cdecl Kernel_SortMagicMenuOrder(int partySlot)
         src[entryIdx].attackId = 0xff;
     }
     for (entryIdx = 0; entryIdx < 4; entryIdx++) {
-        for (inner = 0; inner < 0x18; inner++) {
+        for (inner = 0; inner < 24; inner++) {
             grp[entryIdx][inner] = 0xff;
         }
     }
-    for (entryIdx = 0; entryIdx < 0x36; entryIdx++) {
+    for (entryIdx = 0; entryIdx < 54; entryIdx++) {
         map = g_BattleKernelData.magicOrder[entryIdx];
         grp[((unsigned char(*)[4])((int)&g_KernelMagicGroupPermutations))[code][map >> 5]][map & 0x1f] = (unsigned char)entryIdx;
     }
-    for (entryIdx = 0; entryIdx < 0x38; entryIdx++) {
+    for (entryIdx = 0; entryIdx < 56; entryIdx++) {
         live[entryIdx] = 0xff;
     }
-    for (entryIdx = 0; entryIdx < 0x38; entryIdx++) {
+    for (entryIdx = 0; entryIdx < 56; entryIdx++) {
         id = prev[entryIdx].attackId;
         if (id != 0xff) {
             live[id] = id;
         }
     }
     for (entryIdx = 0; entryIdx < 4; entryIdx++) {
-        for (inner = 0; inner < 0x18; inner++) {
+        for (inner = 0; inner < 24; inner++) {
             cur = grp[entryIdx][inner];
             if (cur != 0xff) {
                 grp[entryIdx][inner] = live[cur];
@@ -87,7 +87,7 @@ void __cdecl Kernel_SortMagicMenuOrder(int partySlot)
     }
     idx = 0;
     for (entryIdx = 0; entryIdx < 4; entryIdx++) {
-        for (inner = 0; inner < 0x18; inner += 3) {
+        for (inner = 0; inner < 24; inner += 3) {
             cell = &grp[entryIdx][inner];
             if ((cell[0] & cell[1] & cell[2]) != 0xff) {
                 for (laneIndex8 = 0; laneIndex8 < 3; laneIndex8++) {
@@ -99,10 +99,10 @@ void __cdecl Kernel_SortMagicMenuOrder(int partySlot)
             }
         }
     }
-    for (entryIdx = 0; entryIdx < 0x48; entryIdx++) {
+    for (entryIdx = 0; entryIdx < 72; entryIdx++) {
         bit = src[entryIdx].attackId;
         if (bit != 0xff) {
-            if (entryIdx >= 0x38) {
+            if (entryIdx >= 56) {
                 bit += 0x38;
             }
             switch (bit) {

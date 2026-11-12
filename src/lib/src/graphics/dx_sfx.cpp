@@ -497,14 +497,14 @@ int __cdecl Gfx_BuildPrimitiveMesh(int kind, int fileName)
                 Pfile_AddVertex(index, vertexIdRef, 0, normal, selVertex, polygonData);
             }
         }
-        ZeroFillMemory32(0x18, recPtr);
+        ZeroFillMemory32(24, recPtr);
         *(short *)&recPtr->shade = 0;
         ((GfxPrimitiveRecord *)recPtr)->kind = 2;
         *(short *)&recPtr->v = 1;
         ((GfxPrimitiveRecord *)recPtr)->mode = 0;
         Pfile_AddPolygon(recPtr, polygonData);
         if (polyCount > 1) {
-            ZeroFillMemory32(0x18, recPtr);
+            ZeroFillMemory32(24, recPtr);
             *(short *)&recPtr->shade = 0;
             ((GfxPrimitiveRecord *)recPtr)->kind = 5;
             *(short *)&recPtr->v = 4;
@@ -512,7 +512,7 @@ int __cdecl Gfx_BuildPrimitiveMesh(int kind, int fileName)
             Pfile_AddPolygon(recPtr, polygonData);
         }
         groupPtr = (GfxPrimitiveMeshVertex *)group;
-        ZeroFillMemory32(0x38, groupPtr);
+        ZeroFillMemory32(56, groupPtr);
         groupPtr->shade = shade;
         groupPtr->v = 0;
         groupPtr->polyCount = polyCount;
@@ -544,7 +544,7 @@ void __cdecl Gfx_DestroyPrimitiveMeshBank(GfxPrimitiveMeshBank *bank)
         GameHeapFree((void *)bank->triIndices, DxSfxCpp_FileLine255(), 0x255);
         GameHeapFree((void *)bank->quadIndices, DxSfxCpp_FileLine256(), 0x256);
         GameHeapFree((void *)bank->lineIndices, DxSfxCpp_FileLine257(), 0x257);
-        for (i = 0; i < 0x10; i++) {
+        for (i = 0; i < 16; i++) {
             Pfile_Free(bank->meshFiles[i]);
         }
         DestroyBlockHeapChain(bank->indexHeap);
@@ -567,24 +567,24 @@ int __cdecl Gfx_CreatePrimitiveMeshBank(int recordCount, int vertexCount, int in
     GfxPrimitiveMeshBank *meshBankPtr;
     int failed;
     int indexCap;
-    char rec[0x10];
+    char rec[16];
 
-    indexCap = 0x200;
+    indexCap = 512;
     failed = 1;
     // STRING: FF7 0x0090ce58
-    meshBankPtr = (GfxPrimitiveMeshBank *)GameHeapAlloc(1, 0x70, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 0x288);
+    meshBankPtr = (GfxPrimitiveMeshBank *)GameHeapAlloc(1, 112, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 648);
     if (meshBankPtr != 0) {
-        meshBankPtr->recordHeap = (MemBlockHeap *)CreateBlockHeap(0xE0, recordCount * 0xE0, 0);
+        meshBankPtr->recordHeap = (MemBlockHeap *)CreateBlockHeap(224, recordCount * 0xE0, 0);
         if (meshBankPtr->recordHeap != 0) {
-            recordSize = 0xA0;
+            recordSize = 160;
             meshBankPtr->device = (GfxEngineContext *)extraFlags;
-            meshBankPtr->vertexHeap = (MemBlockHeap *)CreateBlockHeap(0x84, vertexCount * 0x84, 0);
-            meshBankPtr->indexHeap = (MemBlockHeap *)CreateBlockHeap(0x34, indexCount * 0x34, 0);
+            meshBankPtr->vertexHeap = (MemBlockHeap *)CreateBlockHeap(132, vertexCount * 0x84, 0);
+            meshBankPtr->indexHeap = (MemBlockHeap *)CreateBlockHeap(52, indexCount * 0x34, 0);
             meshBankPtr->entryHeap = (MemBlockHeap *)CreateBlockHeap(recordSize, entryCount * recordSize, 0);
             if (meshBankPtr->vertexHeap != 0 && meshBankPtr->indexHeap != 0 &&
                 meshBankPtr->entryHeap != 0) {
                 failed = 0;
-                for (idx = 0; idx < 0x10; idx++) {
+                for (idx = 0; idx < 16; idx++) {
                     fileName = g_GfxPrimitiveMeshNames[idx];
                     if (Gfx_BuildPrimitiveMesh(idx, fileName) != 0) {
                         InitFileContext(0, rec);
@@ -660,7 +660,7 @@ void __cdecl DestroyRenderObject(void *renderObject)
         D3DFreePolygonSet((struct GfxPolygonSet *)(((GfxRenderObject *)renderObject)->polygonSet));
         Gfx_DestroySpriteBatch((GfxSpriteBatch *)((GfxRenderObject *)renderObject)->spriteBatch);
         // STRING: FF7 0x0090ce78
-        GameHeapFree((void *)((GfxRenderObject *)renderObject)->vertexBuffer, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 0x2EE);
+        GameHeapFree((void *)((GfxRenderObject *)renderObject)->vertexBuffer, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 750);
         block = (GfxRenderObject *)renderObject;
         FreeBlockToHeap(block, ((GfxPrimitiveMeshBank *)((GfxRenderObject *)renderObject)->init)->recordHeap);
     }
@@ -826,7 +826,7 @@ void *__cdecl Gfx_CreateRenderObject(int drawUnsorted, int kind, PfileLoadOption
             allocated = (GfxRenderObject *)(AllocBlockFromHeap(((GfxPrimitiveMeshBank *)init)->recordHeap));
             result = allocated;
             if (result != 0) {
-                ZeroFillMemory32(0xE0, result);
+                ZeroFillMemory32(224, result);
                 result->kind = rawKind8;
                 result->hundredIndex = innerHundred;
                 result->enabled = loadOptions->matrixCount > 0;
@@ -1023,7 +1023,7 @@ void __cdecl Gfx_EmitPolygonSetPrimitive(int noTexture, int texturePage, GfxDraw
                         outPointer->zBits = drawNode->positions[vertNum].z;
                         outPointer->rhwBits = 0;
                         outPointer->color = drawNode->colors[vertNum];
-                        auxPos += 0x20;
+                        auxPos += 32;
                         outPointer++;
                     }
                     break;
@@ -1751,7 +1751,7 @@ void __cdecl Gfx_DestroySpriteBatch(GfxSpriteBatch *spriteBatch)
     if (spriteBatch != 0) {
         DestroyBlockHeapChain(spriteBatch->vertexHeap);
         // STRING: FF7 0x0090ce98
-        GameHeapFree(spriteBatch, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 0x92A);
+        GameHeapFree(spriteBatch, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 2346);
     }
 }
 
@@ -1771,7 +1771,7 @@ int __cdecl Gfx_CreateSpriteBatch(int width, int height, int srcX, int srcY, int
     renderObject = (GfxRenderObject *)((int)Gfx_CreateRenderObject(renderSource, GFX_DRAW_SPRITE_BATCH, loadOptions, (char *)name, (void *)data));
     if (renderObject != 0) {
         // STRING: FF7 0x0090ceb8
-        pBatch = (GfxSpriteBatch *)GameHeapAlloc(1, 0x3C, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 0x939);
+        pBatch = (GfxSpriteBatch *)GameHeapAlloc(1, 60, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 2361);
         if (pBatch != 0) {
             pBatch->width = width;
             pBatch->height = height;
@@ -1789,12 +1789,12 @@ int __cdecl Gfx_CreateSpriteBatch(int width, int height, int srcX, int srcY, int
                 pBatch->mode = mode;
                 pBatch->blockCount = blockCount;
                 heapBatch = pBatch;
-                pBatch->vertexHeap = (MemBlockHeap *)CreateBlockHeapEx(0x80, blockCount << 7, 0, heapBatch, (int)Gfx_FillSpriteBatchVertices);
+                pBatch->vertexHeap = (MemBlockHeap *)CreateBlockHeapEx(128, blockCount << 7, 0, heapBatch, (int)Gfx_FillSpriteBatchVertices);
                 if ((loadOptions->flags & 0x200000) != 0) {
                     batchHandlePtr = pBatch;
                     renderObject->immediateDraw = 1;
                     // STRING: FF7 0x0090ced8
-                    renderObject->vertexBuffer = (int)GameHeapAlloc(4, 0x20, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 0x95D);
+                    renderObject->vertexBuffer = (int)GameHeapAlloc(4, 32, "C:\\lib\\src\\graphics\\dx_sfx.cpp", 2397);
                     hdrPtr = (GfxSpriteBatchHeader *)(renderObject->vertexBuffer);
                     if (hdrPtr != 0) {
                         Gfx_InitTLVertices(4, hdrPtr, batchHandlePtr);
@@ -2467,7 +2467,7 @@ int __cdecl Gfx_CreateSurfaceTexture(GfxTexturePageFill *fill)
                     (int)GameHeapAllocRaw(fill->width * fill->height *
                                               surfDescPtr->bytesPerPixel,
                                           // STRING: FF7 0x0090cef8
-                                          "C:\\lib\\src\\graphics\\dx_sfx.cpp", 0xC83);
+                                          "C:\\lib\\src\\graphics\\dx_sfx.cpp", 3203);
                 if (pTexRec->pixelBuffer != 0) {
                     fill->pixelData = pTexRec->pixelBuffer;
                     pTexRec->bitsPerPixel = surfDescPtr->bitsPerPixel;
@@ -2564,7 +2564,7 @@ int __cdecl Gfx_CreateFrameBufferTexture32(GfxTexturePageFill *fill)
                 texturePtr->pixelBuffer = (int)GameHeapAllocRaw(
                     fill->width * fill->height * pixelBytes,
                     // STRING: FF7 0x0090cf18
-                    "C:\\lib\\src\\graphics\\dx_sfx.cpp", 0xD0D);
+                    "C:\\lib\\src\\graphics\\dx_sfx.cpp", 3341);
                 if (texturePtr->pixelBuffer != 0) {
                     fill->pixelData = texturePtr->pixelBuffer;
                     texturePtr->bitsPerPixel = depth;
@@ -2608,7 +2608,7 @@ int __cdecl Gfx_CreateFrameBufferTexture32(GfxTexturePageFill *fill)
 // FUNCTION: FF7 0x00674402
 void __cdecl Gfx_ClearTexturePageFill(int value)
 {
-    ZeroFillMemory32(0xB8, (void *)(value));
+    ZeroFillMemory32(184, (void *)(value));
 }
 
 /*

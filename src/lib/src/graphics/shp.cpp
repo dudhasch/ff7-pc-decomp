@@ -28,11 +28,11 @@ void __cdecl Gfx_ShpFreeRecord(GfxShpRecord *record)
 {
     if (record != 0) {
         // STRING: FF7 0x00912a68
-        GameHeapFree(record->itemTable, "C:\\lib\\src\\graphics\\shp.cpp", 0xF);
+        GameHeapFree(record->itemTable, "C:\\lib\\src\\graphics\\shp.cpp", 15);
         // STRING: FF7 0x00912a84
-        GameHeapFree((void *)record->fileData, "C:\\lib\\src\\graphics\\shp.cpp", 0x10);
+        GameHeapFree((void *)record->fileData, "C:\\lib\\src\\graphics\\shp.cpp", 16);
         // STRING: FF7 0x00912aa0
-        GameHeapFree(record, "C:\\lib\\src\\graphics\\shp.cpp", 0x11);
+        GameHeapFree(record, "C:\\lib\\src\\graphics\\shp.cpp", 17);
     }
 }
 
@@ -66,7 +66,7 @@ int __cdecl Gfx_ShpLoadFile(int fileName, PfileLoadOptions *context)
 
     frame.failed = 1;
     // STRING: FF7 0x00912abc
-    frame.record = (GfxShpRecord *)GameHeapAlloc(1, 0xC, "C:\\lib\\src\\graphics\\shp.cpp", 0x26);
+    frame.record = (GfxShpRecord *)GameHeapAlloc(1, 12, "C:\\lib\\src\\graphics\\shp.cpp", 38);
     if (frame.record != 0) {
         if (context != 0 && context->directory != 0) {
             PushFileContextDirectory(&context->file, context->directory, (void *)frame.oldDirectory);
@@ -78,13 +78,13 @@ int __cdecl Gfx_ShpLoadFile(int fileName, PfileLoadOptions *context)
             frame.cursor += 8;
             if (frame.record->header->magic0 == 0x23 && (frame.record->header->magic1 == 0x10 || frame.record->header->magic1 == 0x20)) {
                 // STRING: FF7 0x00912ad8
-                frame.record->itemTable = (GfxSpriteItem *)GameHeapAlloc(frame.record->header->itemCount, 8, "C:\\lib\\src\\graphics\\shp.cpp", 0x3A);
+                frame.record->itemTable = (GfxSpriteItem *)GameHeapAlloc(frame.record->header->itemCount, 8, "C:\\lib\\src\\graphics\\shp.cpp", 58);
                 if (frame.record->itemTable != 0) {
                     for (frame.item = 0; frame.item < frame.record->header->itemCount; frame.item++) {
                         frame.record->itemTable[frame.item].header = (GfxSpriteItemHeader *)frame.cursor;
                         frame.cursor += 4;
                         frame.record->itemTable[frame.item].sprites = (GfxSpriteRecord *)frame.cursor;
-                        frame.cursor += frame.record->itemTable[frame.item].header->spriteCount * 0x14;
+                        frame.cursor += frame.record->itemTable[frame.item].header->spriteCount * 20;
                         frame.failed = 0;
                     }
                 }
@@ -135,7 +135,7 @@ int __cdecl Gfx_SptConvertTextToBinaryFile(int fileName)
             CloseFileEx((FileHandle *)frame.file);
         }
         // STRING: FF7 0x00912b2c
-        GameHeapFree((void *)frame.data, "C:\\lib\\src\\graphics\\shp.cpp", 0x90);
+        GameHeapFree((void *)frame.data, "C:\\lib\\src\\graphics\\shp.cpp", 144);
     }
     return frame.result;
 }
@@ -148,11 +148,11 @@ void __cdecl Gfx_SptFreeRecord(GfxSptRecord *record)
 {
     if (record != 0) {
         // STRING: FF7 0x00912b48
-        GameHeapFree((void *)record->fileData, "C:\\lib\\src\\graphics\\shp.cpp", 0x9B);
+        GameHeapFree((void *)record->fileData, "C:\\lib\\src\\graphics\\shp.cpp", 155);
         // STRING: FF7 0x00912b64
-        GameHeapFree(record->itemTable, "C:\\lib\\src\\graphics\\shp.cpp", 0x9C);
+        GameHeapFree(record->itemTable, "C:\\lib\\src\\graphics\\shp.cpp", 156);
         // STRING: FF7 0x00912b80
-        GameHeapFree(record, "C:\\lib\\src\\graphics\\shp.cpp", 0x9D);
+        GameHeapFree(record, "C:\\lib\\src\\graphics\\shp.cpp", 157);
     }
 }
 
@@ -194,7 +194,7 @@ int __cdecl Gfx_SptLoadRecord(int fileName, PfileLoadOptions *context)
 
     frame.failed = 1;
     // STRING: FF7 0x00912b9c
-    frame.record = (GfxSptRecord *)GameHeapAlloc(1, 0x30, "C:\\lib\\src\\graphics\\shp.cpp", 0xB6);
+    frame.record = (GfxSptRecord *)GameHeapAlloc(1, 48, "C:\\lib\\src\\graphics\\shp.cpp", 182);
     if (frame.record != 0) {
         if (context != 0 && context->directory != 0) {
             PushFileContextDirectory(&context->file, context->directory, (void *)frame.oldDirectory);
@@ -214,7 +214,7 @@ int __cdecl Gfx_SptLoadRecord(int fileName, PfileLoadOptions *context)
             frame.cursor += 8;
             if (frame.record->header->magic0 == 0x23 && (frame.record->header->magic1 == 0x10 || frame.record->header->magic1 == 0x20)) {
                 // STRING: FF7 0x00912bc0
-                frame.record->itemTable = (GfxSpriteItem *)GameHeapAlloc(frame.record->header->itemCount, 8, "C:\\lib\\src\\graphics\\shp.cpp", 0xD9);
+                frame.record->itemTable = (GfxSpriteItem *)GameHeapAlloc(frame.record->header->itemCount, 8, "C:\\lib\\src\\graphics\\shp.cpp", 217);
                 if (frame.record->itemTable != 0) {
                     for (frame.item = 0; frame.item < frame.record->header->itemCount; frame.item++) {
                         frame.record->itemTable[frame.item].header = (GfxSpriteItemHeader *)frame.cursor;
@@ -248,7 +248,7 @@ int __cdecl Gfx_SptLoadRecord(int fileName, PfileLoadOptions *context)
                             }
                             frame.spriteData++;
                         }
-                        frame.cursor += frame.spriteCount * 0x14;
+                        frame.cursor += frame.spriteCount * 20;
                         frame.failed = 0;
                     }
                 }

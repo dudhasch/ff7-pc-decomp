@@ -152,7 +152,7 @@ void __cdecl BattleFx_LimitBeginGrenadeBomb(int targetMask, int actorIdx)
 
     slot = (BattleFxLimitGrenadeBombTimeline *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGrenadeBombTimelineTask);
     Battle_GetActorMaskCentroid(g_YasuiLimitGrenadeBombTargetMask = targetMask, &slot->posX);
-    slot->posY -= 0xA;
+    slot->posY -= 10;
 }
 
 /*
@@ -170,45 +170,45 @@ void __cdecl BattleFx_LimitGrenadeBombTimelineTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (taskPtr->frameCounter == 0x28) {
+    if (taskPtr->frameCounter == 40) {
         BattleFx_StartScreenFlashRamp(1);
         Battle_DispatchSfxOpcodeDirect(SOUND_SFX_PLAY_1, Battle_ComputeScreenPanFromPosition(&taskPtr->pos), 0xFA);
     }
-    if (taskPtr->frameCounter == 0x29) {
+    if (taskPtr->frameCounter == 41) {
         BattleFx_FadeOutScreenFlashRamp(3);
     }
-    if (taskPtr->frameCounter == 0x28) {
+    if (taskPtr->frameCounter == 40) {
         child = (BattleFxLimitGrenadeBombChild *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGrenadeBombBlackBlastModelTask);
         child->pos = taskPtr->pos;
     }
-    if (taskPtr->frameCounter == 0x2B) {
+    if (taskPtr->frameCounter == 43) {
         child = (BattleFxLimitGrenadeBombChild *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGrenadeBombExpandingShellModelTask);
         child->pos = taskPtr->pos;
         child->rotX = 0;
         child->rotY = 0;
         child->rotZ = 0;
     }
-    if (taskPtr->frameCounter == 0x2B) {
+    if (taskPtr->frameCounter == 43) {
         child = (BattleFxLimitGrenadeBombChild *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGrenadeBombGrowingModelTask);
         child->pos = taskPtr->pos;
     }
-    if (taskPtr->frameCounter == 0x2B) {
+    if (taskPtr->frameCounter == 43) {
         child = (BattleFxLimitGrenadeBombChild *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGrenadeBombTumblingSpriteEmitterTask);
         child->pos = taskPtr->pos;
     }
-    if (taskPtr->frameCounter == 0x2B) {
+    if (taskPtr->frameCounter == 43) {
         child = (BattleFxLimitGrenadeBombChild *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGrenadeBombRadialSpriteEmitterTask);
         child->pos = taskPtr->pos;
     }
-    if (taskPtr->frameCounter == 0x41) {
-        for (i = 0; i < 0xA; i++) {
+    if (taskPtr->frameCounter == 65) {
+        for (i = 0; i < 10; i++) {
             if ((g_YasuiLimitGrenadeBombTargetMask & 1 << i) != 0) {
                 Battle_PostActorHitOrHurtMessage(i);
                 g_BattleActorStates[i].motionState = 3;
             }
         }
     }
-    if (taskPtr->frameCounter == 0x41) {
+    if (taskPtr->frameCounter == 65) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
     (taskPtr->frameCounter)++;
@@ -232,14 +232,14 @@ void __cdecl BattleFx_LimitGrenadeBombExpandingShellModelTask(void)
     matrix = (struct BattleFxShardTransformBatch *)Gfx_GetPsxScratchpadPtr(0);
     scaler = (BattleFxGrenadeBombScaleDelay *)((char *)matrix + 0x1E);
     frame = task->frame;
-    if (frame < 0xA) {
+    if (frame < 10) {
         g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordC = 0;
         g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordB = g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordC;
         g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordA = g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordB;
     } else {
-        frame -= 0xA;
-        if (frame < 0xA) {
-            g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordC = (frame << 0xC) / 0xA;
+        frame -= 10;
+        if (frame < 10) {
+            g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordC = (frame << 12) / 10;
             g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordB = g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordC;
             g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordA = g_YasuiLimitGrenadeBombExpandingShellModelDrawReq.limitGlenadeShellDrawWordB;
         } else {
@@ -251,7 +251,7 @@ void __cdecl BattleFx_LimitGrenadeBombExpandingShellModelTask(void)
     matrix->posX = task->posX;
     matrix->posY = task->posY;
     matrix->posZ = task->posZ;
-    scaler->scaleTarget = (task->frame << 9) / 0x14;
+    scaler->scaleTarget = (task->frame << 9) / 20;
     scaler->scaleDelayed = scaler->scaleTarget;
     scaler->scale = scaler->scaleDelayed;
     g_YasuiLimitGrenadeBombExpandingShellScale = scaler->scale;
@@ -285,18 +285,18 @@ void __cdecl BattleFx_LimitGrenadeBombGrowingModelTask(void)
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
     g_YasuiLimitGrenadeBombExpandingScaleMatrix.limitGlenadeExpandScaleResource = Gfx_ModelTableGetRenderObject(2, g_YasuiLimitGrenadeBombLoadedResTable);
     frame = task->frame;
-    if (frame < 0xA) {
-        g_YasuiLimitGrenadeBombExpandingScaleMatrix.limitGlenadeExpandScaleFactor = 0x800;
+    if (frame < 10) {
+        g_YasuiLimitGrenadeBombExpandingScaleMatrix.limitGlenadeExpandScaleFactor = 0x800 /* 0.5 */;
     } else {
-        frame -= 0xA;
-        if (frame < 0xA) {
-            g_YasuiLimitGrenadeBombExpandingScaleMatrix.limitGlenadeExpandScaleFactor = (frame << 0xB) / 0xA + 0x800;
+        frame -= 10;
+        if (frame < 10) {
+            g_YasuiLimitGrenadeBombExpandingScaleMatrix.limitGlenadeExpandScaleFactor = (frame << 11) / 10 + 0x800;
         } else {
             task->ownerSlot = BATTLE_TASK_FREE;
             return;
         }
     }
-    g_YasuiLimitGrenadeBombGrowingScaleMatrix.limitGlenadeGrowScaleProgress = (task->frame << 0xA) / 0x14;
+    g_YasuiLimitGrenadeBombGrowingScaleMatrix.limitGlenadeGrowScaleProgress = (task->frame << 10) / 20;
     g_YasuiLimitGrenadeBombGrowingScaleMatrix.limitGlenadeGrowScaleCurrent = g_YasuiLimitGrenadeBombGrowingScaleMatrix.limitGlenadeGrowScaleProgress;
     (g_YasuiLimitGrenadeBombGrowingScaleMatrix.growScaleCopy) = g_YasuiLimitGrenadeBombGrowingScaleMatrix.limitGlenadeGrowScaleCurrent;
     g_YasuiLimitGrenadeBombGrowingScaleMatrix.limitGlenadeGrowPosX = task->posX;
@@ -334,7 +334,7 @@ void __cdecl BattleFx_LimitGrenadeBombTumblingSpriteEmitterTask(void)
         pDebris->pos = taskPtr->pos;
         params->angle = 0;
         params->spinSpeed = rand() & 0xFFF;
-        params->tiltSpeed = rand() % 0x600 - 0x300;
+        params->tiltSpeed = rand() % 1536 - 768;
         RotMatrix((SVECTOR *)params, matrix);
         params->angle = 0;
         params->spinSpeed = -(rand() % 0x1F4 + 0x1F4);
@@ -374,10 +374,10 @@ void __cdecl BattleFx_LimitGrenadeBombTumblingSpriteTask(void)
     matrix = (struct BattleFxShardTransformBatch *)((int)pAngles + 8);
     scaleVecPtr = (BattleFxLimitSealEvilDelay *)((char *)matrix + 0x1E);
     frameIndex = sprite->frameIndex;
-    if (frameIndex < 0xA) {
+    if (frameIndex < 10) {
         g_YasuiLimitGrenadeBombSpriteDrawReqPool.colorWord = 0x2C808080;
     } else {
-        frameIndex -= 0xA;
+        frameIndex -= 10;
         if (frameIndex < 5) {
             g_YasuiLimitGrenadeBombSpriteDrawReqPool.colorB = frameIndex * -0x80 / 5 + 0x80;
             g_YasuiLimitGrenadeBombSpriteDrawReqPool.colorG = g_YasuiLimitGrenadeBombSpriteDrawReqPool.colorB;
@@ -409,9 +409,9 @@ void __cdecl BattleFx_LimitGrenadeBombTumblingSpriteTask(void)
         sprite->posX += sprite->velocityX;
         sprite->posY += sprite->velocityY;
         sprite->posZ += sprite->velocityZ;
-        sprite->velocityX = sprite->velocityX * 0xF00 >> 0xC;
-        sprite->velocityY = (sprite->velocityY * 0xF00 >> 0xC) + 0x32;
-        sprite->velocityZ = sprite->velocityZ * 0xF00 >> 0xC;
+        sprite->velocityX = sprite->velocityX * 0xF00 /* 0.9375 */ >> 12;
+        sprite->velocityY = (sprite->velocityY * 0xF00 /* 0.9375 */ >> 12) + 50;
+        sprite->velocityZ = sprite->velocityZ * 0xF00 /* 0.9375 */ >> 12;
         *(char *)&sprite->angleX += sprite->spinX;
         *(char *)&sprite->angleY += sprite->spinY;
         *(char *)&sprite->angleZ += sprite->spinZ;
@@ -437,13 +437,13 @@ void __cdecl BattleFx_LimitGrenadeBombRadialSpriteEmitterTask(void)
         smoke = (BattleFxGrenadeBombRadialSpriteTask *)BATTLE_NEW_TASK_SLOT(BattleFx_LimitGrenadeBombRadialSpriteTask);
         smoke->pos = pEmitterTask->pos;
         angle = rand() & 0xFFF;
-        smoke->offsetX = SinFixed(angle) * 0x4650 >> 0xC;
+        smoke->offsetX = SinFixed(angle) * 0x4650 >> 12;
         smoke->offsetY = 0;
-        smoke->offsetZ = CosFixed(angle) * 0x4650 >> 0xC;
+        smoke->offsetZ = CosFixed(angle) * 0x4650 >> 12;
         smoke->scale = rand() % 0x800 + 0x1000;
     }
     (pEmitterTask->frameCounter)++;
-    if (pEmitterTask->frameCounter >= 0xF) {
+    if (pEmitterTask->frameCounter >= 15) {
         pEmitterTask->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -461,9 +461,9 @@ void __cdecl BattleFx_LimitGrenadeBombRadialSpriteTask(void)
     g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeRadialSpriteResource = Gfx_ModelTableGetLoadedRecord(4, g_YasuiLimitGrenadeBombLoadedResTable);
     g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeRadialSpriteResourceB = Gfx_ModelTableGetSpriteObject(4, g_YasuiLimitGrenadeBombLoadedResTable);
     position = (Vec3sPacked *)Gfx_GetPsxScratchpadPtr(0);
-    position->vx = puff->baseX + (puff->expandX * g_YasuiLimitGrenadeBombExpandingShellScale >> 0xC);
+    position->vx = puff->baseX + (puff->expandX * g_YasuiLimitGrenadeBombExpandingShellScale >> 12);
     position->vy = puff->posY;
-    position->vz = puff->baseZ + (puff->expandZ * g_YasuiLimitGrenadeBombExpandingShellScale >> 0xC);
+    position->vz = puff->baseZ + (puff->expandZ * g_YasuiLimitGrenadeBombExpandingShellScale >> 12);
     BattleFx_InstallBillboardMatrix((short *)position, (short)puff->angle, 0);
     g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeRadialSpriteFrameIndex = puff->frameIndex;
     g_YasuiLimitGrenadeBombDrawHandle = BattleFx_SubmitSpriteDraw(&g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeRadialSpriteResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitGrenadeBombDrawHandle);
@@ -487,8 +487,8 @@ void __cdecl BattleFx_LimitGrenadeBombBlackBlastModelTask(void)
     task = (BattleFxCosmoMemoryExpandingModel *)BATTLE_CURRENT_TASK_SLOT;
     g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeBlastModelResource = Gfx_ModelTableGetRenderObject(5, g_YasuiLimitGrenadeBombLoadedResTable);
     matrix = (PsxMatrix *)Gfx_GetPsxScratchpadPtr(0);
-    g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeBlastModelScale = (task->frame << 0xC) / 0xA;
-    (g_YasuiLimitGrenadeBombBlackBlastMatrixData.scaleY) = (task->frame << 0xD) / 0xA;
+    g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeBlastModelScale = (task->frame << 12) / 10;
+    (g_YasuiLimitGrenadeBombBlackBlastMatrixData.scaleY) = (task->frame << 13) / 10;
     g_YasuiLimitGrenadeBombBlackBlastScaleY = (g_YasuiLimitGrenadeBombBlackBlastMatrixData.scaleY);
     g_YasuiLimitGrenadeBombBlackBlastTransformMatrix = g_YasuiLimitGrenadeBombBlackBlastScaleY;
     g_YasuiLimitGrenadeBombBlackBlastMatrixData.limitGlenadeBlackBlastPosX = task->posX;
@@ -501,7 +501,7 @@ void __cdecl BattleFx_LimitGrenadeBombBlackBlastModelTask(void)
     g_YasuiLimitGrenadeBombDrawHandle = BattleFx_SubmitModelDraw((BattleFxModelDraw *)&g_YasuiLimitGrenadeBombSpriteDrawReqPool.limitGlenadeBlastModelResource, g_BattleCurrentOrderingTable + BATTLE_OT_DEPTH_SORTED, 0xC, g_YasuiLimitGrenadeBombDrawHandle);
     if (g_BattleIsPaused == 0) {
         (task->frame)++;
-        if (task->frame >= 0xA) {
+        if (task->frame >= 10) {
             task->ownerSlot = BATTLE_TASK_FREE;
         }
     }

@@ -74,13 +74,13 @@ void __cdecl Field_WindowClose(short windowIndex)
         g_FieldWindows[windowIndex].y = 8;
         break;
     default:
-        g_FieldWindows[windowIndex].y = 0x95;
+        g_FieldWindows[windowIndex].y = 149;
     }
     g_FieldWindows[windowIndex].state = MSG_WINDOW_CLOSED;
     g_FieldWindows[windowIndex].style = 0;
     g_FieldWindows[windowIndex].x = 8;
-    g_FieldWindows[windowIndex].width = 0x130;
-    g_FieldWindows[windowIndex].height = 0x4A;
+    g_FieldWindows[windowIndex].width = 304;
+    g_FieldWindows[windowIndex].height = 74;
     g_FieldWindows[windowIndex].currentWidth = 1;
     g_FieldWindows[windowIndex].currentHeight = 1;
     g_FieldWindows[windowIndex].numDisplayType = MESSAGE_WINDOW_ADDON_NONE;
@@ -160,14 +160,14 @@ void __cdecl Field_WindowSetRectClamped(short windowIndex, short x, short y, sho
     if (x < 8) {
         x = 8;
     }
-    if (x + width > 0x138) {
-        x = 0x138 - width;
+    if (x + width > 312) {
+        x = 312 - width;
     }
     if (y < 8) {
         y = 8;
     }
-    if (y + height > 0xE0) {
-        y = 0xE0 - height;
+    if (y + height > 224) {
+        y = 224 - height;
     }
     g_FieldWindows[windowIndex].x = x;
     g_FieldWindows[windowIndex].y = y;
@@ -504,8 +504,8 @@ void __cdecl Field_WindowStepTextReveal(short windowIndex)
     } else {
         if ((*(int *)&g_pFieldState->activeKeys2 & INPUT_CIRCLE) != 0) {
             (g_FieldWindowSpeed[windowIndex])++;
-            if (g_FieldWindowSpeed[windowIndex] > 0x80) {
-                g_FieldWindowSpeed[windowIndex] = 0x80;
+            if (g_FieldWindowSpeed[windowIndex] > 128) {
+                g_FieldWindowSpeed[windowIndex] = 128;
             }
         } else {
             (g_FieldWindowSpeed[windowIndex])--;
@@ -513,7 +513,7 @@ void __cdecl Field_WindowStepTextReveal(short windowIndex)
                 g_FieldWindowSpeed[windowIndex] = 1;
             }
         }
-        if (gSavemap.fieldMessageSpeed < 0x80) {
+        if (gSavemap.fieldMessageSpeed < 128) {
             baseStep = (0x80 - gSavemap.fieldMessageSpeed >> 5) + 2;
             stepScale = 1;
         } else {
@@ -557,7 +557,7 @@ void __cdecl Field_WindowStepTextReveal(short windowIndex)
             break;
         case TEXT_WIDE_TAB:
             (g_FieldWindowTextPointers[windowIndex])++;
-            for (index = 0; index < 0xA; index++) {
+            for (index = 0; index < 10; index++) {
                 g_FieldWindowText[windowIndex][g_FieldWindows[windowIndex].stringByteLength] = 0;
                 (g_FieldWindows[windowIndex].stringByteLength)++;
                 (g_FieldWindows[windowIndex].stringLength)++;
@@ -676,7 +676,7 @@ void __cdecl Field_WindowStepTextReveal(short windowIndex)
                         Field_FormatHexText((short)val, &g_FieldEntityScriptTable[windowIndex << 4]);
                     }
                     (g_FieldWindowPos[windowIndex])++;
-                } else if (g_FieldEntityScriptTable[(windowIndex << 4) + g_FieldWindowPos[windowIndex]] == TEXT_END || g_FieldWindowPos[windowIndex] >= 0x10) {
+                } else if (g_FieldEntityScriptTable[(windowIndex << 4) + g_FieldWindowPos[windowIndex]] == TEXT_END || g_FieldWindowPos[windowIndex] >= 16) {
                     g_FieldWindowTextPointers[windowIndex] += 2;
                     g_FieldWindowPos[windowIndex] = 0xFFFF;
                     (g_FieldEntityParams[windowIndex])++;
@@ -800,8 +800,8 @@ void __cdecl Field_WindowStepPageScrollOut(short windowIndex)
         g_FieldWindows[windowIndex].textScrolling -= (short)(g_FieldWindowSpeed[windowIndex] >> 2);
         if ((*(int *)&g_pFieldState->activeKeys2 & INPUT_CIRCLE) != 0) {
             (g_FieldWindowSpeed[windowIndex])++;
-            if (g_FieldWindowSpeed[windowIndex] > 0x80) {
-                g_FieldWindowSpeed[windowIndex] = 0x80;
+            if (g_FieldWindowSpeed[windowIndex] > 128) {
+                g_FieldWindowSpeed[windowIndex] = 128;
             }
         } else {
             (g_FieldWindowSpeed[windowIndex])--;
@@ -960,7 +960,7 @@ void __cdecl Field_FormatDecimalTextTrimmed(unsigned short number, unsigned char
 
     started = 0;
     divisor = 0x2710;
-    for (outPos = 0; divisor > 1; divisor = divisor / 0xA) {
+    for (outPos = 0; divisor > 1; divisor = divisor / 10) {
         digitValue = number / divisor;
         if (started != 0 || digitValue != 0) {
             started = 1;
@@ -987,7 +987,7 @@ void __cdecl Field_FormatDecimalTextPadded(unsigned short number, unsigned char 
 
     started = 0;
     divisor = 0x2710;
-    for (outPos = 0; divisor > 1; divisor = divisor / 0xA) {
+    for (outPos = 0; divisor > 1; divisor = divisor / 10) {
         digitValue = number / divisor;
         if (started != 0 || digitValue != 0) {
             started = 1;
@@ -1056,7 +1056,7 @@ int __cdecl Field_BuildLocationName(short id)
     textPointer += *((unsigned char *)g_FieldDialogTextPtr + id * 2 + 3) << 8;
     nameOfs = 0;
     outPos = 0;
-    while (outPos < 0x17) {
+    while (outPos < 23) {
         switch (*textPointer) {
         case TEXT_END:
             goto done;

@@ -63,12 +63,12 @@ void __cdecl Mini_HighwayInitEffectPool(void)
 {
     int i;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         g_HighwayEffectRecordsPool.entries[i].slotIndex = 0xFFFF;
         g_HighwayEffectRecordsPool.entries[i].active = 0;
     }
     g_HighwayEffectFreeHead = 0;
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         g_HighwayEffectFreeList[i] = i + 1;
     }
 }
@@ -81,7 +81,7 @@ short __cdecl Mini_HighwayCreateEffectRecord(HighwayEffectPoolEntry *sourceRecor
     short typeId;
     short effectSlot;
 
-    if (g_HighwayActiveEffectCount < 0x63) {
+    if (g_HighwayActiveEffectCount < 99) {
         g_HighwayActiveEffectCount++;
         effectSlot = Mini_HighwayAllocEffectSlot();
         g_HighwayEffectRecordsPool.entries[effectSlot] = *sourceRecord;
@@ -167,7 +167,7 @@ void __cdecl Mini_HighwayUpdateEffectRecords(void)
     char noDraw;
     HighwayEffectPoolEntry *pPooled;
 
-    for (i = 0; i < 0x64; i++) {
+    for (i = 0; i < 100; i++) {
         pPooled = &g_HighwayEffectRecordsPool.entries[i];
         pEffect = &pPooled->effect;
         unused = 0;
@@ -186,9 +186,9 @@ void __cdecl Mini_HighwayUpdateEffectRecords(void)
                 g_pHighwayFieldManager->load(g_HighwayActorRenderOffset + pEffect->rowOffset + (pSlot->posZ >> 8), pSlot->posX >> 8, &pPooled->posX, (int *)&pPooled->rotX);
                 (pEffect->timer)++;
                 pEffect->rowOffset -= 0x28;
-                pEffect->jitter += rand() % 0x14;
+                pEffect->jitter += rand() % 20;
                 pPooled->posY -= pEffect->jitter;
-                if (pEffect->timer > 0xA) {
+                if (pEffect->timer > 10) {
                     Mini_HighwayReleaseEffectRecord(pPooled);
                 }
                 break;
@@ -235,11 +235,11 @@ void __cdecl Mini_HighwayUpdateEffectRecords(void)
                     pEffect->variant = 0;
                 }
                 (pEffect->variant)++;
-                pPooled->rotY += 0x100;
+                pPooled->rotY += 0x100 /* 22.5 deg */;
                 pPooled->posY += pEffect->jitter;
                 (pEffect->jitter)++;
                 (pEffect->timer)++;
-                if (pEffect->timer > 0x3C) {
+                if (pEffect->timer > 60) {
                     Mini_HighwayReleaseEffectRecord(pPooled);
                 }
             }

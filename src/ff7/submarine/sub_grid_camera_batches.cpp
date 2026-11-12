@@ -28,7 +28,7 @@ extern "C" {
 // clang-format on
 
 /* The record of g_SubmarineGridVertexBuffer at (row, col); the byte offset is row * 0x400 + col * 0x10. */
-#define GRID_VERTEX(row, col) ((SubmarineGridVertex *)((char *)&g_SubmarineGridVertexBuffer + (((row) << 0xA) + ((col) << 4))))
+#define GRID_VERTEX(row, col) ((SubmarineGridVertex *)((char *)&g_SubmarineGridVertexBuffer + (((row) << 10) + ((col) << 4))))
 
 #pragma data_seg(".data$u77_lut")
 #pragma bss_seg(".data$u77_lut")
@@ -142,38 +142,38 @@ int __cdecl Submarine_BuildCameraGridBatches(void)
     ComposeWithScreenMatrix(&frame.rotMatrix, &frame.screenMatrix);
     Gfx_SetBatchContextMatrix(0, (int)(&frame.rotMatrix), ((int)g_SubmarineModeBatchList0));
     Gfx_SetBatchContextMatrix(0, (int)(&frame.rotMatrix), ((int)g_SubmarineModeBatchList2));
-    frame.playerCol = (g_SubmarineState.player.posX >> 0xC) + 0x800 >> 6;
-    frame.playerRow = 0x3F - ((g_SubmarineState.player.posZ >> 0xC) + 0x800 >> 6);
-    if (frame.playerCol - 0xC > 0) {
+    frame.playerCol = (g_SubmarineState.player.posX >> 12) + 2048 >> 6;
+    frame.playerRow = 63 - ((g_SubmarineState.player.posZ >> 12) + 2048 >> 6);
+    if (frame.playerCol - 12 > 0) {
         frame.colBase = frame.playerCol - 0xC;
     } else {
         frame.colBase = 0;
     }
     frame.colStart = frame.colBase;
-    frame.colEnd = frame.colStart + 0x18;
-    if (frame.colEnd > 0x3F) {
-        frame.colEnd = 0x3F;
-        frame.colStart = 0x27;
+    frame.colEnd = frame.colStart + 24;
+    if (frame.colEnd > 63) {
+        frame.colEnd = 63;
+        frame.colStart = 39;
     }
-    if (frame.playerRow - 0xC > 0) {
+    if (frame.playerRow - 12 > 0) {
         frame.rowBase = frame.playerRow - 0xC;
     } else {
         frame.rowBase = 0;
     }
     frame.rowStart = frame.rowBase;
-    frame.rowEnd = frame.rowStart + 0x18;
-    if (frame.rowEnd > 0x3F) {
-        frame.rowEnd = 0x3F;
-        frame.rowStart = 0x27;
+    frame.rowEnd = frame.rowStart + 24;
+    if (frame.rowEnd > 63) {
+        frame.rowEnd = 63;
+        frame.rowStart = 39;
     }
     if ((g_SubmarineFlags & SUBMARINE_FLAG_DEBUG_WIREFRAME) != 0) {
-        for (frame.gridRow = 0; frame.gridRow < 0x3F; frame.gridRow++) {
-            for (frame.gridCol = 0; frame.gridCol < 0x3F; frame.gridCol++) {
+        for (frame.gridRow = 0; frame.gridRow < 63; frame.gridRow++) {
+            for (frame.gridCol = 0; frame.gridCol < 63; frame.gridCol++) {
                 frame.packedColor = 0xFF000000;
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 0xA) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[0]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 0xA) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[1]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 0xA) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[2]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 0xA) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[3]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 10) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[0]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 10) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[1]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 10) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[2]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 10) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[3]);
                 frame.packedColor += GRID_VERTEX(frame.gridRow, frame.gridCol)->color >> 2;
                 frame.packedColor += GRID_VERTEX(frame.gridRow, frame.gridCol + 1)->color >> 2;
                 frame.packedColor += GRID_VERTEX(frame.gridRow + 1, frame.gridCol)->color >> 2;
@@ -232,7 +232,7 @@ int __cdecl Submarine_BuildCameraGridBatches(void)
                             frame.camRec5->color = 0xFF7F7F7F;
                         }
                     }
-                    if (frame.gridRow == 0x3E) {
+                    if (frame.gridRow == 62) {
                         if (AcquireBatchNodeNoCommandArea(1, g_SubmarineLineBatchList) != 0) {
                             frame.camRec6 = (SubmarineRadialTerrainBatch *)(g_SubmarineLineBatchList->vertexCursor);
                             frame.camRec6->x = frame.corners[3].xBits;
@@ -370,7 +370,7 @@ int __cdecl Submarine_BuildCameraGridBatches(void)
                             frame.camRec13->color = 0xFF7F7F7F;
                         }
                     }
-                    if (frame.gridRow == 0x3E) {
+                    if (frame.gridRow == 62) {
                         if (AcquireBatchNodeNoCommandArea(1, g_SubmarineLineBatchList) != 0) {
                             frame.camRec14 = (SubmarineRadialTerrainBatch *)(g_SubmarineLineBatchList->vertexCursor);
                             frame.camRec14->x = frame.corners[3].xBits;
@@ -459,10 +459,10 @@ int __cdecl Submarine_BuildCameraGridBatches(void)
     } else if ((g_SubmarineFlags & SUBMARINE_FLAG_NO_TERRAIN_SHADE) == 0) {
         for (frame.gridRow = frame.rowStart; frame.gridRow < frame.rowEnd; frame.gridRow++) {
             for (frame.gridCol = frame.colStart; frame.gridCol < frame.colEnd; frame.gridCol++) {
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 0xA) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[0]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 0xA) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[1]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 0xA) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[2]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 0xA) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[3]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 10) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[0]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 10) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[1]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 10) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[2]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 10) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[3]);
                 frame.clipCount = 0;
                 if (frame.engineCtx->driverType != GFX_DRIVER_SOFTWARE) {
                     for (frame.cornerIndex = 0; frame.cornerIndex < 4; frame.cornerIndex++) {
@@ -555,10 +555,10 @@ int __cdecl Submarine_BuildCameraGridBatches(void)
         for (frame.gridRow = frame.rowStart; frame.gridRow < frame.rowEnd; frame.gridRow++) {
             for (frame.gridCol = frame.colStart; frame.gridCol < frame.colEnd; frame.gridCol++) {
                 frame.packedColor = 0xFF000000;
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 0xA) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[0]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 0xA) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[1]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 0xA) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[2]);
-                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 0xA) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[3]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 10) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[0]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow << 10) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[1]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 10) + (frame.gridCol << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[2]);
+                TransformPointByMatrix4x4(&frame.screenMatrix, (frame.gridRow + 1 << 10) + (frame.gridCol + 1 << 4) + (char *)&g_SubmarineGridVertexBuffer, &frame.corners[3]);
                 frame.packedColor += GRID_VERTEX(frame.gridRow, frame.gridCol)->color >> 2;
                 frame.packedColor += GRID_VERTEX(frame.gridRow, frame.gridCol + 1)->color >> 2;
                 frame.packedColor += GRID_VERTEX(frame.gridRow + 1, frame.gridCol)->color >> 2;
@@ -688,13 +688,13 @@ void __cdecl Submarine_BuildGridRecordsFromCharGrid(void *charGrid)
     int rowIdx;
     unsigned char cellVal;
 
-    for (rowIdx = 0; rowIdx < 0x40; rowIdx++) {
-        for (column = 0; column < 0x40; column++) {
+    for (rowIdx = 0; rowIdx < 64; rowIdx++) {
+        for (column = 0; column < 64; column++) {
             GRID_VERTEX(rowIdx, column)->color = 0xFF0080C0;
             *(float *)&GRID_VERTEX(rowIdx, column)->x = (float)((column - 0x20 << 6) + 0x20);
             cellVal = *(char *)((char *)charGrid + ((rowIdx << 6) + column)) - 0x30;
-            *(float *)&GRID_VERTEX(rowIdx, column)->y = (float)((cellVal << 6 << 0xC) + 0x1FF000 >> 0xC);
-            *(float *)&GRID_VERTEX(rowIdx, column)->z = (float)((0x40 - (rowIdx + 0x20) << 6) - 0x20);
+            *(float *)&GRID_VERTEX(rowIdx, column)->y = (float)((cellVal << 6 << 12) + 0x1FF000 >> 12);
+            *(float *)&GRID_VERTEX(rowIdx, column)->z = (float)((64 - (rowIdx + 0x20) << 6) - 0x20);
             *(char *)&GRID_VERTEX(rowIdx, column)->color = 0xC0 - cellVal * 0x15;
             *((char *)&GRID_VERTEX(rowIdx, column)->color + 1) = 0x80 - (cellVal << 4);
         }

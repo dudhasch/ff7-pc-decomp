@@ -40,7 +40,7 @@ short g_BattleSpecGeyserBonePosZ = 0;
 // The pool of BattleSpecGeyserParticle records starts here; the code reaches all 300 through
 // this object. The span runs to the next named definition of the TU.
 // GLOBAL: FF7 0x00b68ff8
-unsigned char g_BattleSpecGeyserParticlePool[0x8] = {0};
+unsigned char g_BattleSpecGeyserParticlePool[8] = {0};
 // Address of the first particle's pos member; the sprite task indexes from here.
 // GLOBAL: FF7 0x00b69000
 int g_BattleSpecGeyserParticlePos = 0;
@@ -149,11 +149,11 @@ void __cdecl BattleFx_SpecialGeyserTimelineTask(void)
     if (taskPtr->age == 0) {
         child = (int)BATTLE_NEW_TASK_SLOT(BattleFx_SpecialGeyserParticleSpritesTask);
     }
-    if (taskPtr->age == 0x3C) {
+    if (taskPtr->age == 60) {
         Battle_PostActorHitOrHurtMessage(taskPtr->actorIndex);
     }
     (taskPtr->age)++;
-    if (taskPtr->age == 0x46) {
+    if (taskPtr->age == 70) {
         taskPtr->ownerSlot = BATTLE_TASK_FREE;
     }
 }
@@ -186,20 +186,20 @@ void __cdecl BattleFx_SpecialGeyserParticleSpritesTask(void)
     if (g_BattleIsPaused != 0) {
         return;
     }
-    if (task->frameCounter < 0x3C) {
+    if (task->frameCounter < 60) {
         for (index = 0; index < (0x3C - task->frameCounter) / 5 + 1; index++) {
             emitter = (BattleSpecGeyserParticle *)BattleFx_SpecialGeyserClaimParticleRecord();
             if ((unsigned int)(int)emitter > (unsigned int)0) {
                 angle = (rand() % 4096);
-                rad = rand() % 0xC8;
-                emitter->pos.vx = ((BattleSpecGeyserBonePos *)&g_BattleSpecGeyserBonePos)->x + (CosFixed(angle) * rad >> 0xC);
-                emitter->pos.vz = g_BattleSpecGeyserBonePosZ + (SinFixed(angle) * rad >> 0xC);
+                rad = rand() % 200;
+                emitter->pos.vx = ((BattleSpecGeyserBonePos *)&g_BattleSpecGeyserBonePos)->x + (CosFixed(angle) * rad >> 12);
+                emitter->pos.vz = g_BattleSpecGeyserBonePosZ + (SinFixed(angle) * rad >> 12);
                 emitter->pos.vy = ((BattleSpecGeyserBonePos *)&g_BattleSpecGeyserBonePos)->y;
                 angle = (rand() % 4096);
-                rad = rand() % 0x64;
-                emitter->vel.vx = CosFixed(angle) * rad >> 0xC;
-                emitter->vel.vz = SinFixed(angle) * rad >> 0xC;
-                emitter->vel.vy = (SinFixed(task->frameCounter << 0xA) * 0x14 >> 0xC) + task->frameCounter * 2 + -0x15E;
+                rad = rand() % 100;
+                emitter->vel.vx = CosFixed(angle) * rad >> 12;
+                emitter->vel.vz = SinFixed(angle) * rad >> 12;
+                emitter->vel.vy = (SinFixed(task->frameCounter << 10) * 0x14 >> 12) + task->frameCounter * 2 + -350;
                 emitter->scale = ((rand() % 4) << 9) + 0x800;
             }
         }
@@ -212,14 +212,14 @@ void __cdecl BattleFx_SpecialGeyserParticleSpritesTask(void)
             emitter->pos.vy += emitter->vel.vy;
             emitter->pos.vz += emitter->vel.vz;
             oldVy = emitter->vel.vy;
-            emitter->vel.vy += 0x14;
+            emitter->vel.vy += 20;
             if (emitter->fade == 0) {
                 if (oldVy < 0 && emitter->vel.vy >= 0) {
                     emitter->fade = 1;
                 }
             } else {
                 (emitter->fade)++;
-                if (emitter->fade == 0x10) {
+                if (emitter->fade == 16) {
                     emitter->state = 0;
                 }
             }
@@ -228,7 +228,7 @@ void __cdecl BattleFx_SpecialGeyserParticleSpritesTask(void)
         emitter++;
     }
     (task->frameCounter)++;
-    if (task->frameCounter > 0x3C && liveCount == 0) {
+    if (task->frameCounter > 60 && liveCount == 0) {
         task->ownerSlot = BATTLE_TASK_FREE;
     }
 }

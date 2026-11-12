@@ -133,7 +133,7 @@ void __cdecl Field_ResetBackgroundLayers(void)
     g_FieldCameraScrollE74 = 0;
     if (g_FieldLayer1Tiles != 0) {
         // STRING: FF7 0x00907e10
-        GameHeapFree(g_FieldLayer1Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x3a);
+        GameHeapFree(g_FieldLayer1Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 58);
         g_FieldLayer1Tiles = 0;
     }
     (g_FieldLayer2StateDf8.width) = 0;
@@ -142,7 +142,7 @@ void __cdecl Field_ResetBackgroundLayers(void)
     g_FieldLayer2ParamE04 = 0;
     if (g_FieldLayer2Tiles != 0) {
         // STRING: FF7 0x00907e2c
-        GameHeapFree(g_FieldLayer2Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x44);
+        GameHeapFree(g_FieldLayer2Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 68);
         g_FieldLayer2Tiles = 0;
     }
     (g_FieldLayer4StateE8c.width) = 0;
@@ -153,7 +153,7 @@ void __cdecl Field_ResetBackgroundLayers(void)
     g_FieldLayer4Flag = 0;
     if (g_FieldLayer4Tiles != 0) {
         // STRING: FF7 0x00907e48
-        GameHeapFree(g_FieldLayer4Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x4f);
+        GameHeapFree(g_FieldLayer4Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 79);
         g_FieldLayer4Tiles = 0;
     }
     (g_FieldLayer3StateE24.width) = 0;
@@ -164,7 +164,7 @@ void __cdecl Field_ResetBackgroundLayers(void)
     g_FieldLayer3Flag = 0;
     if (g_FieldLayer3Tiles != 0) {
         // STRING: FF7 0x00907e64
-        GameHeapFree(g_FieldLayer3Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x5c);
+        GameHeapFree(g_FieldLayer3Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 92);
         g_FieldLayer3Tiles = 0;
     }
 }
@@ -185,7 +185,7 @@ void __cdecl Field_FreeTileRecordArray(void)
     }
     if (g_pFieldTileDrawOrder != 0) {
         // STRING: FF7 0x00907e80
-        GameHeapFree(g_pFieldTileDrawOrder, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x6a);
+        GameHeapFree(g_pFieldTileDrawOrder, "C:\\FF7\\field\\src\\ad_bk.cpp", 106);
         g_pFieldTileDrawOrder = 0;
     }
     if (g_FieldLayer2Tiles != 0) {
@@ -195,7 +195,7 @@ void __cdecl Field_FreeTileRecordArray(void)
             g_FieldLayer2Tiles[i].active = 0;
         }
         // STRING: FF7 0x00907e9c
-        GameHeapFree(g_FieldLayer2Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x75);
+        GameHeapFree(g_FieldLayer2Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 117);
         g_FieldLayer2Tiles = 0;
     }
     (g_FieldLayer2StateDf8.width) = 0;
@@ -216,7 +216,7 @@ void __cdecl Field_FreeBackgroundLayersAndTileRecords(void)
 
     if (g_FieldLayer1Tiles != 0) {
         // STRING: FF7 0x00907eb8
-        GameHeapFree(g_FieldLayer1Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x86);
+        GameHeapFree(g_FieldLayer1Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 134);
         g_FieldLayer1Tiles = 0;
     }
     g_FieldLayer1StateE48 = 0;
@@ -231,7 +231,7 @@ void __cdecl Field_FreeBackgroundLayersAndTileRecords(void)
                 g_FieldLayer4Tiles[i].inUse = 0;
             }
             // STRING: FF7 0x00907ed4
-            GameHeapFree(g_FieldLayer4Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0x99);
+            GameHeapFree(g_FieldLayer4Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 153);
             g_FieldLayer4Tiles = 0;
         }
     }
@@ -244,7 +244,7 @@ void __cdecl Field_FreeBackgroundLayersAndTileRecords(void)
                 g_FieldLayer3Tiles[i].inUse = 0;
             }
             // STRING: FF7 0x00907ef0
-            GameHeapFree(g_FieldLayer3Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0xAA);
+            GameHeapFree(g_FieldLayer3Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 170);
             g_FieldLayer3Tiles = 0;
         }
     }
@@ -263,7 +263,7 @@ void __cdecl Field_FreeBackgroundLayers(void)
 
     if (g_FieldLayer1Tiles != 0) {
         // STRING: FF7 0x00907f0c
-        GameHeapFree(g_FieldLayer1Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0xBA);
+        GameHeapFree(g_FieldLayer1Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 186);
         g_FieldLayer1Tiles = 0;
     }
     g_FieldLayer1StateE48 = 0;
@@ -278,7 +278,7 @@ void __cdecl Field_FreeBackgroundLayers(void)
                 g_FieldLayer4Tiles[i].inUse = 0;
             }
             // STRING: FF7 0x00907f28
-            GameHeapFree(g_FieldLayer4Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0xCD);
+            GameHeapFree(g_FieldLayer4Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 205);
             g_FieldLayer4Tiles = 0;
         }
     }
@@ -291,7 +291,7 @@ void __cdecl Field_FreeBackgroundLayers(void)
                 g_FieldLayer3Tiles[i].inUse = 0;
             }
             // STRING: FF7 0x00907f44
-            GameHeapFree(g_FieldLayer3Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 0xDE);
+            GameHeapFree(g_FieldLayer3Tiles, "C:\\FF7\\field\\src\\ad_bk.cpp", 222);
             g_FieldLayer3Tiles = 0;
         }
     }
@@ -357,7 +357,7 @@ int __cdecl Field_InterpolateLinear(int start, int end, int duration, int elapse
     int diff;
 
     diff = end - start;
-    if (diff > -0x80000 && diff < 0x80000) {
+    if (diff > -524288 && diff < 524288) {
         start += diff * elapsed / duration;
     } else {
         start += diff / duration * elapsed;
@@ -378,7 +378,7 @@ int __cdecl Field_InterpolateCosine(int value, int end, int duration, int elapse
 
     ang = (unsigned char)((elapsed << 12) / duration / 32 + 0x80);
     diff = end - value;
-    value += (Field_CosineByteAngle(ang) + 0x1000) * diff / 0x2000;
+    value += (Field_CosineByteAngle(ang) + 0x1000) * diff / 8192;
     return value;
 }
 
@@ -547,18 +547,18 @@ void __cdecl Field_ClampCameraToDiagonal(FieldCameraClamp *clamp, FieldCameraCoo
     if (clamp->clampMode == 1) {
         dot = -((clamp->minX + 0xA0 - camera->x) * (clamp->maxX - 0xA0 - (clamp->minX + 0xA0)) + (clamp->minY + 0x78 - camera->y) * (clamp->maxY - 0x78 - (clamp->minY + 0x78)));
         normSq = (clamp->maxX - 0xA0 - (clamp->minX + 0xA0)) * (clamp->maxX - 0xA0 - (clamp->minX + 0xA0)) + (clamp->maxY - 0x78 - (clamp->minY + 0x78)) * (clamp->maxY - 0x78 - (clamp->minY + 0x78)) >> 8;
-        insetWidth = clamp->maxX - 0xA0 - (clamp->minX + 0xA0);
-        insetHeight = clamp->maxY - 0x78 - (clamp->minY + 0x78);
-        camera->x = (dot * insetWidth / normSq >> 8) + clamp->minX + 0xA0;
-        camera->y = (dot * insetHeight / normSq >> 8) + clamp->minY + 0x78;
+        insetWidth = clamp->maxX - 160 - (clamp->minX + 160);
+        insetHeight = clamp->maxY - 120 - (clamp->minY + 120);
+        camera->x = (dot * insetWidth / normSq >> 8) + clamp->minX + 160;
+        camera->y = (dot * insetHeight / normSq >> 8) + clamp->minY + 120;
     }
     if (clamp->clampMode == 2) {
         dot = -((clamp->minX + 0xA0 - camera->x) * (clamp->maxX - 0xA0 - (clamp->minX + 0xA0)) + (clamp->maxY - 0x78 - camera->y) * (clamp->minY + 0x78 - (clamp->maxY - 0x78)));
         normSq = (clamp->maxX - 0xA0 - (clamp->minX + 0xA0)) * (clamp->maxX - 0xA0 - (clamp->minX + 0xA0)) + (clamp->minY - 0x78 - (clamp->maxY - 0x78)) * (clamp->minY + 0x78 - (clamp->maxY - 0x78)) >> 8;
-        insetWidth = clamp->maxX - 0xA0 - (clamp->minX + 0xA0);
-        insetHeight = clamp->minY + 0x78 - (clamp->maxY - 0x78);
-        camera->x = (dot * insetWidth / normSq >> 8) + clamp->minX + 0xA0;
-        camera->y = (dot * insetHeight / normSq >> 8) + clamp->maxY + -0x78;
+        insetWidth = clamp->maxX - 160 - (clamp->minX + 160);
+        insetHeight = clamp->minY + 120 - (clamp->maxY - 120);
+        camera->x = (dot * insetWidth / normSq >> 8) + clamp->minX + 160;
+        camera->y = (dot * insetHeight / normSq >> 8) + clamp->maxY + -120;
     }
 }
 
@@ -570,16 +570,16 @@ void __cdecl Field_ClampCameraToDiagonal(FieldCameraClamp *clamp, FieldCameraCoo
 void __cdecl Field_ClampCameraToRect(FieldCameraCoordsRect *camera)
 {
     if (camera->x > g_pFieldScrollBounds->maxX - 0xA0) {
-        camera->x = g_pFieldScrollBounds->maxX - 0xA0;
+        camera->x = g_pFieldScrollBounds->maxX - 160;
     }
     if (camera->x < g_pFieldScrollBounds->minX + 0xA0) {
-        camera->x = g_pFieldScrollBounds->minX + 0xA0;
+        camera->x = g_pFieldScrollBounds->minX + 160;
     }
     if (camera->y > g_pFieldScrollBounds->maxY - 0x78) {
-        camera->y = g_pFieldScrollBounds->maxY - 0x78;
+        camera->y = g_pFieldScrollBounds->maxY - 120;
     }
     if (camera->y < g_pFieldScrollBounds->minY + 0x78) {
-        camera->y = g_pFieldScrollBounds->minY + 0x78;
+        camera->y = g_pFieldScrollBounds->minY + 120;
     }
 }
 
@@ -610,48 +610,48 @@ void __cdecl Field_AccelerateScrollPositions(short *scrollX, short *scrollY, sho
     if (g_FieldActorState.state.layer2ScrollXSpeed != 0) {
         *scrollX += (short)(g_FieldCameraScrollEd0 * g_FieldActorState.state.layer2ScrollXSpeed);
         g_FieldCameraScrollEd0++;
-        if (*scrollX < 0xA0) {
-            *scrollX = 0xA0;
+        if (*scrollX < 160) {
+            *scrollX = 160;
             g_FieldCameraScrollEd0 = 0;
         }
         if (*scrollX > g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX - 0xA0) {
-            *scrollX = g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX - 0xA0;
+            *scrollX = g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX - 160;
             g_FieldCameraScrollEd0 = 0;
         }
     }
     if (g_FieldActorState.state.layer2ScrollYSpeed != 0) {
         *scrollY += (short)(g_FieldCameraScrollEd4 * g_FieldActorState.state.layer2ScrollYSpeed);
         g_FieldCameraScrollEd4++;
-        if (*scrollY < 0x78) {
-            *scrollY = 0x78;
+        if (*scrollY < 120) {
+            *scrollY = 120;
             g_FieldCameraScrollEd4 = 0;
         }
         if (*scrollY > g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY - 0x78) {
-            *scrollY = g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY - 0x78;
+            *scrollY = g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY - 120;
             g_FieldCameraScrollEd4 = 0;
         }
     }
     if (g_FieldActorState.state.layer3ScrollXSpeed != 0) {
         *scrollX2 += (short)(g_FieldCameraScrollEd8 * g_FieldActorState.state.layer3ScrollXSpeed);
         g_FieldCameraScrollEd8++;
-        if (*scrollX2 < 0xA0) {
-            *scrollX2 = 0xA0;
+        if (*scrollX2 < 160) {
+            *scrollX2 = 160;
             g_FieldCameraScrollEd8 = 0;
         }
         if (*scrollX2 > g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX - 0xA0) {
-            *scrollX2 = g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX - 0xA0;
+            *scrollX2 = g_pFieldScrollBounds->maxX - g_pFieldScrollBounds->minX - 160;
             g_FieldCameraScrollEd8 = 0;
         }
     }
     if (g_FieldActorState.state.layer3ScrollYSpeed != 0) {
         *scrollY2 += (short)(g_FieldCameraScrollEdc * g_FieldActorState.state.layer3ScrollYSpeed);
         g_FieldCameraScrollEdc++;
-        if (*scrollY2 < 0x78) {
-            *scrollY2 = 0x78;
+        if (*scrollY2 < 120) {
+            *scrollY2 = 120;
             g_FieldCameraScrollEdc = 0;
         }
         if (*scrollY2 > g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY - 0x78) {
-            *scrollY2 = g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY - 0x78;
+            *scrollY2 = g_pFieldScrollBounds->maxY - g_pFieldScrollBounds->minY - 120;
             g_FieldCameraScrollEdc = 0;
         }
     }
@@ -675,9 +675,9 @@ void __cdecl Field_ProjectCameraTargetEntityToScreen(FieldCameraCoordsRect *scre
     } frame;
 #pragma pack(pop)
 
-    frame.targetX = g_FieldEntityState[g_FieldActorState.state.cameraScrollTargetId].posX >> 0xC;
-    frame.targetY = g_FieldEntityState[g_FieldActorState.state.cameraScrollTargetId].posY >> 0xC;
-    frame.targetZ = (short)(g_FieldEntityState[g_FieldActorState.state.cameraScrollTargetId].posZ >> 0xC) + g_FieldActorState.state.viewOffset;
+    frame.targetX = g_FieldEntityState[g_FieldActorState.state.cameraScrollTargetId].posX >> 12;
+    frame.targetY = g_FieldEntityState[g_FieldActorState.state.cameraScrollTargetId].posY >> 12;
+    frame.targetZ = (short)(g_FieldEntityState[g_FieldActorState.state.cameraScrollTargetId].posZ >> 12) + g_FieldActorState.state.viewOffset;
     Field_ProjectWorldToScreen((PsxSVectorZ32 *)&frame.targetX, screenPos);
     screenPos->x -= *(short *)&g_FieldDisplayOffsetX;
     screenPos->y -= *(short *)&g_FieldDisplayHeight;
@@ -833,9 +833,9 @@ void __cdecl Field_UpdateCameraScroll(void)
                     (g_FieldActorState.state.viewOffsetCurrentStep)++;
                 }
             }
-            frame.followX = g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 0xC;
-            frame.followY = g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 0xC;
-            frame.followZ = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 0xC) + g_FieldActorState.state.viewOffset;
+            frame.followX = g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 12;
+            frame.followY = g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 12;
+            frame.followZ = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 12) + g_FieldActorState.state.viewOffset;
             g_FieldProjectedScreenPos = Field_ProjectWorldToScreen((PsxSVectorZ32 *)&frame.followX, &frame.cameraX);
             frame.cameraX.x -= *(short *)&g_FieldDisplayOffsetX;
             frame.cameraX.y -= *(short *)&g_FieldDisplayHeight;
@@ -851,17 +851,17 @@ void __cdecl Field_UpdateCameraScroll(void)
             frame.layer3Y = (short)(frame.cameraX.y * g_pFieldScrollBounds->layer3ParallaxY >> 8) + (g_pFieldScrollBounds->layer3ScrollY >> 4);
             frame.layer3X = frame.layer3X % g_pFieldScrollBounds->tileStrideX;
             frame.layer3Y = frame.layer3Y % g_pFieldScrollBounds->tileStrideY;
-            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX - frame.cameraX.x + g_FieldActorState.state.shakeX.currentOffset) - 0xA0;
-            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY - frame.cameraX.y + g_FieldActorState.state.shakeY.currentOffset) - 0x78;
-            g_FieldBgLayer2ScrollX = 0x140 - g_FieldBgLayer1ScrollX + frame.cameraX.x - g_FieldActorState.state.shakeX.currentOffset;
-            g_FieldBgLayer2ScrollY = 0xE8 - g_FieldBgLayer1ScrollY + frame.cameraX.y - g_FieldActorState.state.shakeY.currentOffset;
-            g_FieldBgLayer3ScrollX = 0x140 - g_FieldBgLayer1ScrollX + frame.layer2X - g_FieldActorState.state.shakeX.currentOffset;
-            g_FieldBgLayer3ScrollY = 0xE8 - g_FieldBgLayer1ScrollY + frame.layer2Y - g_FieldActorState.state.shakeY.currentOffset;
-            g_FieldBgLayer4ScrollX = 0x140 - g_FieldBgLayer1ScrollX + frame.layer3X - g_FieldActorState.state.shakeX.currentOffset;
-            g_FieldBgLayer4ScrollY = 0xE8 - g_FieldBgLayer1ScrollY + frame.layer3Y - g_FieldActorState.state.shakeY.currentOffset;
-            frame.playerX = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 0xC) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetX;
-            frame.playerY = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 0xC) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetY;
-            frame.playerZ = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 0xC) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetZ + (short)(g_FieldActorState.state.fieldScale << 7 >> 9);
+            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX - frame.cameraX.x + g_FieldActorState.state.shakeX.currentOffset) - 160;
+            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY - frame.cameraX.y + g_FieldActorState.state.shakeY.currentOffset) - 120;
+            g_FieldBgLayer2ScrollX = 320 - g_FieldBgLayer1ScrollX + frame.cameraX.x - g_FieldActorState.state.shakeX.currentOffset;
+            g_FieldBgLayer2ScrollY = 232 - g_FieldBgLayer1ScrollY + frame.cameraX.y - g_FieldActorState.state.shakeY.currentOffset;
+            g_FieldBgLayer3ScrollX = 320 - g_FieldBgLayer1ScrollX + frame.layer2X - g_FieldActorState.state.shakeX.currentOffset;
+            g_FieldBgLayer3ScrollY = 232 - g_FieldBgLayer1ScrollY + frame.layer2Y - g_FieldActorState.state.shakeY.currentOffset;
+            g_FieldBgLayer4ScrollX = 320 - g_FieldBgLayer1ScrollX + frame.layer3X - g_FieldActorState.state.shakeX.currentOffset;
+            g_FieldBgLayer4ScrollY = 232 - g_FieldBgLayer1ScrollY + frame.layer3Y - g_FieldActorState.state.shakeY.currentOffset;
+            frame.playerX = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 12) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetX;
+            frame.playerY = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 12) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetY;
+            frame.playerZ = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 12) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetZ + (short)(g_FieldActorState.state.fieldScale << 7 >> 9);
             Field_ProjectWorldToScreen((PsxSVectorZ32 *)&frame.playerX, &frame.screenX);
             g_FieldHandCursorX = frame.screenX.x * g_FieldDisplayScaleFactor + g_FieldDisplayHalfCenterX + g_FieldPaletteTargetOrgX * g_FieldDisplayScaleFactor;
             g_FieldHandCursorY = frame.screenX.y * g_FieldDisplayScaleFactor + g_FieldDisplayHalfCenterY + g_FieldPaletteTargetOrgY * g_FieldDisplayScaleFactor - (g_FieldDisplayScaleFactor << 3);
@@ -874,19 +874,19 @@ void __cdecl Field_UpdateCameraScroll(void)
             frame.layer3Y = (short)(-g_FieldLayerScrollY * g_pFieldScrollBounds->layer3ParallaxY >> 8) + (g_pFieldScrollBounds->layer3ScrollY >> 4);
             frame.layer3X = frame.layer3X % g_pFieldScrollBounds->tileStrideX;
             frame.layer3Y = frame.layer3Y % g_pFieldScrollBounds->tileStrideY;
-            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX - g_pFieldCameraData->scrollOffsetX + g_FieldLayerScrollX + g_FieldActorState.state.shakeX.currentOffset) - 0xA0;
-            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY + g_pFieldCameraData->scrollOffsetY + g_FieldLayerScrollY + g_FieldActorState.state.shakeY.currentOffset) - 0x78;
-            g_FieldBgLayer2ScrollX = 0x140 - g_FieldBgLayer1ScrollX - g_FieldLayerScrollX - g_FieldActorState.state.shakeX.currentOffset;
-            g_FieldBgLayer2ScrollY = 0xE8 - g_FieldBgLayer1ScrollY - g_FieldLayerScrollY - g_FieldActorState.state.shakeY.currentOffset;
+            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX - g_pFieldCameraData->scrollOffsetX + g_FieldLayerScrollX + g_FieldActorState.state.shakeX.currentOffset) - 160;
+            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY + g_pFieldCameraData->scrollOffsetY + g_FieldLayerScrollY + g_FieldActorState.state.shakeY.currentOffset) - 120;
+            g_FieldBgLayer2ScrollX = 320 - g_FieldBgLayer1ScrollX - g_FieldLayerScrollX - g_FieldActorState.state.shakeX.currentOffset;
+            g_FieldBgLayer2ScrollY = 232 - g_FieldBgLayer1ScrollY - g_FieldLayerScrollY - g_FieldActorState.state.shakeY.currentOffset;
             g_FieldBgLayer2ScrollY += (*(short *)&g_FieldBgLayer2OffsetY);
-            g_FieldBgLayer3ScrollX = 0x140 - g_FieldBgLayer1ScrollX + frame.layer2X - g_FieldActorState.state.shakeX.currentOffset;
-            g_FieldBgLayer3ScrollY = 0xE8 - g_FieldBgLayer1ScrollY + frame.layer2Y - g_FieldActorState.state.shakeY.currentOffset;
-            g_FieldBgLayer4ScrollX = 0x140 - g_FieldBgLayer1ScrollX + frame.layer3X - g_FieldActorState.state.shakeX.currentOffset;
-            g_FieldBgLayer4ScrollY = 0xE8 - g_FieldBgLayer1ScrollY + frame.layer3Y - g_FieldActorState.state.shakeY.currentOffset;
+            g_FieldBgLayer3ScrollX = 320 - g_FieldBgLayer1ScrollX + frame.layer2X - g_FieldActorState.state.shakeX.currentOffset;
+            g_FieldBgLayer3ScrollY = 232 - g_FieldBgLayer1ScrollY + frame.layer2Y - g_FieldActorState.state.shakeY.currentOffset;
+            g_FieldBgLayer4ScrollX = 320 - g_FieldBgLayer1ScrollX + frame.layer3X - g_FieldActorState.state.shakeX.currentOffset;
+            g_FieldBgLayer4ScrollY = 232 - g_FieldBgLayer1ScrollY + frame.layer3Y - g_FieldActorState.state.shakeY.currentOffset;
             if (*(char *)&g_FieldEntityState[g_FieldPlayerEntityIndex].visible != 0) {
-                frame.playerX = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 0xC) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetX;
-                frame.playerY = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 0xC) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetY;
-                frame.playerZ = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 0xC) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetZ + (short)(g_FieldActorState.state.fieldScale << 7 >> 9);
+                frame.playerX = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posX >> 12) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetX;
+                frame.playerY = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posY >> 12) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetY;
+                frame.playerZ = (short)(g_FieldEntityState[g_FieldPlayerEntityIndex].posZ >> 12) + g_FieldEntityState[g_FieldPlayerEntityIndex].offsetZ + (short)(g_FieldActorState.state.fieldScale << 7 >> 9);
                 Field_ProjectWorldToScreen((PsxSVectorZ32 *)&frame.playerX, &frame.screenX);
                 g_FieldHandCursorX = frame.screenX.x * g_FieldDisplayScaleFactor + g_FieldDisplayHalfCenterX + g_FieldPaletteTargetOrgX * g_FieldDisplayScaleFactor;
                 g_FieldHandCursorY = frame.screenX.y * g_FieldDisplayScaleFactor + g_FieldDisplayHalfCenterY + g_FieldPaletteTargetOrgY * g_FieldDisplayScaleFactor - (g_FieldDisplayScaleFactor << 3);
@@ -895,11 +895,11 @@ void __cdecl Field_UpdateCameraScroll(void)
     } else {
         g_FieldBgLayersDirty = 1;
         if (g_FieldActorState.state.movieCameraDisabled == 1) {
-            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX + g_FieldLayerScrollX) - 0xA0;
-            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY + g_FieldLayerScrollY) - 0x78;
+            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX + g_FieldLayerScrollX) - 160;
+            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY + g_FieldLayerScrollY) - 120;
         } else {
-            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX - g_pFieldCameraData->scrollOffsetX) - 0xA0;
-            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY + g_pFieldCameraData->scrollOffsetY) - 0x78;
+            g_FieldPaletteTargetOrgX = (short)(g_FieldBgLayer1ScrollX - g_pFieldCameraData->scrollOffsetX) - 160;
+            g_FieldPaletteTargetOrgY = (short)(g_FieldBgLayer1ScrollY + g_pFieldCameraData->scrollOffsetY) - 120;
         }
     }
 }
